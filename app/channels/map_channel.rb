@@ -46,6 +46,7 @@ class MapChannel < ApplicationCable::Channel
   end
 
   def map_atts(data)
-    data.slice("name", "description", "base_map", "center", "zoom", "pitch", "bearing", "terrain")
+    data.slice("name", "description", "base_map", "center", "zoom", "pitch", "bearing", "terrain", "view_permission",
+"edit_permission")
   end
 end

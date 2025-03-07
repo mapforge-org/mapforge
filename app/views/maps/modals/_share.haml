@@ -25,8 +25,8 @@
           .form-floating.edit-ui
             %label{ for: "map-edit-permissions"} Edit permissions:
             %select.form-select#map-edit-permissions{ "name": "map-visibility", "aria-label": "Edit permissions", data: { action: "input->map--layers#updateEditPermissions" }}
-              %option only you
-              %option everybody with the edit link
+              %option{ value: 'private' } Only you
+              %option{ value: 'link' } Everybody with the edit link
 
       .row.mb-2
         .col-md-3
@@ -38,9 +38,9 @@
           .form-floating.edit-ui
             %label{ for: "map-view-permissions"} View permissions:
             %select.form-select#map-view-permissions{ "name": "map-visibility", "aria-label": "View permissions", data: { action: "input->map--layers#updateViewPermissions" }}
-              %option only you
-              %option everybody with the viewer link
-              %option everybody, map is shown on mapforge
+              %option{ value: 'private' } Only you
+              %option{ value: 'link' } Everybody with the view link
+              %option{ value: 'public' } Everybody, map is shown on mapforge
 
       .btn-group-sm.mt-3{ role: "group" }
         %span.me-2 Download map as:
