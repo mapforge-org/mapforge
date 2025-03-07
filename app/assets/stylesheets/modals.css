@@ -26,6 +26,14 @@
   z-index: 1000;
   padding: 1.5em 1em 1.5em 1.5em;
   box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
+
+  p {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-select {
+    padding-top: 2rem;
+  }
 }
 
 .map-modal-header {
@@ -34,7 +42,7 @@
 
 .map-modal-content {
   margin-top: 1em;
-  overflow-y: auto;
+  overflow: hidden auto;
   max-height: calc(100vh - 10em);
 }
 
@@ -119,3 +127,9 @@
 #tour-modal .map-modal {
   background-image: url('/images/dark-wood-background.jpg');
 }
+
+#share-edit-link, #share-view-link {
+  margin-top: 0.5em;
+  width: 7em;
+}
+

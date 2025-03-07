@@ -141,3 +141,16 @@ a:hover, a:active, .link:hover, .link:active {
     color: var(--hover-color);
   }
 }
+
+button {
+  a, .link { /* stylelint-disable-line */
+    color: var(--default-color);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  a:hover, a:active, .link:hover, .link:active { /* stylelint-disable-line */
+    color: var(--default-color);
+    text-decoration: none;
+  }
+}

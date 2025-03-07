@@ -91,6 +91,14 @@ export default class extends Controller {
     })
   }
 
+  updateEditPermissions () {
+
+  }
+
+  updateViewPermissions () {
+
+  }
+
   close () {
     resetControls()
   }

@@ -366,6 +366,7 @@ function addBicycleButton () {
 // profiles are: driving-car, driving-hgv(heavy goods vehicle), cycling-regular,
 //               cycling-road, cycling-mountain, cycling-electric, foot-walking,
 //               foot-hiking,wheelchair
+// openrouteservice js lib: https://github.com/GIScience/openrouteservice-js?tab=readme-ov-file
 // openrouteservice API: https://giscience.github.io/openrouteservice/api-reference/
 async function getRouteFeature (feature, waypoints, profile) {
   const Snap = new Openrouteservice.Snap({ api_key: window.gon.map_keys.openrouteservice })
