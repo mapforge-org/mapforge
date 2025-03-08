@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## 2025-03
+
+* Fine grained view + edit permissions per map
+
 ## 2025-02
 
 * Define route waypoints

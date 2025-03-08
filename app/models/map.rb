@@ -7,7 +7,7 @@ class Map
   has_many :layers
   belongs_to :user, optional: true, counter_cache: true
 
-  scope :public, -> { where(view_permission: "public") }
+  scope :listed, -> { where(view_permission: "listed") }
 
   field :base_map, type: String, default: -> { default_base_map }
   field :center, type: Array
@@ -20,7 +20,7 @@ class Map
   field :public_id, type: String
   field :private, type: Boolean
   field :edit_permission, type: String, default: "link" # 'private', 'link'
-  field :view_permission, type: String, default: "link" # 'private', 'link', 'public'
+  field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
   field :images_count, type: Integer, default: 0
 
   BASE_MAPS = [ "osmRasterTiles", "satelliteTiles", "openTopoTiles" ]

@@ -9,7 +9,7 @@ class MapsController < ApplicationController
   layout "map", only: [ :show ]
 
   def index
-    @maps = Map.public.includes(:layers, :user).order(updated_at: :desc)
+    @maps = Map.listed.includes(:layers, :user).order(updated_at: :desc)
   end
 
   def my
