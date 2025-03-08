@@ -5,7 +5,7 @@
 
 .flex-item.map-preview.background-bright{id: dom_id(map)}
 
-  - if map.private
+  - unless map.view_permission == 'listed'
     .map-auth{title: 'This map is private and not linked from the public listing.'}
       %i.bi.bi-lock-fill
 

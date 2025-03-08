@@ -1,14 +1,58 @@
 #share-modal.modal-center.fade
-  .map-modal{'data-controller': "map--layers"}
-    %button.close-button{ data: { action: "click->map--layers#close" } } &times;
+  .map-modal{'data-controller': "map--share"}
+    %button.close-button{ data: { action: "click->map--share#close" } } &times;
     .map-modal-header
       %h3 Share Map
 
     .map-modal-content
-      %ul
-        %li= link_to 'Viewer link', map_path(id: @map.public_id)
-        %li= link_to 'Edit link', map_path(@map)
-        %li= link_to 'Download geojson', map_path(@map.public_id, format: :geojson)
-        %li= link_to 'Download gpx', map_path(@map.public_id, format: :gpx)
-        %li= link_to 'Download map export', map_path(id: @map.public_id, format: :json)
 
+      - if @map.user
+        %p
+          You can access this map via '#{link_to "your maps", my_path}'
+      - else
+        %p
+          This map was created anonymously and can only get changed with the
+          = link_to 'edit link', map_path(@map)
+          = "."
+
+      .row
+        .col-md-3
+          %button#share-edit-link.form-button.btn.btn-success{ type: "button" }
+            =link_to map_path(@map) do
+              %i.bi.bi-link-45deg
+              Edit link
+        .col-md-9
+          .form-floating.edit-ui
+            %label{ for: "map-edit-permissions"} Edit permissions:
+            %select.form-select#map-edit-permissions{ "name": "map-visibility", "aria-label": "Edit permissions", data: { action: "change->map--share#updateEditPermissions" }}
+              %option{ value: 'private' } Only you
+              %option{ value: 'link' } Everybody with the edit link
+
+      .row.mb-2
+        .col-md-3
+          %button#share-view-link.form-button.btn.btn-success{ type: "button" }
+            =link_to map_path(id: @map.public_id) do
+              %i.bi.bi-link-45deg
+              View link
+        .col-md-9
+          .form-floating.edit-ui
+            %label{ for: "map-view-permissions"} View permissions:
+            %select.form-select#map-view-permissions{ "name": "map-visibility", "aria-label": "View permissions", data: { action: "change->map--share#updateViewPermissions" }}
+              %option{ value: 'private' } Only you
+              %option{ value: 'link' } Everybody with the view link
+              %option{ value: 'listed' } Everybody, map is shown on mapforge
+
+      .btn-group-sm.mt-3{ role: "group" }
+        %span.me-2 Download map as:
+        %button.btn.btn-secondary{ type: "button" }
+          =link_to map_path(@map.public_id, format: :geojson) do
+            %i.bi.bi-download
+            GeoJSON
+        %button.btn.btn-secondary{ type: "button" }
+          =link_to map_path(@map.public_id, format: :gpx) do
+            %i.bi.bi-download
+            GPX
+        %button.btn.btn-secondary{ type: "button" }
+          =link_to map_path(@map.public_id, format: :json) do
+            %i.bi.bi-download
+            Map export

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Map List' do
-  let!(:maps) { create_list(:map, 3) }
+  let!(:maps) { create_list(:map, 3, view_permission: 'listed') }
   let(:user) { create(:user) }
 
   before do

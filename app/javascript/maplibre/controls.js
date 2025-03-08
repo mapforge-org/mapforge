@@ -145,7 +145,7 @@ export function initLayersModal () {
       const listItem = document.createElement('li')
       listItem.classList.add('layer-feature-item')
       listItem.textContent = `${feature.geometry.type}: ` +
-          (feature.properties.name || feature.properties.title || feature.id)
+          (feature.properties.title || feature.properties.name || feature.id)
       const link = document.createElement('a')
       link.setAttribute('href', '#')
       link.setAttribute('onclick', 'return false;')

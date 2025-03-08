@@ -1,13 +1,15 @@
 class MapsController < ApplicationController
-  before_action :set_global_js_values, only: %i[show]
   before_action :set_map, only: %i[show properties destroy]
+  before_action :set_map_mode, only: %i[show]
+  before_action :set_global_js_values, only: %i[show]
+  before_action :check_permissions, only: %i[show]
   before_action :require_login, only: %i[my]
   before_action :require_map_owner, only: %i[destroy]
 
   layout "map", only: [ :show ]
 
   def index
-    @maps = Map.where.not(private: true).includes(:layers, :user).order(updated_at: :desc)
+    @maps = Map.listed.includes(:layers, :user).order(updated_at: :desc)
   end
 
   def my
@@ -18,9 +20,7 @@ class MapsController < ApplicationController
     if request.format.html?
       @map_properties = @map.properties
       gon.map_id = params[:id]
-      gon.map_mode = (params[:id] == @map.id.to_s) ? "rw" : "ro"
-      gon.map_mode = "static" if params["static"]
-      @map_mode = gon.map_mode
+      gon.map_mode = @map_mode
       gon.csrf_token = form_authenticity_token
       gon.map_properties = @map_properties
     end
@@ -89,5 +89,15 @@ class MapsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def map_params
     params.fetch(:map, {})
+  end
+
+  def set_map_mode
+    @map_mode = (params[:id] == @map.id.to_s) ? "rw" : "ro"
+    @map_mode = "static" if params["static"]
+  end
+
+  def check_permissions
+    require_map_owner if [ "ro", "static" ].include?(@map_mode) && @map.view_permission == "private"
+    require_map_owner if [ "rw" ].include?(@map_mode) && @map.edit_permission == "private"
   end
 end

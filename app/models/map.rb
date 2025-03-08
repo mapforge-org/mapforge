@@ -4,22 +4,10 @@ class Map
   include Mongoid::Timestamps
   include Turbo::Broadcastable
 
-  # mongoid callbacks: https://www.mongodb.com/docs/mongoid/current/data-modeling/callbacks/
-  # broadcasts: https://www.rubydoc.info/github/hotwired/turbo-rails/Turbo/Streams/Broadcasts
-  after_create do
-    # using refresh to make sure map access is authorized
-    broadcast_refresh_to("admin_maps_list")
-    broadcast_refresh_to("public_maps_list") unless private
-    # broadcast_prepend_to("admin_maps_list", target: "maps", partial: "maps/map",
-    #  locals: { rw: true, avatar: true, delete: true, last_change: true })
-  end
-  after_destroy do
-    broadcast_refresh_to("admin_maps_list")
-    broadcast_refresh_to("public_maps_list") unless private
-  end
-
   has_many :layers
   belongs_to :user, optional: true, counter_cache: true
+
+  scope :listed, -> { where(view_permission: "listed") }
 
   field :base_map, type: String, default: -> { default_base_map }
   field :center, type: Array
@@ -31,6 +19,8 @@ class Map
   field :description, type: String
   field :public_id, type: String
   field :private, type: Boolean
+  field :edit_permission, type: String, default: "link" # 'private', 'link'
+  field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
   field :images_count, type: Integer, default: 0
 
   BASE_MAPS = [ "osmRasterTiles", "satelliteTiles", "openTopoTiles" ]
@@ -46,6 +36,20 @@ class Map
   DEFAULT_PITCH = 30
   DEFAULT_BEARING = 0
   DEFAULT_TERRAIN = false
+
+  # mongoid callbacks: https://www.mongodb.com/docs/mongoid/current/data-modeling/callbacks/
+  # broadcasts: https://www.rubydoc.info/github/hotwired/turbo-rails/Turbo/Streams/Broadcasts
+  after_create do
+    # using refresh to make sure map access is authorized
+    broadcast_refresh_to("admin_maps_list")
+    broadcast_refresh_to("public_maps_list") unless private
+    # broadcast_prepend_to("admin_maps_list", target: "maps", partial: "maps/map",
+    #  locals: { rw: true, avatar: true, delete: true, last_change: true })
+  end
+  after_destroy do
+    broadcast_refresh_to("admin_maps_list")
+    broadcast_refresh_to("public_maps_list") unless private
+  end
 
   after_save :broadcast_update
   after_destroy :delete_screenshot
@@ -66,7 +70,9 @@ class Map
       default_zoom: default_zoom,
       pitch: pitch || DEFAULT_PITCH,
       bearing: bearing || DEFAULT_BEARING,
-      terrain: terrain || DEFAULT_TERRAIN
+      terrain: terrain || DEFAULT_TERRAIN,
+      view_permission: view_permission,
+      edit_permission: edit_permission
     }
   end
 
