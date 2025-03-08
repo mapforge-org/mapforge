@@ -90,14 +90,15 @@ export function editStyles () {
         'circle-stroke-width': 1
       }
     },
-    // default point behind symbols, transparent points etc.
+    // default point behind symbols and transparent points
     {
       id: 'gl-draw-point-point-stroke-inactive',
       type: 'circle',
       filter: ['all',
         ['==', '$type', 'Point'],
         ['==', 'meta', 'feature'],
-        ['!=', 'mode', 'static']
+        ['!=', 'mode', 'static'],
+        ['!has', 'user_route']
       ],
       paint: {
         'circle-radius': pointSize,
@@ -128,7 +129,7 @@ export function editStyles () {
     removeSource(styles()['points-border-layer']),
     removeSource(styles()['points-layer']),
 
-    // inactive vertex points on lines + polygons, outline
+    // outline border of inactive vertex points on lines + polygons,
     // rendering outline seperately to generate nicer overlay effect
     {
       id: 'gl-draw-polygon-and-line-vertex-outline-inactive',
@@ -136,7 +137,8 @@ export function editStyles () {
       filter: ['all',
         ['==', 'meta', 'vertex'],
         ['==', '$type', 'Point'],
-        ['!=', 'mode', 'static']
+        ['!=', 'mode', 'static'],
+        ['!has', 'user_route']
       ],
       paint: {
         'circle-radius': pointSize,
@@ -161,9 +163,9 @@ export function editStyles () {
         'circle-color': highlightColor
       }
     },
-
+    // Route midpoint borders
     {
-      id: 'gl-draw-route-vertex-inactive',
+      id: 'gl-draw-route-vertex-inactive-midpoint-border',
       type: 'circle',
       filter: ['all',
         ['==', 'meta', 'vertex'],
@@ -172,15 +174,73 @@ export function editStyles () {
         ['has', 'user_route']
       ],
       paint: {
-        'circle-radius': pointSize,
+        'circle-radius': [
+          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
+          8, 4
+        ],
+        'circle-opacity': 0,
+        'circle-stroke-opacity': [
+          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
+          0, 1
+        ],
+        'circle-stroke-color': '#ffffff',
+        'circle-stroke-width': 1,
+      }
+    },
+    // Route midpoints
+    {
+      id: 'gl-draw-route-vertex-inactive-midpoint',
+      type: 'circle',
+      filter: ['all',
+        ['==', 'meta', 'vertex'],
+        ['==', '$type', 'Point'],
+        ['!=', 'mode', 'static'],
+        ['has', 'user_route']
+      ],
+      paint: {
+        'circle-radius': [
+          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
+          8, 4
+        ],
         'circle-color': [
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          highlightColor, 'lightgrey'
+          highlightColor, 'grey'
         ],
         'circle-opacity': [
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          1, 0.5
+          0, 0.7
         ]
+      }
+    },
+    // Route waypoints
+    {
+      id: 'gl-draw-route-vertex-inactive-waypoint',
+      type: 'circle',
+      filter: ['all',
+        ['==', 'meta', 'vertex'],
+        ['==', '$type', 'Point'],
+        ['!=', 'mode', 'static'],
+        ['has', 'user_route']
+      ],
+      paint: {
+        'circle-radius': [
+          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
+          8, 4
+        ],
+        'circle-color': [
+          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
+          highlightColor, 'grey'
+        ],
+        'circle-opacity': [
+          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
+          1, 0
+        ],
+        'circle-stroke-opacity': [
+          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
+          1, 0
+        ],
+        'circle-stroke-color': '#ffffff',
+        'circle-stroke-width': 1,
       }
     }
   ]

@@ -322,6 +322,7 @@ export function styles () {
       filter: ['all',
         ['==', '$type', 'Point'],
         ['!=', 'meta', 'midpoint'],
+        ['!=', 'meta', 'vertex'],
         ['none', ['has', 'user_marker-image-url'], ['has', 'marker-image-url'],
           ['has', 'user_marker-symbol'], ['has', 'marker-symbol']]
       ],

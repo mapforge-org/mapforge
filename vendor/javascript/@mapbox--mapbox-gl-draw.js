@@ -1655,7 +1655,7 @@ function createMidpoint(parent, startVertex, endVertex) { // e, t, o
         }
     };
 
-    console.log(midpoint)
+    // console.log(midpoint)
 
     delete midpoint.properties.id;
     return midpoint;
