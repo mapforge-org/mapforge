@@ -25,7 +25,8 @@
           .form-floating.edit-ui
             %label{ for: "map-edit-permissions"} Edit permissions:
             %select.form-select#map-edit-permissions{ "name": "map-visibility", "aria-label": "Edit permissions", data: { action: "change->map--share#updateEditPermissions" }}
-              %option{ value: 'private' } Only you
+              - if @map.user
+                %option{ value: 'private' } Only you
               %option{ value: 'link' } Everybody with the edit link
 
       .row.mb-2
@@ -38,21 +39,22 @@
           .form-floating.edit-ui
             %label{ for: "map-view-permissions"} View permissions:
             %select.form-select#map-view-permissions{ "name": "map-visibility", "aria-label": "View permissions", data: { action: "change->map--share#updateViewPermissions" }}
-              %option{ value: 'private' } Only you
+              - if @map.user
+                %option{ value: 'private' } Only you
               %option{ value: 'link' } Everybody with the view link
               %option{ value: 'listed' } Everybody, map is shown on mapforge
 
       .btn-group-sm.mt-3{ role: "group" }
         %span.me-2 Download map as:
-        %button.btn.btn-secondary{ type: "button" }
+        %button.btn.btn-secondary.btn-download{ type: "button" }
           =link_to map_path(@map.public_id, format: :geojson) do
             %i.bi.bi-download
             GeoJSON
-        %button.btn.btn-secondary{ type: "button" }
+        %button.btn.btn-secondary.btn-download{ type: "button" }
           =link_to map_path(@map.public_id, format: :gpx) do
             %i.bi.bi-download
             GPX
-        %button.btn.btn-secondary{ type: "button" }
+        %button.btn.btn-secondary.btn-download{ type: "button" }
           =link_to map_path(@map.public_id, format: :json) do
             %i.bi.bi-download
             Map export
