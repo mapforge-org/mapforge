@@ -41,6 +41,10 @@
 
 #feature-edit-ui {
   margin-top: 1.1em;
+
+  #fill-color, #stroke-color, #marker-symbol {
+    width: 3em;
+  }
 }
 
 #feature-edit-raw {

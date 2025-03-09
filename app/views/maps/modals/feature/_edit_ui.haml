@@ -37,11 +37,11 @@
   #stroke-color-ui.edit-ui.edit-line.edit-polygon.edit-point
     %label.edit-polygon.edit-line{ for: "stroke-color"} Line color:
     %label.edit-point{ for: "stroke-color"} Border color:
-    %input#stroke-color{ type: "color", 'data-action': "input->map--feature-edit#updateStrokeColor change->map--feature-edit#saveFeature" }
+    %input.form-control#stroke-color{ type: "color", 'data-action': "input->map--feature-edit#updateStrokeColor change->map--feature-edit#saveFeature" }
 
   #fill-color-ui.edit-ui.edit-polygon.edit-point
     %label{ for: "fill-color"} Fill color:
-    %input#fill-color{ type: "color", 'data-action': "input->map--feature-edit#updateFillColor change->map--feature-edit#saveFeature" }
+    %input.form-control#fill-color{ type: "color", 'data-action': "input->map--feature-edit#updateFillColor change->map--feature-edit#saveFeature" }
 
   #opacity-ui.edit-ui.edit-polygon
     %label{ for: "opacity"} Opacity:
@@ -55,11 +55,11 @@
 
   #marker-symbol-ui.edit-ui.edit-point
     %label{ for: "marker-symbol"} Symbol:
-    %input#marker-symbol{ type: "text", size: '1', 'data-action': "input->map--feature-edit#updateMarkerSymbol change->map--feature-edit#saveFeature" }
+    %input.form-control#marker-symbol{ type: "text", size: '1', 'data-action': "input->map--feature-edit#updateMarkerSymbol change->map--feature-edit#saveFeature" }
     %span<
       = surround '(', ')' do
         %a{ href: 'https://emojipedia.org/google/15.1', target: '_blank'}>Emoji list
 
   #marker-image-ui.edit-ui.edit-point
     %label{ for: "marker-image"} Image:
-    %input#marker-image{ type: "file", name: 'marker-image', 'data-action': "input->map--feature-edit#updateMarkerImage" }
+    %input.form-control#marker-image{ type: "file", name: 'marker-image', 'data-action': "input->map--feature-edit#updateMarkerImage" }
