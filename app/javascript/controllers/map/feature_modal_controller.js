@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { geojsonData } from 'maplibre/map'
-import { defaultLineWidth } from 'maplibre/styles'
+import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles'
 import { status } from 'helpers/status'
 import { showFeatureDetails } from 'maplibre/modals'
 import * as functions from 'helpers/functions'
@@ -50,14 +50,14 @@ export default class extends Controller {
     if (feature.properties.desc) { this.show_add_desc() }
 
     dom.hideElements(['.edit-point', '.edit-line', '.edit-polygon'])
-    document.querySelector('#stroke-color').value = feature.properties.stroke || '#0A870A'
-    document.querySelector('#fill-color').value = feature.properties.fill || '#0A870A'
+    document.querySelector('#stroke-color').value = feature.properties.stroke || featureOutlineColor
+    document.querySelector('#fill-color').value = feature.properties.fill || featureColor
     if (feature.geometry.type === 'Point') {
       dom.showElements(['#feature-edit-ui .edit-point'])
       const size = feature.properties['marker-size'] || 6
       document.querySelector('#point-size').value = size
       document.querySelector('#point-size-val').innerHTML = size
-      document.querySelector('#fill-color').value = feature.properties['marker-color'] || '#0A870A'
+      document.querySelector('#fill-color').value = feature.properties['marker-color'] || featureColor
       document.querySelector('#marker-symbol').value = feature.properties['marker-symbol'] || ''
     } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
       const size = feature.properties['stroke-width'] || defaultLineWidth
@@ -66,8 +66,8 @@ export default class extends Controller {
       dom.showElements(['#feature-edit-ui .edit-line'])
     } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
       dom.showElements(['#feature-edit-ui .edit-polygon'])
-      document.querySelector('#fill-color').value = feature.properties.fill || '#0A870A'
-      document.querySelector('#stroke-color').value = feature.properties.stroke || '#ffffff'
+      document.querySelector('#fill-color').value = feature.properties.fill || featureColor
+      document.querySelector('#stroke-color').value = feature.properties.stroke || featureOutlineColor
       const size = feature.properties['stroke-width'] || defaultLineWidth
       document.querySelector('#outline-width').value = size
       document.querySelector('#outline-width-val').innerHTML = size
