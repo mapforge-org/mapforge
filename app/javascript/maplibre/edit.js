@@ -1,6 +1,6 @@
 import { map, geojsonData, initializeDefaultControls, destroy, redrawGeojson } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
-import { highlightFeature } from 'maplibre/feature'
+import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { mapChannel } from 'channels/map_channel'
 import {
   ControlGroup, MapSettingsControl, MapShareControl, MapLayersControl,
@@ -280,6 +280,7 @@ function addLineMenu () {
   lineMenuButton.removeEventListener('click', null)
   lineMenuButton.addEventListener('click', (_e) => {
     draw.changeMode('simple_select')
+    resetHighlightedFeature()
     if (lineMenu.classList.contains('hidden')) {
       lineMenu.classList.remove('hidden')
     } else {

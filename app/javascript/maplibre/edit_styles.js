@@ -1,4 +1,4 @@
-import { styles, loadImage, pointSize, pointOutlineSize, pointSizeMax } from 'maplibre/styles'
+import { styles, loadImage, pointSize, pointSizeMax } from 'maplibre/styles'
 import { map, sortLayers } from 'maplibre/map'
 
 export function initializeEditStyles () {
@@ -103,7 +103,7 @@ export function editStyles () {
       paint: {
         'circle-radius': pointSize,
         'circle-opacity': [
-          'match', ['get', 'user_marker-color'], 'transparent', 0.9, 0],
+          'match', ['get', 'user_marker-color'], 'transparent', 0.2, 0],
         'circle-color': '#c0c0c0'
       }
     },
@@ -144,7 +144,7 @@ export function editStyles () {
         'circle-radius': pointSize,
         'circle-opacity': 0,
         'circle-stroke-color': '#444',
-        'circle-stroke-width': pointOutlineSize,
+        'circle-stroke-width': 2,
         'circle-stroke-opacity': 1
       }
     },

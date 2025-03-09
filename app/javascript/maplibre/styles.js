@@ -142,12 +142,12 @@ const pointSizeMin = ['to-number', ['coalesce',
   ['get', 'user_marker-size'], ['get', 'marker-size'],
   ['case',
     ['any', ['has', 'user_marker-symbol'], ['has', 'marker-symbol']],
-    7, 3]]]
+    10, 3]]]
 export const pointSizeMax = ['to-number', ['coalesce',
   ['get', 'user_marker-size'], ['get', 'marker-size'],
   ['case',
     ['any', ['has', 'user_marker-symbol'], ['has', 'marker-symbol']],
-    16, 8]]]
+    24, 8]]]
 export const pointSize = [
   'interpolate',
   ['linear'],
@@ -175,7 +175,7 @@ const pointOpacityActive = 0.9
 // factor of the original icon size (72x72)
 // in case of icon url, we don't know the size
 // default: 1/6 = 12px (2 * default radius pointSizeMax)
-const iconSizeFactor = ['/', pointSizeMax, 6]
+const iconSizeFactor = ['/', pointSizeMax, 8]
 const iconSize = ['*', 1 / 8, iconSizeFactor]
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 const labelSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], 16]]
@@ -379,8 +379,8 @@ export function styles () {
           [
             'case',
             ['boolean', ['feature-state', 'active'], false],
-            pointOpacityActive,
-            pointOpacity
+            0.7,
+            0.5
           ]],
         'circle-stroke-color': pointOutlineColor,
         'circle-blur': 0.05,
