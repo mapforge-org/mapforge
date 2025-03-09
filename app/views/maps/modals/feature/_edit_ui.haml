@@ -35,7 +35,7 @@
     %span#outline-width-val.text-muted.small
 
   #stroke-color-ui.edit-ui.edit-line.edit-polygon.edit-point
-    %label.edit-polygon{ for: "stroke-color"} Line color:
+    %label.edit-polygon.edit-line{ for: "stroke-color"} Line color:
     %label.edit-point{ for: "stroke-color"} Border color:
     %input#stroke-color{ type: "color", 'data-action': "input->map--feature-edit#updateStrokeColor change->map--feature-edit#saveFeature" }
 
