@@ -174,7 +174,7 @@ const pointOpacityActive = 0.9
 // factor of the original icon size (72x72)
 // in case of icon url, we don't know the size
 // default: 1/6 = 12px (2 * default radius pointSizeMax)
-const iconSizeFactor = ['/', pointSizeMax, 8]
+const iconSizeFactor = ['/', pointSizeMax, 6]
 const iconSize = ['*', 1 / 8, iconSizeFactor]
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 const labelSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], 16]]
@@ -368,7 +368,7 @@ export function styles () {
           ['has', 'user_marker-symbol'], ['has', 'marker-symbol']]
       ],
       paint: {
-        'circle-pitch-scale': 'map', // points get bigger when camera is closer
+        'circle-pitch-scale': 'map',
         'circle-radius': pointSize,
         'circle-color': pointColor,
         'circle-opacity': [
@@ -389,7 +389,7 @@ export function styles () {
           pointOutlineSizeActive,
           pointOutlineSize
         ],
-        'circle-stroke-opacity': pointOpacity + 0.2
+        'circle-stroke-opacity': pointOpacity
       }
     },
     // support symbols on all feature types
@@ -414,7 +414,8 @@ export function styles () {
       // 'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
       },
       paint: {
-      // cannot set circle-stroke-* in the symbol layer :-(
+        // circle-pitch-scale: 'map' // seems default and cannot get changed
+        // cannot set circle-pitch-scale, circle-stroke-* in the symbol layer :-(
       }
     },
     'text-layer': {
