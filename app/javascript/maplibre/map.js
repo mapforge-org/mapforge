@@ -1,6 +1,6 @@
 import { basemaps, defaultFont } from 'maplibre/basemaps'
 import { draw } from 'maplibre/edit'
-import { resetControls, initSettingsModal, geocoderConfig, initCtrlTooltips } from 'maplibre/controls'
+import { resetControls, initSettingsModal, geocoderConfig, initCtrlTooltips, ControlGroup, MapEditControl,  } from 'maplibre/controls'
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { AnimatePointAnimation } from 'maplibre/animations'
@@ -237,10 +237,17 @@ export function initializeDefaultControls () {
   map.addControl(scale)
   scale.setUnit('metric')
 
+  if (gon.map_mode === "ro" && window.gon.edit_id) {
+    const controlGroup = new ControlGroup([new MapEditControl()])
+    map.addControl(controlGroup, 'top-left')
+    document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)').classList.add('hidden') // hide for aos animation
+  }
+
   map.once('load', function (_e) {
     animateElement('.maplibregl-ctrl-geocoder', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
+    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)
   })
 }
 

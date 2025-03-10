@@ -15,6 +15,7 @@ describe 'Map public view' do
       expect(page).to have_css('.maplibregl-ctrl-zoom-out')
       expect(page).to have_css('.maplibregl-ctrl-compass')
       expect(page).to have_css('.maplibregl-ctrl-geolocate')
+      expect(page).not_to have_css('.maplibregl-ctrl-edit')
     end
   end
 
@@ -91,6 +92,20 @@ describe 'Map public view' do
       click_coord('.map', 50, 50)
       expect(page).to have_css('#feature-details-modal')
       expect(page).to have_text('New Title')
+    end
+  end
+
+  context 'as map owner / admin' do
+    let(:map) { create(:map, user: user) }
+    let(:user) { create(:user) }
+
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      visit path
+    end
+
+    it 'has link to switch to edit mode' do
+      expect(page).to have_css('.maplibregl-ctrl-edit')
     end
   end
 
