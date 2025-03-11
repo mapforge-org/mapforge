@@ -20,7 +20,7 @@ class MapsController < ApplicationController
     if request.format.html?
       @map_properties = @map.properties
       gon.map_id = params[:id]
-      gon.edit_id = @map.id.to_s if (@user&.admin? || (@user && @map.user == @user))
+      gon.edit_id = @map.id.to_s if @user&.admin? || (@user && @map.user == @user)
       gon.map_mode = @map_mode
       gon.csrf_token = form_authenticity_token
       gon.map_properties = @map_properties
