@@ -72,12 +72,12 @@ export default class extends Controller {
       const size = feature.properties['stroke-width'] || defaultLineWidth
       document.querySelector('#outline-width').value = size
       document.querySelector('#outline-width-val').innerHTML = size
-      document.querySelector('#opacity').value = feature.properties.fillOpacity || 7
-      document.querySelector('#opacity-val').textContent = (feature.properties.fillOpacity || 7) * 10 + '%'
+      document.querySelector('#opacity').value = (feature.properties['fill-opacity'] || 0.7) * 10
+      document.querySelector('#opacity-val').textContent = (feature.properties['fill-opacity'] || 0.7) * 100 + '%'
     }
 
     if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString' ||
-      feature.geometry.type === 'Polygon') {
+      feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
       const height = feature.properties['fill-extrusion-height'] || 0
       document.querySelector('#fill-extrusion-height').value = height
       document.querySelector('#fill-extrusion-height-val').innerHTML = height + 'm'

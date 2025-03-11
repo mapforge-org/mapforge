@@ -37,6 +37,10 @@ html:has(.map), body:has(.map) {
   overflow: hidden;
 }
 
+#map-title:empty {
+    padding: 0;
+}
+
 /* 640 is breakpoint for search form */
 @media (width >= 640px) {
   #map-head {
