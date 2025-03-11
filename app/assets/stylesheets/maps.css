@@ -49,6 +49,9 @@
   text-shadow: 0 -4px 4px white, 4px 0 4px white, 0 4px 4px white, -4px 0 4px white;
   font-weight: bold;
   font-family: Lobster, serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .map-auth {
