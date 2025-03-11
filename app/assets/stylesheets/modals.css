@@ -128,9 +128,15 @@
   background-image: url('/images/dark-wood-background.jpg');
 }
 
+/* Share modal */
+
 #share-edit-link, #share-view-link {
   margin-top: 0.5em;
   width: 7em;
+}
+
+#share-modal .form-floating > .form-select {
+  height: unset;
 }
 
 .btn-download {
