@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Maplibre Test</title>
+    <link href="https://unpkg.com/maplibre-gl/dist/maplibre-gl.css" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/maplibre-gl"></script>
+<script>
+var map = new maplibregl.Map({
+    container: 'map',
+    style: 'https://demotiles.maplibre.org/style.json', // Use a style or any other compatible style URL
+    center: [-0.1276, 51.5072],
+    zoom: 5
+});
+
+map.on('style.load', function () {
+    // Add a source of type GeoJSON
+    map.addSource('geojson-source', {
+        type: 'geojson',
+        data: {
+            type: 'FeatureCollection',
+            features: [
+                {
+                    type: 'Feature',
+                    properties: {
+                        description: 'Circle'
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [-0.1276, 51.5072] // Coordinates for London
+                    }
+                }
+            ]
+        }
+    });
+
+    map.addLayer({
+        id: 'geojson-circle',
+        type: 'circle',
+        source: 'geojson-source',
+          paint: {
+            'circle-radius': 30,
+            'circle-opacity': 0.9,
+            'circle-color': 'green',
+          }
+    });
+});
+
+map.on('mousemove', (e) => {
+    const features = map.queryRenderedFeatures(e.point)
+    if (features?.length && features[0].source === 'geojson-source') {
+        console.log('On feature')
+    } else {
+        console.log('Not on feature')
+    }
+})
+
+</script>
+</body>
+</html>

@@ -36,11 +36,12 @@ export function initializeViewStyles () {
 
   // highlight features on hover
   map.on('mousemove', (e) => {
+    if (window.gon.map_mode === 'static') { return }
     if (!(stickyFeatureHighlight && highlightedFeatureId)) {
-      resetHighlightedFeature()
       const features = map.queryRenderedFeatures(e.point)
-      if (!features?.length || window.gon.map_mode === 'static') { return }
-      if (features[0].source === 'geojson-source') {
+      if (features?.length && features[0].id === highlightedFeatureId) { return }
+      resetHighlightedFeature()
+      if (features?.length && features[0].source === 'geojson-source') {
         highlightFeature(features[0])
       } else {
         // console.log(features[0])
@@ -340,7 +341,7 @@ export function styles () {
             pointOpacityActive,
             pointOpacity
           ]],
-        'circle-blur': 0.1
+        'circle-blur': 0.05
       }
     },
     'points-hit-layer': {
