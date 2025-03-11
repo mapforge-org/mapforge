@@ -176,14 +176,7 @@ export function loadGeoJsonData () {
       geojsonData = data
       if (geojsonData.features.length > 0) {
         console.log('loaded ' + geojsonData.features.length + ' features from ' + url)
-        // this + `promoteId: 'id'` is a workaround for the maplibre limitation:
-        // https://github.com/mapbox/mapbox-gl-js/issues/2716
-        // because to highlight a feature we need the id,
-        // and in the style layers it only accepts mumeric ids in the id field initially
-        geojsonData.features.forEach((feature, _index) => { feature.properties.id = feature.id })
         redrawGeojson()
-        // drop the properties.id after sending to the map
-        geojsonData.features.forEach(feature => { delete feature.properties.id })
       }
       console.log('Geojson layer loaded')
       map.fire('geojson.load', { detail: { message: 'geojson-source loaded' } })
@@ -263,6 +256,11 @@ export function initializeViewMode () {
 }
 
 export function redrawGeojson (resetDraw = true) {
+  // this + `promoteId: 'id'` is a workaround for the maplibre limitation:
+  // https://github.com/mapbox/mapbox-gl-js/issues/2716
+  // because to highlight a feature we need the id,
+  // and in the style layers it only accepts mumeric ids in the id field initially
+  geojsonData.features.forEach((feature, _index) => { feature.properties.id = feature.id })
   // draw has its own style layers based on editStyles
   if (draw) {
     if (resetDraw) {
@@ -277,6 +275,8 @@ export function redrawGeojson (resetDraw = true) {
   }
   map.getSource('geojson-source')?.setData(renderedGeojsonData())
   map.redraw()
+  // drop the properties.id after sending to the map
+  geojsonData.features.forEach(feature => { delete feature.properties.id })
 }
 
 // change geojson data before rendering:

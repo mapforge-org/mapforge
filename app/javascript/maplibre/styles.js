@@ -37,16 +37,14 @@ export function initializeViewStyles () {
   // highlight features on hover
   map.on('mousemove', (e) => {
     if (window.gon.map_mode === 'static') { return }
-    if (!(stickyFeatureHighlight && highlightedFeatureId)) {
-      const features = map.queryRenderedFeatures(e.point)
-      if (features?.length && features[0].id === highlightedFeatureId) { return }
-      resetHighlightedFeature()
-      if (features?.length && features[0].source === 'geojson-source') {
-        highlightFeature(features[0])
-      } else {
-        // console.log(features[0])
-      }
-    }
+    if (stickyFeatureHighlight && highlightedFeatureId) { return }
+
+    const features = map.queryRenderedFeatures(e.point).filter(f => f.source === 'geojson-source')
+
+    if (!features?.length) { resetHighlightedFeature(); return }
+    if (features[0].id === highlightedFeatureId) { return }
+
+    highlightFeature(features[0])
   })
 
   map.on('styleimagemissing', loadImage)
