@@ -207,12 +207,17 @@ export function styles () {
         ['in', '$type', 'Polygon'],
         ['>', 'fill-extrusion-height', 0]],
       paint: {
-        'fill-extrusion-color': ['coalesce',
-          ['get', 'fill-extrusion-color'],
-          ['get', 'user_fill-extrusion-color'],
-          ['get', 'fill'],
-          ['get', 'user_fill'],
-          featureColor],
+        'fill-extrusion-color': [
+          'case',
+          ['boolean', ['feature-state', 'active'], false],
+            '#0A870Aaa',
+            ['coalesce',
+            ['get', 'fill-extrusion-color'],
+            ['get', 'user_fill-extrusion-color'],
+            ['get', 'fill'],
+            ['get', 'user_fill'],
+            featureColor]
+        ],
         'fill-extrusion-height': ['to-number', ['coalesce',
           ['get', 'fill-extrusion-height'],
           ['get', 'user_fill-extrusion-height']]],
@@ -220,7 +225,7 @@ export function styles () {
           ['get', 'fill-extrusion-base'],
           ['get', 'user_fill-extrusion-base']]],
         // opacity does not support data expressions!?!
-        'fill-extrusion-opacity': 0.8
+        'fill-extrusion-opacity': 0.5
       }
     },
     // polygon outlines
