@@ -141,9 +141,9 @@ export function initializeMap (divId = 'maplibre-map') {
       e.setAttribute('data-map--settings-current-center-value', JSON.stringify([map.getCenter().lng, map.getCenter().lat]))
     })
   })
-  map.on('error', (err) => {
-    console.log('map error >>> ', err)
-  })
+  // map.on('error', (err) => {
+  //   console.log('map error >>> ', err)
+  // })
 }
 
 export function loadGeoJsonData () {

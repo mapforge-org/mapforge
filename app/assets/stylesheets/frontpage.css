@@ -285,6 +285,7 @@ section,
   background-color: var(--color-light-teagreen);
 }
 
+/* Bootstrap breakpoints: https://getbootstrap.com/docs/5.0/layout/breakpoints/ */
 @media (width <= 992px) {
   #features .swiper {
     margin: 60px 60px 40px;

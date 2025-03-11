@@ -19,6 +19,39 @@ html:has(.map), body:has(.map) {
   overflow: hidden;
   font-size: 1.5em;
   cursor: pointer;
+  background: #fffa;
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 5%);
+  margin-top: 0.2em;
+}
+
+#map-title {
+  padding: 0 0.7em 0 0.2em;
+  font-size: 1.2em;
+  color: var(--color-dark-moss-green);
+  text-shadow: 0 -4px 4px white, 4px 0 4px white, 0 4px 4px white, -4px 0 4px white;
+  font-weight: bold;
+  font-family: Lobster, serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* 640 is breakpoint for search form */
+@media (width >= 640px) {
+  #map-head {
+    max-width: calc(100% - 4em);
+  }
+}
+
+@media (width < 640px) {
+  #map-head {
+    max-width: calc(100% - 3.5em);
+  }
+
+  #map-title {
+    font-size: 0.9em;
+  }
 }
 
 /* this is an ugly hack for the profile dropdown not to be cut off */

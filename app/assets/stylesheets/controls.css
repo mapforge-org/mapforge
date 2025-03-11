@@ -64,14 +64,22 @@
   background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20">%3Cpath style="fill: %232091b0;" d="m13.5 3.5c-1.4 0-2.5 1.1-2.5 2.5 0 .3 0 .6.2.9l-3.8 3.8c-.3-.1-.6-.2-.9-.2-1.4 0-2.5 1.1-2.5 2.5s1.1 2.5 2.5 2.5 2.5-1.1 2.5-2.5c0-.3 0-.6-.2-.9l3.8-3.8c.3.1.6.2.9.2 1.4 0 2.5-1.1 2.5-2.5s-1.1-2.5-2.5-2.5z"/>%3C/svg>');
 }
 
-/* small search form on mobile */
-@media (0 <= width < 640px) {
+/* hide search form on mobile */
+@media (width < 640px) {
   .maplibregl-ctrl-geocoder {
     display: none !important;
   }
 
   .maplibregl-ctrl-top-right {
     top: 2.4em;
+  }
+
+  .maplibregl-ctrl-top-left .maplibregl-ctrl {
+    margin: 10px 0 0 5px;
+  }
+
+  .maplibregl-ctrl-top-right .maplibregl-ctrl {
+    margin: 10px 5px 0 0;
   }
 }
 

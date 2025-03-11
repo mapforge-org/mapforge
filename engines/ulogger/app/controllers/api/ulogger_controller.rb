@@ -36,7 +36,8 @@ module Ulogger
       track = Feature.new(layer: @map.layers.first, geometry: { 'coordinates' => [] }) unless track
       track_coords = track.geometry['coordinates'] << coords
       track.update(geometry: { "type" => "LineString",
-                               "coordinates" => track_coords })
+                               "coordinates" => track_coords,
+                               "properties" => { "title" => "µlogger track" } })
 
       # add point with details
       geometry = { "type" => "Point", "coordinates" => coords }
