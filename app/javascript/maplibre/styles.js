@@ -332,7 +332,7 @@ export function styles () {
         'circle-opacity': [
           'match',
           ['coalesce', ['get', 'user_marker-color'], ['get', 'marker-color']],
-          'transparent', 0, // If marker-color is 'transparent', set circle-radius to 0
+          'transparent', 0, // If marker-color is 'transparent', set circle-opacity to 0
           [
             'case',
             ['boolean', ['feature-state', 'active'], false],
@@ -397,7 +397,10 @@ export function styles () {
       id: 'symbols-layer',
       type: 'symbol',
       source: 'geojson-source',
-      filter: ['!=', 'active', 'true'],
+      filter: ['all',
+        ['any', ['has', 'user_marker-image-url'], ['has', 'marker-image-url'],
+          ['has', 'user_marker-symbol'], ['has', 'marker-symbol']]
+      ],
       // minzoom: 15, // TODO: only static values possible right now
       layout: {
         'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
