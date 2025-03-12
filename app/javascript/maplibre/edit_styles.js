@@ -26,6 +26,8 @@ export function initializeEditStyles () {
 // source layers 'mapbox-gl-draw-cold' + 'mapbox-gl-draw-hot'
 
 const highlightColor = '#fbb03b'
+const midpointSize = 8
+const vertexSize = 8
 
 export function editStyles () {
   return [
@@ -83,7 +85,7 @@ export function editStyles () {
         ['!has', 'user_route']
       ],
       paint: {
-        'circle-radius': pointSize,
+        'circle-radius': midpointSize,
         'circle-color': 'grey',
         'circle-opacity': 0.8,
         'circle-stroke-color': '#ffffff',
@@ -141,7 +143,7 @@ export function editStyles () {
         ['!has', 'user_route']
       ],
       paint: {
-        'circle-radius': pointSize,
+        'circle-radius': vertexSize,
         'circle-opacity': 0,
         'circle-stroke-color': '#444',
         'circle-stroke-width': 2,
@@ -159,7 +161,7 @@ export function editStyles () {
         ['!has', 'user_route']
       ],
       paint: {
-        'circle-radius': pointSize,
+        'circle-radius': vertexSize,
         'circle-color': highlightColor
       }
     },
@@ -176,7 +178,7 @@ export function editStyles () {
       paint: {
         'circle-radius': [
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          8, 4
+          vertexSize, 4
         ],
         'circle-opacity': 0,
         'circle-stroke-opacity': [
@@ -200,7 +202,7 @@ export function editStyles () {
       paint: {
         'circle-radius': [
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          8, 4
+          midpointSize, 4
         ],
         'circle-color': [
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
@@ -225,7 +227,7 @@ export function editStyles () {
       paint: {
         'circle-radius': [
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          8, 4
+          vertexSize, 4
         ],
         'circle-color': [
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
