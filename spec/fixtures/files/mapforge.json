@@ -2,7 +2,6 @@
   {"name":"TestMap",
     "description":null,
     "public_id":"114f7aa0",
-    "private":null,
     "base_map":"test",
     "center": [11.07338990801668,49.44765470337188],
     "default_center":[11.061062279850441,49.46840031499557],

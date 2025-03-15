@@ -67,7 +67,6 @@ class Map
   validate :public_id_must_be_unique
 
   def properties
-    @properties ||=
     { name: name,
       description: description,
       public_id: public_id,

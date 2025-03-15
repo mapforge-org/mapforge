@@ -22,7 +22,9 @@ module Ulogger
       user = User.find_by(email: session['email'])
       map_id, padded_id = create_numeric_map_id
       @map = Map.create!(id: padded_id, name: params[:track],
-                         public_id: params[:track], private: true,
+                         public_id: params[:track],
+                         view_permission: 'link',
+                         edit_permission: 'link',
                          user: user)
       @map.save!
       render json: { error: false, trackid: map_id }
