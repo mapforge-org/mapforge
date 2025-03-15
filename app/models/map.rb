@@ -18,7 +18,6 @@ class Map
   field :name, type: String
   field :description, type: String
   field :public_id, type: String
-  field :private, type: Boolean
   field :edit_permission, type: String, default: "link" # 'private', 'link'
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
   field :images_count, type: Integer, default: 0
@@ -42,13 +41,22 @@ class Map
   after_create do
     # using refresh to make sure map access is authorized
     broadcast_refresh_to("admin_maps_list")
-    broadcast_refresh_to("public_maps_list") unless private
+    broadcast_refresh_to("public_maps_list") if view_permission == "listed"
     # broadcast_prepend_to("admin_maps_list", target: "maps", partial: "maps/map",
     #  locals: { rw: true, avatar: true, delete: true, last_change: true })
   end
+  after_update(
+    if: Proc.new { |record|
+      record.saved_change_to_attribute?(:name) ||
+      record.saved_change_to_attribute?(:view_permission)
+    }) do
+    broadcast_refresh_to("admin_maps_list")
+    broadcast_refresh_to("public_maps_list") if view_permission == "listed"
+  end
+
   after_destroy do
     broadcast_refresh_to("admin_maps_list")
-    broadcast_refresh_to("public_maps_list") unless private
+    broadcast_refresh_to("public_maps_list") if view_permission == "listed"
   end
 
   after_save :broadcast_update
@@ -59,10 +67,10 @@ class Map
   validate :public_id_must_be_unique
 
   def properties
+    @properties ||=
     { name: name,
       description: description,
       public_id: public_id,
-      private: private,
       base_map: get_base_map,
       center: center,
       default_center: default_center,
