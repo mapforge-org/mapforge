@@ -121,7 +121,6 @@ export function initializeMap (divId = 'maplibre-map') {
   map.on('mousemove', (e) => { lastMousePosition = e.lngLat })
   map.on('touchend', (e) => { lastMousePosition = e.lngLat })
   map.on('drag', () => { mapInteracted = true })
-  map.on('click', resetControls)
   map.on('pitchend', function (_e) {
     functions.e('#settings-modal', e => {
       e.setAttribute('data-map--settings-current-pitch-value', map.getPitch().toFixed(0))
@@ -214,6 +213,7 @@ export function initializeViewMode () {
     initializeDefaultControls()
   })
   map.on('geojson.load', () => { initializeViewStyles() })
+  map.on('click', resetControls)
 }
 
 export function redrawGeojson (resetDraw = true) {

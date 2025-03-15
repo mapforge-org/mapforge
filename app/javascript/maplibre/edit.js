@@ -103,13 +103,12 @@ export function initializeEditMode () {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Line Mode: Click on the map to draw a line', 'info', 'medium', 8000)
     }
-    // console.log('draw mode: ' + draw.getMode())
+    //console.log('draw mode: ' + draw.getMode())
   })
 
   map.on('draw.selectionchange', function (e) {
     // probably mapbox draw bug: map can lose drag capabilities on double click
     map.dragPan.enable()
-
     if (!e.features?.length) { justCreated = false; return }
     if (justCreated) { justCreated = false; return }
     selectedFeature = e.features[0]
@@ -137,6 +136,12 @@ export function initializeEditMode () {
       touchStartPosition.y === touchEndPosition.y &&
       draw.getMode() === 'simple_select') {
       map.fire('click')
+    }
+  })
+  // in edit mode, map click handler is only needed to hide modals
+  map.on('click', () => {
+    if (document.querySelector('.maplibregl-ctrl button.active')) {
+      resetControls()
     }
   })
 
