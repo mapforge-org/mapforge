@@ -45,6 +45,14 @@ function featureMeta (feature) {
     } else {
       meta = (area / 1000000).toFixed(2) + ' km²'
     }
+  } else if (feature.geometry.type === 'MultiPolygon') {
+    const turfPolygon = turf.multiPolygon(feature.geometry.coordinates)
+    const area = turf.area(turfPolygon)
+    if (area < 100000) {
+      meta = area.toFixed(0) + ' m²'
+    } else {
+      meta = (area / 1000000).toFixed(2) + ' km²'
+    }
   }
   return meta
 }

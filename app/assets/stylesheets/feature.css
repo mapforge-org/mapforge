@@ -60,9 +60,6 @@
 #feature-details-meta {
   font-size: 80%;
   color: #999;
-  position: absolute;
-  left: 1em;
-  top: 1em;
 }
 
 #feature-details-body, #feature-edit-ui, #feature-edit-raw {
