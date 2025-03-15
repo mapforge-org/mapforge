@@ -38,6 +38,7 @@ export function initializeViewStyles () {
   map.on('mousemove', (e) => {
     if (window.gon.map_mode === 'static') { return }
     if (stickyFeatureHighlight && highlightedFeatureId) { return }
+    if (document.querySelector('.maplibregl-ctrl button.active')) { return }
 
     const features = map.queryRenderedFeatures(e.point).filter(f => f.source === 'geojson-source')
 

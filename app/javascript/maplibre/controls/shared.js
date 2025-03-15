@@ -6,6 +6,7 @@ import { initTooltips } from 'helpers/dom'
 import MaplibreGeocoder from 'maplibre-gl-geocoder'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { animateElement } from 'helpers/dom'
+import { status } from 'helpers/status'
 
 export class ControlGroup {
   constructor (controls) {
@@ -158,7 +159,7 @@ export const geocoderConfig = {
         features.push(point)
       }
     } catch (e) {
-      console.error(`Failed to forwardGeocode with error: ${e}`)
+      console.error(`Failed to forward Geocode with error: ${e}`)
     }
 
     return {
@@ -193,7 +194,7 @@ export function initializeDefaultControls () {
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)').classList.add('hidden')
 
   // https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl
-  // Note: This might work only via https
+  // Note: This might works only via https in modern browsers
   const geolocate = new maplibregl.GeolocateControl({
     positionOptions: {
       enableHighAccuracy: true
@@ -206,6 +207,7 @@ export function initializeDefaultControls () {
   map.addControl(geolocate, 'top-right')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)').classList.add('hidden')
 
+
   const scale = new maplibregl.ScaleControl({
     maxWidth: 100,
     unit: 'metric'
@@ -214,6 +216,10 @@ export function initializeDefaultControls () {
   scale.setUnit('metric')
 
   map.once('load', function (_e) {
+    if (window.location.protocol !== 'https:') {
+      document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('disabled', '1')
+      document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('data-bs-original-title', 'Location (https only)')
+    }
     animateElement('.maplibregl-ctrl-geocoder', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)

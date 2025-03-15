@@ -26,8 +26,8 @@ export function initializeEditStyles () {
 // source layers 'mapbox-gl-draw-cold' + 'mapbox-gl-draw-hot'
 
 const highlightColor = '#fbb03b'
-const midpointSize = 8
-const vertexSize = 8
+const midpointSize = 6
+const vertexSize = 6
 
 export function editStyles () {
   return [
