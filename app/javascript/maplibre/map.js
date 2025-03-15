@@ -205,6 +205,7 @@ export function initializeStaticMode () {
   map.on('geojson.load', () => {
     initializeViewStyles()
   })
+  functions.e('.maplibregl-ctrl-attrib, #map-head', e => { e.classList.add('hidden') })
 }
 
 export function initializeViewMode () {
