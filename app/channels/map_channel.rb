@@ -13,23 +13,23 @@ class MapChannel < ApplicationCable::Channel
   end
 
   def update_feature(data)
-    map = Map.find(data["map_id"])
+    map = get_map_rw(data["map_id"])
     feature = map.features.find(feature_atts(data)["id"])
     feature.update!(feature_atts(data))
   end
 
   def update_map(data)
-    map = Map.find(data["map_id"])
+    map = get_map_rw(data["map_id"])
     map.update!(map_atts(data))
   end
 
   def new_feature(data)
-    map = Map.find(data["map_id"])
+    map = get_map_rw(data["map_id"])
     map.layers.first.features.create!(feature_atts(data))
   end
 
   def delete_feature(data)
-    map = Map.find(data["map_id"])
+    map = get_map_rw(data["map_id"])
     feature = map.features.find(feature_atts(data)["id"])
     feature.destroy
   end
@@ -48,5 +48,12 @@ class MapChannel < ApplicationCable::Channel
   def map_atts(data)
     data.slice("name", "description", "base_map", "center", "zoom", "pitch", "bearing", "terrain", "view_permission",
 "edit_permission")
+  end
+
+  # load map with write access
+  def get_map_rw(id)
+    map = Map.find(id)
+    raise "Cannot open map for writing with (public?) id '#{id}'" unless map
+    map
   end
 end

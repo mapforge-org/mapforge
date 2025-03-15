@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { resetControls } from 'maplibre/controls'
+import { resetControls } from 'maplibre/controls/shared'
 import * as functions from 'helpers/functions'
 import { map, mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
 

@@ -1,6 +1,8 @@
 import { basemaps, defaultFont } from 'maplibre/basemaps'
 import { draw } from 'maplibre/edit'
-import { resetControls, initSettingsModal, geocoderConfig, initCtrlTooltips, ControlGroup, MapEditControl,  } from 'maplibre/controls'
+import { resetControls, initCtrlTooltips, initializeDefaultControls } from 'maplibre/controls/shared'
+import { initializeViewControls } from 'maplibre/controls/view'
+import { initSettingsModal } from 'maplibre/controls/edit'
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { AnimatePointAnimation } from 'maplibre/animations'
@@ -8,7 +10,6 @@ import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
 import maplibregl from 'maplibre-gl'
-import MaplibreGeocoder from 'maplibre-gl-geocoder'
 import { animateElement, initTooltips } from 'helpers/dom'
 
 export let map
@@ -200,57 +201,6 @@ function addTerrain () {
   status('Terrain added to map')
 }
 
-export function initializeDefaultControls () {
-  map.addControl(
-    new MaplibreGeocoder(geocoderConfig, {
-      maplibregl
-    }), 'top-right'
-  )
-  document.querySelector('.maplibregl-ctrl-geocoder').classList.add('hidden')
-
-  const nav = new maplibregl.NavigationControl({
-    visualizePitch: true,
-    showZoom: true,
-    showCompass: true
-  })
-  map.addControl(nav)
-  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)').classList.add('hidden')
-
-  // https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl
-  // Note: This might work only via https
-  const geolocate = new maplibregl.GeolocateControl({
-    positionOptions: {
-      enableHighAccuracy: true
-    },
-    trackUserLocation: functions.isMobileDevice()
-  })
-  geolocate.on('error', () => {
-    status('Error detecting location', 'warning')
-  })
-  map.addControl(geolocate, 'top-right')
-  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)').classList.add('hidden')
-
-  const scale = new maplibregl.ScaleControl({
-    maxWidth: 100,
-    unit: 'metric'
-  })
-  map.addControl(scale)
-  scale.setUnit('metric')
-
-  if (gon.map_mode === "ro" && window.gon.edit_id) {
-    const controlGroup = new ControlGroup([new MapEditControl()])
-    map.addControl(controlGroup, 'top-left')
-    document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)').classList.add('hidden') // hide for aos animation
-  }
-
-  map.once('load', function (_e) {
-    animateElement('.maplibregl-ctrl-geocoder', 'fade-left', 500)
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)', 'fade-left', 500)
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)
-  })
-}
-
 export function initializeStaticMode () {
   map.on('geojson.load', () => {
     initializeViewStyles()
@@ -258,7 +208,10 @@ export function initializeStaticMode () {
 }
 
 export function initializeViewMode () {
-  map.once('style.load', () => { initializeDefaultControls() })
+  map.once('style.load', () => {
+    initializeViewControls()
+    initializeDefaultControls()
+  })
   map.on('geojson.load', () => { initializeViewStyles() })
 }
 

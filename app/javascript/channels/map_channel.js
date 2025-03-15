@@ -3,7 +3,7 @@ import {
   upsert, destroy, setBackgroundMapLayer, mapProperties,
   initializeMaplibreProperties, map, resetGeojsonData
 } from 'maplibre/map'
-import { disableEditControls, enableEditControls } from 'maplibre/edit'
+import { disableEditControls, enableEditControls } from 'maplibre/controls/edit'
 import { status } from 'helpers/status'
 
 export let mapChannel

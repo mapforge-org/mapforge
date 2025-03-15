@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { map, geojsonData, upsert, mapProperties } from 'maplibre/map'
-import { initLayersModal, resetControls } from 'maplibre/controls'
+import { initLayersModal, resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
 import { status } from 'helpers/status'
@@ -81,7 +81,7 @@ export default class extends Controller {
     const centroid = window.turf.centroid(feature)
     console.log('Fly to: ' + feature.id + ' ' + centroid.geometry.coordinates)
     resetControls()
-    draw.changeMode('simple_select', { featureIds: [feature.id] })
+    if (draw) { draw.changeMode('simple_select', { featureIds: [feature.id] }) }
     map.once('moveend', function () { highlightFeature(feature, true) })
     map.flyTo({
       center: centroid.geometry.coordinates,

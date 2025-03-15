@@ -6,13 +6,14 @@
 
     .map-modal-content
 
-      #layer-upload.row.align-items-center
-        .col
-          %label{ for: "formFile" } Import gpx/kml (max. 800Kb)
-          %br
-          %small EPSG:4326 (WGS 84) format
-        .col
-          %input.form-control#fileInput{ type: "file", data: { action: "input->map--layers#upload" } }
+      - if @map_mode == 'rw'
+        #layer-upload.row.align-items-center
+          .col
+            %label{ for: "formFile" } Import gpx/kml (max. 800Kb)
+            %br
+            %small EPSG:4326 (WGS 84) format
+          .col
+            %input.form-control#fileInput{ type: "file", data: { action: "input->map--layers#upload" } }
 
       #default-layer
         %h4.layer-name Default Layer

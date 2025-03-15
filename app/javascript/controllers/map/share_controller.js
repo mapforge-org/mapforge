@@ -1,14 +1,17 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { mapProperties } from 'maplibre/map'
-import { resetControls } from 'maplibre/controls'
+import { resetControls } from 'maplibre/controls/shared'
 
 export default class extends Controller {
   connect () {
     // initializeMaplibreProperties is not called yet when rendering _share.haml
     let props = mapProperties || window.gon.map_properties
-    document.querySelector('#map-view-permissions').value = props['view_permission']
-    document.querySelector('#map-edit-permissions').value = props['edit_permission']
+
+    if (window.gon.map_mode === "rw") {
+      document.querySelector('#map-view-permissions').value = props['view_permission']
+      document.querySelector('#map-edit-permissions').value = props['edit_permission']
+    }
   }
 
   updateEditPermissions () {

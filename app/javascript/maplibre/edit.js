@@ -1,24 +1,20 @@
-import { map, geojsonData, initializeDefaultControls, destroy, redrawGeojson } from 'maplibre/map'
+import { map, geojsonData, destroy, redrawGeojson } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
-import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
+import { highlightFeature } from 'maplibre/feature'
 import { mapChannel } from 'channels/map_channel'
-import {
-  ControlGroup, MapSettingsControl, MapShareControl, MapLayersControl,
-  resetControls
-} from 'maplibre/controls'
+import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
+import { initializeEditControls } from 'maplibre/controls/edit'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import PaintMode from 'mapbox-gl-draw-paint-mode'
-import { animateElement } from 'helpers/dom'
 import Openrouteservice from 'openrouteservice-js'
 import { decodePolyline } from 'helpers/polyline'
 
 export let draw
 export let selectedFeature
 let justCreated = false
-let lineMenu
 
 MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl'
 MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-'
@@ -66,8 +62,8 @@ export function initializeEditMode () {
     modes
   })
 
-  initializeDefaultControls()
   initializeEditControls()
+  initializeDefaultControls()
 
   map.on('geojson.load', function (_e) {
     initializeEditStyles()
@@ -145,26 +141,6 @@ export function initializeEditMode () {
   })
 
   document.querySelector('#edit-buttons').classList.remove('hidden')
-}
-
-function initializeEditControls () {
-  map.addControl(draw, 'top-left')
-  addLineMenu()
-  document.querySelector('button.mapbox-gl-draw_polygon').setAttribute('title', 'Draw polygon')
-  document.querySelector('button.mapbox-gl-draw_point').setAttribute('title', 'Draw point')
-  document.querySelector('.maplibregl-ctrl:has(button.ctrl-line-menu-btn)').classList.add('hidden') // hide for aos animation
-
-  const controlGroup = new ControlGroup(
-    [new MapSettingsControl(),
-      new MapLayersControl(),
-      new MapShareControl()])
-  map.addControl(controlGroup, 'top-left')
-  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)').classList.add('hidden') // hide for aos animation
-
-  map.once('load', function (_e) {
-    animateElement('.maplibregl-ctrl:has(button.ctrl-line-menu-btn)', 'fade-right', 500)
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)', 'fade-right', 500)
-  })
 }
 
 // switching directly from 'simple_select' to 'direct_select',
@@ -247,121 +223,6 @@ export function handleDelete (e) {
   destroy(deletedFeature.id)
   status('Feature ' + deletedFeature.id + ' deleted')
   mapChannel.send_message('delete_feature', { id: deletedFeature.id })
-}
-
-export function disableEditControls () {
-  functions.e('.mapbox-gl-draw_ctrl-draw-btn', e => { e.disabled = true })
-  functions.e('.maplibregl-ctrl-map', e => { e.disabled = true })
-  functions.e('#save-map-name', e => { e.disabled = true })
-  functions.e('#save-map-defaults', e => { e.disabled = true })
-}
-
-export function enableEditControls () {
-  functions.e('.mapbox-gl-draw_ctrl-draw-btn', e => { e.disabled = false })
-  functions.e('.maplibregl-ctrl-map', e => { e.disabled = false })
-  functions.e('#save-map-name', e => { e.disabled = false })
-  functions.e('#save-map-defaults', e => { e.disabled = false })
-}
-
-function addLineMenu () {
-  const originalButton = document.querySelector('.mapbox-gl-draw_line')
-  originalButton.title = 'Draw line'
-  originalButton.setAttribute('data-bs-placement', 'right')
-  lineMenu = document.createElement('div')
-  document.querySelector('.maplibregl-ctrl-top-left').appendChild(lineMenu)
-  lineMenu.classList.add('maplibregl-ctrl-group')
-  lineMenu.classList.add('maplibregl-ctrl')
-  lineMenu.classList.add('ctrl-line-menu')
-  lineMenu.classList.add('hidden')
-
-  const lineMenuButton = originalButton.cloneNode(true)
-  lineMenuButton.title = 'Select line draw mode'
-  lineMenuButton.classList.add('ctrl-line-menu-btn')
-  lineMenuButton.removeEventListener('click', null)
-  lineMenuButton.addEventListener('click', (_e) => {
-    draw.changeMode('simple_select')
-    resetHighlightedFeature()
-    if (lineMenu.classList.contains('hidden')) {
-      lineMenu.classList.remove('hidden')
-    } else {
-      lineMenu.classList.add('hidden')
-      resetControls()
-    }
-  })
-  const parentElement = originalButton.parentElement
-  parentElement.insertBefore(lineMenuButton, originalButton.nextSibling)
-  lineMenu.appendChild(originalButton)
-  addPaintButton()
-  if (window.gon.map_keys.openrouteservice) {
-    addBicycleButton()
-    addRoadButton()
-  }
-}
-
-function addPaintButton () {
-  const originalButton = document.querySelector('.ctrl-line-menu .mapbox-gl-draw_line')
-  const paintButton = originalButton.cloneNode(true)
-  paintButton.title = 'Draw freehand'
-  paintButton.classList.remove('mapbox-gl-draw_line')
-  paintButton.classList.add('mapbox-gl-draw_paint')
-  const icon = document.createElement('i')
-  icon.classList.add('bi')
-  icon.classList.add('bi-pencil-fill')
-  paintButton.appendChild(icon)
-  paintButton.removeEventListener('click', null)
-  paintButton.addEventListener('click', (_e) => {
-    if (draw.getMode() === 'draw_paint_mode') {
-      draw.changeMode('simple_select')
-    } else {
-      draw.changeMode('draw_paint_mode')
-    }
-    map.fire('draw.modechange')
-  })
-  lineMenu.appendChild(paintButton)
-}
-
-function addRoadButton () {
-  const originalButton = document.querySelector('.ctrl-line-menu .mapbox-gl-draw_line')
-  const roadButton = originalButton.cloneNode(true)
-  roadButton.title = 'Calculate a car route'
-  roadButton.classList.remove('mapbox-gl-draw_line')
-  roadButton.classList.add('mapbox-gl-draw_road')
-  const icon = document.createElement('i')
-  icon.classList.add('bi')
-  icon.classList.add('bi-car-front-fill')
-  roadButton.appendChild(icon)
-  roadButton.removeEventListener('click', null)
-  roadButton.addEventListener('click', (_e) => {
-    if (draw.getMode() === 'road') {
-      draw.changeMode('simple_select')
-    } else {
-      draw.changeMode('road')
-    }
-    map.fire('draw.modechange')
-  })
-  lineMenu.appendChild(roadButton)
-}
-
-function addBicycleButton () {
-  const originalButton = document.querySelector('.ctrl-line-menu .mapbox-gl-draw_line')
-  const bicycleButton = originalButton.cloneNode(true)
-  bicycleButton.title = 'Calculate a bike route'
-  bicycleButton.classList.remove('mapbox-gl-draw_line')
-  bicycleButton.classList.add('mapbox-gl-draw_bicycle')
-  const icon = document.createElement('i')
-  icon.classList.add('bi')
-  icon.classList.add('bi-bicycle')
-  bicycleButton.appendChild(icon)
-  bicycleButton.removeEventListener('click', null)
-  bicycleButton.addEventListener('click', (_e) => {
-    if (draw.getMode() === 'bicycle') {
-      draw.changeMode('simple_select')
-    } else {
-      draw.changeMode('bicycle')
-    }
-    map.fire('draw.modechange')
-  })
-  lineMenu.appendChild(bicycleButton)
 }
 
 // profiles are: driving-car, driving-hgv(heavy goods vehicle), cycling-regular,
