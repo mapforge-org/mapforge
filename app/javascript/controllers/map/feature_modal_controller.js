@@ -51,7 +51,15 @@ export default class extends Controller {
 
     dom.hideElements(['.edit-point', '.edit-line', '.edit-polygon'])
     document.querySelector('#stroke-color').value = feature.properties.stroke || featureOutlineColor
-    document.querySelector('#fill-color').value = feature.properties.fill || featureColor
+    if (feature.properties.fill === 'transparent') {
+      document.querySelector('#fill-color').setAttribute('disabled', 'true')
+      document.querySelector('#fill-color-transparent').setAttribute('checked', 'true')
+    } else {
+      document.querySelector('#fill-color').removeAttribute('disabled')
+      document.querySelector('#fill-color').value = feature.properties.fill || featureColor
+      document.querySelector('#fill-color-transparent').setAttribute('checked', 'false')
+    }
+
     if (feature.geometry.type === 'Point') {
       dom.showElements(['#feature-edit-ui .edit-point'])
       const size = feature.properties['marker-size'] || 6

@@ -109,7 +109,7 @@ export function showFeatureDetails (feature) {
     dom.showElements('#feature-export')
     // set feature id in export link
     const link = document.querySelector('#feature-export a')
-    link.href = link.href.replace(/feature\/.*/, '/feature/' + feature.id)
+    link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id)
   }
   const desc = marked(feature?.properties?.desc || '')
   document.querySelector('#feature-details-body').innerHTML = desc

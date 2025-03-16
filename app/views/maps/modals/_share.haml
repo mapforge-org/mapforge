@@ -57,14 +57,14 @@
       .btn-group-sm.mt-3{ role: "group" }
         %span.me-2 Download map as:
         %button.btn.btn-secondary.btn-download{ type: "button" }
-          =link_to map_path(@map.public_id, format: :geojson) do
+          =link_to map_path(@map.public_id, format: :geojson), target: '_blank' do
             %i.bi.bi-download
             GeoJSON
         %button.btn.btn-secondary.btn-download{ type: "button" }
-          =link_to map_path(@map.public_id, format: :gpx) do
+          =link_to map_path(@map.public_id, format: :gpx), target: '_blank' do
             %i.bi.bi-download
             GPX
         %button.btn.btn-secondary.btn-download{ type: "button" }
-          =link_to map_path(@map.public_id, format: :json) do
+          =link_to map_path(@map.public_id, format: :json), target: '_blank' do
             %i.bi.bi-download
             Map export

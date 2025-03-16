@@ -119,8 +119,21 @@ export default class extends Controller {
     const color = document.querySelector('#fill-color').value
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
     if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
-    // draw layer feature properties aren't getting updated by draw.set()
-    draw.setFeatureProperty(this.featureIdValue, 'fill', color)
+    redrawGeojson(false)
+  }
+
+  updateFillColorTransparent () {
+    const feature = this.getFeature()
+    let color
+    if (document.querySelector('#fill-color-transparent').checked) {
+      color = 'transparent'
+      document.querySelector('#fill-color').setAttribute('disabled', 'true')
+    } else {
+      color = null
+      document.querySelector('#fill-color').removeAttribute('disabled')
+    }
+    if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
+    if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
     redrawGeojson(false)
   }
 
