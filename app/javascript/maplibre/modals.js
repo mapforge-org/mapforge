@@ -53,6 +53,9 @@ function featureMeta (feature) {
     } else {
       meta = (area / 1000000).toFixed(2) + ' km²'
     }
+  } else if (feature.geometry.type === 'Point') {
+    meta = '(' + feature.geometry.coordinates[1].toFixed(6) +
+      ', ' + feature.geometry.coordinates[0].toFixed(6) + ')'
   }
   return meta
 }
@@ -99,7 +102,15 @@ export function showFeatureDetails (feature) {
   dom.showElements('#feature-title')
   dom.hideElements('#feature-title-input')
   document.querySelector('#feature-title').innerHTML = featureTitle(feature)
-  document.querySelector('#feature-details-meta').innerHTML = featureMeta(feature)
+  document.querySelector('#feature-size').innerHTML = featureMeta(feature)
+  if (feature.geometry.type === 'Point') {
+    dom.hideElements('#feature-export')
+  } else {
+    dom.showElements('#feature-export')
+    // set feature id in export link
+    const link = document.querySelector('#feature-export a')
+    link.href = link.href.replace(/feature\/.*/, '/feature/' + feature.id)
+  }
   const desc = marked(feature?.properties?.desc || '')
   document.querySelector('#feature-details-body').innerHTML = desc
 }

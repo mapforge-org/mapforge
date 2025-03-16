@@ -1,5 +1,6 @@
 class MapsController < ApplicationController
-  before_action :set_map, only: %i[show properties destroy]
+  before_action :set_map_ro, only: %i[show properties feature]
+  before_action :set_map_rw, only: %i[destroy]
   before_action :set_map_mode, only: %i[show]
   before_action :set_global_js_values, only: %i[show]
   before_action :check_permissions, only: %i[show]
@@ -54,6 +55,12 @@ class MapsController < ApplicationController
   end
   # :nocov:
 
+  def feature
+    feature = @map.features.find(params["feature_id"])
+    head :not_found and return unless feature
+    render json: feature.to_geojson
+  end
+
   # some maplibre style tries to load eg. /atm_11; catching those calls here
   # :nocov:
   def catchall
@@ -81,9 +88,14 @@ class MapsController < ApplicationController
   end
 
   # Use callbacks to share common setup or constraints between actions.
-  def set_map
+  def set_map_ro
     @map = Map.includes(:layers, :user)
     @map = @map.find_by(public_id: params[:id]) || @map.find_by(id: params[:id])
+    head :not_found unless @map
+  end
+
+  def set_map_rw
+    @map = Map.includes(:layers, :user).find_by(id: params[:id])
     head :not_found unless @map
   end
 

@@ -57,7 +57,7 @@
   margin-right: 0.6em;
 }
 
-#feature-details-meta {
+#feature-details-meta, #feature-details-meta a {
   font-size: 80%;
   color: #999;
 }

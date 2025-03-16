@@ -18,4 +18,8 @@
 
   %p#feature-details-body
 
-  #feature-details-meta
+  #feature-details-meta.mt-2
+    %span#feature-size
+    %span#feature-export.ms-2
+      =link_to map_feature_path(id: @map.public_id, feature_id: 'feature_id') do
+        %i.bi.bi-download

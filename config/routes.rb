@@ -22,6 +22,8 @@ Rails.application.routes.draw do
     get "/:id.geojson" => "maps#show", constraints: { id: ID_PATTERN }, defaults: { format: "geojson" }
     get "/:id.gpx" => "maps#show", constraints: { id: ID_PATTERN }, defaults: { format: "gpx" }
     get "/:id/properties" => "maps#properties", as: :map_properties, constraints: { id: ID_PATTERN }
+    get "/:id/feature/:feature_id" => "maps#feature", as: :map_feature,
+constraints: { id: ID_PATTERN, feature_id: ID_PATTERN }
     get "/:id" => "maps#show", as: :map, format: :html, constraints: { id: ID_PATTERN }
 
     post "" => "maps#create", as: :create_map

@@ -25,6 +25,11 @@ describe 'Feature details' do
         height = find('#feature-details-modal').native.style('height').sub('px', '').to_i
         expect(height).to be > 150
       end
+
+      it 'can download feature export' do
+        find('#feature-export').click
+        expect(page).to have_text(polygon.id)
+      end
     end
   end
 end

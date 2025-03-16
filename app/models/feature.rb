@@ -25,6 +25,11 @@ class Feature
       properties: properties || {} }
   end
 
+  def to_geojson
+    { type: "FeatureCollection",
+      features: [ geojson ] }
+  end
+
   # input file formats are typically gps format EPSG:4326 (WGS 84) or
   # web_mercator format EPSG:3857
   def self.from_collection(collection, collection_format: 4326, db_format: 4326)
