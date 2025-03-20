@@ -36,12 +36,15 @@
     %label.edit-polygon.edit-line{ for: "stroke-color"} Line color:
     %label.edit-point{ for: "stroke-color"} Border color:
     %input.form-control#stroke-color{ type: "color", 'data-action': "input->map--feature-edit#updateStrokeColor change->map--feature-edit#saveFeature" }
+    %div.edit-polygon.edit-point
+      %input#stroke-color-transparent{type: "checkbox", data: { action: "input->map--feature-edit#updateStrokeColorTransparent change->map--feature-edit#saveFeature"} }
+      %label{ for: "stroke-color-transparent"}transparent
 
   #fill-color-ui.edit-ui.edit-polygon.edit-point
     %label{ for: "fill-color"} Fill color:
     %input.form-control#fill-color{ type: "color", 'data-action': "input->map--feature-edit#updateFillColor change->map--feature-edit#saveFeature" }
     %div
-      %input#fill-color-transparent{type: "checkbox", data: { action: "input->map--feature-edit#updateFillColorTransparent change->map--feature-edit#saveFeature"} }
+      %input#fill-color-transparent{type: "checkbox", value: 'transparent', data: { action: "input->map--feature-edit#updateFillColorTransparent change->map--feature-edit#saveFeature"} }
       %label{ for: "fill-color-transparent"}transparent
 
   #opacity-ui.edit-ui.edit-polygon

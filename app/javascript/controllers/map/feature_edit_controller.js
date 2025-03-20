@@ -3,6 +3,7 @@ import { mapChannel } from 'channels/map_channel'
 import { geojsonData, redrawGeojson } from 'maplibre/map'
 import { setFeatureTitleImage } from 'maplibre/modals'
 import { handleDelete, draw } from 'maplibre/edit'
+import { featureColor, featureOutlineColor } from 'maplibre/styles'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 
@@ -114,6 +115,21 @@ export default class extends Controller {
     redrawGeojson(false)
   }
 
+  updateStrokeColorTransparent () {
+    const feature = this.getFeature()
+    let color
+    if (document.querySelector('#stroke-color-transparent').checked) {
+      color = 'transparent'
+      document.querySelector('#stroke-color').setAttribute('disabled', 'true')
+    } else {
+      color = featureOutlineColor
+      document.querySelector('#stroke-color').value = color
+      document.querySelector('#stroke-color').removeAttribute('disabled')
+    }
+    feature.properties.stroke = color
+    redrawGeojson(false)
+  }
+
   updateFillColor () {
     const feature = this.getFeature()
     const color = document.querySelector('#fill-color').value
@@ -129,7 +145,8 @@ export default class extends Controller {
       color = 'transparent'
       document.querySelector('#fill-color').setAttribute('disabled', 'true')
     } else {
-      color = null
+      color = featureColor
+      document.querySelector('#fill-color').value = color
       document.querySelector('#fill-color').removeAttribute('disabled')
     }
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }

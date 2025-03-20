@@ -123,6 +123,16 @@ describe 'Feature edit' do
         wait_for { point.reload.properties['marker-color'] }.to eq('#aabbcc')
       end
 
+      it 'can set fill color transparent' do
+        # TODO: did not find a better solution to check the box and trigger stimulus
+        js = "document.getElementById('fill-color-transparent')"
+        page.driver.execute_script("#{js}.dispatchEvent(new Event('click'))")
+        page.driver.execute_script("#{js}.dispatchEvent(new Event('input'))")
+        page.driver.execute_script("#{js}.dispatchEvent(new Event('change'))")
+
+        wait_for { point.reload.properties['marker-color'] }.to eq('transparent')
+      end
+
       it 'can update outline color' do
         find('#stroke-color').set('#aabbcc')
         wait_for { point.reload.properties['stroke'] }.to eq('#aabbcc')
