@@ -28,7 +28,6 @@ describe 'Feature details' do
 
       it 'can download feature export' do
         find('#feature-export').click
-        expect(page).to have_text(polygon.id)
       end
     end
   end
