@@ -154,9 +154,9 @@ export function basemaps () {
 
     // https://github.com/versatiles-org/versatiles-style
     // fonts: https://github.com/versatiles-org/versatiles-fonts
-    versatilesColorful: { style: 'https://tiles.versatiles.org/assets/styles/colorful.json', font: 'noto_sans_regular' },
-    versatilesGraybeard: { style: 'https://tiles.versatiles.org/assets/styles/graybeard.json', font: 'noto_sans_regular' },
-    versatilesNeutrino: { style: 'https://tiles.versatiles.org/assets/styles/neutrino.json', font: 'noto_sans_regular' },
+    versatilesColorful: { style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', font: 'noto_sans_regular' },
+    versatilesGraybeard: { style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', font: 'noto_sans_regular' },
+    versatilesNeutrino: { style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', font: 'noto_sans_regular' },
 
     // Maptiler maps: https://docs.maptiler.com/sdk-js/api/map-styles/#mapstylelist
     // 3D Houses
