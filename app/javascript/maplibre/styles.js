@@ -172,11 +172,9 @@ const pointOutlineColor = ['coalesce', ['get', 'user_stroke'], ['get', 'stroke']
 const pointOpacity = 0.7
 const pointOpacityActive = 0.9
 
-// factor of the original icon size (72x72)
-// in case of icon url, we don't know the size
-// default: 1/6 = 12px (2 * default radius pointSizeMax)
-const iconSizeFactor = ['/', pointSizeMax, 6]
-const iconSize = ['*', 1 / 8, iconSizeFactor]
+// factor of the original icon size (200x200)
+// in case of external icon url, we don't know the size
+const iconSize = ['*', 1 / 70, pointSizeMax]
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 const labelSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], 16]]
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']

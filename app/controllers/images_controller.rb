@@ -6,7 +6,7 @@ class ImagesController < ApplicationController
     redirect_to "/images/image-not-found_100.webp" and return unless @image
     expires_in 60.minutes, public: true
     # resize, crop if necessary to maintain aspect ratio (centre gravity)
-    image_url = @image.img.thumb("100x100#", quality: 95).rounded.url
+    image_url = @image.img.thumb("200x200#", quality: 95).rounded.url
     redirect_to image_url
   end
 

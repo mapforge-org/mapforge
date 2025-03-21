@@ -187,7 +187,18 @@ export default class extends Controller {
         console.log('Setting icon: ' + data.icon)
         feature.properties['marker-image-url'] = data.icon
         draw.setFeatureProperty(this.featureIdValue, 'marker-image-url', data.icon)
-        draw.setFeatureProperty(this.featureIdValue, 'marker-size', 15)
+
+        // set default size + transparent background
+        feature.properties['marker-size'] = 15
+        document.querySelector('#point-size').value = 15
+        document.querySelector('#point-size-val').innerHTML = 15
+        feature.properties['stroke'] = 'transparent'
+        document.querySelector('#stroke-color').setAttribute('disabled', 'true')
+        document.querySelector('#stroke-color-transparent').checked = true
+        feature.properties['marker-color'] = 'transparent'
+        document.querySelector('#fill-color').setAttribute('disabled', 'true')
+        document.querySelector('#fill-color-transparent').checked = true
+
         setFeatureTitleImage(feature)
         redrawGeojson(false)
         this.saveFeature()

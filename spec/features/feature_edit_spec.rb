@@ -124,9 +124,11 @@ describe 'Feature edit' do
       end
 
       it 'can set fill color transparent' do
+        expect(find('#fill-color-transparent')).not_to be_checked
+
         # TODO: did not find a better solution to check the box and trigger stimulus
         js = "document.getElementById('fill-color-transparent')"
-        page.driver.execute_script("#{js}.dispatchEvent(new Event('click'))")
+        page.driver.execute_script("#{js}.checked = true")
         page.driver.execute_script("#{js}.dispatchEvent(new Event('input'))")
         page.driver.execute_script("#{js}.dispatchEvent(new Event('change'))")
 

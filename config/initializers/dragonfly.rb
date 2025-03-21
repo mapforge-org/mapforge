@@ -18,7 +18,13 @@ Dragonfly.app.configure do
   # custom processors: http://markevans.github.io/dragonfly/processors
   processor :rounded do |content|
     content.shell_update(ext: "png") do |old_path, new_path|
-      "/usr/bin/convert #{old_path} -alpha set -background none -vignette +0+0 #{new_path}"
+      # Instagram style rounded corners, preserving inner transparency
+      "/usr/bin/convert #{old_path} -alpha set \
+                          \( +clone -alpha extract \
+                             -draw 'fill black polygon 0,0 0,50 50,0 fill white circle 50,50 50,0' \
+                             \( +clone -flip \) -compose Multiply -composite \
+                             \( +clone -flop \) -compose Multiply -composite \
+                          \) -alpha off -compose CopyOpacity -composite #{new_path}"
     end
   end
 

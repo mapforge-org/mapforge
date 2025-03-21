@@ -52,14 +52,25 @@ export default class extends Controller {
     if (feature.properties.desc) { this.show_add_desc() }
 
     dom.hideElements(['.edit-point', '.edit-line', '.edit-polygon'])
-    document.querySelector('#stroke-color').value = feature.properties.stroke || featureOutlineColor
-    if (feature.properties.fill === 'transparent') {
+
+    // transparent stroke
+    if (feature.properties.stroke === 'transparent') {
+      document.querySelector('#stroke-color').setAttribute('disabled', 'true')
+      document.querySelector('#stroke-color-transparent').checked = true
+    } else {
+      document.querySelector('#stroke-color').removeAttribute('disabled')
+      document.querySelector('#stroke-color').value = feature.properties.stroke|| featureOutlineColor
+      document.querySelector('#stroke-color-transparent').checked = false
+    }
+
+    // transparent fill
+    if (feature.properties.fill === 'transparent' || feature.properties['marker-color'] === 'transparent') {
       document.querySelector('#fill-color').setAttribute('disabled', 'true')
-      document.querySelector('#fill-color-transparent').setAttribute('checked', 'true')
+      document.querySelector('#fill-color-transparent').checked = true
     } else {
       document.querySelector('#fill-color').removeAttribute('disabled')
       document.querySelector('#fill-color').value = feature.properties.fill || featureColor
-      document.querySelector('#fill-color-transparent').setAttribute('checked', 'false')
+      document.querySelector('#fill-color-transparent').checked = false
     }
 
     if (feature.geometry.type === 'Point') {
