@@ -12,7 +12,7 @@ describe ImagesController do
 
   describe '#icon' do
     it 'redirects to icon' do
-      image_url = image.img.thumb("200x200#", quality: 95).rounded.url
+      image_url = image.img.thumb("200x200#", quality: 95).rounded.border.rounded.url
       expect(get icon_path(public_id: image.public_id)).to redirect_to(image_url)
     end
   end
