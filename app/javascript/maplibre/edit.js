@@ -138,9 +138,10 @@ export function initializeEditMode () {
       map.fire('click')
     }
   })
-  // in edit mode, map click handler is only needed to hide modals
+  // in edit mode, map click handler is needed to hide modals
+  // and to hide feature modal if no feature is selected
   map.on('click', () => {
-    if (document.querySelector('.maplibregl-ctrl button.active')) {
+    if (document.querySelector('.maplibregl-ctrl button.active') || !draw.getSelectedIds().length) {
       resetControls()
     }
   })
