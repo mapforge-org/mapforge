@@ -35,13 +35,22 @@ Dragonfly.app.configure do
     quadrant_size = [ width, height ].min
     # Crop the image
     content.shell_update do |old_path, new_path|
-      "/usr/bin/convert #{old_path} -gravity center -crop #{quadrant_size}x#{quadrant_size}+0+0 +repage #{new_path}"
+      "/usr/bin/convert #{old_path} -gravity center \
+        -crop #{quadrant_size}x#{quadrant_size}+0+0 +repage #{new_path}"
     end
   end
 
   processor :sharpen do |content, amount|
     content.shell_update do |old_path, new_path|
       "/usr/bin/convert #{old_path} -sharpen #{amount} #{new_path}"
+    end
+  end
+
+  processor :border do |content, width|
+    width ||= 5
+    content.shell_update do |old_path, new_path|
+      "/usr/bin/convert #{old_path} -bordercolor white -border #{width}x#{width} \
+        -alpha set -channel RGBA -background none #{new_path}"
     end
   end
 end
