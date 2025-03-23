@@ -21,6 +21,10 @@
   opacity: 0.75;
 }
 
+.maplibregl-ctrl-tour {
+  font-size: 1.3em;
+}
+
 /* only add hover effects to supported browsers */
 @media (hover: hover) {
   .maplibregl-ctrl button:hover, .mapbox-gl-draw_ctrl-draw-btn:hover { /* stylelint-disable-line */

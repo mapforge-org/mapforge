@@ -4,9 +4,10 @@
            settings_current_pitch_value: @map_properties[:pitch].to_f.round(0),
            settings_current_zoom_value: (@map_properties[:zoom] || @map_properties[:default_zoom]).to_f.round(2),
            settings_current_bearing_value: @map_properties[:bearing].to_f.round(0),
-           settings_current_center_value: (@map_properties[:center] || @map_properties[:default_center]) }
+           settings_current_center_value: (@map_properties[:center] || @map_properties[:default_center]),
+           action: "keydown.esc@window->map--settings#close" }
 
-#settings-modal.modal-center.fade{ data: data}
+#settings-modal.modal-center.fade{ data: data }
   .map-modal
     %button.close-button{ data: { action: "click->map--settings#close" } } &times;
     .map-modal-header

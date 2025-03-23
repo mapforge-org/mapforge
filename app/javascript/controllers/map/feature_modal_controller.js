@@ -6,6 +6,8 @@ import { status } from 'helpers/status'
 import { showFeatureDetails } from 'maplibre/modals'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
+import { resetControls } from 'maplibre/controls/shared'
+import { draw } from 'maplibre/edit'
 
 let easyMDE
 
@@ -187,5 +189,10 @@ export default class extends Controller {
   getFeature () {
     const id = this.featureIdValue
     return geojsonData.features.find(f => f.id === id)
+  }
+
+  close () {
+    resetControls()
+    if (draw) { draw.changeMode('simple_select', { featureIds: [] }) }
   }
 }

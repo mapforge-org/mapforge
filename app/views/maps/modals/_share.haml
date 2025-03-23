@@ -1,11 +1,10 @@
 #share-modal.modal-center.fade
-  .map-modal{'data-controller': "map--share"}
+  .map-modal{'data-controller': "map--share", 'data-action': "keydown.esc@window->map--share#close"}
     %button.close-button{ data: { action: "click->map--share#close" } } &times;
     .map-modal-header
       %h3 Share Map
 
     .map-modal-content
-
 
       - if @map_mode == 'rw'
         - if @map.user

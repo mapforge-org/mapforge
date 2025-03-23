@@ -48,7 +48,7 @@ Dragonfly.app.configure do
 
   processor :border do |content, width|
     width ||= 5
-    content.shell_update do |old_path, new_path|
+    content.shell_update(ext: "png") do |old_path, new_path|
       "/usr/bin/convert #{old_path} -bordercolor white -border #{width}x#{width} \
         -alpha set -channel RGBA -background none #{new_path}"
     end

@@ -120,12 +120,12 @@
   color: #333;
 }
 
-.close-button:hover {
-  color: #666;
+.background-dark .close-button {
+  color: #fff;
 }
 
-#tour-modal .map-modal {
-  background-image: url('/images/dark-wood-background.jpg');
+.close-button:hover {
+  color: #666;
 }
 
 /* Share modal */

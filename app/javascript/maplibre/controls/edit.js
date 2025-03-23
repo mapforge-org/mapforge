@@ -37,6 +37,36 @@ export class MapSettingsControl {
   }
 }
 
+export class TourControl {
+  constructor (_options) {
+    this._container = document.createElement('div')
+    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-tour" type="button" title="Mapforge Feature Tour" aria-label="Tour" aria-pressed="false" data-bs-placement="right"><b><i class="bi bi-info-lg"></i></b></button>'
+    this._container.onclick = function (e) {
+      const modal = document.querySelector('#tour-modal')
+      if (modal.classList.contains('show')) {
+        resetControls()
+      } else {
+        resetControls()
+        if (draw) { resetEditControls() }
+        initSettingsModal()
+        e.target.closest('button').classList.add('active')
+        modal.classList.add('show')
+      }
+    }
+  }
+
+  onAdd (map) {
+    map.getCanvas().appendChild(this._container)
+    return this._container
+  }
+
+  onRemove () {
+    if (this._container.parentNode) {
+      this._container.parentNode.removeChild(this._container)
+    }
+  }
+}
+
 // initialize settings modal with default map values from mapProperties
 export function initSettingsModal () {
   functions.e('#settings-modal', e => {
@@ -72,9 +102,13 @@ export function initializeEditControls () {
   map.addControl(controlGroup, 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)').classList.add('hidden') // hide for aos animation
 
+  map.addControl(new ControlGroup([new TourControl()]), 'top-left')
+  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-tour)').classList.add('hidden') // hide for aos animation
+
   map.once('load', function (_e) {
     animateElement('.maplibregl-ctrl:has(button.ctrl-line-menu-btn)', 'fade-right', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)', 'fade-right', 500)
+    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-tour)', 'fade-right', 500)
   })
 }
 

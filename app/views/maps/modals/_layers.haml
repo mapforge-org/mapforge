@@ -1,5 +1,5 @@
 #layers-modal.modal-center.fade
-  .map-modal{'data-controller': "map--layers"}
+  .map-modal{'data-controller': "map--layers", 'data-action': "keydown.esc@window->map--layers#close"}
     %button.close-button{ data: { action: "click->map--layers#close" } } &times;
     .map-modal-header
       %h3 Layers

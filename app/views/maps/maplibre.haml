@@ -24,6 +24,7 @@
 - unless @map_mode == 'static'
   = render 'status'
   = render 'maps/modals/settings' if @map_mode == 'rw'
+  = render 'maps/modals/tour' if @map_mode == 'rw'
   = render 'maps/modals/layers'
   = render 'maps/modals/share'
   = render 'maps/modals/feature'

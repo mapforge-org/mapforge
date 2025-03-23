@@ -1,4 +1,4 @@
-#feature-details-modal.map-modal.modal-pull-down.fade{ 'data-controller': "map--feature-modal map--feature-edit" }
+#feature-details-modal.map-modal.modal-pull-down.fade{ 'data-controller': "map--feature-modal map--feature-edit", 'data-action': "keydown.esc@window->map--feature-modal#close" }
   %a.modal-pull-button.link{ 'data-action': "click->map--feature-modal#toggleModalSize"}
 
   #edit-buttons.hidden.maplibregl-ctrl-group.maplibregl-ctrl.edit-button-group
