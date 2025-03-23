@@ -1,0 +1,13 @@
+#tour-modal.modal-center.fade
+  .map-modal.background-dark{'data-controller': "map--tour", 'data-action': "keydown.esc@window->map--tour#close"}
+    %button.close-button{ data: { action: "click->map--tour#close" } } &times;
+    .map-modal-header
+      %h3 Welcome to the Mapforge tour
+
+    .map-modal-content
+      %p
+        This feature tour will show you how to create maps with Mapforge.
+        You can browse through the different tutorials with '<' + '>',
+        or close the tour by clicking on 'x'.
+        You can re-open the tour anytime with the icon on the left.
+
