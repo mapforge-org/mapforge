@@ -40,8 +40,7 @@ namespace :maps do
           page.wait_for_selector("#maplibre-map[map-loaded='true']", timeout: 30000)
 
           unless failure
-            page.screenshot(path: map.screenshot_file,
-                            quality: 95)
+            page.screenshot(path: map.screenshot_file, quality: 100)
             image = Rszr::Image.load(map.screenshot_file)
             image.resize!(400, :auto)
             image.save(map.screenshot_file)
