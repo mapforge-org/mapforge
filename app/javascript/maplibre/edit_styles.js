@@ -202,7 +202,7 @@ export function editStyles () {
       paint: {
         'circle-radius': [
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          midpointSize, 4
+          ['+', midpointSize, 10], 4
         ],
         'circle-color': [
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],

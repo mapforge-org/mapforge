@@ -254,24 +254,41 @@ async function getRouteFeature (feature, waypoints, profile) {
 
     const routeResponse = await orsDirections.calculate({
       coordinates: waypoints,
-      profile
+      profile,
+      extra_info: ['waytype', 'steepness']
     })
     console.log('route response: ', routeResponse)
     const routeLocations = decodePolyline(routeResponse.routes[0].geometry)
     console.log('routeLocations: ', routeLocations)
-    feature.geometry.coordinates = routeLocations
+    const routeLocationsElevation = await getRouteElevation(routeLocations)
+    feature.geometry.coordinates = routeLocationsElevation
 
-    // store waypoint indexes in coordinate for style highlight
-    const waypointIndexes = []
-    waypoints.forEach((waypoint) => {
-      const index = functions.findCoordinate(routeLocations, waypoint)
-      if (index >= 0) waypointIndexes.push(index + '')
-    })
+    // store waypoint indexes as strings in coordinate for style highlight
+    const waypointIndexes = routeResponse.routes[0].way_points.map(item => item.toString())
+    feature.properties.route = { profile, waypoints,
+      extras: routeResponse.routes[0].extras }
 
-    feature.properties.route = { profile, waypoints }
     feature.properties.waypointIndexes = waypointIndexes
   } catch (err) {
     console.error('An error occurred: ' + err)
   }
   return feature
+}
+
+// return route points including elevation
+async function getRouteElevation (waypoints) {
+  try {
+    const Elevation = new Openrouteservice.Elevation({api_key: window.gon.map_keys.openrouteservice})
+    let response = await Elevation.lineElevation({
+    format_in: 'geojson',
+    format_out: 'geojson',
+    geometry: {
+      coordinates: waypoints,
+      type: 'LineString'
+    }
+  })
+  return response.geometry.coordinates
+  } catch (err) {
+    console.log("An error occurred: " + err)
+  }
 }

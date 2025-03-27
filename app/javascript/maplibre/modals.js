@@ -125,5 +125,11 @@ export function setFeatureTitleImage (feature) {
   } else if (feature.properties['marker-symbol']) {
     document.querySelector('#feature-symbol').innerHTML =
       "<img id='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
+  } else if (feature.properties?.route?.profile === "cycling-mountain") {
+    document.querySelector('#feature-symbol').innerHTML =
+      "<i class='bi bi-bicycle me-2 fs-4'>"
+  } else if (feature.properties?.route?.profile === "driving-car") {
+    document.querySelector('#feature-symbol').innerHTML =
+      "<i class='bi bi-car-front-fill me-2 fs-4'>"
   }
 }
