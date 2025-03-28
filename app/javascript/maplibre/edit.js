@@ -1,6 +1,7 @@
 import { map, geojsonData, destroy, redrawGeojson } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
 import { highlightFeature } from 'maplibre/feature'
+import { getRouteFeature, getRouteUpdate } from 'maplibre/route'
 import { mapChannel } from 'channels/map_channel'
 import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
 import { initializeEditControls } from 'maplibre/controls/edit'
@@ -9,8 +10,6 @@ import * as functions from 'helpers/functions'
 import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import PaintMode from 'mapbox-gl-draw-paint-mode'
-import Openrouteservice from 'openrouteservice-js'
-import { decodePolyline } from 'helpers/polyline'
 
 export let draw
 export let selectedFeature
@@ -197,23 +196,8 @@ async function handleUpdate (e) {
     // console.log('Feature update event triggered without update')
     return
   }
-
   // change route
-  if (feature.properties.route) {
-    // new waypoints are start, end, changed point and current waypoints that are still in the feature
-    const waypoints = functions.removeElevation([feature.geometry.coordinates[0]])
-    // Track coordinate changes
-    feature.geometry.coordinates.slice(1, -1).forEach((coord, index) => {
-      if (coord[0] !== geojsonFeature.geometry.coordinates[index + 1][0] ||
-          coord[1] !== geojsonFeature.geometry.coordinates[index + 1][1]) {
-        waypoints.push(coord)
-      } else if (functions.hasCoordinate(feature.properties.route.waypoints, coord)) {
-        waypoints.push(coord)
-      }
-    })
-    waypoints.push(feature.geometry.coordinates.at(-1))
-    feature = await getRouteFeature(feature, waypoints, feature.properties.route.profile)
-  }
+  if (feature.properties.route) { feature = await getRouteUpdate(geojsonFeature, feature) }
 
   status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry
@@ -229,67 +213,4 @@ export function handleDelete (e) {
   destroy(deletedFeature.id)
   status('Feature ' + deletedFeature.id + ' deleted')
   mapChannel.send_message('delete_feature', { id: deletedFeature.id })
-}
-
-// profiles are: driving-car, driving-hgv(heavy goods vehicle), cycling-regular,
-//               cycling-road, cycling-mountain, cycling-electric, foot-walking,
-//               foot-hiking,wheelchair
-// openrouteservice js lib: https://github.com/GIScience/openrouteservice-js?tab=readme-ov-file
-// openrouteservice API: https://giscience.github.io/openrouteservice/api-reference/
-async function getRouteFeature (feature, waypoints, profile) {
-  const Snap = new Openrouteservice.Snap({ api_key: window.gon.map_keys.openrouteservice })
-  const orsDirections = new Openrouteservice.Directions({ api_key: window.gon.map_keys.openrouteservice })
-
-  console.log('get ' + profile + ' route for: ' + waypoints)
-  try {
-    const snapResponse = await Snap.calculate({
-      locations: waypoints,
-      radius: 300,
-      profile,
-      format: 'json'
-    })
-    console.log('snap response: ', snapResponse)
-    waypoints = snapResponse.locations.map(item => item.location)
-    console.log('snapped values: ', waypoints)
-
-    const routeResponse = await orsDirections.calculate({
-      coordinates: waypoints,
-      profile,
-      extra_info: ['waytype', 'steepness']
-    })
-    console.log('route response: ', routeResponse)
-    const routeLocations = decodePolyline(routeResponse.routes[0].geometry)
-    console.log('routeLocations: ', routeLocations)
-    const routeLocationsElevation = await getRouteElevation(routeLocations)
-    feature.geometry.coordinates = routeLocationsElevation
-
-    // store waypoint indexes as strings in coordinate for style highlight
-    const waypointIndexes = routeResponse.routes[0].way_points.map(item => item.toString())
-    feature.properties.route = { profile, waypoints,
-      extras: routeResponse.routes[0].extras }
-
-    feature.properties.waypointIndexes = waypointIndexes
-  } catch (err) {
-    console.error('An error occurred: ' + err)
-    status('Error building route', 'error')
-  }
-  return feature
-}
-
-// return route points including elevation
-async function getRouteElevation (waypoints) {
-  try {
-    const Elevation = new Openrouteservice.Elevation({api_key: window.gon.map_keys.openrouteservice})
-    let response = await Elevation.lineElevation({
-    format_in: 'geojson',
-    format_out: 'geojson',
-    geometry: {
-      coordinates: waypoints,
-      type: 'LineString'
-    }
-  })
-  return response.geometry.coordinates
-  } catch (err) {
-    console.log("An error occurred: " + err)
-  }
 }

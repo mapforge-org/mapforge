@@ -61,7 +61,11 @@ export default class extends Controller {
       document.querySelector('#stroke-color-transparent').checked = true
     } else {
       document.querySelector('#stroke-color').removeAttribute('disabled')
-      document.querySelector('#stroke-color').value = feature.properties.stroke|| featureOutlineColor
+      let default_stroke = featureOutlineColor
+      if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
+        default_stroke = featureColor
+      }
+      document.querySelector('#stroke-color').value = feature.properties.stroke || default_stroke
       document.querySelector('#stroke-color-transparent').checked = false
     }
 
