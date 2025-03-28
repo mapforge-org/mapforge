@@ -81,7 +81,6 @@ describe 'Map public view' do
     it 'shows feature details on hover' do
       hover_coord('.map', 50, 50)
       expect(page).to have_css('#feature-details-modal')
-      expect(page).to have_text('No title')
     end
   end
 

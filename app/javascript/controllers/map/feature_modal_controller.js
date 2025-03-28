@@ -3,7 +3,7 @@ import { mapChannel } from 'channels/map_channel'
 import { geojsonData } from 'maplibre/map'
 import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles'
 import { status } from 'helpers/status'
-import { showFeatureDetails } from 'maplibre/modals'
+import { showFeatureDetails } from 'maplibre/feature'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { resetControls } from 'maplibre/controls/shared'
@@ -46,7 +46,7 @@ export default class extends Controller {
     }
     const feature = this.getFeature()
     dom.showElements(['#feature-edit-ui', '#feature-title-input', '#button-add-desc', '#button-add-label'])
-    dom.hideElements(['#feature-edit-raw', '#feature-title', '#feature-desc', '#feature-label'])
+    dom.hideElements(['#feature-edit-raw', '#feature-desc', '#feature-label'])
 
     // init ui input elements
     document.querySelector('#feature-title-input input').value = feature.properties.title || null

@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { geojsonData, redrawGeojson } from 'maplibre/map'
-import { setFeatureTitleImage } from 'maplibre/modals'
+import { setFeatureTitleImage } from 'maplibre/feature'
 import { handleDelete, draw } from 'maplibre/edit'
 import { featureColor, featureOutlineColor } from 'maplibre/styles'
 import { status } from 'helpers/status'
