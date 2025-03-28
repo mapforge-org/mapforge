@@ -143,3 +143,22 @@
   margin-bottom: 0.5em;
 }
 
+
+.layer-feature-item {
+  cursor: pointer;
+}
+
+.layer-feature-item:hover {
+  text-decoration: underline;
+}
+
+.layer-feature-item i.bi {
+  vertical-align: -.125em;
+}
+
+.layer-feature-item .feature-details-icon {
+  height: 2em;
+  margin: 0.3em 0.5em 0 0;
+}
+
+

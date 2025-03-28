@@ -1,7 +1,7 @@
 import { map, geojsonData } from 'maplibre/map'
 import * as functions from 'helpers/functions'
 import { draw } from 'maplibre/edit'
-import { resetHighlightedFeature } from 'maplibre/feature'
+import { resetHighlightedFeature, featureIcon } from 'maplibre/feature'
 import { initTooltips } from 'helpers/dom'
 import MaplibreGeocoder from 'maplibre-gl-geocoder'
 import { resetEditControls } from 'maplibre/controls/edit'
@@ -103,19 +103,20 @@ export function initLayersModal () {
     geojsonData.features.forEach(feature => {
       const listItem = document.createElement('li')
       listItem.classList.add('layer-feature-item')
-      listItem.textContent = `${feature.geometry.type}: ` +
-          (feature.properties.title || feature.properties.name || feature.id)
+      listItem.setAttribute('data-feature-id', feature.id)
+      listItem.setAttribute('data-controller', 'map--layers')
+      listItem.setAttribute('data-action', 'click->map--layers#flyto')
+
+      const icon = document.createElement('span')
+      icon.innerHTML = featureIcon(feature)
+      listItem.appendChild(icon)
+      const name = document.createElement('span')
+      name.textContent = (feature.properties.title || feature.properties.name || feature.id)
+      listItem.appendChild(name)
       const link = document.createElement('a')
       link.setAttribute('href', '#')
       link.setAttribute('onclick', 'return false;')
       listItem.appendChild(link)
-      const icon = document.createElement('i')
-      icon.classList.add('bi')
-      icon.classList.add('bi-arrow-right-circle')
-      icon.setAttribute('data-feature-id', feature.id)
-      icon.setAttribute('data-controller', 'map--layers')
-      icon.setAttribute('data-action', 'click->map--layers#flyto')
-      link.appendChild(icon)
       e.appendChild(listItem)
     })
   })

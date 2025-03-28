@@ -88,18 +88,6 @@ html:has(.map), body:has(.map) {
   text-shadow: -1px -1px 1px #666, 1px -1px 1px #666, 1px 1px 1px #666, -1px 1px 1px #666;
 }
 
-.layer-feature-item a {
-  color: black;
-}
-
-.layer-feature-item a:hover {
-  color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1)); /* stylelint-disable-line */
-}
-
-.layer-feature-item i {
-  margin-left: 0.5em;
-}
-
 .cursor-crosshair {
   cursor: crosshair;
 }

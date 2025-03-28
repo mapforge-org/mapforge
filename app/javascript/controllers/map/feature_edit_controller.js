@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { geojsonData, redrawGeojson } from 'maplibre/map'
-import { setFeatureTitleImage } from 'maplibre/feature'
+import { featureIcon } from 'maplibre/feature'
 import { handleDelete, draw } from 'maplibre/edit'
 import { featureColor, featureOutlineColor } from 'maplibre/styles'
 import { status } from 'helpers/status'
@@ -199,7 +199,7 @@ export default class extends Controller {
         document.querySelector('#fill-color').setAttribute('disabled', 'true')
         document.querySelector('#fill-color-transparent').checked = true
 
-        setFeatureTitleImage(feature)
+        document.querySelector('#feature-symbol').innerHTML = featureIcon(feature)
         redrawGeojson(false)
         this.saveFeature()
       })

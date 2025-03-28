@@ -28,7 +28,7 @@ describe 'Map' do
     end
 
     it 'flies to feature on click' do
-      find("i[data-feature-id='#{feature.id}']").click
+      find("li[data-feature-id='#{feature.id}']").click
       # flyTo is finished when the feature details are shown
       expect(page).to have_text('F1 desc')
       expect(page.evaluate_script("[map.getCenter().lng, map.getCenter().lat].toString()"))

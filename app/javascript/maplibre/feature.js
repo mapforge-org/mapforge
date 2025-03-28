@@ -102,7 +102,7 @@ export function showFeatureDetails (feature) {
     modal.style.cursor = 'default'
   })
 
-  setFeatureTitleImage(feature)
+  document.querySelector('#feature-symbol').innerHTML = featureIcon(feature)
   dom.hideElements('#feature-title-input')
   document.querySelector('#feature-title').innerHTML = featureTitle(feature)
   document.querySelector('#feature-size').innerHTML = featureMeta(feature)
@@ -119,14 +119,14 @@ export function showFeatureDetails (feature) {
 }
 
 // set title image according to feature type
-export function setFeatureTitleImage (feature) {
+export function featureIcon (feature) {
   let image = ''
   if (feature.properties['marker-image-url']) {
     const imageUrl = feature.properties['marker-image-url'].replace('/icon/', '/image/')
     image = "<a href='" + imageUrl + "' target='_blank'>" +
-      "<img id='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'></a>"
+      "<img class='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'></a>"
   } else if (feature.properties['marker-symbol']) {
-    image = "<img id='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
+    image = "<img class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
   } else if (feature.properties?.route?.profile === "cycling-mountain") {
     image = "<i class='bi bi-bicycle me-2 fs-2'>"
   } else if (feature.properties?.route?.profile === "driving-car") {
@@ -138,7 +138,7 @@ export function setFeatureTitleImage (feature) {
   } else if (feature.geometry.type === "Point") {
     image = "<i class='bi bi-cursor me-2 fs-2'>"
   }
-  document.querySelector('#feature-symbol').innerHTML = image
+  return image
 }
 
 export function resetHighlightedFeature (source = 'geojson-source') {
