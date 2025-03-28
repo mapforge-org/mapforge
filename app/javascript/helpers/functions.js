@@ -42,6 +42,10 @@ export function roundedCoords (coords, precision = 3) {
   return coords.map(coord => parseFloat(coord.toFixed(precision)))
 }
 
+export function removeElevation (coords) {
+  return coords.map(coord => coord.slice(0, 2))
+}
+
 export function isMobileDevice () {
   return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 }

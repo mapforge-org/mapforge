@@ -31,7 +31,7 @@ module Ulogger
     end
 
     def addpos
-      coords = [ params[:lon].to_f, params[:lat].to_f, params[:altitude].to_f ]
+      coords = [ params[:lon].to_f, params[:lat].to_f, params[:altitude].to_f.round(2) ]
 
       # if the map has no track yet, create one, else append
       track = @map.features.line_string.first

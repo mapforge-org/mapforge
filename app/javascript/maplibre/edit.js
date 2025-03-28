@@ -113,7 +113,7 @@ export function initializeEditMode () {
     if (justCreated) { justCreated = false; return }
     selectedFeature = e.features[0]
     if (geojsonData.features.find(f => f.id === selectedFeature.id)) {
-      console.log('selected: ' + JSON.stringify(selectedFeature))
+      console.log('selected: ', selectedFeature)
       select(selectedFeature)
       highlightFeature(selectedFeature, true)
     }
@@ -201,7 +201,7 @@ async function handleUpdate (e) {
   // change route
   if (feature.properties.route) {
     // new waypoints are start, end, changed point and current waypoints that are still in the feature
-    const waypoints = [feature.geometry.coordinates[0]]
+    const waypoints = functions.removeElevation([feature.geometry.coordinates[0]])
     // Track coordinate changes
     feature.geometry.coordinates.slice(1, -1).forEach((coord, index) => {
       if (coord[0] !== geojsonFeature.geometry.coordinates[index + 1][0] ||
@@ -271,6 +271,7 @@ async function getRouteFeature (feature, waypoints, profile) {
     feature.properties.waypointIndexes = waypointIndexes
   } catch (err) {
     console.error('An error occurred: ' + err)
+    status('Error building route', 'error')
   }
   return feature
 }

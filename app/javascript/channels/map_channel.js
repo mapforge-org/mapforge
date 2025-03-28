@@ -61,7 +61,7 @@ export function initializeSocket () {
     },
 
     received (data) {
-      console.log('received from map_channel: ' + JSON.stringify(data))
+      console.log('received from map_channel: ', data)
       switch (data.event) {
         case 'update_feature':
           upsert(data.feature)
@@ -79,7 +79,7 @@ export function initializeSocket () {
 
     send_message (action, data) {
       data.map_id = window.gon.map_id
-      console.log('Sending: [' + action + '] ' + JSON.stringify(data))
+      console.log(('Sending: [' + action + '] '), data)
       // Call the original perform method
       this.perform(action, data)
     }
