@@ -165,7 +165,7 @@ export function editStyles () {
         'circle-color': highlightColor
       }
     },
-    // Route midpoint borders
+    // Route point borders (rendered like midpoints in normal linestring)
     {
       id: 'gl-draw-route-vertex-inactive-midpoint-border',
       type: 'circle',
@@ -176,20 +176,14 @@ export function editStyles () {
         ['has', 'user_route']
       ],
       paint: {
-        'circle-radius': [
-          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          vertexSize, 4
-        ],
+        'circle-radius': 4,
         'circle-opacity': 0,
-        'circle-stroke-opacity': [
-          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          0, 1
-        ],
+        'circle-stroke-opacity': 1,
         'circle-stroke-color': '#ffffff',
         'circle-stroke-width': 1,
       }
     },
-    // Route midpoints
+    // Route midpoints (rendered like midpoints in normal linestring)
     {
       id: 'gl-draw-route-vertex-inactive-midpoint',
       type: 'circle',
@@ -200,18 +194,9 @@ export function editStyles () {
         ['has', 'user_route']
       ],
       paint: {
-        'circle-radius': [
-          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          ['+', midpointSize, 10], 4
-        ],
-        'circle-color': [
-          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          highlightColor, 'grey'
-        ],
-        'circle-opacity': [
-          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          0, 0.7
-        ]
+        'circle-radius': 4,
+        'circle-color': 'grey',
+        'circle-opacity': 0.7
       }
     },
     // Route waypoints
@@ -226,8 +211,10 @@ export function editStyles () {
       ],
       paint: {
         'circle-radius': [
+          // coord_path is the index of the waypoint in the linestring
+          // added in mapbox-gl-draw.js createVertex()
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          vertexSize, 4
+          ['+', vertexSize, 2], 4
         ],
         'circle-color': [
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
@@ -241,8 +228,8 @@ export function editStyles () {
           'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
           1, 0
         ],
-        'circle-stroke-color': '#ffffff',
-        'circle-stroke-width': 1,
+        'circle-stroke-color': '#000',
+        'circle-stroke-width': 2,
       }
     }
   ]
