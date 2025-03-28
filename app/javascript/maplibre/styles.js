@@ -79,7 +79,6 @@ const fillColor = ['coalesce',
   ['get', 'fill'], ['get', 'user_fill'], featureColor]
 const fillOpacity = ['to-number', ['coalesce',
   ['get', 'fill-opacity'], ['get', 'user_fill-opacity'], 0.7]]
-const fillOpacityActive = ['*', 0.7, fillOpacity]
 
 const lineColor = ['coalesce', ['get', 'stroke'], ['get', 'user_stroke'], featureColor]
 const polygonOutlineColor = ['coalesce', ['get', 'stroke'], ['get', 'user_stroke'], featureOutlineColor]
@@ -190,12 +189,7 @@ export function styles () {
         ['in', '$type', 'Polygon']],
       paint: {
         'fill-color': fillColor,
-        'fill-opacity': [
-          'case',
-          ['boolean', ['feature-state', 'active'], false],
-          fillOpacityActive,
-          fillOpacity
-        ]
+        'fill-opacity': fillOpacity
       }
     },
     'polygon-layer-extrusion': {
@@ -206,17 +200,11 @@ export function styles () {
         ['in', '$type', 'Polygon'],
         ['>', 'fill-extrusion-height', 0]],
       paint: {
-        'fill-extrusion-color': [
-          'case',
-          ['boolean', ['feature-state', 'active'], false],
-            '#0A870Aaa',
-            ['coalesce',
+        'fill-extrusion-color': ['coalesce',
             ['get', 'fill-extrusion-color'],
             ['get', 'user_fill-extrusion-color'],
             ['get', 'fill'],
-            ['get', 'user_fill'],
-            featureColor]
-        ],
+            ['get', 'user_fill'], featureColor],
         'fill-extrusion-height': ['to-number', ['coalesce',
           ['get', 'fill-extrusion-height'],
           ['get', 'user_fill-extrusion-height']]],
@@ -239,8 +227,14 @@ export function styles () {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': polygonOutlineColor,
-        'line-width': outlineWidthPolygon,
+        'line-color': [
+          'case', ['boolean', ['feature-state', 'active'], false],
+          '#000', polygonOutlineColor
+        ],
+        'line-width': [
+          'case', ['boolean', ['feature-state', 'active'], false],
+          ['+', outlineWidthPolygon, 2], outlineWidthPolygon
+        ],
         'line-opacity': lineOpacity
       }
     },
@@ -256,7 +250,10 @@ export function styles () {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': lineOutlineColor,
+        'line-color': [
+          'case', ['boolean', ['feature-state', 'active'], false],
+          '#000', lineOutlineColor
+        ],
         'line-width': outlineWidth,
         'line-opacity': lineOpacity
       }
@@ -351,11 +348,10 @@ export function styles () {
       type: 'circle',
       source: 'geojson-source',
       filter: ['all',
-        ['==', '$type', 'Point'],
-        ['!=', 'active', 'true']
+        ['==', '$type', 'Point']
       ],
       paint: {
-        'circle-radius': ['+', 5, pointSizeMax],
+        'circle-radius': ['+', 80, pointSizeMax], // TODO: this only work with very high numbers??
         'circle-opacity': 0
       }
     },
