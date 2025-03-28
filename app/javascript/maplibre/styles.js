@@ -351,7 +351,7 @@ export function styles () {
         ['==', '$type', 'Point']
       ],
       paint: {
-        'circle-radius': ['+', 80, pointSizeMax], // TODO: this only work with very high numbers??
+        'circle-radius': ['+', 5, pointSizeMax],
         'circle-opacity': 0
       }
     },
