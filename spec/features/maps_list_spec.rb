@@ -14,7 +14,9 @@ describe 'Map List' do
 
   it 'receives broadcasts for map changes' do
     # page is already loaded
-    new_map = create(:map, view_permission: 'listed')
+    expect(page).to have_selector(:xpath, "//a[@href='/m/#{maps[0].public_id}']")
+    sleep(1) # make sure websocket is connected
+    new_map = create(:map, name: 'broadcast', view_permission: 'listed')
 
     expect(page).to have_selector(:xpath, "//a[@href='/m/#{new_map.public_id}']")
   end
