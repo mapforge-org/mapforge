@@ -110,7 +110,9 @@
   align-items: center;
   gap: 1em;
   max-width: 25em;
-  margin-right: 1em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 #feature-desc {
