@@ -6,6 +6,7 @@ import { initSettingsModal } from 'maplibre/controls/edit'
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { AnimatePointAnimation } from 'maplibre/animations'
+import { AnimateLineAnimation, AnimatePolygonAnimation } from 'maplibre/animations'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
@@ -91,16 +92,9 @@ export function initializeMap (divId = 'maplibre-map') {
 
   map.on('geojson.load', (_e) => {
     functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
-    const urlFeatureId = new URLSearchParams(window.location.search).get('f')
-    const feature = geojsonData.features.find(f => f.id === urlFeatureId)
-    if (feature) {
-      highlightFeature(feature, true)
-      const centroid = window.turf.center(feature)
-      map.setCenter(centroid.geometry.coordinates)
-    }
   })
 
-  map.once('load', function (_e) {
+  map.once('load', async function (_e) {
     // on first map load, re-sort layers late, when all map,
     // view + edit layers are added
     sortLayers()
@@ -116,6 +110,27 @@ export function initializeMap (divId = 'maplibre-map') {
     functions.e('#preloader', e => { e.classList.add('hidden') })
     functions.e('.map', e => { e.setAttribute('map-loaded', true) })
     console.log('Map loaded')
+
+    const urlFeatureId = new URLSearchParams(window.location.search).get('f')
+    let feature = geojsonData.features.find(f => f.id === urlFeatureId)
+    if (feature) {
+      highlightFeature(feature, true)
+      const centroid = window.turf.center(feature)
+      map.setCenter(centroid.geometry.coordinates)
+    }
+    const urlFeatureAnimateId = new URLSearchParams(window.location.search).get('a')
+    feature = geojsonData.features.find(f => f.id === urlFeatureAnimateId)
+    if (feature) {
+      console.log('Animating ' + feature.id)
+      if (feature.geometry.type === 'LineString') {
+        new AnimateLineAnimation().run(feature)
+      } else if (feature?.geometry?.type === 'Polygon') {
+        new AnimatePolygonAnimation().run(feature)
+      } else {
+        console.error('Feature to animate ' + animateFeatureId + ' not found!')
+      }
+      setViewFromProperties()
+    }
   })
 
   map.on('mousemove', (e) => { lastMousePosition = e.lngLat })

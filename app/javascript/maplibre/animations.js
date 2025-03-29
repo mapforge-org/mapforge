@@ -67,6 +67,8 @@ export class AnimatePointAnimation extends AnimationManager {
 
 export class AnimateLineAnimation extends AnimationManager {
   run = (line) => {
+    map.setZoom(15)
+    map.setPitch(60)
     const path = {
       type: line.type,
       geometry: {
@@ -83,14 +85,14 @@ export class AnimateLineAnimation extends AnimationManager {
       const progress = counter / steps
       const distance = progress * lineDistance
       const coordinate = window.turf.along(path, distance, 'kilometers').geometry.coordinates
-      // console.log("Frame #" + frame + ", distance: " + distance + ", coords: " + coordinates)
+      // console.log("Frame #" + _frame + ", distance: " + distance + ", coord: " + coordinate)
 
       line.geometry.coordinates.push(coordinate)
-      // console.log("New line coords: " + animationLine.features[0].geometry.coordinates)
+      // console.log("New line coords: " + line.geometry.coordinates)
       redrawGeojson(false)
 
       // Update camera position
-      map.setCenter(coordinate, 12)
+      map.setCenter(coordinate)
       // map.setBearing(map.getBearing() + 1)
       counter++
 
@@ -100,7 +102,7 @@ export class AnimateLineAnimation extends AnimationManager {
     }
 
     line.geometry.coordinates = []
-    redrawGeojson(false)
+    //redrawGeojson(false)
     animate(0)
   }
 }
