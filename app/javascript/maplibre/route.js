@@ -12,7 +12,7 @@ export async function getRouteFeature (feature, waypoints, profile) {
   const Snap = new Openrouteservice.Snap({ api_key: window.gon.map_keys.openrouteservice })
   const orsDirections = new Openrouteservice.Directions({ api_key: window.gon.map_keys.openrouteservice })
 
-  console.log('get ' + profile + ' route for: ' + waypoints)
+  console.log('get ' + profile + ' route for: ', waypoints)
   try {
     const snapResponse = await Snap.calculate({
       locations: waypoints,
@@ -26,8 +26,8 @@ export async function getRouteFeature (feature, waypoints, profile) {
 
     const routeResponse = await orsDirections.calculate({
       coordinates: waypoints,
-      profile,
-      extra_info: ['waytype', 'steepness']
+      // extra_info: ['waytype', 'surface'],
+      profile
     })
     console.log('route response: ', routeResponse)
     const routeLocations = decodePolyline(routeResponse.routes[0].geometry)
@@ -43,8 +43,8 @@ export async function getRouteFeature (feature, waypoints, profile) {
 
     // store waypoint indexes as strings in coordinate for style highlight
     const waypointIndexes = routeResponse.routes[0].way_points.map(item => item.toString())
-    feature.properties.route = { profile, waypoints,
-      extras: routeResponse.routes[0].extras }
+    feature.properties.route = { profile, waypoints }
+    // extras: routeResponse.routes[0].extras }
 
     feature.properties.waypointIndexes = waypointIndexes
   } catch (err) {
