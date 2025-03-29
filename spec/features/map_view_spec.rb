@@ -37,7 +37,7 @@ describe 'Map public view' do
       hover_coord('.map', 50, 50)
       expect(page).to have_text('Poly Title')
       hover_coord('.map', 400, 0)
-      expect(page).to_not have_text('Poly Desc')
+      expect(page).not_to have_text('Poly Desc')
     end
 
     it 'shows feature details on click' do
@@ -58,7 +58,7 @@ describe 'Map public view' do
       hover_coord('.map', 400, 0)
       expect(page).to have_text('Poly Desc')
       click_coord('.map', 400, 0)
-      expect(page).to_not have_text('Poly Desc')
+      expect(page).not_to have_text('Poly Desc')
     end
   end
 

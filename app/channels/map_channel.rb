@@ -2,7 +2,7 @@ class MapChannel < ApplicationCable::Channel
   # Allow to subscribe to changes with public + private id,
   # Check auth on update methods by looking up map with private id
   def subscribed
-    map = Map.find(params[:map_id]) || Map.find_by(public_id: params[:map_id])
+    Map.find(params[:map_id]) || Map.find_by(public_id: params[:map_id])
     stream_from "map_channel_#{params[:map_id]}"
     Rails.logger.debug { "MapChannel subscribed for '#{params[:map_id]}'" }
   end
@@ -13,23 +13,23 @@ class MapChannel < ApplicationCable::Channel
   end
 
   def update_feature(data)
-    map = get_map_rw(data["map_id"])
+    get_map_rw!(data["map_id"])
     feature = map.features.find(feature_atts(data)["id"])
     feature.update!(feature_atts(data))
   end
 
   def update_map(data)
-    map = get_map_rw(data["map_id"])
+    map = get_map_rw!(data["map_id"])
     map.update!(map_atts(data))
   end
 
   def new_feature(data)
-    map = get_map_rw(data["map_id"])
+    map = get_map_rw!(data["map_id"])
     map.layers.first.features.create!(feature_atts(data))
   end
 
   def delete_feature(data)
-    map = get_map_rw(data["map_id"])
+    get_map_rw!(data["map_id"])
     feature = map.features.find(feature_atts(data)["id"])
     feature.destroy
   end
@@ -51,7 +51,7 @@ class MapChannel < ApplicationCable::Channel
   end
 
   # load map with write access
-  def get_map_rw(id)
+  def get_map_rw!(id)
     map = Map.find(id)
     raise "Cannot open map for writing with (public?) id '#{id}'" unless map
     map

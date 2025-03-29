@@ -2,8 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Api::UloggerController do
   describe '#auth' do
-    before { post '/ulogger/client/index.php', params: payload }
     subject { response }
+
+    before { post '/ulogger/client/index.php', params: payload }
+
+
     let(:payload) { { action: 'auth', pass: 'supers3cr3t', user: 'cwh' } }
     let(:response_body) { JSON.parse(response.body) }
 
@@ -12,8 +15,11 @@ RSpec.describe Api::UloggerController do
   end
 
   describe '#addtrack' do
-    before { post '/ulogger/client/index.php', params: payload }
     subject { response }
+
+    before { post '/ulogger/client/index.php', params: payload }
+
+
     let(:payload) { { action: 'addtrack', track: 'ulogger track' } }
     let(:response_body) { JSON.parse(response.body) }
 
@@ -35,11 +41,14 @@ RSpec.describe Api::UloggerController do
   end
 
   describe '#addpos' do
+    subject { response }
+
     before do
       map
       post '/ulogger/client/index.php', params: payload
     end
-    subject { response }
+
+
     let(:map) { create(:map, id: "%024d" % [ trackid ]) }
     let(:trackid) { 924977797 }
     let(:payload) { { action: 'addpos', altitude: 374.29, speed: 4.3,

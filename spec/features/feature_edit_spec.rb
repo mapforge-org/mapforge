@@ -102,7 +102,7 @@ describe 'Feature edit' do
       end
 
       it 'can update label' do
-        expect(page).to_not have_selector('#feature-label')
+        expect(page).not_to have_selector('#feature-label')
         click_button 'Add label'
         expect(page).to have_selector('#feature-label')
         fill_in 'feature-label', with: "New Label"
@@ -110,7 +110,7 @@ describe 'Feature edit' do
       end
 
       it 'can update desc' do
-        expect(page).to_not have_selector('#feature-desc-input')
+        expect(page).not_to have_selector('#feature-desc-input')
         click_button 'Add description'
         expect(page).to have_text('Add a description text')
         text_area = find(:css, '.CodeMirror textarea', visible: false)
