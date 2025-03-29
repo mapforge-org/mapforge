@@ -558,7 +558,6 @@ DEPENDENCIES
   byebug
   capybara
   capybara-screenshot
-  csv
   database_cleaner-mongoid
   debug
   dotenv-rails
