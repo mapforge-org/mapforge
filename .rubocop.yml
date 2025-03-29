@@ -17,10 +17,7 @@ plugins:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-thread_safety
-
-require:
   - rubocop-rubycw
-
 
 Style/FrozenStringLiteralComment:
   Enabled: false
