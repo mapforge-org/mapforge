@@ -32,8 +32,14 @@ export async function getRouteFeature (feature, waypoints, profile) {
     console.log('route response: ', routeResponse)
     const routeLocations = decodePolyline(routeResponse.routes[0].geometry)
     console.log('routeLocations: ', routeLocations)
-    const routeLocationsElevation = await getRouteElevation(routeLocations)
-    feature.geometry.coordinates = routeLocationsElevation
+
+    // don't calculate elevation for car routes
+    if (profile.includes('driving')) {
+      feature.geometry.coordinates = routeLocations
+    } else {
+      const routeLocationsElevation = await getRouteElevation(routeLocations)
+      feature.geometry.coordinates = routeLocationsElevation
+    }
 
     // store waypoint indexes as strings in coordinate for style highlight
     const waypointIndexes = routeResponse.routes[0].way_points.map(item => item.toString())
