@@ -112,14 +112,14 @@ export function initializeMap (divId = 'maplibre-map') {
     console.log('Map loaded')
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
-    let feature = geojsonData.features.find(f => f.id === urlFeatureId)
+    let feature = geojsonData?.features?.find(f => f.id === urlFeatureId)
     if (feature) {
       highlightFeature(feature, true)
       const centroid = window.turf.center(feature)
       map.setCenter(centroid.geometry.coordinates)
     }
     const urlFeatureAnimateId = new URLSearchParams(window.location.search).get('a')
-    feature = geojsonData.features.find(f => f.id === urlFeatureAnimateId)
+    feature = geojsonData?.features?.find(f => f.id === urlFeatureAnimateId)
     if (feature) {
       console.log('Animating ' + feature.id)
       if (feature.geometry.type === 'LineString') {
