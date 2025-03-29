@@ -146,6 +146,9 @@
 
 .layer-feature-item {
   cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .layer-feature-item:hover {
@@ -157,8 +160,9 @@
 }
 
 .layer-feature-item .feature-details-icon {
-  height: 2em;
-  margin: 0.3em 0.5em 0 0;
+  width: calc(1.325rem + .9vw); /* same size as .fs-2 */
+  height: calc(1.325rem + .9vw);
+  margin: 0.2em 0.4em 0 0;
 }
 
 

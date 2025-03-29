@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 ## 2025-03
 
 * Fine grained view + edit permissions per map
+* Reworked layers modal
+* Add share and layers modal in read-only view
 
 ## 2025-02
 
