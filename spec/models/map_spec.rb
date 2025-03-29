@@ -1,17 +1,17 @@
 require 'rails_helper'
 
 describe Map do
-  subject { Map.create_from_file('spec/fixtures/files/mapforge.json') }
+  subject(:map) { described_class.create_from_file('spec/fixtures/files/mapforge.json') }
 
   describe '#to_json' do
     it 'included properties & layers' do
-      expect(subject.to_json).to be_a(String)
+      expect(map.to_json).to be_a(String)
     end
   end
 
   describe '#features_count' do
     it 'sums up feature count of all layers' do
-      expect(subject.features_count).to eq(3)
+      expect(map.features_count).to eq(3)
     end
   end
 
@@ -28,10 +28,13 @@ describe Map do
 
   describe '#properties' do
     context 'when map has no center defined' do
+      before do
+        create(:feature, :point_with_elevation, layer: map.layers.first)
+        create(:feature, :polygon_middle, layer: map.layers.first)
+        create(:feature, :line_string, layer: map.layers.first)
+      end
+
       let(:map) { create(:map, center: nil) }
-      let!(:point) { create(:feature, :point_with_elevation, layer: map.layers.first) }
-      let!(:poly) { create(:feature, :polygon_middle, layer: map.layers.first) }
-      let!(:line) { create(:feature, :line_string, layer: map.layers.first) }
 
       it 'sets default center to midpoint of all features' do
         expect(map.properties[:default_center]).to eq [ 11.0670007125, 49.4592973375 ]
@@ -93,7 +96,7 @@ describe Map do
       end
     end
 
-    context 'base_map' do
+    context 'with base_map' do
       let(:map) { create(:map, base_map: 'quatsch') }
 
       it 'returns default_base_map when map is not found' do

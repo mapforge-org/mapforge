@@ -40,11 +40,23 @@ Layout/LineLength:
 Metrics/MethodLength:
   Max: 25
 
+RSpec/NamedSubject:
+  Enabled: false
+
 RSpec/MultipleExpectations:
   Enabled: false
 
 RSpec/ExampleLength:
   Max: 15
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/ExpectInHook:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false
 
 Rails/Output:
   Exclude:

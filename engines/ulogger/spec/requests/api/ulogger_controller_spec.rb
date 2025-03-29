@@ -11,7 +11,7 @@ RSpec.describe Api::UloggerController do
     let(:response_body) { JSON.parse(response.body) }
 
     it { is_expected.to have_http_status(200) }
-    it { expect(response_body['error']).to eq(false) }
+    it { expect(response_body['error']).to be(false) }
   end
 
   describe '#addtrack' do
@@ -24,7 +24,7 @@ RSpec.describe Api::UloggerController do
     let(:response_body) { JSON.parse(response.body) }
 
     it { is_expected.to have_http_status(200) }
-    it { expect(response_body['error']).to eq(false) }
+    it { expect(response_body['error']).to be(false) }
 
     it 'returns a numeric id' do
       expect(response_body['trackid']).to be > 0
@@ -57,7 +57,7 @@ RSpec.describe Api::UloggerController do
     let(:response_body) { JSON.parse(response.body) }
 
     it { is_expected.to have_http_status(200) }
-    it { expect(response_body['error']).to eq(false) }
+    it { expect(response_body['error']).to be(false) }
 
     it 'adds point feature at coordinates' do
       expect(map.reload.features.point.count).to eq 1

@@ -22,6 +22,6 @@ namespace :seed do
 
   desc "Import map from a mapforge export file"
   task :mapforge_file, %i[path] => :environment do |_, args|
-    map = Map.create_from_file(args.fetch(:path), collection_format: 4326)
+    Map.create_from_file(args.fetch(:path), collection_format: 4326)
   end
 end
