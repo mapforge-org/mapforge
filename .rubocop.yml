@@ -12,11 +12,13 @@ AllCops:
   NewCops: enable
   SuggestExtensions: false
 
-require:
+plugins:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
   - rubocop-thread_safety
+
+require:
   - rubocop-rubycw
 
 
@@ -38,11 +40,29 @@ Layout/LineLength:
 Metrics/MethodLength:
   Max: 25
 
+RSpec/NamedSubject:
+  Enabled: false
+
 RSpec/MultipleExpectations:
   Enabled: false
 
 RSpec/ExampleLength:
   Max: 15
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/ExpectInHook:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false
+
+RSpec/NoExpectationExample:
+  AllowedPatterns:
+  - ^assert_
+  - ^expect_
+  - ^wait(_for)?$
 
 Rails/Output:
   Exclude:

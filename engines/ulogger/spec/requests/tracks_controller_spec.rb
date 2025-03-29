@@ -3,8 +3,11 @@ require 'rails_helper'
 RSpec.describe TracksController do
   describe '#redirect' do
     context 'redirect with id param' do
-      before { get "/ulogger/?id=#{id}" }
       subject { response }
+
+      before { get "/ulogger/?id=#{id}" }
+
+
       let(:id) { '1234' }
 
       it 'returns 404 on invalid id' do

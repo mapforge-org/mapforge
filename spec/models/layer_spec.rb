@@ -7,8 +7,8 @@ describe Layer do
     it 'returns a clone with cloned features' do
       clone = subject.clone_with_features
       expect(clone.features.count).to eq 2
-      expect(clone.features.map(&:id)).to_not match_array(subject.features.map(&:id))
-      expect(clone.id).to_not eq subject.id
+      expect(clone.features.map(&:id)).not_to match_array(subject.features.map(&:id))
+      expect(clone.id).not_to eq subject.id
     end
   end
 end

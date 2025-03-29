@@ -2,23 +2,29 @@ require 'rails_helper'
 
 RSpec.describe Api::UloggerController do
   describe '#auth' do
-    before { post '/ulogger/client/index.php', params: payload }
     subject { response }
+
+    before { post '/ulogger/client/index.php', params: payload }
+
+
     let(:payload) { { action: 'auth', pass: 'supers3cr3t', user: 'cwh' } }
     let(:response_body) { JSON.parse(response.body) }
 
     it { is_expected.to have_http_status(200) }
-    it { expect(response_body['error']).to eq(false) }
+    it { expect(response_body['error']).to be(false) }
   end
 
   describe '#addtrack' do
-    before { post '/ulogger/client/index.php', params: payload }
     subject { response }
+
+    before { post '/ulogger/client/index.php', params: payload }
+
+
     let(:payload) { { action: 'addtrack', track: 'ulogger track' } }
     let(:response_body) { JSON.parse(response.body) }
 
     it { is_expected.to have_http_status(200) }
-    it { expect(response_body['error']).to eq(false) }
+    it { expect(response_body['error']).to be(false) }
 
     it 'returns a numeric id' do
       expect(response_body['trackid']).to be > 0
@@ -35,11 +41,14 @@ RSpec.describe Api::UloggerController do
   end
 
   describe '#addpos' do
+    subject { response }
+
     before do
       map
       post '/ulogger/client/index.php', params: payload
     end
-    subject { response }
+
+
     let(:map) { create(:map, id: "%024d" % [ trackid ]) }
     let(:trackid) { 924977797 }
     let(:payload) { { action: 'addpos', altitude: 374.29, speed: 4.3,
@@ -48,7 +57,7 @@ RSpec.describe Api::UloggerController do
     let(:response_body) { JSON.parse(response.body) }
 
     it { is_expected.to have_http_status(200) }
-    it { expect(response_body['error']).to eq(false) }
+    it { expect(response_body['error']).to be(false) }
 
     it 'adds point feature at coordinates' do
       expect(map.reload.features.point.count).to eq 1

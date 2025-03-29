@@ -14,7 +14,7 @@ namespace :maps do
 
         # https://github.com/YusukeIwaki/puppeteer-ruby
         Puppeteer.launch(headless: true, ignore_https_errors: true) do |browser|
-          context = browser.create_incognito_browser_context
+          browser.create_incognito_browser_context
           page = browser.new_page
           page.default_timeout = 90000
           map_url = base_url + map.public_id + "?static=true"
