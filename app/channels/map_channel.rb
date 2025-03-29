@@ -13,7 +13,7 @@ class MapChannel < ApplicationCable::Channel
   end
 
   def update_feature(data)
-    get_map_rw!(data["map_id"])
+    map = get_map_rw!(data["map_id"])
     feature = map.features.find(feature_atts(data)["id"])
     feature.update!(feature_atts(data))
   end
@@ -29,7 +29,7 @@ class MapChannel < ApplicationCable::Channel
   end
 
   def delete_feature(data)
-    get_map_rw!(data["map_id"])
+    map = get_map_rw!(data["map_id"])
     feature = map.features.find(feature_atts(data)["id"])
     feature.destroy
   end
