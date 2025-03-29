@@ -5,7 +5,7 @@ describe Map do
 
   describe '#to_json' do
     it 'included properties & layers' do
-      expect(subject.to_json).to be_kind_of(String)
+      expect(subject.to_json).to be_a(String)
     end
   end
 
