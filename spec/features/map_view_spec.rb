@@ -76,7 +76,7 @@ describe 'Map public view' do
 
   context 'with features that don\'t have properties' do
     # this polygon is in the middle of nbg (default view)
-    let!(:polygon) { create(:feature, :polygon_middle, layer: map.layers.first, properties: nil) }
+    before { create(:feature, :polygon_middle, layer: map.layers.first, properties: nil) }
 
     it 'shows feature details on hover' do
       hover_coord('.map', 50, 50)

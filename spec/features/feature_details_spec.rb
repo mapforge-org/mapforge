@@ -9,7 +9,7 @@ describe 'Feature details' do
   end
 
   context 'with polygon on map' do
-    let!(:polygon) { create(:feature, :polygon_middle, layer: map.layers.first, title: 'Poly Title') }
+    before { create(:feature, :polygon_middle, layer: map.layers.first, title: 'Poly Title') }
 
     context 'with selected feature' do
       before do
