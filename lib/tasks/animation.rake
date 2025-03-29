@@ -1,7 +1,7 @@
 namespace :animation do
   desc "Animate a point along a line (server-side)"
   task :path, %i[mapid lineid markerid] => :environment do |_, args|
-    map = Map.find(args.fetch(:mapid))
+    Map.find(args.fetch(:mapid))
     line = Feature.find(args.fetch(:lineid))
     point = Feature.find(args.fetch(:markerid))
     # line

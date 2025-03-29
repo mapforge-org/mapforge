@@ -21,6 +21,7 @@ describe 'Map' do
       expect(page).to have_text('Map view updated')
       find('.maplibregl-ctrl-layers').click
     end
+
     let(:feature) { create(:feature, :point, title: 'Feature 1', desc: 'F1 desc', layer: map.layers.first) }
 
     it 'lists all features' do
