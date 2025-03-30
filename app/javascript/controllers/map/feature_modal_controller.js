@@ -1,7 +1,8 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { geojsonData } from 'maplibre/map'
+import { geojsonData, setViewFromProperties } from 'maplibre/map'
 import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles'
+import { AnimateLineAnimation, AnimatePolygonAnimation } from 'maplibre/animations'
 import { status } from 'helpers/status'
 import { showFeatureDetails } from 'maplibre/feature'
 import * as functions from 'helpers/functions'
@@ -193,6 +194,17 @@ export default class extends Controller {
   getFeature () {
     const id = this.featureIdValue
     return geojsonData.features.find(f => f.id === id)
+  }
+
+  animate () {
+    const feature = this.getFeature()
+    console.log('Animating ' + feature.id)
+    if (feature.geometry.type === 'LineString') {
+      new AnimateLineAnimation().run(feature)
+    } else if (feature.geometry.type === 'Polygon') {
+      new AnimatePolygonAnimation().run(feature)
+    }
+    setViewFromProperties()
   }
 
   close () {

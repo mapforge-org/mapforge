@@ -20,6 +20,9 @@
 
   #feature-details-meta.mt-2
     %span#feature-size
-    %span#feature-export.ms-2
-      =link_to map_feature_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank' do
+    %span#feature-export.ms-2<
+      =link_to map_feature_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
         %i.bi.bi-download
+    %span#feature-animation.ms-2
+      %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip", 'data-action': "click->map--feature-modal#animate"}
+
