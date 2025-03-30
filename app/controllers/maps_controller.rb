@@ -89,13 +89,13 @@ class MapsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_map_ro
-    @map = Map.includes(:layers, :user)
+    @map = Map.includes(:user, layers: :features)
     @map = @map.find_by(public_id: params[:id]) || @map.find_by(id: params[:id])
     head :not_found unless @map
   end
 
   def set_map_rw
-    @map = Map.includes(:layers, :user).find_by(id: params[:id])
+    @map = Map.includes(:user, layers: :features).find_by(id: params[:id])
     head :not_found unless @map
   end
 

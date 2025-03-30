@@ -79,7 +79,7 @@ export function initializeSocket () {
 
     send_message (action, data) {
       data.map_id = window.gon.map_id
-      console.log('Sending: [' + action + '] :' + data)
+      console.log('Sending: [' + action + '] :', data)
       // Call the original perform method
       this.perform(action, data)
     }

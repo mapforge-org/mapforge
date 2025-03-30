@@ -112,7 +112,7 @@ class Map
   end
 
   def features
-    Feature.in(layer: layers.map(&:id))
+    Feature.in(layer: layers.pluck(:id))
   end
 
   def features_count

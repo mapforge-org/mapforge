@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { geojsonData, setViewFromProperties } from 'maplibre/map'
+import { geojsonData, animateViewFromProperties } from 'maplibre/map'
 import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles'
 import { AnimateLineAnimation, AnimatePolygonAnimation } from 'maplibre/animations'
 import { status } from 'helpers/status'
@@ -204,7 +204,7 @@ export default class extends Controller {
     } else if (feature.geometry.type === 'Polygon') {
       new AnimatePolygonAnimation().run(feature)
     }
-    setViewFromProperties()
+    animateViewFromProperties()
   }
 
   close () {

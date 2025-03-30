@@ -38,13 +38,14 @@ export function initializeMaplibreProperties () {
     updateMapName(mapProperties.name)
     initSettingsModal()
     status('Map properties updated')
+    // initial load
     if (Object.keys(lastProperties).length === 0 || !mapProperties) { return }
     // animate to new view if map had no interaction yet
-    if (!mapInteracted) { setViewFromProperties() }
+    if (!mapInteracted) { animateViewFromProperties() }
   }
 }
 
-export function setViewFromProperties () {
+export function animateViewFromProperties () {
   map.once('moveend', function () { status('Map view updated') })
   map.flyTo({
     center: mapProperties.center || mapProperties.default_center,
@@ -78,6 +79,7 @@ export function initializeMap (divId = 'maplibre-map') {
     interactive: (window.gon.map_mode !== 'static') // can move/zoom map
     // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
   })
+
   // for console debugging
   window.map = map
   window.maplibregl = maplibregl
@@ -128,7 +130,7 @@ export function initializeMap (divId = 'maplibre-map') {
       } else {
         console.error('Feature to animate ' + animateFeatureId + ' not found!')
       }
-      setViewFromProperties()
+      animateViewFromProperties()
     }
   })
 
