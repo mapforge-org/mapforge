@@ -198,7 +198,7 @@ export default class extends Controller {
         feature.properties['marker-color'] = 'transparent'
         document.querySelector('#fill-color').setAttribute('disabled', 'true')
         document.querySelector('#fill-color-transparent').checked = true
-        feature.properties['desc'] += `\n[![image](${data.image})](${data.image})\n`
+        feature.properties['desc'] = (feature.properties['desc'] || '') + `\n[![image](${data.image})](${data.image})\n`
 
         document.querySelector('#feature-symbol').innerHTML = featureIcon(feature)
         redrawGeojson(false)

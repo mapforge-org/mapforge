@@ -29,8 +29,6 @@ export function initializeEditMode () {
   DirectSelectMode.dragFeature = function (_state, _e, _delta) { /* noop */ }
 
   const SimpleSelectMode = { ...MapboxDraw.modes.simple_select }
-  // DirectSelectMode.dragFeature = function (state, e, delta) { /* noop */ }
-
   const RoadMode = { ...MapboxDraw.modes.draw_line_string }
   const BicycleMode = { ...MapboxDraw.modes.draw_line_string }
 
@@ -124,6 +122,7 @@ export function initializeEditMode () {
 
   // Mapbox Draw kills the click event on mobile (https://github.com/mapbox/mapbox-gl-js/issues/9114)
   // patching click on touchstart + touchend on same position
+  // alternative solution: https://github.com/mapbox/mapbox-gl-draw/issues/617#issuecomment-2764850360
   let touchStartPosition
   let touchEndPosition
   map.on('touchstart', (e) => {
