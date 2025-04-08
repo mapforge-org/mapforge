@@ -1,6 +1,6 @@
 import consumer from 'channels/consumer'
 import {
-  upsert, destroy, setBackgroundMapLayer, mapProperties,
+  upsert, destroyFeature, setBackgroundMapLayer, mapProperties,
   initializeMaplibreProperties, map, resetGeojsonData
 } from 'maplibre/map'
 import { disableEditControls, enableEditControls } from 'maplibre/controls/edit'
@@ -67,7 +67,7 @@ export function initializeSocket () {
           upsert(data.feature)
           break
         case 'delete_feature':
-          destroy(data.feature.id)
+          destroyFeature(data.feature.id)
           break
         case 'update_map':
           window.gon.map_properties = data.map

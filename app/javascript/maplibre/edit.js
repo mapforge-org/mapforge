@@ -1,4 +1,4 @@
-import { map, geojsonData, destroy, redrawGeojson } from 'maplibre/map'
+import { map, geojsonData, destroyFeature, redrawGeojson } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
 import { highlightFeature } from 'maplibre/feature'
 import { getRouteFeature, getRouteUpdate } from 'maplibre/route'
@@ -209,7 +209,7 @@ async function handleUpdate (e) {
 export function handleDelete (e) {
   selectedFeature = null
   const deletedFeature = e.features[0] // Assuming one feature is deleted at a time
-  destroy(deletedFeature.id)
+  destroyFeature(deletedFeature.id)
   status('Feature ' + deletedFeature.id + ' deleted')
   mapChannel.send_message('delete_feature', { id: deletedFeature.id })
 }

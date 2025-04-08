@@ -1,16 +1,16 @@
-import { basemaps, defaultFont } from 'maplibre/basemaps'
-import { draw } from 'maplibre/edit'
-import { resetControls, initCtrlTooltips, initializeDefaultControls } from 'maplibre/controls/shared'
-import { initializeViewControls } from 'maplibre/controls/view'
-import { initSettingsModal } from 'maplibre/controls/edit'
-import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
-import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
-import { AnimatePointAnimation, AnimateLineAnimation, AnimatePolygonAnimation } from 'maplibre/animations'
+import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep-equal
+import { animateElement, initTooltips } from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
-import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
 import maplibregl from 'maplibre-gl'
-import { animateElement, initTooltips } from 'helpers/dom'
+import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation } from 'maplibre/animations'
+import { basemaps, defaultFont } from 'maplibre/basemaps'
+import { initSettingsModal } from 'maplibre/controls/edit'
+import { initCtrlTooltips, initializeDefaultControls, resetControls } from 'maplibre/controls/shared'
+import { initializeViewControls } from 'maplibre/controls/view'
+import { draw } from 'maplibre/edit'
+import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
+import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
 
 export let map
 export let geojsonData //= { type: 'FeatureCollection', features: [] }
@@ -204,9 +204,24 @@ export function loadGeoJsonData () {
 }
 
 function addTerrain () {
+  // Use a different source for terrain and hillshade layers, to improve render quality
   map.addSource('terrain', {
     type: 'raster-dem',
-    url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler
+    url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
+    tileSize: 256
+  })
+  map.addSource('hillshade', {
+    type: 'raster-dem',
+    url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
+    tileSize: 256
+  })
+
+  map.addLayer({
+      id: 'hills',
+      type: 'hillshade',
+      source: 'hillshade',
+      layout: {visibility: 'visible'},
+      paint: {'hillshade-shadow-color': '#473B24'}
   })
 
   map.setTerrain({
@@ -315,7 +330,7 @@ function updateFeature (feature, updatedFeature) {
   }
 }
 
-export function destroy (featureId) {
+export function destroyFeature (featureId) {
   if (geojsonData.features.find(f => f.id === featureId)) {
     status('Deleting feature ' + featureId)
     geojsonData.features = geojsonData.features.filter(f => f.id !== featureId)
