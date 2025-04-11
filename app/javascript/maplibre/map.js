@@ -88,7 +88,7 @@ export function initializeMap (divId = 'maplibre-map') {
   map.on('style.load', () => {
     // console.log('Map style loaded')
     loadGeoJsonData()
-    if (mapProperties.terrain && window.gon.map_keys.maptiler) { addTerrain() }
+    if (mapProperties.terrain) { addTerrain() }
   })
 
   map.on('geojson.load', (_e) => {
@@ -204,31 +204,49 @@ export function loadGeoJsonData () {
 }
 
 function addTerrain () {
-  // Use a different source for terrain and hillshade layers, to improve render quality
+
   map.addSource('terrain', {
     type: 'raster-dem',
-    url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
-    tileSize: 256
-  })
-  map.addSource('hillshade', {
-    type: 'raster-dem',
-    url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
+    tiles: [
+      // From https://registry.opendata.aws/terrain-tiles/, Mapzen terrain tiles
+      // 'https://s3.amazonaws.com/elevation-tiles-prod/normal/{z}/{x}/{y}.png'
+      'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'
+    ],
+    // maptiler terrain tiles:
+    // url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
     tileSize: 256
   })
 
-  map.addLayer({
+  // Use a different source for terrain and hillshade layers, to improve render quality
+  map.addSource('hillshade', {
+    type: 'raster-dem',
+    // url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
+    tiles: [
+      // From https://registry.opendata.aws/terrain-tiles/, Mapzen terrain tiles
+      // 'https://s3.amazonaws.com/elevation-tiles-prod/normal/{z}/{x}/{y}.png'
+      'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'
+    ],
+    tileSize: 256
+  })
+
+  if (backgroundMapLayer !== 'test') {
+    map.addLayer({
       id: 'hills',
       type: 'hillshade',
       source: 'hillshade',
       layout: {visibility: 'visible'},
-      paint: {'hillshade-shadow-color': '#473B24'}
-  })
+      paint: {
+        'hillshade-shadow-color': '#473B24',
+        "hillshade-exaggeration": 0.1
+      }
+    })
 
-  map.setTerrain({
-    source: 'terrain',
-    exaggeration: 1.3
-  })
-  status('Terrain added to map')
+    map.setTerrain({
+      source: 'terrain',
+      exaggeration: 0.05
+    })
+    status('Terrain added to map')
+  }
 }
 
 export function initializeStaticMode () {
