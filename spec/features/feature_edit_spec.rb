@@ -59,7 +59,8 @@ describe 'Feature edit' do
         find('#edit-button-raw').click
         expect(page).to have_selector('textarea[name="properties"]')
         fill_in 'properties', with: '{"title": "TEST"}'
-        expect { find('.feature-update').click }.to change { polygon.reload.properties['title'] }
+        find('.feature-update').click
+        wait_for { polygon.reload.properties['title'] }.to eq('TEST')
       end
 
       it 'can delete feature' do
