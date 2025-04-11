@@ -37,7 +37,7 @@ to: "https://ga.jspm.io/npm:@maplibre/maplibre-gl-geocoder@1.7.1/dist/maplibre-g
 pin "openrouteservice-js", preload: false # @0.4.1
 
 # render markdown
-pin "marked", preload: false # @15.0.7
+pin "marked"# @15.0.8
 
 # https://github.com/mapbox/mapbox-gl-draw
 # Unminified + patched version to style midpoints & vertexes (https://github.com/mapbox/mapbox-gl-draw/pull/964)
