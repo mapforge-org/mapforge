@@ -37,7 +37,7 @@
 }
 
 .map-modal-header {
-  border-bottom: 2px solid gray;
+  border-bottom: 2px solid var(--color-dark-moss-green);
 }
 
 .map-modal-content {
@@ -47,7 +47,8 @@
 }
 
 .layer-preview {
-  width: 6.5em;
+  width: 5.5em;
+  height: 5.5em;
   border-radius: 4px;
   border-width: 2px;
   border-style: solid;
@@ -64,8 +65,17 @@
 }
 
 .layer-preview.active, .layer-preview:hover {
-  border-color: var(--hover-color);
+  border-color: var(--color-dark-moss-green);
   opacity: 1;
+}
+
+.view-values {
+  font-family: monospace;
+  background: var(--color-light-alabaster);
+  border: 1px solid var(--color-dark-moss-green);
+  border-radius: 3px;
+  font-size: 0.9em;
+  padding: 0.1em;
 }
 
 .modal-pull-button {
@@ -140,6 +150,10 @@
 }
 
 .btn-download {
+  --bs-btn-bg: var(--color-dark-charcoal);
+  --bs-btn-hover-bg: var(--color-mid-steel-blue);
+  --bs-btn-active-bg: var(--color-mid-steel-blue);
+
   margin-bottom: 0.5em;
 }
 

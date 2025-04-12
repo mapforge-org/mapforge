@@ -9,6 +9,7 @@ export default class extends Controller {
   static values = {
     mapName: String,
     mapTerrain: Boolean,
+    mapHillshade: Boolean,
     baseMap: String,
     defaultPitch: String,
     currentPitch: String,
@@ -29,6 +30,11 @@ export default class extends Controller {
   mapTerrainValueChanged (value, _previousValue) {
     // console.log('mapTerrainValueChanged(): ' + value)
     document.querySelector('#map-terrain').checked = value
+  }
+
+  mapHillshadeValueChanged (value, _previousValue) {
+    // console.log('mapTerrainValueChanged(): ' + value)
+    document.querySelector('#map-hillshade').checked = value
   }
 
   baseMapValueChanged (value, _previousValue) {
@@ -97,6 +103,13 @@ export default class extends Controller {
     mapProperties.terrain = this.mapTerrainValue
     setBackgroundMapLayer()
     mapChannel.send_message('update_map', { terrain: mapProperties.terrain })
+  }
+
+  updateHillshade (event) {
+    this.mapHillshadeValue = event.target.checked
+    mapProperties.hillshade = this.mapHillshadeValue
+    setBackgroundMapLayer()
+    mapChannel.send_message('update_map', { hillshade: mapProperties.hillshade })
   }
 
   updateBaseMap (event) {

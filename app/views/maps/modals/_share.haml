@@ -2,7 +2,7 @@
   .map-modal{'data-controller': "map--share", 'data-action': "keydown.esc@window->map--share#close"}
     %button.close-button{ data: { action: "click->map--share#close" } } &times;
     .map-modal-header
-      %h3 Share Map
+      %h3.mapforge-font Share Map
 
     .map-modal-content
 
@@ -18,7 +18,7 @@
 
         .row
           .col-md-3
-            %button#share-edit-link.form-button.btn.btn-success{ type: "button" }
+            %button#share-edit-link.form-button.btn.btn-green{ type: "button" }
               =link_to(map_path(@map), data: {turbo: false}) do
                 %i.bi.bi-link-45deg
                 Edit link
@@ -32,7 +32,7 @@
 
         .row.mb-2
           .col-md-3
-            %button#share-view-link.form-button.btn.btn-success{ type: "button" }
+            %button#share-view-link.form-button.btn.btn-green{ type: "button" }
               =link_to(map_path(id: @map.public_id), data: {turbo: false}) do
                 %i.bi.bi-link-45deg
                 View link

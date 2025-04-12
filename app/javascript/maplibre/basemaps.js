@@ -19,6 +19,18 @@ const defaultRasterLayer = [
 ]
 const host = new URL(window.location.href).origin
 
+export let elevationSource = {
+    type: 'raster-dem',
+    tiles: [
+      // From https://registry.opendata.aws/terrain-tiles/, Mapzen terrain tiles
+      // 'https://s3.amazonaws.com/elevation-tiles-prod/normal/{z}/{x}/{y}.png'
+      'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'
+    ],
+    // maptiler terrain tiles:
+    // url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
+    tileSize: 256
+  }
+
 export function basemaps () {
   return {
   // static test tile

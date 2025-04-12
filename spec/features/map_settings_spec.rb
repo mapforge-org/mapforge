@@ -19,10 +19,10 @@ describe 'Map' do
     it 'basemap update gets saved' do
       find('.maplibregl-ctrl-map').click
       expect(page).to have_text('Configure Map')
-      find(".layer-preview[data-base-map='osmRasterTiles']").click
+      find(".layer-preview[data-base-map='versatilesColorful']").click
       # 'Map view updated' is rendered at 'moveend', undetermined if that's before base map is loaded
-      expect(page).to have_text(/Loaded base map osmRasterTiles|Map view updated/, wait: 30)
-      expect(map.reload.base_map).to eq 'osmRasterTiles'
+      expect(page).to have_text(/Loaded base map versatilesColorful|Map view updated/, wait: 30)
+      expect(map.reload.base_map).to eq 'versatilesColorful'
     end
 
     it 'terrain update gets saved' do
@@ -41,11 +41,11 @@ describe 'Map' do
     end
 
     it 'basemap update' do
-      map.update(base_map: 'osmRasterTiles')
+      map.update(base_map: 'versatilesColorful')
       # 'Map view updated' is rendered at 'moveend', undetermined if that's before base map is loaded
       expect(page).to have_text(/Loaded base map osmRasterTiles|Map view updated/, wait: 30)
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_css('.layer-preview[data-base-map="osmRasterTiles"].active')
+      expect(page).to have_css('.layer-preview[data-base-map="versatilesColorful"].active')
     end
 
     it 'terrain update' do
@@ -61,7 +61,7 @@ describe 'Map' do
       expect(page).to have_text('Map view updated')
       expect(page.evaluate_script("[map.getCenter().lng, map.getCenter().lat].toString()")).to eq('11,49.5')
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_text('Center: 11,49.5')
+      expect(page).to have_text('center: 11,49.5')
     end
 
     it 'client follows default center update if map did not move' do
@@ -71,7 +71,7 @@ describe 'Map' do
       expect(page.evaluate_script("[map.getCenter().lng.toFixed(3), map.getCenter().lat.toFixed(3)].toString()"))
         .to eq(feature.coordinates.join(','))
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_text("Center: #{feature.coordinates.join(',')} (auto)")
+      expect(page).to have_text("center: #{feature.coordinates.join(',')} (auto)")
     end
 
     it 'map zoom update' do
@@ -79,7 +79,7 @@ describe 'Map' do
       expect(page).to have_text('Map view updated')
       expect(page.evaluate_script("map.getZoom()")).to eq(16)
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_text('Zoom: 16')
+      expect(page).to have_text('zoom: 16')
     end
 
     it 'map pitch update' do
@@ -87,7 +87,7 @@ describe 'Map' do
       expect(page).to have_text('Map view updated')
       expect(page.evaluate_script("map.getPitch()")).to eq(33)
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_text('Pitch: 33')
+      expect(page).to have_text('pitch: 33')
     end
 
     it 'map orientation update' do
@@ -95,7 +95,7 @@ describe 'Map' do
       expect(page).to have_text('Map view updated')
       expect(page.evaluate_script("map.getBearing()")).to eq(33)
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_text('Bearing: 33')
+      expect(page).to have_text('bearing: 33')
     end
   end
 end

@@ -13,6 +13,7 @@ class Map
   field :center, type: Array
   field :zoom, type: String
   field :terrain, type: Boolean
+  field :hillshade, type: Boolean
   field :pitch, type: String
   field :bearing, type: String
   field :name, type: String
@@ -22,7 +23,8 @@ class Map
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
   field :images_count, type: Integer, default: 0
 
-  BASE_MAPS = [ "osmRasterTiles", "satelliteTiles", "openTopoTiles" ]
+  BASE_MAPS = [ "versatilesColorful", "maptilerHybrid", "openTopoTiles", "openfreemapLiberty",
+    "versatilesGraybeard"  ]
   STADIA_MAPS = [ "stamenTonerTiles", "stamenWatercolorTiles" ]
   OPENFREE_MAPS = [ "openfreemapPositron", "openfreemapBright", "openfreemapLiberty" ]
   VERSATILES_MAPS = [ "versatilesColorful", "versatilesGraybeard" ]
@@ -35,6 +37,7 @@ class Map
   DEFAULT_PITCH = 30
   DEFAULT_BEARING = 0
   DEFAULT_TERRAIN = false
+  DEFAULT_HILLSHADE = false
 
   # mongoid callbacks: https://www.mongodb.com/docs/mongoid/current/data-modeling/callbacks/
   # broadcasts: https://www.rubydoc.info/github/hotwired/turbo-rails/Turbo/Streams/Broadcasts
@@ -78,6 +81,7 @@ class Map
       pitch: pitch || DEFAULT_PITCH,
       bearing: bearing || DEFAULT_BEARING,
       terrain: terrain || DEFAULT_TERRAIN,
+      hillshade: hillshade || DEFAULT_HILLSHADE,
       view_permission: view_permission,
       edit_permission: edit_permission
     }

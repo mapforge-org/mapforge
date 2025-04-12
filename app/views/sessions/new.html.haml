@@ -18,18 +18,18 @@
             = '.'
           - if ENV["GITHUB_CLIENT_ID"] && ENV["GITHUB_CLIENT_SECRET"]
             = form_tag('/auth/github', method: 'post', data: {turbo: false}) do
-              = button_tag class: 'btn w-100 btn-secondary btn-login btn-social btn-github mb-2' do
+              = button_tag class: 'btn w-100 btn-secondary btn-green btn-social btn-github mb-2' do
                 %i.bi.bi-github.me-1
                 Login with Github
 
           - if ENV["GOOGLE_CLIENT_ID"] && ENV["GOOGLE_CLIENT_SECRET"]
             = form_tag('/auth/google_oauth2', method: 'post', data: {turbo: false}) do
-              = button_tag class: 'btn w-100 btn-secondary btn-login btn-social btn-google mb-2' do
+              = button_tag class: 'btn w-100 btn-secondary btn-green btn-social btn-google mb-2' do
                 %i.bi.bi-google.me-1
                 Login with Google
 
           - if Rails.env.local?
             = form_tag('/auth/developer/login', method: 'post', data: {turbo: false}) do
-              = button_tag class: 'btn w-100 btn-secondary btn-login btn-social btn-developer mb-2' do
+              = button_tag class: 'btn w-100 btn-secondary btn-green btn-social btn-developer mb-2' do
                 %i.bi.bi-tools.me-1
                 Developer Login

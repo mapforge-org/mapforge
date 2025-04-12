@@ -73,6 +73,7 @@ export function initSettingsModal () {
     if (mapProperties.name) { e.setAttribute('data-map--settings-map-name-value', mapProperties.name) }
     e.setAttribute('data-map--settings-base-map-value', mapProperties.base_map)
     e.setAttribute('data-map--settings-map-terrain-value', mapProperties.terrain)
+    e.setAttribute('data-map--settings-map-hillshade-value', mapProperties.hillshade)
     e.setAttribute('data-map--settings-default-pitch-value', Math.round(mapProperties.pitch))
     e.setAttribute('data-map--settings-default-zoom-value', parseFloat(mapProperties.zoom || mapProperties.default_zoom).toFixed(2))
     e.setAttribute('data-map--settings-default-bearing-value', Math.round(mapProperties.bearing))
@@ -105,6 +106,31 @@ export function initializeEditControls () {
   map.addControl(new ControlGroup([new TourControl()]), 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-tour)').classList.add('hidden') // hide for aos animation
 
+  functions.e('#settings-modal', e => {
+    e.setAttribute('data-map--settings-current-pitch-value', map.getPitch().toFixed(0))
+    e.setAttribute('data-map--settings-current-zoom-value', map.getZoom().toFixed(2))
+    e.setAttribute('data-map--settings-current-bearing-value', map.getBearing().toFixed(0))
+  })
+  map.on('pitchend', function (_e) {
+    functions.e('#settings-modal', e => {
+      e.setAttribute('data-map--settings-current-pitch-value', map.getPitch().toFixed(0))
+    })
+  })
+  map.on('zoomend', function (_e) {
+    functions.e('#settings-modal', e => {
+      e.setAttribute('data-map--settings-current-zoom-value', map.getZoom().toFixed(2))
+    })
+  })
+  map.on('rotate', function (_e) {
+    functions.e('#settings-modal', e => {
+      e.setAttribute('data-map--settings-current-bearing-value', map.getBearing().toFixed(0))
+    })
+  })
+  map.on('moveend', function (_e) {
+    functions.e('#settings-modal', e => {
+      e.setAttribute('data-map--settings-current-center-value', JSON.stringify([map.getCenter().lng, map.getCenter().lat]))
+    })
+  })
   map.once('load', function (_e) {
     animateElement('.maplibregl-ctrl:has(button.ctrl-line-menu-btn)', 'fade-right', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)', 'fade-right', 500)

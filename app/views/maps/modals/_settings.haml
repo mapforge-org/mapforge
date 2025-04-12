@@ -11,62 +11,54 @@
   .map-modal
     %button.close-button{ data: { action: "click->map--settings#close" } } &times;
     .map-modal-header
-      %h3 Configure Map
+      %h3.mapforge-font Configure Map
 
     .map-modal-content
 
       .form-floating.edit-ui
         %input.form-control#map-name{"name": "map-name", type: "text", size: 27, data: { action: "input->map--settings#updateName" } }
-        %label{ for: "map-name"} Name:
+        %label{ for: "map-name"}
+          %b Name:
 
-      %br
-      Free tile maps:
-      %br
+      %h4.mapforge-font.mt-2
+        Background map
+
       - Map::BASE_MAPS.each do |base_map|
         - active = (@map_properties[:base_map] == base_map)
         = image_tag("base_maps/#{base_map}.jpg", data: { base_map: base_map, action: "click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
-      %br
-      Versatiles maps:
-      %br
-      - Map::VERSATILES_MAPS.each do |base_map|
-        - active = (@map_properties[:base_map] == base_map)
-        = image_tag("base_maps/#{base_map}.jpg", data: { base_map: base_map, action: "click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
-      %br
-      Openfreemaps:
-      %br
-      - Map::OPENFREE_MAPS.each do |base_map|
-        - active = (@map_properties[:base_map] == base_map)
-        = image_tag("base_maps/#{base_map}.jpg", data: { base_map: base_map, action: "click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
-      - if ENV['MAPTILER_KEY']
-        %br
-        Maptiler maps:
-        %br
-        - Map::MAPTILER_MAPS.each do |base_map|
-          = image_tag("base_maps/#{base_map}.jpg", data: { base_map: base_map, action: "click->map--settings#updateBaseMap"}, class: "layer-preview", loading: 'lazy')
-      %br
-      %h4 Default view
-      Center:
-      %span#map-center
-      %br
-      Zoom:
-      %span#map-zoom
-      , Pitch:
-      %span#map-pitch
-      °, Bearing:
-      %span#map-bearing
-      °
-      %br
-      %span
+
+      %span.me-2
         %label{ for: "map-terrain"} 3D Terrain:
         %input#map-terrain{type: "checkbox", checked: @map_properties[:terrain], data: { action: "click->map--settings#updateTerrain"} }
+
+      %span.me-2
+        %label{ for: "map-hillshade"} Hillshade:
+        %input#map-hillshade{type: "checkbox", checked: @map_properties[:hillshade], data: { action: "click->map--settings#updateHillshade"} }
+
+      %h4.mapforge-font.mt-2 View
+      %b Default
+      center:&nbsp;
+      %span.view-values#map-center>
+      , zoom:&nbsp;
+      %span.view-values#map-zoom>
+      , pitch:&nbsp;
+      %span.view-values#map-pitch>
+      , bearing:&nbsp;
+      %span.view-values#map-bearing>
+
       %br
-      %button#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
-        Use current view as new default (center:
-        %span#map-center-current
-        , pitch:
-        %span#map-pitch-current
-        °, zoom:
-        %span#map-zoom-current
-        , bearing:
-        %span#map-bearing-current
-        °)
+      %b Current
+      center:&nbsp;
+      %span.view-values#map-center-current>
+      , zoom:&nbsp;
+      %span.view-values#map-zoom-current>
+      , pitch:&nbsp;
+      %span.view-values#map-pitch-current>
+      , bearing:&nbsp;
+      %span.view-values#map-bearing-current>
+
+
+      %button.btn.btn-green.mt-1#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
+        %i.bi.bi-crosshair.me-1
+        Set current view as default
+

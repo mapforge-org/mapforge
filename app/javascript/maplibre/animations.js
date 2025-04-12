@@ -1,5 +1,6 @@
-import { map, redrawGeojson } from 'maplibre/map'
+import { map, redrawGeojson, mapProperties } from 'maplibre/map'
 import * as functions from 'helpers/functions'
+import { status } from 'helpers/status'
 
 export class AnimationManager {
   constructor () {
@@ -131,4 +132,17 @@ export class AnimatePolygonAnimation extends AnimationManager {
     redrawGeojson()
     animate(0)
   }
+}
+
+export function animateViewFromProperties () {
+  map.once('moveend', function () { status('Map view updated') })
+  map.flyTo({
+    center: mapProperties.center || mapProperties.default_center,
+    zoom: mapProperties.zoom || mapProperties.default_zoom,
+    pitch: mapProperties.pitch,
+    bearing: mapProperties.bearing || 0,
+    curve: 0.3,
+    essential: true,
+    duration: 2000
+  })
 }

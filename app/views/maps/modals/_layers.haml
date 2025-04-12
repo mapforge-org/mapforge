@@ -2,23 +2,25 @@
   .map-modal{'data-controller': "map--layers", 'data-action': "keydown.esc@window->map--layers#close"}
     %button.close-button{ data: { action: "click->map--layers#close" } } &times;
     .map-modal-header
-      %h3 Layers
+      %h3.mapforge-font Layers
 
     .map-modal-content
 
       - if @map_mode == 'rw'
         #layer-upload.row.align-items-center
-          .col
+          .col-5
             %label{ for: "formFile" }
-              %b Import gpx/kml
+              %b
+                %i.bi.bi-upload.me-1
+                Import gpx/kml
 
-          .col
-            %input.form-control#fileInput{ type: "file", data: { action: "input->map--layers#upload" } }
+          .col-7
+            %input.form-control.btn.btn-green#fileInput{ type: "file", data: { action: "input->map--layers#upload" } }
           %i
             %small EPSG:4326 (WGS 84) format, max. 800Kb
 
       #default-layer.mt-2
-        %h4.layer-name Map elements
+        %h4.mapforge-font.layer-name Map elements
         %ul.layer-elements.list-unstyled
 
 

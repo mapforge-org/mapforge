@@ -119,6 +119,9 @@ export function initLayersModal () {
       listItem.appendChild(link)
       e.appendChild(listItem)
     })
+    if (geojsonData.features.length === 0) {
+      e.innerHTML = 'Your map has no elements yet. You can either import or manually create some with the controls on the left.'
+    }
   })
 }
 

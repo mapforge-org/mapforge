@@ -3,8 +3,8 @@ import { animateElement, initTooltips } from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import maplibregl from 'maplibre-gl'
-import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation } from 'maplibre/animations'
-import { basemaps, defaultFont } from 'maplibre/basemaps'
+import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
+import { basemaps, defaultFont, elevationSource } from 'maplibre/basemaps'
 import { initSettingsModal } from 'maplibre/controls/edit'
 import { initCtrlTooltips, initializeDefaultControls, resetControls } from 'maplibre/controls/shared'
 import { initializeViewControls } from 'maplibre/controls/view'
@@ -21,6 +21,7 @@ export let backgroundMapLayer
 
 let mapInteracted
 let backgroundTerrain
+let backgroundHillshade
 
 // workflow of event based map loading:
 // page calls: initializeMap(), [initializeSocket()],
@@ -43,19 +44,6 @@ export function initializeMaplibreProperties () {
     // animate to new view if map had no interaction yet
     if (!mapInteracted) { animateViewFromProperties() }
   }
-}
-
-export function animateViewFromProperties () {
-  map.once('moveend', function () { status('Map view updated') })
-  map.flyTo({
-    center: mapProperties.center || mapProperties.default_center,
-    zoom: mapProperties.zoom || mapProperties.default_zoom,
-    pitch: mapProperties.pitch,
-    bearing: mapProperties.bearing || 0,
-    curve: 0.3,
-    essential: true,
-    duration: 2000
-  })
 }
 
 export function resetGeojsonData () {
@@ -89,6 +77,7 @@ export function initializeMap (divId = 'maplibre-map') {
     // console.log('Map style loaded')
     loadGeoJsonData()
     if (mapProperties.terrain) { addTerrain() }
+    if (mapProperties.hillshade) { addHillshade() }
   })
 
   map.on('geojson.load', (_e) => {
@@ -137,26 +126,6 @@ export function initializeMap (divId = 'maplibre-map') {
   map.on('mousemove', (e) => { lastMousePosition = e.lngLat })
   map.on('touchend', (e) => { lastMousePosition = e.lngLat })
   map.on('drag', () => { mapInteracted = true })
-  map.on('pitchend', function (_e) {
-    functions.e('#settings-modal', e => {
-      e.setAttribute('data-map--settings-current-pitch-value', map.getPitch().toFixed(0))
-    })
-  })
-  map.on('zoomend', function (_e) {
-    functions.e('#settings-modal', e => {
-      e.setAttribute('data-map--settings-current-zoom-value', map.getZoom().toFixed(2))
-    })
-  })
-  map.on('rotate', function (_e) {
-    functions.e('#settings-modal', e => {
-      e.setAttribute('data-map--settings-current-bearing-value', map.getBearing().toFixed(0))
-    })
-  })
-  map.on('moveend', function (_e) {
-    functions.e('#settings-modal', e => {
-      e.setAttribute('data-map--settings-current-center-value', JSON.stringify([map.getCenter().lng, map.getCenter().lat]))
-    })
-  })
   // map.on('error', (err) => {
   //   console.log('map error >>> ', err)
   // })
@@ -204,31 +173,19 @@ export function loadGeoJsonData () {
 }
 
 function addTerrain () {
+  map.addSource('terrain', elevationSource)
+  if (backgroundMapLayer !== 'test') {
+    map.setTerrain({
+      source: 'terrain',
+      exaggeration: 0.05
+    })
+    status('Terrain added to map')
+  }
+}
 
-  map.addSource('terrain', {
-    type: 'raster-dem',
-    tiles: [
-      // From https://registry.opendata.aws/terrain-tiles/, Mapzen terrain tiles
-      // 'https://s3.amazonaws.com/elevation-tiles-prod/normal/{z}/{x}/{y}.png'
-      'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'
-    ],
-    // maptiler terrain tiles:
-    // url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
-    tileSize: 256
-  })
-
+function addHillshade () {
   // Use a different source for terrain and hillshade layers, to improve render quality
-  map.addSource('hillshade', {
-    type: 'raster-dem',
-    // url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
-    tiles: [
-      // From https://registry.opendata.aws/terrain-tiles/, Mapzen terrain tiles
-      // 'https://s3.amazonaws.com/elevation-tiles-prod/normal/{z}/{x}/{y}.png'
-      'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'
-    ],
-    tileSize: 256
-  })
-
+  map.addSource('hillshade', elevationSource)
   if (backgroundMapLayer !== 'test') {
     map.addLayer({
       id: 'hills',
@@ -240,12 +197,7 @@ function addTerrain () {
         "hillshade-exaggeration": 0.1
       }
     })
-
-    map.setTerrain({
-      source: 'terrain',
-      exaggeration: 0.05
-    })
-    status('Terrain added to map')
+    status('Hillshade added to map')
   }
 }
 
@@ -358,12 +310,14 @@ export function destroyFeature (featureId) {
 }
 
 export function setBackgroundMapLayer (mapName = mapProperties.base_map, force = false) {
-  if (backgroundMapLayer === mapName && backgroundTerrain === mapProperties.terrain && !force) { return }
+  if (backgroundMapLayer === mapName && backgroundTerrain === mapProperties.terrain &&
+    backgroundHillshade === mapProperties.hillshade && !force) { return }
   const basemap = basemaps()[mapName]
   if (basemap) {
     map.once('style.load', () => { status('Loaded base map ' + mapName) })
     backgroundMapLayer = mapName
     backgroundTerrain = mapProperties.terrain
+    backgroundHillshade = mapProperties.hillshade
     setStyleDefaultFont(basemap.font || defaultFont)
     map.setStyle(basemap.style,
       // adding 'diff: false' so that 'style.load' gets triggered (https://github.com/maplibre/maplibre-gl-js/issues/2587)
