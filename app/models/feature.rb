@@ -16,7 +16,7 @@ class Feature
   scope :latest, -> { order_by(created_at: :desc) }
 
   after_destroy :broadcast_destroy, if: -> { layer.present? && map.present? }
-  after_save :broadcast_update, if: -> { layer.present? && map.present? }
+  after_save :broadcast_update, if: -> { previous_changes.present? && layer.present? && map.present? }
 
   def geojson
     { id: _id.to_s,

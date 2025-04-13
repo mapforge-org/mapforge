@@ -52,8 +52,19 @@ module Ulogger
       if uploaded.is_a?(ActionDispatch::Http::UploadedFile)
         image_properties = image_properties(uploaded)
         properties.merge!(image_properties)
+      else
+        properties.merge!(location_properties)
       end
 
+      # reset waypoints to default style
+      @map.layers.first.features
+        .reject { |f| f.properties['marker-image-url'] || f.properties["marker-color"].nil? }.each do |f|
+        f.properties.delete("marker-color")
+        f.properties.delete("stroke")
+        f.properties["marker-size"] = 4
+        f.save!
+      end
+      # set leading waypoint
       @map.layers.first.features.create!(geometry: geometry, properties: properties)
       @map.update!(center: [ params[:lon].to_f, params[:lat].to_f ])
 
@@ -82,6 +93,12 @@ module Ulogger
         "stroke-width" => 8,
         "marker-image-url" => "/icon/" + img.public_id,
         "desc" => desc }
+    end
+
+    def location_properties
+      { "marker-size": "8",
+        "marker-color": "#ff7800",
+        "stroke": "#000000" }
     end
 
     def description
