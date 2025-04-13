@@ -24,13 +24,13 @@
   --color-light-beige: #DAE2C8;
   --color-light-teagreen: #CEDFB9;
   --color-light-alabaster: #E5E5D7;
-  --color-dark-moss-green: #354620;
   --color-mid-ecru: #DAC591;
   --color-mid-fawn: #E6AA68;
   --color-mid-chili: #CA3C25;
+  --color-mid-steel-blue: #4D7A9C;
   --color-dark-smoky-black: #1D1A05;
   --color-dark-charcoal: #354A51;
-  --color-mid-steel-blue: #4D7A9C;
+  --color-dark-moss-green: #354620;
   --color-ctrl-active: #2091b0;
   --text-color: var(--color-dark-smoky-black);
   --hover-color: var(--color-dark-charcoal);

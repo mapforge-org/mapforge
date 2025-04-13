@@ -261,7 +261,35 @@ export function redrawGeojson (resetDraw = true) {
 
 // change geojson data before rendering:
 // - For LineStrings with a 'fill-extrusion-height', add a polygon to render extrusion
+let kmMarkers = []
 export function renderedGeojsonData () {
+  kmMarkers.forEach((m) => { m.remove() })
+  geojsonData.features.filter(feature => (feature.geometry.type === 'LineString' &&
+    feature.properties['km-markers'])).forEach((f) => {
+    const line = turf.lineString(f.geometry.coordinates)
+    const length = turf.length(line, { units: 'kilometers' })
+    // Create markers at 1km intervals
+    for (let i = 0; i <= Math.ceil(length); i++) {
+        // Get point at current kilometer
+        const point = turf.along(line, i, { units: 'kilometers' })
+
+        // Create marker element
+        const markerDiv = document.createElement('div')
+        markerDiv.className = 'km-marker'
+        if (i === Math.ceil(length)) {
+          markerDiv.textContent = Math.round(length * 10) / 10
+        } else {
+          markerDiv.textContent = `${i}`
+        }
+
+        // Add marker to map
+        let marker = new maplibregl.Marker({ element: markerDiv })
+            .setLngLat([point.geometry.coordinates[0], point.geometry.coordinates[1]])
+        kmMarkers.push(marker)
+        marker.addTo(map)
+    }
+  })
+
   let extrusionLines = geojsonData.features.filter(feature => (
     feature.geometry.type === 'LineString' &&
       feature.properties['fill-extrusion-height'] &&

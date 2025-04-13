@@ -30,6 +30,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-width`: width in m
 * `fill-extrusion-base`: ground distance in m (default: 0)
+* `km-markers`: show markers at each kilometer (default: false)
 
 #### *Polygon* geometry:
 
