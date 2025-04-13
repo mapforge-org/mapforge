@@ -14,6 +14,7 @@ class Map
   field :zoom, type: String
   field :terrain, type: Boolean
   field :hillshade, type: Boolean
+  field :globe, type: Boolean
   field :pitch, type: String
   field :bearing, type: String
   field :name, type: String
@@ -38,6 +39,7 @@ class Map
   DEFAULT_BEARING = 0
   DEFAULT_TERRAIN = false
   DEFAULT_HILLSHADE = false
+  DEFAULT_GLOBE = false
 
   # mongoid callbacks: https://www.mongodb.com/docs/mongoid/current/data-modeling/callbacks/
   # broadcasts: https://www.rubydoc.info/github/hotwired/turbo-rails/Turbo/Streams/Broadcasts
@@ -82,6 +84,7 @@ class Map
       bearing: bearing || DEFAULT_BEARING,
       terrain: terrain || DEFAULT_TERRAIN,
       hillshade: hillshade || DEFAULT_HILLSHADE,
+      globe: globe || DEFAULT_GLOBE,
       view_permission: view_permission,
       edit_permission: edit_permission
     }

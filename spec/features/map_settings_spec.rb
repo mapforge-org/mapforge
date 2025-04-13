@@ -32,6 +32,14 @@ describe 'Map' do
       # Terrain feature is only used with maptiler key
       wait_for { map.reload.terrain }.to be(true)
     end
+
+    it 'globe update gets saved' do
+      find('.maplibregl-ctrl-map').click
+      expect(page).to have_text('Configure Map')
+      find('#map-globe').click
+      # Terrain feature is only used with maptiler key
+      wait_for { map.reload.globe }.to be(true)
+    end
   end
 
   context 'when map settings change server side' do

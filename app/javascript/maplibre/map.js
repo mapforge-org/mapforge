@@ -22,6 +22,7 @@ export let backgroundMapLayer
 let mapInteracted
 let backgroundTerrain
 let backgroundHillshade
+let backgroundGlobe
 
 // workflow of event based map loading:
 // page calls: initializeMap(), [initializeSocket()],
@@ -78,6 +79,7 @@ export function initializeMap (divId = 'maplibre-map') {
     loadGeoJsonData()
     if (mapProperties.terrain) { addTerrain() }
     if (mapProperties.hillshade) { addHillshade() }
+    if (mapProperties.globe) { addGlobe() }
   })
 
   map.on('geojson.load', (_e) => {
@@ -201,6 +203,22 @@ function addHillshade () {
   }
 }
 
+function addGlobe () {
+  // https://maplibre.org/maplibre-style-spec/projection/
+  map.setProjection({ type: 'globe' })
+  // see https://maplibre.org/maplibre-gl-js/docs/examples/sky-with-fog-and-terrain/
+  map.setSky({
+    'atmosphere-blend': [
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      0, 1,
+      5, 1,
+      7, 0
+    ]
+  })
+}
+
 export function initializeStaticMode () {
   map.on('geojson.load', () => {
     initializeViewStyles()
@@ -310,14 +328,17 @@ export function destroyFeature (featureId) {
 }
 
 export function setBackgroundMapLayer (mapName = mapProperties.base_map, force = false) {
-  if (backgroundMapLayer === mapName && backgroundTerrain === mapProperties.terrain &&
-    backgroundHillshade === mapProperties.hillshade && !force) { return }
+  if (backgroundMapLayer === mapName &&
+      backgroundTerrain === mapProperties.terrain &&
+      backgroundHillshade === mapProperties.hillshade &&
+      backgroundGlobe === mapProperties.globe && !force) { return }
   const basemap = basemaps()[mapName]
   if (basemap) {
     map.once('style.load', () => { status('Loaded base map ' + mapName) })
     backgroundMapLayer = mapName
     backgroundTerrain = mapProperties.terrain
     backgroundHillshade = mapProperties.hillshade
+    backgroundGlobe = mapProperties.globe
     setStyleDefaultFont(basemap.font || defaultFont)
     map.setStyle(basemap.style,
       // adding 'diff: false' so that 'style.load' gets triggered (https://github.com/maplibre/maplibre-gl-js/issues/2587)

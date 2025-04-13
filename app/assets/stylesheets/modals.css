@@ -64,6 +64,8 @@
   margin-right: 0.2em;
 }
 
+/* settings modal */
+
 .layer-preview.active, .layer-preview:hover {
   border-color: var(--color-dark-moss-green);
   opacity: 1;
@@ -76,6 +78,10 @@
   border-radius: 3px;
   font-size: 0.9em;
   padding: 0.1em;
+}
+
+.map-property {
+  white-space: nowrap;
 }
 
 .modal-pull-button {
