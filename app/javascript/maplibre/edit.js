@@ -1,7 +1,7 @@
 import { map, geojsonData, destroyFeature, redrawGeojson } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
 import { highlightFeature } from 'maplibre/feature'
-import { getRouteFeature, getRouteUpdate } from 'maplibre/route'
+import { getRouteFeature, getRouteUpdate } from 'maplibre/routing/openrouteservice'
 import { mapChannel } from 'channels/map_channel'
 import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
 import { initializeEditControls } from 'maplibre/controls/edit'
