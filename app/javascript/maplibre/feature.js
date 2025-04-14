@@ -175,3 +175,65 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
     }
   }
 }
+
+// called from map.renderedGeojsonData()
+let kmMarkers = []
+export function renderKmMarkers () {
+  kmMarkers.forEach((m) => { m.remove() })
+  geojsonData.features.filter(feature => (feature.geometry.type === 'LineString' &&
+    feature.properties['show-km-markers'])).forEach((f) => {
+    const line = turf.lineString(f.geometry.coordinates)
+    const length = turf.length(line, { units: 'kilometers' })
+    // Create markers at useful intervals
+    let interval = 1
+    if (Math.ceil(length) > 15) { interval = 5 }
+    if (Math.ceil(length) > 40) { interval = 10 }
+    if (Math.ceil(length) > 150) { interval = 50 }
+    if (Math.ceil(length) > 1000) { interval = 100 }
+    for (let i = 0; i <= Math.ceil(length); i += interval) {
+        // Get point at current kilometer
+        const point = turf.along(line, i, { units: 'kilometers' })
+
+        // Create marker element
+        const markerDiv = document.createElement('div')
+        markerDiv.className = 'km-marker'
+        if (i === Math.ceil(length)) { markerDiv.className += ' km-marker-final' }
+        if (i === Math.ceil(length) && Math.ceil(length) < 100) {
+          markerDiv.textContent = Math.round(length * 10) / 10
+        } else {
+          markerDiv.textContent = `${i}`
+        }
+
+        // Add marker to map
+        let marker = new maplibregl.Marker({ element: markerDiv })
+            .setLngLat([point.geometry.coordinates[0], point.geometry.coordinates[1]])
+        kmMarkers.push(marker)
+        marker.addTo(map)
+    }
+  })
+}
+
+export function renderExtrusionLines () {
+  let extrusionLines = geojsonData.features.filter(feature => (
+    feature.geometry.type === 'LineString' &&
+      feature.properties['fill-extrusion-height'] &&
+      feature.geometry.coordinates.length !== 1 // don't break line animation
+  ))
+
+  extrusionLines = extrusionLines.map(feature => {
+    const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] * 2 || 4
+    const extrusionLine = window.turf.buffer(feature, width, { units: 'meters' })
+    // clone properties hash, else we're writing into the original feature's properties
+    extrusionLine.properties = { ...feature.properties }
+    if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
+      extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
+    }
+    extrusionLine.properties['stroke-width'] = 0
+    extrusionLine.properties['stroke-opacity'] = 0
+    extrusionLine.properties['fill-opacity'] = 0
+    return extrusionLine
+  })
+  return extrusionLines
+}
+
+

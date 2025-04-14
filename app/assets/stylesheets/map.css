@@ -21,7 +21,7 @@ html:has(.map), body:has(.map) {
   cursor: pointer;
   background: #fffa;
   border-radius: 3px;
-  box-shadow: 0 0 0 2px #CEDFB9;
+  box-shadow: 0 0 0 2px #BBB;
   margin-top: 0.2em;
 }
 
@@ -141,11 +141,18 @@ html:has(.map), body:has(.map) {
 .km-marker {
   border-radius: 50%;
   background-color: var(--color-dark-charcoal);
+  opacity: 0.8 !important;
   width: 25px;
   height: 25px;
   padding-top: 0.15em;
   color: var(--color-light-alabaster);
   font-size: 1.2em;
   font-weight: bold;
+}
+
+.km-marker-final {
+  width: 35px;
+  height: 35px;
+  padding-top: 0.5em;
 }
 
