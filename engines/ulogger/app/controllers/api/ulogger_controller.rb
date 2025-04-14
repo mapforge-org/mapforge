@@ -39,7 +39,13 @@ module Ulogger
       track_coords = track.geometry['coordinates'] << coords
       track.update(geometry: { "type" => "LineString",
                                "coordinates" => track_coords,
-                               "properties" => { "title" => "µlogger track" } })
+                               "properties" => {
+                                 "title" => "µlogger track",
+                                 "fill-extrusion-height": 50,
+                                 "stroke-width": "8",
+                                 "stroke": "#62a0ea",
+                                 "show-km-markers": true
+                              } })
 
       # add point with details
       geometry = { "type" => "Point", "coordinates" => coords }
@@ -59,9 +65,9 @@ module Ulogger
       # reset waypoints to default style
       @map.layers.first.features
         .reject { |f| f.properties['marker-image-url'] || f.properties["marker-color"].nil? }.each do |f|
-        f.properties.delete("marker-color")
-        f.properties.delete("stroke")
-        f.properties["marker-size"] = 4
+        f.properties["marker-size"] = 3
+        f.properties["marker-color"] = "transparent"
+        f.properties["stroke"] = "transparent"
         f.save!
       end
       # set leading waypoint

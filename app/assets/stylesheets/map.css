@@ -141,7 +141,7 @@ html:has(.map), body:has(.map) {
 .km-marker {
   border-radius: 50%;
   background-color: var(--color-dark-charcoal);
-  opacity: 0.6 !important;
+  opacity: 0.75 !important;
   width: 25px;
   height: 25px;
   padding-top: 0.05em;

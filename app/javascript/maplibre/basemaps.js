@@ -13,8 +13,8 @@ const defaultRasterLayer = [
     id: 'simple-tiles',
     type: 'raster',
     source: 'raster-tiles',
-    minzoom: 0,
-    maxzoom: 22
+    minzoom: 1.4,
+    maxzoom: 20
   }
 ]
 const host = new URL(window.location.href).origin
