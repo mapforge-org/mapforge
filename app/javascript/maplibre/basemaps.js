@@ -33,22 +33,6 @@ export let elevationSource = {
 
 export function basemaps () {
   return {
-  // static test tile
-    test: {
-      style: {
-        version: 8,
-        sources: {
-          'raster-tiles': {
-            type: 'raster',
-            tiles: ['/layers/test_tile.png'],
-            tileSize: 1024
-          }
-        },
-        layers: defaultRasterLayer,
-        glyphs: testGlyphs
-      }
-    },
-
     // Stadia maps
     stamenWatercolorTiles: {
       style: {
@@ -170,6 +154,38 @@ export function basemaps () {
     maptilerSatellite: { style: 'https://api.maptiler.com/maps/satellite/style.json?key=' + window.gon.map_keys.maptiler },
     maptilerWinter: { style: 'https://api.maptiler.com/maps/winter-v2/style.json?key=' + window.gon.map_keys.maptiler },
     maptilerBike: { style: 'https://api.maptiler.com/maps/64d03850-97e0-4aaa-bd1d-8287a9792de1/style.json?key=' + window.gon.map_keys.maptiler },
-    maptilerHybrid: { style: 'https://api.maptiler.com/maps/hybrid/style.json?key=' + window.gon.map_keys.maptiler }
+    maptilerHybrid: { style: 'https://api.maptiler.com/maps/hybrid/style.json?key=' + window.gon.map_keys.maptiler },
+
+  // static test tile
+    test: {
+      style: {
+        version: 8,
+        sources: {
+          'raster-tiles': {
+            type: 'raster',
+            tiles: ['/layers/test_tile.png'],
+            tileSize: 1024
+          }
+        },
+        layers: defaultRasterLayer,
+        glyphs: testGlyphs
+      }
+    },
+  // second static test tile for testing background map switch
+    test2: {
+      style: {
+        version: 8,
+        sources: {
+          'raster-tiles': {
+            type: 'raster',
+            tiles: ['/layers/test_tile.png'],
+            tileSize: 1024
+          }
+        },
+        layers: defaultRasterLayer,
+        glyphs: testGlyphs
+      }
+    }
+
   }
 }

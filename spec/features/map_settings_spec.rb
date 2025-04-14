@@ -16,13 +16,19 @@ describe 'Map' do
   end
 
   context 'when using map settings modal' do
+    before do
+      stub_const("Map::BASE_MAPS", Map::BASE_MAPS + [ "test", "test2" ])
+      visit map_path(map)
+      expect(page).to have_css("#maplibre-map[map-loaded='true']")
+    end
+
     it 'basemap update gets saved' do
       find('.maplibregl-ctrl-map').click
       expect(page).to have_text('Configure Map')
-      find(".layer-preview[data-base-map='versatilesColorful']").click
+      find(".layer-preview[data-base-map='test2']").click
       # 'Map view updated' is rendered at 'moveend', undetermined if that's before base map is loaded
-      expect(page).to have_text(/Loaded base map versatilesColorful|Map view updated/, wait: 30)
-      expect(map.reload.base_map).to eq 'versatilesColorful'
+      expect(page).to have_text(/Loaded base map test2|Map view updated/, wait: 30)
+      expect(map.reload.base_map).to eq 'test2'
     end
 
     it 'terrain update gets saved' do
