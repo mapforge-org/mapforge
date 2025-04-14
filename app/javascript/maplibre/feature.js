@@ -189,17 +189,21 @@ export function renderKmMarkers () {
     if (Math.ceil(length) > 15) { interval = 5 }
     if (Math.ceil(length) > 40) { interval = 10 }
     if (Math.ceil(length) > 150) { interval = 50 }
-    if (Math.ceil(length) > 1000) { interval = 100 }
-    for (let i = 0; i <= Math.ceil(length); i += interval) {
+    if (Math.ceil(length) > 500) { interval = 100 }
+    if (Math.ceil(length) > 2000) { interval = 500 }
+    for (let i = 0; i < Math.ceil(length) + interval; i += interval) {
         // Get point at current kilometer
         const point = turf.along(line, i, { units: 'kilometers' })
 
         // Create marker element
         const markerDiv = document.createElement('div')
         markerDiv.className = 'km-marker'
-        if (i === Math.ceil(length)) { markerDiv.className += ' km-marker-final' }
-        if (i === Math.ceil(length) && Math.ceil(length) < 100) {
-          markerDiv.textContent = Math.round(length * 10) / 10
+        if (i >= Math.ceil(length)) {
+          markerDiv.className += ' km-marker-final'
+          markerDiv.textContent = Math.round(length)
+          if (Math.ceil(length) < 100) {
+            markerDiv.textContent = Math.round(length * 10) / 10
+          }
         } else {
           markerDiv.textContent = `${i}`
         }

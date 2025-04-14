@@ -141,18 +141,22 @@ html:has(.map), body:has(.map) {
 .km-marker {
   border-radius: 50%;
   background-color: var(--color-dark-charcoal);
-  opacity: 0.8 !important;
+  opacity: 0.6 !important;
   width: 25px;
   height: 25px;
-  padding-top: 0.15em;
+  padding-top: 0.05em;
   color: var(--color-light-alabaster);
   font-size: 1.2em;
   font-weight: bold;
+  border-color: #fff;
+  border-style: solid;
+  border-width: 0.15em;
 }
 
 .km-marker-final {
   width: 35px;
   height: 35px;
-  padding-top: 0.5em;
+  padding-top: 0.4em;
+  opacity: 0.9 !important;
 }
 
