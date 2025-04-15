@@ -1,5 +1,4 @@
-import { map } from 'maplibre/map'
-import MapLibreGlDirections, { LoadingIndicatorControl } from "@maplibre/maplibre-gl-directions";
+import MapLibreGlDirections from "@maplibre/maplibre-gl-directions"
 
 // https://github.com/maplibre/maplibre-gl-directions/tree/main
 // Examples: https://maplibre.org/maplibre-gl-directions/#/examples
