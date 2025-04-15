@@ -92,6 +92,7 @@ export default class extends Controller {
       const size = feature.properties['stroke-width'] || defaultLineWidth
       document.querySelector('#line-width').value = size
       document.querySelector('#line-width-val').innerHTML = size
+      document.querySelector('#show-km-markers').checked = feature.properties['show-km-markers']
       dom.showElements(['#feature-edit-ui .edit-line'])
     } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
       dom.showElements(['#feature-edit-ui .edit-polygon'])

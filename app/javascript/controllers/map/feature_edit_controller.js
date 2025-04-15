@@ -154,6 +154,16 @@ export default class extends Controller {
     redrawGeojson(false)
   }
 
+  updateShowKmMarkers () {
+    const feature = this.getFeature()
+    if (document.querySelector('#show-km-markers').checked) {
+      feature.properties['show-km-markers'] = true
+    } else {
+      delete feature.properties['show-km-markers']
+    }
+    redrawGeojson(false)
+  }
+
   updateMarkerSymbol () {
     const feature = this.getFeature()
     const symbol = document.querySelector('#marker-symbol').value
