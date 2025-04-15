@@ -13,6 +13,14 @@ module Ulogger
       [ :comment, '%s' ]
     ]
 
+    TRACK_PROPERTIES = {
+      "title" => "µlogger track",
+      "fill-extrusion-height": 50,
+      "stroke-width": "8",
+      "stroke": "#62a0ea",
+      "show-km-markers": true
+    }
+
     def auth
       session['email'] = params[:user]
       render json: { error: false }
@@ -35,17 +43,10 @@ module Ulogger
 
       # if the map has no track yet, create one, else append
       track = @map.features.line_string.first
-      track = Feature.new(layer: @map.layers.first, geometry: { 'coordinates' => [] }) unless track
+      track = Feature.new(layer: @map.layers.first, geometry: { 'coordinates' => [] }, properties: TRACK_PROPERTIES) unless track
       track_coords = track.geometry['coordinates'] << coords
       track.update(geometry: { "type" => "LineString",
-                               "coordinates" => track_coords,
-                               "properties" => {
-                                 "title" => "µlogger track",
-                                 "fill-extrusion-height": 50,
-                                 "stroke-width": "8",
-                                 "stroke": "#62a0ea",
-                                 "show-km-markers": true
-                              } })
+                               "coordinates" => track_coords })
 
       # add point with details
       geometry = { "type" => "Point", "coordinates" => coords }
@@ -62,7 +63,7 @@ module Ulogger
         properties.merge!(location_properties)
       end
 
-      # reset waypoints to default style
+      # reset waypoints to default invisible style, skipping photos
       @map.layers.first.features
         .reject { |f| f.properties['marker-image-url'] || f.properties["marker-color"].nil? }.each do |f|
         f.properties["marker-size"] = 3
