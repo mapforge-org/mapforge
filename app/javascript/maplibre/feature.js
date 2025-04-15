@@ -2,6 +2,7 @@ import { map, geojsonData } from 'maplibre/map'
 import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
+import { featureColor } from 'maplibre/styles'
 
 window.marked = marked
 
@@ -12,7 +13,8 @@ let dragStartY, dragStartModalHeight
 
 function featureTitle (feature) {
   const title = feature?.properties?.title || feature?.properties?.user_title ||
-    feature?.properties?.label || feature?.properties?.user_label
+    feature?.properties?.label || feature?.properties?.user_label ||
+    feature?.properties?.name || feature?.properties?.user_name
   if (!title || title === '') {
     return ''
   }
@@ -177,13 +179,32 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
 }
 
 // called from map.renderedGeojsonData()
-let kmMarkers = []
+let kmMarkers
+
+export function initializeMarkers () {
+  kmMarkers = []
+
+  // hide km markers when zooming out
+  map.on('zoom', () => {
+    const currentZoom = map.getZoom()
+    if (currentZoom < 9) {
+      kmMarkers.forEach((m) => {
+        if (!m.getElement().classList.contains('km-marker-final')) {
+        m.getElement().style.display = 'none'
+      }})
+    } else {
+      kmMarkers.forEach((m) => { m.getElement().style.display = 'block' })
+    }
+  })
+}
+
 export function renderKmMarkers () {
   kmMarkers.forEach((m) => { m.remove() })
   geojsonData.features.filter(feature => (feature.geometry.type === 'LineString' &&
     feature.properties['show-km-markers'])).forEach((f) => {
     const line = turf.lineString(f.geometry.coordinates)
     const length = turf.length(line, { units: 'kilometers' })
+    const currentZoom = map.getZoom()
     // Create markers at useful intervals
     let interval = 1
     if (Math.ceil(length) > 15) { interval = 5 }
@@ -191,12 +212,13 @@ export function renderKmMarkers () {
     if (Math.ceil(length) > 150) { interval = 50 }
     if (Math.ceil(length) > 500) { interval = 100 }
     if (Math.ceil(length) > 2000) { interval = 500 }
-    for (let i = 0; i < Math.ceil(length) + interval; i += interval) {
+    for (let i = interval; i < Math.ceil(length) + interval; i += interval) {
         // Get point at current kilometer
         const point = turf.along(line, i, { units: 'kilometers' })
 
         // Create marker element
         const markerDiv = document.createElement('div')
+        markerDiv.style.backgroundColor = f.properties['stroke'] || featureColor
         markerDiv.className = 'km-marker'
         if (i >= Math.ceil(length)) {
           markerDiv.className += ' km-marker-final'
@@ -206,11 +228,20 @@ export function renderKmMarkers () {
           }
         } else {
           markerDiv.textContent = `${i}`
+          if (currentZoom < 9) { markerDiv.style.display = 'none' }
         }
+        if (i >= 100) { markerDiv.style.fontSize = '1em' }
+        if (i >= 1000) { markerDiv.style.fontSize = '0.8em' }
 
-        // Add marker to map
-        let marker = new maplibregl.Marker({ element: markerDiv })
-            .setLngLat([point.geometry.coordinates[0], point.geometry.coordinates[1]])
+        // Add marker to map; https://maplibre.org/maplibre-gl-js/docs/API/classes/Marker/
+        let marker = new maplibregl.Marker({
+          element: markerDiv,
+          opacity: '0.8',
+          opacityWhenCovered: '0',
+          rotationAlignment: 'viewport',
+          pitchAlignment: 'viewport'
+          })
+        marker.setLngLat([point.geometry.coordinates[0], point.geometry.coordinates[1]])
         kmMarkers.push(marker)
         marker.addTo(map)
     }

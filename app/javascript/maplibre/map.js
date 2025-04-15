@@ -9,7 +9,7 @@ import { initSettingsModal } from 'maplibre/controls/edit'
 import { initCtrlTooltips, initializeDefaultControls, resetControls } from 'maplibre/controls/shared'
 import { initializeViewControls } from 'maplibre/controls/view'
 import { draw } from 'maplibre/edit'
-import { highlightFeature, resetHighlightedFeature, renderKmMarkers, renderExtrusionLines } from 'maplibre/feature'
+import { highlightFeature, resetHighlightedFeature, renderKmMarkers, renderExtrusionLines, initializeMarkers } from 'maplibre/feature'
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
 
 export let map
@@ -73,6 +73,7 @@ export function initializeMap (divId = 'maplibre-map') {
   window.map = map
   window.maplibregl = maplibregl
 
+  initializeMarkers()
   // after basemap style is ready/changed, load geojson layer
   map.on('style.load', () => {
     // console.log('Map style loaded')
