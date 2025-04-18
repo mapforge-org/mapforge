@@ -27,17 +27,22 @@
         - active = (@map_properties[:base_map] == base_map)
         = image_tag("base_maps/#{base_map}.jpg", data: { base_map: base_map, action: "click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
       %br
+      - # Default checkbox state gets set by initSettingsModal()
       %span.map-property.me-2
         %label{ for: "map-terrain"} 3D Terrain:
-        %input#map-terrain{type: "checkbox", checked: @map_properties[:terrain], data: { action: "click->map--settings#updateTerrain"} }
+        %input#map-terrain{type: "checkbox", data: { action: "click->map--settings#updateTerrain"} }
 
       %span.map-property.me-2
         %label{ for: "map-hillshade"} Hillshade:
-        %input#map-hillshade{type: "checkbox", checked: @map_properties[:hillshade], data: { action: "click->map--settings#updateHillshade"} }
+        %input#map-hillshade{type: "checkbox", data: { action: "click->map--settings#updateHillshade"} }
+
+      %span.map-property.me-2
+        %label{ for: "map-contours"} Contour lines:
+        %input#map-contours{type: "checkbox", data: { action: "click->map--settings#updateContours"} }
 
       %span.map-property.me-2
         %label{ for: "map-globe"} Globe:
-        %input#map-globe{type: "checkbox", checked: @map_properties[:globe], data: { action: "click->map--settings#updateGlobe"} }
+        %input#map-globe{type: "checkbox", data: { action: "click->map--settings#updateGlobe"} }
 
       %h4.mapforge-font.mt-2 View
       %b Default

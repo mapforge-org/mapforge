@@ -4,7 +4,7 @@ import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import maplibregl from 'maplibre-gl'
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
-import { basemaps, defaultFont, elevationSource } from 'maplibre/basemaps'
+import { basemaps, defaultFont, elevationSource, demSource } from 'maplibre/basemaps'
 import { initSettingsModal } from 'maplibre/controls/edit'
 import { initCtrlTooltips, initializeDefaultControls, resetControls } from 'maplibre/controls/shared'
 import { initializeViewControls } from 'maplibre/controls/view'
@@ -23,6 +23,7 @@ let mapInteracted
 let backgroundTerrain
 let backgroundHillshade
 let backgroundGlobe
+let backgroundContours
 
 // workflow of event based map loading:
 // page calls: initializeMap(), [initializeSocket()],
@@ -76,11 +77,13 @@ export function initializeMap (divId = 'maplibre-map') {
   initializeMarkers()
   // after basemap style is ready/changed, load geojson layer
   map.on('style.load', () => {
-    // console.log('Map style loaded')
+    console.log('Map style loaded')
     loadGeoJsonData()
+    demSource.setupMaplibre(maplibregl)
     if (mapProperties.terrain) { addTerrain() }
     if (mapProperties.hillshade) { addHillshade() }
     if (mapProperties.globe) { addGlobe() }
+    if (mapProperties.contours) { addContours() }
   })
 
   map.on('geojson.load', (_e) => {
@@ -176,32 +179,89 @@ export function loadGeoJsonData () {
 }
 
 function addTerrain () {
+  if (backgroundMapLayer === 'test') { return }
   map.addSource('terrain', elevationSource)
-  if (backgroundMapLayer !== 'test') {
-    map.setTerrain({
-      source: 'terrain',
-      exaggeration: 0.05
-    })
-    status('Terrain added to map')
-  }
+  map.setTerrain({
+    source: 'terrain',
+    exaggeration: 0.05
+  })
+  status('Terrain added to map')
 }
 
 function addHillshade () {
-  // Use a different source for terrain and hillshade layers, to improve render quality
+  if (backgroundMapLayer === 'test') { return }
   map.addSource('hillshade', elevationSource)
-  if (backgroundMapLayer !== 'test') {
-    map.addLayer({
-      id: 'hills',
-      type: 'hillshade',
-      source: 'hillshade',
-      layout: {visibility: 'visible'},
-      paint: {
-        'hillshade-shadow-color': '#473B24',
-        "hillshade-exaggeration": 0.1
-      }
-    })
-    status('Hillshade added to map')
-  }
+  map.addLayer({
+    id: 'hills',
+    type: 'hillshade',
+    source: 'hillshade',
+    layout: {visibility: 'visible'},
+    paint: {
+      'hillshade-shadow-color': '#473B24',
+      "hillshade-exaggeration": 0.1
+    }
+  })
+  status('Hillshade added to map')
+}
+
+function addContours () {
+  if (backgroundMapLayer === 'test') { return }
+  map.addSource('contours', {
+    type: "vector",
+    tiles: [
+      demSource.contourProtocolUrl({
+        thresholds: {
+          // zoom: [minor, major]
+          10: [200, 400],
+          11: [200, 400],
+          12: [100, 200],
+          13: [100, 200],
+          14: [50, 100],
+          15: [20, 100],
+        },
+        elevationKey: "ele",
+        levelKey: "level",
+        contourLayer: "contours",
+      }),
+    ],
+    maxzoom: 16,
+  })
+  map.addLayer({
+    id: "contours",
+    type: "line",
+    source: "contours",
+    "source-layer": "contours",
+    paint: {
+      "line-color": "rgba(0,0,0, 50%)",
+      "line-width": ["match", ["get", "level"], 1, 1, 0.5],
+    },
+    layout: {
+      "line-join": "round",
+    },
+  })
+  map.addLayer({
+    id: "contour-text",
+    type: "symbol",
+    source: "contours",
+    "source-layer": "contours",
+    filter: [">", ["get", "level"], 0],
+    paint: {
+      "text-halo-color": "white",
+      "text-halo-width": 1,
+    },
+    layout: {
+      "symbol-placement": "line",
+      "text-anchor": "center",
+      "text-size": 11,
+      "text-field": [
+        "concat",
+        ["number-format", ["get", "ele"], {}],
+        "m",
+      ],
+      "text-font": [basemaps()[mapProperties.base_map].font || defaultFont]
+    }
+  })
+  status('Contour lines added to map')
 }
 
 function addGlobe () {
@@ -316,6 +376,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
   if (backgroundMapLayer === mapName &&
       backgroundTerrain === mapProperties.terrain &&
       backgroundHillshade === mapProperties.hillshade &&
+      backgroundContours === mapProperties.contours &&
       backgroundGlobe === mapProperties.globe && !force) { return }
   const basemap = basemaps()[mapName]
   if (basemap) {
@@ -323,6 +384,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     backgroundMapLayer = mapName
     backgroundTerrain = mapProperties.terrain
     backgroundHillshade = mapProperties.hillshade
+    backgroundContours = mapProperties.contours
     backgroundGlobe = mapProperties.globe
     setStyleDefaultFont(basemap.font || defaultFont)
     map.setStyle(basemap.style,

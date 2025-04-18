@@ -47,7 +47,7 @@ class MapChannel < ApplicationCable::Channel
 
   def map_atts(data)
     data.slice("name", "description", "base_map", "center", "zoom", "pitch",
-      "bearing", "terrain", "hillshade", "globe", "view_permission", "edit_permission")
+      "bearing", "terrain", "hillshade", "globe", "contours", "view_permission", "edit_permission")
   end
 
   # load map with write access

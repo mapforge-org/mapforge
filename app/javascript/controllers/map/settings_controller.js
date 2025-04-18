@@ -10,6 +10,7 @@ export default class extends Controller {
     mapName: String,
     mapTerrain: Boolean,
     mapHillshade: Boolean,
+    mapContours: Boolean,
     mapGlobe: Boolean,
     baseMap: String,
     defaultPitch: String,
@@ -34,8 +35,13 @@ export default class extends Controller {
   }
 
   mapHillshadeValueChanged (value, _previousValue) {
-    // console.log('mapTerrainValueChanged(): ' + value)
+    // console.log('mapHillshadeValueChanged(): ' + value)
     document.querySelector('#map-hillshade').checked = value
+  }
+
+  mapContoursValueChanged (value, _previousValue) {
+    console.log('mapContoursValueChanged(): ' + value)
+    document.querySelector('#map-contours').checked = value
   }
 
   mapGlobeValueChanged (value, _previousValue) {
@@ -116,6 +122,13 @@ export default class extends Controller {
     mapProperties.hillshade = this.mapHillshadeValue
     setBackgroundMapLayer()
     mapChannel.send_message('update_map', { hillshade: mapProperties.hillshade })
+  }
+
+  updateContours (event) {
+    this.mapContoursValue = event.target.checked
+    mapProperties.contours = this.mapContoursValue
+    setBackgroundMapLayer()
+    mapChannel.send_message('update_map', { contours: mapProperties.contours })
   }
 
   updateGlobe (event) {

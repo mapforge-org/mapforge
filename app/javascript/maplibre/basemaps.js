@@ -1,3 +1,5 @@
+import mlcontour from 'maplibre-contour'
+
 // Default glyphs for Raster maps
 const openmaptilesGlyphs = 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf'
 const testGlyphs = 'fonts/test/{fontstack}/{range}.pbf'
@@ -19,17 +21,29 @@ const defaultRasterLayer = [
 ]
 const host = new URL(window.location.href).origin
 
+// provides caching for dem tiles used by 3d, hillshade + contour
+export let demSource = new mlcontour.DemSource({
+  url: "https://elevation-tiles-prod.s3.amazonaws.com/terrarium/{z}/{x}/{y}.png",
+  encoding: "terrarium",
+  maxzoom: 13,
+  worker: true, // offload isoline computation to a web worker to reduce jank
+  cacheSize: 100, // number of most-recent tiles to cache
+  timeoutMs: 10_000, // timeout on fetch requests
+})
+
 export let elevationSource = {
-    type: 'raster-dem',
-    tiles: [
-      // From https://registry.opendata.aws/terrain-tiles/, Mapzen terrain tiles
-      // 'https://s3.amazonaws.com/elevation-tiles-prod/normal/{z}/{x}/{y}.png'
-      'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'
-    ],
-    // maptiler terrain tiles:
-    // url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
-    tileSize: 256
-  }
+  type: 'raster-dem',
+  //encoding: "terrarium",
+  tiles: [
+    // From https://registry.opendata.aws/terrain-tiles/, Mapzen terrain tiles
+    // 'https://s3.amazonaws.com/elevation-tiles-prod/normal/{z}/{x}/{y}.png'
+    demSource.sharedDemProtocolUrl
+  ],
+  // maptiler terrain tiles:
+  // url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
+  tileSize: 256,
+  maxzoom: 13
+}
 
 export function basemaps () {
   return {

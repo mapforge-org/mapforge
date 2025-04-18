@@ -37,7 +37,8 @@ to: "https://ga.jspm.io/npm:@maplibre/maplibre-gl-geocoder@1.7.1/dist/maplibre-g
 pin "openrouteservice-js", preload: false # @0.4.1
 # https://github.com/maplibre/maplibre-gl-directions/tree/main
 pin "@maplibre/maplibre-gl-directions", preload: false, to: "@maplibre--maplibre-gl-directions.js" # @0.8.0
-
+# https://github.com/onthegomap/maplibre-contour
+pin "maplibre-contour", preload: false # @0.1.0
 
 # render markdown
 pin "marked"# @15.0.8
