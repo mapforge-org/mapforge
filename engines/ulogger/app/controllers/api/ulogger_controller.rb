@@ -40,9 +40,10 @@ module Ulogger
 
     def addpos
       coords = [ params[:lon].to_f, params[:lat].to_f, params[:altitude].to_f.round(2) ]
+      features = @map.layers.first.features
 
       # if the map has no track yet, create one, else append
-      track = @map.features.line_string.first
+      track = features.line_string.first
       track = Feature.new(layer: @map.layers.first, geometry: { 'coordinates' => [] }, properties: TRACK_PROPERTIES) unless track
       track_coords = track.geometry['coordinates'] << coords
       track.update(geometry: { "type" => "LineString",
@@ -53,6 +54,7 @@ module Ulogger
 
       timestamp = Time.at(params[:time].to_i).to_datetime.strftime("%Y-%m-%d %H:%M:%S")
       properties = { "title" => timestamp, "desc" => description || "", "marker-size" => 4 }
+      properties['label'] = params['comment'] if params['comment']
 
       uploaded = params.fetch(:image, nil)
 
@@ -63,16 +65,16 @@ module Ulogger
         properties.merge!(location_properties)
       end
 
-      # reset waypoints to default invisible style, skipping photos
-      @map.layers.first.features
-        .reject { |f| f.properties['marker-image-url'] || f.properties["marker-color"].nil? }.each do |f|
+      # reset waypoints to default invisible style, keep photos and labels
+      features.reject { |f| f.properties['marker-image-url'] ||
+        f.properties['label'] || f.properties["marker-color"].nil? }.each do |f|
         f.properties["marker-size"] = 3
         f.properties["marker-color"] = "transparent"
         f.properties["stroke"] = "transparent"
         f.save!
       end
       # set leading waypoint
-      @map.layers.first.features.create!(geometry: geometry, properties: properties)
+      features.create!(geometry: geometry, properties: properties)
       @map.update!(center: [ params[:lon].to_f, params[:lat].to_f ])
 
       render json: { error: false }
