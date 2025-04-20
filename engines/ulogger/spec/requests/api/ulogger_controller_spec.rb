@@ -53,7 +53,7 @@ RSpec.describe Api::UloggerController do
     let(:trackid) { 924977797 }
     let(:payload) { { action: 'addpos', altitude: 374.29, speed: 4.3,
       provider: 'network', trackid: trackid, accuracy: 16.113,
-      lon: 11.1268342, time: 1717959606, lat: 49.4492029, comment: '🥸' } }
+      lon: 11.1268342, time: 1717959606, lat: 49.4492029 } }
     let(:response_body) { JSON.parse(response.body) }
 
     it { is_expected.to have_http_status(200) }
@@ -67,13 +67,29 @@ RSpec.describe Api::UloggerController do
 
     it "writes formatted metadata to the point's description" do
       expect(map.reload.features.point.first.properties['desc']).
-        to eq "- Altitude: 374.29 m\n- Speed: 15.5 km/h\n- Accuracy: 16.11 m\n- Provider: network\n- Comment: 🥸"
+        to eq "- Altitude: 374.29 m\n- Speed: 15.5 km/h\n- Accuracy: 16.11 m\n- Provider: network"
+    end
+
+    it "sets comment as label" do
+      payload = { action: 'addpos', altitude: 374.29, speed: 4.3,
+        provider: 'network', trackid: trackid, accuracy: 16.113,
+        lon: 11.1268342, time: 1717959606, lat: 49.4492029, comment: 'Hey' }
+      post '/ulogger/client/index.php', params: payload
+
+      expect(map.reload.features.point.last.properties['label']).to eq 'Hey'
     end
 
     it 'adds linestring feature at coordinates' do
       expect(map.reload.features.line_string.count).to eq 1
       expect(map.reload.features.line_string.first.geometry['coordinates']).
         to eq ([ [ 11.1268342, 49.4492029, 374.29 ] ])
+    end
+
+    it "hides points other than the last one" do
+      post '/ulogger/client/index.php', params: payload
+
+      expect(map.reload.features.point.count).to eq 2
+      expect(map.reload.features.point.first.properties["marker-color"]).to eq("transparent")
     end
 
     context "with attached image file" do
