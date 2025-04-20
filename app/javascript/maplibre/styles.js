@@ -9,6 +9,7 @@ export const viewStyleNames = [
   'polygon-layer-outline',
   'line-layer-outline', // line outline below line, because it's a wider line
   'line-layer',
+  'line-layer-route-direction',
   'line-layer-hit',
   'points-border-layer',
   'points-layer',
@@ -287,6 +288,20 @@ export function styles () {
       paint: {
         'line-width': ['+', 15, outlineWidthMax],
         'line-opacity': 0
+      }
+    },
+    'line-layer-route-direction': {
+      id: "line-layer-route-direction",
+      type: "symbol",
+      source: "geojson-source",
+      filter: ["has", "route"],
+      layout: {
+        "symbol-placement": "line-center",
+        "icon-image": "/icons/direction-arrow.png",
+        "icon-size": ["interpolate", ["exponential", 1.5], ["zoom"], 12, 0.85, 18, 1.4],
+      },
+      paint: {
+        "icon-opacity": 0.9,
       }
     },
     'points-border-layer': {

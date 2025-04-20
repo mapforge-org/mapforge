@@ -88,3 +88,7 @@ export function findCoordinate (coordinates, coordinate) {
   }
   return -1
 }
+
+export function featureId () {
+  Math.random().toString(36).substring(2, 18)
+}

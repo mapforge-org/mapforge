@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2025-04
+
+* Reworked settings modal
+* Map options: Terrain, hillshade, contour lines, globe mode
+* Option to show distance markers on tracks
 
 ## 2025-03
 
