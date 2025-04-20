@@ -2,6 +2,7 @@ import { map, geojsonData, destroyFeature, redrawGeojson } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
 import { highlightFeature } from 'maplibre/feature'
 import { getRouteFeature, getRouteUpdate } from 'maplibre/routing/openrouteservice'
+import { initDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
 import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
 import { initializeEditControls } from 'maplibre/controls/edit'
@@ -22,6 +23,7 @@ MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group'
 // https://github.com/mapbox/mapbox-gl-draw
 export function initializeEditMode () {
   // console.log('Initializing MapboxDraw')
+  initDirections()
 
   // Patching direct select mode to not allow dragging features
   // similar to https://github.com/zakjan/mapbox-gl-draw-waypoint
