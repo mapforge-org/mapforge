@@ -6,6 +6,7 @@ export function initializeEditStyles () {
   // Adding those as extra layers to the map.
   // render the extrusion layer from "source: 'geojson-source' without having it available for edit in draw
   map.addLayer(styles()['polygon-layer-extrusion'])
+  map.addLayer(styles()['line-layer-route-direction'])
   map.addLayer(styles()['symbols-border-layer'])
   map.addLayer(styles()['symbols-layer'])
   map.addLayer(styles()['text-layer'])
@@ -235,7 +236,7 @@ export function editStyles () {
   ]
 }
 
-function removeSource (style) {
+export function removeSource (style) {
   // eslint-disable-next-line no-unused-vars
   const { source, ...filteredStyle } = style
   return filteredStyle

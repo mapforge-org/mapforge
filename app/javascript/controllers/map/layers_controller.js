@@ -5,6 +5,7 @@ import { initLayersModal, resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
 import { status } from 'helpers/status'
+import * as functions from 'helpers/functions'
 
 export default class extends Controller {
   upload () {
@@ -41,7 +42,7 @@ export default class extends Controller {
 
         let i = 1
         geoJSON.features.forEach(feature => {
-          feature.id = Math.random().toString(36).substring(2, 18)
+          feature.id = functions.featureId()
           feature.properties ||= {}
           upsert(feature)
           mapChannel.send_message('new_feature', feature)
