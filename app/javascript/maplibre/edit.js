@@ -2,7 +2,7 @@ import { map, geojsonData, destroyFeature, redrawGeojson } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
 import { highlightFeature } from 'maplibre/feature'
 import { getRouteFeature, getRouteUpdate } from 'maplibre/routing/openrouteservice'
-import { initDirections } from 'maplibre/routing/osrm'
+import { initDirections, resetDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
 import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
 import { initializeEditControls } from 'maplibre/controls/edit'
@@ -23,7 +23,6 @@ MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group'
 // https://github.com/mapbox/mapbox-gl-draw
 export function initializeEditMode () {
   // console.log('Initializing MapboxDraw')
-  initDirections()
 
   // Patching direct select mode to not allow dragging features
   // similar to https://github.com/zakjan/mapbox-gl-draw-waypoint
@@ -73,6 +72,7 @@ export function initializeEditMode () {
 
   map.on('draw.modechange', () => {
     resetControls()
+    resetDirections()
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
     if (draw.getMode() !== 'simple_select') {
       functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
@@ -88,6 +88,8 @@ export function initializeEditMode () {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Road Mode: Click on the map to set waypoints, double click to finish',
         'info', 'medium', 8000)
+      draw.changeMode('simple_select')
+      initDirections()
     } else if (draw.getMode() === 'bicycle') {
       functions.e('.mapbox-gl-draw_bicycle', e => { e.classList.add('active') })
       functions.e('.mapbox-gl-draw_line', e => { e.classList.remove('active') })
@@ -102,7 +104,7 @@ export function initializeEditMode () {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Line Mode: Click on the map to draw a line', 'info', 'medium', 8000)
     }
-    //console.log('draw mode: ' + draw.getMode())
+    console.log('draw mode: ' + draw.getMode())
   })
 
   map.on('draw.selectionchange', function (e) {
@@ -111,9 +113,15 @@ export function initializeEditMode () {
     if (!e.features?.length) { justCreated = false; return }
     if (justCreated) { justCreated = false; return }
     selectedFeature = e.features[0]
+
     if (geojsonData.features.find(f => f.id === selectedFeature.id)) {
       console.log('selected: ', selectedFeature)
-      select(selectedFeature)
+
+      if (selectedFeature?.properties?.route?.provider === 'osrm') {
+        initDirections()
+      } else {
+        select(selectedFeature)
+      }
       highlightFeature(selectedFeature, true)
     }
   })

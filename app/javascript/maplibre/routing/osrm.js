@@ -14,8 +14,17 @@ import * as functions from 'helpers/functions'
 // OSRM router.project-osrm.org rules: https://github.com/Project-OSRM/osrm-backend/wiki/Demo-server
 // FOSSGIS rules: https://fossgis.de/arbeitsgruppen/osm-server/nutzungsbedingungen/
 
+let directions
+
+export function resetDirections () {
+  if (directions) { directions.destroy() }
+  directions = undefined
+}
+
+
 export function initDirections () {
 
+  console.log("Initializing directions")
   let layers = layersFactory()
 
   console.log(layers)
@@ -76,10 +85,10 @@ export function initDirections () {
     ],
   })
 
-  map.once('load', async function (_e) {
+  // map.once('load', async function (_e) {
 
     // https://maplibre.org/maplibre-gl-directions/api/interfaces/MapLibreGlDirectionsConfiguration.html
-    const directions = new MapLibreGlDirections(map, {
+    directions = new MapLibreGlDirections(map, {
       api: "https://router.project-osrm.org/route/v1",
       profile: "driving",
       refreshOnMove: false, // no live updates on route drag
@@ -104,12 +113,12 @@ export function initDirections () {
         "geometry": { "coordinates": coords, "type": "LineString" },
         "properties": { "fill-extrusion-height": 32,
           "show-km-markers": true,
-          "route": {"profile": "osrm", "profile": "cycling-mountain", "waypoints": [] }}
+          "route": {"provider": "osrm", "profile": "cycling-mountain", "waypoints": [] }}
       }
 
       upsert(feature)
       mapChannel.send_message('new_feature', feature)
       status('Added track')
     })
-  })
+//  })
 }
