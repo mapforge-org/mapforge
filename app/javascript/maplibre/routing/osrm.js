@@ -1,4 +1,5 @@
-import MapLibreGlDirections, { layersFactory } from "@maplibre/maplibre-gl-directions";
+import { layersFactory } from "@maplibre/maplibre-gl-directions"
+import CustomMapLibreGlDirections from "maplibre/routing/custom_directions"
 import { map, mapProperties, upsert } from 'maplibre/map'
 import { styles } from 'maplibre/styles'
 import { decodePolyline } from 'helpers/polyline'
@@ -17,59 +18,67 @@ import * as functions from 'helpers/functions'
 let directions
 let currentFeature
 
+
 export function resetDirections () {
-  // if (directions) {
-  //   console.log("Resetting directions with ", currentFeature)
-  //   directions.destroy()
-  //   if (map.getSource("maplibre-gl-directions")) {
-  //     map.removeSource("maplibre-gl-directions")
-  //   }
-  //   directions = undefined
-  // }
+  if (directions) {
+    console.log("Resetting directions with ", currentFeature)
+    directions.destroy()
+    if (map.getSource("maplibre-gl-directions")) {
+      map.removeSource("maplibre-gl-directions")
+    }
+    currentFeature = undefined
+    directions = undefined
+  }
 }
 
-
-export function initDirections (feature) {
+export function initDirections (profile, feature) {
   resetDirections()
-  console.log("Initializing directions with ", feature)
+  console.log("Initializing directions ('" + profile + "') with", feature || "new route")
   currentFeature = feature
 
-  // map.once('load', async function (_e) {
+  // https://maplibre.org/maplibre-gl-directions/api/interfaces/MapLibreGlDirectionsConfiguration.html
+  directions = new CustomMapLibreGlDirections(map, {
+    api: "https://router.project-osrm.org/route/v1",
+    profile: profile,
+    refreshOnMove: false, // no live updates on route drag
+    // https://project-osrm.org/docs/v5.24.0/api/#route-service
+    requestOptions: {
+      alternatives: "false",
+      overview: 'full',
+      snapping: 'any'
+    },
+    layers: getDirectionsLayers()
+  })
 
-    // https://maplibre.org/maplibre-gl-directions/api/interfaces/MapLibreGlDirectionsConfiguration.html
-    directions = new MapLibreGlDirections(map, {
-      api: "https://router.project-osrm.org/route/v1",
-      profile: "driving",
-      refreshOnMove: false, // no live updates on route drag
-      // https://project-osrm.org/docs/v5.24.0/api/#route-service
-      requestOptions: {
-        alternatives: "false",
-        overview: 'full',
-        snapping: 'any'
-      },
-      layers: getDirectionsLayers()
-    })
-    directions.interactive = true
+  if (currentFeature) {
+    let waypoints = [currentFeature.geometry.coordinates[0],
+      currentFeature.geometry.coordinates[currentFeature.geometry.coordinates.length - 1]]
+    console.log("Waypoints: ", waypoints)
+    // TODO: waypoints need to be full geojson features
+    //directions.setWaypointsFeatures(waypoints)
+    //directions.setSnappointsFeatures(waypoints)
+    //directions.setRoutelinesFeatures(currentFeature.geometry.coordinates)
+  }
+  directions.interactive = true
 
-    directions.on("fetchroutesend", (e) => {
+  directions.on("fetchroutesend", (e) => {
+    console.log(e)
+    let coords = decodePolyline(e.data.routes[0].geometry)
+    currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
+      "geometry": { "coordinates": coords, "type": "LineString" },
+      "properties": currentFeature?.properties || { "fill-extrusion-height": 32,
+        "show-km-markers": true,
+        "route": {"provider": "osrm", "profile": profile, "waypoints": [] }}
+    }
 
-      console.log(e)
-      console.log(e.data.routes[0].geometry)
-      let coords = decodePolyline(e.data.routes[0].geometry)
-      console.log(coords)
-      //console.log(JSON.stringify(directions.routelines))
-      let feature = { "type": "Feature", "id": functions.featureId(),
-        "geometry": { "coordinates": coords, "type": "LineString" },
-        "properties": { "fill-extrusion-height": 32,
-          "show-km-markers": true,
-          "route": {"provider": "osrm", "profile": "cycling-mountain", "waypoints": [] }}
-      }
+    upsert(currentFeature)
+    mapChannel.send_message('new_feature', currentFeature)
+    status('Added track')
+  })
 
-      upsert(feature)
-      mapChannel.send_message('new_feature', feature)
-      status('Added track')
-    })
-//  })
+  directions.on('movewaypoint', (e) => {
+    console.log(`Waypoint ${e.index} moved to`, e.waypoint.coordinates)
+  })
 }
 
 export function getDirectionsLayers () {

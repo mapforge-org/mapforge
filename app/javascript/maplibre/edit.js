@@ -76,6 +76,8 @@ export function initializeEditMode () {
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
     if (draw.getMode() !== 'simple_select') {
       functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
+    } else {
+      functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
     }
     if (draw.getMode() === 'draw_paint_mode') {
       functions.e('.mapbox-gl-draw_paint', e => { e.classList.add('active') })
@@ -88,7 +90,7 @@ export function initializeEditMode () {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Road Mode: Click on the map to set waypoints, double click to finish',
         'info', 'medium', 8000)
-      initDirections()
+      initDirections('driving')
     } else if (draw.getMode() === 'bicycle') {
       functions.e('.mapbox-gl-draw_bicycle', e => { e.classList.add('active') })
       functions.e('.mapbox-gl-draw_line', e => { e.classList.remove('active') })
@@ -116,7 +118,8 @@ export function initializeEditMode () {
       console.log('selected: ', selectedFeature)
 
       if (selectedFeature?.properties?.route?.provider === 'osrm') {
-        initDirections(selectedFeature)
+        draw.changeMode('simple_select')
+        initDirections(selectedFeature?.properties?.route?.profile, selectedFeature)
       } else {
         select(selectedFeature)
       }
