@@ -30,7 +30,7 @@ export function initializeEditMode () {
   DirectSelectMode.dragFeature = function (_state, _e, _delta) { /* noop */ }
 
   const SimpleSelectMode = { ...MapboxDraw.modes.simple_select }
-  const RoadMode = { ...MapboxDraw.modes.draw_line_string }
+  const RoadMode = { ...MapboxDraw.modes.simple_select }
   const BicycleMode = { ...MapboxDraw.modes.draw_line_string }
 
   const modes = {
@@ -71,8 +71,8 @@ export function initializeEditMode () {
   })
 
   map.on('draw.modechange', () => {
-    resetControls()
     resetDirections()
+    console.log('switch to draw mode: ' + draw.getMode())
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
     if (draw.getMode() !== 'simple_select') {
       functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
@@ -88,7 +88,6 @@ export function initializeEditMode () {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Road Mode: Click on the map to set waypoints, double click to finish',
         'info', 'medium', 8000)
-      draw.changeMode('simple_select')
       initDirections()
     } else if (draw.getMode() === 'bicycle') {
       functions.e('.mapbox-gl-draw_bicycle', e => { e.classList.add('active') })
@@ -104,7 +103,6 @@ export function initializeEditMode () {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Line Mode: Click on the map to draw a line', 'info', 'medium', 8000)
     }
-    console.log('draw mode: ' + draw.getMode())
   })
 
   map.on('draw.selectionchange', function (e) {
@@ -118,7 +116,7 @@ export function initializeEditMode () {
       console.log('selected: ', selectedFeature)
 
       if (selectedFeature?.properties?.route?.provider === 'osrm') {
-        initDirections()
+        initDirections(selectedFeature)
       } else {
         select(selectedFeature)
       }

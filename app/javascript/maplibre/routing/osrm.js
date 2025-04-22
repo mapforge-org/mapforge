@@ -15,18 +15,65 @@ import * as functions from 'helpers/functions'
 // FOSSGIS rules: https://fossgis.de/arbeitsgruppen/osm-server/nutzungsbedingungen/
 
 let directions
+let currentFeature
 
 export function resetDirections () {
-  if (directions) { directions.destroy() }
-  directions = undefined
+  // if (directions) {
+  //   console.log("Resetting directions with ", currentFeature)
+  //   directions.destroy()
+  //   if (map.getSource("maplibre-gl-directions")) {
+  //     map.removeSource("maplibre-gl-directions")
+  //   }
+  //   directions = undefined
+  // }
 }
 
 
-export function initDirections () {
+export function initDirections (feature) {
+  resetDirections()
+  console.log("Initializing directions with ", feature)
+  currentFeature = feature
 
-  console.log("Initializing directions")
+  // map.once('load', async function (_e) {
+
+    // https://maplibre.org/maplibre-gl-directions/api/interfaces/MapLibreGlDirectionsConfiguration.html
+    directions = new MapLibreGlDirections(map, {
+      api: "https://router.project-osrm.org/route/v1",
+      profile: "driving",
+      refreshOnMove: false, // no live updates on route drag
+      // https://project-osrm.org/docs/v5.24.0/api/#route-service
+      requestOptions: {
+        alternatives: "false",
+        overview: 'full',
+        snapping: 'any'
+      },
+      layers: getDirectionsLayers()
+    })
+    directions.interactive = true
+
+    directions.on("fetchroutesend", (e) => {
+
+      console.log(e)
+      console.log(e.data.routes[0].geometry)
+      let coords = decodePolyline(e.data.routes[0].geometry)
+      console.log(coords)
+      //console.log(JSON.stringify(directions.routelines))
+      let feature = { "type": "Feature", "id": functions.featureId(),
+        "geometry": { "coordinates": coords, "type": "LineString" },
+        "properties": { "fill-extrusion-height": 32,
+          "show-km-markers": true,
+          "route": {"provider": "osrm", "profile": "cycling-mountain", "waypoints": [] }}
+      }
+
+      upsert(feature)
+      mapChannel.send_message('new_feature', feature)
+      status('Added track')
+    })
+//  })
+}
+
+export function getDirectionsLayers () {
   let layers = layersFactory()
-
   console.log(layers)
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline")
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline-casing")
@@ -84,41 +131,5 @@ export function initDirections () {
       ["in", ["get", "category"], ["literal", ["ORIGIN", "DESTINATION"]]],
     ],
   })
-
-  // map.once('load', async function (_e) {
-
-    // https://maplibre.org/maplibre-gl-directions/api/interfaces/MapLibreGlDirectionsConfiguration.html
-    directions = new MapLibreGlDirections(map, {
-      api: "https://router.project-osrm.org/route/v1",
-      profile: "driving",
-      refreshOnMove: false, // no live updates on route drag
-      // https://project-osrm.org/docs/v5.24.0/api/#route-service
-      requestOptions: {
-        alternatives: "false",
-        overview: 'full',
-        snapping: 'any'
-      },
-      layers
-    })
-    directions.interactive = true
-
-    directions.on("fetchroutesend", (e) => {
-
-      console.log(e)
-      console.log(e.data.routes[0].geometry)
-      let coords = decodePolyline(e.data.routes[0].geometry)
-      console.log(coords)
-      //console.log(JSON.stringify(directions.routelines))
-      let feature = { "type": "Feature", "id": functions.featureId(),
-        "geometry": { "coordinates": coords, "type": "LineString" },
-        "properties": { "fill-extrusion-height": 32,
-          "show-km-markers": true,
-          "route": {"provider": "osrm", "profile": "cycling-mountain", "waypoints": [] }}
-      }
-
-      upsert(feature)
-      mapChannel.send_message('new_feature', feature)
-      status('Added track')
-    })
-//  })
+  return layers
 }
