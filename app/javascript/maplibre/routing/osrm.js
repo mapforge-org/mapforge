@@ -45,31 +45,35 @@ export function initDirections (profile, feature) {
     requestOptions: {
       alternatives: "false",
       overview: 'full',
-      snapping: 'any'
+      snapping: 'any',
+      generate_hints: false
     },
     layers: getDirectionsLayers()
   })
 
   if (currentFeature) {
-    let waypoints = [currentFeature.geometry.coordinates[0],
-      currentFeature.geometry.coordinates[currentFeature.geometry.coordinates.length - 1]]
+    let waypoints = currentFeature.properties.route.waypoints
     console.log("Waypoints: ", waypoints)
     // TODO: waypoints need to be full geojson features
-    //directions.setWaypointsFeatures(waypoints)
-    //directions.setSnappointsFeatures(waypoints)
-    //directions.setRoutelinesFeatures(currentFeature.geometry.coordinates)
+    directions.setWaypointsFeatures(waypoints.map(wp => createWaypointfeature(wp)))
+    //directions.setSnappointsFeatures(waypoints.map(wp => createWaypointfeature(wp)))
+    //directions.setRoutelinesFeatures(createRouteLinefeatures(currentFeature))
   }
   directions.interactive = true
 
   directions.on("fetchroutesend", (e) => {
     console.log(e)
+
+    // use 'snapped' waypoints
+    let waypoints = e.data.waypoints.map(wp => wp.location)
+    directions.setWaypointsFeatures(waypoints.map(wp => createWaypointfeature(wp)))
+
     let coords = decodePolyline(e.data.routes[0].geometry)
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords, "type": "LineString" },
-      "properties": currentFeature?.properties || { "fill-extrusion-height": 32,
-        "show-km-markers": true,
-        "route": {"provider": "osrm", "profile": profile, "waypoints": [] }}
+      "properties": currentFeature?.properties || { "fill-extrusion-height": 32, "show-km-markers": true }
     }
+    currentFeature.properties.route = { "provider": "osrm", "profile": profile, "waypoints": waypoints }
 
     upsert(currentFeature)
     mapChannel.send_message('new_feature', currentFeature)
@@ -77,7 +81,7 @@ export function initDirections (profile, feature) {
   })
 
   directions.on('movewaypoint', (e) => {
-    console.log(`Waypoint ${e.index} moved to`, e.waypoint.coordinates)
+    console.log('Waypoint moved', e)
   })
 }
 
@@ -142,3 +146,30 @@ export function getDirectionsLayers () {
   })
   return layers
 }
+
+function createWaypointfeature (coords) {
+  return {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": coords
+    },
+    "properties": {
+      "type": "WAYPOINT",
+      "id": functions.featureId(),
+      "index": 0,
+      "category": "ORIGIN",
+      "highlight": false
+    }
+  }
+}
+
+function createRouteLinefeatures (feature) {
+  //feature
+
+  //[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[-74.19281,40.72035],[-74.19214,40.72202],[-74.19272,40.72186],[-74.19346,40.72203],[-74.18833,40.73438],[-74.18785,40.73675],[-74.18707,40.73766],[-74.18381,40.74446],[-74.18297,40.74418],[-74.18274,40.74463]]},
+  //"properties":{"id":"Pe-UF3f7NUsReWlxoMw2M","routeIndex":0,"route":"SELECTED","legIndex":0,"congestion":0,"departSnappointProperties":{"type":"SNAPPOINT","id":"nmLjKyNVGH7A_tyPpGoJI","profile":"driving","waypointProperties":{"type":"WAYPOINT","id":"LQh6XJuxCkJz7LsSF6ePj","index":0,"category":"ORIGIN","highlight":false},"highlight":false},"arriveSnappointProperties":{"type":"SNAPPOINT","id":"fBHK_nYWZ0Og5Dk0zRHdt","profile":"driving","waypointProperties":{"type":"WAYPOINT","id":"eVJ1T9NlCsmjg5-EaUhxR","index":1,"category":"DESTINATION","highlight":false},"highlight":false},"highlight":false}}]
+
+  return [feature]
+}
+
