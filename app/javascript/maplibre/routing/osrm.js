@@ -1,6 +1,6 @@
 import { layersFactory } from "@maplibre/maplibre-gl-directions"
 import CustomMapLibreGlDirections from "maplibre/routing/custom_directions"
-import { map, mapProperties, upsert } from 'maplibre/map'
+import { map, mapProperties, upsert, geojsonData } from 'maplibre/map'
 import { styles } from 'maplibre/styles'
 import { decodePolyline } from 'helpers/polyline'
 import { basemaps, defaultFont } from 'maplibre/basemaps'
@@ -75,9 +75,15 @@ export function initDirections (profile, feature) {
     }
     currentFeature.properties.route = { "provider": "osrm", "profile": profile, "waypoints": waypoints }
 
-    upsert(currentFeature)
-    mapChannel.send_message('new_feature', currentFeature)
-    status('Added track')
+    if (geojsonData.features.find(f => f.id === currentFeature.id)) {
+      upsert(currentFeature)
+      mapChannel.send_message('update_feature', currentFeature)
+      status('Updated track')
+    } else {
+      upsert(currentFeature)
+      mapChannel.send_message('new_feature', currentFeature)
+      status('Added track')
+    }
   })
 
   directions.on('movewaypoint', (e) => {
@@ -164,12 +170,12 @@ function createWaypointfeature (coords) {
   }
 }
 
-function createRouteLinefeatures (feature) {
-  //feature
+// function createRouteLinefeatures (feature) {
+//   //feature
 
-  //[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[-74.19281,40.72035],[-74.19214,40.72202],[-74.19272,40.72186],[-74.19346,40.72203],[-74.18833,40.73438],[-74.18785,40.73675],[-74.18707,40.73766],[-74.18381,40.74446],[-74.18297,40.74418],[-74.18274,40.74463]]},
-  //"properties":{"id":"Pe-UF3f7NUsReWlxoMw2M","routeIndex":0,"route":"SELECTED","legIndex":0,"congestion":0,"departSnappointProperties":{"type":"SNAPPOINT","id":"nmLjKyNVGH7A_tyPpGoJI","profile":"driving","waypointProperties":{"type":"WAYPOINT","id":"LQh6XJuxCkJz7LsSF6ePj","index":0,"category":"ORIGIN","highlight":false},"highlight":false},"arriveSnappointProperties":{"type":"SNAPPOINT","id":"fBHK_nYWZ0Og5Dk0zRHdt","profile":"driving","waypointProperties":{"type":"WAYPOINT","id":"eVJ1T9NlCsmjg5-EaUhxR","index":1,"category":"DESTINATION","highlight":false},"highlight":false},"highlight":false}}]
+//   //[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[-74.19281,40.72035],[-74.19214,40.72202],[-74.19272,40.72186],[-74.19346,40.72203],[-74.18833,40.73438],[-74.18785,40.73675],[-74.18707,40.73766],[-74.18381,40.74446],[-74.18297,40.74418],[-74.18274,40.74463]]},
+//   //"properties":{"id":"Pe-UF3f7NUsReWlxoMw2M","routeIndex":0,"route":"SELECTED","legIndex":0,"congestion":0,"departSnappointProperties":{"type":"SNAPPOINT","id":"nmLjKyNVGH7A_tyPpGoJI","profile":"driving","waypointProperties":{"type":"WAYPOINT","id":"LQh6XJuxCkJz7LsSF6ePj","index":0,"category":"ORIGIN","highlight":false},"highlight":false},"arriveSnappointProperties":{"type":"SNAPPOINT","id":"fBHK_nYWZ0Og5Dk0zRHdt","profile":"driving","waypointProperties":{"type":"WAYPOINT","id":"eVJ1T9NlCsmjg5-EaUhxR","index":1,"category":"DESTINATION","highlight":false},"highlight":false},"highlight":false}}]
 
-  return [feature]
-}
+//   return [feature]
+// }
 

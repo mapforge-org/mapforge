@@ -72,6 +72,7 @@ export function initializeEditMode () {
 
   map.on('draw.modechange', () => {
     resetDirections()
+    resetControls()
     console.log('switch to draw mode: ' + draw.getMode())
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
     if (draw.getMode() !== 'simple_select') {
@@ -118,7 +119,7 @@ export function initializeEditMode () {
       console.log('selected: ', selectedFeature)
 
       if (selectedFeature?.properties?.route?.provider === 'osrm') {
-        draw.changeMode('simple_select')
+        draw.changeMode('road')
         initDirections(selectedFeature?.properties?.route?.profile, selectedFeature)
       } else {
         select(selectedFeature)
@@ -147,10 +148,12 @@ export function initializeEditMode () {
       map.fire('click')
     }
   })
+
   // in edit mode, map click handler is needed to hide modals
   // and to hide feature modal if no feature is selected
   map.on('click', () => {
-    if (document.querySelector('.maplibregl-ctrl button.active') || !draw.getSelectedIds().length) {
+    console.log(draw.getMode())
+    if (draw.getMode() === 'simple_select') {
       resetControls()
     }
   })
@@ -176,8 +179,8 @@ async function handleCreate (e) {
   if (mode === 'draw_paint_mode') {
     const options = { tolerance: 0.00001, highQuality: true }
     feature = window.turf.simplify(feature, options)
-  } else if (mode === 'road') {
-    feature = await getRouteFeature(feature, feature.geometry.coordinates, 'driving-car')
+  // } else if (mode === 'road') {
+  //   feature = await getRouteFeature(feature, feature.geometry.coordinates, 'driving-car')
   } else if (mode === 'bicycle') {
     feature = await getRouteFeature(feature, feature.geometry.coordinates, 'cycling-mountain')
   } else {
