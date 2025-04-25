@@ -5,6 +5,10 @@ name: Docker
 # separate terms of service, privacy policy, and support
 # documentation.
 
+permissions:
+  contents: read
+  pull-requests: read
+
 on:
   # rebuild image with updated patches each night:
   #schedule:

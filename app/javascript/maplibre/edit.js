@@ -2,6 +2,7 @@ import { map, geojsonData, destroyFeature, redrawGeojson } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
 import { highlightFeature } from 'maplibre/feature'
 import { getRouteFeature, getRouteUpdate } from 'maplibre/routing/openrouteservice'
+import { initDirections, resetDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
 import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
 import { initializeEditControls } from 'maplibre/controls/edit'
@@ -29,7 +30,7 @@ export function initializeEditMode () {
   DirectSelectMode.dragFeature = function (_state, _e, _delta) { /* noop */ }
 
   const SimpleSelectMode = { ...MapboxDraw.modes.simple_select }
-  const RoadMode = { ...MapboxDraw.modes.draw_line_string }
+  const RoadMode = { ...MapboxDraw.modes.simple_select }
   const BicycleMode = { ...MapboxDraw.modes.draw_line_string }
 
   const modes = {
@@ -70,10 +71,14 @@ export function initializeEditMode () {
   })
 
   map.on('draw.modechange', () => {
+    resetDirections()
     resetControls()
+    console.log('switch to draw mode: ' + draw.getMode())
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
-    if (draw.getMode() !== 'simple_select') {
+    if (draw.getMode() !== 'simple_select' && draw.getMode() !== 'direct_select') {
       functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
+    } else {
+      functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
     }
     if (draw.getMode() === 'draw_paint_mode') {
       functions.e('.mapbox-gl-draw_paint', e => { e.classList.add('active') })
@@ -86,6 +91,7 @@ export function initializeEditMode () {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Road Mode: Click on the map to set waypoints, double click to finish',
         'info', 'medium', 8000)
+      initDirections('driving')
     } else if (draw.getMode() === 'bicycle') {
       functions.e('.mapbox-gl-draw_bicycle', e => { e.classList.add('active') })
       functions.e('.mapbox-gl-draw_line', e => { e.classList.remove('active') })
@@ -100,7 +106,6 @@ export function initializeEditMode () {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Line Mode: Click on the map to draw a line', 'info', 'medium', 8000)
     }
-    //console.log('draw mode: ' + draw.getMode())
   })
 
   map.on('draw.selectionchange', function (e) {
@@ -108,10 +113,19 @@ export function initializeEditMode () {
     map.dragPan.enable()
     if (!e.features?.length) { justCreated = false; return }
     if (justCreated) { justCreated = false; return }
+    if (selectedFeature && (selectedFeature.id === e.features[0].id)) { return }
     selectedFeature = e.features[0]
+
     if (geojsonData.features.find(f => f.id === selectedFeature.id)) {
       console.log('selected: ', selectedFeature)
-      select(selectedFeature)
+
+      if (selectedFeature?.properties?.route?.provider === 'osrm') {
+        draw.changeMode('road')
+        map.fire('draw.modechange')
+        initDirections(selectedFeature?.properties?.route?.profile, selectedFeature)
+      } else {
+        select(selectedFeature)
+      }
       highlightFeature(selectedFeature, true)
     }
   })
@@ -136,10 +150,12 @@ export function initializeEditMode () {
       map.fire('click')
     }
   })
+
   // in edit mode, map click handler is needed to hide modals
   // and to hide feature modal if no feature is selected
   map.on('click', () => {
-    if (document.querySelector('.maplibregl-ctrl button.active') || !draw.getSelectedIds().length) {
+    console.log(draw.getMode())
+    if (draw.getMode() === 'simple_select') {
       resetControls()
     }
   })
@@ -155,6 +171,7 @@ function select (feature) {
   } else {
     draw.changeMode('simple_select', { featureIds: [feature.id] })
   }
+  map.fire('draw.modechange')
 }
 
 async function handleCreate (e) {
@@ -165,8 +182,8 @@ async function handleCreate (e) {
   if (mode === 'draw_paint_mode') {
     const options = { tolerance: 0.00001, highQuality: true }
     feature = window.turf.simplify(feature, options)
-  } else if (mode === 'road') {
-    feature = await getRouteFeature(feature, feature.geometry.coordinates, 'driving-car')
+  // } else if (mode === 'road') {
+  //   feature = await getRouteFeature(feature, feature.geometry.coordinates, 'driving-car')
   } else if (mode === 'bicycle') {
     feature = await getRouteFeature(feature, feature.geometry.coordinates, 'cycling-mountain')
   } else {
@@ -210,6 +227,7 @@ export function handleDelete (e) {
   selectedFeature = null
   const deletedFeature = e.features[0] // Assuming one feature is deleted at a time
   destroyFeature(deletedFeature.id)
+  resetDirections()
   status('Feature ' + deletedFeature.id + ' deleted')
   mapChannel.send_message('delete_feature', { id: deletedFeature.id })
 }

@@ -4,6 +4,7 @@ import { draw } from 'maplibre/edit'
 import { resetHighlightedFeature } from 'maplibre/feature'
 import { animateElement } from 'helpers/dom'
 import { ControlGroup, MapLayersControl, MapShareControl, resetControls } from 'maplibre/controls/shared'
+import { resetDirections } from 'maplibre/routing/osrm'
 
 let lineMenu
 
@@ -86,6 +87,7 @@ export function initSettingsModal () {
 }
 
 export function resetEditControls () {
+  resetDirections()
   draw.changeMode('simple_select')
   map.fire('draw.modechange')
 }
@@ -170,6 +172,7 @@ function addLineMenu () {
   lineMenuButton.removeEventListener('click', null)
   lineMenuButton.addEventListener('click', (_e) => {
     draw.changeMode('simple_select')
+    map.fire('draw.modechange')
     resetHighlightedFeature()
     if (lineMenu.classList.contains('hidden')) {
       lineMenu.classList.remove('hidden')
