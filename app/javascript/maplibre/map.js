@@ -132,6 +132,7 @@ export function initializeMap (divId = 'maplibre-map') {
   map.on('mousemove', (e) => { lastMousePosition = e.lngLat })
   map.on('touchend', (e) => { lastMousePosition = e.lngLat })
   map.on('drag', () => { mapInteracted = true })
+  map.on('zoom', () => { mapInteracted = true })
   // map.on('error', (err) => {
   //   console.log('map error >>> ', err)
   // })
@@ -421,8 +422,9 @@ export function sortLayers () {
   const points = functions.reduceArray(layers, (e) => (e.id === 'points-layer.hot' || e.id === 'points-layer.cold' || e.id === 'points-layer' || e.id === 'points-border-layer' || e.id === 'points-border-layer.cold' || e.id === 'points-border-layer.hot'))
   const lineLayerHits = functions.reduceArray(layers, (e) => e.id === 'line-layer-hit')
   const pointsLayerHits = functions.reduceArray(layers, (e) => e.id === 'points-hit-layer')
+  const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
 
-  layers = layers.concat(mapExtrusions)
+  layers = layers.concat(mapExtrusions).concat(directions)
     .concat(mapSymbols).concat(points).concat(editLayer)
     .concat(userSymbols).concat(userLabels)
     .concat(lineLayerHits).concat(pointsLayerHits)

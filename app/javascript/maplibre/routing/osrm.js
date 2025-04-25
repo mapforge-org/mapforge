@@ -2,7 +2,7 @@ import { layersFactory } from "@maplibre/maplibre-gl-directions"
 import CustomMapLibreGlDirections from "maplibre/routing/custom_directions"
 import { map, mapProperties, upsert, geojsonData } from 'maplibre/map'
 import { highlightColor } from 'maplibre/edit_styles'
-import { styles } from 'maplibre/styles'
+import { styles, featureColor } from 'maplibre/styles'
 import { decodePolyline } from 'helpers/polyline'
 import { basemaps, defaultFont } from 'maplibre/basemaps'
 import { mapChannel } from 'channels/map_channel'
@@ -55,25 +55,24 @@ export function initDirections (profile, feature) {
     let waypoints = currentFeature.properties.route.waypoints
     console.log("Waypoints: ", waypoints)
     // TODO: waypoints need to be full geojson features
-    directions.setWaypointsFeatures(waypoints.map(wp => createWaypointfeature(wp)))
+    directions.setWaypointsFeatures(waypoints.map( (wp, index) => createWaypointfeature(wp, index) ))
     //directions.setSnappointsFeatures(waypoints.map(wp => createWaypointfeature(wp)))
     //directions.setRoutelinesFeatures(createRouteLinefeatures(currentFeature))
   }
   directions.interactive = true
 
   directions.on("fetchroutesend", (e) => {
-
     console.log(directions)
     console.log(e)
 
     // use 'snapped' waypoints
     let waypoints = e.data.waypoints.map(wp => wp.location)
-    directions.setWaypointsFeatures(waypoints.map(wp => createWaypointfeature(wp)))
+    directions.setWaypointsFeatures(waypoints.map( (wp, index) => createWaypointfeature(wp, index)))
 
     let coords = decodePolyline(e.data.routes[0].geometry)
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords, "type": "LineString" },
-      "properties": currentFeature?.properties || { "fill-extrusion-height": 32, "show-km-markers": true }
+      "properties": currentFeature?.properties || { "fill-extrusion-height": 25 }
     }
     currentFeature.properties.route = { "provider": "osrm",
                                         "profile": profile,
@@ -97,7 +96,7 @@ export function initDirections (profile, feature) {
 
 export function getDirectionsLayers () {
   let layers = layersFactory()
-  console.log(layers)
+  console.log('Directions layers:', layers)
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline")
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline-casing")
 
@@ -136,17 +135,18 @@ export function getDirectionsLayers () {
     source: "maplibre-gl-directions",
     id: "maplibre-gl-directions-routeline-direction" }) )
 
+  let waypoints_layer = layers.find(layer => layer.id === "maplibre-gl-directions-waypoint")
+  waypoints_layer.paint["circle-color"] = featureColor
+
+  let waypoints_casing_layer = layers.find(layer => layer.id === "maplibre-gl-directions-waypoint-casing")
+  waypoints_casing_layer.paint["circle-color"] = highlightColor
+
   layers.push({
     id: "maplibre-gl-directions-waypoint-label",
     type: "symbol",
     source: "maplibre-gl-directions",
     layout: {
-      "text-field": [
-        "case",
-        ["==", ["get", "category"], "ORIGIN"], "A",
-        ["==", ["get", "category"], "DESTINATION"], "B",
-        "",
-      ],
+      "text-field": ["get", "label"],
       "text-font": [basemaps()[mapProperties.base_map].font || defaultFont]
     },
     paint: {
@@ -156,14 +156,13 @@ export function getDirectionsLayers () {
     filter: [
       "all",
       ["==", ["geometry-type"], "Point"],
-      ["==", ["get", "type"], "WAYPOINT"],
-      ["in", ["get", "category"], ["literal", ["ORIGIN", "DESTINATION"]]],
+      ["==", ["get", "type"], "WAYPOINT"]
     ],
   })
   return layers
 }
 
-function createWaypointfeature (coords) {
+function createWaypointfeature (coords, index) {
   return {
     "type": "Feature",
     "geometry": {
@@ -174,7 +173,7 @@ function createWaypointfeature (coords) {
       "type": "WAYPOINT",
       "id": functions.featureId(),
       "index": 0,
-      "category": "ORIGIN",
+      "label": String.fromCharCode(64 + index+1),
       "highlight": false
     }
   }
