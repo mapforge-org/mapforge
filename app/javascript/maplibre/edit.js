@@ -75,7 +75,7 @@ export function initializeEditMode () {
     resetControls()
     console.log('switch to draw mode: ' + draw.getMode())
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
-    if (draw.getMode() !== 'simple_select') {
+    if (draw.getMode() !== 'simple_select' && draw.getMode() !== 'direct_select') {
       functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
     } else {
       functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
@@ -120,6 +120,7 @@ export function initializeEditMode () {
 
       if (selectedFeature?.properties?.route?.provider === 'osrm') {
         draw.changeMode('road')
+        map.fire('draw.modechange')
         initDirections(selectedFeature?.properties?.route?.profile, selectedFeature)
       } else {
         select(selectedFeature)
@@ -169,6 +170,7 @@ function select (feature) {
   } else {
     draw.changeMode('simple_select', { featureIds: [feature.id] })
   }
+  map.fire('draw.modechange')
 }
 
 async function handleCreate (e) {
@@ -224,6 +226,7 @@ export function handleDelete (e) {
   selectedFeature = null
   const deletedFeature = e.features[0] // Assuming one feature is deleted at a time
   destroyFeature(deletedFeature.id)
+  resetDirections()
   status('Feature ' + deletedFeature.id + ' deleted')
   mapChannel.send_message('delete_feature', { id: deletedFeature.id })
 }

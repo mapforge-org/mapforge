@@ -172,6 +172,7 @@ function addLineMenu () {
   lineMenuButton.removeEventListener('click', null)
   lineMenuButton.addEventListener('click', (_e) => {
     draw.changeMode('simple_select')
+    map.fire('draw.modechange')
     resetHighlightedFeature()
     if (lineMenu.classList.contains('hidden')) {
       lineMenu.classList.remove('hidden')

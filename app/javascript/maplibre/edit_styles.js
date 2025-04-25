@@ -26,7 +26,7 @@ export function initializeEditStyles () {
 // mapbox gl draw doesn't use 'feature-state', but switches between different
 // source layers 'mapbox-gl-draw-cold' + 'mapbox-gl-draw-hot'
 
-const highlightColor = '#fbb03b'
+export const highlightColor = '#fbb03b'
 const midpointSize = 6
 const vertexSize = 6
 
