@@ -113,6 +113,7 @@ export function initializeEditMode () {
     map.dragPan.enable()
     if (!e.features?.length) { justCreated = false; return }
     if (justCreated) { justCreated = false; return }
+    if (selectedFeature && (selectedFeature.id === e.features[0].id)) { return }
     selectedFeature = e.features[0]
 
     if (geojsonData.features.find(f => f.id === selectedFeature.id)) {

@@ -113,7 +113,7 @@ export function getDirectionsLayers () {
       "line-width": 5,
       'line-color': highlightColor,
       'line-dasharray': [0.2, 2],
-      "line-opacity": 1
+      "line-opacity": 0.8
     },
     filter: ["==", ["get", "route"], "SELECTED"]
   })
@@ -151,7 +151,7 @@ export function getDirectionsLayers () {
     },
     paint: {
       "text-color": "#ffffff",
-      "text-opacity": 0.7
+      "text-opacity": 1
     },
     filter: [
       "all",

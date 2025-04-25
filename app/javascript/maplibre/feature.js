@@ -131,7 +131,7 @@ export function featureIcon (feature) {
     image = "<img class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
   } else if (feature.properties?.route?.profile === "cycling-mountain") {
     image = "<i class='bi bi-bicycle me-2 fs-2'>"
-  } else if (feature.properties?.route?.profile === "driving-car") {
+  } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "driving") {
     image = "<i class='bi bi-car-front me-2 fs-2'>"
   } else if (feature.geometry.type === "LineString" || feature.geometry.type === "MultiString") {
     image = "<i class='bi bi-signpost me-2 fs-2'>"
