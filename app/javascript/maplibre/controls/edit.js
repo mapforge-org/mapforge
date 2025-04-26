@@ -186,6 +186,7 @@ function addLineMenu () {
   lineMenu.appendChild(originalButton)
   addPaintButton()
   if (window.gon.map_keys.openrouteservice) {
+    addFootButton()
     addBicycleButton()
     addRoadButton()
   }
@@ -255,4 +256,26 @@ function addBicycleButton () {
     map.fire('draw.modechange')
   })
   lineMenu.appendChild(bicycleButton)
+}
+
+function addFootButton () {
+  const originalButton = document.querySelector('.ctrl-line-menu .mapbox-gl-draw_line')
+  const footButton = originalButton.cloneNode(true)
+  footButton.title = 'Calculate a walking route'
+  footButton.classList.remove('mapbox-gl-draw_line')
+  footButton.classList.add('mapbox-gl-draw_foot')
+  const icon = document.createElement('i')
+  icon.classList.add('bi')
+  icon.classList.add('bi-person-walking')
+  footButton.appendChild(icon)
+  footButton.removeEventListener('click', null)
+  footButton.addEventListener('click', (_e) => {
+    if (draw.getMode() === 'directions_foot') {
+      draw.changeMode('simple_select')
+    } else {
+      draw.changeMode('directions_foot')
+    }
+    map.fire('draw.modechange')
+  })
+  lineMenu.appendChild(footButton)
 }

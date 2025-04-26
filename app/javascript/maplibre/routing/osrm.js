@@ -5,6 +5,7 @@ import { highlightColor } from 'maplibre/edit_styles'
 import { styles, featureColor } from 'maplibre/styles'
 import { decodePolyline } from 'helpers/polyline'
 import { basemaps, defaultFont } from 'maplibre/basemaps'
+import { getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { mapChannel } from 'channels/map_channel'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
@@ -48,7 +49,8 @@ export function initDirections (profile, feature) {
       alternatives: "false",
       overview: 'full',
       snapping: 'any',
-      generate_hints: false
+      generate_hints: false,
+      annotations: true
     },
     layers: getDirectionsLayers()
   })
@@ -63,7 +65,7 @@ export function initDirections (profile, feature) {
   }
   directions.interactive = true
 
-  directions.on("fetchroutesend", (e) => {
+  directions.on("fetchroutesend", async (e) => {
     console.log(directions)
     console.log(e)
 
@@ -72,6 +74,9 @@ export function initDirections (profile, feature) {
     directions.setWaypointsFeatures(waypoints.map( (wp, index) => createWaypointfeature(wp, index)))
 
     let coords = decodePolyline(e.data.routes[0].geometry)
+    // add elevation from openrouteservice
+    coords = await getRouteElevation(coords)
+
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords, "type": "LineString" },
       "properties": currentFeature?.properties || { "fill-extrusion-height": 25 }
@@ -93,6 +98,14 @@ export function initDirections (profile, feature) {
 
   directions.on('movewaypoint', (e) => {
     console.log('Waypoint moved', e)
+  })
+
+  directions.on('addwaypoint', (e) => {
+    console.log('Waypoint added', e)
+  })
+
+  directions.on('removewaypoint', (e) => {
+    console.log('Waypoint removed', e)
   })
 }
 

@@ -32,11 +32,13 @@ export function initializeEditMode () {
   const SimpleSelectMode = { ...MapboxDraw.modes.simple_select }
   const DirectionsCarMode = { ...MapboxDraw.modes.simple_select }
   const DirectionsBikeMode = { ...MapboxDraw.modes.simple_select }
+  const DirectionsFootMode = { ...MapboxDraw.modes.simple_select }
 
   const modes = {
     ...MapboxDraw.modes,
     directions_car: DirectionsCarMode,
     directions_bike: DirectionsBikeMode,
+    directions_foot: DirectionsFootMode,
     direct_select: DirectSelectMode,
     simple_select: SimpleSelectMode,
     draw_paint_mode: PaintMode
@@ -99,6 +101,13 @@ export function initializeEditMode () {
       status('Bicycle Mode: Click on the map to set waypoints, double click to finish',
         'info', 'medium', 8000)
       initDirections('bike')
+    } else if (draw.getMode() === 'directions_foot') {
+      functions.e('.mapbox-gl-draw_foot', e => { e.classList.add('active') })
+      functions.e('.mapbox-gl-draw_line', e => { e.classList.remove('active') })
+      functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
+      status('Walk Mode: Click on the map to set waypoints, double click to finish',
+        'info', 'medium', 8000)
+      initDirections('foot')
     } else if (draw.getMode() === 'draw_point') {
       status('Point Mode: Click on the map to place a marker', 'info', 'medium', 8000)
     } else if (draw.getMode() === 'draw_polygon') {
@@ -192,7 +201,7 @@ async function handleCreate (e) {
   status('Feature ' + feature.id + ' created')
   geojsonData.features.push(feature)
   // redraw if the painted feature was changed in this method
-  if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'draw_paint_mode') { redrawGeojson(false) }
+  if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') { redrawGeojson(false) }
   mapChannel.send_message('new_feature', feature)
 
   setTimeout(() => {

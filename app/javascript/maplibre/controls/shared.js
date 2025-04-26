@@ -130,7 +130,7 @@ export function resetControls () {
   // reset cursor
   functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
   // reset ctrl buttons
-  functions.e('.maplibregl-ctrl-btn, .mapbox-gl-draw_paint, .mapbox-gl-draw_road, .mapbox-gl-draw_bicycle',
+  functions.e('.maplibregl-ctrl-btn, .mapbox-gl-draw_paint, .mapbox-gl-draw_road, .mapbox-gl-draw_bicycle, .mapbox-gl-draw_foot',
     e => { e.classList.remove('active') })
 
   // reset active modals

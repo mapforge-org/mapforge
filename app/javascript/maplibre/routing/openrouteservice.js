@@ -55,7 +55,7 @@ export async function getRouteFeature (feature, waypoints, profile) {
 }
 
 // return route points including elevation
-async function getRouteElevation (waypoints) {
+export async function getRouteElevation (waypoints) {
   try {
     const Elevation = new Openrouteservice.Elevation({api_key: window.gon.map_keys.openrouteservice})
     let response = await Elevation.lineElevation({
