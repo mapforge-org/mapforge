@@ -129,9 +129,9 @@ export function featureIcon (feature) {
       "<img class='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'></a>"
   } else if (feature.properties['marker-symbol']) {
     image = "<img class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
-  } else if (feature.properties?.route?.profile === "cycling-mountain") {
+  } else if (feature.properties?.route?.profile === "cycling-mountain" || feature.properties?.route?.profile === "bike") {
     image = "<i class='bi bi-bicycle me-2 fs-2'>"
-  } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "driving") {
+  } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "car") {
     image = "<i class='bi bi-car-front me-2 fs-2'>"
   } else if (feature.geometry.type === "LineString" || feature.geometry.type === "MultiString") {
     image = "<i class='bi bi-signpost me-2 fs-2'>"

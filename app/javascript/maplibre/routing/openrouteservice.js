@@ -43,7 +43,7 @@ export async function getRouteFeature (feature, waypoints, profile) {
 
     // store waypoint indexes as strings in coordinate for style highlight
     const waypointIndexes = routeResponse.routes[0].way_points.map(item => item.toString())
-    feature.properties.route = { profile, waypoints }
+    feature.properties.route = { "provider": "ors", profile, waypoints }
     // extras: routeResponse.routes[0].extras }
 
     feature.properties.waypointIndexes = waypointIndexes

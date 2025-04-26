@@ -225,10 +225,10 @@ function addRoadButton () {
   roadButton.appendChild(icon)
   roadButton.removeEventListener('click', null)
   roadButton.addEventListener('click', (_e) => {
-    if (draw.getMode() === 'road') {
+    if (draw.getMode() === 'directions_car') {
       draw.changeMode('simple_select')
     } else {
-      draw.changeMode('road')
+      draw.changeMode('directions_car')
     }
     map.fire('draw.modechange')
   })
@@ -247,10 +247,10 @@ function addBicycleButton () {
   bicycleButton.appendChild(icon)
   bicycleButton.removeEventListener('click', null)
   bicycleButton.addEventListener('click', (_e) => {
-    if (draw.getMode() === 'bicycle') {
+    if (draw.getMode() === 'directions_bike') {
       draw.changeMode('simple_select')
     } else {
-      draw.changeMode('bicycle')
+      draw.changeMode('directions_bike')
     }
     map.fire('draw.modechange')
   })

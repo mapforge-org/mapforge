@@ -1,7 +1,7 @@
 import { map, geojsonData, destroyFeature, redrawGeojson } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
 import { highlightFeature } from 'maplibre/feature'
-import { getRouteFeature, getRouteUpdate } from 'maplibre/routing/openrouteservice'
+import { getRouteUpdate } from 'maplibre/routing/openrouteservice'
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
 import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
@@ -30,13 +30,13 @@ export function initializeEditMode () {
   DirectSelectMode.dragFeature = function (_state, _e, _delta) { /* noop */ }
 
   const SimpleSelectMode = { ...MapboxDraw.modes.simple_select }
-  const RoadMode = { ...MapboxDraw.modes.simple_select }
-  const BicycleMode = { ...MapboxDraw.modes.draw_line_string }
+  const DirectionsCarMode = { ...MapboxDraw.modes.simple_select }
+  const DirectionsBikeMode = { ...MapboxDraw.modes.simple_select }
 
   const modes = {
     ...MapboxDraw.modes,
-    road: RoadMode,
-    bicycle: BicycleMode,
+    directions_car: DirectionsCarMode,
+    directions_bike: DirectionsBikeMode,
     direct_select: DirectSelectMode,
     simple_select: SimpleSelectMode,
     draw_paint_mode: PaintMode
@@ -85,19 +85,20 @@ export function initializeEditMode () {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Paint Mode: Click on the map to start drawing, double click to finish',
         'info', 'medium', 8000)
-    } else if (draw.getMode() === 'road') {
+    } else if (draw.getMode() === 'directions_car') {
       functions.e('.mapbox-gl-draw_road', e => { e.classList.add('active') })
       functions.e('.mapbox-gl-draw_line', e => { e.classList.remove('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Road Mode: Click on the map to set waypoints, double click to finish',
         'info', 'medium', 8000)
-      initDirections('driving')
-    } else if (draw.getMode() === 'bicycle') {
+      initDirections('car')
+    } else if (draw.getMode() === 'directions_bike') {
       functions.e('.mapbox-gl-draw_bicycle', e => { e.classList.add('active') })
       functions.e('.mapbox-gl-draw_line', e => { e.classList.remove('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Bicycle Mode: Click on the map to set waypoints, double click to finish',
         'info', 'medium', 8000)
+      initDirections('bike')
     } else if (draw.getMode() === 'draw_point') {
       status('Point Mode: Click on the map to place a marker', 'info', 'medium', 8000)
     } else if (draw.getMode() === 'draw_polygon') {
@@ -111,7 +112,7 @@ export function initializeEditMode () {
   map.on('draw.selectionchange', function (e) {
     // probably mapbox draw bug: map can lose drag capabilities on double click
     map.dragPan.enable()
-    if (!e.features?.length) { justCreated = false; return }
+    if (!e.features?.length) { justCreated = false; selectedFeature = null; return }
     if (justCreated) { justCreated = false; return }
     if (selectedFeature && (selectedFeature.id === e.features[0].id)) { return }
     selectedFeature = e.features[0]
@@ -120,9 +121,10 @@ export function initializeEditMode () {
       console.log('selected: ', selectedFeature)
 
       if (selectedFeature?.properties?.route?.provider === 'osrm') {
-        draw.changeMode('road')
-        map.fire('draw.modechange')
-        initDirections(selectedFeature?.properties?.route?.profile, selectedFeature)
+        let profile = selectedFeature?.properties?.route?.profile
+        draw.changeMode('directions_' + profile) // don't fire 'draw.modechange' event to avoid reset
+        initDirections(profile, selectedFeature)
+        functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
       } else {
         select(selectedFeature)
       }
@@ -146,7 +148,7 @@ export function initializeEditMode () {
     touchEndPosition = e.point
     if (touchStartPosition.x === touchEndPosition.x &&
       touchStartPosition.y === touchEndPosition.y &&
-      draw.getMode() === 'simple_select') {
+      (draw.getMode() === 'simple_select' || draw.getMode() === 'directions_car' || draw.getMode() === 'directions_bike')) {
       map.fire('click')
     }
   })
@@ -154,8 +156,8 @@ export function initializeEditMode () {
   // in edit mode, map click handler is needed to hide modals
   // and to hide feature modal if no feature is selected
   map.on('click', () => {
-    console.log(draw.getMode())
     if (draw.getMode() === 'simple_select') {
+      selectedFeature = null
       resetControls()
     }
   })
@@ -182,10 +184,6 @@ async function handleCreate (e) {
   if (mode === 'draw_paint_mode') {
     const options = { tolerance: 0.00001, highQuality: true }
     feature = window.turf.simplify(feature, options)
-  // } else if (mode === 'road') {
-  //   feature = await getRouteFeature(feature, feature.geometry.coordinates, 'driving-car')
-  } else if (mode === 'bicycle') {
-    feature = await getRouteFeature(feature, feature.geometry.coordinates, 'cycling-mountain')
   } else {
     // std mapbox draw shapes will auto-select the feature.
     // This prevents automatic selection + stays in current mode
@@ -194,12 +192,14 @@ async function handleCreate (e) {
   status('Feature ' + feature.id + ' created')
   geojsonData.features.push(feature)
   // redraw if the painted feature was changed in this method
-  if (mode === 'road' || mode === 'bicycle' || mode === 'draw_paint_mode') { redrawGeojson(false) }
+  if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'draw_paint_mode') { redrawGeojson(false) }
   mapChannel.send_message('new_feature', feature)
 
   setTimeout(() => {
-    draw.changeMode(mode)
-    map.fire('draw.modechange') // not fired automatically with draw.changeMode()
+    if (draw.getMode() !== mode) {
+      draw.changeMode(mode)
+      map.fire('draw.modechange') // not fired automatically with draw.changeMode()
+    }
   }, 10)
 }
 
@@ -213,7 +213,7 @@ async function handleUpdate (e) {
     return
   }
   // change route
-  if (feature.properties.route) { feature = await getRouteUpdate(geojsonFeature, feature) }
+  if (selectedFeature?.properties?.route?.provider === 'ors') { feature = await getRouteUpdate(geojsonFeature, feature) }
 
   status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry

@@ -21,7 +21,7 @@ let currentFeature
 
 export function resetDirections () {
   if (directions) {
-    console.log("Resetting directions with ", currentFeature)
+    console.log("Resetting directions")
     directions.destroy()
     if (map.getSource("maplibre-gl-directions")) {
       map.removeSource("maplibre-gl-directions")
@@ -38,8 +38,10 @@ export function initDirections (profile, feature) {
 
   // https://maplibre.org/maplibre-gl-directions/api/interfaces/MapLibreGlDirectionsConfiguration.html
   directions = new CustomMapLibreGlDirections(map, {
-    api: "https://router.project-osrm.org/route/v1",
-    profile: profile,
+    // api: "https://router.project-osrm.org/route/v1",
+    // car | bike | foot
+    api: "https://routing.openstreetmap.de/routed-" + profile + "/route/v1",
+    profile: 'driving',
     refreshOnMove: false, // no live updates on route drag
     // https://project-osrm.org/docs/v5.24.0/api/#route-service
     requestOptions: {
@@ -101,7 +103,7 @@ export function getDirectionsLayers () {
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline-casing")
 
   // display of route is already handled in view styles
-  layers.push( {
+  layers.unshift( {
     id: "maplibre-gl-directions-routeline",
     type: "line",
     source: "maplibre-gl-directions",
@@ -119,12 +121,12 @@ export function getDirectionsLayers () {
   })
 
   // line border
-  layers.push( {
+  layers.unshift( {
     "id": "maplibre-gl-directions-routeline-casing",
     "type": "line",
     "source": "maplibre-gl-directions",
     paint: {
-      "line-width": 12,
+      "line-width": 10,
       "line-opacity": 0
     },
     filter: ["==", ["get", "route"], "SELECTED"],

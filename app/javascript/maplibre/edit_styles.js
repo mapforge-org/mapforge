@@ -232,7 +232,12 @@ export function editStyles () {
         'circle-stroke-color': '#000',
         'circle-stroke-width': 2,
       }
+    },
+    {
+      id: "maplibre-gl-directions-waypoint",
+      type: "line",
     }
+
   ]
 }
 
