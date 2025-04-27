@@ -157,8 +157,8 @@ export function initializeEditMode () {
     touchEndPosition = e.point
     if (touchStartPosition.x === touchEndPosition.x &&
       touchStartPosition.y === touchEndPosition.y &&
-      (draw.getMode() === 'simple_select' || draw.getMode() === 'directions_car' || draw.getMode() === 'directions_bike')) {
-      map.fire('click')
+      (draw.getMode() === 'simple_select' || draw.getMode().startsWith('directions_'))) {
+      map.fire('click', e) // attach original event for coordinates
     }
   })
 

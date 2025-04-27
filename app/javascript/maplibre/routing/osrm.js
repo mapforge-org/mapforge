@@ -10,7 +10,7 @@ import { mapChannel } from 'channels/map_channel'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 
-// https://github.com/maplibre/maplibre-gl-directions/tree/main
+// https://github.com/maplibre/maplibre-gl-directions
 // Examples: https://maplibre.org/maplibre-gl-directions/#/examples
 // API: https://maplibre.org/maplibre-gl-directions/api/
 // OSRM routing server: https://project-osrm.org/, backend: https://github.com/Project-OSRM/osrm-backend/tree/master
@@ -100,6 +100,7 @@ export function initDirections (profile, feature) {
   })
 
   directions.on('addwaypoint', (e) => {
+    status('Waypoint added')
     console.log('Waypoint added', e)
   })
 
