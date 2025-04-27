@@ -8,8 +8,16 @@
 
 - content_for :title, "Mapforge: #{(@map.name.presence || @map.id)}"
 - content_for :head do
+  - # Open Graph protocol https://ogp.me/
+  %meta{ property: 'og:type', content: 'website' }
+  %meta{ property: 'og:url', content: request.url }
+  %meta{ property: 'og:site_name', content: 'Mapforge' }
+  - if @map.name
+    %meta{ property: 'og:title', content: @map.name }
+  - if @map.description
+    %meta{ property: 'og:description', content: @map.description }
   - if @map.screenshot
-    %meta{ 'og:image': "#{request.protocol}#{request.host_with_port}#{@map.screenshot}" }
+    %meta{ property: 'og:image', content: "#{request.protocol}#{request.host_with_port}#{@map.screenshot}" }
 
 
 #preloader
