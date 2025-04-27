@@ -49,8 +49,7 @@ export function initDirections (profile, feature) {
       alternatives: "false",
       overview: 'full',
       snapping: 'any',
-      generate_hints: false,
-      annotations: true
+      generate_hints: false
     },
     layers: getDirectionsLayers()
   })
