@@ -268,7 +268,7 @@ export function styles () {
         ['in', '$type', 'LineString']],
       layout: {
         'line-join': 'round',
-        'line-cap': 'butt'
+        'line-cap': 'round'
       },
       paint: {
         'line-color': lineColor,

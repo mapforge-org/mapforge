@@ -36,7 +36,7 @@ export function editStyles () {
     removeSource(styles()['polygon-layer']), // gl-draw-polygon-fill-inactive
     removeSource(styles()['polygon-layer-outline']),
     removeSource(styles()['line-layer-outline']), // line outline below line, because it's a wider line
-    removeSource(styles()['line-layer']), // 'gl-draw-line-inactive', 'gl-draw-polygon-stroke-inactive',
+    removeSource(styles()['line-layer']),
 
     // active polygon outline
     {
@@ -200,43 +200,11 @@ export function editStyles () {
         'circle-opacity': 0.7
       }
     },
-    // Route waypoints
-    {
-      id: 'gl-draw-route-vertex-inactive-waypoint',
-      type: 'circle',
-      filter: ['all',
-        ['==', 'meta', 'vertex'],
-        ['==', '$type', 'Point'],
-        ['!=', 'mode', 'static'],
-        ['has', 'user_route']
-      ],
-      paint: {
-        'circle-radius': [
-          // coord_path is the index of the waypoint in the linestring
-          // added in mapbox-gl-draw.js createVertex()
-          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          ['+', vertexSize, 2], 4
-        ],
-        'circle-color': [
-          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          highlightColor, 'grey'
-        ],
-        'circle-opacity': [
-          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          1, 0
-        ],
-        'circle-stroke-opacity': [
-          'case', ['in', ['get', 'coord_path'], ['get', 'user_waypointIndexes']],
-          1, 0
-        ],
-        'circle-stroke-color': '#000',
-        'circle-stroke-width': 2,
-      }
-    },
-    {
-      id: "maplibre-gl-directions-waypoint",
-      type: "line",
-    }
+    //
+    // {
+    //   id: "maplibre-gl-directions-waypoint",
+    //   type: "line",
+    // }
 
   ]
 }

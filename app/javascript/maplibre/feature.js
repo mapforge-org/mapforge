@@ -133,6 +133,8 @@ export function featureIcon (feature) {
     image = "<i class='bi bi-bicycle me-2 fs-2'>"
   } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "car") {
     image = "<i class='bi bi-car-front me-2 fs-2'>"
+  } else if (feature.properties?.route?.profile === "foot") {
+    image = "<i class='bi bi-person-walking me-2 fs-2'>"
   } else if (feature.geometry.type === "LineString" || feature.geometry.type === "MultiString") {
     image = "<i class='bi bi-signpost me-2 fs-2'>"
   } else if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
