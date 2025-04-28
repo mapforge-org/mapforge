@@ -78,7 +78,7 @@ export function initDirections (profile, feature) {
 
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords, "type": "LineString" },
-      "properties": currentFeature?.properties || { "fill-extrusion-height": 25 }
+      "properties": currentFeature?.properties || { "fill-extrusion-height": 15 }
     }
     currentFeature.properties.route = { "provider": "osrm",
                                         "profile": profile,

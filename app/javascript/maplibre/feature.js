@@ -2,7 +2,7 @@ import { map, geojsonData } from 'maplibre/map'
 import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
-import { featureColor } from 'maplibre/styles'
+import { featureColor, defaultLineWidth } from 'maplibre/styles'
 
 window.marked = marked
 
@@ -258,7 +258,7 @@ export function renderExtrusionLines () {
   ))
 
   extrusionLines = extrusionLines.map(feature => {
-    const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] * 2 || 4
+    const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
     const extrusionLine = window.turf.buffer(feature, width, { units: 'meters' })
     // clone properties hash, else we're writing into the original feature's properties
     extrusionLine.properties = { ...feature.properties }
