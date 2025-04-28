@@ -40,7 +40,7 @@ export default class extends Controller {
   }
 
   mapContoursValueChanged (value, _previousValue) {
-    console.log('mapContoursValueChanged(): ' + value)
+    // console.log('mapContoursValueChanged(): ' + value)
     document.querySelector('#map-contours').checked = value
   }
 

@@ -29,10 +29,11 @@ export function initializeEditMode () {
   const DirectSelectMode = { ...MapboxDraw.modes.direct_select }
   DirectSelectMode.dragFeature = function (_state, _e, _delta) { /* noop */ }
 
-  const SimpleSelectMode = { ...MapboxDraw.modes.simple_select }
-  const DirectionsCarMode = { ...MapboxDraw.modes.simple_select }
-  const DirectionsBikeMode = { ...MapboxDraw.modes.simple_select }
-  const DirectionsFootMode = { ...MapboxDraw.modes.simple_select }
+  const DirectionsMode = { ...MapboxDraw.modes.simple_select }
+  DirectionsMode.onClick = function (_state, _e, _delta) { /* noop */ }
+  const DirectionsCarMode = { ...DirectionsMode }
+  const DirectionsBikeMode = { ...DirectionsMode }
+  const DirectionsFootMode = { ...DirectionsMode }
 
   const modes = {
     ...MapboxDraw.modes,
@@ -40,7 +41,6 @@ export function initializeEditMode () {
     directions_bike: DirectionsBikeMode,
     directions_foot: DirectionsFootMode,
     direct_select: DirectSelectMode,
-    simple_select: SimpleSelectMode,
     draw_paint_mode: PaintMode
   }
 
