@@ -3,6 +3,7 @@ import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
 import { featureColor, defaultLineWidth } from 'maplibre/styles'
+import {CategoryScale, Chart, LinearScale, LineController, LineElement, PointElement} from 'chart.js'
 
 window.marked = marked
 
@@ -10,6 +11,7 @@ export let highlightedFeatureId
 export let stickyFeatureHighlight = false
 let isDragging = false
 let dragStartY, dragStartModalHeight
+let elevationChart
 
 function featureTitle (feature) {
   const title = feature?.properties?.title || feature?.properties?.user_title ||
@@ -76,6 +78,10 @@ export function showFeatureDetails (feature) {
   modal.scrollTo(0, 0)
   modal.setAttribute('data-map--feature-modal-feature-id-value', feature.id)
   modal.setAttribute('data-map--feature-edit-feature-id-value', feature.id)
+  if (feature.geometry.type === 'LineString') {
+    if (elevationChart) { elevationChart.destroy() }
+    elevationChart = showElevationChart(feature)
+  }
 
   f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
     if (!f.isTouchDevice()) return
@@ -144,6 +150,35 @@ export function featureIcon (feature) {
   }
   return image
 }
+
+function showElevationChart (feature) {
+  // skip whithout elevation data
+  if (feature.geometry.coordinates[0].length !== 3) { return null }
+
+  Chart.register([CategoryScale, LineController, LineElement, LinearScale, PointElement])
+  const labels = feature.geometry.coordinates.map((_, index) => index)
+  const values = feature.geometry.coordinates.map(coords => coords[2])
+
+  return new Chart(
+    document.getElementById('route-elevation-chart'),
+    { type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        fill: true,
+        label: 'Track elevation',
+        data: values,
+        borderColor: featureColor,
+        backgroundColor: '#66ccff66',
+        tension: 0.1,
+        pointRadius: 0,
+        spanGaps: true,
+      }]
+    }
+  }
+  );
+}
+
 
 export function resetHighlightedFeature (source = 'geojson-source') {
   if (highlightedFeatureId) {

@@ -40,6 +40,10 @@ pin "@maplibre/maplibre-gl-directions", preload: false, to: "@maplibre--maplibre
 # https://github.com/onthegomap/maplibre-contour
 pin "maplibre-contour", preload: false # @0.1.0
 
+# Elevation chart
+pin "chart.js", to: "https://ga.jspm.io/npm:chart.js@4.4.9/dist/chart.js"
+pin "@kurkle/color", to: "https://ga.jspm.io/npm:@kurkle/color@0.3.4/dist/color.esm.js" # @0.3.4
+
 # render markdown
 pin "marked"# @15.0.8
 

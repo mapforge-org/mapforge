@@ -49,7 +49,7 @@ class Feature
   end
 
   def coordinates(include_height: true)
-    include_height ? geometry["coordinates"] : drop_elevation(geometry["coordinates"])
+    include_height ? geometry["coordinates"] : drop_elevation(geometry["coordinates"] || [])
   end
 
   private
