@@ -1,7 +1,10 @@
 import mlcontour from 'maplibre-contour'
 
 // Default glyphs for Raster maps
-const openmaptilesGlyphs = 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf'
+// const openmaptilesGlyphs = 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf'
+const versatilesGlyphs = "https://tiles.versatiles.org/assets/glyphs/{fontstack}/{range}.pbf"
+// const openfreemapGlyphs = "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf"
+
 const testGlyphs = 'fonts/test/{fontstack}/{range}.pbf'
 
 // fonts must be available via glyphs:
@@ -9,7 +12,7 @@ const testGlyphs = 'fonts/test/{fontstack}/{range}.pbf'
 // maptiler: https://docs.maptiler.com/gl-style-specification/glyphs/
 // versatiles: https://github.com/versatiles-org/versatiles-fonts/tree/main/fonts
 // Emojis are not in the character range: https://github.com/maplibre/maplibre-gl-js/issues/2307
-export const defaultFont = 'Klokantech Noto Sans Bold' // avail from openmaptiles + maplibre
+export const defaultFont = 'noto_sans_regular'
 const defaultRasterLayer = [
   {
     id: 'simple-tiles',
@@ -64,7 +67,7 @@ export function basemaps () {
           }
         },
         layers: defaultRasterLayer,
-        glyphs: openmaptilesGlyphs
+        glyphs: versatilesGlyphs
       }
     },
     stamenTonerTiles: {
@@ -83,7 +86,7 @@ export function basemaps () {
           }
         },
         layers: defaultRasterLayer,
-        glyphs: openmaptilesGlyphs
+        glyphs: versatilesGlyphs
       }
     },
 
@@ -107,7 +110,7 @@ export function basemaps () {
           }
         },
         layers: defaultRasterLayer,
-        glyphs: openmaptilesGlyphs
+        glyphs: versatilesGlyphs
       }
     },
     satelliteTiles: {
@@ -125,7 +128,7 @@ export function basemaps () {
           }
         },
         layers: defaultRasterLayer,
-        glyphs: openmaptilesGlyphs
+        glyphs: versatilesGlyphs
       }
     },
     osmRasterTiles: {
@@ -142,7 +145,7 @@ export function basemaps () {
           }
         },
         layers: defaultRasterLayer,
-        glyphs: openmaptilesGlyphs
+        glyphs: versatilesGlyphs
       }
     },
 
