@@ -110,7 +110,7 @@ export function initializeMap (divId = 'maplibre-map') {
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     let feature = geojsonData?.features?.find(f => f.id === urlFeatureId)
     if (feature) {
-      highlightFeature(feature, true)
+      if (!draw) { highlightFeature(feature, true) }
       const centroid = window.turf.center(feature)
       map.setCenter(centroid.geometry.coordinates)
     }
