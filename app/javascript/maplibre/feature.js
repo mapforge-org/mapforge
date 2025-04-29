@@ -152,9 +152,14 @@ export function featureIcon (feature) {
 }
 
 function showElevationChart (feature) {
-  // skip whithout elevation data
-  if (feature.geometry.coordinates[0].length !== 3) { return null }
+  const chartElement = document.getElementById('route-elevation-chart')
+  // skip without elevation data
+  if (feature.geometry.coordinates[0].length !== 3) {
+    chartElement.classList.add('hidden')
+    return null
+  }
 
+  chartElement.classList.remove('hidden')
   Chart.register([CategoryScale, LineController, LineElement, LinearScale, PointElement])
   const labels = feature.geometry.coordinates.map((_, index) => index)
   const values = feature.geometry.coordinates.map(coords => coords[2])
@@ -175,10 +180,8 @@ function showElevationChart (feature) {
         spanGaps: true,
       }]
     }
-  }
-  );
+  })
 }
-
 
 export function resetHighlightedFeature (source = 'geojson-source') {
   if (highlightedFeatureId) {

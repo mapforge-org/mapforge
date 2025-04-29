@@ -9,6 +9,7 @@ import { getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { mapChannel } from 'channels/map_channel'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
+import { showFeatureDetails } from 'maplibre/feature'
 
 // https://github.com/maplibre/maplibre-gl-directions
 // Examples: https://maplibre.org/maplibre-gl-directions/#/examples
@@ -73,9 +74,6 @@ export function initDirections (profile, feature) {
     directions.setWaypointsFeatures(waypoints.map( (wp, index) => createWaypointfeature(wp, index)))
 
     let coords = decodePolyline(e.data.routes[0].geometry)
-    // add elevation from openrouteservice
-    coords = await getRouteElevation(coords)
-
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords || [], "type": "LineString" },
       "properties": currentFeature?.properties || { "fill-extrusion-height": 15 }
@@ -83,16 +81,14 @@ export function initDirections (profile, feature) {
     currentFeature.properties.route = { "provider": "osrm",
                                         "profile": profile,
                                         "waypoints": waypoints }
+    updateFeature(currentFeature, false)
 
-    if (geojsonData.features.find(f => f.id === currentFeature.id)) {
-      upsert(currentFeature)
-      mapChannel.send_message('update_feature', currentFeature)
-      status('Updated track')
-    } else {
-      upsert(currentFeature)
-      mapChannel.send_message('new_feature', currentFeature)
-      status('Added track')
-    }
+    // add elevation from openrouteservice
+    getRouteElevation(coords).then(coords => {
+      currentFeature.geometry.coordinates = coords
+      updateFeature(currentFeature)
+      showFeatureDetails(currentFeature)
+    })
   })
 
   directions.on('movewaypoint', (e) => {
@@ -107,6 +103,18 @@ export function initDirections (profile, feature) {
   directions.on('removewaypoint', (e) => {
     console.log('Waypoint removed', e)
   })
+}
+
+function updateFeature(feature, upstream=true) {
+  if (geojsonData.features.find(f => f.id === feature.id)) {
+    upsert(currentFeature)
+    if (upstream) { mapChannel.send_message('update_feature', feature) }
+    status('Updated track')
+  } else {
+    upsert(currentFeature)
+    if (upstream) { mapChannel.send_message('new_feature', feature) }
+    status('Added track')
+  }
 }
 
 export function getDirectionsLayers () {

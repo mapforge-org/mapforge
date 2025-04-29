@@ -25,7 +25,10 @@
 
       - Map::BASE_MAPS.each do |base_map|
         - active = (@map_properties[:base_map] == base_map)
-        = image_tag("base_maps/#{base_map}.jpg", data: { base_map: base_map, action: "click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
+
+        - if Rails.application.assets.find_asset("base_maps/#{base_map}.jpg").present?
+          = image_tag("base_maps/#{base_map}.jpg", data: { base_map: base_map, action: "click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
+
       %br
       - # Default checkbox state gets set by initSettingsModal()
       %span.map-property.me-2
