@@ -229,7 +229,7 @@ GEM
     jbuilder (2.13.0)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
-    json (2.10.2)
+    json (2.11.3)
     jwt (2.10.1)
       base64
     language_server-protocol (3.17.0.4)
@@ -437,7 +437,7 @@ GEM
     rspec-wait (1.0.1)
       rspec (>= 3.4)
     rszr (1.5.0)
-    rubocop (1.75.3)
+    rubocop (1.75.4)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
