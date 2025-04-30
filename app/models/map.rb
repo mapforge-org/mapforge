@@ -34,7 +34,7 @@ class Map
   MAPTILER_MAPS = [ "maptilerBuildings", "maptilerHybrid", "maptilerDataviz",
                     "maptilerStreets", "maptilerNoStreets", "maptilerWinter",
                     "maptilerBike", "maptilerBasic" ]
-  OTHER_MAPS = ["cyclosmTiles"]
+  OTHER_MAPS = [ "cyclosmTiles" ]
 
   DEFAULT_CENTER = [ 11.077, 49.447 ].freeze
   DEFAULT_ZOOM = 12

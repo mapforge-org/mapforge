@@ -65,7 +65,7 @@ class Feature
   end
 
   def require_coords
-    errors.add(:geometry, "coordinates missing") unless geometry['coordinates'].present?
+    errors.add(:geometry, "coordinates missing") unless geometry["coordinates"].present?
   end
 
   def broadcast_update
