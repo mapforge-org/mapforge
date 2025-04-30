@@ -58,8 +58,8 @@ export function initDirections (profile, feature) {
   if (currentFeature) {
     let waypoints = currentFeature.properties.route.waypoints
     console.log("Waypoints: ", waypoints)
-    // TODO: waypoints need to be full geojson features
     directions.setWaypointsFeatures(waypoints.map( (wp, index) => createWaypointfeature(wp, index) ))
+    // TODO: Generate routeline for setting new midpoints
     //directions.setSnappointsFeatures(waypoints.map(wp => createWaypointfeature(wp)))
     //directions.setRoutelinesFeatures(createRouteLinefeatures(currentFeature))
   }
@@ -201,12 +201,3 @@ function createWaypointfeature (coords, index) {
     }
   }
 }
-
-// function createRouteLinefeatures (feature) {
-//   //feature
-
-//   //[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[-74.19281,40.72035],[-74.19214,40.72202],[-74.19272,40.72186],[-74.19346,40.72203],[-74.18833,40.73438],[-74.18785,40.73675],[-74.18707,40.73766],[-74.18381,40.74446],[-74.18297,40.74418],[-74.18274,40.74463]]},
-//   //"properties":{"id":"Pe-UF3f7NUsReWlxoMw2M","routeIndex":0,"route":"SELECTED","legIndex":0,"congestion":0,"departSnappointProperties":{"type":"SNAPPOINT","id":"nmLjKyNVGH7A_tyPpGoJI","profile":"driving","waypointProperties":{"type":"WAYPOINT","id":"LQh6XJuxCkJz7LsSF6ePj","index":0,"category":"ORIGIN","highlight":false},"highlight":false},"arriveSnappointProperties":{"type":"SNAPPOINT","id":"fBHK_nYWZ0Og5Dk0zRHdt","profile":"driving","waypointProperties":{"type":"WAYPOINT","id":"eVJ1T9NlCsmjg5-EaUhxR","index":1,"category":"DESTINATION","highlight":false},"highlight":false},"highlight":false}}]
-//   return [feature]
-// }
-
