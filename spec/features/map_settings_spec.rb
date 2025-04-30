@@ -35,7 +35,6 @@ describe 'Map' do
       find('.maplibregl-ctrl-map').click
       expect(page).to have_text('Configure Map')
       find('#map-terrain').click
-      # Terrain feature is only used with maptiler key
       wait_for { map.reload.terrain }.to be(true)
     end
 
@@ -43,7 +42,6 @@ describe 'Map' do
       find('.maplibregl-ctrl-map').click
       expect(page).to have_text('Configure Map')
       find('#map-globe').click
-      # Terrain feature is only used with maptiler key
       wait_for { map.reload.globe }.to be(true)
     end
   end

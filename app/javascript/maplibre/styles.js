@@ -286,8 +286,8 @@ export function styles () {
       filter: ['all',
         ['in', '$type', 'LineString']],
       paint: {
-        'line-width': ['+', 15, outlineWidthMax],
-        'line-opacity': 0
+        'line-width': ['+', 10, outlineWidthMax],
+        'line-opacity': 0 // cannot use visibility:none here
       }
     },
     'line-layer-route-direction': {

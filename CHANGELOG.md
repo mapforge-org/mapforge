@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## 2025-04
 
+* Elevation graph
+* Use maplibre-directions for routing
 * Reworked settings modal
 * Map options: Terrain, hillshade, contour lines, globe mode
 * Option to show distance markers on tracks

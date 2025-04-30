@@ -54,8 +54,7 @@ jobs:
     env:
       RAILS_ENV: test
       COVERAGE: true
-      ADMIN_USER: 'test'
-      ADMIN_PW: 'test'
+      SE_AVOID_STATS: true # skip Selenium stats
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

@@ -25,14 +25,16 @@ class Map
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
   field :images_count, type: Integer, default: 0
 
-  BASE_MAPS = [ "versatilesColorful", "maptilerHybrid", "openTopoTiles", "openfreemapLiberty",
-    "versatilesGraybeard"  ]
+  BASE_MAPS = [ "versatilesColorful", "satelliteTiles", "openTopoTiles",
+    "openfreemapLiberty", "versatilesGraybeard", "versatilesEclipse",
+    "stamenWatercolorTiles", "cyclosmTiles" ]
   STADIA_MAPS = [ "stamenTonerTiles", "stamenWatercolorTiles" ]
   OPENFREE_MAPS = [ "openfreemapPositron", "openfreemapBright", "openfreemapLiberty" ]
   VERSATILES_MAPS = [ "versatilesColorful", "versatilesGraybeard" ]
   MAPTILER_MAPS = [ "maptilerBuildings", "maptilerHybrid", "maptilerDataviz",
                     "maptilerStreets", "maptilerNoStreets", "maptilerWinter",
                     "maptilerBike", "maptilerBasic" ]
+  OTHER_MAPS = [ "cyclosmTiles" ]
 
   DEFAULT_CENTER = [ 11.077, 49.447 ].freeze
   DEFAULT_ZOOM = 12
@@ -208,7 +210,7 @@ collection_format: collection_format))
       return base_map if ENV["MAPTILER_KEY"].present?
       logger.warn("Cannot use maptiler map #{base_map} without MAPTILER_KEY. Falling back to: #{default_base_map}")
       return default_base_map
-    elsif (BASE_MAPS + OPENFREE_MAPS + VERSATILES_MAPS).include?(base_map) || base_map == "test"
+    elsif (BASE_MAPS + OPENFREE_MAPS + VERSATILES_MAPS + OTHER_MAPS).include?(base_map) || base_map == "test"
       return base_map
     end
     logger.warn("Map '#{base_map}' not found, falling back to #{default_base_map}")
@@ -216,7 +218,7 @@ collection_format: collection_format))
   end
 
   def default_base_map
-    ENV["DEFAULT_MAP"] || "osmRasterTiles"
+    ENV["DEFAULT_MAP"] || "versatilesColorful"
   end
 
   def broadcast_update

@@ -1,7 +1,7 @@
 import { map, geojsonData, destroyFeature, redrawGeojson } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
-import { highlightFeature } from 'maplibre/feature'
-import { getRouteUpdate } from 'maplibre/routing/openrouteservice'
+import { highlightFeature, showFeatureDetails } from 'maplibre/feature'
+import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
 import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
@@ -210,6 +210,7 @@ async function handleCreate (e) {
       map.fire('draw.modechange') // not fired automatically with draw.changeMode()
     }
   }, 10)
+  if (feature.geometry.type === 'LineString') { updateElevation(feature) }
 }
 
 async function handleUpdate (e) {
@@ -221,7 +222,7 @@ async function handleUpdate (e) {
     // console.log('Feature update event triggered without update')
     return
   }
-  // change route
+  // change route with openrouteservice
   if (selectedFeature?.properties?.route?.provider === 'ors') { feature = await getRouteUpdate(geojsonFeature, feature) }
 
   status('Feature ' + feature.id + ' changed')
@@ -230,6 +231,7 @@ async function handleUpdate (e) {
   mapChannel.send_message('update_feature', feature)
   // trigger highlight, to update eg. coordinates
   highlightFeature(feature, true)
+  if (feature.geometry.type === 'LineString') { updateElevation(geojsonFeature) }
 }
 
 export function handleDelete (e) {
@@ -239,4 +241,13 @@ export function handleDelete (e) {
   resetDirections()
   status('Feature ' + deletedFeature.id + ' deleted')
   mapChannel.send_message('delete_feature', { id: deletedFeature.id })
+}
+
+// add elevation from openrouteservice async
+function updateElevation(feature) {
+  getRouteElevation(feature.geometry.coordinates).then(coords => {
+    feature.geometry.coordinates = coords
+    mapChannel.send_message('update_feature', feature)
+    showFeatureDetails(feature)
+  })
 }

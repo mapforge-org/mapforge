@@ -9,6 +9,7 @@ import { getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { mapChannel } from 'channels/map_channel'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
+import { showFeatureDetails } from 'maplibre/feature'
 
 // https://github.com/maplibre/maplibre-gl-directions
 // Examples: https://maplibre.org/maplibre-gl-directions/#/examples
@@ -57,8 +58,8 @@ export function initDirections (profile, feature) {
   if (currentFeature) {
     let waypoints = currentFeature.properties.route.waypoints
     console.log("Waypoints: ", waypoints)
-    // TODO: waypoints need to be full geojson features
     directions.setWaypointsFeatures(waypoints.map( (wp, index) => createWaypointfeature(wp, index) ))
+    // TODO: Generate routeline for setting new midpoints
     //directions.setSnappointsFeatures(waypoints.map(wp => createWaypointfeature(wp)))
     //directions.setRoutelinesFeatures(createRouteLinefeatures(currentFeature))
   }
@@ -73,26 +74,21 @@ export function initDirections (profile, feature) {
     directions.setWaypointsFeatures(waypoints.map( (wp, index) => createWaypointfeature(wp, index)))
 
     let coords = decodePolyline(e.data.routes[0].geometry)
-    // add elevation from openrouteservice
-    coords = await getRouteElevation(coords)
-
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
-      "geometry": { "coordinates": coords, "type": "LineString" },
+      "geometry": { "coordinates": coords || [], "type": "LineString" },
       "properties": currentFeature?.properties || { "fill-extrusion-height": 15 }
     }
     currentFeature.properties.route = { "provider": "osrm",
                                         "profile": profile,
                                         "waypoints": waypoints }
+    updateFeature(currentFeature, false)
 
-    if (geojsonData.features.find(f => f.id === currentFeature.id)) {
-      upsert(currentFeature)
-      mapChannel.send_message('update_feature', currentFeature)
-      status('Updated track')
-    } else {
-      upsert(currentFeature)
-      mapChannel.send_message('new_feature', currentFeature)
-      status('Added track')
-    }
+    // add elevation from openrouteservice
+    getRouteElevation(coords).then(coords => {
+      currentFeature.geometry.coordinates = coords
+      updateFeature(currentFeature)
+      showFeatureDetails(currentFeature)
+    })
   })
 
   directions.on('movewaypoint', (e) => {
@@ -107,6 +103,18 @@ export function initDirections (profile, feature) {
   directions.on('removewaypoint', (e) => {
     console.log('Waypoint removed', e)
   })
+}
+
+function updateFeature(feature, upstream=true) {
+  if (geojsonData.features.find(f => f.id === feature.id)) {
+    upsert(currentFeature)
+    if (upstream) { mapChannel.send_message('update_feature', feature) }
+    status('Updated track')
+  } else {
+    upsert(currentFeature)
+    if (upstream) { mapChannel.send_message('new_feature', feature) }
+    status('Added track')
+  }
 }
 
 export function getDirectionsLayers () {
@@ -193,12 +201,3 @@ function createWaypointfeature (coords, index) {
     }
   }
 }
-
-// function createRouteLinefeatures (feature) {
-//   //feature
-
-//   //[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[-74.19281,40.72035],[-74.19214,40.72202],[-74.19272,40.72186],[-74.19346,40.72203],[-74.18833,40.73438],[-74.18785,40.73675],[-74.18707,40.73766],[-74.18381,40.74446],[-74.18297,40.74418],[-74.18274,40.74463]]},
-//   //"properties":{"id":"Pe-UF3f7NUsReWlxoMw2M","routeIndex":0,"route":"SELECTED","legIndex":0,"congestion":0,"departSnappointProperties":{"type":"SNAPPOINT","id":"nmLjKyNVGH7A_tyPpGoJI","profile":"driving","waypointProperties":{"type":"WAYPOINT","id":"LQh6XJuxCkJz7LsSF6ePj","index":0,"category":"ORIGIN","highlight":false},"highlight":false},"arriveSnappointProperties":{"type":"SNAPPOINT","id":"fBHK_nYWZ0Og5Dk0zRHdt","profile":"driving","waypointProperties":{"type":"WAYPOINT","id":"eVJ1T9NlCsmjg5-EaUhxR","index":1,"category":"DESTINATION","highlight":false},"highlight":false},"highlight":false}}]
-//   return [feature]
-// }
-
