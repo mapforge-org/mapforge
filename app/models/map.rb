@@ -25,7 +25,7 @@ class Map
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
   field :images_count, type: Integer, default: 0
 
-  BASE_MAPS = [ "versatilesColorful", "maptilerHybrid", "openTopoTiles",
+  BASE_MAPS = [ "versatilesColorful", "satelliteTiles", "openTopoTiles",
     "openfreemapLiberty", "versatilesGraybeard", "versatilesEclipse",
     "stamenWatercolorTiles", "cyclosmTiles" ]
   STADIA_MAPS = [ "stamenTonerTiles", "stamenWatercolorTiles" ]
