@@ -17,6 +17,7 @@ class Feature
 
   after_destroy :broadcast_destroy, if: -> { layer.present? && map.present? }
   after_save :broadcast_update, if: -> { previous_changes.present? && layer.present? && map.present? }
+  validate :require_coords
 
   def geojson
     { id: _id.to_s,
@@ -61,6 +62,10 @@ class Feature
     else
       coords.map { |c| drop_elevation(c) }
     end
+  end
+
+  def require_coords
+    errors.add(:geometry, "coordinates missing") unless geometry['coordinates'].present?
   end
 
   def broadcast_update
