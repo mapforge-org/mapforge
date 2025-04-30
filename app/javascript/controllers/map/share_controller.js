@@ -12,6 +12,14 @@ export default class extends Controller {
       document.querySelector('#map-view-permissions').value = props['view_permission']
       document.querySelector('#map-edit-permissions').value = props['edit_permission']
     }
+
+    if (navigator.share) {
+      document.querySelector('#share-edit-link i').classList.remove('bi-link-45deg')
+      document.querySelector('#share-edit-link i').classList.add('bi-share')
+
+      document.querySelector('#share-view-link i').classList.remove('bi-link-45deg')
+      document.querySelector('#share-view-link i').classList.add('bi-share')
+    }
   }
 
   updateEditPermissions () {
@@ -22,6 +30,30 @@ export default class extends Controller {
   updateViewPermissions () {
     mapProperties['view_permission'] = document.querySelector('#map-view-permissions').value
     mapChannel.send_message('update_map', { view_permission: mapProperties['view_permission'] })
+  }
+
+  nativeShareEditLink (e) {
+    if (navigator.share) {
+      e.preventDefault()
+      navigator.share({
+        title: document.querySelector('title').textContent,
+        url: window.location.origin + e.target.getAttribute('href'),
+      })
+    .then(() => console.log('Successful share'))
+    .catch((error) => console.log('Error sharing', error))
+    }
+  }
+
+  nativeShareViewLink (e) {
+    if (navigator.share) {
+      e.preventDefault()
+      navigator.share({
+        title: document.querySelector('title').textContent,
+        url: window.location.origin + e.target.getAttribute('href'),
+      })
+    .then(() => console.log('Successful share'))
+    .catch((error) => console.log('Error sharing', error))
+    }
   }
 
   close () {
