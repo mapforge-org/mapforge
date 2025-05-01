@@ -1,6 +1,11 @@
 import {CategoryScale, Chart, LinearScale, LineController,
   LineElement, PointElement, Filler, Tooltip} from 'chart.js'
 import { featureColor } from 'maplibre/styles'
+import { map } from 'maplibre/map'
+import maplibregl from 'maplibre-gl'
+
+
+let marker
 
 export function showElevationChart (feature) {
   const chartElement = document.getElementById('route-elevation-chart')
@@ -24,8 +29,9 @@ export function showElevationChart (feature) {
   }, 0)
   console.log(labels)
   const values = feature.geometry.coordinates.map(coords => coords[2])
+  const chartLineColor = feature.properties['stroke'] || featureColor
 
-  return new Chart(
+  let chart = new Chart(
     document.getElementById('route-elevation-chart'), {
       type: 'line',
       data: {
@@ -34,14 +40,14 @@ export function showElevationChart (feature) {
           fill: true,
           label: 'Track elevation',
           data: values,
-          borderColor: featureColor,
+          borderColor: chartLineColor,
           borderWidth: 2,
-          backgroundColor: featureColor + '50',
+          backgroundColor: chartLineColor + '50',
           pointRadius: 4,
           pointHoverRadius: 6,
           pointBackgroundColor: 'white',
-          pointBorderColor: featureColor,
-          pointBorderWidth: 2,
+          pointBorderColor: chartLineColor,
+          pointBorderWidth: 3,
           tension: 0.1,
           pointRadius: 0,
           spanGaps: true,
@@ -76,12 +82,22 @@ export function showElevationChart (feature) {
                 return "Distance: " + toDisplayUnit(tooltipItems[0].label)
               },
               label: (tooltipItem) => {
-                return "Elevation: " + tooltipItem.raw + 'm'
+                return "Elevation: " + tooltipItem.raw.toFixed(0) + 'm'
               },
               afterBody: function(context) {
-                  // Action when tooltip is shown
-                  console.log('Tooltip shown for:', context)
-                  console.log('Show point on:', feature.geometry.coordinates[context[0]['dataIndex']])
+                let coord = feature.geometry.coordinates[context[0]['dataIndex']]
+                const markerDiv = document.createElement('div')
+                markerDiv.style.backgroundColor = chartLineColor
+                markerDiv.className = 'elevation-marker'
+                marker = new maplibregl.Marker({
+                  element: markerDiv,
+                  opacity: '0.8',
+                  opacityWhenCovered: '0',
+                  rotationAlignment: 'viewport',
+                  pitchAlignment: 'viewport'
+                })
+                marker.setLngLat([coord[0], coord[1]])
+                marker.addTo(map)
               }
             }
           },
@@ -90,6 +106,11 @@ export function showElevationChart (feature) {
             display: true,
             text: 'Track elevation chart'
           }
+        },
+        onHover: (_e, item) => {
+          console.log(item)
+          if (marker) { marker.remove() }
+
         },
         scales: {
           x: {
@@ -120,6 +141,8 @@ export function showElevationChart (feature) {
         }
       }
     })
+
+  return chart
 }
 
 function toDisplayUnit (distance) {

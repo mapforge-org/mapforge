@@ -158,3 +158,12 @@ html:has(.map), body:has(.map) {
   opacity: 0.9 !important;
 }
 
+.elevation-marker {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  border-color: #fff;
+  border-style: solid;
+  border-width: 0.15em;
+}
+
