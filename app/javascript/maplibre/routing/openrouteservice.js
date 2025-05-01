@@ -68,7 +68,7 @@ export async function getRouteElevation (waypoints) {
   })
   return response.geometry.coordinates
   } catch (err) {
-    console.log("An error occurred: " + err)
+    console.log("An error occurred:", err)
   }
 }
 

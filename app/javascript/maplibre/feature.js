@@ -3,8 +3,7 @@ import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
 import { featureColor, defaultLineWidth } from 'maplibre/styles'
-import {CategoryScale, Chart, LinearScale, LineController,
-  LineElement, PointElement, Filler, Tooltip} from 'chart.js'
+import { showElevationChart } from 'maplibre/feature/elevation'
 
 window.marked = marked
 
@@ -124,7 +123,7 @@ export function showFeatureDetails (feature) {
     link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id)
   }
   const desc = marked(feature?.properties?.desc || '')
-  document.querySelector('#feature-details-body').innerHTML = desc
+  document.querySelector('#feature-details-body p').innerHTML = desc
 }
 
 // set title image according to feature type
@@ -150,62 +149,6 @@ export function featureIcon (feature) {
     image = "<i class='bi bi-cursor me-2 fs-2'>"
   }
   return image
-}
-
-function showElevationChart (feature) {
-  const chartElement = document.getElementById('route-elevation-chart')
-  // skip without elevation data
-  if (feature.geometry.coordinates[0].length !== 3) {
-    chartElement.classList.add('hidden')
-    return null
-  }
-
-  chartElement.classList.remove('hidden')
-  Chart.register([CategoryScale, LineController, LineElement, LinearScale, PointElement, Filler, Tooltip])
-  const labels = []
-  feature.geometry.coordinates.reduce((distance, coord, index) => {
-    if (index == 0) { labels.push(0); return 0 }
-    let from = turf.point(feature.geometry.coordinates[index - 1])
-    let to = turf.point(coord)
-    distance += turf.distance(from, to, { units: 'kilometers' })
-    labels.push((Math.round(distance) * 10) / 10)
-    return distance
-  }, 0)
-  const values = feature.geometry.coordinates.map(coords => coords[2])
-
-  return new Chart(
-    document.getElementById('route-elevation-chart'), {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          fill: true,
-          label: 'Track elevation',
-          data: values,
-          borderColor: featureColor,
-          backgroundColor: featureColor + '50',
-          tension: 0.1,
-          pointRadius: 0,
-          spanGaps: true,
-        }]
-      },
-      options: {
-        tooltip: { position: 'nearest' },
-        plugins: {
-          tooltip: {
-            displayColors: false,
-            callbacks: {
-              title: (tooltipItems) => {
-                return "Distance: " + tooltipItems[0].label + 'km'
-              },
-              label: (tooltipItem) => {
-                return "Elevation: " + tooltipItem.raw + 'm'
-              }
-            }
-          }
-        }
-      }
-    })
 }
 
 export function resetHighlightedFeature (source = 'geojson-source') {

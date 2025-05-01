@@ -1,0 +1,129 @@
+import {CategoryScale, Chart, LinearScale, LineController,
+  LineElement, PointElement, Filler, Tooltip} from 'chart.js'
+import { featureColor } from 'maplibre/styles'
+
+export function showElevationChart (feature) {
+  const chartElement = document.getElementById('route-elevation-chart')
+  // skip without elevation data
+  if (feature.geometry.coordinates[0].length !== 3) {
+    chartElement.classList.add('hidden')
+    return null
+  }
+
+  chartElement.classList.remove('hidden')
+  Chart.register([CategoryScale, LineController, LineElement, LinearScale, PointElement,
+    Filler, Tooltip])
+  const labels = []
+  feature.geometry.coordinates.reduce((distance, coord, index) => {
+    if (index == 0) { labels.push(0); return 0 }
+    let from = turf.point(feature.geometry.coordinates[index - 1])
+    let to = turf.point(coord)
+    distance += turf.distance(from, to, { units: 'meters' })
+    labels.push(Math.round(distance))
+    return distance
+  }, 0)
+  console.log(labels)
+  const values = feature.geometry.coordinates.map(coords => coords[2])
+
+  return new Chart(
+    document.getElementById('route-elevation-chart'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          fill: true,
+          label: 'Track elevation',
+          data: values,
+          borderColor: featureColor,
+          borderWidth: 2,
+          backgroundColor: featureColor + '50',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: 'white',
+          pointBorderColor: featureColor,
+          pointBorderWidth: 2,
+          tension: 0.1,
+          pointRadius: 0,
+          spanGaps: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        interaction: {
+            mode: 'index',
+            intersect: false,
+        },
+        tooltip: { position: 'nearest' },
+        plugins: {
+          legend: {
+              display: false,
+              position: 'top',
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            padding: 12,
+            titleFont: {
+                size: 14,
+                weight: 'bold'
+            },
+            bodyFont: {
+                size: 13
+            },
+            displayColors: false,
+            animation: { duration: 0 },
+            callbacks: {
+              title: (tooltipItems) => {
+                return "Distance: " + toDisplayUnit(tooltipItems[0].label)
+              },
+              label: (tooltipItem) => {
+                return "Elevation: " + tooltipItem.raw + 'm'
+              },
+              afterBody: function(context) {
+                  // Action when tooltip is shown
+                  console.log('Tooltip shown for:', context)
+                  console.log('Show point on:', feature.geometry.coordinates[context[0]['dataIndex']])
+              }
+            }
+          },
+          // TODO: Not shown
+          title: {
+            display: true,
+            text: 'Track elevation chart'
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            //type: 'linear', // linear only paints y values on full x values
+            display: true,
+            grid: {
+                display: false,
+                drawBorder: false
+            },
+            ticks: {
+              font: {
+                  size: 12
+              },
+              padding: 10,
+              callback: function(_value, index, _values) {
+                const label = labels[index]
+                return toDisplayUnit(label)
+              }
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Elevation (m)'
+            }
+          }
+        }
+      }
+    })
+}
+
+function toDisplayUnit (distance) {
+  const unit = distance >= 1000 ? 'km' : 'm'
+  const factor = distance >= 1000 ? 0.001 : 1
+  return (distance * factor).toFixed(1) + unit
+}

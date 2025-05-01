@@ -245,9 +245,12 @@ export function handleDelete (e) {
 
 // add elevation from openrouteservice async
 function updateElevation(feature) {
+  console.log(feature)
   getRouteElevation(feature.geometry.coordinates).then(coords => {
-    feature.geometry.coordinates = coords
-    mapChannel.send_message('update_feature', feature)
-    showFeatureDetails(feature)
+    if (feature.geometry.coordinates.length === coords?.length) {
+      feature.geometry.coordinates = coords
+      mapChannel.send_message('update_feature', feature)
+      showFeatureDetails(feature)
+    }
   })
 }
