@@ -10,7 +10,7 @@ let marker
 export function showElevationChart (feature) {
   const chartElement = document.getElementById('route-elevation-chart')
   // skip without elevation data
-  if (feature.geometry.coordinates[0].length !== 3) {
+  if (feature.geometry.type !== 'LineString' || feature.geometry.coordinates[0].length !== 3) {
     chartElement.classList.add('hidden')
     return null
   }
@@ -27,7 +27,7 @@ export function showElevationChart (feature) {
     labels.push(Math.round(distance))
     return distance
   }, 0)
-  console.log(labels)
+
   const values = feature.geometry.coordinates.map(coords => coords[2])
   const chartLineColor = feature.properties['stroke'] || featureColor
 

@@ -78,10 +78,9 @@ export function showFeatureDetails (feature) {
   modal.scrollTo(0, 0)
   modal.setAttribute('data-map--feature-modal-feature-id-value', feature.id)
   modal.setAttribute('data-map--feature-edit-feature-id-value', feature.id)
-  if (feature.geometry.type === 'LineString') {
-    if (elevationChart) { elevationChart.destroy() }
-    elevationChart = showElevationChart(feature)
-  }
+
+  if (elevationChart) { elevationChart.destroy() }
+  elevationChart = showElevationChart(feature)
 
   f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
     if (!f.isTouchDevice()) return
