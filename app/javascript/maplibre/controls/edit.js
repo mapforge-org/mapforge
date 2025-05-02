@@ -8,6 +8,29 @@ import { resetDirections } from 'maplibre/routing/osrm'
 
 let lineMenu
 
+export class MapSelectControl {
+  constructor (_options) {
+    this._container = document.createElement('div')
+    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-select" type="button" title="Select mode" aria-label="Select mode" aria-pressed="false"><b><i class="bi bi-hand-index"></i></b></button>'
+    this._container.onclick = function (e) {
+      resetControls()
+      if (draw) { resetEditControls() }
+      e.target.closest('button').classList.add('active')
+    }
+  }
+  onAdd (map) {
+    map.getCanvas().appendChild(this._container)
+    return this._container
+  }
+
+  onRemove () {
+    if (this._container.parentNode) {
+      this._container.parentNode.removeChild(this._container)
+    }
+  }
+}
+
+
 export class MapSettingsControl {
   constructor (_options) {
     this._container = document.createElement('div')
@@ -93,6 +116,10 @@ export function resetEditControls () {
 }
 
 export function initializeEditControls () {
+
+  map.addControl(new ControlGroup([new MapSelectControl()]), 'top-left')
+  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-select)').classList.add('hidden')
+
   map.addControl(draw, 'top-left')
   addLineMenu()
   document.querySelector('button.mapbox-gl-draw_polygon').setAttribute('title', 'Draw polygon')
@@ -106,8 +133,8 @@ export function initializeEditControls () {
   map.addControl(controlGroup, 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)').classList.add('hidden') // hide for aos animation
 
-  map.addControl(new ControlGroup([new TourControl()]), 'top-left')
-  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-tour)').classList.add('hidden') // hide for aos animation
+  // map.addControl(new ControlGroup([new TourControl()]), 'top-left')
+  // document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-tour)').classList.add('hidden') // hide for aos animation
 
   functions.e('#settings-modal', e => {
     e.setAttribute('data-map--settings-current-pitch-value', map.getPitch().toFixed(0))
@@ -135,9 +162,10 @@ export function initializeEditControls () {
     })
   })
   map.once('load', function (_e) {
+    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-select)', 'fade-right', 500)
     animateElement('.maplibregl-ctrl:has(button.ctrl-line-menu-btn)', 'fade-right', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)', 'fade-right', 500)
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-tour)', 'fade-right', 500)
+    // animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-tour)', 'fade-right', 500)
   })
 }
 
