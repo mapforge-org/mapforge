@@ -86,16 +86,7 @@ export function showElevationChart (feature) {
               },
               afterBody: function(context) {
                 let coord = feature.geometry.coordinates[context[0]['dataIndex']]
-                const markerDiv = document.createElement('div')
-                markerDiv.style.backgroundColor = chartLineColor
-                markerDiv.className = 'elevation-marker'
-                marker = new maplibregl.Marker({
-                  element: markerDiv,
-                  opacity: '0.8',
-                  opacityWhenCovered: '0',
-                  rotationAlignment: 'viewport',
-                  pitchAlignment: 'viewport'
-                })
+                marker = getMarker(feature)
                 marker.setLngLat([coord[0], coord[1]])
                 marker.addTo(map)
               }
@@ -106,11 +97,6 @@ export function showElevationChart (feature) {
             display: true,
             text: 'Track elevation chart'
           }
-        },
-        onHover: (_e, item) => {
-          console.log(item)
-          if (marker) { marker.remove() }
-
         },
         scales: {
           x: {
@@ -142,11 +128,31 @@ export function showElevationChart (feature) {
       }
     })
 
+  chart.canvas.addEventListener('mouseout', function(_event) {
+    if (marker) { marker.remove() }
+  })
+
   return chart
+}
+
+function getMarker(feature) {
+  if (marker) { return marker }
+  const markerDiv = document.createElement('div')
+  markerDiv.style.backgroundColor = feature.properties['stroke'] || featureColor
+  markerDiv.className = 'elevation-marker'
+  return new maplibregl.Marker({
+    element: markerDiv,
+    opacity: '0.8',
+    opacityWhenCovered: '0',
+    rotationAlignment: 'viewport',
+    pitchAlignment: 'viewport'
+  })
 }
 
 function toDisplayUnit (distance) {
   const unit = distance >= 1000 ? 'km' : 'm'
   const factor = distance >= 1000 ? 0.001 : 1
-  return (distance * factor).toFixed(1) + unit
+  const decimals = unit == 'm' ? 0 : 1
+  if (distance == 0) { return '' }
+  return (distance * factor).toFixed(decimals) + ' ' + unit
 }
