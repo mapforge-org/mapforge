@@ -132,7 +132,15 @@ export function initializeMap (divId = 'maplibre-map') {
   map.on('mousemove', (e) => { lastMousePosition = e.lngLat })
   map.on('touchend', (e) => { lastMousePosition = e.lngLat })
   map.on('drag', () => { mapInteracted = true })
-  map.on('zoom', () => { mapInteracted = true })
+  map.on('zoom', (_e) => {
+    mapInteracted = true
+    let bgMap = basemaps()[backgroundMapLayer]
+    if (!bgMap.style.layers) { return }
+    let maxzoom = bgMap.style.layers[0].maxzoom
+    if (map.getZoom() > maxzoom - 0.2) {
+      map.setZoom(maxzoom - 0.2)
+    }
+  })
   // map.on('error', (err) => {
   //   console.log('map error >>> ', err)
   // })
@@ -392,6 +400,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
       // adding 'diff: false' so that 'style.load' gets triggered (https://github.com/maplibre/maplibre-gl-js/issues/2587)
       // which will trigger loadGeoJsonData()
       { diff: false, strictMode: true })
+    //map.setMaxZoom(basemap.style.layers[0].maxzoom)
   } else {
     console.error('Base map ' + mapName + ' not available!')
   }
