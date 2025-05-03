@@ -122,7 +122,6 @@ export function initializeEditMode () {
     // probably mapbox draw bug: map can lose drag capabilities on double click
     map.dragPan.enable()
     if (!e.features?.length) { justCreated = false; selectedFeature = null; return }
-    if (justCreated) { justCreated = false; return }
     if (selectedFeature && (selectedFeature.id === e.features[0].id)) { return }
     selectedFeature = e.features[0]
 
@@ -138,6 +137,8 @@ export function initializeEditMode () {
         select(selectedFeature)
       }
       highlightFeature(selectedFeature, true)
+      // jump to edit mode after feature create
+      if (justCreated) { justCreated = false; window.dispatchEvent(new CustomEvent("toggle-edit-feature")) }
     }
   })
 
@@ -165,10 +166,9 @@ export function initializeEditMode () {
   // in edit mode, map click handler is needed to hide modals
   // and to hide feature modal if no feature is selected
   map.on('click', () => {
-    if (draw.getMode() === 'simple_select') {
-      selectedFeature = null
-      resetControls()
-    }
+    selectedFeature = null
+    resetControls()
+    document.querySelector('.maplibregl-ctrl-select').classList.add('active')
   })
 
   document.querySelector('#edit-buttons').classList.remove('hidden')
@@ -176,11 +176,12 @@ export function initializeEditMode () {
 
 // switching directly from 'simple_select' to 'direct_select',
 // allow only to select one feature
+// direct_select mode does not allow to select other features
 function select (feature) {
-  if (feature.geometry.type !== 'Point') {
-    draw.changeMode('direct_select', { featureId: feature.id })
-  } else {
+  if (feature.geometry.type === 'Point') {
     draw.changeMode('simple_select', { featureIds: [feature.id] })
+  } else {
+    draw.changeMode('direct_select', { featureId: feature.id })
   }
   map.fire('draw.modechange')
 }
@@ -195,7 +196,7 @@ async function handleCreate (e) {
     feature = window.turf.simplify(feature, options)
   } else {
     // std mapbox draw shapes will auto-select the feature.
-    // This prevents automatic selection + stays in current mode
+    // This var enables special handling in draw.selectionchange
     justCreated = true
   }
   status('Feature ' + feature.id + ' created')
@@ -203,14 +204,15 @@ async function handleCreate (e) {
   // redraw if the painted feature was changed in this method
   if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') { redrawGeojson(false) }
   mapChannel.send_message('new_feature', feature)
-
-  setTimeout(() => {
-    if (draw.getMode() !== mode) {
-      draw.changeMode(mode)
-      map.fire('draw.modechange') // not fired automatically with draw.changeMode()
-    }
-  }, 10)
   if (feature.geometry.type === 'LineString') { updateElevation(feature) }
+
+  // Switch back to draw mode to create multiple features
+  // setTimeout(() => {
+  //   if (draw.getMode() !== mode) {
+  //     draw.changeMode(mode)
+  //     map.fire('draw.modechange') // not fired automatically with draw.changeMode()
+  //   }
+  // }, 10)
 }
 
 async function handleUpdate (e) {
@@ -245,7 +247,6 @@ export function handleDelete (e) {
 
 // add elevation from openrouteservice async
 function updateElevation(feature) {
-  console.log(feature)
   getRouteElevation(feature.geometry.coordinates).then(coords => {
     if (feature.geometry.coordinates.length === coords?.length) {
       feature.geometry.coordinates = coords

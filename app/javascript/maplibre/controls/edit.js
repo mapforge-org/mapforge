@@ -14,7 +14,7 @@ export class MapSelectControl {
     this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-select" type="button" title="Select mode" aria-label="Select mode" aria-pressed="false"><b><i class="bi bi-hand-index"></i></b></button>'
     this._container.onclick = function (e) {
       resetControls()
-      if (draw) { resetEditControls() }
+      resetEditControls()
       e.target.closest('button').classList.add('active')
     }
   }
