@@ -57,7 +57,7 @@ export function initDirections (profile, feature) {
 
   if (currentFeature) {
     let waypoints = currentFeature.properties.route.waypoints
-    console.log("Waypoints: ", waypoints)
+    // console.log("Waypoints: ", waypoints)
     directions.setWaypointsFeatures(waypoints.map( (wp, index) => createWaypointfeature(wp, index) ))
     // TODO: Generate routeline for setting new midpoints
     //directions.setSnappointsFeatures(waypoints.map(wp => createWaypointfeature(wp)))
@@ -109,17 +109,17 @@ function updateFeature(feature, upstream=true) {
   if (geojsonData.features.find(f => f.id === feature.id)) {
     upsert(currentFeature)
     if (upstream) { mapChannel.send_message('update_feature', feature) }
-    status('Updated track')
+    // status('Updated track')
   } else {
     upsert(currentFeature)
     if (upstream) { mapChannel.send_message('new_feature', feature) }
-    status('Added track')
+    // status('Added track')
   }
 }
 
 export function getDirectionsLayers () {
   let layers = layersFactory()
-  console.log('Directions layers:', layers)
+  // console.log('Directions layers:', layers)
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline")
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline-casing")
 

@@ -37,12 +37,7 @@ function startDrawing(state, e) {
 }
 
 function stopDrawing(state, e, me) {
-  me.changeMode(Constants.modes.SIMPLE_SELECT);
-  me.changeMode('draw_paint_mode')
-
-  me.map.fire("draw.create", {
-    type: "FeatureCollection",
-    features: [{
+  let feature = {
       type: "Feature",
       id: state.currentLineFeature.id,
       properties: {},
@@ -50,8 +45,15 @@ function stopDrawing(state, e, me) {
         type: "LineString",
         coordinates: state.currentLineFeature.coordinates,
       }
-    }]
+    }
+
+  // same behavior as std draw element: create + select
+  me.map.fire("draw.create", {
+    type: "FeatureCollection",
+    features: [feature]
   })
+
+  me.changeMode('direct_select', { featureId: feature.id })
 }
 
 PaintMode.onMouseMove = PaintMode.onTouchMove = function (state, e) {

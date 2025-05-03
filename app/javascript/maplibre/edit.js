@@ -14,6 +14,7 @@ import PaintMode from 'mapbox-gl-draw-paint-mode'
 
 export let draw
 export let selectedFeature
+let currentMode
 let justCreated = false
 
 MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl'
@@ -73,13 +74,16 @@ export function initializeEditMode () {
   })
 
   map.on('draw.modechange', () => {
+    console.log("Switch draw mode from '" + currentMode + "' to '" + draw.getMode() + "'")
+    currentMode = draw.getMode()
+
     resetDirections()
     resetControls()
-    console.log('switch to draw mode: ' + draw.getMode())
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
     if (draw.getMode() !== 'simple_select' && draw.getMode() !== 'direct_select') {
       functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
     } else {
+      functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
       functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
     }
     if (draw.getMode() === 'draw_paint_mode') {
@@ -122,23 +126,19 @@ export function initializeEditMode () {
     // probably mapbox draw bug: map can lose drag capabilities on double click
     map.dragPan.enable()
     if (!e.features?.length) { justCreated = false; selectedFeature = null; return }
+    console.log('draw.selectionchange', e.features)
     if (selectedFeature && (selectedFeature.id === e.features[0].id)) { return }
     selectedFeature = e.features[0]
 
     if (geojsonData.features.find(f => f.id === selectedFeature.id)) {
-      console.log('selected: ', selectedFeature)
-
-      if (selectedFeature?.properties?.route?.provider === 'osrm') {
-        let profile = selectedFeature?.properties?.route?.profile
-        draw.changeMode('directions_' + profile) // don't fire 'draw.modechange' event to avoid reset
-        initDirections(profile, selectedFeature)
-        functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
-      } else {
-        select(selectedFeature)
-      }
+      select(selectedFeature)
       highlightFeature(selectedFeature, true)
-      // jump to edit mode after feature create
-      if (justCreated) { justCreated = false; window.dispatchEvent(new CustomEvent("toggle-edit-feature")) }
+      // switch feature details to edit mode after create
+      if (justCreated) {
+        justCreated = false
+        window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
+      }
+
     }
   })
 
@@ -166,9 +166,12 @@ export function initializeEditMode () {
   // in edit mode, map click handler is needed to hide modals
   // and to hide feature modal if no feature is selected
   map.on('click', () => {
-    selectedFeature = null
-    resetControls()
-    document.querySelector('.maplibregl-ctrl-select').classList.add('active')
+    // mapbox draw type features don't fire map.click, but directions does - ignore it
+    if (!draw.getMode().startsWith('directions_')) {
+      selectedFeature = null
+      resetControls()
+      document.querySelector('.maplibregl-ctrl-select').classList.add('active')
+    }
   })
 
   document.querySelector('#edit-buttons').classList.remove('hidden')
@@ -178,15 +181,24 @@ export function initializeEditMode () {
 // allow only to select one feature
 // direct_select mode does not allow to select other features
 function select (feature) {
-  if (feature.geometry.type === 'Point') {
+  console.log('select', feature)
+  if (feature?.properties?.route?.provider === 'osrm') {
+    let profile = feature?.properties?.route?.profile
+    draw.changeMode('directions_' + profile) // don't fire 'draw.modechange' event to avoid reset
+    map.fire('draw.modechange')
+    initDirections(profile, feature)
+    functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
+  } else if (feature.geometry.type === 'Point') {
     draw.changeMode('simple_select', { featureIds: [feature.id] })
+    map.fire('draw.modechange')
   } else {
     draw.changeMode('direct_select', { featureId: feature.id })
+    map.fire('draw.modechange')
   }
-  map.fire('draw.modechange')
 }
 
 async function handleCreate (e) {
+  console.log('handleCreate')
   let feature = e.features[0] // Assuming one feature is created at a time
   const mode = draw.getMode()
 
@@ -194,11 +206,11 @@ async function handleCreate (e) {
   if (mode === 'draw_paint_mode') {
     const options = { tolerance: 0.00001, highQuality: true }
     feature = window.turf.simplify(feature, options)
-  } else {
-    // std mapbox draw shapes will auto-select the feature.
-    // This var enables special handling in draw.selectionchange
-    justCreated = true
   }
+  // std mapbox draw shapes will auto-select the feature (simple_select).
+  // This var enables special handling in draw.selectionchange
+  justCreated = true
+
   status('Feature ' + feature.id + ' created')
   geojsonData.features.push(feature)
   // redraw if the painted feature was changed in this method

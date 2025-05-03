@@ -199,14 +199,16 @@ function addLineMenu () {
   lineMenuButton.classList.add('ctrl-line-menu-btn')
   lineMenuButton.removeEventListener('click', null)
   lineMenuButton.addEventListener('click', (_e) => {
-    draw.changeMode('simple_select')
-    map.fire('draw.modechange')
     resetHighlightedFeature()
     if (lineMenu.classList.contains('hidden')) {
       lineMenu.classList.remove('hidden')
+      draw.changeMode('draw_line_string')
+      map.fire('draw.modechange')
     } else {
-      lineMenu.classList.add('hidden')
       resetControls()
+      draw.changeMode('simple_select')
+      map.fire('draw.modechange')
+      lineMenu.classList.add('hidden')
     }
   })
   const parentElement = originalButton.parentElement
