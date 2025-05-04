@@ -1,5 +1,7 @@
 import { styles, loadImage, pointSize, pointSizeMax } from 'maplibre/styles'
-import { map, sortLayers } from 'maplibre/map'
+import { map } from 'maplibre/map'
+import { kmMarkerStyles } from 'maplibre/feature'
+
 
 export function initializeEditStyles () {
   // MapboxDraw cannot render symbol+text styles.
@@ -10,7 +12,8 @@ export function initializeEditStyles () {
   map.addLayer(styles()['symbols-border-layer'])
   map.addLayer(styles()['symbols-layer'])
   map.addLayer(styles()['text-layer'])
-  sortLayers()
+  map.addLayer(kmMarkerStyles()['km-marker-points'])
+  map.addLayer(kmMarkerStyles()['km-marker-numbers'])
   // console.log('Edit styles added')
 
   map.on('styleimagemissing', loadImage)
@@ -32,7 +35,6 @@ const vertexSize = 6
 
 export function editStyles () {
   return [
-
     removeSource(styles()['polygon-layer']), // gl-draw-polygon-fill-inactive
     removeSource(styles()['polygon-layer-outline']),
     removeSource(styles()['line-layer-outline']), // line outline below line, because it's a wider line

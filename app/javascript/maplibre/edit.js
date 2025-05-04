@@ -66,8 +66,12 @@ export function initializeEditMode () {
   initializeEditControls()
   initializeDefaultControls()
 
-  map.on('geojson.load', function (_e) {
+  // Add edit styles when basemap style is loaded
+  map.on('style.load', function (_e) {
     initializeEditStyles()
+  })
+
+  map.on('geojson.load', function (_e) {
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     const feature = geojsonData.features.find(f => f.id === urlFeatureId)
     if (feature) { select(feature) }
@@ -138,10 +142,10 @@ export function initializeEditMode () {
         justCreated = false
         window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
       }
-
     }
   })
 
+  // https://github.com/mapbox/mapbox-gl-draw/blob/main/src/constants.js#L57
   map.on('draw.create', handleCreate)
   map.on('draw.update', handleUpdate)
   map.on('draw.delete', handleDelete)

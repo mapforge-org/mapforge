@@ -62,7 +62,7 @@ export async function getRouteElevation (waypoints) {
     format_in: 'geojson',
     format_out: 'geojson',
     geometry: {
-      coordinates: waypoints,
+      coordinates: functions.removeElevation(waypoints),
       type: 'LineString'
     }
   })

@@ -1,7 +1,7 @@
-import { map, sortLayers } from 'maplibre/map'
+import { map } from 'maplibre/map'
 import {
   highlightedFeatureId, stickyFeatureHighlight,
-  resetHighlightedFeature, highlightFeature
+  resetHighlightedFeature, highlightFeature, kmMarkerStyles
 } from 'maplibre/feature'
 
 export const viewStyleNames = [
@@ -26,7 +26,8 @@ export function initializeViewStyles () {
   viewStyleNames.forEach(styleName => {
     map.addLayer(styles()[styleName])
   })
-  sortLayers()
+  map.addLayer(kmMarkerStyles()['km-marker-points'])
+  map.addLayer(kmMarkerStyles()['km-marker-numbers'])
   console.log('View styles added')
 
   // click is needed to select on mobile and for sticky highlight
@@ -178,7 +179,7 @@ const iconSize = ['*', 1 / 70, pointSizeMax]
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 const labelSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], 16]]
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']
-let labelFont
+export let labelFont
 
 export function styles () {
   return {

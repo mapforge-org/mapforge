@@ -40,7 +40,7 @@ export function initializeSocket () {
         setBackgroundMapLayer(mapProperties.base_map, true)
         map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
       } else {
-        status('Connection to server established')
+        // status('Connection to server established')
       }
       channelStatus = 'on'
     },

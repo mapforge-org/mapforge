@@ -2,7 +2,7 @@ import { map, geojsonData } from 'maplibre/map'
 import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
-import { featureColor, defaultLineWidth } from 'maplibre/styles'
+import { featureColor, defaultLineWidth, styles, labelFont } from 'maplibre/styles'
 import { showElevationChart } from 'maplibre/feature/elevation'
 
 window.marked = marked
@@ -185,74 +185,78 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
   }
 }
 
-// called from map.renderedGeojsonData()
-let kmMarkers
+export function kmMarkerStyles () {
+  let pointsLayer = styles()['points-layer']
+  pointsLayer.id = 'km-marker-points'
+  pointsLayer.source = 'km-marker-source'
+  pointsLayer.minzoom = 9
 
-export function initializeMarkers () {
-  kmMarkers = []
-
-  // hide km markers when zooming out
-  map.on('zoom', () => {
-    const currentZoom = map.getZoom()
-    if (currentZoom < 9) {
-      kmMarkers.forEach((m) => {
-        if (!m.getElement().classList.contains('km-marker-final')) {
-        m.getElement().style.display = 'none'
-      }})
-    } else {
-      kmMarkers.forEach((m) => { m.getElement().style.display = 'block' })
+  let numbersLayer = {
+    id: 'km-marker-numbers',
+    type: 'symbol',
+    source: 'km-marker-source',
+    minzoom: 9,
+    layout: {
+      'text-allow-overlap': true,
+      'text-field': ['get', 'km'],
+      'text-size': 14,
+      'text-font': labelFont,
+      'text-justify': 'center',
+      'text-anchor': 'center'
+    },
+    paint: {
+      'text-color': '#ffffff'
     }
+  }
+
+  return { 'km-marker-points': pointsLayer, 'km-marker-numbers': numbersLayer }
+}
+
+export function addKmMarkersSource () {
+  map.addSource('km-marker-source', {
+    type: 'geojson',
+    data: { type: 'FeatureCollection', features: [] }
   })
 }
 
 export function renderKmMarkers () {
-  kmMarkers.forEach((m) => { m.remove() })
+  let kmMarkerFeatures = []
   geojsonData.features.filter(feature => (feature.geometry.type === 'LineString' &&
     feature.properties['show-km-markers'])).forEach((f) => {
     const line = turf.lineString(f.geometry.coordinates)
     const length = turf.length(line, { units: 'kilometers' })
-    const currentZoom = map.getZoom()
     // Create markers at useful intervals
-    let interval = 1
-    if (Math.ceil(length) > 15) { interval = 5 }
+    let interval = 2
+    if (Math.ceil(length) > 10) { interval = 5 }
     if (Math.ceil(length) > 40) { interval = 10 }
     if (Math.ceil(length) > 150) { interval = 50 }
     if (Math.ceil(length) > 500) { interval = 100 }
     if (Math.ceil(length) > 2000) { interval = 500 }
+
     for (let i = interval; i < Math.ceil(length) + interval; i += interval) {
         // Get point at current kilometer
         const point = turf.along(line, i, { units: 'kilometers' })
+        point.properties['marker-color'] = f.properties['stroke'] || featureColor
+        point.properties['marker-size'] = 10
 
-        // Create marker element
-        const markerDiv = document.createElement('div')
-        markerDiv.style.backgroundColor = f.properties['stroke'] || featureColor
-        markerDiv.className = 'km-marker'
         if (i >= Math.ceil(length)) {
-          markerDiv.className += ' km-marker-final'
-          markerDiv.textContent = Math.round(length)
+          point.properties['marker-size'] = 12
+          point.properties['km'] = Math.round(length)
           if (Math.ceil(length) < 100) {
-            markerDiv.textContent = Math.round(length * 10) / 10
+            point.properties['km'] = Math.round(length * 10) / 10
           }
         } else {
-          markerDiv.textContent = `${i}`
-          if (currentZoom < 9) { markerDiv.style.display = 'none' }
+          point.properties['km'] = i
         }
-        if (i >= 100) { markerDiv.style.fontSize = '1em' }
-        if (i >= 1000) { markerDiv.style.fontSize = '0.8em' }
-
-        // Add marker to map; https://maplibre.org/maplibre-gl-js/docs/API/classes/Marker/
-        let marker = new maplibregl.Marker({
-          element: markerDiv,
-          opacity: '0.8',
-          opacityWhenCovered: '0',
-          rotationAlignment: 'viewport',
-          pitchAlignment: 'viewport'
-          })
-        marker.setLngLat([point.geometry.coordinates[0], point.geometry.coordinates[1]])
-        kmMarkers.push(marker)
-        marker.addTo(map)
+        kmMarkerFeatures.push(point)
     }
   })
+
+  let markerFeatures = {
+        type: 'FeatureCollection',
+        features: kmMarkerFeatures
+      }
+  map.getSource('km-marker-source').setData(markerFeatures)
 }
 
 export function renderExtrusionLines () {

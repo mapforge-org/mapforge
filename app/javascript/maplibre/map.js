@@ -9,7 +9,8 @@ import { initSettingsModal } from 'maplibre/controls/edit'
 import { initCtrlTooltips, initializeDefaultControls, resetControls } from 'maplibre/controls/shared'
 import { initializeViewControls } from 'maplibre/controls/view'
 import { draw } from 'maplibre/edit'
-import { highlightFeature, resetHighlightedFeature, renderKmMarkers, renderExtrusionLines, initializeMarkers } from 'maplibre/feature'
+import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
+  renderExtrusionLines, addKmMarkersSource } from 'maplibre/feature'
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
 
 export let map
@@ -30,14 +31,14 @@ let backgroundContours
 // initializeViewMode() or initializeEditMode() or initializeStaticMode()
 // setBackgroundMapLayer() -> 'style.load' event
 // 'style.load' -> initializeDefaultControls()
+// 'style.load' -> initializeViewStyles() || initializeEditStyles()
 // 'style.load' -> loadGeoJsonData() -> 'geojson.load'
-// 'geojson.load' -> initializeViewStyles()
 
 export function initializeMaplibreProperties () {
   const lastProperties = JSON.parse(JSON.stringify(mapProperties || {}))
   mapProperties = window.gon.map_properties
   if (!equal(lastProperties, mapProperties)) {
-    console.log('update map properties: ' + JSON.stringify(mapProperties))
+    console.log('Update map properties:', mapProperties)
     updateMapName(mapProperties.name)
     initSettingsModal()
     status('Map properties updated')
@@ -74,10 +75,11 @@ export function initializeMap (divId = 'maplibre-map') {
   window.map = map
   window.maplibregl = maplibregl
 
-  initializeMarkers()
-  // after basemap style is ready/changed, load geojson layer
+  // after basemap style is ready/changed, init source layers + load geojson layer
   map.on('style.load', () => {
-    console.log('Map style loaded')
+    console.log('Basemap style loaded (style.load)')
+    addGeoJSONSource()
+    addKmMarkersSource()
     loadGeoJsonData()
     demSource.setupMaplibre(maplibregl)
     if (mapProperties.terrain) { addTerrain() }
@@ -90,6 +92,7 @@ export function initializeMap (divId = 'maplibre-map') {
     functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
   })
 
+  // NOTE: map 'load' can happen before 'geojson.load' when loading features is slow
   map.once('load', async function (_e) {
     // on first map load, re-sort layers late, when all map,
     // view + edit layers are added
@@ -105,7 +108,7 @@ export function initializeMap (divId = 'maplibre-map') {
     initTooltips()
     functions.e('#preloader', e => { e.classList.add('hidden') })
     functions.e('.map', e => { e.setAttribute('map-loaded', true) })
-    console.log('Map loaded')
+    console.log("Map loaded ('load')")
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     let feature = geojsonData?.features?.find(f => f.id === urlFeatureId)
@@ -146,7 +149,7 @@ export function initializeMap (divId = 'maplibre-map') {
   // })
 }
 
-export function loadGeoJsonData () {
+export function addGeoJSONSource () {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
   map.addSource('geojson-source', {
     type: 'geojson',
@@ -154,7 +157,9 @@ export function loadGeoJsonData () {
     data: { type: 'FeatureCollection', features: [] }, // geojsonData,
     cluster: false
   })
+}
 
+export function loadGeoJsonData () {
   if (geojsonData) {
     // data is already loaded
     redrawGeojson()
@@ -174,16 +179,15 @@ export function loadGeoJsonData () {
     .then(data => {
       // console.log('loaded GeoJSON from server: ', JSON.stringify(data))
       geojsonData = data
+      console.log('Loaded ' + geojsonData.features.length + ' features from ' + url)
       if (geojsonData.features.length > 0) {
-        console.log('loaded ' + geojsonData.features.length + ' features from ' + url)
         redrawGeojson()
       }
-      console.log('Geojson layer loaded')
       map.fire('geojson.load', { detail: { message: 'geojson-source loaded' } })
     })
     .catch(error => {
       console.error('Failed to fetch GeoJSON:', error)
-      console.error('geojsonData: ' + JSON.stringify(geojsonData))
+      console.error('GeoJSONData:', geojsonData)
     })
 }
 
@@ -290,7 +294,7 @@ function addGlobe () {
 }
 
 export function initializeStaticMode () {
-  map.on('geojson.load', () => {
+  map.on('style.load', () => {
     initializeViewStyles()
   })
   functions.e('.maplibregl-ctrl-attrib, #map-head', e => { e.classList.add('hidden') })
@@ -300,8 +304,8 @@ export function initializeViewMode () {
   map.once('style.load', () => {
     initializeViewControls()
     initializeDefaultControls()
+    initializeViewStyles()
   })
-  map.on('geojson.load', () => { initializeViewStyles() })
   map.on('click', resetControls)
 }
 
@@ -389,7 +393,11 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
       backgroundGlobe === mapProperties.globe && !force) { return }
   const basemap = basemaps()[mapName]
   if (basemap) {
-    map.once('style.load', () => { status('Loaded base map ' + mapName) })
+    map.once('style.load', () => {
+      status('Loaded base map ' + mapName)
+      // re-sort layers after basemap style change
+      sortLayers()
+    })
     backgroundMapLayer = mapName
     backgroundTerrain = mapProperties.terrain
     backgroundHillshade = mapProperties.hillshade
@@ -400,7 +408,6 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
       // adding 'diff: false' so that 'style.load' gets triggered (https://github.com/maplibre/maplibre-gl-js/issues/2587)
       // which will trigger loadGeoJsonData()
       { diff: false, strictMode: true })
-    //map.setMaxZoom(basemap.style.layers[0].maxzoom)
   } else {
     console.error('Base map ' + mapName + ' not available!')
   }
@@ -439,6 +446,11 @@ export function sortLayers () {
     .concat(lineLayerHits).concat(pointsLayerHits)
   const newStyle = { ...currentStyle, layers }
   map.setStyle(newStyle, { diff: true })
+
+  // place km markers under symbols layer (icons)
+  map.moveLayer('km-marker-points', 'symbols-layer')
+  map.moveLayer('km-marker-numbers', 'symbols-layer')
+
   // console.log(map.getStyle().layers)
 }
 
