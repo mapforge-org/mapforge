@@ -16,7 +16,7 @@
   "start_url": "/",
   "display": "standalone",
   "scope": "/",
-  "description": "Mapforge is an open source (Ruby on Rails) web application that lets you create and share geojson layers on top of different base maps.",
+  "description": "Mapforge is an open source web application that lets you create and share individual maps for your locations, tracks and events.",
   "theme_color": "red",
   "background_color": "red"
 }
