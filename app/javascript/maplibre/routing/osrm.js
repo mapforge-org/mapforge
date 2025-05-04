@@ -76,12 +76,15 @@ export function initDirections (profile, feature) {
     let coords = decodePolyline(e.data.routes[0].geometry)
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords || [], "type": "LineString" },
-      "properties": currentFeature?.properties || { "fill-extrusion-height": 15 }
+      "properties": currentFeature?.properties || { "fill-extrusion-height": 15,
+                                                    "fill-extrusion-base": 5,
+                                                    "stroke-opacity": 0.6, }
     }
     currentFeature.properties.route = { "provider": "osrm",
                                         "profile": profile,
                                         "waypoints": waypoints }
-    updateFeature(currentFeature, false)
+    // TODO: we're saving the feture 2 times
+    updateFeature(currentFeature,)
 
     // add elevation from openrouteservice
     getRouteElevation(coords).then(coords => {
@@ -105,14 +108,14 @@ export function initDirections (profile, feature) {
   })
 }
 
-function updateFeature(feature, upstream=true) {
+function updateFeature(feature) {
   if (geojsonData.features.find(f => f.id === feature.id)) {
     upsert(currentFeature)
-    if (upstream) { mapChannel.send_message('update_feature', feature) }
+    mapChannel.send_message('update_feature', feature)
     // status('Updated track')
   } else {
     upsert(currentFeature)
-    if (upstream) { mapChannel.send_message('new_feature', feature) }
+    mapChannel.send_message('new_feature', feature)
     // status('Added track')
   }
 }
