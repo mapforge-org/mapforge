@@ -199,7 +199,7 @@ export function kmMarkerStyles () {
     layout: {
       'text-allow-overlap': true,
       'text-field': ['get', 'km'],
-      'text-size': 14,
+      'text-size': 12,
       'text-font': labelFont,
       'text-justify': 'center',
       'text-anchor': 'center'
@@ -237,7 +237,7 @@ export function renderKmMarkers () {
         // Get point at current kilometer
         const point = turf.along(line, i, { units: 'kilometers' })
         point.properties['marker-color'] = f.properties['stroke'] || featureColor
-        point.properties['marker-size'] = 10
+        point.properties['marker-size'] = 11
 
         if (i >= Math.ceil(length)) {
           point.properties['marker-size'] = 12
