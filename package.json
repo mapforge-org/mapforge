@@ -6,7 +6,7 @@
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.css'"
   },
   "devDependencies": {
-    "@eslint/js": "^9.25.0",
+    "@eslint/js": "^9.26.0",
     "eslint": "^9.25.1",
     "globals": "^16.0.0",
     "stylelint": "^16.19.1",
