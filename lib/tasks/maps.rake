@@ -9,7 +9,8 @@ namespace :maps do
     Map.each do |map|
       begin
         last_update = File.mtime(map.screenshot_file) if File.exist?(map.screenshot_file)
-        next if File.exist?(map.screenshot_file) && map.updated_at < last_update
+        # Scheduled job is running each 10 minutes
+        next if File.exist?(map.screenshot_file) && map.updated_at < last_update - 5.minutes
         puts "Map #{map.public_id} updated #{map.updated_at}, last screenshot from #{last_update || 'n/a'}"
 
         # https://github.com/YusukeIwaki/puppeteer-ruby
