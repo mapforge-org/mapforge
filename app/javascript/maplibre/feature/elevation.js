@@ -29,7 +29,8 @@ export function showElevationChart (feature) {
   }, 0)
 
   const values = feature.geometry.coordinates.map(coords => coords[2])
-  const chartLineColor = (feature.properties['stroke'] || featureColor).substring(0, 7)
+  const chartLineColor = (feature.properties['fill-extrusion-color'] ||
+    feature.properties['stroke'] || featureColor).substring(0, 7)
 
   let chart = new Chart(
     document.getElementById('route-elevation-chart'), {

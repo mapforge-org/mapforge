@@ -73,12 +73,17 @@ export function initDirections (profile, feature) {
     let waypoints = e.data.waypoints.map(wp => wp.location)
     directions.setWaypointsFeatures(waypoints.map( (wp, index) => directions.createWaypointfeature(wp, index)))
 
+    const defaultProperties = { "fill-extrusion-height": 8,
+                                "fill-extrusion-base": 3,
+                                "stroke-opacity": 0.45,
+                                "fill-extrusion-color": "#62a0ea",
+                                "fill-extrusion-width": 1.5,
+                                "stroke-width": 5,
+                                "stroke": "#000000" }
     let coords = decodePolyline(e.data.routes[0].geometry)
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords || [], "type": "LineString" },
-      "properties": currentFeature?.properties || { "fill-extrusion-height": 15,
-                                                    "fill-extrusion-base": 5,
-                                                    "stroke-opacity": 0.6, }
+      "properties": currentFeature?.properties || defaultProperties
     }
     currentFeature.properties.route = { "provider": "osrm",
                                         "profile": profile,

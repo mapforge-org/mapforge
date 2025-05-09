@@ -1,4 +1,4 @@
-import { map, geojsonData } from 'maplibre/map'
+import { map, geojsonData, mapProperties } from 'maplibre/map'
 import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
@@ -260,6 +260,9 @@ export function renderKmMarkers () {
 }
 
 export function renderExtrusionLines () {
+  // Disable extrusionlines on 3D terrain, it does not work
+  if (mapProperties.terrain) { return [] }
+
   let extrusionLines = geojsonData.features.filter(feature => (
     feature.geometry.type === 'LineString' &&
       feature.properties['fill-extrusion-height'] &&
