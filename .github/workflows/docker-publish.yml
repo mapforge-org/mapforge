@@ -109,10 +109,3 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
-
-      # Make the Docker image public
-      - name: Make image public
-        run: |
-          gh api -X PATCH /user/packages/container/${{ github.event.repository.name }}/visibility --field visibility=public
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
