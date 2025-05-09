@@ -214,7 +214,7 @@ export function styles () {
           ['get', 'fill-extrusion-base'],
           ['get', 'user_fill-extrusion-base']]],
         // opacity does not support data expressions!?!
-        'fill-extrusion-opacity': 0.7
+        'fill-extrusion-opacity': 0.9
       }
     },
     // polygon outlines

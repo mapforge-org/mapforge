@@ -53,3 +53,52 @@ export function decodePolyline (encodedPolyline, includeElevation) {
   }
   return points
 }
+
+
+/**
+ * Encode an array of x,y or x,y,z coordinates into a polyline
+ * @param {Array} coordinates - Array of coordinates (e.g., [[lng, lat], [lng, lat, ele]])
+ * @param {Boolean} includeElevation - true if coordinates include elevation (x, y, z)
+ * @returns {String} encoded polyline
+ */
+export function encodePolyline(coordinates, includeElevation = false) {
+  let encodedPolyline = '';
+  let prevLat = 0;
+  let prevLng = 0;
+  let prevEle = 0;
+
+  for (const point of coordinates) {
+    const lat = Math.round(point[1] * 1E5);
+    const lng = Math.round(point[0] * 1E5);
+    const ele = includeElevation && point.length > 2 ? Math.round(point[2] * 100) : 0;
+
+    encodedPolyline += encodeValue(lat - prevLat);
+    encodedPolyline += encodeValue(lng - prevLng);
+
+    if (includeElevation) {
+      encodedPolyline += encodeValue(ele - prevEle);
+    }
+
+    prevLat = lat;
+    prevLng = lng;
+    prevEle = ele;
+  }
+
+  return encodedPolyline;
+}
+
+/**
+ * Encode a single value using Google's polyline algorithm
+ * @param {Number} value - The value to encode
+ * @returns {String} encoded value
+ */
+function encodeValue(value) {
+  let encoded = '';
+  let v = value < 0 ? ~(value << 1) : (value << 1);
+  while (v >= 0x20) {
+    encoded += String.fromCharCode((0x20 | (v & 0x1f)) + 63);
+    v >>= 5;
+  }
+  encoded += String.fromCharCode(v + 63);
+  return encoded;
+}

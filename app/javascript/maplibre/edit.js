@@ -74,7 +74,7 @@ export function initializeEditMode () {
   map.on('geojson.load', function (_e) {
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     const feature = geojsonData.features.find(f => f.id === urlFeatureId)
-    if (feature) { select(feature) }
+    if (feature) { map.fire('draw.selectionchange', {features: [feature]}) }
   })
 
   map.on('draw.modechange', () => {

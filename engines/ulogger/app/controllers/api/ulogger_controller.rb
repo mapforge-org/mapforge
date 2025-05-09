@@ -15,10 +15,14 @@ module Ulogger
 
     TRACK_PROPERTIES = {
       "title" => "µlogger track",
-      "fill-extrusion-height": 50,
-      "stroke-width": "8",
-      "stroke": "#62a0ea",
-      "show-km-markers": true
+      "show-km-markers": true,
+      "fill-extrusion-color": "#62a0ea",
+      "fill-extrusion-height": 8,
+      "fill-extrusion-base": 3,
+      "fill-extrusion-width": 1.5,
+      "stroke-opacity": 0.45,
+      "stroke-width": 5,
+      "stroke": "#000000"
     }
 
     def auth

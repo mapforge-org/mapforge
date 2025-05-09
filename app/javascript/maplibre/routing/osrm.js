@@ -58,20 +58,20 @@ export function initDirections (profile, feature) {
   if (currentFeature) {
     let waypoints = currentFeature.properties.route.waypoints
     // console.log("Waypoints: ", waypoints)
-    directions.setWaypointsFeatures(waypoints.map( (wp, index) => createWaypointfeature(wp, index) ))
-    // TODO: Generate routeline for setting new midpoints
-    //directions.setSnappointsFeatures(waypoints.map(wp => createWaypointfeature(wp)))
-    //directions.setRoutelinesFeatures(createRouteLinefeatures(currentFeature))
+    directions.setWaypointsFeatures(waypoints.map( (wp, index) => directions.createWaypointfeature(wp, index) ))
+    // Generate routeline for setting new midpoints
+    directions.setSnappointsFeatures(directions.createSnappointsFeatures())
+    directions.setRoutelinesFeatures(directions.createRoutelinesFeatures(currentFeature))
   }
   directions.interactive = true
 
   directions.on("fetchroutesend", async (e) => {
-    console.log(directions)
-    console.log(e)
+    // console.log(directions)
+    console.log("fetchroutesend", e)
 
     // use 'snapped' waypoints
     let waypoints = e.data.waypoints.map(wp => wp.location)
-    directions.setWaypointsFeatures(waypoints.map( (wp, index) => createWaypointfeature(wp, index)))
+    directions.setWaypointsFeatures(waypoints.map( (wp, index) => directions.createWaypointfeature(wp, index)))
 
     let coords = decodePolyline(e.data.routes[0].geometry)
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
@@ -186,21 +186,4 @@ export function getDirectionsLayers () {
     ],
   })
   return layers
-}
-
-function createWaypointfeature (coords, index) {
-  return {
-    "type": "Feature",
-    "geometry": {
-      "type": "Point",
-      "coordinates": coords
-    },
-    "properties": {
-      "type": "WAYPOINT",
-      "id": functions.featureId(),
-      "index": 0,
-      "label": String.fromCharCode(64 + index+1),
-      "highlight": false
-    }
-  }
 }
