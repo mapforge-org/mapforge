@@ -4,6 +4,7 @@ describe 'Map' do
   subject(:map) { create(:map, center: nil, zoom: nil) }
 
   before do
+    stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
     visit map_path(map)
     expect(page).to have_css("#maplibre-map[map-loaded='true']")
   end
@@ -17,7 +18,6 @@ describe 'Map' do
 
   context 'when using map settings modal' do
     before do
-      stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
       visit map_path(map)
       expect(page).to have_css("#maplibre-map[map-loaded='true']")
     end
