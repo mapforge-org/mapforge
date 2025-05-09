@@ -17,7 +17,7 @@ describe 'Map' do
 
   context 'when using map settings modal' do
     before do
-      stub_const("Map::BASE_MAPS", Map::BASE_MAPS + [ "test", "test2" ])
+      stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
       visit map_path(map)
       expect(page).to have_css("#maplibre-map[map-loaded='true']")
     end
@@ -53,11 +53,11 @@ describe 'Map' do
     end
 
     it 'basemap update' do
-      map.update(base_map: 'versatilesColorful')
+      map.update(base_map: 'test2')
       # 'Map view updated' is rendered at 'moveend', undetermined if that's before base map is loaded
-      expect(page).to have_text(/Loaded base map osmRasterTiles|Map view updated/, wait: 30)
+      expect(page).to have_text(/Loaded base map test2|Map view updated/, wait: 30)
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_css('.layer-preview[data-base-map="versatilesColorful"].active')
+      expect(page).to have_css('.layer-preview[data-base-map="test2"].active')
     end
 
     it 'terrain update' do
