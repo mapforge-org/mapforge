@@ -299,8 +299,8 @@ export function styles () {
         ["has", "stroke-image-url"],
         ["has", "stroke-symbol"]],
       layout: {
-        "symbol-placement": "line",
-        "symbol-spacing": 200, // distance in pixels
+        "symbol-placement": "line-center", // NOTE: 'line' mis-rotates icons
+        // "symbol-spacing": 200, // distance in pixels, only works with 'line'
         'icon-image': ['coalesce',
           ['get', 'stroke-image-url'],
           // replacing stroke-symbol value with path to emoji png
@@ -309,7 +309,7 @@ export function styles () {
             ['concat', '/emojis/noto/', ['get', 'stroke-symbol'], '.png'],
             '']],
         "icon-size": ["interpolate", ["exponential", 1.5], ["zoom"], 12, 0.85, 18, 1.4],
-        // "icon-rotation-alignment": "viewport",
+        "icon-rotation-alignment": "map",
         "icon-size": ['case', ['has', 'stroke-symbol'], 0.35, 1]
       },
       paint: {

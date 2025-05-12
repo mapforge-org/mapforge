@@ -56,7 +56,7 @@ module Mapforge
        entitystore: "file:tmp/cache/rack/body"
     }
 
-    config.session_store :cookie_store, key: "_mapforge_session"
+    config.session_store :cookie_store, key: "_mapforge_session", expire_after: 48.hours
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
   end

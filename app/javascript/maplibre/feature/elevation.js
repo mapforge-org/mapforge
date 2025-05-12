@@ -67,7 +67,7 @@ export function showElevationChart (feature) {
               position: 'top',
           },
           tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            backgroundColor: '#354A51',
             padding: 12,
             titleFont: {
                 size: 14,
@@ -139,7 +139,8 @@ export function showElevationChart (feature) {
 function getMarker(feature) {
   if (marker) { return marker }
   const markerDiv = document.createElement('div')
-  markerDiv.style.backgroundColor = feature.properties['stroke'] || featureColor
+  markerDiv.style.backgroundColor = feature.properties['fill-extrusion-color'] ||
+    feature.properties['stroke'] || featureColor
   markerDiv.className = 'elevation-marker'
   return new maplibregl.Marker({
     element: markerDiv,
