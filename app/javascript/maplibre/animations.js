@@ -80,7 +80,7 @@ export class AnimateLineAnimation extends AnimationManager {
     const lineDistance = window.turf.lineDistance(path, 'kilometers')
     console.log('Line length: ' + lineDistance + ' km')
     const steps = 500
-    let counter = 0
+    let counter = 1
 
     function animate (_frame) {
       const progress = counter / steps
@@ -102,7 +102,7 @@ export class AnimateLineAnimation extends AnimationManager {
       }
     }
 
-    line.geometry.coordinates = []
+    line.geometry.coordinates = [line.geometry.coordinates[0]]
     //redrawGeojson(false)
     animate(0)
   }
