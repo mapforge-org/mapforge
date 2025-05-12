@@ -295,14 +295,25 @@ export function styles () {
       id: "line-layer-route-direction",
       type: "symbol",
       source: "geojson-source",
-      filter: ["has", "route"],
+      filter: ['any',
+        ["has", "stroke-image-url"],
+        ["has", "stroke-symbol"]],
       layout: {
-        "symbol-placement": "line-center",
-        "icon-image": "/icons/direction-arrow.png",
+        "symbol-placement": "line",
+        "symbol-spacing": 200, // distance in pixels
+        'icon-image': ['coalesce',
+          ['get', 'stroke-image-url'],
+          // replacing stroke-symbol value with path to emoji png
+          ['case',
+            ['has', 'stroke-symbol'],
+            ['concat', '/emojis/noto/', ['get', 'stroke-symbol'], '.png'],
+            '']],
         "icon-size": ["interpolate", ["exponential", 1.5], ["zoom"], 12, 0.85, 18, 1.4],
+        // "icon-rotation-alignment": "viewport",
+        "icon-size": ['case', ['has', 'stroke-symbol'], 0.35, 1]
       },
       paint: {
-        "icon-opacity": 0.9,
+        "icon-opacity": 1
       }
     },
     'points-border-layer': {

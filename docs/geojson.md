@@ -26,6 +26,8 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `stroke-width`: width of the line (default: 2)
 * `stroke`: line color (default: 'darkgreen')
 * `stroke-opacity`: opacity of the line (default: 0.8)
+* `stroke-image-url`: URL pointing to icon image that will get repeated along the line. Can point to a Mapforge hosted image like /icons/direction-arrow.png
+* `stroke-symbol`: taken as text/emoji, emoji list: https://emojipedia.org/google/15.1
 * `fill-extrusion-color`: color of the extrusion (default: green)
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-width`: width in m
