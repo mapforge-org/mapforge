@@ -210,6 +210,7 @@ function addHillshade () {
     source: 'hillshade',
     layout: {visibility: 'visible'},
     paint: {
+      "hillshade-method": "standard",
       'hillshade-shadow-color': '#473B24',
       "hillshade-exaggeration": 0.1
     }
