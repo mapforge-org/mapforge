@@ -2,7 +2,7 @@ class AdminController < ApplicationController
   before_action :require_admin_user
 
   def index
-    @maps = Map.includes(:layers, :user).order(updated_at: :desc)
+    @maps = Map.unscoped.includes(:layers, :user).order(updated_at: :desc)
   end
 
   private

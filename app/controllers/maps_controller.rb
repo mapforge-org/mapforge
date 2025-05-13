@@ -10,11 +10,11 @@ class MapsController < ApplicationController
   layout "map", only: [ :show ]
 
   def index
-    @maps = Map.listed.includes(:layers, :user).order(updated_at: :desc)
+    @maps = Map.unscoped.listed.includes(:layers, :user).order(updated_at: :desc)
   end
 
   def my
-    @maps = Map.where(user: @user).includes(:layers, :user).order(updated_at: :desc)
+    @maps = Map.unscoped.where(user: @user).includes(:layers, :user).order(updated_at: :desc)
   end
 
   def show

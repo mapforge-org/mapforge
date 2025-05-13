@@ -222,7 +222,9 @@ export function addKmMarkersSource () {
 export function renderKmMarkers () {
   let kmMarkerFeatures = []
   geojsonData.features.filter(feature => (feature.geometry.type === 'LineString' &&
-    feature.properties['show-km-markers'])).forEach((f) => {
+    feature.properties['show-km-markers'] &&
+    feature.geometry.coordinates.length >= 2)).forEach((f) => {
+
     const line = turf.lineString(f.geometry.coordinates)
     const length = turf.length(line, { units: 'kilometers' })
     // Create markers at useful intervals
