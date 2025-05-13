@@ -20,6 +20,13 @@ RSpec.describe TracksController do
         get "/ulogger/?id=1234"
         expect(subject).to have_http_status(302)
       end
+
+      it 'highlights track' do
+        create(:map, id: "000000000000000000001234", features: [create(:feature, :line_string)])
+
+        get "/ulogger/?id=1234"
+        expect(subject).to have_http_status(302)
+      end
     end
   end
 end
