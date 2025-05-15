@@ -211,12 +211,12 @@ export function initializeDefaultControls () {
   })
   geolocate.on('trackuserlocationstart', () => {
     if (functions.isMobileDevice()) {
-      element.removeEventListener('deviceorientation', updateOrientation)
-      element.addEventListener('deviceorientation', updateOrientation)
+      window.removeEventListener('deviceorientation', updateOrientation)
+      window.addEventListener('deviceorientation', updateOrientation)
     }
   })
   geolocate.on('trackuserlocationend', () => {
-    element.removeEventListener('deviceorientation', updateOrientation)
+    window.removeEventListener('deviceorientation', updateOrientation)
   })
 
   map.addControl(geolocate, 'top-right')

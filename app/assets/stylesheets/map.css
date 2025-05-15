@@ -143,8 +143,10 @@ html:has(.map), body:has(.map) {
 }
 
 .maplibregl-user-location-dot::after{
-  content: "↑";
+  content: "⬆";
   font-weight: bold;
+  font-size: 1.3em;
+  line-height: 1;
   color: #fff;
   transform: var(--user-dot-rotation);
 }
