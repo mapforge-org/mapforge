@@ -210,14 +210,13 @@ export function initializeDefaultControls () {
     status('Error detecting location', 'warning')
   })
   geolocate.on('trackuserlocationstart', () => {
-    status('A trackuserlocationstart event has occurred.')
     if (functions.isMobileDevice()) {
-      window.addEventListener('deviceorientation', (event) => {
-        console.log("Orientation:", event.alpha)
-        let dot = document.querySelector('.maplibregl-user-location-dot')
-        dot.style.setProperty('--user-dot-rotation', `rotate(${event.alpha}deg)`);
-      })
+      element.removeEventListener('deviceorientation', updateOrientation)
+      element.addEventListener('deviceorientation', updateOrientation)
     }
+  })
+  geolocate.on('trackuserlocationend', () => {
+    element.removeEventListener('deviceorientation', updateOrientation)
   })
 
   map.addControl(geolocate, 'top-right')
@@ -241,4 +240,12 @@ export function initializeDefaultControls () {
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)
   })
+}
+
+const updateOrientation = (event) => {
+  console.log("Orientation:", event.alpha)
+  let dot = document.querySelector('.maplibregl-user-location-dot')
+  if (dot) {
+    dot.style.setProperty('--user-dot-rotation', `rotate(${event.alpha}deg)`)
+  }
 }
