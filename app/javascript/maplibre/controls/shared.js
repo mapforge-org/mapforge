@@ -243,7 +243,7 @@ export function initializeDefaultControls () {
 }
 
 const updateOrientation = (event) => {
-  console.log("Orientation:", event.alpha)
+  // console.log("Orientation:", event.alpha)
   let dot = document.querySelector('.maplibregl-user-location-dot')
   if (dot) {
     dot.style.setProperty('--user-dot-rotation', `rotate(${event.alpha}deg)`)

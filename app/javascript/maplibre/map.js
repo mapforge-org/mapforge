@@ -449,8 +449,10 @@ export function sortLayers () {
   map.setStyle(newStyle, { diff: true })
 
   // place km markers under symbols layer (icons)
-  map.moveLayer('km-marker-points', 'symbols-layer')
-  map.moveLayer('km-marker-numbers', 'symbols-layer')
+  if (layers.find(layer => layer.id === 'km-marker-points')) {
+    map.moveLayer('km-marker-points', 'symbols-layer')
+    map.moveLayer('km-marker-numbers', 'symbols-layer')
+  }
 
   // console.log(map.getStyle().layers)
 }
