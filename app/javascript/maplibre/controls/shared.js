@@ -214,8 +214,8 @@ export function initializeDefaultControls () {
     if (functions.isMobileDevice()) {
       window.addEventListener('deviceorientation', (event) => {
         console.log("Orientation:", event.alpha)
-        let el = document.querySelector('.maplibregl-user-location-dot::after')
-        el.style.transform = `rotate(${event.alpha}deg)`
+        let dot = document.querySelector('.maplibregl-user-location-dot')
+        dot.style.setProperty('--user-dot-rotation', `rotate(${event.alpha}deg)`);
       })
     }
   })

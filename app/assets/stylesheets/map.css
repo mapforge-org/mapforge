@@ -138,10 +138,15 @@ html:has(.map), body:has(.map) {
   left: 0;
 }
 
+.maplibregl-user-location-dot{
+  --user-dot-rotation: rotate(0deg);
+}
+
 .maplibregl-user-location-dot::after{
   content: "^";
   font-weight: bold;
   color: #fff;
+  transform: var(--user-dot-rotation);
 }
 
 .km-marker {
