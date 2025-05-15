@@ -138,6 +138,12 @@ html:has(.map), body:has(.map) {
   left: 0;
 }
 
+.maplibregl-user-location-dot::after{
+  content: "^";
+  font-weight: bold;
+  color: #fff;
+}
+
 .km-marker {
   border-radius: 50%;
   width: 25px;

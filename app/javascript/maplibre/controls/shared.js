@@ -198,7 +198,8 @@ export function initializeDefaultControls () {
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)').classList.add('hidden')
 
   // https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl
-  // Note: This might works only via https in modern browsers
+  // css: .maplibregl-user-location-dot
+  // Note: This works only via https in modern browsers
   const geolocate = new maplibregl.GeolocateControl({
     positionOptions: {
       enableHighAccuracy: true
@@ -208,6 +209,17 @@ export function initializeDefaultControls () {
   geolocate.on('error', () => {
     status('Error detecting location', 'warning')
   })
+  geolocate.on('trackuserlocationstart', () => {
+    status('A trackuserlocationstart event has occurred.')
+    if (functions.isMobileDevice()) {
+      window.addEventListener('deviceorientation', (event) => {
+        console.log("Orientation:", event.alpha)
+        let el = document.querySelector('.maplibregl-user-location-dot::after')
+        el.style.transform = `rotate(${event.alpha}deg)`
+      })
+    }
+  })
+
   map.addControl(geolocate, 'top-right')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)').classList.add('hidden')
 
