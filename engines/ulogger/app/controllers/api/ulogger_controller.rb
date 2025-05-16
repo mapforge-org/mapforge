@@ -22,7 +22,7 @@ module Ulogger
       "fill-extrusion-width": 1.5,
       "stroke-opacity": 0.45,
       "stroke-width": 5,
-      "stroke": "#000000"
+      "stroke": "#62a0ea"
     }
 
     def auth

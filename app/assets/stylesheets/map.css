@@ -32,6 +32,7 @@ html:has(.map), body:has(.map) {
   text-shadow: 0 -4px 4px white, 4px 0 4px white, 0 4px 4px white, -4px 0 4px white;
   font-weight: bold;
   font-family: Lobster, serif;
+  text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -55,6 +56,14 @@ html:has(.map), body:has(.map) {
 
   #map-title {
     font-size: 0.9em;
+  }
+}
+
+@media (width < 380px) {
+  #map-title {
+    font-size: 0.7em;
+    max-height: 3em;
+    white-space: unset;
   }
 }
 

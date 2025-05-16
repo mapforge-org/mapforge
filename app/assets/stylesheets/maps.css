@@ -50,7 +50,8 @@
   font-weight: bold;
   font-family: Lobster, serif;
   text-overflow: ellipsis;
-  white-space: nowrap;
+
+  /* white-space: nowrap; */
   overflow: hidden;
 }
 

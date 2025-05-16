@@ -206,17 +206,12 @@ export function initializeDefaultControls () {
     },
     trackUserLocation: functions.isMobileDevice()
   })
-  geolocate.on('error', () => {
-    status('Error detecting location', 'warning')
-  })
+  geolocate.on('error', () => { status('Error detecting location', 'warning') })
   geolocate.on('trackuserlocationstart', () => {
     if (functions.isMobileDevice()) {
       window.removeEventListener('deviceorientation', updateOrientation)
       window.addEventListener('deviceorientation', updateOrientation)
     }
-  })
-  geolocate.on('trackuserlocationend', () => {
-    window.removeEventListener('deviceorientation', updateOrientation)
   })
 
   map.addControl(geolocate, 'top-right')
