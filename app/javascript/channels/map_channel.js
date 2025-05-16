@@ -1,7 +1,7 @@
 import consumer from 'channels/consumer'
 import {
   upsert, destroyFeature, setBackgroundMapLayer, mapProperties,
-  initializeMaplibreProperties, map, resetGeojsonData, loadGeoJsonData
+  initializeMaplibreProperties, map, resetGeojsonData, loadGeoJsonData, reloadMapProperties
 } from 'maplibre/map'
 import { disableEditControls, enableEditControls } from 'maplibre/controls/edit'
 import { status } from 'helpers/status'
@@ -29,15 +29,18 @@ export function initializeSocket () {
       console.log('Connected to map_channel ' + window.gon.map_id)
       map.fire('online', { detail: { message: 'Connected to map_channel' } })
       mapChannel = this
+      window.mapChannel = mapChannel
       enableEditControls()
       // only reload data when there has been a connection before, to avoid double load
       if (channelStatus === 'off') {
-        status('Connection to server re-established')
-        initializeMaplibreProperties()
-        resetGeojsonData()
-        loadGeoJsonData()
-        setBackgroundMapLayer(mapProperties.base_map, false)
-        map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
+        reloadMapProperties().then(() => {
+          initializeMaplibreProperties()
+          resetGeojsonData()
+          loadGeoJsonData()
+          setBackgroundMapLayer(mapProperties.base_map, false)
+          map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
+          status('Connection to server re-established')
+        })
       } else {
         // status('Connection to server established')
       }

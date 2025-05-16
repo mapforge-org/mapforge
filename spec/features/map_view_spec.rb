@@ -5,6 +5,7 @@ describe 'Map public view' do
   let(:path) { map_path(map.public_id) }
 
   before do
+    stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
     visit path
     expect(page).to have_css('#maplibre-map[map-loaded="true"]')
   end
@@ -108,10 +109,37 @@ describe 'Map public view' do
     end
   end
 
-  context 'with lost websocket' do
+  context 'with server gone' do
     it 'shows warning' do
       ActionCable.server.connections.each(&:close)
       expect(page).to have_text('Connection to server lost')
+    end
+  end
+
+  context 'with client going offline' do
+    it 'shows warning' do
+      go_offline
+      expect(page).to have_text('Connection to server lost')
+    end
+
+    it 'catches up with new features on reconnect' do
+      go_offline
+      expect(page).to have_text('Connection to server lost')
+      create(:feature, :polygon_middle, layer: map.layers.first, title: 'Poly Title')
+      go_online
+      expect(page).to have_text(/Connection to server re-established|Map view updated/)
+      click_coord('#maplibre-map', 50, 50)
+      expect(page).to have_text('Poly Title')
+    end
+
+    it 'catches up with map property changes on reconnect' do
+      go_offline
+      expect(page).to have_text('Connection to server lost')
+      map.update!(base_map: 'test2')
+      go_online
+      expect(page).to have_text(/Connection to server re-established|Map view updated/)
+      base_map = page.driver.evaluate_script("window.gon.map_properties['base_map']")
+      expect(base_map).to eq 'test2'
     end
   end
 

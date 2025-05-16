@@ -171,9 +171,7 @@ export function loadGeoJsonData () {
   const url = host + '/m/' + window.gon.map_id + '.geojson'
   fetch(url)
     .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
+      if (!response.ok) { throw new Error('Network response was not ok') }
       return response.json()
     })
     .then(data => {
@@ -189,6 +187,21 @@ export function loadGeoJsonData () {
       console.error('Failed to fetch GeoJSON:', error)
       console.error('GeoJSONData:', geojsonData)
     })
+}
+
+export function reloadMapProperties () {
+  const host = new URL(window.location.href).origin
+  const url = host + '/m/' + window.gon.map_id + '/properties'
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) { throw new Error('Network response was not ok') }
+      return response.json()
+    })
+    .then(data => {
+      // console.log('reloaded map properties', data)
+      window.gon.map_properties = data
+    })
+    .catch(error => { console.error('Failed to fetch map properties', error) })
 }
 
 function addTerrain () {

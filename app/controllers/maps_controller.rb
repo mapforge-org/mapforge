@@ -3,7 +3,7 @@ class MapsController < ApplicationController
   before_action :set_map_rw, only: %i[destroy]
   before_action :set_map_mode, only: %i[show]
   before_action :set_global_js_values, only: %i[show]
-  before_action :check_permissions, only: %i[show]
+  before_action :check_permissions, only: %i[show properties]
   before_action :require_login, only: %i[my]
   before_action :require_map_owner, only: %i[destroy]
 
