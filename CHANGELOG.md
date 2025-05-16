@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2025-05
+
+* Device orientation indicator
+
 ## 2025-04
 
 * Elevation graph

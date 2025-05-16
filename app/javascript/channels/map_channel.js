@@ -1,14 +1,13 @@
 import consumer from 'channels/consumer'
 import {
   upsert, destroyFeature, setBackgroundMapLayer, mapProperties,
-  initializeMaplibreProperties, map, resetGeojsonData
+  initializeMaplibreProperties, map, resetGeojsonData, loadGeoJsonData
 } from 'maplibre/map'
 import { disableEditControls, enableEditControls } from 'maplibre/controls/edit'
 import { status } from 'helpers/status'
 
 export let mapChannel
 let channelStatus
-let reconnectTimer
 
 ['turbo:load'].forEach(function (e) {
   window.addEventListener(e, function () {
@@ -27,7 +26,6 @@ export function initializeSocket () {
   consumer.subscriptions.create({ channel: 'MapChannel', map_id: window.gon.map_id }, {
     connected () {
       // Called when the subscription is ready for use on the server
-      clearInterval(reconnectTimer)
       console.log('Connected to map_channel ' + window.gon.map_id)
       map.fire('online', { detail: { message: 'Connected to map_channel' } })
       mapChannel = this
@@ -37,7 +35,8 @@ export function initializeSocket () {
         status('Connection to server re-established')
         initializeMaplibreProperties()
         resetGeojsonData()
-        setBackgroundMapLayer(mapProperties.base_map, true)
+        loadGeoJsonData()
+        setBackgroundMapLayer(mapProperties.base_map, false)
         map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
       } else {
         // status('Connection to server established')
@@ -51,13 +50,8 @@ export function initializeSocket () {
       map.fire('offline', { detail: { message: 'Disconnected from map_channel' } })
       channelStatus = 'off'
       disableEditControls()
-      mapChannel = null
       // show error with delay to avoid showing it on unload/refresh
       setTimeout(function () { status('Connection to server lost', 'error', 'medium', 60 * 60 * 1000) }, 1000)
-      reconnectTimer = setInterval(() => {
-        console.log('Trying to re-connect websocket..')
-        initializeSocket()
-      }, 10000)
     },
 
     received (data) {
