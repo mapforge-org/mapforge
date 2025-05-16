@@ -6,7 +6,13 @@ class Layer
   belongs_to :map, optional: true, touch: true
   has_many :features, dependent: :destroy
 
+  field :type
   field :features_count, type: Integer, default: 0
+
+  def to_geojson
+    { type: "FeatureCollection",
+      features: features.map(&:geojson) }
+  end
 
   def clone_with_features
     clone = self.dup

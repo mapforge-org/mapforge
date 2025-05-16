@@ -112,12 +112,13 @@ class Map
   end
 
   def to_json
-    { properties: properties, layers: [ to_geojson ] }.to_json
+    { properties: properties, layers: layers.map(&:to_geojson) }.to_json
   end
 
+  # flattened geojson collection of all layers
   def to_geojson
     { type: "FeatureCollection",
-      features: features.map(&:geojson) }
+      features: layers.map(&:features).flatten.map(&:geojson) }
   end
 
   def to_gpx
