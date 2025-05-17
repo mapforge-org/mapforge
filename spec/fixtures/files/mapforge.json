@@ -11,10 +11,11 @@
     "bearing": 50.4,
     "terrain":false},
   "layers":
-  [{"type":"FeatureCollection","features":
+  [{"name":"TestLayer", "type":"geojson", "geojson":{"type":"FeatureCollection","features":
     [{"id":"45bb0ef1d0f5b93a3edb2d2ff83f1caa","type":"Feature","geometry":{"coordinates":[11.064763346883609,49.46551067663387],"type":"Point"},"properties":{"title":"f1"}},
       {"id":"279a0f8b5d604c06041af08445bd1e29","type":"Feature","geometry":{"coordinates":[11.0528335673568,49.468579449140435],"type":"Point"},"properties":{}},
       {"id":"e82015441a251162247612aa13056c6e","type":"Feature","geometry":{"coordinates":[11.065589925310917,49.47111081921241],"type":"Point"},"properties":{}}
     ]
-  }]
+    }}
+  ]
 }

@@ -74,7 +74,7 @@ class Map
   after_destroy :delete_screenshot
   # broadcast updates when the layer changed because of default_center + default_zoom
   after_touch :broadcast_update, unless: proc { |record| record.center && record.zoom }
-  before_create :create_public_id, :create_layer
+  before_create :create_public_id, :create_default_layer
   validate :public_id_must_be_unique
 
   def properties
@@ -107,18 +107,14 @@ class Map
     self.public_id = SecureRandom.hex(4).tap { |i| i[0..1] = "11" } unless public_id.present?
   end
 
-  def create_layer
-    self.layers << Layer.create!(map: self) unless layers.present?
-  end
-
   def to_json
-    { properties: properties, layers: layers.map(&:to_geojson) }.to_json
+    { properties: properties, layers: layers.map(&:to_json) }.to_json
   end
 
   # flattened geojson collection of all layers
   def to_geojson
-    { type: "FeatureCollection",
-      features: layers.map(&:features).flatten.map(&:geojson) }
+      { type: "FeatureCollection",
+        features: layers.map(&:features).flatten.map(&:geojson) }
   end
 
   def to_gpx
@@ -149,9 +145,12 @@ class Map
     map = Map.find_or_create_by(public_id: map_hash["properties"]["public_id"])
     map.update(map_hash["properties"].except("default_center", "default_zoom"))
     map.layers.delete_all
-    map.create_layer
-    map.layers.first.update!(features: Feature.from_collection(map_hash["layers"][0],
-collection_format: collection_format))
+    map_hash["layers"].each do |layer|
+      features = Feature.from_collection(layer["geojson"], collection_format: collection_format)
+      layer = Layer.create!(name: layer["name"], type: layer["type"], query: layer["query"],
+        features: features)
+      map.layers << layer
+    end
 
     Rails.logger.info "Created map with #{map.features.size} features from #{path}"
     Rails.logger.info "Public id: #{map.public_id}, private id: #{map.id}"
@@ -167,6 +166,10 @@ collection_format: collection_format))
   end
 
   private
+
+  def create_default_layer
+    self.layers << Layer.create!(map: self, type: "geojson") unless layers.present?
+  end
 
   def all_points
     coordinates = features.map { |feature| feature.coordinates(include_height: false) }

@@ -37,7 +37,8 @@ export default class extends Controller {
         } else if (file.type === 'application/json') {
           // mapforge or geojson export file
           geoJSON = JSON.parse(content)
-          if (geoJSON.layers) { geoJSON = geoJSON.layers[0] }
+          // Taking only the first geojson layer for now
+          if (geoJSON.layers) { geoJSON = geoJSON.layers.find(f => f.type === 'geojson').geojson }
         }
 
         let i = 1

@@ -26,7 +26,7 @@ function featureTitle (feature) {
 function featureMeta (feature) {
   const turf = window.turf
   let meta = ''
-  if (feature.geometry.type === 'LineString') {
+  if (feature.geometry.type === 'LineString' && feature.geometry.coordinates.length > 1) {
     const turfLineString = turf.lineString(feature.geometry.coordinates)
     const length = turf.length(turfLineString)
     if (length <= 2) {

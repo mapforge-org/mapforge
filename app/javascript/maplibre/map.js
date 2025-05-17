@@ -168,7 +168,7 @@ export function loadGeoJsonData () {
   }
 
   const host = new URL(window.location.href).origin
-  const url = host + '/m/' + window.gon.map_id + '.geojson'
+  const url = host + '/m/' + window.gon.map_id + '.json'
   fetch(url)
     .then(response => {
       if (!response.ok) { throw new Error('Network response was not ok') }
@@ -176,7 +176,8 @@ export function loadGeoJsonData () {
     })
     .then(data => {
       // console.log('loaded GeoJSON from server: ', JSON.stringify(data))
-      geojsonData = data
+      // Taking only the first geojson layer for now
+      geojsonData = data.layers.find(f => f.type === 'geojson').geojson
       console.log('Loaded ' + geojsonData.features.length + ' features from ' + url)
       if (geojsonData.features.length > 0) {
         redrawGeojson()

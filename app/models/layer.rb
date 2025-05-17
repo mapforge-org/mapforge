@@ -6,8 +6,18 @@ class Layer
   belongs_to :map, optional: true, touch: true
   has_many :features, dependent: :destroy
 
+  scope :geojson, -> { where(type: "geojson") }
+  scope :overpass, -> { where(type: "overpass") }
+
   field :type
+  field :name
+  field :query
   field :features_count, type: Integer, default: 0
+
+  def to_json
+    { id: id, type: type, name: name, query: query,
+      geojson: to_geojson }
+  end
 
   def to_geojson
     { type: "FeatureCollection",
