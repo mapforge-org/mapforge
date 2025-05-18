@@ -14,6 +14,7 @@ import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
 
 export let map
+export let layerCache // [{ id:, geojson: { type: 'FeatureCollection', features: [] } }]
 export let geojsonData //= { type: 'FeatureCollection', features: [] }
 export let mapProperties
 export let lastMousePosition
@@ -32,7 +33,7 @@ let backgroundContours
 // setBackgroundMapLayer() -> 'style.load' event
 // 'style.load' -> initializeDefaultControls()
 // 'style.load' -> initializeViewStyles() || initializeEditStyles()
-// 'style.load' -> loadGeoJsonData() -> 'geojson.load'
+// 'style.load' -> loadGeoJsonLayer() -> 'geojson.load'
 
 export function initializeMaplibreProperties () {
   const lastProperties = JSON.parse(JSON.stringify(mapProperties || {}))
@@ -49,13 +50,14 @@ export function initializeMaplibreProperties () {
   }
 }
 
-export function resetGeojsonData () {
+// reset map data
+export function resetLayers () {
   geojsonData = null
+  layerCache = []
 }
 
 export function initializeMap (divId = 'maplibre-map') {
-  // reset map data
-  geojsonData = null
+  resetLayers()
   backgroundMapLayer = null
 
   initializeMaplibreProperties()
@@ -75,12 +77,23 @@ export function initializeMap (divId = 'maplibre-map') {
   window.map = map
   window.maplibregl = maplibregl
 
-  // after basemap style is ready/changed, init source layers + load geojson layer
+  // after basemap style is ready/changed, init source layers +
+  // load geojson layers
   map.on('style.load', () => {
     console.log('Basemap style loaded (style.load)')
-    addGeoJSONSource()
-    addKmMarkersSource()
-    loadGeoJsonData()
+    window.gon.map_layers.forEach((layer, _index) => {
+      // TODO: assuming only one geojson layer per map for now
+      if (layer.type === 'geojson') {
+        addGeoJSONSource('geojson-source')
+        addKmMarkersSource('km-marker-source')
+        loadGeoJsonLayer('geojson-source')
+        // layer styles get set in initializeViewStyles() + initializeEditStyles()
+      } else if (layer.type === 'overpass') {
+        addGeoJSONSource('overpass-source-' + layer.id)
+        // TODO: load overpass data
+        initializeViewStyles('overpass-source-' + layer.id)
+      }
+    })
     demSource.setupMaplibre(maplibregl)
     if (mapProperties.terrain) { addTerrain() }
     if (mapProperties.hillshade) { addHillshade() }
@@ -149,9 +162,9 @@ export function initializeMap (divId = 'maplibre-map') {
   // })
 }
 
-export function addGeoJSONSource () {
+export function addGeoJSONSource (layerName) {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
-  map.addSource('geojson-source', {
+  map.addSource(layerName, {
     type: 'geojson',
     promoteId: 'id',
     data: { type: 'FeatureCollection', features: [] }, // geojsonData,
@@ -159,7 +172,7 @@ export function addGeoJSONSource () {
   })
 }
 
-export function loadGeoJsonData () {
+export function loadGeoJsonLayer (_id) {
   if (geojsonData) {
     // data is already loaded
     redrawGeojson()
@@ -200,7 +213,8 @@ export function reloadMapProperties () {
     })
     .then(data => {
       // console.log('reloaded map properties', data)
-      window.gon.map_properties = data
+      window.gon.map_properties = data.properties
+      window.gon.map_layers = data.layers
     })
     .catch(error => { console.error('Failed to fetch map properties', error) })
 }
@@ -310,7 +324,7 @@ function addGlobe () {
 
 export function initializeStaticMode () {
   map.on('style.load', () => {
-    initializeViewStyles()
+    initializeViewStyles('geojson-source')
   })
   functions.e('.maplibregl-ctrl-attrib, #map-head', e => { e.classList.add('hidden') })
 }
@@ -319,7 +333,7 @@ export function initializeViewMode () {
   map.once('style.load', () => {
     initializeViewControls()
     initializeDefaultControls()
-    initializeViewStyles()
+    initializeViewStyles('geojson-source')
   })
   map.on('click', resetControls)
 }
@@ -421,7 +435,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     setStyleDefaultFont(basemap.font || defaultFont)
     map.setStyle(basemap.style,
       // adding 'diff: false' so that 'style.load' gets triggered (https://github.com/maplibre/maplibre-gl-js/issues/2587)
-      // which will trigger loadGeoJsonData()
+      // which will trigger loadGeoJsonLayer()
       { diff: false, strictMode: true })
   } else {
     console.error('Base map ' + mapName + ' not available!')

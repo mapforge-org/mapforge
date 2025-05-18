@@ -14,6 +14,10 @@ class Layer
   field :query
   field :features_count, type: Integer, default: 0
 
+  def to_summary_json
+    { id: id, type: type, name: name, query: query }
+  end
+
   def to_json
     { id: id, type: type, name: name, query: query,
       geojson: to_geojson }

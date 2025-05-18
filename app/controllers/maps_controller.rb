@@ -25,6 +25,7 @@ class MapsController < ApplicationController
       gon.map_mode = @map_mode
       gon.csrf_token = form_authenticity_token
       gon.map_properties = @map_properties
+      gon.map_layers = @map.layers.map(&:to_summary_json)
     end
 
     respond_to do |format|
@@ -49,11 +50,9 @@ class MapsController < ApplicationController
     redirect_to map_url(@map), notice: "Map was successfully created."
   end
 
-  # :nocov:
   def properties
-    render json: @map.properties.as_json
+    render json: { properties: @map.properties, layers: @map.layers.map(&:to_summary_json) }
   end
-  # :nocov:
 
   def feature
     feature = @map.features.find(params["feature_id"])

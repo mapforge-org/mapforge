@@ -212,8 +212,8 @@ export function kmMarkerStyles () {
   return { 'km-marker-points': pointsLayer, 'km-marker-numbers': numbersLayer }
 }
 
-export function addKmMarkersSource () {
-  map.addSource('km-marker-source', {
+export function addKmMarkersSource (sourceName) {
+  map.addSource(sourceName, {
     type: 'geojson',
     data: { type: 'FeatureCollection', features: [] }
   })

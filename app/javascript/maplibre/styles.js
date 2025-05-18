@@ -22,13 +22,13 @@ export const viewStyleNames = [
 
 export function setStyleDefaultFont (font) { labelFont = [font] }
 
-export function initializeViewStyles () {
+export function initializeViewStyles (sourceName) {
   viewStyleNames.forEach(styleName => {
-    map.addLayer(styles()[styleName])
+    map.addLayer(setSource(styles()[styleName], sourceName))
   })
-  map.addLayer(kmMarkerStyles()['km-marker-points'])
-  map.addLayer(kmMarkerStyles()['km-marker-numbers'])
-  console.log('View styles added')
+  map.addLayer(setSource(kmMarkerStyles()['km-marker-points'], sourceName))
+  map.addLayer(setSource(kmMarkerStyles()['km-marker-numbers'], sourceName))
+  console.log('View styles added for source ' + sourceName)
 
   // click is needed to select on mobile and for sticky highlight
   map.on('click', viewStyleNames, function (e) {
@@ -474,4 +474,8 @@ export function styles () {
       }
     }
   }
+}
+
+export function setSource (style, sourceName) {
+  return { ...style, source: sourceName }
 }
