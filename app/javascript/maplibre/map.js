@@ -14,7 +14,7 @@ import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
 
 export let map
-export let layerCache // [{ id:, geojson: { type: 'FeatureCollection', features: [] } }]
+export let layers // [{ id:, geojson: { type: 'FeatureCollection', features: [] } }]
 export let geojsonData //= { type: 'FeatureCollection', features: [] }
 export let mapProperties
 export let lastMousePosition
@@ -33,7 +33,7 @@ let backgroundContours
 // setBackgroundMapLayer() -> 'style.load' event
 // 'style.load' -> initializeDefaultControls()
 // 'style.load' -> initializeViewStyles() || initializeEditStyles()
-// 'style.load' -> loadGeoJsonLayer() -> 'geojson.load'
+// 'style.load' -> loadLayers() -> 'geojson.load'
 
 export function initializeMaplibreProperties () {
   const lastProperties = JSON.parse(JSON.stringify(mapProperties || {}))
@@ -53,7 +53,7 @@ export function initializeMaplibreProperties () {
 // reset map data
 export function resetLayers () {
   geojsonData = null
-  layerCache = []
+  layers = []
 }
 
 export function initializeMap (divId = 'maplibre-map') {
@@ -78,15 +78,14 @@ export function initializeMap (divId = 'maplibre-map') {
   window.maplibregl = maplibregl
 
   // after basemap style is ready/changed, init source layers +
-  // load geojson layers
+  // load geojson data
   map.on('style.load', () => {
     console.log('Basemap style loaded (style.load)')
+    addGeoJSONSource('geojson-source')
+    addKmMarkersSource('km-marker-source')
+    loadLayers()
     window.gon.map_layers.forEach((layer, _index) => {
-      // TODO: assuming only one geojson layer per map for now
       if (layer.type === 'geojson') {
-        addGeoJSONSource('geojson-source')
-        addKmMarkersSource('km-marker-source')
-        loadGeoJsonLayer('geojson-source')
         // layer styles get set in initializeViewStyles() + initializeEditStyles()
       } else if (layer.type === 'overpass') {
         addGeoJSONSource('overpass-source-' + layer.id)
@@ -162,9 +161,10 @@ export function initializeMap (divId = 'maplibre-map') {
   // })
 }
 
-export function addGeoJSONSource (layerName) {
+export function addGeoJSONSource (sourceName) {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
-  map.addSource(layerName, {
+  // console.log("Adding source: " + sourceName)
+  map.addSource(sourceName, {
     type: 'geojson',
     promoteId: 'id',
     data: { type: 'FeatureCollection', features: [] }, // geojsonData,
@@ -172,7 +172,7 @@ export function addGeoJSONSource (layerName) {
   })
 }
 
-export function loadGeoJsonLayer (_id) {
+export function loadLayers () {
   if (geojsonData) {
     // data is already loaded
     redrawGeojson()
@@ -188,10 +188,14 @@ export function loadGeoJsonLayer (_id) {
       return response.json()
     })
     .then(data => {
-      // console.log('loaded GeoJSON from server: ', JSON.stringify(data))
-      // Taking only the first geojson layer for now
-      geojsonData = data.layers.find(f => f.type === 'geojson').geojson
-      console.log('Loaded ' + geojsonData.features.length + ' features from ' + url)
+      console.log('loaded GeoJSON from server: ', data)
+      data.layers.filter(f => f.type === 'geojson').forEach((layer) => {
+        layers.push(layer)
+        console.log('Layer ' + layer.id + ' loaded with ' + layer.geojson.features.length + ' features')
+      })
+      geojsonData = mergedGeoJSONLayers()
+
+
       if (geojsonData.features.length > 0) {
         redrawGeojson()
       }
@@ -435,7 +439,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     setStyleDefaultFont(basemap.font || defaultFont)
     map.setStyle(basemap.style,
       // adding 'diff: false' so that 'style.load' gets triggered (https://github.com/maplibre/maplibre-gl-js/issues/2587)
-      // which will trigger loadGeoJsonLayer()
+      // which will trigger loadLayers()
       { diff: false, strictMode: true })
   } else {
     console.error('Base map ' + mapName + ' not available!')
@@ -493,4 +497,9 @@ export function updateMapName (name) {
     }
     functions.e('#map-title', e => { e.textContent = mapProperties.name })
   }
+}
+
+export function mergedGeoJSONLayers() {
+  return { type: "FeatureCollection",
+    features: layers.flatMap(layer => layer.geojson.features) }
 }
