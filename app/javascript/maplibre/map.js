@@ -361,7 +361,7 @@ export function redrawGeojson (resetDraw = true) {
     }
   }
   map.getSource('geojson-source')?.setData(renderedGeojsonData())
-  map.redraw()
+  map.triggerRepaint()
   // drop the properties.id after sending to the map
   geojsonData.features.forEach(feature => { delete feature.properties.id })
 }
