@@ -75,6 +75,7 @@ export function initializeMap (divId = 'maplibre-map') {
 
   // for console debugging
   window.map = map
+  window.layers = layers
   window.maplibregl = maplibregl
 
   // after basemap style is ready/changed, init source layers +
@@ -386,7 +387,8 @@ export function upsert (updatedFeature) {
 
 export function addFeature (feature) {
   feature.properties.id = feature.id
-  geojsonData.features.push(feature)
+  layers.find(l => l.type === 'geojson').geojson.features.push(feature)
+  geojsonData = mergedGeoJSONLayers()
   redrawGeojson()
   status('Added feature ' + feature.id)
 }
@@ -413,6 +415,7 @@ export function destroyFeature (featureId) {
   if (geojsonData.features.find(f => f.id === featureId)) {
     status('Deleting feature ' + featureId)
     geojsonData.features = geojsonData.features.filter(f => f.id !== featureId)
+    layers.forEach(l => l.geojson.features = l.geojson.features.filter(f => f.id !== featureId))
     redrawGeojson()
     resetHighlightedFeature()
   }

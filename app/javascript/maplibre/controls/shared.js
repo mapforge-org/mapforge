@@ -1,4 +1,4 @@
-import { map, geojsonData } from 'maplibre/map'
+import { map, geojsonData, layers } from 'maplibre/map'
 import * as functions from 'helpers/functions'
 import { draw } from 'maplibre/edit'
 import { resetHighlightedFeature, featureIcon } from 'maplibre/feature'
@@ -98,27 +98,45 @@ export class MapLayersControl {
 
 // create the list of layers + features
 export function initLayersModal () {
-  functions.e('#default-layer .layer-elements', e => {
+  console.log("Re-draw layers modal")
+  functions.e('#layers', e => {
     e.innerHTML = ''
-    geojsonData.features.forEach(feature => {
-      const listItem = document.createElement('li')
-      listItem.classList.add('layer-feature-item')
-      listItem.setAttribute('data-feature-id', feature.id)
-      listItem.setAttribute('data-controller', 'map--layers')
-      listItem.setAttribute('data-action', 'click->map--layers#flyto')
+    layers.forEach(layer => {
+      const head = document.createElement('h4')
+      head.classList.add('mapforge-font')
+      head.classList.add('layer-name')
+      head.setAttribute('data-layer-id', layer.id)
+      head.setAttribute('data-layer-type', layer.type)
+      head.textContent = 'Map elements'
+      e.appendChild(head)
 
-      const icon = document.createElement('span')
-      icon.innerHTML = featureIcon(feature)
-      listItem.appendChild(icon)
-      const name = document.createElement('span')
-      name.textContent = (feature.properties.title || feature.properties.name || feature.id)
-      listItem.appendChild(name)
-      const link = document.createElement('a')
-      link.setAttribute('href', '#')
-      link.setAttribute('onclick', 'return false;')
-      listItem.appendChild(link)
-      e.appendChild(listItem)
+      const ul = document.createElement('ul')
+      ul.classList.add('layer-elements')
+      ul.classList.add('list-unstyled')
+      e.appendChild(ul)
+
+      layer.geojson.features.forEach(feature => {
+        const listItem = document.createElement('li')
+        listItem.classList.add('layer-feature-item')
+        listItem.setAttribute('data-feature-id', feature.id)
+        listItem.setAttribute('data-controller', 'map--layers')
+        listItem.setAttribute('data-action', 'click->map--layers#flyto')
+
+        const icon = document.createElement('span')
+        icon.innerHTML = featureIcon(feature)
+        listItem.appendChild(icon)
+        const name = document.createElement('span')
+        name.textContent = (feature.properties.title || feature.properties.name || feature.id)
+        listItem.appendChild(name)
+        const link = document.createElement('a')
+        link.setAttribute('href', '#')
+        link.setAttribute('onclick', 'return false;')
+        listItem.appendChild(link)
+        ul.appendChild(listItem)
+      })
+
     })
+
     if (geojsonData.features.length === 0) {
       e.innerHTML = 'Your map has no elements yet. You can either import or manually create some with the controls on the left.'
     }

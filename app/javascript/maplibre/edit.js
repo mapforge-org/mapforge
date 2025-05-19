@@ -1,4 +1,4 @@
-import { map, geojsonData, destroyFeature, redrawGeojson } from 'maplibre/map'
+import { map, geojsonData, destroyFeature, redrawGeojson, addFeature } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
 import { highlightFeature, showFeatureDetails } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
@@ -78,6 +78,7 @@ export function initializeEditMode () {
   })
 
   map.on('draw.modechange', () => {
+    if (currentMode === draw.getMode()) { return }
     console.log("Switch draw mode from '" + currentMode + "' to '" + draw.getMode() + "'")
     currentMode = draw.getMode()
 
@@ -130,7 +131,7 @@ export function initializeEditMode () {
     // probably mapbox draw bug: map can lose drag capabilities on double click
     map.dragPan.enable()
     if (!e.features?.length) { justCreated = false; selectedFeature = null; return }
-    console.log('draw.selectionchange', e.features)
+    // console.log('draw.selectionchange', e.features)
     if (selectedFeature && (selectedFeature.id === e.features[0].id)) { return }
     selectedFeature = e.features[0]
 
@@ -214,9 +215,8 @@ async function handleCreate (e) {
   // std mapbox draw shapes will auto-select the feature (simple_select).
   // This var enables special handling in draw.selectionchange
   justCreated = true
-
   status('Feature ' + feature.id + ' created')
-  geojsonData.features.push(feature)
+  addFeature(feature)
   // redraw if the painted feature was changed in this method
   if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') { redrawGeojson(false) }
   mapChannel.send_message('new_feature', feature)
