@@ -66,7 +66,7 @@
 
   #marker-image-ui.edit-ui.edit-point
     %label{ for: "marker-image"} Image:
-    %input.form-control#marker-image{ type: "file", name: 'marker-image', 'data-action': "input->map--feature-edit#updateMarkerImage" }
+    %input.form-control#marker-image{ type: "file", name: 'marker-image', 'data-action': "change->map--feature-edit#updateMarkerImage" }
 
   #show-km-markers-ui.edit-ui.edit-line
     %label.edit-line{ for: "show-km-markers"} Show km markers:
