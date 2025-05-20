@@ -259,6 +259,13 @@ const updateOrientation = (event) => {
   // console.log("Orientation:", event.alpha)
   let dot = document.querySelector('.maplibregl-user-location-dot')
   if (dot) {
-    dot.style.setProperty('--user-dot-rotation', `rotate(${event.alpha}deg)`)
+    // Prefer webkitCompassHeading on iOS Safari
+    let heading;
+    if (event.webkitCompassHeading !== undefined) {
+      heading = event.webkitCompassHeading // 0 = North
+    } else {
+      heading = event.alpha // 0 = North
+    }
+    dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
   }
 }
