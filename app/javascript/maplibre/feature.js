@@ -99,9 +99,9 @@ export function showFeatureDetails (feature) {
     const dragY = event.clientY || event.touches[0].clientY
     const y = dragY - dragStartY
     modal.classList.remove('modal-pull-up')
-    modal.classList.remove('modal-pull-up-half')
     modal.classList.remove('modal-pull-down')
     modal.style.height = (dragStartModalHeight - y) + 'px'
+    e.preventDefault()
   })
 
   f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend'], (_event) => {

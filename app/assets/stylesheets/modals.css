@@ -103,14 +103,8 @@
     height 0.3s linear !important;
 }
 
-.modal-pull-up-half {
-  height: 50% !important;
-  transition:
-    height 0.3s linear !important;
-}
-
 .modal-pull-down {
-  height: 25% !important;
+  height: 25%;
   transition:
     height 0.3s linear !important;
 }
