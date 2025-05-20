@@ -85,15 +85,6 @@ export function initializeMap (divId = 'maplibre-map') {
     addGeoJSONSource('geojson-source')
     addKmMarkersSource('km-marker-source')
     loadLayers()
-    window.gon.map_layers.forEach((layer, _index) => {
-      if (layer.type === 'geojson') {
-        // layer styles get set in initializeViewStyles() + initializeEditStyles()
-      } else if (layer.type === 'overpass') {
-        addGeoJSONSource('overpass-source-' + layer.id)
-        // TODO: load overpass data
-        initializeViewStyles('overpass-source-' + layer.id)
-      }
-    })
     demSource.setupMaplibre(maplibregl)
     if (mapProperties.terrain) { addTerrain() }
     if (mapProperties.hillshade) { addHillshade() }
@@ -190,16 +181,30 @@ export function loadLayers () {
     })
     .then(data => {
       console.log('loaded GeoJSON from server: ', data)
-      data.layers.filter(f => f.type === 'geojson').forEach((layer) => {
+      data.layers.forEach((layer) => {
         layers.push(layer)
-        console.log('Layer ' + layer.id + ' loaded with ' + layer.geojson.features.length + ' features')
+        console.log('Layer ' + layer.id + ' (' + layer.type + ') loaded with ' + layer.geojson.features.length + ' features')
       })
       geojsonData = mergedGeoJSONLayers()
 
+      // TODO: factor this out
+      layers.filter(f => f.type === 'overpass').forEach((layer) => {
+        console.log('Loading overpass layer', layer)
+        fetch("https://overpass-api.de/api/interpreter",
+          {
+            method: "POST",
+            headers: { "Content-Type": "text/plain" },
+            // The body contains the query
+            body: 'nwr[public_transport=station](49.428861698453204,10.880450958926303,49.49010039682332,11.226692850739255);\nout center;'
+          })
+        .then( response => { console.log(response); return response.json() })
+        .then( data => console.log(data) )
+        .catch(error => {
+          console.error('Failed to fetch overpass:', error)
+        })
+      })
 
-      if (geojsonData.features.length > 0) {
-        redrawGeojson()
-      }
+      redrawGeojson()
       map.fire('geojson.load', { detail: { message: 'geojson-source loaded' } })
     })
     .catch(error => {
@@ -504,5 +509,6 @@ export function updateMapName (name) {
 
 export function mergedGeoJSONLayers() {
   return { type: "FeatureCollection",
-    features: layers.flatMap(layer => layer.geojson.features) }
+    features: layers.filter(f => f.type === 'geojson')
+      .flatMap(layer => layer.geojson.features) }
 }

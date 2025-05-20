@@ -107,7 +107,7 @@ export function initLayersModal () {
       head.classList.add('layer-name')
       head.setAttribute('data-layer-id', layer.id)
       head.setAttribute('data-layer-type', layer.type)
-      head.textContent = 'Map elements'
+      head.textContent = 'Layer elements'
       e.appendChild(head)
 
       const ul = document.createElement('ul')
@@ -134,7 +134,11 @@ export function initLayersModal () {
         listItem.appendChild(link)
         ul.appendChild(listItem)
       })
-
+      if (layer.geojson.features.length === 0) {
+        const newNode = document.createElement('i')
+        newNode.textContent = 'No elements in this layer'
+        e.parentNode.insertBefore(newNode, e.nextSibling)
+      }
     })
 
     if (geojsonData.features.length === 0) {

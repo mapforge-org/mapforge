@@ -15,7 +15,7 @@ class Layer
   field :features_count, type: Integer, default: 0
 
   def to_summary_json
-    { id: id, type: type, name: name, query: query }
+    { id: id, type: type, name: name }
   end
 
   def to_json

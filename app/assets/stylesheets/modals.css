@@ -111,11 +111,11 @@
 
 @media (width > 574px) {
   .modal-pull-up {
-    height: auto !important;
+    height: auto;
   }
 
   .modal-pull-down {
-    height: auto !important;
+    height: auto;
   }
 }
 
