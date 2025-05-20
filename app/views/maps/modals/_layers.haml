@@ -15,7 +15,12 @@
                 Import gpx/kml
 
           .col-7
-            %input.form-control.btn.btn-green#fileInput{ type: "file", data: { action: "change->map--layers#upload" } }
+            - if @user
+              %input.form-control.btn.btn-green#fileInput{ type: "file", data: { action: "change->map--layers#upload" } }
+            - else
+              %i.bi.bi-info-circle
+                Please log in to upload tracks
+
           %i
             %small EPSG:4326 (WGS 84) format, max. 800Kb
 

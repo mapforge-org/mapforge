@@ -2,8 +2,10 @@ require 'rails_helper'
 
 describe 'Feature edit' do
   let(:map) { create(:map) }
+  let(:user) { create(:user) }
 
   before do
+    allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
     visit map_path(map)
     expect(page).to have_css("#maplibre-map[map-loaded='true']")
   end

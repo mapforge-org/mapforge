@@ -66,7 +66,11 @@
 
   #marker-image-ui.edit-ui.edit-point
     %label{ for: "marker-image"} Image:
-    %input.form-control#marker-image{ type: "file", name: 'marker-image', 'data-action': "change->map--feature-edit#updateMarkerImage" }
+    - if @user
+      %input.form-control#marker-image{ type: "file", name: 'marker-image', 'data-action': "change->map--feature-edit#updateMarkerImage" }
+    - else
+      %i.bi.bi-info-circle
+        Please log in to upload images
 
   #show-km-markers-ui.edit-ui.edit-line
     %label.edit-line{ for: "show-km-markers"} Show km markers:
