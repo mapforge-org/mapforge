@@ -266,6 +266,7 @@ const updateOrientation = (event) => {
     } else {
       heading = event.alpha // 0 = North
     }
+    heading -= map.getBearing()
     dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
   }
 }
