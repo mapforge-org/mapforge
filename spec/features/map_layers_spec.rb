@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'Map' do
   subject(:map) { create(:map) }
+
   let(:user) { create(:user) }
 
   before do
