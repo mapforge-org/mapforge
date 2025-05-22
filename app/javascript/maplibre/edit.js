@@ -1,6 +1,7 @@
 import { map, geojsonData, destroyFeature, redrawGeojson, addFeature } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
-import { highlightFeature, showFeatureDetails } from 'maplibre/feature'
+import { initializeViewStyles } from 'maplibre/styles'
+import { highlightFeature, showFeatureDetails, initializeKmMarkerStyles } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
@@ -69,6 +70,8 @@ export function initializeEditMode () {
   // Add edit styles when basemap style is loaded
   map.on('style.load', function (_e) {
     initializeEditStyles()
+    initializeViewStyles('overpass-source')
+    initializeKmMarkerStyles()
   })
 
   map.on('geojson.load', function (_e) {
@@ -136,6 +139,7 @@ export function initializeEditMode () {
     selectedFeature = e.features[0]
 
     if (geojsonData.features.find(f => f.id === selectedFeature.id)) {
+      document.querySelector('#edit-buttons').classList.remove('hidden')
       select(selectedFeature)
       highlightFeature(selectedFeature, true)
       // switch feature details to edit mode after create
@@ -175,11 +179,10 @@ export function initializeEditMode () {
     if (!draw.getMode().startsWith('directions_')) {
       selectedFeature = null
       resetControls()
+      document.querySelector('#edit-buttons').classList.add('hidden')
       document.querySelector('.maplibregl-ctrl-select').classList.add('active')
     }
   })
-
-  document.querySelector('#edit-buttons').classList.remove('hidden')
 }
 
 // switching directly from 'simple_select' to 'direct_select',

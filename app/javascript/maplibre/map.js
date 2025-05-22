@@ -10,8 +10,9 @@ import { initCtrlTooltips, initializeDefaultControls, resetControls } from 'mapl
 import { initializeViewControls } from 'maplibre/controls/view'
 import { draw } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
-  renderExtrusionLines, addKmMarkersSource } from 'maplibre/feature'
+  renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
+import { loadOverpassLayers } from 'maplibre/overpass'
 
 export let map
 export let layers // [{ id:, geojson: { type: 'FeatureCollection', features: [] } }]
@@ -52,6 +53,7 @@ export function initializeMaplibreProperties () {
 
 // reset map data
 export function resetLayers () {
+  functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', false) })
   geojsonData = null
   layers = []
 }
@@ -75,7 +77,7 @@ export function initializeMap (divId = 'maplibre-map') {
 
   // for console debugging
   window.map = map
-  window.layers = layers
+  window._layers = layers
   window.maplibregl = maplibregl
 
   // after basemap style is ready/changed, init source layers +
@@ -83,7 +85,8 @@ export function initializeMap (divId = 'maplibre-map') {
   map.on('style.load', () => {
     console.log('Basemap style loaded (style.load)')
     addGeoJSONSource('geojson-source')
-    addKmMarkersSource('km-marker-source')
+    addGeoJSONSource('overpass-source')
+    addGeoJSONSource('km-marker-source')
     loadLayers()
     demSource.setupMaplibre(maplibregl)
     if (mapProperties.terrain) { addTerrain() }
@@ -186,26 +189,10 @@ export function loadLayers () {
         console.log('Layer ' + layer.id + ' (' + layer.type + ') loaded with ' + layer.geojson.features.length + ' features')
       })
       geojsonData = mergedGeoJSONLayers()
-
-      // TODO: factor this out
-      layers.filter(f => f.type === 'overpass').forEach((layer) => {
-        console.log('Loading overpass layer', layer)
-        fetch("https://overpass-api.de/api/interpreter",
-          {
-            method: "POST",
-            headers: { "Content-Type": "text/plain" },
-            // The body contains the query
-            body: 'nwr[public_transport=station](49.428861698453204,10.880450958926303,49.49010039682332,11.226692850739255);\nout center;'
-          })
-        .then( response => { console.log(response); return response.json() })
-        .then( data => console.log(data) )
-        .catch(error => {
-          console.error('Failed to fetch overpass:', error)
-        })
-      })
-
       redrawGeojson()
+      functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
       map.fire('geojson.load', { detail: { message: 'geojson-source loaded' } })
+      loadOverpassLayers()
     })
     .catch(error => {
       console.error('Failed to fetch GeoJSON:', error)
@@ -335,6 +322,7 @@ function addGlobe () {
 export function initializeStaticMode () {
   map.on('style.load', () => {
     initializeViewStyles('geojson-source')
+    initializeKmMarkerStyles ()
   })
   functions.e('.maplibregl-ctrl-attrib, #map-head', e => { e.classList.add('hidden') })
 }
@@ -344,6 +332,8 @@ export function initializeViewMode () {
     initializeViewControls()
     initializeDefaultControls()
     initializeViewStyles('geojson-source')
+    initializeViewStyles('overpass-source')
+    initializeKmMarkerStyles()
   })
   map.on('click', resetControls)
 }
@@ -353,7 +343,11 @@ export function redrawGeojson (resetDraw = true) {
   // https://github.com/mapbox/mapbox-gl-js/issues/2716
   // because to highlight a feature we need the id,
   // and in the style layers it only accepts mumeric ids in the id field initially
+  mergedGeoJSONLayers('overpass').features.forEach((feature) => { feature.properties.id = feature.id })
+  mergedGeoJSONLayers('geojson').features.forEach((feature) => { feature.properties.id = feature.id })
+  //geojsonData = mergedGeoJSONLayers('geojson')
   geojsonData.features.forEach((feature, _index) => { feature.properties.id = feature.id })
+
   // draw has its own style layers based on editStyles
   if (draw) {
     if (resetDraw) {
@@ -367,9 +361,13 @@ export function redrawGeojson (resetDraw = true) {
     }
   }
   map.getSource('geojson-source')?.setData(renderedGeojsonData())
+  console.log("Setting overpass source", mergedGeoJSONLayers('overpass'))
+  map.getSource('overpass-source')?.setData(mergedGeoJSONLayers('overpass'))
+
   map.triggerRepaint()
   // drop the properties.id after sending to the map
-  geojsonData.features.forEach(feature => { delete feature.properties.id })
+  mergedGeoJSONLayers('overpass').features.forEach((feature) => { delete feature.properties.id })
+  mergedGeoJSONLayers('geojson').features.forEach((feature) => { delete feature.properties.id })
 }
 
 // change geojson data before rendering:
@@ -490,8 +488,8 @@ export function sortLayers () {
 
   // place km markers under symbols layer (icons)
   if (layers.find(layer => layer.id === 'km-marker-points')) {
-    map.moveLayer('km-marker-points', 'symbols-layer')
-    map.moveLayer('km-marker-numbers', 'symbols-layer')
+    map.moveLayer('km-marker-points', 'symbols-layer_geojson-source')
+    map.moveLayer('km-marker-numbers', 'symbols-layer_geojson-source')
   }
 
   // console.log(map.getStyle().layers)
@@ -507,8 +505,8 @@ export function updateMapName (name) {
   }
 }
 
-export function mergedGeoJSONLayers() {
+export function mergedGeoJSONLayers(type='geojson') {
   return { type: "FeatureCollection",
-    features: layers.filter(f => f.type === 'geojson')
+    features: layers.filter(f => f.type === type)
       .flatMap(layer => layer.geojson.features) }
 }

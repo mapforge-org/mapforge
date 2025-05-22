@@ -1,4 +1,4 @@
-import { map, geojsonData, mapProperties } from 'maplibre/map'
+import { map, geojsonData, layers, mapProperties } from 'maplibre/map'
 import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
@@ -150,14 +150,17 @@ export function featureIcon (feature) {
   return image
 }
 
-export function resetHighlightedFeature (source = 'geojson-source') {
+export function resetHighlightedFeature () {
   if (highlightedFeatureId) {
-    map.setFeatureState({ source, id: highlightedFeatureId }, { active: false })
+    map.setFeatureState({ source: 'geojson-source', id: highlightedFeatureId }, { active: false })
+    map.setFeatureState({ source: 'overpass-source', id: highlightedFeatureId }, { active: false })
     highlightedFeatureId = null
     // drop feature param from url
     const url = new URL(window.location.href)
-    url.searchParams.delete('f')
-    window.history.replaceState({}, document.title, url.toString())
+    if (url.searchParams.get('f')) {
+      url.searchParams.delete('f')
+      window.history.replaceState({}, document.title, url.toString())
+    }
   }
   // reset active modals
   f.e('#feature-details-modal', e => { e.classList.remove('show') })
@@ -169,7 +172,9 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
     stickyFeatureHighlight = sticky
     highlightedFeatureId = feature.id
     // load feature from source, the style only returns the dimensions on screen
-    const sourceFeature = geojsonData.features.find(f => f.id === feature.id)
+    const sourceFeature = layers.flatMap(layer => layer.geojson.features)
+      .find(f => f.id === feature.id)
+
     if (sourceFeature) {
       showFeatureDetails(sourceFeature)
       // A feature's state is not part of the GeoJSON or vector tile data but can get used in styles
@@ -180,7 +185,7 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
         window.history.pushState({}, '', newPath)
       }
     } else {
-      console.error('Feature #' + feature.id + ' not found in geojson-source!')
+      console.error('Feature #' + feature.id + ' not found in ' + source + '!')
     }
   }
 }
@@ -212,11 +217,9 @@ export function kmMarkerStyles () {
   return { 'km-marker-points': pointsLayer, 'km-marker-numbers': numbersLayer }
 }
 
-export function addKmMarkersSource (sourceName) {
-  map.addSource(sourceName, {
-    type: 'geojson',
-    data: { type: 'FeatureCollection', features: [] }
-  })
+export function initializeKmMarkerStyles () {
+  map.addLayer(kmMarkerStyles()['km-marker-points'])
+  map.addLayer(kmMarkerStyles()['km-marker-numbers'])
 }
 
 export function renderKmMarkers () {

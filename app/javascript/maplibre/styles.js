@@ -1,7 +1,7 @@
 import { map } from 'maplibre/map'
 import {
   highlightedFeatureId, stickyFeatureHighlight,
-  resetHighlightedFeature, highlightFeature, kmMarkerStyles
+  resetHighlightedFeature, highlightFeature
 } from 'maplibre/feature'
 
 export const viewStyleNames = [
@@ -26,14 +26,17 @@ export function initializeViewStyles (sourceName) {
   viewStyleNames.forEach(styleName => {
     map.addLayer(setSource(styles()[styleName], sourceName))
   })
-  map.addLayer(setSource(kmMarkerStyles()['km-marker-points'], sourceName))
-  map.addLayer(setSource(kmMarkerStyles()['km-marker-numbers'], sourceName))
   console.log('View styles added for source ' + sourceName)
 
   // click is needed to select on mobile and for sticky highlight
-  map.on('click', viewStyleNames, function (e) {
+  map.on('click', styleNames('geojson-source'), function (e) {
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
-    highlightFeature(e.features[0], true)
+    highlightFeature(e.features[0], true, 'geojson-source')
+  })
+
+  map.on('click', styleNames('overpass-source'), function (e) {
+    if (!e.features?.length || window.gon.map_mode === 'static') { return }
+    highlightFeature(e.features[0], true, 'overpass-source')
   })
 
   // highlight features on hover
@@ -42,12 +45,16 @@ export function initializeViewStyles (sourceName) {
     if (stickyFeatureHighlight && highlightedFeatureId) { return }
     if (document.querySelector('.maplibregl-ctrl button.active')) { return }
 
-    const features = map.queryRenderedFeatures(e.point).filter(f => f.source === 'geojson-source')
-
-    if (!features?.length) { resetHighlightedFeature(); return }
-    if (features[0].id === highlightedFeatureId) { return }
-
-    highlightFeature(features[0])
+    const sources = ['geojson-source', 'overpass-source']
+    for (const s of sources) {
+      const features = map.queryRenderedFeatures(e.point).filter(f => f.source === s)
+      if (features[0]) {
+        if (features[0].id === highlightedFeatureId) { return }
+        highlightFeature(features[0], false, s)
+        return
+      }
+      resetHighlightedFeature()
+    }
   })
 
   map.on('styleimagemissing', loadImage)
@@ -186,7 +193,6 @@ export function styles () {
     'polygon-layer': {
       id: 'polygon-layer',
       type: 'fill',
-      source: 'geojson-source',
       filter: ['all',
         ['in', '$type', 'Polygon']],
       paint: {
@@ -197,7 +203,6 @@ export function styles () {
     'polygon-layer-extrusion': {
       id: 'polygon-layer-extrusion',
       type: 'fill-extrusion',
-      source: 'geojson-source',
       filter: ['all',
         ['in', '$type', 'Polygon'],
         ['>', 'fill-extrusion-height', 0]],
@@ -221,7 +226,6 @@ export function styles () {
     'polygon-layer-outline': {
       id: 'polygon-layer-outline',
       type: 'line',
-      source: 'geojson-source',
       filter: ['all',
         ['in', '$type', 'Polygon']],
       layout: {
@@ -244,7 +248,6 @@ export function styles () {
     'line-layer-outline': {
       id: 'line-layer-outline',
       type: 'line',
-      source: 'geojson-source',
       filter: ['all',
         ['in', '$type', 'LineString']],
       layout: {
@@ -264,7 +267,6 @@ export function styles () {
     'line-layer': {
       id: 'line-layer',
       type: 'line',
-      source: 'geojson-source',
       filter: ['all',
         ['in', '$type', 'LineString']],
       layout: {
@@ -283,7 +285,6 @@ export function styles () {
     'line-layer-hit': {
       id: 'line-layer-hit',
       type: 'line',
-      source: 'geojson-source',
       filter: ['all',
         ['in', '$type', 'LineString']],
       paint: {
@@ -294,7 +295,6 @@ export function styles () {
     'line-layer-route-direction': {
       id: "line-layer-route-direction",
       type: "symbol",
-      source: "geojson-source",
       filter: ['any',
         ["has", "stroke-image-url"],
         ["has", "stroke-symbol"]],
@@ -319,7 +319,6 @@ export function styles () {
     'points-border-layer': {
       id: 'points-border-layer',
       type: 'circle',
-      source: 'geojson-source',
       filter: ['all',
         ['==', '$type', 'Point'],
         ['!=', 'meta', 'midpoint'],
@@ -345,7 +344,6 @@ export function styles () {
     'points-layer': {
       id: 'points-layer',
       type: 'circle',
-      source: 'geojson-source',
       filter: ['all',
         ['==', '$type', 'Point'],
         ['!=', 'meta', 'midpoint'],
@@ -386,7 +384,6 @@ export function styles () {
     'symbols-border-layer': {
       id: 'symbols-border-layer',
       type: 'circle',
-      source: 'geojson-source',
       filter: ['all',
         ['==', '$type', 'Point'],
         ['!=', 'meta', 'midpoint'],
@@ -423,7 +420,6 @@ export function styles () {
     'symbols-layer': {
       id: 'symbols-layer',
       type: 'symbol',
-      source: 'geojson-source',
       filter: ['all',
         ['any', ['has', 'user_marker-image-url'], ['has', 'marker-image-url'],
           ['has', 'user_marker-symbol'], ['has', 'marker-symbol']]
@@ -451,7 +447,6 @@ export function styles () {
     'text-layer': {
       id: 'text-layer',
       type: 'symbol',
-      source: 'geojson-source',
       filter: ['has', 'label'],
       layout: {
         'icon-overlap': 'never',
@@ -477,5 +472,9 @@ export function styles () {
 }
 
 export function setSource (style, sourceName) {
-  return { ...style, source: sourceName }
+  return { ...style, source: sourceName, id: style.id + '_' + sourceName }
+}
+
+function styleNames (sourceName) {
+  return viewStyleNames.map(styleName => styleName + '_' + sourceName)
 }
