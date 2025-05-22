@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { map, geojsonData, upsert, mapProperties } from 'maplibre/map'
+import { map, layers, upsert, mapProperties } from 'maplibre/map'
 import { initLayersModal, resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
@@ -78,7 +78,9 @@ export default class extends Controller {
 
   flyto () {
     const id = this.element.getAttribute('data-feature-id')
-    const feature = geojsonData.features.find(f => f.id === id)
+    const feature = layers.flatMap(layer => layer.geojson.features)
+      .find(f => f.id === id)
+
     // Calculate the centroid
     const centroid = window.turf.centroid(feature)
     console.log('Fly to: ' + feature.id + ' ' + centroid.geometry.coordinates)
