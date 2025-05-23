@@ -1,19 +1,16 @@
-import { styles, loadImage, pointSize, pointSizeMax } from 'maplibre/styles'
+import { styles, loadImage, pointSize, pointSizeMax, setSource } from 'maplibre/styles'
 import { map } from 'maplibre/map'
-import { kmMarkerStyles } from 'maplibre/feature'
 
 
 export function initializeEditStyles () {
   // MapboxDraw cannot render symbol+text styles.
   // Adding those as extra layers to the map.
   // render the extrusion layer from "source: 'geojson-source' without having it available for edit in draw
-  map.addLayer(styles()['polygon-layer-extrusion'])
-  map.addLayer(styles()['line-layer-route-direction'])
-  map.addLayer(styles()['symbols-border-layer'])
-  map.addLayer(styles()['symbols-layer'])
-  map.addLayer(styles()['text-layer'])
-  map.addLayer(kmMarkerStyles()['km-marker-points'])
-  map.addLayer(kmMarkerStyles()['km-marker-numbers'])
+  map.addLayer(setSource(styles()['polygon-layer-extrusion'], 'geojson-source') )
+  map.addLayer(setSource(styles()['line-layer-route-direction'], 'geojson-source') )
+  map.addLayer(setSource(styles()['symbols-border-layer'], 'geojson-source') )
+  map.addLayer(setSource(styles()['symbols-layer'], 'geojson-source') )
+  map.addLayer(setSource(styles()['text-layer'], 'geojson-source') )
   // console.log('Edit styles added')
 
   map.on('styleimagemissing', loadImage)

@@ -1,3 +1,4 @@
+import { map } from 'maplibre/map'
 import { ControlGroup, MapLayersControl, MapShareControl } from 'maplibre/controls/shared'
 import { animateElement } from 'helpers/dom'
 

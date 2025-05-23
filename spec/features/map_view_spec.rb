@@ -125,9 +125,10 @@ describe 'Map public view' do
     it 'catches up with new features on reconnect' do
       go_offline
       expect(page).to have_text('Connection to server lost')
-      create(:feature, :polygon_middle, layer: map.layers.first, title: 'Poly Title')
+      create(:feature, :polygon_middle, layer: map.layers.geojson.first, title: 'Poly Title')
       go_online
       expect(page).to have_text(/Connection to server re-established|Map view updated/)
+      expect(page).to have_css('#maplibre-map[map-loaded="true"]')
       click_coord('#maplibre-map', 50, 50)
       expect(page).to have_text('Poly Title')
     end
