@@ -76,8 +76,8 @@ export function showFeatureDetails (feature) {
   modal.classList.remove('expanded')
   modal.classList.add('show')
   modal.scrollTo(0, 0)
-  modal.setAttribute('data-map--feature-modal-feature-id-value', feature.id)
-  modal.setAttribute('data-map--feature-edit-feature-id-value', feature.id)
+  modal.setAttribute('data-feature--modal-feature-id-value', feature.id)
+  modal.setAttribute('data-feature--edit-feature-id-value', feature.id)
 
   if (elevationChart) { elevationChart.destroy() }
   elevationChart = showElevationChart(feature)
@@ -169,6 +169,7 @@ export function resetHighlightedFeature () {
 export function highlightFeature (feature, sticky = false, source = 'geojson-source') {
   if (highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
   if (feature.id) {
+    console.log('highlight', feature)
     stickyFeatureHighlight = sticky
     highlightedFeatureId = feature.id
     // load feature from source, the style only returns the dimensions on screen
