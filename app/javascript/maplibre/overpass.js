@@ -48,8 +48,12 @@ function styleOverpassLayers(geojson) {
   geojson.features.forEach( f => {
     f.properties["label"] = f.properties["name"]
     f.properties["desc"] = f.properties["website"]
-    if (f.properties['internet_access:fee'] === 'no' || f.properties['internet_access:fee'] === 'customers') {
+    if (['no', 'customers'].includes(f.properties['internet_access:fee'])) {
        f.properties["marker-symbol"] = "🛜"
+    }
+    if (['toilets'].includes(f.properties.amenity)) {
+       f.properties["marker-symbol"] = "🚻"
+       f.properties["desc"] = f.properties?.notes
     }
     if (f.properties['amenity'] === 'post_box') {
        f.properties["marker-symbol"] = "📯"
