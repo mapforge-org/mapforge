@@ -1,13 +1,13 @@
-#feature-details-modal.map-modal.modal-pull-down.fade{ 'data-controller': "map--feature-modal map--feature-edit", 'data-action': "keydown.esc@window->map--feature-modal#close toggle-edit-feature@window->map--feature-modal#toggle_edit_feature" }
+#feature-details-modal.map-modal.modal-pull-down.fade{ 'data-controller': "feature--modal feature--edit", 'data-action': "keydown.esc@window->feature--modal#close toggle-edit-feature@window->feature--modal#toggle_edit_feature" }
 
-  %a.modal-pull-button.link{ 'data-action': "click->map--feature-modal#toggleModalSize"}
+  %a.modal-pull-button.link{ 'data-action': "click->feature--modal#toggleModalSize"}
 
   #edit-buttons.hidden.maplibregl-ctrl-group.maplibregl-ctrl.edit-button-group
-    %button.edit-button.maplibregl-ctrl-btn#edit-button-edit{title: "Edit", 'data-action': "click->map--feature-modal#toggle_edit_feature", 'data-edit-type': 'ui'}
+    %button.edit-button.maplibregl-ctrl-btn#edit-button-edit{title: "Edit", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui'}
       %i.bi.bi-pencil-square
-    %button.edit-button.hidden#edit-button-raw{title: "Edit Raw", 'data-action': "click->map--feature-modal#toggle_edit_feature", 'data-edit-type': 'raw'}
+    %button.edit-button.hidden#edit-button-raw{title: "Edit Raw", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'raw'}
       %i.bi.bi-filetype-raw
-    %button.edit-button#edit-button-trash{title: "Delete", data: { action: "click->map--feature-edit#delete_feature" } }
+    %button.edit-button#edit-button-trash{title: "Delete", data: { action: "click->feature--edit#delete_feature" } }
       %i.bi.bi-trash
 
   %h4#feature-details-header.flex-container
@@ -29,5 +29,5 @@
       =link_to map_feature_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
         %i.bi.bi-download
     %span#feature-animation.ms-2
-      %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip", 'data-action': "click->map--feature-modal#animate"}
+      %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip", 'data-action': "click->feature--modal#animate"}
 
