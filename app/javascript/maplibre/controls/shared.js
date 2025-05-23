@@ -107,8 +107,23 @@ export function initLayersModal () {
       head.classList.add('layer-name')
       head.setAttribute('data-layer-id', layer.id)
       head.setAttribute('data-layer-type', layer.type)
-      head.textContent = 'Layer elements'
+      head.textContent = layer.name || 'Layer elements'
       e.appendChild(head)
+      if (layer.type === 'overpass') {
+        const subtitle = document.createElement('i')
+        subtitle.textContent = 'Overpass query'
+        e.appendChild(subtitle)
+
+        const refreshLink = document.createElement('a')
+        refreshLink.setAttribute('href', '#')
+        refreshLink.setAttribute('data-action', 'click->map--layers#refreshOverpassLayer')
+        const refreshIcon = document.createElement('i')
+        refreshIcon.classList.add('bi')
+        refreshIcon.classList.add('ms-1')
+        refreshIcon.classList.add('bi-arrow-clockwise')
+        refreshLink.appendChild(refreshIcon)
+        e.appendChild(refreshLink)
+      }
 
       const ul = document.createElement('ul')
       ul.classList.add('layer-elements')

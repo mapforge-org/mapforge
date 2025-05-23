@@ -6,6 +6,7 @@ import { highlightFeature } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
+import { loadOverpassLayers } from 'maplibre/overpass'
 
 export default class extends Controller {
   upload () {
@@ -97,5 +98,10 @@ export default class extends Controller {
 
   close () {
     resetControls()
+  }
+
+  refreshOverpassLayer (event) {
+    event.preventDefault()
+    loadOverpassLayers()
   }
 }

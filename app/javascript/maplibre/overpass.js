@@ -46,13 +46,25 @@ function replaceBboxWithMapRectangle(query) {
 
 function styleOverpassLayers(geojson) {
   geojson.features.forEach( f => {
+    f.properties["label"] = f.properties["name"]
+    f.properties["desc"] = f.properties["website"]
+    if (f.properties['internet_access:fee'] === 'no' || f.properties['internet_access:fee'] === 'customers') {
+       f.properties["marker-symbol"] = "🛜"
+    }
+    if (f.properties['amenity'] === 'post_box') {
+       f.properties["marker-symbol"] = "📯"
+    }
     if (f.properties?.subway === 'yes') {
        f.properties["marker-symbol"] = "🚇"
-       f.properties["label"] = f.properties["name"]
     }
     if (f.properties?.train === 'yes') {
        f.properties["marker-symbol"] = "🚆"
-       f.properties["label"] = f.properties["name"]
+    }
+    if (f.properties?.tourism === 'camp_site') {
+       f.properties["marker-symbol"] = "🏕️"
+    }
+    if (f.properties?.craft === 'brewery') {
+       f.properties["marker-symbol"] = "🍻"
     }
   })
   return geojson
