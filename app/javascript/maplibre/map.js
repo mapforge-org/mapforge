@@ -322,6 +322,7 @@ function addGlobe () {
 export function initializeStaticMode () {
   map.on('style.load', () => {
     initializeViewStyles('geojson-source')
+    initializeViewStyles('overpass-source')
     initializeKmMarkerStyles ()
   })
   functions.e('.maplibregl-ctrl-attrib, #map-head', e => { e.classList.add('hidden') })
