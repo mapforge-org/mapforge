@@ -47,13 +47,13 @@ function replaceBboxWithMapRectangle(query) {
 function styleOverpassLayers(geojson) {
   geojson.features.forEach( f => {
     f.properties["label"] = f.properties["name"]
-    f.properties["desc"] = f.properties["website"]
+    f.properties["desc"] = overpassDescription(f.properties)
     if (['no', 'customers'].includes(f.properties['internet_access:fee'])) {
        f.properties["marker-symbol"] = "🛜"
     }
     if (['toilets'].includes(f.properties.amenity)) {
        f.properties["marker-symbol"] = "🚻"
-       f.properties["desc"] = f.properties?.notes
+       f.properties["marker-color"] = "transparent"
     }
     if (f.properties['amenity'] === 'post_box') {
        f.properties["marker-symbol"] = "📯"
@@ -72,4 +72,15 @@ function styleOverpassLayers(geojson) {
     }
   })
   return geojson
+}
+
+function overpassDescription(props) {
+  let desc = ''
+  if (props["description"]) { desc += props["description"] + '\n' }
+  if (props["notes"]) { desc += props["notes"] + '\n' }
+  if (props["website"]) { desc += props["website"] + '\n' }
+
+  desc += '\n' + '[' + props['id'] + '](https://www.openstreetmap.org/' + props['id'] + ') source in osm'
+
+  return desc
 }

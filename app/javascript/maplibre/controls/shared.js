@@ -1,4 +1,4 @@
-import { map, geojsonData, layers } from 'maplibre/map'
+import { map, layers } from 'maplibre/map'
 import * as functions from 'helpers/functions'
 import { draw } from 'maplibre/edit'
 import { resetHighlightedFeature, featureIcon } from 'maplibre/feature'
@@ -155,10 +155,6 @@ export function initLayersModal () {
         e.parentNode.insertBefore(newNode, e.nextSibling)
       }
     })
-
-    if (geojsonData.features.length === 0) {
-      e.innerHTML = 'Your map has no elements yet. You can either import or manually create some with the controls on the left.'
-    }
   })
 }
 
