@@ -246,7 +246,7 @@ export function renderKmMarkers () {
         point.properties['marker-size'] = 11
 
         if (i >= Math.ceil(length)) {
-          point.properties['marker-size'] = 12
+          point.properties['marker-size'] = 14
           point.properties['km'] = Math.round(length)
           if (Math.ceil(length) < 100) {
             point.properties['km'] = Math.round(length * 10) / 10

@@ -20,6 +20,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `marker-image-url`: URL pointing to icon image. Can point to a Mapforge hosted image like /image/<id>
 * `stroke-width`: width of the circle border line (default: 2)
 * `stroke`: circle border color (default "white", 'transparent' for none)
+* `heatmap`: if set, points will be styled as a heatmap
 
 #### *LineString* geometry:
 

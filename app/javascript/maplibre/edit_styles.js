@@ -130,6 +130,7 @@ export function editStyles () {
     // inactive single point features
     removeSource(styles()['points-border-layer']),
     removeSource(styles()['points-layer']),
+    removeSource(styles()['heatmap-layer']),
 
     // outline border of inactive vertex points on lines + polygons,
     // rendering outline seperately to generate nicer overlay effect

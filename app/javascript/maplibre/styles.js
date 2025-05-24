@@ -14,6 +14,7 @@ export const viewStyleNames = [
   'points-border-layer',
   'points-layer',
   'points-hit-layer',
+  'heatmap-layer',
   'symbols-border-layer',
   'symbols-layer',
   'text-layer',
@@ -378,6 +379,18 @@ export function styles () {
       paint: {
         'circle-radius': ['+', 5, pointSizeMax],
         'circle-opacity': 0
+      }
+    },
+    'heatmap-layer': {
+      id: 'heatmap-layer',
+      type: 'heatmap',
+      filter: ['any',
+        ["has", "heatmap"],
+        ["has", "user_heatmap"]],
+      paint: {
+        'heatmap-opacity': 0.8,
+        'heatmap-intensity': 1,
+        'heatmap-radius': 10
       }
     },
     // background + border for symbols

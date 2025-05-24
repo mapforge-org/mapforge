@@ -29,7 +29,7 @@ export function loadOverpassLayer(id) {
     console.log('Received from overpass-api.de', data)
     let geojson = osmtogeojson(data)
     console.log('osmtogeojson', geojson)
-    geojson = styleOverpassLayers(geojson)
+    geojson = styleOverpassLayers(geojson, query)
     layer.geojson = geojson
     redrawGeojson()
   })
@@ -49,16 +49,18 @@ function replaceBboxWithMapRectangle(query) {
   return query.replace(/\{\{bbox\}\}/g, bbox.join(","))
 }
 
-function styleOverpassLayers(geojson) {
+function styleOverpassLayers(geojson, query) {
   geojson.features.forEach( f => {
     f.properties["label"] = f.properties["name"]
     f.properties["desc"] = overpassDescription(f.properties)
+    if (query.includes("out skel;")) { f.properties["heatmap"] = true }
     if (['no', 'customers'].includes(f.properties['internet_access:fee'])) {
        f.properties["marker-symbol"] = "🛜"
     }
     if (['toilets'].includes(f.properties.amenity)) {
        f.properties["marker-symbol"] = "🚻"
        f.properties["marker-color"] = "transparent"
+
     }
     if (f.properties['amenity'] === 'post_box') {
        f.properties["marker-symbol"] = "📯"
@@ -84,6 +86,7 @@ function overpassDescription(props) {
   if (props["description"]) { desc += props["description"] + '\n' }
   if (props["notes"]) { desc += props["notes"] + '\n' }
   if (props["website"]) { desc += props["website"] + '\n' }
+  { desc += '```\n' + JSON.stringify(props, null, 2) + '\n```\n' }
 
   desc += '\n' + '[' + props['id'] + '](https://www.openstreetmap.org/' + props['id'] + ') source in osm'
 

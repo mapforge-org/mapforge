@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## 2025-05
 
 * Device orientation indicator
+* Maps can have multiple layers
+* Overpass layers
+* Heatmap support
 
 ## 2025-04
 
