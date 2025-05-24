@@ -120,7 +120,7 @@ html:has(.map), body:has(.map) {
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  animation: animate-preloader 1s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 #preloader img {
@@ -130,17 +130,6 @@ html:has(.map), body:has(.map) {
   width: 53px;
   height: 35px;
 }
-
-@keyframes animate-preloader {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 
 /* maptiler-sdk messes with the geolocate marker animation */
 .maplibregl-user-location-dot::before{

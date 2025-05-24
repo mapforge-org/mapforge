@@ -6,7 +6,7 @@ import { highlightFeature } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
-import { loadOverpassLayers } from 'maplibre/overpass'
+import { loadOverpassLayer } from 'maplibre/overpass'
 
 export default class extends Controller {
   upload () {
@@ -79,15 +79,18 @@ export default class extends Controller {
 
   flyto () {
     const id = this.element.getAttribute('data-feature-id')
-    const feature = layers.flatMap(layer => layer.geojson.features)
-      .find(f => f.id === id)
+    this.element.getAttribute('data-feature-id')
+    const layer = layers.find(l => l.geojson.features.some(f => f.id === id))
+    const feature = layer.geojson.features.find(f => f.id === id)
+    const source = layer.type === 'geojson' ? 'geojson-source' : 'overpass-source'
 
     // Calculate the centroid
     const centroid = window.turf.centroid(feature)
     console.log('Fly to: ' + feature.id + ' ' + centroid.geometry.coordinates)
     resetControls()
     if (draw) { draw.changeMode('simple_select', { featureIds: [feature.id] }) }
-    map.once('moveend', function () { highlightFeature(feature, true) })
+
+    map.once('moveend', function () { highlightFeature(feature, true, source) })
     map.flyTo({
       center: centroid.geometry.coordinates,
       duration: 1000,
@@ -102,6 +105,8 @@ export default class extends Controller {
 
   refreshOverpassLayer (event) {
     event.preventDefault()
-    loadOverpassLayers()
+    const lid = event.target.getAttribute('data-layer-id')
+    event.target.classList.add('layer-refresh-animate')
+    loadOverpassLayer(lid).then( () => { initLayersModal() })
   }
 }

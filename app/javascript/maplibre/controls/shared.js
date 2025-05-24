@@ -110,19 +110,21 @@ export function initLayersModal () {
       head.textContent = layer.name || 'Layer elements'
       e.appendChild(head)
       if (layer.type === 'overpass') {
-        const subtitle = document.createElement('i')
-        subtitle.textContent = 'Overpass query'
-        e.appendChild(subtitle)
-
         const refreshLink = document.createElement('a')
         refreshLink.setAttribute('href', '#')
         refreshLink.setAttribute('data-action', 'click->map--layers#refreshOverpassLayer')
         const refreshIcon = document.createElement('i')
+        refreshIcon.setAttribute('data-layer-id', layer.id)
         refreshIcon.classList.add('bi')
-        refreshIcon.classList.add('ms-1')
+        refreshIcon.classList.add('ms-2')
         refreshIcon.classList.add('bi-arrow-clockwise')
         refreshLink.appendChild(refreshIcon)
-        e.appendChild(refreshLink)
+        head.appendChild(refreshLink)
+        new window.bootstrap.Tooltip(refreshLink)
+
+        const subtitle = document.createElement('i')
+        subtitle.textContent = 'Openstreetmap query'
+        e.appendChild(subtitle)
       }
 
       const ul = document.createElement('ul')

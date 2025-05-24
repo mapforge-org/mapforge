@@ -2,34 +2,39 @@ import { map, layers, redrawGeojson } from 'maplibre/map'
 
 export function loadOverpassLayers() {
   layers.filter(f => f.type === 'overpass').forEach((layer) => {
-    console.log('Loading overpass layer ' + layer.id)
-    let query = layer.query
+    loadOverpassLayer(layer.id)
+  })
+}
 
-    // settings block
-    query = "[out:json][timeout:25][bbox:{{bbox}}];" + query
-    query = replaceBboxWithMapRectangle(query)
+export function loadOverpassLayer(id) {
+  const layer = layers.find(f => f.id === id)
+  console.log('Loading overpass layer ' + layer.id)
+  let query = layer.query
 
-    console.log('Overpass query ', query)
-    fetch("https://overpass-api.de/api/interpreter",
-      {
-        method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        // The body contains the query, Note: newlines (\n) break
-        body: query
-      })
-    // overpass xml to geojson: https://github.com/tyrasd/osmtogeojson
-    .then( response => { return response.json() } )
-    .then( data => {
-      console.log('Received from overpass-api.de', data)
-      let geojson = osmtogeojson(data)
-      console.log('osmtogeojson', geojson)
-      geojson = styleOverpassLayers(geojson)
-      layer.geojson = geojson
-      redrawGeojson()
+  // settings block
+  query = "[out:json][timeout:25][bbox:{{bbox}}];" + query
+  query = replaceBboxWithMapRectangle(query)
+
+  console.log('Overpass query ', query)
+  return fetch("https://overpass-api.de/api/interpreter",
+    {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      // The body contains the query, Note: newlines (\n) break
+      body: query
     })
-    .catch(error => {
-      console.error('Failed to fetch overpass:', error)
-    })
+  // overpass xml to geojson: https://github.com/tyrasd/osmtogeojson
+  .then( response => { return response.json() } )
+  .then( data => {
+    console.log('Received from overpass-api.de', data)
+    let geojson = osmtogeojson(data)
+    console.log('osmtogeojson', geojson)
+    geojson = styleOverpassLayers(geojson)
+    layer.geojson = geojson
+    redrawGeojson()
+  })
+  .catch(error => {
+    console.error('Failed to fetch overpass:', error)
   })
 }
 

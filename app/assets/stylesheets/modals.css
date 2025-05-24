@@ -179,4 +179,8 @@
   margin: 0.2em 0.4em 0 0;
 }
 
+.layer-refresh-animate {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
 

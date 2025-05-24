@@ -155,3 +155,9 @@ button {
     text-decoration: none;
   }
 }
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
