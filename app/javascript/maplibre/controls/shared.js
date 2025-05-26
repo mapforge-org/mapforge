@@ -154,7 +154,7 @@ export function initLayersModal () {
       if (layer.geojson.features.length === 0) {
         const newNode = document.createElement('i')
         newNode.textContent = 'No elements in this layer'
-        e.parentNode.insertBefore(newNode, e.nextSibling)
+        e.appendChild(newNode)
       }
     })
   })
