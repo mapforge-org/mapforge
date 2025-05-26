@@ -8,25 +8,33 @@
 
       - if @map_mode == 'rw'
         #layer-upload.row.align-items-center
-          .col-5
-            %label{ for: "formFile" }
-              %b
+          .col-12
+            - if @user
+              %label.form-control.btn.btn-green#file-input-label{ for: "fileInput" }
                 %i.bi.bi-upload.me-1
                 Import gpx/kml
-
-          .col-7
-            - if @user
-              %input.form-control.btn.btn-green#fileInput{ type: "file", data: { action: "change->map--layers#upload" } }
+              %input.hidden#fileInput{ type: "file", data: { action: "change->map--layers#upload" } }
+              %i.no-wrap.ms-2
+                %small WGS84 format, max. 800Kb
             - else
               %i.bi.bi-info-circle
                 Please log in to upload tracks
 
-          %i
-            %small EPSG:4326 (WGS 84) format, max. 800Kb
+      - # used by controls/shared.js
+      .hidden
+        #layer-list-template.mt-3
+          %h4.link.mapforge-font{ data: { action: "click->map--layers#toggleLayerList" }}
+            %i.bi.bi-caret-down-fill
+            %span.layer-name Layer elements
+
+          .layer-content
+            %button.hidden.btn.btn-green{ data: { action: "click->map--layers#refreshOverpassLayer" } }
+              %i.bi.bi-arrow-clockwise
+              Refresh for current view
+
+            %ul.list-unstyled
 
       #layers.mt-2
-        - # set by controls/shared.js
-        - #%h4.mapforge-font.layer-name Layer elements
-        - #%ul.layer-elements.list-unstyled
+
 
 

@@ -80,10 +80,6 @@
   padding: 0.1em;
 }
 
-.map-property {
-  white-space: nowrap;
-}
-
 .modal-pull-button {
   display: block;
   width: 45px;
@@ -157,6 +153,9 @@
   margin-bottom: 0.5em;
 }
 
+#file-input-label {
+  max-width: 17em;
+}
 
 .layer-feature-item {
   cursor: pointer;

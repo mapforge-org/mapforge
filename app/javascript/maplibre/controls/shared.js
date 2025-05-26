@@ -101,37 +101,23 @@ export function initLayersModal () {
   console.log("Re-draw layers modal")
   functions.e('#layers', e => {
     e.innerHTML = ''
+    const template = document.querySelector('#layer-list-template')
     layers.forEach(layer => {
-      const head = document.createElement('h4')
-      head.classList.add('mapforge-font')
-      head.classList.add('layer-name')
-      head.setAttribute('data-layer-id', layer.id)
-      head.setAttribute('data-layer-type', layer.type)
+      const layerElement = template.cloneNode(true)
+      layerElement.id = 'layer-list-' + layer.id
+      layerElement.setAttribute('data-layer-id', layer.id)
+      layerElement.setAttribute('data-layer-type', layer.type)
+      const head = layerElement.querySelector('.layer-name')
       head.textContent = layer.name || 'Layer elements'
-      e.appendChild(head)
+      e.appendChild(layerElement)
       if (layer.type === 'overpass') {
-        const refreshLink = document.createElement('a')
-        refreshLink.setAttribute('href', '#')
-        refreshLink.setAttribute('data-action', 'click->map--layers#refreshOverpassLayer')
-        const refreshIcon = document.createElement('i')
-        refreshIcon.setAttribute('data-layer-id', layer.id)
-        refreshIcon.classList.add('bi')
-        refreshIcon.classList.add('ms-2')
-        refreshIcon.classList.add('bi-arrow-clockwise')
-        refreshLink.appendChild(refreshIcon)
-        head.appendChild(refreshLink)
-        new window.bootstrap.Tooltip(refreshLink)
-
-        const subtitle = document.createElement('i')
-        subtitle.textContent = 'Openstreetmap query'
-        e.appendChild(subtitle)
+        layerElement.querySelector('button').classList.remove('hidden')
+        const subtitle = document.createElement('p')
+        subtitle.textContent = 'Openstreetmap live query'
+        layerElement.querySelector('.layer-content').insertBefore(subtitle, layerElement.querySelector('button'))
       }
 
-      const ul = document.createElement('ul')
-      ul.classList.add('layer-elements')
-      ul.classList.add('list-unstyled')
-      e.appendChild(ul)
-
+      const ul = layerElement.querySelector('ul')
       layer.geojson.features.forEach(feature => {
         const listItem = document.createElement('li')
         listItem.classList.add('layer-feature-item')
@@ -154,7 +140,7 @@ export function initLayersModal () {
       if (layer.geojson.features.length === 0) {
         const newNode = document.createElement('i')
         newNode.textContent = 'No elements in this layer'
-        e.appendChild(newNode)
+        e.querySelector('.layer-content').appendChild(newNode)
       }
     })
   })

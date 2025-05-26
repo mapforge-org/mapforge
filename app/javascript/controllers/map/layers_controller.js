@@ -105,8 +105,22 @@ export default class extends Controller {
 
   refreshOverpassLayer (event) {
     event.preventDefault()
-    const lid = event.target.getAttribute('data-layer-id')
-    event.target.classList.add('layer-refresh-animate')
+    const lid = event.target.parentElement.parentElement.getAttribute('data-layer-id')
+    event.target.querySelector('i').classList.add('layer-refresh-animate')
     loadOverpassLayer(lid).then( () => { initLayersModal() })
+  }
+
+  toggleLayerList (event) {
+    event.preventDefault()
+    const list = event.target.closest('div').querySelector('.layer-content')
+    const icon = event.target.closest('h4').querySelector('i')
+    if (list.classList.contains('hidden')) {
+      icon.classList.remove('bi-caret-right-fill')
+      icon.classList.add('bi-caret-down-fill')
+    } else {
+      icon.classList.add('bi-caret-right-fill')
+      icon.classList.remove('bi-caret-down-fill')
+    }
+    list.classList.toggle('hidden')
   }
 }

@@ -31,19 +31,19 @@
 
       %br
       - # Default checkbox state gets set by initSettingsModal()
-      %span.map-property.me-2
+      %span.no-wrap.me-2
         %label{ for: "map-terrain"} 3D Terrain:
         %input#map-terrain{type: "checkbox", data: { action: "click->map--settings#updateTerrain"} }
 
-      %span.map-property.me-2
+      %span.no-wrap.me-2
         %label{ for: "map-hillshade"} Hillshade:
         %input#map-hillshade{type: "checkbox", data: { action: "click->map--settings#updateHillshade"} }
 
-      %span.map-property.me-2
+      %span.no-wrap.me-2
         %label{ for: "map-contours"} Contour lines:
         %input#map-contours{type: "checkbox", data: { action: "click->map--settings#updateContours"} }
 
-      %span.map-property.me-2
+      %span.no-wrap.me-2
         %label{ for: "map-globe"} Globe:
         %input#map-globe{type: "checkbox", data: { action: "click->map--settings#updateGlobe"} }
 

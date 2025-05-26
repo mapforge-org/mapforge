@@ -41,12 +41,14 @@ describe 'Map' do
 
     context 'file upload' do
       it 'import geojson' do
+        page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
         attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "features.json"))
         expect(page).to have_text('Import1')
         expect(map.reload.features.count).to eq 4
       end
 
       it 'import mapforge json' do
+        page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
         attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "mapforge.json"))
         expect(page).to have_text('f1')
         expect(map.reload.features.count).to eq 4

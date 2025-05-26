@@ -161,3 +161,7 @@ button {
     transform: rotate(360deg);
   }
 }
+
+.no-wrap {
+  white-space: nowrap;
+}
