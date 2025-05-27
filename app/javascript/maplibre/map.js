@@ -144,6 +144,7 @@ export function initializeMap (divId = 'maplibre-map') {
   map.on('drag', () => { mapInteracted = true })
   map.on('zoom', (_e) => {
     mapInteracted = true
+    // block zooming in closer than defined max zoom level
     let bgMap = basemaps()[backgroundMapLayer]
     if (!bgMap.style.layers) { return }
     let maxzoom = bgMap.style.layers[0].maxzoom

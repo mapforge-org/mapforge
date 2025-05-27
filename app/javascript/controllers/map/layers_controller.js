@@ -103,11 +103,22 @@ export default class extends Controller {
     resetControls()
   }
 
+  edit (event) {
+    event.preventDefault()
+    const layer_id = event.target.closest('.layer-item').getAttribute('data-layer-id')
+    const layer = layers.find(f => f.id === layer_id)
+    const contentElement = event.target.closest('.layer-content')
+    contentElement.innerHTML = ''
+    const queryElement = document.createElement('textarea')
+    queryElement.value = layer.query
+    contentElement.appendChild(queryElement)
+  }
+
   refreshOverpassLayer (event) {
     event.preventDefault()
-    const lid = event.target.parentElement.parentElement.getAttribute('data-layer-id')
+    const layer_id = event.target.closest('.layer-item').getAttribute('data-layer-id')
     event.target.querySelector('i').classList.add('layer-refresh-animate')
-    loadOverpassLayer(lid).then( () => { initLayersModal() })
+    loadOverpassLayer(layer_id).then( () => { initLayersModal() })
   }
 
   toggleLayerList (event) {

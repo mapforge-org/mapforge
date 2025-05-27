@@ -12,15 +12,21 @@ class MapChannel < ApplicationCable::Channel
     # Rails.logger.debug "MapChannel unsubscribed"
   end
 
+  def update_map(data)
+    map = get_map_rw!(data["map_id"])
+    map.update!(map_atts(data))
+  end
+
+  def update_layer(data)
+    map = get_map_rw!(data["map_id"])
+    layer = map.layers.find(layer_atts(data)["id"])
+    layer.update!(layer_atts(data))
+  end
+
   def update_feature(data)
     map = get_map_rw!(data["map_id"])
     feature = map.features.find(feature_atts(data)["id"])
     feature.update!(feature_atts(data))
-  end
-
-  def update_map(data)
-    map = get_map_rw!(data["map_id"])
-    map.update!(map_atts(data))
   end
 
   def new_feature(data)
@@ -48,6 +54,10 @@ class MapChannel < ApplicationCable::Channel
   def map_atts(data)
     data.slice("name", "description", "base_map", "center", "zoom", "pitch",
       "bearing", "terrain", "hillshade", "globe", "contours", "view_permission", "edit_permission")
+  end
+
+  def layer_atts(data)
+    data.slice("id", "type", "name", "query")
   end
 
   # load map with write access
