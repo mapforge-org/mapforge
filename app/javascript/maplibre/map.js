@@ -12,7 +12,7 @@ import { draw } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
   renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
-import { loadOverpassLayers } from 'maplibre/overpass'
+import { loadOverpassLayers } from 'maplibre/overpass/overpass'
 
 export let map
 export let layers // [{ id:, geojson: { type: 'FeatureCollection', features: [] } }]

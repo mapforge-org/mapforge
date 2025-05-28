@@ -1,4 +1,5 @@
 import { map, layers, redrawGeojson } from 'maplibre/map'
+import { style } from 'maplibre/overpass/queries'
 
 export function loadOverpassLayers() {
   layers.filter(f => f.type === 'overpass').forEach((layer) => {
@@ -30,7 +31,7 @@ export function loadOverpassLayer(id) {
     let geojson = osmtogeojson(data)
     console.log('osmtogeojson', geojson)
     geojson = styleOverpassLayers(geojson, query)
-    layer.geojson = geojson
+    layer.geojson = style(geojson, layer.name)
     redrawGeojson()
   })
   .catch(error => {
@@ -56,11 +57,6 @@ function styleOverpassLayers(geojson, query) {
     if (query.includes("out skel;")) { f.properties["heatmap"] = true }
     if (['no', 'customers'].includes(f.properties['internet_access:fee'])) {
        f.properties["marker-symbol"] = "🛜"
-    }
-    if (['toilets'].includes(f.properties.amenity)) {
-       f.properties["marker-symbol"] = "🚻"
-       f.properties["marker-color"] = "transparent"
-
     }
     if (f.properties['amenity'] === 'post_box') {
        f.properties["marker-symbol"] = "📯"

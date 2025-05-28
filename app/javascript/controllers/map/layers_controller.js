@@ -6,7 +6,7 @@ import { highlightFeature } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
-import { loadOverpassLayer } from 'maplibre/overpass'
+import { loadOverpassLayer } from 'maplibre/overpass/overpass'
 
 export default class extends Controller {
   upload () {
