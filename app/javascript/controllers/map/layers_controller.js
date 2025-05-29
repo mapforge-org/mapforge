@@ -110,8 +110,26 @@ export default class extends Controller {
     const contentElement = event.target.closest('.layer-content')
     contentElement.innerHTML = ''
     const queryElement = document.createElement('textarea')
+    queryElement.id = 'overpass-query'
+    queryElement.classList.add('overpass-edit')
     queryElement.value = layer.query
     contentElement.appendChild(queryElement)
+    const updateElement = document.createElement('button')
+    updateElement.classList.add('btn')
+    updateElement.classList.add('btn-green')
+    updateElement.setAttribute('data-action', 'click->map--layers#update')
+    updateElement.innerHTML = 'Update'
+    contentElement.appendChild(updateElement)
+  }
+
+  update (event) {
+    event.preventDefault()
+    const layer_id = event.target.closest('.layer-item').getAttribute('data-layer-id')
+    const layer = layers.find(f => f.id === layer_id)
+    layer.query = document.querySelector('#overpass-query').value
+    const { geojson: _geojson, ...sendLayer } = layer
+    mapChannel.send_message('update_layer', sendLayer)
+    loadOverpassLayer(layer_id).then( () => { initLayersModal() })
   }
 
   refreshOverpassLayer (event) {
