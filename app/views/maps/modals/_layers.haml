@@ -22,13 +22,13 @@
 
       - # used by controls/shared.js
       .hidden
-        #layer-list-template.mt-3
+        #layer-item-template.layer-item.mt-3
           %h4.link.mapforge-font{ data: { action: "click->map--layers#toggleLayerList" }}
             %i.bi.bi-caret-down-fill
             %span.layer-name Layer elements
 
           .layer-content
-            %button.hidden.btn.btn-green{ data: { action: "click->map--layers#refreshOverpassLayer" } }
+            %button.hidden.btn.btn-light-green{ data: { action: "click->map--layers#refreshOverpassLayer" } }
               %i.bi.bi-arrow-clockwise
               Refresh for current view
 

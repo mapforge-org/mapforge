@@ -101,7 +101,7 @@ export function initLayersModal () {
   console.log("Re-draw layers modal")
   functions.e('#layers', e => {
     e.innerHTML = ''
-    const template = document.querySelector('#layer-list-template')
+    const template = document.querySelector('#layer-item-template')
     layers.forEach(layer => {
       const layerElement = template.cloneNode(true)
       layerElement.id = 'layer-list-' + layer.id
@@ -114,6 +114,16 @@ export function initLayersModal () {
         layerElement.querySelector('button').classList.remove('hidden')
         const subtitle = document.createElement('p')
         subtitle.textContent = 'Openstreetmap live query'
+        if (window.gon.map_mode === "rw"){
+          const edit_icon = document.createElement('i')
+          edit_icon.classList.add('bi')
+          edit_icon.classList.add('bi-pencil-square')
+          edit_icon.classList.add('ms-2')
+          edit_icon.classList.add('link')
+          edit_icon.classList.add('edit-overpass')
+          edit_icon.setAttribute('data-action', 'click->map--layers#edit')
+          subtitle.appendChild(edit_icon)
+        }
         layerElement.querySelector('.layer-content').insertBefore(subtitle, layerElement.querySelector('button'))
       }
 

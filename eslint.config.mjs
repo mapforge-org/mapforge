@@ -24,7 +24,8 @@ export default  {
     rules: {
         "no-unused-vars": ["error", {
             "args": "all",
-            "argsIgnorePattern": "^_"
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_"
         }]
     }
 };

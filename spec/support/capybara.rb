@@ -6,7 +6,7 @@
 # @return [Hash] all keyword arguments needed by capybara to register the driver.
 def chrome_driver_arguments(headless: false)
   options = Selenium::WebDriver::Chrome::Options.new
-  options.args << '--window-size=1024,576'
+  options.args << '--window-size=1024,860'
   options.args << '--lang=en_US'
   options.args << '--enable-logging'
 

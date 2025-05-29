@@ -59,4 +59,27 @@ describe 'Map' do
       end
     end
   end
+
+  context 'overpass layer' do
+    before do
+      map.layers << layer
+      visit map_path(map)
+      expect(page).to have_css("#maplibre-map[map-loaded='true']")
+      find('.maplibregl-ctrl-layers').click
+    end
+
+    let(:layer) { create(:layer, :overpass, name: 'opass') }
+
+    it 'Shows overpass layer' do
+      expect(page).to have_text('opass')
+    end
+
+    it 'can edit overpass layer' do
+      find(".edit-overpass").click
+      expect(page).to have_field('overpass-query', with: layer.query)
+      fill_in 'overpass-query', with: 'nwr[highway=bus];out center;'
+      click_button 'Update'
+      wait_for { layer.reload.query }.to eq('nwr[highway=bus];out center;')
+    end
+  end
 end
