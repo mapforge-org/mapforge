@@ -169,7 +169,7 @@ export function resetHighlightedFeature () {
 export function highlightFeature (feature, sticky = false, source = 'geojson-source') {
   if (highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
   if (feature.id) {
-    console.log('highlight', feature)
+    // console.log('highlight', feature)
     stickyFeatureHighlight = sticky
     highlightedFeatureId = feature.id
     // load feature from source, the style only returns the dimensions on screen
