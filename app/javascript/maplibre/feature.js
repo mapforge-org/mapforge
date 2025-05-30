@@ -101,7 +101,11 @@ export function showFeatureDetails (feature) {
     modal.classList.remove('modal-pull-up')
     modal.classList.remove('modal-pull-down')
     modal.style.height = (dragStartModalHeight - y) + 'px'
-    e.preventDefault()
+
+    // disable scrolling until modal is fully dragged up (#feature-details-modal class)
+    if (parseInt(modal.style.height, 10) < (window.screen.height - 20)) {
+      event.preventDefault()
+    }
   })
 
   f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend'], (_event) => {
