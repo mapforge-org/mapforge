@@ -117,17 +117,39 @@ export function basemaps () {
       style: {
         version: 8,
         sources: {
-          'raster-tiles': {
+          esri_satellite: {
             type: 'raster',
             tiles: [
               'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
             ],
             tileSize: 256,
-            attribution: 'Powered by Esri, ' +
-          'Sources: Esri, DigitalGlobe, GeoEye, i-cubed, USDA FSA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community'
+            attribution: 'Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
+          },
+          esri_labels: {
+            type: 'raster',
+            tiles: [
+              'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'
+            ],
+            tileSize: 256,
+            attribution: 'Labels: Esri, HERE, Garmin, OpenStreetMap contributors, and the GIS user community'
           }
         },
-        layers: defaultRasterLayer,
+        layers: [
+          {
+            id: 'satellite',
+            type: 'raster',
+            source: 'esri_satellite',
+            minzoom: 0,
+            maxzoom: 22
+          },
+          {
+            id: 'labels',
+            type: 'raster',
+            source: 'esri_labels',
+            minzoom: 0,
+            maxzoom: 22
+          }
+        ],
         glyphs: versatilesGlyphs
       }
     },
