@@ -158,8 +158,10 @@ export default class extends Controller {
     const feature = this.getFeature()
     if (document.querySelector('#show-km-markers').checked) {
       feature.properties['show-km-markers'] = true
+      feature.properties['stroke-image-url'] = "/icons/direction-arrow.png"
     } else {
       delete feature.properties['show-km-markers']
+      delete feature.properties['stroke-image-url']
     }
     redrawGeojson(false)
   }

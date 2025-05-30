@@ -148,6 +148,7 @@ export function basemaps () {
         glyphs: versatilesGlyphs
       }
     },
+    // other than OpenCycleMap, https://www.cyclosm.org is free and open source
     cyclosmTiles: {
       style: {
         version: 8,
@@ -158,7 +159,7 @@ export function basemaps () {
               'https://b.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png'
             ],
             tileSize: 256,
-            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap Contributors</a>'
+            attribution: '<a href="https://www.cyclosm.org/" title="CyclOSM - Open Bicycle render">CyclOSM</a> | <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap Contributors</a>'
           }
         },
         layers: defaultRasterLayer,
