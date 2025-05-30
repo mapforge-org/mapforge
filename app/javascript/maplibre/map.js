@@ -58,6 +58,12 @@ export function resetLayers () {
   layers = []
 }
 
+export function resetGeojsonLayers () {
+  functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', false) })
+  geojsonData = null
+  layers = layers.filter(l => l.type !== 'geojson')
+}
+
 export function initializeMap (divId = 'maplibre-map') {
   resetLayers()
   backgroundMapLayer = null
@@ -169,8 +175,8 @@ export function addGeoJSONSource (sourceName) {
 }
 
 export function loadLayers () {
-  if (geojsonData) {
-    // data is already loaded
+  // return if all layers already loaded (eg. in case of basemap style change)
+  if (gon.map_layers.length == layers.length) {
     redrawGeojson()
     map.fire('geojson.load', { detail: { message: 'redraw cached geojson-source' } })
     return
@@ -184,10 +190,12 @@ export function loadLayers () {
       return response.json()
     })
     .then(data => {
-      console.log('loaded GeoJSON from server: ', data)
+      console.log('Loaded map layers from server: ', data)
       data.layers.forEach((layer) => {
-        layers.push(layer)
-        console.log('Layer ' + layer.id + ' (' + layer.type + ') loaded with ' + layer.geojson.features.length + ' features')
+        if (!layers.find( l => l.id === layer.id) ) {
+          layers.push(layer)
+          console.log('Layer ' + layer.id + ' (' + layer.type + ') loaded with ' + layer?.geojson?.features?.length + ' features')
+        }
       })
       geojsonData = mergedGeoJSONLayers()
       redrawGeojson()
@@ -363,7 +371,7 @@ export function redrawGeojson (resetDraw = true) {
     }
   }
   map.getSource('geojson-source')?.setData(renderedGeojsonData())
-  console.log("Setting overpass source", mergedGeoJSONLayers('overpass'))
+  // console.log("Setting overpass source", mergedGeoJSONLayers('overpass'))
   map.getSource('overpass-source')?.setData(mergedGeoJSONLayers('overpass'))
 
   map.triggerRepaint()
@@ -510,5 +518,5 @@ export function updateMapName (name) {
 export function mergedGeoJSONLayers(type='geojson') {
   return { type: "FeatureCollection",
     features: layers.filter(f => f.type === type)
-      .flatMap(layer => layer.geojson.features) }
+      .flatMap(layer => (layer?.geojson?.features || [])) }
 }

@@ -3,7 +3,7 @@ import { style } from 'maplibre/overpass/queries'
 
 export function loadOverpassLayers() {
   layers.filter(f => f.type === 'overpass').forEach((layer) => {
-    loadOverpassLayer(layer.id)
+    if (!layer.geojson) { loadOverpassLayer(layer.id) }
   })
 }
 

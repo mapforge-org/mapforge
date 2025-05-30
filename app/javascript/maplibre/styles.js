@@ -27,7 +27,7 @@ export function initializeViewStyles (sourceName) {
   viewStyleNames.forEach(styleName => {
     map.addLayer(setSource(styles()[styleName], sourceName))
   })
-  console.log('View styles added for source ' + sourceName)
+  // console.log('View styles added for source ' + sourceName)
 
   // click is needed to select on mobile and for sticky highlight
   map.on('click', styleNames('geojson-source'), function (e) {
