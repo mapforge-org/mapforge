@@ -97,14 +97,21 @@ export function showFeatureDetails (feature) {
     if (!isDragging) return
 
     const dragY = event.clientY || event.touches[0].clientY
+    // y < 0 -> dragging up
     const y = dragY - dragStartY
     modal.classList.remove('modal-pull-up')
     modal.classList.remove('modal-pull-down')
-    modal.style.height = (dragStartModalHeight - y) + 'px'
+
+    // When dragging down, at first scroll up, then lower modal
+    if (y < 0 || modal.scrollTop === 0) {
+      modal.style.height = (dragStartModalHeight - y) + 'px'
+    } else {
+      dragStartY = dragY
+    }
 
     // disable scrolling until modal is fully dragged up (#feature-details-modal class)
-    console.log('Modal: ' + parseInt(modal.style.height, 10) + ' max: ' + window.screen.height - 20)
-    if (parseInt(modal.style.height, 10) < (window.screen.height - 20)) {
+    const max_height = parseInt(window.getComputedStyle(document.querySelector('.map')).height, 10) - 20
+    if (y < 0 && parseInt(modal.style.height, 10) < max_height) {
       event.preventDefault()
     }
   })
