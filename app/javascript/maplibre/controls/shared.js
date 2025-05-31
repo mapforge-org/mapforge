@@ -109,6 +109,8 @@ export function initLayersModal () {
       layerElement.setAttribute('data-layer-type', layer.type)
       const head = layerElement.querySelector('.layer-name')
       head.textContent = layer.name || 'Layer elements'
+      if (layer.type === 'overpass') { layerElement.querySelector('.layer-osm-icon').classList.remove('hidden') }
+      if (layer.type === 'geojson') { head.textContent += ' (' + layer.geojson.features.length + ')' }
       e.appendChild(layerElement)
       if (layer.type === 'overpass') {
         layerElement.querySelector('button').classList.remove('hidden')
@@ -124,7 +126,7 @@ export function initLayersModal () {
           edit_icon.setAttribute('data-action', 'click->map--layers#edit')
           subtitle.appendChild(edit_icon)
         }
-        layerElement.querySelector('.layer-content').insertBefore(subtitle, layerElement.querySelector('button'))
+        layerElement.querySelector('.layer-content').insertBefore(subtitle, layerElement.querySelector('ul'))
       }
 
       const ul = layerElement.querySelector('ul')
@@ -150,7 +152,7 @@ export function initLayersModal () {
       if (layer.geojson.features.length === 0) {
         const newNode = document.createElement('i')
         newNode.textContent = 'No elements in this layer'
-        e.querySelector('.layer-content').appendChild(newNode)
+        layerElement.querySelector('.layer-content').appendChild(newNode)
       }
     })
   })

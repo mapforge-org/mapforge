@@ -147,17 +147,17 @@ export function featureIcon (feature) {
   } else if (feature.properties['marker-symbol']) {
     image = "<img class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
   } else if (feature.properties?.route?.profile === "cycling-mountain" || feature.properties?.route?.profile === "bike") {
-    image = "<i class='bi bi-bicycle me-2 fs-2'>"
+    image = "<i class='bi bi-bicycle me-2 fs-3'>"
   } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "car") {
-    image = "<i class='bi bi-car-front me-2 fs-2'>"
+    image = "<i class='bi bi-car-front me-2 fs-3'>"
   } else if (feature.properties?.route?.profile === "foot") {
-    image = "<i class='bi bi-person-walking me-2 fs-2'>"
+    image = "<i class='bi bi-person-walking me-2 fs-3'>"
   } else if (feature.geometry.type === "LineString" || feature.geometry.type === "MultiString") {
-    image = "<i class='bi bi-signpost me-2 fs-2'>"
+    image = "<i class='bi bi-signpost me-2 fs-3'>"
   } else if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-    image = "<i class='bi bi-bounding-box-circles me-2 fs-2'>"
+    image = "<i class='bi bi-bounding-box-circles me-2 fs-3'>"
   } else if (feature.geometry.type === "Point") {
-    image = "<i class='bi bi-cursor me-2 fs-2'>"
+    image = "<i class='bi bi-cursor me-2 fs-3'>"
   }
   return image
 }
@@ -185,7 +185,7 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
     stickyFeatureHighlight = sticky
     highlightedFeatureId = feature.id
     // load feature from source, the style only returns the dimensions on screen
-    const sourceFeature = layers.flatMap(layer => layer.geojson.features)
+    const sourceFeature = layers.flatMap(layer => layer.geojson?.features)
       .find(f => f.id === feature.id)
 
     if (sourceFeature) {

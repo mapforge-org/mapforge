@@ -23,15 +23,16 @@
       - # used by controls/shared.js
       .hidden
         #layer-item-template.layer-item.mt-3
-          %h4.link.mapforge-font{ data: { action: "click->map--layers#toggleLayerList" }}
-            %i.bi.bi-caret-down-fill
-            %span.layer-name Layer elements
-
-          .layer-content
+          %h4
+            %span.link{ data: { action: "click->map--layers#toggleLayerList" }}
+              %i.bi.bi-caret-right-fill
+              = image_tag "/icons/osm-icon-small.png", class: 'hidden layer-osm-icon', alt: "OSM Overpass layer"
+              %span.mapforge-font.layer-name Layer elements
             %button.hidden.btn.btn-light-green{ data: { action: "click->map--layers#refreshOverpassLayer" } }
               %i.bi.bi-arrow-clockwise
               Refresh for current view
 
+          .layer-content.hidden
             %ul.list-unstyled
 
       #layers.mt-2
