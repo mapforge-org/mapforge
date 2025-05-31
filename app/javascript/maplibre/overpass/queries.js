@@ -21,5 +21,18 @@ export const queries = [
       if (f.properties.craft.includes('brewery')) {
         f.properties["marker-symbol"] = "🍻"
       }
+  }},
+  { name: 'Subway',
+    query: '(relation["railway"="subway"];way["railway"="subway"];); \n' +
+           'out geom;\n' +
+           'node["railway"="station"]["station"="subway"];\n' +
+           'out center;',
+    style: (f) => {
+      if (f.properties?.subway === 'yes') {
+         f.properties["marker-symbol"] = "🚇"
+      }
+      if (f.properties?.train === 'yes') {
+         f.properties["marker-symbol"] = "🚆"
+      }
   }}
 ]

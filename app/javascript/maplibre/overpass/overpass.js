@@ -61,17 +61,8 @@ function styleOverpassLayers(geojson, query) {
     if (f.properties['amenity'] === 'post_box') {
        f.properties["marker-symbol"] = "📯"
     }
-    if (f.properties?.subway === 'yes') {
-       f.properties["marker-symbol"] = "🚇"
-    }
-    if (f.properties?.train === 'yes') {
-       f.properties["marker-symbol"] = "🚆"
-    }
     if (f.properties?.tourism === 'camp_site') {
        f.properties["marker-symbol"] = "🏕️"
-    }
-    if (f.properties?.craft === 'brewery') {
-       f.properties["marker-symbol"] = "🍻"
     }
   })
   return geojson
