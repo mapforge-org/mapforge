@@ -16,9 +16,9 @@ export const queries = [
       }
   }},
   { name: 'Breweries',
-    query: 'nwr["craft"~"brewery",i];out center;',
+    query: '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];);out center;',
     style: (f) => {
-      if (f.properties.craft.includes('brewery')) {
+      if (f.properties?.craft?.includes('brewery') || f.properties?.microbrewery === 'yes') {
         f.properties["marker-symbol"] = "🍻"
       }
   }},

@@ -103,6 +103,7 @@ export function showFeatureDetails (feature) {
     modal.style.height = (dragStartModalHeight - y) + 'px'
 
     // disable scrolling until modal is fully dragged up (#feature-details-modal class)
+    console.log('Modal: ' + parseInt(modal.style.height, 10) + ' max: ' + window.screen.height - 20)
     if (parseInt(modal.style.height, 10) < (window.screen.height - 20)) {
       event.preventDefault()
     }
