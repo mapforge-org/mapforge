@@ -1,3 +1,9 @@
+  .btn {
+    a, .link, a:hover, a:active, .link:hover, .link:active {
+      color: unset;
+    }
+  }
+
 .btn-green {
   --bs-btn-color: #fff;
   --bs-btn-bg: var(--color-dark-moss-green);
@@ -10,10 +16,6 @@
   --bs-btn-active-bg: var(--color-light-alabaster);
   --bs-btn-active-border-color: #51585e;
   --bs-btn-active-shadow: inset 0 3px 5px rgb(0 0 0 / 12.5%);
-
-  a, .link, a:hover, a:active, .link:hover, .link:active {
-    color: unset;
-  }
 }
 
 .btn-light-green {
@@ -28,8 +30,4 @@
   --bs-btn-active-bg: var(--color-light-alabaster);
   --bs-btn-active-border-color: #51585e;
   --bs-btn-active-shadow: inset 0 3px 5px rgb(0 0 0 / 12.5%);
-
-  a, .link, a:hover, a:active, .link:hover, .link:active {
-    color: unset;
-  }
 }
