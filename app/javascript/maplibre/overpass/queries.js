@@ -18,7 +18,10 @@ export const queries = [
   { name: 'Breweries',
     query: '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];);out center;',
     style: (f) => {
-      if (f.properties?.craft?.includes('brewery') || f.properties?.microbrewery === 'yes') {
+      if (f.properties?.craft?.includes('brewery')) {
+        f.properties["marker-symbol"] = "🍺"
+      }
+      if (f.properties?.microbrewery === 'yes') {
         f.properties["marker-symbol"] = "🍻"
       }
   }},
