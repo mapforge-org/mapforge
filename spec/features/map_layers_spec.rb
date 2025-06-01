@@ -23,7 +23,6 @@ describe 'Map' do
       feature
       expect(page).to have_text('Map view updated')
       find('.maplibregl-ctrl-layers').click
-      find('.layer-name').click
     end
 
     let(:feature) { create(:feature, :point, title: 'Feature 1', desc: 'F1 desc', layer: map.layers.first) }
@@ -50,7 +49,6 @@ describe 'Map' do
       page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
       attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "features.geojson"))
       expect(page).to have_text('(3)')
-      find('.layer-name').click
       expect(page).to have_text('Import1')
       expect(map.reload.features.count).to eq 3
     end
@@ -59,7 +57,6 @@ describe 'Map' do
       page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
       attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "mapforge.json"))
       expect(page).to have_text('(3)')
-      find('.layer-name').click
       expect(page).to have_text('f1')
       expect(map.reload.features.count).to eq 3
       expect(map.reload.center).to eq [ 11.07338990801668, 49.44765470337188 ]
