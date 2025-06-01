@@ -194,7 +194,8 @@ export function loadLayers () {
       data.layers.forEach((layer) => {
         if (!layers.find( l => l.id === layer.id) ) {
           layers.push(layer)
-          console.log('Layer ' + layer.id + ' (' + layer.type + ') loaded with ' + layer?.geojson?.features?.length + ' features')
+          console.log('Layer ' + layer.id + ' (' + layer.type + ') loaded' +
+            (layer.type !== 'overpass' ? ' with ' + layer.geojson.features.length + ' features' : ''))
         }
       })
       geojsonData = mergedGeoJSONLayers()

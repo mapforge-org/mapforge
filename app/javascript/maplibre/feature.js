@@ -97,14 +97,21 @@ export function showFeatureDetails (feature) {
     if (!isDragging) return
 
     const dragY = event.clientY || event.touches[0].clientY
+    // y < 0 -> dragging up
     const y = dragY - dragStartY
     modal.classList.remove('modal-pull-up')
     modal.classList.remove('modal-pull-down')
-    modal.style.height = (dragStartModalHeight - y) + 'px'
+
+    // When dragging down, at first scroll up, then lower modal
+    if (y < 0 || modal.scrollTop === 0) {
+      modal.style.height = (dragStartModalHeight - y) + 'px'
+    } else {
+      dragStartY = dragY
+    }
 
     // disable scrolling until modal is fully dragged up (#feature-details-modal class)
-    console.log('Modal: ' + parseInt(modal.style.height, 10) + ' max: ' + window.screen.height - 20)
-    if (parseInt(modal.style.height, 10) < (window.screen.height - 20)) {
+    const max_height = parseInt(window.getComputedStyle(document.querySelector('.map')).height, 10) - 20
+    if (y < 0 && parseInt(modal.style.height, 10) < max_height) {
       event.preventDefault()
     }
   })
@@ -140,17 +147,17 @@ export function featureIcon (feature) {
   } else if (feature.properties['marker-symbol']) {
     image = "<img class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
   } else if (feature.properties?.route?.profile === "cycling-mountain" || feature.properties?.route?.profile === "bike") {
-    image = "<i class='bi bi-bicycle me-2 fs-2'>"
+    image = "<i class='bi bi-bicycle me-2 fs-3'>"
   } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "car") {
-    image = "<i class='bi bi-car-front me-2 fs-2'>"
+    image = "<i class='bi bi-car-front me-2 fs-3'>"
   } else if (feature.properties?.route?.profile === "foot") {
-    image = "<i class='bi bi-person-walking me-2 fs-2'>"
+    image = "<i class='bi bi-person-walking me-2 fs-3'>"
   } else if (feature.geometry.type === "LineString" || feature.geometry.type === "MultiString") {
-    image = "<i class='bi bi-signpost me-2 fs-2'>"
+    image = "<i class='bi bi-signpost me-2 fs-3'>"
   } else if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-    image = "<i class='bi bi-bounding-box-circles me-2 fs-2'>"
+    image = "<i class='bi bi-bounding-box-circles me-2 fs-3'>"
   } else if (feature.geometry.type === "Point") {
-    image = "<i class='bi bi-cursor me-2 fs-2'>"
+    image = "<i class='bi bi-cursor me-2 fs-3'>"
   }
   return image
 }
@@ -178,7 +185,7 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
     stickyFeatureHighlight = sticky
     highlightedFeatureId = feature.id
     // load feature from source, the style only returns the dimensions on screen
-    const sourceFeature = layers.flatMap(layer => layer.geojson.features)
+    const sourceFeature = layers.flatMap(layer => layer.geojson?.features)
       .find(f => f.id === feature.id)
 
     if (sourceFeature) {

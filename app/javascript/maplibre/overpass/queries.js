@@ -15,6 +15,7 @@ export const queries = [
          f.properties["marker-color"] = "transparent"
       }
   }},
+  // Brewery restaurants are tagged with microbrewery=yes (https://wiki.openstreetmap.org/wiki/Brewery)
   { name: 'Breweries',
     query: '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];);out center;',
     style: (f) => {
