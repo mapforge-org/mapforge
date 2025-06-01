@@ -35,6 +35,7 @@ gem "mongoid_rails_migrations"
 # https://github.com/markevans/dragonfly (rdoc: https://rubydoc.info/github/markevans/dragonfly/)
 # https://github.com/demersus/dragonfly-mongoid_data_store
 gem "dragonfly"
+gem "mini_magick"
 
 gem "amazing_print"
 gem "haml"

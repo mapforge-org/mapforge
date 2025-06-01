@@ -11,6 +11,7 @@ export const viewStyleNames = [
   'line-layer',
   'line-layer-route-direction',
   'line-layer-hit',
+  'line-labels',
   'points-border-layer',
   'points-layer',
   'points-hit-layer',
@@ -27,7 +28,7 @@ export function initializeViewStyles (sourceName) {
   viewStyleNames.forEach(styleName => {
     map.addLayer(setSource(styles()[styleName], sourceName))
   })
-  console.log('View styles added for source ' + sourceName)
+  // console.log('View styles added for source ' + sourceName)
 
   // click is needed to select on mobile and for sticky highlight
   map.on('click', styleNames('geojson-source'), function (e) {
@@ -457,10 +458,30 @@ export function styles () {
         // cannot set circle-pitch-scale, circle-stroke-* in the symbol layer :-(
       }
     },
+    'line-labels': {
+      id: 'line-labels',
+      type: 'symbol',
+      source: 'lines',
+      layout: {
+        'symbol-placement': 'line',
+        'text-field': ['get', 'label'],
+        'text-font': labelFont,
+        'text-size': 14,
+        'text-max-angle': 30,
+        'symbol-spacing': 250
+      },
+      paint: {
+        'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
+        'text-halo-color': ['coalesce', ['get', 'user_label-shadow'], ['get', 'label-shadow'], '#fff'],
+        'text-halo-width': 2
+      }
+    },
     'text-layer': {
       id: 'text-layer',
       type: 'symbol',
-      filter: ['has', 'label'],
+      filter: ['all',
+        ['==', '$type', 'Point'],
+        ['has', 'label']],
       layout: {
         'icon-overlap': 'never',
         'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
@@ -478,7 +499,7 @@ export function styles () {
       paint: {
         'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
         'text-halo-color': ['coalesce', ['get', 'user_label-shadow'], ['get', 'label-shadow'], '#fff'],
-        'text-halo-width': 1
+        'text-halo-width': 2
       }
     }
   }

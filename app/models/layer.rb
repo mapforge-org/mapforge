@@ -19,8 +19,10 @@ class Layer
   end
 
   def to_json
-    { id: id, type: type, name: name, query: query,
-      geojson: to_geojson }
+    json = { id: id, type: type, name: name }
+    json[:query] = query if type == "overpass"
+    json[:geojson] = to_geojson if type == "geojson"
+    json
   end
 
   def to_geojson

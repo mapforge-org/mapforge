@@ -1,6 +1,7 @@
 #feature-details-modal.map-modal.modal-pull-down.fade{ 'data-controller': "feature--modal feature--edit", 'data-action': "keydown.esc@window->feature--modal#close toggle-edit-feature@window->feature--modal#toggle_edit_feature" }
 
-  %a.modal-pull-button.link{ 'data-action': "click->feature--modal#toggleModalSize"}
+  %a.link{ 'data-action': "click->feature--modal#toggleModalSize"}
+    .modal-pull-button
 
   #edit-buttons.hidden.maplibregl-ctrl-group.maplibregl-ctrl.edit-button-group
     %button.edit-button.maplibregl-ctrl-btn#edit-button-edit{title: "Edit", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui'}
@@ -25,9 +26,9 @@
 
   #feature-details-meta.mt-2
     %span#feature-size
-    %span#feature-export.ms-2<
+    %span#feature-export.ms-2.link<
       =link_to map_feature_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
         %i.bi.bi-download
-    %span#feature-animation.ms-2
-      %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip", 'data-action': "click->feature--modal#animate"}
+    / %span#feature-animation.ms-2.link
+    /   %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip", 'data-action': "click->feature--modal#animate"}
 
