@@ -15,11 +15,28 @@ export const queries = [
          f.properties["marker-color"] = "transparent"
       }
   }},
+  // Brewery restaurants are tagged with microbrewery=yes (https://wiki.openstreetmap.org/wiki/Brewery)
   { name: 'Breweries',
-    query: 'nwr["craft"~"brewery",i];out center;',
+    query: '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];);out center;',
     style: (f) => {
-      if (f.properties.craft.includes('brewery')) {
+      if (f.properties?.craft?.includes('brewery')) {
+        f.properties["marker-symbol"] = "🍺"
+      }
+      if (f.properties?.microbrewery === 'yes') {
         f.properties["marker-symbol"] = "🍻"
+      }
+  }},
+  { name: 'Subway',
+    query: '(relation["railway"="subway"];way["railway"="subway"];); \n' +
+           'out geom;\n' +
+           'node["railway"="station"]["station"="subway"];\n' +
+           'out center;',
+    style: (f) => {
+      if (f.properties?.subway === 'yes') {
+         f.properties["marker-symbol"] = "🚇"
+      }
+      if (f.properties?.train === 'yes') {
+         f.properties["marker-symbol"] = "🚆"
       }
   }}
 ]
