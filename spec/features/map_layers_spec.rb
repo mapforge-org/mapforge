@@ -23,6 +23,7 @@ describe 'Map' do
       feature
       expect(page).to have_text('Map view updated')
       find('.maplibregl-ctrl-layers').click
+      find('.layer-name').click
     end
 
     let(:feature) { create(:feature, :point, title: 'Feature 1', desc: 'F1 desc', layer: map.layers.first) }
@@ -38,25 +39,33 @@ describe 'Map' do
       expect(page.evaluate_script("[map.getCenter().lng, map.getCenter().lat].toString()"))
         .to eq(feature.coordinates.join(','))
     end
+  end
 
-    context 'file upload' do
-      it 'import geojson' do
-        page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
-        attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "features.json"))
-        expect(page).to have_text('Import1')
-        expect(map.reload.features.count).to eq 4
-      end
+  context 'file upload' do
+    before do
+      find('.maplibregl-ctrl-layers').click
+    end
 
-      it 'import mapforge json' do
-        page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
-        attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "mapforge.json"))
-        expect(page).to have_text('f1')
-        expect(map.reload.features.count).to eq 4
-        expect(map.reload.center).to eq [ 11.07338990801668, 49.44765470337188 ]
-        expect(map.reload.zoom).to eq "14.6"
-        expect(map.reload.bearing).to eq "50.4"
-        expect(page).to have_text('TestMap')
-      end
+    it 'import geojson' do
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "features.geojson"))
+      expect(page).to have_text('(3)')
+      find('.layer-name').click
+      expect(page).to have_text('Import1')
+      expect(map.reload.features.count).to eq 3
+    end
+
+    it 'import mapforge json' do
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "mapforge.json"))
+      expect(page).to have_text('(3)')
+      find('.layer-name').click
+      expect(page).to have_text('f1')
+      expect(map.reload.features.count).to eq 3
+      expect(map.reload.center).to eq [ 11.07338990801668, 49.44765470337188 ]
+      expect(map.reload.zoom).to eq "14.6"
+      expect(map.reload.bearing).to eq "50.4"
+      expect(page).to have_text('TestMap')
     end
   end
 
@@ -75,6 +84,10 @@ describe 'Map' do
     end
 
     it 'can edit overpass layer' do
+      expect(page).to have_text('opass')
+      # find('*', text: /opass/, match: :first).click
+      find('img.layer-osm-icon').click
+      expect(page).to have_text('Openstreetmap live query')
       find(".edit-overpass").click
       expect(page).to have_field('overpass-query', with: layer.query)
       fill_in 'overpass-query', with: 'nwr[highway=bus];out center;'

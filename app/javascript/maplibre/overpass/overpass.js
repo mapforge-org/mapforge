@@ -3,20 +3,19 @@ import { style } from 'maplibre/overpass/queries'
 
 export function loadOverpassLayers() {
   layers.filter(f => f.type === 'overpass').forEach((layer) => {
-    loadOverpassLayer(layer.id)
+    if (!layer.geojson) { loadOverpassLayer(layer.id) }
   })
 }
 
 export function loadOverpassLayer(id) {
   const layer = layers.find(f => f.id === id)
-  console.log('Loading overpass layer ' + layer.id)
+  console.log('Loading overpass layer', layer)
   let query = layer.query
 
   // settings block
   query = "[out:json][timeout:25][bbox:{{bbox}}];" + query
   query = replaceBboxWithMapRectangle(query)
 
-  console.log('Overpass query ', query)
   return fetch("https://overpass-api.de/api/interpreter",
     {
       method: "POST",
@@ -27,15 +26,15 @@ export function loadOverpassLayer(id) {
   // overpass xml to geojson: https://github.com/tyrasd/osmtogeojson
   .then( response => { return response.json() } )
   .then( data => {
-    console.log('Received from overpass-api.de', data)
+    //console.log('Received from overpass-api.de', data)
     let geojson = osmtogeojson(data)
-    console.log('osmtogeojson', geojson)
+    // console.log('osmtogeojson', geojson)
     geojson = styleOverpassLayers(geojson, query)
     layer.geojson = style(geojson, layer.name)
     redrawGeojson()
   })
   .catch(error => {
-    console.error('Failed to fetch overpass:', error)
+    console.error('Failed to fetch overpass for ' + layer.id, error)
   })
 }
 
@@ -61,17 +60,8 @@ function styleOverpassLayers(geojson, query) {
     if (f.properties['amenity'] === 'post_box') {
        f.properties["marker-symbol"] = "📯"
     }
-    if (f.properties?.subway === 'yes') {
-       f.properties["marker-symbol"] = "🚇"
-    }
-    if (f.properties?.train === 'yes') {
-       f.properties["marker-symbol"] = "🚆"
-    }
     if (f.properties?.tourism === 'camp_site') {
        f.properties["marker-symbol"] = "🏕️"
-    }
-    if (f.properties?.craft === 'brewery') {
-       f.properties["marker-symbol"] = "🍻"
     }
   })
   return geojson
@@ -84,7 +74,8 @@ function overpassDescription(props) {
   if (props["website"]) { desc += props["website"] + '\n' }
   { desc += '```\n' + JSON.stringify(props, null, 2) + '\n```\n' }
 
-  desc += '\n' + '[' + props['id'] + '](https://www.openstreetmap.org/' + props['id'] + ') source in osm'
+  desc += '\n' + '![osm link](/icons/osm-icon-small.png)'
+  desc += '\n' + '[' + props['id'] + '](https://www.openstreetmap.org/' + props['id'] + ')'
 
   return desc
 }

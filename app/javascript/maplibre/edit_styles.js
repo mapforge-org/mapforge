@@ -7,6 +7,7 @@ export function initializeEditStyles () {
   // Adding those as extra layers to the map.
   // render the extrusion layer from "source: 'geojson-source' without having it available for edit in draw
   map.addLayer(setSource(styles()['polygon-layer-extrusion'], 'geojson-source') )
+  map.addLayer(setSource(styles()['line-labels'], 'geojson-source') )
   map.addLayer(setSource(styles()['line-layer-route-direction'], 'geojson-source') )
   map.addLayer(setSource(styles()['symbols-border-layer'], 'geojson-source') )
   map.addLayer(setSource(styles()['symbols-layer'], 'geojson-source') )
