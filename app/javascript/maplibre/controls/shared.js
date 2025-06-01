@@ -102,7 +102,7 @@ export function initLayersModal () {
   functions.e('#layers', e => {
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')
-    layers.forEach(layer => {
+    layers.filter(l => l.geojson?.features).forEach(layer => {
       const layerElement = template.cloneNode(true)
       layerElement.id = 'layer-list-' + layer.id
       layerElement.setAttribute('data-layer-id', layer.id)
