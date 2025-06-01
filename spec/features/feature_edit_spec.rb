@@ -144,7 +144,15 @@ describe 'Feature edit' do
       end
 
       it 'can upload image' do
-        image_path = Rails.root.join('public', 'icons', 'mapforge-logo.png')
+        image_path = Rails.root.join('spec', 'fixtures', 'files', 'mapforge-logo-icon.png')
+        expect(page).to have_selector('#marker-image')
+        attach_file('marker-image', image_path)
+
+        wait_for { point.reload.properties['marker-image-url'] }.to match(/icon\/.+/)
+      end
+
+      it 'can upload image bigger 1024px' do
+        image_path = Rails.root.join('spec', 'fixtures', 'files', 'image_large.jpg')
         expect(page).to have_selector('#marker-image')
         attach_file('marker-image', image_path)
 

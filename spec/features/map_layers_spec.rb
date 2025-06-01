@@ -85,7 +85,6 @@ describe 'Map' do
 
     it 'can edit overpass layer' do
       expect(page).to have_text('opass')
-      # find('*', text: /opass/, match: :first).click
       find('img.layer-osm-icon').click
       expect(page).to have_text('Openstreetmap live query')
       find(".edit-overpass").click
