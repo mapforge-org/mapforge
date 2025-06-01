@@ -188,7 +188,7 @@ export function initializeEditMode () {
 // switching directly from 'simple_select' to 'direct_select',
 // allow only to select one feature
 // direct_select mode does not allow to select other features
-function select (feature) {
+export function select (feature) {
   console.log('select', feature)
   if (feature?.properties?.route?.provider === 'osrm') {
     let profile = feature?.properties?.route?.profile

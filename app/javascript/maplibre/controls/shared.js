@@ -145,10 +145,16 @@ export function initLayersModal () {
         listItem.appendChild(name)
         const link = document.createElement('a')
         link.setAttribute('href', '#')
-        link.setAttribute('onclick', 'return false;')
         listItem.appendChild(link)
         ul.appendChild(listItem)
       })
+      // expand layer items when there is only one layer
+      if (layers.length === 1) {
+        e.querySelector('.layer-content').classList.remove('hidden')
+        layerElement.querySelector('h4 i').classList.remove('bi-caret-right-fill')
+        layerElement.querySelector('h4 i').classList.add('bi-caret-down-fill')
+      }
+
       if (layer.geojson.features.length === 0) {
         const newNode = document.createElement('i')
         newNode.textContent = 'No elements in this layer'
