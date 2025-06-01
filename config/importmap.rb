@@ -42,7 +42,7 @@ pin "maplibre-contour", preload: false # @0.1.0
 
 # Elevation chart
 pin "chart.js", to: "chart-js.js", preload: false # @4.4.9
-pin "@kurkle/color", to: "@kurkle--color", preload: false # @0.3.4
+pin "@kurkle/color", to: "@kurkle--color", preload: false # @0.4.0
 
 # render markdown
 pin "marked"# @15.0.8
