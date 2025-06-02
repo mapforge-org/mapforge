@@ -36,10 +36,22 @@ export default class extends Controller {
         } else if (file.type === 'application/geo+json') {
           geoJSON = JSON.parse(content)
         } else if (file.type === 'application/json') {
-          // mapforge or geojson export file
+          // geojson export file
           geoJSON = JSON.parse(content)
-          // Taking only the first geojson layer for now
-          if (geoJSON.layers) { geoJSON = geoJSON.layers.find(f => f.type === 'geojson').geojson }
+          // mapforge export file, taking only the first geojson layer for now
+          if (geoJSON.layers) {
+            geoJSON = geoJSON.layers.find(f => f.type === 'geojson').geojson
+          }
+          if (geoJSON.properties) {
+            const props = geoJSON.properties
+            mapProperties.base_map = props.base_map
+            mapProperties.center = props.center
+            mapProperties.zoom = props.zoom
+            mapProperties.pitch = props.pitch
+            mapProperties.bearing = props.bearing
+            mapProperties.name = props.name
+            mapChannel.send_message('update_map', mapProperties)
+          }
         }
 
         let i = 1
@@ -50,17 +62,6 @@ export default class extends Controller {
           mapChannel.send_message('new_feature', feature)
           status('Added feature ' + i++ + '/' + geoJSON.features.length)
         })
-
-        const props = JSON.parse(content).properties
-        if (props) {
-          mapProperties.base_map = props.base_map
-          mapProperties.center = props.center
-          mapProperties.zoom = props.zoom
-          mapProperties.pitch = props.pitch
-          mapProperties.bearing = props.bearing
-          mapProperties.name = props.name
-          mapChannel.send_message('update_map', mapProperties)
-        }
 
         status('File imported')
         initLayersModal()
