@@ -27,7 +27,7 @@ class Map
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
   field :images_count, type: Integer, default: 0
 
-  BASE_MAPS = [ "versatilesColorful", "satelliteTiles", "openTopoTiles",
+  BASE_MAPS = [ "versatilesColorful", "satelliteStreets", "openTopoTiles",
     "openfreemapLiberty", "versatilesGraybeard", "versatilesEclipse",
     "stamenWatercolorTiles", "cyclosmTiles" ]
   STADIA_MAPS = [ "stamenTonerTiles", "stamenWatercolorTiles" ]
@@ -36,7 +36,7 @@ class Map
   MAPTILER_MAPS = [ "maptilerBuildings", "maptilerHybrid", "maptilerDataviz",
                     "maptilerStreets", "maptilerNoStreets", "maptilerWinter",
                     "maptilerBike", "maptilerBasic" ]
-  OTHER_MAPS = [ "cyclosmTiles" ]
+  OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets" ]
 
   DEFAULT_CENTER = [ 11.077, 49.447 ].freeze
   DEFAULT_ZOOM = 12

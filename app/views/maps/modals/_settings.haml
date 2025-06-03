@@ -26,8 +26,10 @@
       - Map::BASE_MAPS.each do |base_map|
         - active = (@map_properties[:base_map] == base_map)
 
+        - map_image = "base_maps/placeholder.jpg"
         - if Rails.application.assets.find_asset("base_maps/#{base_map}.jpg").present?
-          = image_tag("base_maps/#{base_map}.jpg", data: { base_map: base_map, action: "click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
+          - map_image = "base_maps/#{base_map}.jpg"
+        = image_tag(map_image, data: { base_map: base_map, action: "click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
 
       %br
       - # Default checkbox state gets set by initSettingsModal()
