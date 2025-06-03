@@ -141,7 +141,7 @@ export function initLayersModal () {
         icon.innerHTML = featureIcon(feature)
         listItem.appendChild(icon)
         const name = document.createElement('span')
-        name.textContent = (feature.properties.title || feature.properties.name || feature.id)
+        name.textContent = (feature.properties.title || feature.properties.name || feature.properties.label || feature.geometry.type)
         listItem.appendChild(name)
         const link = document.createElement('a')
         link.setAttribute('href', '#')

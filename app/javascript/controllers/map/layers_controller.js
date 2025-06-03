@@ -3,7 +3,7 @@ import { mapChannel } from 'channels/map_channel'
 import { map, layers, upsert, mapProperties } from 'maplibre/map'
 import { initLayersModal, resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
-import { draw, select } from 'maplibre/edit'
+import { draw } from 'maplibre/edit'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import { loadOverpassLayer } from 'maplibre/overpass/overpass'
@@ -89,8 +89,13 @@ export default class extends Controller {
     const centroid = window.turf.centroid(feature)
     console.log('Fly to: ' + feature.id + ' ' + centroid.geometry.coordinates)
     resetControls()
-    if (draw) { select (feature) }
-    map.once('moveend', function () { highlightFeature(feature, true, source) })
+    map.once('moveend', function () {
+      if (draw) {
+        map.fire('draw.selectionchange', { features: [feature]})
+      } else {
+        highlightFeature(feature, true, source)
+      }
+    })
     map.flyTo({
       center: centroid.geometry.coordinates,
       duration: 1000,
