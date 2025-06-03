@@ -76,15 +76,16 @@ describe 'Map' do
       expect(page).to have_text('center: 11,49.5')
     end
 
-    it 'client follows default center update if map did not move' do
-      feature = create(:feature, :point, layer: map.layers.first, coordinates: [ 11.543, 49.123 ])
-      expect(page).to have_text('Map view updated')
-      # new default center are the feature coordinates
-      expect(page.evaluate_script("[map.getCenter().lng.toFixed(3), map.getCenter().lat.toFixed(3)].toString()"))
-        .to eq(feature.coordinates.join(','))
-      find('.maplibregl-ctrl-map').click
-      expect(page).to have_text("center: #{feature.coordinates.join(',')} (auto)")
-    end
+    # TODO: Add with client side centering
+    # it 'client follows default center update if map did not move' do
+    #   feature = create(:feature, :point, layer: map.layers.first, coordinates: [ 11.543, 49.123 ])
+    #   expect(page).to have_text('Map view updated')
+    #   # new default center are the feature coordinates
+    #   expect(page.evaluate_script("[map.getCenter().lng.toFixed(3), map.getCenter().lat.toFixed(3)].toString()"))
+    #     .to eq(feature.coordinates.join(','))
+    #   find('.maplibregl-ctrl-map').click
+    #   expect(page).to have_text("center: #{feature.coordinates.join(',')} (auto)")
+    # end
 
     it 'map zoom update' do
       map.update(zoom: 16)

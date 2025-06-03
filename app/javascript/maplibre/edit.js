@@ -206,7 +206,7 @@ export function select (feature) {
 }
 
 async function handleCreate (e) {
-  console.log('handleCreate')
+  // console.log('handleCreate')
   let feature = e.features[0] // Assuming one feature is created at a time
   const mode = draw.getMode()
 
@@ -218,7 +218,7 @@ async function handleCreate (e) {
   // std mapbox draw shapes will auto-select the feature (simple_select).
   // This var enables special handling in draw.selectionchange
   justCreated = true
-  status('Feature ' + feature.id + ' created')
+  // status('Feature ' + feature.id + ' created')
   addFeature(feature)
   // redraw if the painted feature was changed in this method
   if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') { redrawGeojson(false) }
@@ -260,7 +260,7 @@ export function handleDelete (e) {
   const deletedFeature = e.features[0] // Assuming one feature is deleted at a time
   destroyFeature(deletedFeature.id)
   resetDirections()
-  status('Feature ' + deletedFeature.id + ' deleted')
+  status('Feature deleted')
   mapChannel.send_message('delete_feature', { id: deletedFeature.id })
 }
 

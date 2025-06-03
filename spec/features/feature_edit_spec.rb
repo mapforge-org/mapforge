@@ -31,8 +31,9 @@ describe 'Feature edit' do
         click_coord('#maplibre-map', 50, 10)
         click_coord('#maplibre-map', 10, 10)
 
-        expect(page).to have_text('Map view updated')
-        expect(Feature.polygon.count).to eq(1)
+        expect(page).to have_text('Added feature')
+        # need to wait until feature is saved server side
+        wait_for { Feature.polygon.count }.to eq(1)
       end
     end
   end
@@ -69,11 +70,9 @@ describe 'Feature edit' do
         accept_alert do
           find('#edit-button-trash').click
         end
-        # the actioncable events of map + feature update are not always received in the same order:
-        expect(page).to have_text("Deleting feature #{polygon.id}")
-          .or have_text('Map properties updated')
-          .or have_text('Map view updated')
-        expect(Feature.count).to eq(0)
+        expect(page).to have_text("Feature deleted")
+        # need to wait until feature is saved server side
+        wait_for { Feature.count }.to eq(0)
       end
 
       it 'shows feature meta data' do

@@ -404,7 +404,7 @@ export function addFeature (feature) {
   layers.find(l => l.type === 'geojson').geojson.features.push(feature)
   geojsonData = mergedGeoJSONLayers()
   redrawGeojson()
-  status('Added feature ' + feature.id)
+  status('Added feature')
 }
 
 function updateFeature (feature, updatedFeature) {

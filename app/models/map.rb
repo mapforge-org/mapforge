@@ -73,7 +73,7 @@ class Map
   after_save :broadcast_update
   after_destroy :delete_screenshot
   # broadcast updates when the layer changed because of default_center + default_zoom
-  after_touch :broadcast_update, unless: proc { |record| record.center && record.zoom }
+  after_update :broadcast_update, unless: proc { |record| record.center && record.zoom }
   before_create :create_public_id, :create_default_layer
   validate :public_id_must_be_unique
 
