@@ -37,13 +37,9 @@ export default class extends Controller {
           geoJSON = JSON.parse(content)
         } else if (file.type === 'application/json') {
           // geojson export file
-          geoJSON = JSON.parse(content)
-          // mapforge export file, taking only the first geojson layer for now
-          if (geoJSON.layers) {
-            geoJSON = geoJSON.layers.find(f => f.type === 'geojson').geojson
-          }
-          if (geoJSON.properties) {
-            const props = geoJSON.properties
+          const mapforgeJSON = JSON.parse(content)
+          if (mapforgeJSON.properties) {
+            const props = mapforgeJSON.properties
             mapProperties.base_map = props.base_map
             mapProperties.center = props.center
             mapProperties.zoom = props.zoom
@@ -51,6 +47,10 @@ export default class extends Controller {
             mapProperties.bearing = props.bearing
             mapProperties.name = props.name
             mapChannel.send_message('update_map', mapProperties)
+          }
+          if (mapforgeJSON.layers) {
+            // mapforge export file, importing only the first geojson layer for now
+            geoJSON = mapforgeJSON.layers.find(f => f.type === 'geojson').geojson
           }
         }
 
