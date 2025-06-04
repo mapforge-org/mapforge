@@ -158,8 +158,8 @@ export function initializeMap (divId = 'maplibre-map') {
       map.setZoom(maxzoom - 0.2)
     }
   })
-  map.on('online', (e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
-  map.on('offline', (e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
+  map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
+  map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
 
   // map.on('error', (err) => {
   //   console.log('map error >>> ', err)
