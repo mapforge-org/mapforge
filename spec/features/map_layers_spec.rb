@@ -8,8 +8,7 @@ describe 'Map' do
   before do
     allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
     visit map_path(map)
-    expect(page).to have_css("#maplibre-map[data-map-loaded='true']")
-    expect(page).to have_css("#maplibre-map[data-geojson-loaded='true']")
+    ensure_map_loaded
   end
 
   context 'with initial map rendering' do
@@ -71,7 +70,7 @@ describe 'Map' do
     before do
       map.layers << layer
       visit map_path(map)
-      expect(page).to have_css("#maplibre-map[data-map-loaded='true']")
+      ensure_map_loaded
       find('.maplibregl-ctrl-layers').click
     end
 

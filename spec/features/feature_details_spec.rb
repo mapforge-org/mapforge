@@ -5,7 +5,7 @@ describe 'Feature details' do
 
   before do
     visit map_path(id: map.public_id)
-    expect(page).to have_css("#maplibre-map[data-map-loaded='true']")
+    ensure_map_loaded
   end
 
   context 'with polygon on map' do

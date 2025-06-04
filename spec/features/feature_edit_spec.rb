@@ -7,7 +7,7 @@ describe 'Feature edit' do
   before do
     allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
     visit map_path(map)
-    expect(page).to have_css("#maplibre-map[data-map-loaded='true']")
+    ensure_map_loaded
   end
 
   context 'with empty map' do

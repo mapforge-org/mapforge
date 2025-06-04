@@ -7,7 +7,7 @@ describe 'Map public view' do
   before do
     stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
     visit path
-    expect(page).to have_css('#maplibre-map[data-map-loaded="true"]')
+    ensure_map_loaded
   end
 
   context 'with initial map rendering' do
@@ -128,7 +128,7 @@ describe 'Map public view' do
       create(:feature, :polygon_middle, layer: map.layers.geojson.first, title: 'Poly Title')
       go_online
       expect(page).to have_text(/Connection to server re-established|Map view updated/)
-      expect(page).to have_css('#maplibre-map[data-map-loaded="true"]')
+      ensure_map_loaded
       click_coord('#maplibre-map', 50, 50)
       expect(page).to have_text('Poly Title')
     end
