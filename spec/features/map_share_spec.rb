@@ -50,7 +50,7 @@ describe 'Map' do
   context 'permissions' do
     before do
       visit map_path(map)
-      expect(page).to have_css("#maplibre-map[map-loaded='true']")
+      expect(page).to have_css("#maplibre-map[data-map-loaded='true']")
       find('.maplibregl-ctrl-share').click
       expect(page).to have_text('Share Map')
     end

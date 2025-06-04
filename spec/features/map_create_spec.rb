@@ -7,6 +7,6 @@ describe 'Create map' do
 
   it 'shows description' do
     click_link 'Create map'
-    expect(page).to have_css('#maplibre-map[map-loaded="true"]')
+    expect(page).to have_css('#maplibre-map[data-map-loaded="true"]')
   end
 end

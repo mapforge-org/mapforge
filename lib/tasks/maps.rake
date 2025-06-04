@@ -38,7 +38,8 @@ namespace :maps do
           page.viewport = Puppeteer::Viewport.new(width: 800, height: 600)
           puts "Loading #{map_url}"
           page.goto(map_url, wait_until: "networkidle0")
-          page.wait_for_selector("#maplibre-map[map-loaded='true']", timeout: 30000)
+          page.wait_for_selector("#maplibre-map[data-map-loaded='true']", timeout: 30000)
+          page.wait_for_selector("#maplibre-map[data-geojson-loaded='true']", timeout: 30000)
 
           unless failure
             page.screenshot(path: map.screenshot_file, quality: 100)

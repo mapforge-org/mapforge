@@ -120,7 +120,7 @@ export function initializeMap (divId = 'maplibre-map') {
     })
     initTooltips()
     functions.e('#preloader', e => { e.classList.add('hidden') })
-    functions.e('.map', e => { e.setAttribute('map-loaded', true) })
+    functions.e('.map', e => { e.setAttribute('data-map-loaded', true) })
     console.log("Map loaded ('load')")
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')

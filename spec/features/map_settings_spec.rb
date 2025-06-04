@@ -6,7 +6,7 @@ describe 'Map' do
   before do
     stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
     visit map_path(map)
-    expect(page).to have_css("#maplibre-map[map-loaded='true']")
+    expect(page).to have_css("#maplibre-map[data-map-loaded='true']")
   end
 
   context 'with initial map rendering' do
@@ -19,7 +19,7 @@ describe 'Map' do
   context 'when using map settings modal' do
     before do
       visit map_path(map)
-      expect(page).to have_css("#maplibre-map[map-loaded='true']")
+      expect(page).to have_css("#maplibre-map[data-map-loaded='true']")
     end
 
     it 'basemap update gets saved' do
