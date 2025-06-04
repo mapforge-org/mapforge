@@ -19,11 +19,15 @@ export const queries = [
   { name: 'Breweries',
     query: '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];);out center;',
     style: (f) => {
-      if (f.properties?.craft?.includes('brewery')) {
-        f.properties["marker-symbol"] = "🍺"
-      }
       if (f.properties?.microbrewery === 'yes') {
         f.properties["marker-symbol"] = "🍻"
+        f.properties["stroke"] = "#ffffff"
+        f.properties["marker-color"] = "transparent"
+      } else if (f.properties?.craft?.includes('brewery')) {
+        f.properties["marker-image-url"] = "/icons/barrel-48.png"
+        f.properties["marker-size"] = "20"
+        f.properties["marker-color"] = "transparent"
+        f.properties["stroke"] = "transparent"
       }
   }},
   { name: 'Subway',
@@ -44,6 +48,8 @@ export const queries = [
     style: (f) => {
       if (f.properties.amenity === 'drinking_water') {
          f.properties["marker-symbol"] = "🚰"
+         f.properties["marker-color"] = "transparent"
+         f.properties["stroke"] = "transparent"
       }
   }}
 ]
