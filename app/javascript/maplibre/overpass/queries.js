@@ -38,5 +38,12 @@ export const queries = [
       if (f.properties?.train === 'yes') {
          f.properties["marker-symbol"] = "🚆"
       }
+  }},
+  { name: 'Drinking water',
+    query: "nwr[amenity=drinking_water];out center;",
+    style: (f) => {
+      if (f.properties.amenity === 'drinking_water') {
+         f.properties["marker-symbol"] = "🚰"
+      }
   }}
 ]
