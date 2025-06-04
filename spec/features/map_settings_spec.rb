@@ -6,7 +6,7 @@ describe 'Map' do
   before do
     stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
     visit map_path(map)
-    ensure_map_loaded
+    expect_map_loaded
   end
 
   context 'with initial map rendering' do
@@ -19,7 +19,7 @@ describe 'Map' do
   context 'when using map settings modal' do
     before do
       visit map_path(map)
-      ensure_map_loaded
+      expect_map_loaded
     end
 
     it 'basemap update gets saved' do

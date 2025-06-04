@@ -50,7 +50,7 @@ describe 'Map' do
   context 'permissions' do
     before do
       visit map_path(map)
-      ensure_map_loaded
+      expect_map_loaded
       find('.maplibregl-ctrl-share').click
       expect(page).to have_text('Share Map')
     end

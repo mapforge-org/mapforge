@@ -7,6 +7,6 @@ describe 'Create map' do
 
   it 'shows description' do
     click_link 'Create map'
-    ensure_map_loaded
+    expect_map_loaded
   end
 end

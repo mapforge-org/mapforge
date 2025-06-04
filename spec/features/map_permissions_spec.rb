@@ -18,7 +18,7 @@ describe 'Map' do
       it 'is accessible for owner' do
         allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
         visit map_path(map)
-        ensure_map_loaded
+        expect_map_loaded
       end
     end
 
@@ -26,7 +26,7 @@ describe 'Map' do
       subject(:map) { create(:map, edit_permission: "link") }
 
       it 'is accessible via link' do
-        ensure_map_loaded
+        expect_map_loaded
       end
     end
   end
@@ -46,7 +46,7 @@ describe 'Map' do
       it 'is accessible for owner' do
         allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
         visit map_path(id: map.public_id)
-        ensure_map_loaded
+        expect_map_loaded
       end
     end
 
@@ -54,7 +54,7 @@ describe 'Map' do
       subject(:map) { create(:map, view_permission: "link") }
 
       it 'is accessible via link' do
-        ensure_map_loaded
+        expect_map_loaded
       end
     end
 
@@ -62,7 +62,7 @@ describe 'Map' do
       subject(:map) { create(:map, view_permission: "public") }
 
       it 'is accessible via link' do
-        ensure_map_loaded
+        expect_map_loaded
       end
     end
   end

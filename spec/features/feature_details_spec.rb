@@ -5,7 +5,7 @@ describe 'Feature details' do
 
   before do
     visit map_path(id: map.public_id)
-    ensure_map_loaded
+    expect_map_loaded
   end
 
   context 'with polygon on map' do
