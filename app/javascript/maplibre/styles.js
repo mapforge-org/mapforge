@@ -297,12 +297,17 @@ export function styles () {
     'line-layer-route-direction': {
       id: "line-layer-route-direction",
       type: "symbol",
-      filter: ['any',
-        ["has", "stroke-image-url"],
-        ["has", "stroke-symbol"]],
+      filter: ['all',
+        ['==', '$type', 'LineString'],
+        // Line symbols don't work in combination with extrusion
+        ['none', ['>', 'fill-extrusion-height', 0], ['>', 'user_fill-extrusion-height', 0]],
+        ['any',
+          ["has", "stroke-image-url"],
+          ["has", "stroke-symbol"]
+        ]],
       layout: {
-        "symbol-placement": "line-center", // NOTE: 'line' mis-rotates icons
-        // "symbol-spacing": 200, // distance in pixels, only works with 'line'
+        "symbol-placement": "line",
+        "symbol-spacing": 200, // distance in pixels, only works with 'line'
         'icon-image': ['coalesce',
           ['get', 'stroke-image-url'],
           // replacing stroke-symbol value with path to emoji png
@@ -461,14 +466,16 @@ export function styles () {
     'line-labels': {
       id: 'line-labels',
       type: 'symbol',
-      source: 'lines',
+      filter: ['all',
+        ['in', '$type', 'LineString'],
+        ['has', 'label']],
       layout: {
         'symbol-placement': 'line',
         'text-field': ['get', 'label'],
         'text-font': labelFont,
         'text-size': 14,
         'text-max-angle': 30,
-        'symbol-spacing': 250
+        'symbol-spacing': 200
       },
       paint: {
         'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
@@ -480,7 +487,7 @@ export function styles () {
       id: 'text-layer',
       type: 'symbol',
       filter: ['all',
-        ['==', '$type', 'Point'],
+        ['!=', '$type', 'LineString'],
         ['has', 'label']],
       layout: {
         'icon-overlap': 'never',
