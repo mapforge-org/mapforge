@@ -71,6 +71,7 @@ describe 'Map' do
       map.layers << layer
       visit map_path(map)
       expect_map_loaded
+      expect_overpass_loaded
       find('.maplibregl-ctrl-layers').click
     end
 

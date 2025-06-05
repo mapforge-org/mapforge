@@ -1,5 +1,6 @@
 import { map, layers, redrawGeojson } from 'maplibre/map'
 import { style } from 'maplibre/overpass/queries'
+import * as functions from 'helpers/functions'
 
 export function loadOverpassLayers() {
   layers.filter(f => f.type === 'overpass').forEach((layer) => {
@@ -29,9 +30,10 @@ export function loadOverpassLayer(id) {
     //console.log('Received from overpass-api.de', data)
     let geojson = osmtogeojson(data)
     // console.log('osmtogeojson', geojson)
-    geojson = styleOverpassLayers(geojson, query)
+    geojson = styleOverpassLayer(geojson, query)
     layer.geojson = style(geojson, layer.name)
     redrawGeojson()
+    functions.e('#maplibre-map', e => { e.setAttribute('data-overpass-loaded', true) })
   })
   .catch(error => {
     console.error('Failed to fetch overpass for ' + layer.id, error)
@@ -49,7 +51,7 @@ function replaceBboxWithMapRectangle(query) {
   return query.replace(/\{\{bbox\}\}/g, bbox.join(","))
 }
 
-function styleOverpassLayers(geojson, query) {
+function styleOverpassLayer(geojson, query) {
   geojson.features.forEach( f => {
     f.properties["label"] = f.properties["name"]
     f.properties["desc"] = overpassDescription(f.properties)
