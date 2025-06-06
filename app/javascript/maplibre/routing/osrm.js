@@ -163,7 +163,7 @@ export function getDirectionsLayers () {
   })
 
   // add a direction arrow layer
-  layers.push( Object.assign({}, styles()['line-layer-route-direction'], {
+  layers.push( Object.assign({}, styles()['line-label-symbol'], {
     source: "maplibre-gl-directions",
     id: "maplibre-gl-directions-routeline-direction" }) )
 

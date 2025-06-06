@@ -9,7 +9,7 @@ export const viewStyleNames = [
   'polygon-layer-outline',
   'line-layer-outline', // line outline below line, because it's a wider line
   'line-layer',
-  'line-layer-route-direction',
+  'line-label-symbol',
   'line-layer-hit',
   'line-labels',
   'points-border-layer',
@@ -294,35 +294,6 @@ export function styles () {
         'line-opacity': 0 // cannot use visibility:none here
       }
     },
-    'line-layer-route-direction': {
-      id: "line-layer-route-direction",
-      type: "symbol",
-      filter: ['all',
-        ['==', '$type', 'LineString'],
-        // Line symbols don't work in combination with extrusion
-        ['none', ['>', 'fill-extrusion-height', 0], ['>', 'user_fill-extrusion-height', 0]],
-        ['any',
-          ["has", "stroke-image-url"],
-          ["has", "stroke-symbol"]
-        ]],
-      layout: {
-        "symbol-placement": "line",
-        "symbol-spacing": 200, // distance in pixels, only works with 'line'
-        'icon-image': ['coalesce',
-          ['get', 'stroke-image-url'],
-          // replacing stroke-symbol value with path to emoji png
-          ['case',
-            ['has', 'stroke-symbol'],
-            ['concat', '/emojis/noto/', ['get', 'stroke-symbol'], '.png'],
-            '']],
-        "icon-size": ["interpolate", ["exponential", 1.5], ["zoom"], 12, 0.85, 18, 1.4],
-        "icon-rotation-alignment": "map",
-        "icon-size": ['case', ['has', 'stroke-symbol'], 0.35, 1]
-      },
-      paint: {
-        "icon-opacity": 1
-      }
-    },
     'points-border-layer': {
       id: 'points-border-layer',
       type: 'circle',
@@ -463,6 +434,7 @@ export function styles () {
         // cannot set circle-pitch-scale, circle-stroke-* in the symbol layer :-(
       }
     },
+    // Line labels sometimes get rendered wrong when line is extruded
     'line-labels': {
       id: 'line-labels',
       type: 'symbol',
@@ -481,6 +453,35 @@ export function styles () {
         'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
         'text-halo-color': ['coalesce', ['get', 'user_label-shadow'], ['get', 'label-shadow'], '#fff'],
         'text-halo-width': 2
+      }
+    },
+    'line-label-symbol': {
+      id: "line-label-symbol",
+      type: "symbol",
+      filter: ['all',
+        ['==', '$type', 'LineString'],
+        // Line symbols don't work in combination with extrusion
+        ['none', ['>', 'fill-extrusion-height', 0], ['>', 'user_fill-extrusion-height', 0]],
+        ['any',
+          ["has", "stroke-image-url"],
+          ["has", "stroke-symbol"]
+        ]],
+      layout: {
+        "symbol-placement": "line",
+        "symbol-spacing": 200, // distance in pixels, only works with 'line'
+        'icon-image': ['coalesce',
+          ['get', 'stroke-image-url'],
+          // replacing stroke-symbol value with path to emoji png
+          ['case',
+            ['has', 'stroke-symbol'],
+            ['concat', '/emojis/noto/', ['get', 'stroke-symbol'], '.png'],
+            '']],
+        "icon-size": ["interpolate", ["exponential", 1.5], ["zoom"], 12, 0.85, 18, 1.4],
+        "icon-rotation-alignment": "map",
+        "icon-size": ['case', ['has', 'stroke-symbol'], 0.35, 1]
+      },
+      paint: {
+        "icon-opacity": 1
       }
     },
     'text-layer': {
