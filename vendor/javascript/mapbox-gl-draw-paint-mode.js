@@ -23,6 +23,16 @@ PaintMode.onClick = function (state, e) {
   }
 };
 
+PaintMode.onMouseDown = function (state, e) {
+    startDrawing(state, e);
+    // disable map drag
+    e.preventDefault();
+};
+
+PaintMode.onMouseUp = function (state, e) {
+  stopDrawing(state, e, this);
+};
+
 PaintMode.onTouchStart = function (state, e) {
   startDrawing(state, e);
 };
@@ -40,7 +50,7 @@ function stopDrawing(state, e, me) {
   let feature = {
       type: "Feature",
       id: state.currentLineFeature.id,
-      properties: {},
+      properties: { "stroke-width": "6", "stroke": "#63452c" },
       geometry: {
         type: "LineString",
         coordinates: state.currentLineFeature.coordinates,
@@ -56,7 +66,7 @@ function stopDrawing(state, e, me) {
   me.changeMode('direct_select', { featureId: feature.id })
 }
 
-PaintMode.onMouseMove = PaintMode.onTouchMove = function (state, e) {
+PaintMode.onMouseMove = PaintMode.onDrag = PaintMode.onTouchMove = function (state, e) {
   if (!state.currentLine) return;
 
   state.currentLine.push([e.lngLat.lng, e.lngLat.lat]);
@@ -64,7 +74,7 @@ PaintMode.onMouseMove = PaintMode.onTouchMove = function (state, e) {
   if (!state.currentLineFeature) {
     state.currentLineFeature = this.newFeature({
       type: "Feature",
-      properties: {},
+      properties: { "stroke-width": "6", "stroke": "#63452c" },
       geometry: {
         type: "LineString"
       },

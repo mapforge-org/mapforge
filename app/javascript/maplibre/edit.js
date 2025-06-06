@@ -97,7 +97,7 @@ export function initializeEditMode () {
     if (draw.getMode() === 'draw_paint_mode') {
       functions.e('.mapbox-gl-draw_paint', e => { e.classList.add('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
-      status('Paint Mode: Click on the map to start drawing, double click to finish',
+      status('Paint Mode: Click on the map to start drawing, release to finish',
         'info', 'medium', 8000)
     } else if (draw.getMode() === 'directions_car') {
       functions.e('.mapbox-gl-draw_road', e => { e.classList.add('active') })
@@ -212,8 +212,8 @@ async function handleCreate (e) {
 
   // simplify hand-drawing
   if (mode === 'draw_paint_mode') {
-    const options = { tolerance: 0.00001, highQuality: true }
-    feature = window.turf.simplify(feature, options)
+    const options = { tolerance: 0.00005, highQuality: true, mutate: true }
+    window.turf.simplify(feature, options)
   }
   // std mapbox draw shapes will auto-select the feature (simple_select).
   // This var enables special handling in draw.selectionchange
