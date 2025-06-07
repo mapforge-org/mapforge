@@ -146,6 +146,8 @@ export function featureIcon (feature) {
       "<img class='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'></a>"
   } else if (feature.properties['marker-symbol']) {
     image = "<img class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
+  } else if (feature.properties['stroke-image-url']) {
+    image = "<img class='feature-details-icon' src='" + feature.properties['stroke-image-url'] + "'>"
   } else if (feature.properties?.route?.profile === "cycling-mountain" || feature.properties?.route?.profile === "bike") {
     image = "<i class='bi bi-bicycle me-2 fs-3'>"
   } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "car") {

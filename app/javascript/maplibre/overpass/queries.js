@@ -1,7 +1,7 @@
 export function style (geojson, queryName) {
   const template = queries.find(q => q.name === queryName)
   if (template) {
-    geojson.features.forEach( f => template.style(f) )
+    geojson.features.forEach(f => { if(template.style) { template.style(f) }} )
   }
   return geojson
 }
@@ -51,5 +51,8 @@ export const queries = [
          f.properties["marker-color"] = "transparent"
          f.properties["stroke"] = "transparent"
       }
-  }}
+  }},
+  { name: 'Hiking trails',
+    query: "nwr[type=route][route=hiking];out geom;",
+  }
 ]

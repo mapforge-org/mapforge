@@ -36,6 +36,7 @@ constraints: { id: ID_PATTERN, feature_id: ID_PATTERN }
   get "/admin" => "admin#index"
 
   # map icons
+  get "/icon/osmc/:osmc_symbol", to: "images#osmc_symbol", as: "osmc"
   get "/icon/:public_id", to: "images#icon", as: "icon", constraints: { public_id: ID_PATTERN }
   get "/image/:public_id", to: "images#image", as: "image", constraints: { public_id: ID_PATTERN }
   post "/images", to: "images#upload", as: "upload"

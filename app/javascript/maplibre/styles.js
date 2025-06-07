@@ -477,7 +477,7 @@ export function styles () {
             ['concat', '/emojis/noto/', ['get', 'stroke-symbol'], '.png'],
             '']],
         "icon-size": ["interpolate", ["exponential", 1.5], ["zoom"], 12, 0.85, 18, 1.4],
-        "icon-rotation-alignment": "map",
+        "icon-rotation-alignment": "viewport", // TODO: data expressions not allowed here :-(
         "icon-size": ['case', ['has', 'stroke-symbol'], 0.35, 1]
       },
       paint: {
@@ -498,7 +498,8 @@ export function styles () {
         // arrange text to avoid collision
         'text-variable-anchor': ['top'], // text under point
         // distance of the text in 'em'
-        'text-radial-offset': ['+', ['/', pointSizeMax, 14], 0.4],
+        // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
+        "text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
         'text-justify': 'auto',
         'text-ignore-placement': false, // hide on collision
         // TODO: sort keys on text are ascending, on symbols descending???

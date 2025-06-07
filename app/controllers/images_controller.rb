@@ -21,6 +21,42 @@ class ImagesController < ApplicationController
     redirect_to image_url
   end
 
+  # convert osmc symbol code to image
+  # https://wiki.openstreetmap.org/wiki/Key:osmc:symbol?uselang=en
+  def osmc_symbol
+    # https://www.wanderreitkarte.de/symbols_en.html
+    _waycolor, background, foreground, text, textcolor = params[:osmc_symbol].split(":")
+    background = Rails.root.join("public", "icons", "osmc", "background", "#{background}.png")
+    foreground = Rails.root.join("public", "icons", "osmc", "#{foreground}.png")
+    head :not_found and return unless File.exist?(background)
+
+    # background image is mandatory
+    result = MiniMagick::Image.open(background)
+    # overlay 1 + 2 are optional
+    if File.exist?(foreground)
+      image2 = MiniMagick::Image.open(foreground)
+
+      # Overlay image2 on top of image1, centering by default
+      result = result.composite(image2) do |c|
+        c.compose "Over"
+        c.gravity "center"
+      end
+    end
+
+    if text
+      # Add text on top
+      result.combine_options do |c|
+        c.gravity "center"
+        c.pointsize 10
+        c.draw "text 1,2 '#{text[..2]}'"
+        c.fill textcolor || "white"
+        # c.font "Arial"
+      end
+    end
+
+    send_data result.to_blob, type: "image/png", disposition: "inline"
+  end
+
   def upload
     uploaded_file = params[:image]
     ext = uploaded_file.content_type.split("/").last
