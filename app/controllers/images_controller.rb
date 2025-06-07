@@ -54,6 +54,7 @@ class ImagesController < ApplicationController
       end
     end
 
+    expires_in 180.minutes, public: true
     send_data result.to_blob, type: "image/png", disposition: "inline"
   end
 
