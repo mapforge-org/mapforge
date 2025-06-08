@@ -48,9 +48,9 @@ class ImagesController < ApplicationController
       result.combine_options do |c|
         c.gravity "center"
         c.pointsize 10
-        c.draw "text 1,2 '#{text[..2]}'"
+        c.draw "text 0,0 '#{text[..2]}'"
         c.fill textcolor || "white"
-        # c.font "Arial"
+        c.font Rails.root.join("vendor", "OpenSans-Bold.ttf")
       end
     end
 

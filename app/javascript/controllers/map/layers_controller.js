@@ -90,7 +90,7 @@ export default class extends Controller {
     console.log('Fly to: ' + feature.id + ' ' + centroid.geometry.coordinates)
     resetControls()
     map.once('moveend', function () {
-      if (draw) {
+      if (draw && layer.type === 'geojson') {
         map.fire('draw.selectionchange', { features: [feature]})
       } else {
         highlightFeature(feature, true, source)

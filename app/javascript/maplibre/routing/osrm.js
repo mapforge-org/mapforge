@@ -76,7 +76,7 @@ export function initDirections (profile, feature) {
     const defaultProperties = { "fill-extrusion-height": 8,
                                 "fill-extrusion-base": 3,
                                 "stroke-opacity": 0.45,
-                                "stroke-image-url": "/icons/direction-arrow.png",
+                                // "stroke-image-url": "/icons/direction-arrow.png",
                                 "fill-extrusion-color": "#62a0ea",
                                 "fill-extrusion-width": 1.5,
                                 "stroke-width": 5,

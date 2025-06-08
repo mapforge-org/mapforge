@@ -468,7 +468,7 @@ export function styles () {
         ]],
       layout: {
         "symbol-placement": "line",
-        "symbol-spacing": 200, // distance in pixels, only works with 'line'
+        "symbol-spacing": 100, // distance in pixels, only works with 'line'
         'icon-image': ['coalesce',
           ['get', 'stroke-image-url'],
           // replacing stroke-symbol value with path to emoji png
