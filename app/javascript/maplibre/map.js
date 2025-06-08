@@ -524,3 +524,16 @@ export function mergedGeoJSONLayers(type='geojson') {
     features: layers.filter(f => f.type === type)
       .flatMap(layer => (layer?.geojson?.features || [])) }
 }
+
+export function frontFeature(frontFeature) {
+  for (const layer of layers) {
+    const features = layer.geojson.features
+    const idx = features.findIndex(f => f.id === frontFeature.id)
+    if (idx !== -1) {
+      const [feature] = features.splice(idx, 1) // Remove it
+      features.push(feature) // Add to end
+      break // done, exit loop
+    }
+  }
+  redrawGeojson()
+}

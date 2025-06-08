@@ -1,4 +1,4 @@
-import { map } from 'maplibre/map'
+import { map, frontFeature } from 'maplibre/map'
 import {
   highlightedFeatureId, stickyFeatureHighlight,
   resetHighlightedFeature, highlightFeature
@@ -33,11 +33,13 @@ export function initializeViewStyles (sourceName) {
   // click is needed to select on mobile and for sticky highlight
   map.on('click', styleNames('geojson-source'), function (e) {
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
+    frontFeature(e.features[0])
     highlightFeature(e.features[0], true, 'geojson-source')
   })
 
   map.on('click', styleNames('overpass-source'), function (e) {
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
+    frontFeature(e.features[0])
     highlightFeature(e.features[0], true, 'overpass-source')
   })
 
@@ -52,6 +54,7 @@ export function initializeViewStyles (sourceName) {
       const features = map.queryRenderedFeatures(e.point).filter(f => f.source === s)
       if (features[0]) {
         if (features[0].id === highlightedFeatureId) { return }
+        frontFeature(features[0])
         highlightFeature(features[0], false, s)
         return
       }

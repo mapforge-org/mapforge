@@ -122,12 +122,13 @@ export default class extends Controller {
 
   update (event) {
     event.preventDefault()
-    const layer_id = event.target.closest('.layer-item').getAttribute('data-layer-id')
-    const layer = layers.find(f => f.id === layer_id)
-    layer.query = document.querySelector('#overpass-query').value
+    const layerElement = event.target.closest('.layer-item')
+    const layerId = layerElement.getAttribute('data-layer-id')
+    const layer = layers.find(f => f.id === layerId)
+    layer.query = layerElement.querySelector('.overpass-query').value
     const { geojson: _geojson, ...sendLayer } = layer
     mapChannel.send_message('update_layer', sendLayer)
-    loadOverpassLayer(layer_id).then( () => { initLayersModal() })
+    loadOverpassLayer(layerId).then( () => { initLayersModal() })
   }
 
   refreshOverpassLayer (event) {

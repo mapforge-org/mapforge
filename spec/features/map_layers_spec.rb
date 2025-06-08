@@ -83,9 +83,7 @@ describe 'Map' do
 
     it 'can edit overpass layer' do
       expect(page).to have_text('opass')
-      find('img.layer-osm-icon').click
-      expect(page).to have_text('Openstreetmap live query')
-      find(".edit-overpass").click
+      find(".layer-edit").click
       expect(page).to have_field('overpass-query', with: layer.query)
       fill_in 'overpass-query', with: 'nwr[highway=bus];out center;'
       click_button 'Update'
