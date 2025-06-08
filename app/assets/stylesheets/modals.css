@@ -174,7 +174,7 @@
 
 .layer-feature-item .feature-details-icon {
   width: calc(1.325rem + .9vw); /* same size as .fs-2 */
-  height: calc(1.325rem + .9vw);
+  max-height: calc(1.325rem + .9vw);
   margin: 0.2em 0.4em 0 0;
 }
 

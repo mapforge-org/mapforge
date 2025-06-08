@@ -108,23 +108,16 @@ export default class extends Controller {
     resetControls()
   }
 
-  edit (event) {
+  toggleEdit (event) {
     event.preventDefault()
-    const layer_id = event.target.closest('.layer-item').getAttribute('data-layer-id')
-    const layer = layers.find(f => f.id === layer_id)
-    const contentElement = event.target.closest('.layer-content')
-    contentElement.innerHTML = ''
-    const queryElement = document.createElement('textarea')
-    queryElement.id = 'overpass-query'
-    queryElement.classList.add('overpass-edit')
-    queryElement.value = layer.query
-    contentElement.appendChild(queryElement)
-    const updateElement = document.createElement('button')
-    updateElement.classList.add('btn')
-    updateElement.classList.add('btn-green')
-    updateElement.setAttribute('data-action', 'click->map--layers#update')
-    updateElement.innerHTML = 'Update'
-    contentElement.appendChild(updateElement)
+
+    const layerElement = event.target.closest('.layer-item')
+    const layerId = layerElement.getAttribute('data-layer-id')
+    const layer = layers.find(f => f.id === layerId)
+    const contentElement = layerElement.querySelector('.layer-content')
+    if (contentElement.classList.contains('hidden')) { this.toggleLayerList(event) }
+    contentElement.querySelector('.overpass-edit').classList.toggle('hidden')
+    contentElement.querySelector('.overpass-query').value = layer.query
   }
 
   update (event) {
@@ -140,14 +133,14 @@ export default class extends Controller {
   refreshOverpassLayer (event) {
     event.preventDefault()
     const layer_id = event.target.closest('.layer-item').getAttribute('data-layer-id')
-    event.target.querySelector('i').classList.add('layer-refresh-animate')
+    event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
     loadOverpassLayer(layer_id).then( () => { initLayersModal() })
   }
 
   toggleLayerList (event) {
     event.preventDefault()
     const list = event.target.closest('div').querySelector('.layer-content')
-    const icon = event.target.closest('h4').querySelector('i')
+    const icon = event.target.closest('h4').querySelector('span i')
     if (list.classList.contains('hidden')) {
       icon.classList.remove('bi-caret-right-fill')
       icon.classList.add('bi-caret-down-fill')

@@ -1,5 +1,6 @@
 import { map, layers } from 'maplibre/map'
 import * as functions from 'helpers/functions'
+import * as dom from 'helpers/dom'
 import { draw } from 'maplibre/edit'
 import { resetHighlightedFeature, featureIcon } from 'maplibre/feature'
 import { initTooltips } from 'helpers/dom'
@@ -113,20 +114,10 @@ export function initLayersModal () {
       if (layer.type === 'geojson') { head.textContent += ' (' + layer.geojson.features.length + ')' }
       e.appendChild(layerElement)
       if (layer.type === 'overpass') {
-        layerElement.querySelector('button').classList.remove('hidden')
-        const subtitle = document.createElement('p')
-        subtitle.textContent = 'Openstreetmap live query'
+        layerElement.querySelector('button.overpass-refresh').classList.remove('hidden')
         if (window.gon.map_mode === "rw"){
-          const edit_icon = document.createElement('i')
-          edit_icon.classList.add('bi')
-          edit_icon.classList.add('bi-pencil-square')
-          edit_icon.classList.add('ms-2')
-          edit_icon.classList.add('link')
-          edit_icon.classList.add('edit-overpass')
-          edit_icon.setAttribute('data-action', 'click->map--layers#edit')
-          subtitle.appendChild(edit_icon)
+          layerElement.querySelector('button.layer-edit').classList.remove('hidden')
         }
-        layerElement.querySelector('.layer-content').insertBefore(subtitle, layerElement.querySelector('ul'))
       }
 
       const ul = layerElement.querySelector('ul')
@@ -154,6 +145,7 @@ export function initLayersModal () {
         layerElement.querySelector('h4 i').classList.remove('bi-caret-right-fill')
         layerElement.querySelector('h4 i').classList.add('bi-caret-down-fill')
       }
+      dom.initTooltips()
 
       if (layer.geojson.features.length === 0) {
         const newNode = document.createElement('i')

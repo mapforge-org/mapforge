@@ -27,12 +27,19 @@
             %span.link{ data: { action: "click->map--layers#toggleLayerList" }}
               %i.bi.bi-caret-right-fill
               = image_tag "/icons/osm-icon-small.png", class: 'hidden layer-osm-icon', alt: "OSM Overpass layer"
-              %span.mapforge-font.layer-name Layer elements
-            %button.hidden.btn.btn-light-green{ data: { action: "click->map--layers#refreshOverpassLayer" } }
-              %i.bi.bi-arrow-clockwise
-              Refresh for current view
+              %span.mapforge-font.layer-name Layer name
+            %button.hidden.btn.btn-green.btn-layer-actions.overpass-refresh{ data: { action: "click->map--layers#refreshOverpassLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Refresh layer for current view" }
+              %i.bi.bi-arrow-clockwise.reload-icon
+            %button.hidden.btn.btn-light-green.btn-layer-actions.layer-edit{ data: { action: "click->map--layers#toggleEdit", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Edit query" }
+              %i.bi.bi-pencil-square
 
           .layer-content.hidden
+
+            .overpass-edit.hidden
+              %textarea.form-control.overpass-query
+              %button.btn.btn-green{ 'data-action': 'click->map--layers#update'}
+                Update
+
             %ul.list-unstyled
 
       #layers.mt-2

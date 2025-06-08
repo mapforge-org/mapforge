@@ -154,12 +154,12 @@ export function featureIcon (feature) {
     image = "<i class='bi bi-car-front me-2 fs-3'>"
   } else if (feature.properties?.route?.profile === "foot") {
     image = "<i class='bi bi-person-walking me-2 fs-3'>"
-  } else if (feature.geometry.type === "LineString" || feature.geometry.type === "MultiString") {
+  } else if (feature.geometry.type === "LineString" || feature.geometry.type === "MultiLineString") {
     image = "<i class='bi bi-signpost me-2 fs-3'>"
   } else if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
     image = "<i class='bi bi-bounding-box-circles me-2 fs-3'>"
   } else if (feature.geometry.type === "Point") {
-    image = "<i class='bi bi-cursor me-2 fs-3'>"
+    image = "<i class='bi bi-record-circle me-2 fs-3'>"
   }
   return image
 }
