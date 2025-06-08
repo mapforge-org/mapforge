@@ -54,5 +54,18 @@ export const queries = [
   }},
   { name: 'Hiking trails',
     query: "nwr[type=route][route=hiking];out geom;",
+  },
+  { name: 'Camping',
+    query: "nwr[tourism=camp_site];out center;",
+  },
+  { name: 'Feuerwehr',
+    query: "nwr[amenity=fire_station];out center;",
+  },
+  { name: 'Train',
+    query: '(way["railway"="rail"]; // Train tracks (railways)' +
+           'node["railway"="station"]; // Train stations' +
+           'way["railway"="station"];' +
+           'relation["railway"="station"];);' +
+           'out geom;',
   }
 ]

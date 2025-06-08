@@ -44,10 +44,12 @@ class ImagesController < ApplicationController
     end
 
     if text
+      pointsize = 10
+      pointsize = 8 if text.size >= 3
       # Add text on top
       result.combine_options do |c|
         c.gravity "center"
-        c.pointsize 10
+        c.pointsize pointsize
         c.draw "text 0,0 '#{text[..2]}'"
         c.fill textcolor || "white"
         c.font Rails.root.join("vendor", "OpenSans-Bold.ttf")
