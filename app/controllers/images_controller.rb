@@ -28,9 +28,9 @@ class ImagesController < ApplicationController
     _waycolor, background, foreground, text, textcolor = params[:osmc_symbol].split(":")
     background = Rails.root.join("public", "icons", "osmc", "background", "#{background}.png")
     foreground = Rails.root.join("public", "icons", "osmc", "#{foreground}.png")
-    head :not_found and return unless File.exist?(background)
 
     # background image is mandatory
+    head :not_found and return unless File.exist?(background)
     result = MiniMagick::Image.open(background)
     # overlay 1 + 2 are optional
     if File.exist?(foreground)
@@ -43,14 +43,14 @@ class ImagesController < ApplicationController
       end
     end
 
-    if text
+    if text && !text.blank? && text.size <= 3
       pointsize = 10
-      pointsize = 8 if text.size >= 3
+      pointsize = 8 if text.size == 3
       # Add text on top
       result.combine_options do |c|
         c.gravity "center"
         c.pointsize pointsize
-        c.draw "text 0,0 '#{text[..2]}'"
+        c.draw "text 0,0 '#{text}'"
         c.fill textcolor || "white"
         c.font Rails.root.join("vendor", "OpenSans-Bold.ttf")
       end

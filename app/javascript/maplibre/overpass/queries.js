@@ -52,8 +52,11 @@ export const queries = [
          f.properties["stroke"] = "transparent"
       }
   }},
-  { name: 'Hiking trails',
+  { name: 'Hiking routes',
     query: "relation[type=route][route=hiking];out geom;",
+  },
+  { name: 'Bicycle routes',
+    query: "relation[type=route][route=bicycle];out geom;",
   },
   { name: 'Camping',
     query: "nwr[tourism=camp_site];out center;",
@@ -61,11 +64,26 @@ export const queries = [
   { name: 'Feuerwehr',
     query: "nwr[amenity=fire_station];out center;",
   },
-  { name: 'Train',
-    query: '(way["railway"="rail"]; // Train tracks (railways)' +
-           'node["railway"="station"]; // Train stations' +
-           'way["railway"="station"];' +
-           'relation["railway"="station"];);' +
-           'out geom;',
+  { name: 'Trains',
+    query: '(way["railway"="rail"]; // Train tracks (railways)\n' +
+           'node["railway"="station"]; // Train stations\n' +
+           'node["railway"="halt"];\n' +
+           'way["railway"="station"];\n' +
+           'relation["railway"="station"];);\n' +
+           'out geom;\n',
+    style: (f) => {
+      if (f.properties.railway === "rail") {
+         f.properties["stroke"] = "black"
+         f.properties["stroke-width"] = "2"
+      }
+    }
+  },
+  { name: 'Wifi',
+    query: '(nwr["internet_access:fee"=no];nwr["internet_access:fee"=customers];);out center;',
+    style: (f) => {
+      if (['no', 'customers'].includes(f.properties['internet_access:fee'])) {
+        f.properties["marker-symbol"] = "🛜"
+      }
+    }
   }
 ]

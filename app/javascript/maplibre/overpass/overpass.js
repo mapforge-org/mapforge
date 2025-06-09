@@ -56,9 +56,6 @@ function styleOverpassLayer(geojson, query) {
     f.properties["label"] = f.properties["name"]
     f.properties["desc"] = overpassDescription(f.properties)
     if (query.includes("out skel;")) { f.properties["heatmap"] = true }
-    if (['no', 'customers'].includes(f.properties['internet_access:fee'])) {
-      f.properties["marker-symbol"] = "🛜"
-    }
     if (f.properties['amenity'] === 'post_box') {
       f.properties["marker-symbol"] = "📯"
     }
@@ -75,6 +72,9 @@ function styleOverpassLayer(geojson, query) {
       f.properties["stroke"] = parts[0]
       f.properties["stroke-width"] = "2"
       f.properties["stroke-image-url"] = "/icon/osmc/" + f.properties['osmc:symbol']
+    // render 'ref' name as label on bike routes without osmc:symbol
+    } else if (f.properties["route"] === 'bicycle' && f.properties["ref"]){
+      f.properties["label"] = f.properties["ref"]
     }
   })
   return geojson
