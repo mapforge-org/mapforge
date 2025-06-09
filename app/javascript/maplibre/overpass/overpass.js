@@ -68,7 +68,8 @@ function styleOverpassLayer(geojson, query) {
 
     // https://wiki.openstreetmap.org/wiki/Key:osmc:symbol?uselang=en
     // osmc:symbol=waycolor:background[:foreground][:foreground2][:text:textcolor]
-    if (f.geometry.type === 'LineString' && f.properties['osmc:symbol']) {
+    if ((f.geometry.type === 'LineString' || f.geometry.type === 'MultiLineString')
+      && f.properties['osmc:symbol']) {
       const parts = f.properties['osmc:symbol'].split(':')
 
       f.properties["stroke"] = parts[0]

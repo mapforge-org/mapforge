@@ -1,6 +1,6 @@
 import { map, layers } from 'maplibre/map'
 import * as functions from 'helpers/functions'
-import * as dom from 'helpers/dom'
+// import * as dom from 'helpers/dom'
 import { draw } from 'maplibre/edit'
 import { resetHighlightedFeature, featureIcon } from 'maplibre/feature'
 import { initTooltips } from 'helpers/dom'
@@ -145,7 +145,7 @@ export function initLayersModal () {
         layerElement.querySelector('h4 i').classList.remove('bi-caret-right-fill')
         layerElement.querySelector('h4 i').classList.add('bi-caret-down-fill')
       }
-      dom.initTooltips()
+      //dom.initTooltips()
 
       if (layer.geojson.features.length === 0) {
         const newNode = document.createElement('i')

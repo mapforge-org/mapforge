@@ -53,7 +53,7 @@ export const queries = [
       }
   }},
   { name: 'Hiking trails',
-    query: "nwr[type=route][route=hiking];out geom;",
+    query: "relation[type=route][route=hiking];out geom;",
   },
   { name: 'Camping',
     query: "nwr[tourism=camp_site];out center;",

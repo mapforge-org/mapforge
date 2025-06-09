@@ -128,14 +128,14 @@ export default class extends Controller {
     layer.query = layerElement.querySelector('.overpass-query').value
     const { geojson: _geojson, ...sendLayer } = layer
     mapChannel.send_message('update_layer', sendLayer)
-    loadOverpassLayer(layerId).then( () => { initLayersModal() })
+    this.refreshOverpassLayer(event)
   }
 
   refreshOverpassLayer (event) {
     event.preventDefault()
-    const layer_id = event.target.closest('.layer-item').getAttribute('data-layer-id')
+    const layerId = event.target.closest('.layer-item').getAttribute('data-layer-id')
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
-    loadOverpassLayer(layer_id).then( () => { initLayersModal() })
+    loadOverpassLayer(layerId).then( () => { initLayersModal() })
   }
 
   toggleLayerList (event) {
