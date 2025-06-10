@@ -110,7 +110,6 @@ export default class extends Controller {
 
   toggleEdit (event) {
     event.preventDefault()
-
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
@@ -118,14 +117,16 @@ export default class extends Controller {
     if (contentElement.classList.contains('hidden')) { this.toggleLayerList(event) }
     contentElement.querySelector('.overpass-edit').classList.toggle('hidden')
     contentElement.querySelector('.overpass-query').value = layer.query
+    contentElement.querySelector('.overpass-name').value = layer.name
   }
 
-  update (event) {
+  updateOverpassLayer (event) {
     event.preventDefault()
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
     layer.query = layerElement.querySelector('.overpass-query').value
+    layer.name = layerElement.querySelector('.overpass-name').value
     const { geojson: _geojson, ...sendLayer } = layer
     mapChannel.send_message('update_layer', sendLayer)
     this.refreshOverpassLayer(event)

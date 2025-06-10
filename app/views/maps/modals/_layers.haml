@@ -36,8 +36,11 @@
           .layer-content.hidden
 
             .overpass-edit.mb-3.hidden
+              %input.form-control.overpass-name{type: 'text', autocomplete: 'off', placeholder: 'Enter name / Search queries'}
+              .autocomplete-list.dropdown-menu
+
               %textarea.form-control.overpass-query{name: 'overpass-query'}
-              %button.btn.btn-green{ 'data-action': 'click->map--layers#update'}
+              %button.btn.btn-green{ 'data-action': 'click->map--layers#updateOverpassLayer'}
                 Update
 
             %ul.list-unstyled

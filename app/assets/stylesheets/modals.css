@@ -181,12 +181,35 @@
   animation: spin 1s linear infinite;
 }
 
-.overpass-query {
+.overpass-edit {
   max-width: 95%;
+}
+
+.overpass-query {
   min-height: 7em !important;
 }
 
 .layer-osm-icon {
   padding-bottom: 0.2em;
+}
+
+@media (width < 640px) {
+  .layer-name {
+    width: 8em;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+  }
+}
+
+@media (width < 380px) {
+  .layer-name {
+    width: 4em;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+  }
 }
 
