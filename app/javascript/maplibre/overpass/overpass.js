@@ -59,9 +59,6 @@ function styleOverpassLayer(geojson, query) {
     if (f.properties['amenity'] === 'post_box') {
       f.properties["marker-symbol"] = "📯"
     }
-    if (f.properties.tourism === 'camp_site') {
-      f.properties["marker-symbol"] = "🏕️"
-    }
 
     // https://wiki.openstreetmap.org/wiki/Key:osmc:symbol?uselang=en
     // osmc:symbol=waycolor:background[:foreground][:foreground2][:text:textcolor]
