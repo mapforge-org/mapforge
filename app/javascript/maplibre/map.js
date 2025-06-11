@@ -194,6 +194,10 @@ export function loadLayers () {
     })
     .then(data => {
       console.log('Loaded map layers from server: ', data)
+      // make sure we're still showing the map the request came from
+      if (window.gon.map_properties.public_id !== data.properties.public_id){
+        return
+      }
       data.layers.forEach((layer) => {
         if (!layers.find( l => l.id === layer.id) ) {
           layers.push(layer)

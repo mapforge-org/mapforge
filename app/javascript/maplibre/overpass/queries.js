@@ -65,16 +65,24 @@ export const queries = [
     query: "nwr[amenity=fire_station];out center;",
   },
   { name: 'Trains',
-    query: '(way["railway"="rail"]; // Train tracks (railways)\n' +
+    query: '(relation["route"="tracks"]; // Train tracks (railways)\n' +
            'node["railway"="station"]; // Train stations\n' +
            'node["railway"="halt"];\n' +
-           'way["railway"="station"];\n' +
-           'relation["railway"="station"];);\n' +
-           'out geom;\n',
+           '//way["railway"="station"];\n' +
+           '//relation["railway"="station"];\n' +
+           ');\n' +
+           'out geom 250;\n',
     style: (f) => {
-      if (f.properties.railway === "rail") {
+      f.properties.desc = "[Abfahrten](https://bahn.expert/" +
+        encodeURIComponent(f.properties.name) + ")\n" + f.properties.desc
+      if (f.properties.route === "tracks") {
          f.properties["stroke"] = "black"
          f.properties["stroke-width"] = "2"
+      }
+      if (["halt", "station"].includes(f.properties.railway)) {
+        f.properties["marker-size"] = "5"
+        f.properties["marker-color"] = "#000"
+        f.properties["stroke"] = "transparent"
       }
     }
   },
