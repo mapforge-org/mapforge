@@ -60,6 +60,11 @@ export const queries = [
   },
   { name: 'Camping',
     query: "nwr[tourism=camp_site];out center;",
+    style: (f) => {
+      if (f.properties.tourism === 'camp_site') {
+        f.properties["marker-symbol"] = "🏕️"
+      }
+    }
   },
   { name: 'Feuerwehr',
     query: "nwr[amenity=fire_station];out center;",

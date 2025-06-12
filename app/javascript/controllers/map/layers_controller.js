@@ -127,6 +127,7 @@ export default class extends Controller {
     const layer = layers.find(f => f.id === layerId)
     layer.query = layerElement.querySelector('.overpass-query').value
     layer.name = layerElement.querySelector('.overpass-name').value
+    event.target.closest('.layer-item').querySelector('.layer-name').innerHTML = layer.name
     const { geojson: _geojson, ...sendLayer } = layer
     mapChannel.send_message('update_layer', sendLayer)
     this.refreshOverpassLayer(event)
