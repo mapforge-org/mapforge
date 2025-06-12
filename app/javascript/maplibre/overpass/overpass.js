@@ -79,9 +79,10 @@ function styleOverpassLayer(geojson, query) {
 
 function overpassDescription(props) {
   let desc = ''
-  if (props["description"]) { desc += props["description"] + '\n' }
+  if (props["description"]) { desc += props["description"] + '\n\n' }
   if (props["notes"]) { desc += props["notes"] + '\n' }
   if (props["website"]) { desc += props["website"] + '\n' }
+  if (props["url"]) { desc += props["url"] + '\n' }
   { desc += '```\n' + JSON.stringify(props, null, 2) + '\n```\n' }
 
   desc += '\n' + '![osm link](/icons/osm-icon-small.png)'
