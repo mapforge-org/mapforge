@@ -43,9 +43,9 @@ namespace :maps do
 
           unless failure
             page.screenshot(path: map.screenshot_file, quality: 100)
-            #image = Rszr::Image.load(map.screenshot_file)
-            #image.resize!(600, :auto)
-            #image.save(map.screenshot_file)
+            # image = Rszr::Image.load(map.screenshot_file)
+            # image.resize!(600, :auto)
+            # image.save(map.screenshot_file)
             puts "Updated #{map.screenshot_file}"
           end
          browser.close
