@@ -98,5 +98,25 @@ export const queries = [
         f.properties["marker-symbol"] = "🛜"
       }
     }
+  },
+  { name: 'Food Shops',
+    query: '(nwr[shop=supermarket];\n' +
+           'nwr[amenity=fuel][shop=yes];\n' +
+           'nwr[shop=bakery];\n' +
+           'nwr[shop=butcher];);out center;',
+    style: (f) => {
+      if (['supermarket'].includes(f.properties['shop'])) {
+        f.properties["marker-symbol"] = "🛒"
+      }
+      if (['fuel'].includes(f.properties['amenity'])) {
+        f.properties["marker-symbol"] = "⛽"
+      }
+      if (['bakery'].includes(f.properties['shop'])) {
+        f.properties["marker-symbol"] = "🥐"
+      }
+      if (['butcher'].includes(f.properties['shop'])) {
+        f.properties["marker-symbol"] = "🥩"
+      }
+    }
   }
 ]
