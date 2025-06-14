@@ -158,8 +158,12 @@ export default class extends Controller {
   createOverpassLayer (event) {
     event.preventDefault()
     let layerId = functions.featureId()
-    let query = queries.find(q => q.name === event.target.dataset.queryName)
-    layers.push({ "id": layerId, "type":"overpass", "name": query.name, "query": query.query })
+    let queryName = event.target.dataset.queryName
+    // empty query for custom
+    let query = queries.find(q => q.name === queryName)?.query || ''
+    let layer = { "id": layerId, "type":"overpass", "name": queryName, "query": query }
+    layers.push(layer)
+    mapChannel.send_message('new_layer', layer)
     loadOverpassLayer(layerId).then( () => { initLayersModal() })
   }
 

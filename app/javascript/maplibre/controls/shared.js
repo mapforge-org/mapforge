@@ -105,7 +105,7 @@ export function initLayersModal () {
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')
     let ul = document.querySelector('#layers-modal #query-dropdown')
-    queries.forEach(q => {
+    queries.sort((a, b) => a.name.localeCompare(b.name)).forEach(q => {
       let li = document.createElement('li')
       li.innerHTML = "<li data-query-name='" + q['name'] + "'>" + q['name'] + "</li>"
       ul.appendChild(li)

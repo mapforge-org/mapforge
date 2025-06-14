@@ -34,6 +34,11 @@ class MapChannel < ApplicationCable::Channel
     map.layers.geojson.first.features.create!(feature_atts(data))
   end
 
+  def new_layer(data)
+    map = get_map_rw!(data["map_id"])
+    map.layers.create!(layer_atts(data))
+  end
+
   def delete_feature(data)
     map = get_map_rw!(data["map_id"])
     feature = map.features.find(feature_atts(data)["id"])

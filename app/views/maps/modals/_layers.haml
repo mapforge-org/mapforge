@@ -23,7 +23,7 @@
               %i.bi.bi-plus-square.me-1
               Add query
             %ul#query-dropdown.dropdown-menu{ 'aria-labelledby': "newLayerDropdown", data: { action: "click->map--layers#createOverpassLayer" } }
-              %li Custom query
+              %li{ 'data-query-name': "Custom query" } Custom query
 
       - # used by controls/shared.js
       .hidden
