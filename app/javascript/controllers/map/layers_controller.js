@@ -7,6 +7,7 @@ import { draw } from 'maplibre/edit'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import { loadOverpassLayer } from 'maplibre/overpass/overpass'
+import { queries } from 'maplibre/overpass/queries'
 
 export default class extends Controller {
   upload () {
@@ -153,4 +154,13 @@ export default class extends Controller {
     }
     list.classList.toggle('hidden')
   }
+
+  createOverpassLayer (event) {
+    event.preventDefault()
+    let layerId = functions.featureId()
+    let query = queries.find(q => q.name === event.target.dataset.queryName)
+    layers.push({ "id": layerId, "type":"overpass", "name": query.name, "query": query.query })
+    loadOverpassLayer(layerId).then( () => { initLayersModal() })
+  }
+
 }

@@ -103,7 +103,8 @@ export const queries = [
     query: '(nwr[shop=supermarket];\n' +
            'nwr[amenity=fuel][shop=yes];\n' +
            'nwr[shop=bakery];\n' +
-           'nwr[shop=butcher];);out center;',
+           // 'nwr[shop=butcher];\n' +
+           ');out center;',
     style: (f) => {
       if (['supermarket'].includes(f.properties['shop'])) {
         f.properties["marker-symbol"] = "🛒"
