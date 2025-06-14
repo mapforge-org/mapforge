@@ -8,6 +8,7 @@ import MaplibreGeocoder from 'maplibre-gl-geocoder'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { animateElement } from 'helpers/dom'
 import { status } from 'helpers/status'
+import { queries } from 'maplibre/overpass/queries'
 
 export class ControlGroup {
   constructor (controls) {
@@ -103,6 +104,12 @@ export function initLayersModal () {
   functions.e('#layers', e => {
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')
+    let ul = document.querySelector('#layers-modal #query-dropdown')
+    queries.forEach(q => {
+      let li = document.createElement('li')
+      li.innerHTML = "<li data-query-name='" + q['name'] + "'>" + q['name'] + "</li>"
+      ul.appendChild(li)
+    })
     layers.filter(l => l.geojson?.features).forEach(layer => {
       const layerElement = template.cloneNode(true)
       layerElement.id = 'layer-list-' + layer.id
@@ -110,10 +117,10 @@ export function initLayersModal () {
       layerElement.setAttribute('data-layer-type', layer.type)
       const head = layerElement.querySelector('.layer-name')
       head.textContent = layer.name || 'Layer elements'
-      if (layer.type === 'overpass') { layerElement.querySelector('.layer-osm-icon').classList.remove('hidden') }
-      if (layer.type === 'geojson') { head.textContent += ' (' + layer.geojson.features.length + ')' }
+      head.textContent += ' (' + layer.geojson.features.length + ')'
       e.appendChild(layerElement)
       if (layer.type === 'overpass') {
+        layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
         layerElement.querySelector('button.overpass-refresh').classList.remove('hidden')
         if (window.gon.map_mode === "rw"){
           layerElement.querySelector('button.layer-edit').classList.remove('hidden')
