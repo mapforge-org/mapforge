@@ -90,4 +90,26 @@ describe 'Map' do
       wait_for { layer.reload.query }.to eq('nwr[highway=bus];out center;')
     end
   end
+
+  context 'add new layer' do
+   before do
+      find('.maplibregl-ctrl-layers').click
+    end
+
+    it 'can add predefined query layer' do
+      click_button 'Add query'
+      within('#query-dropdown') do
+        first('li', text: 'Breweries').click
+      end
+      wait_for { map.layers.find { |m| m.name == 'Breweries' } }.to be_present
+    end
+
+    it 'can add custom query layer' do
+      click_button 'Add query'
+      within('#query-dropdown') do
+        first('li', text: 'Custom query').click
+      end
+      wait_for { map.layers.find { |m| m.name == 'Custom query' } }.to be_present
+    end
+  end
 end
