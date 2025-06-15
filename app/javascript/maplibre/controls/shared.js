@@ -116,8 +116,8 @@ export function initLayersModal () {
       layerElement.setAttribute('data-layer-id', layer.id)
       layerElement.setAttribute('data-layer-type', layer.type)
       const head = layerElement.querySelector('.layer-name')
-      head.textContent = layer.name || 'Layer elements'
-      head.textContent += ' (' + layer.geojson.features.length + ')'
+      head.innerHTML = layer.name || 'Layer elements'
+      head.innerHTML += ' <span class="small">(' + layer.geojson.features.length + ')</span>'
       e.appendChild(layerElement)
       if (layer.type === 'overpass') {
         layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
@@ -128,7 +128,7 @@ export function initLayersModal () {
       }
 
       const ul = layerElement.querySelector('ul')
-      layer.geojson.features.forEach(feature => {
+      layer.geojson.features.slice(0, 300).forEach(feature => {
         const listItem = document.createElement('li')
         listItem.classList.add('layer-feature-item')
         listItem.setAttribute('data-feature-id', feature.id)

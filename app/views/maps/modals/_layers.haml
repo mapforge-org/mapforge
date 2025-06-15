@@ -10,25 +10,29 @@
         #layer-upload.row.align-items-center
           .col-6
             - if @user
-              %label.form-control.btn.btn-green#file-input-label{ for: "fileInput", title: 'WGS84 format, max. 800Kb' }
+              %label.no-wrap.form-control.btn.btn-green#file-input-label{ for: "fileInput", title: 'WGS84 format, max. 800Kb' }
                 %i.bi.bi-upload.me-1
-                Import gpx/kml
+                Import
+                %span.d-none.d-sm-inline
+                  gpx/kml
               %input.hidden#fileInput{ type: "file", data: { action: "change->map--layers#upload" } }
             - else
               %i.bi.bi-info-circle
                 Please log in to upload tracks
           .col-6
-            %button.form-control.btn.btn-green.dropdown-toggle{ type: "button",
+            %button.no-wrap.form-control.btn.btn-green.dropdown-toggle{ type: "button",
                   id: "newLayerDropdown", 'data-bs-toggle': "dropdown", 'aria-expanded': "false" }
               %i.bi.bi-plus-square.me-1
-              Add query
+              Add
+              %span.d-none.d-sm-inline
+                query
             %ul#query-dropdown.dropdown-menu{ 'aria-labelledby': "newLayerDropdown", data: { action: "click->map--layers#createOverpassLayer" } }
               %li{ 'data-query-name': "Custom query" } Custom query
 
       - # used by controls/shared.js
       .hidden
         #layer-item-template.layer-item.mt-3
-          %h4
+          %h4.layer-item-header
             %span.link{ data: { action: "click->map--layers#toggleLayerList" }}
               %i.bi.bi-caret-right-fill
               %span.mapforge-font.layer-name Layer name
@@ -40,9 +44,10 @@
           .layer-content.hidden
 
             .layer-item-overpass.hidden
-              This layer is an
+              %span.d-none.d-sm-inline
+                This layer is an
               = image_tag "/icons/osm-icon-small.png", class: 'layer-osm-icon', alt: "OSM Overpass layer"
-              OSM live query.
+              OSM live query
 
             .overpass-edit.hidden
               .mb-3
