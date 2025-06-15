@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { map, layers, upsert, mapProperties } from 'maplibre/map'
+import { map, layers, upsert, mapProperties, redrawGeojson } from 'maplibre/map'
 import { initLayersModal, resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
@@ -164,7 +164,21 @@ export default class extends Controller {
     let layer = { "id": layerId, "type":"overpass", "name": queryName, "query": query }
     layers.push(layer)
     mapChannel.send_message('new_layer', layer)
+    initLayersModal()
     loadOverpassLayer(layerId).then( () => { initLayersModal() })
+  }
+
+  deleteOverpassLayer (event) {
+    event.preventDefault()
+    if (!confirm('Really delete this layer?')) { return }
+    const layerElement = event.target.closest('.layer-item')
+    const layerId = layerElement.getAttribute('data-layer-id')
+    const layer = layers.find(f => f.id === layerId)
+    const { geojson: _geojson, ...sendLayer } = layer
+    layers.splice(layers.indexOf(layer), 1)
+    mapChannel.send_message('delete_layer', sendLayer)
+    initLayersModal()
+    redrawGeojson()
   }
 
 }
