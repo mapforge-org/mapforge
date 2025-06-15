@@ -7,7 +7,7 @@
     .map-modal-content
 
       - if @map_mode == 'rw'
-        #layer-upload.row.align-items-center
+        .row.align-items-center
           .col-6
             - if @user
               %label.no-wrap.form-control.btn.btn-green#file-input-label{ for: "fileInput", title: 'WGS84 format, max. 800Kb' }
@@ -27,7 +27,6 @@
               %span.d-none.d-sm-inline
                 query
             %ul#query-dropdown.dropdown-menu{ 'aria-labelledby': "newLayerDropdown", data: { action: "click->map--layers#createOverpassLayer" } }
-              %li{ 'data-query-name': "Custom query" } Custom query
 
       - # used by controls/shared.js
       .hidden
@@ -50,15 +49,26 @@
               OSM live query
 
             .overpass-edit.hidden
-              .mb-3
-                Title:
-                %input.form-control.overpass-name{type: 'text', autocomplete: 'off', placeholder: 'Enter name / Search queries'}
+              .mb-2.form-floating
+                %input.mw-400.form-control.overpass-name{type: 'text', autocomplete: 'off', placeholder: 'Enter name / Search queries', name: 'overpass-name'}
+                %label{ for: "overpass-name"} Title
                 .autocomplete-list.dropdown-menu
 
-                Query:
-                %textarea.form-control.overpass-query{name: 'overpass-query'}
+              .mb-3.form-floating
+                %textarea.mb-1.form-control.overpass-query{name: 'overpass-query'}
+                %label{ for: "overpass-query"} Query
+                %span.d-none.d-sm-inline.overpass-docs
+                  %i.bi.bi-info-circle-fill
+                  = link_to 'Overpass QL docs', 'https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL', {target: '_blank', rel: 'noopener noreferrer' }
+
                 %button.btn.btn-green{ 'data-action': 'click->map--layers#updateOverpassLayer'}
                   Update
+                  %span.d-none.d-sm-inline
+                    Layer
+                %button.btn.btn-orange{ 'data-action': 'click->map--layers#deleteOverpassLayer'}
+                  Delete
+                  %span.d-none.d-sm-inline
+                    Layer
 
             %ul.list-unstyled
 

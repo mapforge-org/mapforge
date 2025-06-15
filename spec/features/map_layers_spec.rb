@@ -86,8 +86,17 @@ describe 'Map' do
       find(".layer-edit").click
       expect(page).to have_field('overpass-query', with: layer.query)
       fill_in 'overpass-query', with: 'nwr[highway=bus];out center;'
-      click_button 'Update'
+      click_button 'Update Layer'
       wait_for { layer.reload.query }.to eq('nwr[highway=bus];out center;')
+    end
+
+    it 'can delete overpass layer' do
+      expect(page).to have_text('opass')
+      find(".layer-edit").click
+      accept_alert do
+        click_button 'Delete Layer'
+      end
+      wait_for { Layer.find(layer.id) }.to be_nil
     end
   end
 

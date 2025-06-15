@@ -45,6 +45,12 @@ class MapChannel < ApplicationCable::Channel
     feature.destroy
   end
 
+  def delete_layer(data)
+    map = get_map_rw!(data["map_id"])
+    layer = map.layers.find(layer_atts(data)["id"])
+    layer.destroy
+  end
+
   private
 
   def feature_atts(data)

@@ -105,9 +105,12 @@ export function initLayersModal () {
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')
     let ul = document.querySelector('#layers-modal #query-dropdown')
+    ul.innerHTML = '<li data-query-name="Custom query">Custom query</li>'
+
     queries.sort((a, b) => a.name.localeCompare(b.name)).forEach(q => {
       let li = document.createElement('li')
-      li.innerHTML = "<li data-query-name='" + q['name'] + "'>" + q['name'] + "</li>"
+      li.dataset.queryName = q['name']
+      li.innerHTML = q['name']
       ul.appendChild(li)
     })
     layers.filter(l => l.geojson?.features).forEach(layer => {
