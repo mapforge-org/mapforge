@@ -30,8 +30,8 @@ class ImagesController < ApplicationController
     raise ActionController::BadRequest, "Invalid background filename '#{background}'" unless background =~ /\A[\w.-]+\z/
     raise ActionController::BadRequest, "Invalid foreground filename '#{foreground}'" unless foreground.blank? || foreground =~ /\A[\w.-]+\z/
 
-    background_img = Rails.root.join("public", "icons", "osmc", "background", "#{background}.png")
-    foreground_img = Rails.root.join("public", "icons", "osmc", "#{foreground}.png")
+    background_img = Rails.root.join("public", "icons", "osmc", "background", "#{File.basename(background)}.png")
+    foreground_img = Rails.root.join("public", "icons", "osmc", "#{File.basename(foreground)}.png")
 
     # background image is mandatory
     head :not_found and return unless File.exist?(background_img)
@@ -48,7 +48,7 @@ class ImagesController < ApplicationController
     end
 
     if text && !text.blank? && text.size <= 4
-      raise ActionController::BadRequest, "Invalid text" unless text =~ /\A[\p{L}\p{M}\d.-]+\z/
+      raise ActionController::BadRequest, "Invalid text" unless text =~ /\A(?:[\p{L}\p{M}\d.\-\+\=€]|\p{Emoji})+\z/u
       pointsize = 11
       pointsize = 10 if text.size == 2
       pointsize = 8 if text.size == 3
