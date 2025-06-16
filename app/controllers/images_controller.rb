@@ -60,9 +60,6 @@ class ImagesController < ApplicationController
         c.draw "text 0,0 '#{text}'"
         c.fill textcolor || "white"
         c.font Rails.root.join("vendor", "OpenSans-Bold.ttf")
-        # Outline (border) settings
-        # c.stroke "black"
-        # c.strokewidth 1
       end
     end
 
