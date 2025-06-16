@@ -10,7 +10,7 @@ export function loadOverpassLayers() {
 
 export function loadOverpassLayer(id) {
   const layer = layers.find(f => f.id === id)
-  if (!layer.query) { return }
+  if (!layer.query) { return Promise.resolve() }
   console.log('Loading overpass layer', layer)
   let query = layer.query
 

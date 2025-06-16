@@ -165,6 +165,7 @@ export default class extends Controller {
     layers.push(layer)
     mapChannel.send_message('new_layer', layer)
     initLayersModal()
+    document.querySelector('#layer-list-' + layerId + ' .reload-icon').classList.add('layer-refresh-animate')
     loadOverpassLayer(layerId).then( () => { initLayersModal() })
   }
 

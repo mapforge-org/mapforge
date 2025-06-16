@@ -113,14 +113,15 @@ export function initLayersModal () {
       li.innerHTML = q['name']
       ul.appendChild(li)
     })
-    layers.filter(l => l.geojson?.features).forEach(layer => {
+    layers.forEach(layer => {
+      let features = layer?.geojson?.features || []
       const layerElement = template.cloneNode(true)
       layerElement.id = 'layer-list-' + layer.id
       layerElement.setAttribute('data-layer-id', layer.id)
       layerElement.setAttribute('data-layer-type', layer.type)
       const head = layerElement.querySelector('.layer-name')
       head.innerHTML = layer.name || 'Layer elements'
-      head.innerHTML += ' <span class="small">(' + layer.geojson.features.length + ')</span>'
+      head.innerHTML += ' <span class="small">(' + features.length + ')</span>'
       e.appendChild(layerElement)
       if (layer.type === 'overpass') {
         layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
@@ -131,7 +132,7 @@ export function initLayersModal () {
       }
 
       const ul = layerElement.querySelector('ul')
-      layer.geojson.features.slice(0, 300).forEach(feature => {
+      features.slice(0, 300).forEach(feature => {
         const listItem = document.createElement('li')
         listItem.classList.add('layer-feature-item')
         listItem.setAttribute('data-feature-id', feature.id)
@@ -157,7 +158,7 @@ export function initLayersModal () {
       }
       //dom.initTooltips()
 
-      if (layer.geojson.features.length === 0) {
+      if (features.length === 0) {
         const newNode = document.createElement('i')
         newNode.textContent = 'No elements in this layer'
         layerElement.querySelector('.layer-content').appendChild(newNode)
