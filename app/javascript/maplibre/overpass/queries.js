@@ -56,7 +56,7 @@ export const queries = [
     query: "relation[type=route][route=hiking];out geom 200;",
   },
   { name: 'Bicycle routes',
-    query: "relation[type=route][route=bicycle];out geom;",
+    query: "relation[type=route][route=bicycle];out geom 200;",
   },
   { name: 'Camping',
     query: "nwr[tourism=camp_site];out center;",
