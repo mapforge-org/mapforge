@@ -41,8 +41,8 @@ pin "@maplibre/maplibre-gl-directions", preload: false, to: "@maplibre--maplibre
 pin "maplibre-contour", preload: false # @0.1.0
 
 # Elevation chart
-pin "chart.js", to: "chart-js.js", preload: false # @4.4.9
-pin "@kurkle/color", to: "@kurkle--color", preload: false # @0.4.0
+pin "chart.js", to: "chart-js.js", preload: false # @4.5.0
+pin "@kurkle/color", to: "@kurkle--color", preload: false # @0.3.4
 
 # render markdown
 pin "marked"# @15.0.8
