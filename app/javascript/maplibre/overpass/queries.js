@@ -53,7 +53,7 @@ export const queries = [
       }
   }},
   { name: 'Hiking routes',
-    query: "relation[type=route][route=hiking];out geom;",
+    query: "relation[type=route][route=hiking];out geom 200;",
   },
   { name: 'Bicycle routes',
     query: "relation[type=route][route=bicycle];out geom;",

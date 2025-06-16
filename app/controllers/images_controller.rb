@@ -26,15 +26,15 @@ class ImagesController < ApplicationController
   def osmc_symbol
     # https://www.wanderreitkarte.de/symbols_en.html
     _waycolor, background, foreground, text, textcolor = params[:osmc_symbol].split(":")
-    background = Rails.root.join("public", "icons", "osmc", "background", "#{background}.png")
-    foreground = Rails.root.join("public", "icons", "osmc", "#{foreground}.png")
+    background_img = Rails.root.join("public", "icons", "osmc", "background", "#{background}.png")
+    foreground_img = Rails.root.join("public", "icons", "osmc", "#{foreground}.png")
 
     # background image is mandatory
-    head :not_found and return unless File.exist?(background)
-    result = MiniMagick::Image.open(background)
+    head :not_found and return unless File.exist?(background_img)
+    result = MiniMagick::Image.open(background_img)
     # overlay 1 + 2 are optional
-    if File.exist?(foreground)
-      image2 = MiniMagick::Image.open(foreground)
+    if File.exist?(foreground_img)
+      image2 = MiniMagick::Image.open(foreground_img)
 
       # Overlay image2 on top of image1, centering by default
       result = result.composite(image2) do |c|
@@ -43,9 +43,11 @@ class ImagesController < ApplicationController
       end
     end
 
-    if text && !text.blank? && text.size <= 3
-      pointsize = 10
+    if text && !text.blank? && text.size <= 4
+      pointsize = 11
+      pointsize = 10 if text.size == 2
       pointsize = 8 if text.size == 3
+      pointsize = 7 if text.size == 4
       # Add text on top
       result.combine_options do |c|
         c.gravity "center"
@@ -53,10 +55,13 @@ class ImagesController < ApplicationController
         c.draw "text 0,0 '#{text}'"
         c.fill textcolor || "white"
         c.font Rails.root.join("vendor", "OpenSans-Bold.ttf")
+        # Outline (border) settings
+        # c.stroke "black"
+        # c.strokewidth 1
       end
     end
 
-    expires_in 180.minutes, public: true
+    expires_in 720.minutes, public: true
     send_data result.to_blob, type: "image/png", disposition: "inline"
   end
 
