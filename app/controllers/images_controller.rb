@@ -27,8 +27,8 @@ class ImagesController < ApplicationController
     # https://www.wanderreitkarte.de/symbols_en.html
     _waycolor, background, foreground, text, textcolor = params[:osmc_symbol].split(":")
 
-    raise ArgumentError, "Invalid background filename '#{background}'" unless background =~ /\A[\w.-]+\z/
-    raise ArgumentError, "Invalid foreground filename '#{foreground}'" unless foreground.blank? || foreground =~ /\A[\w.-]+\z/
+    raise ActionController::BadRequest, "Invalid background filename '#{background}'" unless background =~ /\A[\w.-]+\z/
+    raise ActionController::BadRequest, "Invalid foreground filename '#{foreground}'" unless foreground.blank? || foreground =~ /\A[\w.-]+\z/
 
     background_img = Rails.root.join("public", "icons", "osmc", "background", "#{background}.png")
     foreground_img = Rails.root.join("public", "icons", "osmc", "#{foreground}.png")
@@ -48,7 +48,7 @@ class ImagesController < ApplicationController
     end
 
     if text && !text.blank? && text.size <= 4
-      raise ArgumentError, "Invalid text" unless text =~ /\A[\p{L}\p{M}.-]+\z/
+      raise ActionController::BadRequest, "Invalid text" unless text =~ /\A[\p{L}\p{M}.-]+\z/
       pointsize = 11
       pointsize = 10 if text.size == 2
       pointsize = 8 if text.size == 3
