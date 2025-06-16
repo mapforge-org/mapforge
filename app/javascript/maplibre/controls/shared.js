@@ -120,8 +120,11 @@ export function initLayersModal () {
       layerElement.setAttribute('data-layer-id', layer.id)
       layerElement.setAttribute('data-layer-type', layer.type)
       const head = layerElement.querySelector('.layer-name')
-      head.innerHTML = layer.name || 'Layer elements'
-      head.innerHTML += ' <span class="small">(' + features.length + ')</span>'
+      head.textContent = layer.name || 'Layer elements'
+      const featureCount = document.createElement('span')
+      featureCount.classList.add('small')
+      featureCount.textContent = '(' + features.length + ')'
+      head.appendChild(featureCount)
       e.appendChild(layerElement)
       if (layer.type === 'overpass') {
         layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
