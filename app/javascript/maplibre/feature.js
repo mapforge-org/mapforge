@@ -187,8 +187,10 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
     stickyFeatureHighlight = sticky
     highlightedFeatureId = feature.id
     // load feature from source, the style only returns the dimensions on screen
-    const sourceFeature = layers.filter(l => l.geojson !== undefined)
-      .flatMap(layer => layer.geojson.features).find(f => f.id === feature.id)
+    const sourceFeature = layers
+      .filter(l => Array.isArray(l.geojson?.features))
+      .flatMap(layer => layer.geojson.features)
+      .find(f => f.id === feature.id)
 
     if (sourceFeature) {
       showFeatureDetails(sourceFeature)
