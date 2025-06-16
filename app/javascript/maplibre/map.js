@@ -201,8 +201,6 @@ export function loadLayers () {
       data.layers.forEach((layer) => {
         if (!layers.find( l => l.id === layer.id) ) {
           layers.push(layer)
-          console.log('Layer ' + layer.id + ' (' + layer.type + ') loaded' +
-            (layer.type !== 'overpass' ? ' with ' + layer.geojson.features.length + ' features' : ''))
         }
       })
       geojsonData = mergedGeoJSONLayers()
@@ -531,6 +529,7 @@ export function mergedGeoJSONLayers(type='geojson') {
 
 export function frontFeature(frontFeature) {
   for (const layer of layers) {
+    if (!layer?.geojson?.features) { continue }
     const features = layer.geojson.features
     const idx = features.findIndex(f => f.id === frontFeature.id)
     if (idx !== -1) {
