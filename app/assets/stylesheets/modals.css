@@ -149,6 +149,10 @@
   margin-bottom: 0.5em;
 }
 
+#layers-modal .map-modal {
+  overflow-y: visible;
+}
+
 #file-input-label {
   max-width: 17em;
 }
