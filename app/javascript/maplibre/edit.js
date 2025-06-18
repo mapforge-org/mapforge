@@ -1,6 +1,5 @@
 import { map, geojsonData, destroyFeature, redrawGeojson, addFeature } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
-import { initializeViewStyles } from 'maplibre/styles'
 import { highlightFeature, showFeatureDetails, initializeKmMarkerStyles } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'
@@ -70,7 +69,6 @@ export function initializeEditMode () {
   // Add edit styles when basemap style is loaded
   map.on('style.load', function (_e) {
     initializeEditStyles()
-    initializeViewStyles('overpass-source')
     initializeKmMarkerStyles()
   })
 

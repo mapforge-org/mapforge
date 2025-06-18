@@ -28,19 +28,13 @@ export function initializeViewStyles (sourceName) {
   viewStyleNames.forEach(styleName => {
     map.addLayer(setSource(styles()[styleName], sourceName))
   })
-  // console.log('View styles added for source ' + sourceName)
+  console.log('View styles added for source ' + sourceName)
 
   // click is needed to select on mobile and for sticky highlight
-  map.on('click', styleNames('geojson-source'), function (e) {
+  map.on('click', styleNames(sourceName), function (e) {
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
     frontFeature(e.features[0])
-    highlightFeature(e.features[0], true, 'geojson-source')
-  })
-
-  map.on('click', styleNames('overpass-source'), function (e) {
-    if (!e.features?.length || window.gon.map_mode === 'static') { return }
-    frontFeature(e.features[0])
-    highlightFeature(e.features[0], true, 'overpass-source')
+    highlightFeature(e.features[0], true, sourceName)
   })
 
   // highlight features on hover
@@ -49,17 +43,14 @@ export function initializeViewStyles (sourceName) {
     if (stickyFeatureHighlight && highlightedFeatureId) { return }
     if (document.querySelector('.maplibregl-ctrl button.active')) { return }
 
-    const sources = ['geojson-source', 'overpass-source']
-    for (const s of sources) {
-      const features = map.queryRenderedFeatures(e.point).filter(f => f.source === s)
-      if (features[0]) {
-        if (features[0].id === highlightedFeatureId) { return }
-        frontFeature(features[0])
-        highlightFeature(features[0], false, s)
-        return
-      }
-      resetHighlightedFeature()
+    const features = map.queryRenderedFeatures(e.point).filter(f => f.source === sourceName)
+    if (features[0]) {
+      if (features[0].id === highlightedFeatureId) { return }
+      frontFeature(features[0])
+      highlightFeature(features[0], false, sourceName)
+      return
     }
+    resetHighlightedFeature()
   })
 
   map.on('styleimagemissing', loadImage)

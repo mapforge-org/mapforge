@@ -1,4 +1,4 @@
-export function style (geojson, queryName) {
+export function applyOverpassQueryStyle (geojson, queryName) {
   const template = queries.find(q => q.name === queryName)
   if (template) {
     geojson.features.forEach(f => { if(template.style) { template.style(f) }} )
