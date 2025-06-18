@@ -117,7 +117,10 @@ export default class extends Controller {
     const contentElement = layerElement.querySelector('.layer-content')
     if (contentElement.classList.contains('hidden')) { this.toggleLayerList(event) }
     contentElement.querySelector('.overpass-edit').classList.toggle('hidden')
-    contentElement.querySelector('.overpass-query').value = layer.query
+    const queryTextarea = contentElement.querySelector('.overpass-query')
+    queryTextarea.value = layer.query
+    queryTextarea.style.height = 'auto' // Reset height
+    queryTextarea.style.height = queryTextarea.scrollHeight + 'px' // Set to content height
     contentElement.querySelector('.overpass-name').value = layer.name
   }
 

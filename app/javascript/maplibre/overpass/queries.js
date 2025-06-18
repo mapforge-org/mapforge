@@ -8,7 +8,7 @@ export function style (geojson, queryName) {
 
 export const queries = [
   { name: 'Public toilets',
-    query: "nwr[amenity=toilets];out center;",
+    query: "nwr[amenity=toilets];out center 250;",
     style: (f) => {
       if (['toilets'].includes(f.properties.amenity)) {
          f.properties["marker-symbol"] = "🚻"
@@ -17,7 +17,7 @@ export const queries = [
   }},
   // Brewery restaurants are tagged with microbrewery=yes (https://wiki.openstreetmap.org/wiki/Brewery)
   { name: 'Breweries',
-    query: '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];nwr["industrial"="brewery"];);out center;',
+    query: '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];nwr["industrial"="brewery"];);out center 250;',
     style: (f) => {
       if (f.properties?.microbrewery === 'yes') {
         f.properties["marker-symbol"] = "🍻"
@@ -34,7 +34,7 @@ export const queries = [
     query: '(relation["railway"="subway"];way["railway"="subway"];); \n' +
            'out geom;\n' +
            'node["railway"="station"]["station"="subway"];\n' +
-           'out center;',
+           'out center 250;',
     style: (f) => {
       if (f.properties?.subway === 'yes') {
          f.properties["marker-symbol"] = "🚇"
@@ -44,7 +44,7 @@ export const queries = [
       }
   }},
   { name: 'Drinking water',
-    query: "nwr[amenity=drinking_water];out center;",
+    query: "nwr[amenity=drinking_water];out center 250;",
     style: (f) => {
       if (f.properties.amenity === 'drinking_water') {
          f.properties["marker-symbol"] = "🚰"
@@ -53,10 +53,10 @@ export const queries = [
       }
   }},
   { name: 'Hiking routes',
-    query: "relation[type=route][route=hiking];out geom 200;",
+    query: "relation[type=route][route=hiking];out geom 150;",
   },
   { name: 'Bicycle routes',
-    query: "relation[type=route][route=bicycle];out geom 200;",
+    query: "relation[type=route][route=bicycle];out geom 150;",
   },
   { name: 'Camping',
     query: "nwr[tourism=camp_site];out center;",
@@ -67,7 +67,7 @@ export const queries = [
     }
   },
   { name: 'Feuerwehr',
-    query: "nwr[amenity=fire_station];out center;",
+    query: "nwr[amenity=fire_station];out center 250;",
   },
   { name: 'Trains',
     query: '(relation["route"="tracks"]; // Train tracks (railways)\n' +
@@ -92,7 +92,7 @@ export const queries = [
     }
   },
   { name: 'Wifi',
-    query: '(nwr["internet_access:fee"=no];nwr["internet_access:fee"=customers];);out center;',
+    query: '(nwr["internet_access:fee"=no];nwr["internet_access:fee"=customers];);out center 250;',
     style: (f) => {
       if (['no', 'customers'].includes(f.properties['internet_access:fee'])) {
         f.properties["marker-symbol"] = "🛜"
@@ -104,7 +104,7 @@ export const queries = [
            'nwr[amenity=fuel][shop=yes];\n' +
            'nwr[shop=bakery];\n' +
            // 'nwr[shop=butcher];\n' +
-           ');out center;',
+           ');out center 250;',
     style: (f) => {
       if (['supermarket'].includes(f.properties['shop'])) {
         f.properties["marker-symbol"] = "🛒"

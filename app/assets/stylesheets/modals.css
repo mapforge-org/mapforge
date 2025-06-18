@@ -149,6 +149,8 @@
   margin-bottom: 0.5em;
 }
 
+/* Layers modal */
+
 #layers-modal .map-modal {
   overflow-y: visible;
 }
@@ -216,7 +218,7 @@
 }
 
 .overpass-query {
-  min-height: 7em !important;
+  min-height: 4em !important;
 }
 
 .layer-osm-icon {
