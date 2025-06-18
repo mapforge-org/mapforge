@@ -44,6 +44,7 @@
   margin-top: 1em;
   overflow: hidden auto;
   max-height: calc(100vh - 10em);
+  padding-right: 5px; /* Prevents scrollbar from overlapping content */
 }
 
 .layer-preview {
@@ -160,12 +161,14 @@
 }
 
 #query-dropdown {
+  background-color: var(--color-light-alabaster);
   overflow-y: auto;
-  max-height: 300px;
+  max-height: 50vh;
 }
 
 #query-dropdown li {
   margin: 0.1em 0.5em;
+  cursor: pointer;
 }
 
 .layer-item-header {
