@@ -1,1 +1,7 @@
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+
+# Disallow search engines from indexing .gpx and .geojson files
+User-agent: *
+Disallow: /*.gpx$
+Disallow: /*.geojson$
+Disallow: /*.json$
