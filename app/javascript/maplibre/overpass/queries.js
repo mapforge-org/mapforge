@@ -1,5 +1,11 @@
+import { labelFont } from 'maplibre/styles'
+
+export function getQueryTemplate(queryName) {
+  return queries.find(q => q.name === queryName)
+}
+
 export function applyOverpassQueryStyle (geojson, queryName) {
-  const template = queries.find(q => q.name === queryName)
+  const template = getQueryTemplate(queryName)
   if (template) {
     geojson.features.forEach(f => { if(template.style) { template.style(f) }} )
   }
@@ -29,7 +35,21 @@ export const queries = [
         f.properties["marker-color"] = "transparent"
         f.properties["stroke"] = "transparent"
       }
-  }},
+    },
+    cluster: (source) => {
+      return {
+        'id': 'clusters',
+        source: source,
+        type: 'symbol',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': ['get', 'point_count'],
+          'text-font': labelFont,
+          'text-size': 12
+        }
+        }
+    }
+  },
   { name: 'Subway',
     query: '(relation["railway"="subway"];way["railway"="subway"];); \n' +
            'out geom;\n' +

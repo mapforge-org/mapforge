@@ -165,7 +165,7 @@ export function initializeMap (divId = 'maplibre-map') {
   // })
 }
 
-export function addGeoJSONSource (sourceName) {
+export function addGeoJSONSource (sourceName, cluster=false ) {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
   // console.log("Adding source: " + sourceName)
   if (map.getSource(sourceName)) { return } // source already exists
@@ -173,7 +173,7 @@ export function addGeoJSONSource (sourceName) {
     type: 'geojson',
     promoteId: 'id',
     data: { type: 'FeatureCollection', features: [] }, // geojsonData,
-    cluster: false
+    cluster: cluster
   })
 }
 
