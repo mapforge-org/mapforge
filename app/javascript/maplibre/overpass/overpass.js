@@ -1,13 +1,15 @@
 import { map, layers, redrawGeojson, addGeoJSONSource } from 'maplibre/map'
 import { applyOverpassQueryStyle, getQueryTemplate } from 'maplibre/overpass/queries'
-import { initializeViewStyles } from 'maplibre/styles'
+import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
 
 export function loadOverpassLayers() {
   layers.filter(l => l.type === 'overpass').forEach((layer) => {
     addGeoJSONSource('overpass-source-' + layer.id, true)
     initializeViewStyles('overpass-source-' + layer.id)
-    setClusterStyle(layer)
+    if (getQueryTemplate(layer.name)?.cluster) { 
+      initializeClusterStyles('overpass-source-' + layer.id, getQueryTemplate(layer.name).clusterIcon)
+    }
     if (!layer.geojson) { loadOverpassLayer(layer.id) }
   })
 }
@@ -80,11 +82,6 @@ function applyOverpassStyle(geojson, query) {
     }
   })
   return geojson
-}
-
-function setClusterStyle (layer) {
-  if (!getQueryTemplate(layer.name).cluster) { return }
-  map.addLayer(getQueryTemplate(layer.name).cluster('overpass-source-' + layer.id))
 }
 
 function overpassDescription(props) {

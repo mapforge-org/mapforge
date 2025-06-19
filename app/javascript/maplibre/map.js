@@ -173,7 +173,9 @@ export function addGeoJSONSource (sourceName, cluster=false ) {
     type: 'geojson',
     promoteId: 'id',
     data: { type: 'FeatureCollection', features: [] }, // geojsonData,
-    cluster: cluster
+    cluster: cluster,
+    clusterMaxZoom: 14, 
+    clusterRadius: 50 
   })
 }
 
