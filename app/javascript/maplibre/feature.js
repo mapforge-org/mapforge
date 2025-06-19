@@ -166,8 +166,13 @@ export function featureIcon (feature) {
 
 export function resetHighlightedFeature () {
   if (highlightedFeatureId) {
-    map.setFeatureState({ source: 'geojson-source', id: highlightedFeatureId }, { active: false })
-    map.setFeatureState({ source: 'overpass-source', id: highlightedFeatureId }, { active: false })
+    const sources = map.getStyle().sources
+    let sourceNames = Object.keys(sources).filter(
+      name => name.startsWith('overpass-') || name.startsWith('geojson-')
+    )
+    sourceNames.forEach(sourceName => {
+      map.setFeatureState({ source: sourceName, id: highlightedFeatureId }, { active: false })
+    })
     highlightedFeatureId = null
     // drop feature param from url
     const url = new URL(window.location.href)

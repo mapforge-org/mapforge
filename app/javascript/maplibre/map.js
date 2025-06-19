@@ -91,7 +91,6 @@ export function initializeMap (divId = 'maplibre-map') {
   map.on('style.load', () => {
     console.log('Basemap style loaded (style.load)')
     addGeoJSONSource('geojson-source')
-    addGeoJSONSource('overpass-source')
     addGeoJSONSource('km-marker-source')
     loadLayers()
     demSource.setupMaplibre(maplibregl)
@@ -166,14 +165,17 @@ export function initializeMap (divId = 'maplibre-map') {
   // })
 }
 
-export function addGeoJSONSource (sourceName) {
+export function addGeoJSONSource (sourceName, cluster=false ) {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
   // console.log("Adding source: " + sourceName)
+  if (map.getSource(sourceName)) { return } // source already exists
   map.addSource(sourceName, {
     type: 'geojson',
     promoteId: 'id',
     data: { type: 'FeatureCollection', features: [] }, // geojsonData,
-    cluster: false
+    cluster: cluster,
+    clusterMaxZoom: 14, 
+    clusterRadius: 50 
   })
 }
 
@@ -337,7 +339,6 @@ function addGlobe () {
 export function initializeStaticMode () {
   map.on('style.load', () => {
     initializeViewStyles('geojson-source')
-    initializeViewStyles('overpass-source')
     initializeKmMarkerStyles ()
   })
   functions.e('.maplibregl-ctrl-attrib, #map-head', e => { e.classList.add('hidden') })
@@ -348,7 +349,6 @@ export function initializeViewMode () {
     initializeViewControls()
     initializeDefaultControls()
     initializeViewStyles('geojson-source')
-    initializeViewStyles('overpass-source')
     initializeKmMarkerStyles()
   })
   map.on('click', resetControls)
@@ -377,8 +377,11 @@ export function redrawGeojson (resetDraw = true) {
     }
   }
   map.getSource('geojson-source')?.setData(renderedGeojsonData())
-  // console.log("Setting overpass source", mergedGeoJSONLayers('overpass'))
-  map.getSource('overpass-source')?.setData(mergedGeoJSONLayers('overpass'))
+  layers.filter(f => f.type === 'overpass').forEach((layer) => {
+    if (layer.geojson && layer.geojson.features.length > 0) {
+      map.getSource('overpass-source-' + layer.id)?.setData(layer.geojson)
+    }
+  })
 
   map.triggerRepaint()
   // drop the properties.id after sending to the map

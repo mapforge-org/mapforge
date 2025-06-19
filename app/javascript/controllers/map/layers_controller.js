@@ -81,10 +81,9 @@ export default class extends Controller {
 
   flyto () {
     const id = this.element.getAttribute('data-feature-id')
-    this.element.getAttribute('data-feature-id')
-    const layer = layers.find(l => l.geojson.features.some(f => f.id === id))
+    const source = this.element.getAttribute('data-feature-source')
+    const layer = layers.find(l => l?.geojson?.features?.some(f => f.id === id))
     const feature = layer.geojson.features.find(f => f.id === id)
-    const source = layer.type === 'geojson' ? 'geojson-source' : 'overpass-source'
 
     // Calculate the centroid
     const centroid = window.turf.centroid(feature)
