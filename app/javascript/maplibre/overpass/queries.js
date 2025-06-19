@@ -1,5 +1,3 @@
-import { labelFont } from 'maplibre/styles'
-
 export function getQueryTemplate(queryName) {
   return queries.find(q => q.name === queryName)
 }
@@ -34,21 +32,15 @@ export const queries = [
         f.properties["marker-size"] = "20"
         f.properties["marker-color"] = "transparent"
         f.properties["stroke"] = "transparent"
+      } else if (f.properties?.industrial?.includes('brewery')) {
+        f.properties["marker-image-url"] = "/emojis/noto/🏭.png"
+        f.properties["marker-size"] = "20"
+        f.properties["marker-color"] = "transparent"
+        f.properties["stroke"] = "transparent"
       }
     },
-    cluster: (source) => {
-      return {
-        'id': 'clusters',
-        source: source,
-        type: 'symbol',
-        filter: ['has', 'point_count'],
-        layout: {
-          'text-field': ['get', 'point_count'],
-          'text-font': labelFont,
-          'text-size': 12
-        }
-        }
-    }
+    cluster: true,
+    clusterIcon: '/emojis/noto/🍻.png'
   },
   { name: 'Subway',
     query: '(relation["railway"="subway"];way["railway"="subway"];); \n' +
@@ -84,7 +76,9 @@ export const queries = [
       if (f.properties.tourism === 'camp_site') {
         f.properties["marker-symbol"] = "🏕️"
       }
-    }
+    }, 
+    cluster: true,
+    clusterIcon: '/emojis/noto/🏕️.png'
   },
   { name: 'Feuerwehr',
     query: "nwr[amenity=fire_station];out center 250;",
@@ -128,16 +122,19 @@ export const queries = [
     style: (f) => {
       if (['supermarket'].includes(f.properties['shop'])) {
         f.properties["marker-symbol"] = "🛒"
+        f.properties["marker-color"] = "#000"
       }
       if (['fuel'].includes(f.properties['amenity'])) {
         f.properties["marker-symbol"] = "⛽"
       }
       if (['bakery'].includes(f.properties['shop'])) {
-        f.properties["marker-symbol"] = "🥐"
+        f.properties["marker-symbol"] = "🥨"
       }
       if (['butcher'].includes(f.properties['shop'])) {
         f.properties["marker-symbol"] = "🥩"
       }
-    }
+    },
+    cluster: true,
+    clusterIcon: '/emojis/noto/🥨.png'
   }
 ]

@@ -33,6 +33,7 @@ export function initializeViewStyles (sourceName) {
   // click is needed to select on mobile and for sticky highlight
   map.on('click', styleNames(sourceName), function (e) {
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
+    if (e.features[0].properties.cluster) { return } 
     frontFeature(e.features[0])
     highlightFeature(e.features[0], true, sourceName)
   })
@@ -45,6 +46,7 @@ export function initializeViewStyles (sourceName) {
 
     const features = map.queryRenderedFeatures(e.point).filter(f => f.source === sourceName)
     if (features[0]) {
+      if (features[0].properties.cluster) { return } 
       if (features[0].id === highlightedFeatureId) { return }
       frontFeature(features[0])
       highlightFeature(features[0], false, sourceName)
@@ -54,6 +56,21 @@ export function initializeViewStyles (sourceName) {
   })
 
   map.on('styleimagemissing', loadImage)
+}
+
+export function initializeClusterStyles(sourceName, icon) {
+  clusterStyles(icon).forEach(style => {
+    map.addLayer(setSource(style, sourceName))
+  })
+
+  // zoom into cluster on click
+  map.on('click', ['cluster_circles_' + sourceName], async function (e) {
+    if (!e.features?.length || window.gon.map_mode === 'static') { return }
+    const center = e.features[0].geometry.coordinates
+    const clusterId = e.features[0].properties.cluster_id
+    const zoom = await map.getSource(sourceName).getClusterExpansionZoom(clusterId)
+    map.easeTo({ center: center, zoom: zoom })
+  })
 }
 
 // loading images from 'marker-image-url' attributes
@@ -506,6 +523,35 @@ export function styles () {
       }
     }
   }
+}
+
+export function clusterStyles(icon) {
+  return [
+    {
+      id: 'cluster_circles',
+      type: 'symbol',
+      filter: ['has', 'point_count'],
+      layout: {
+        'icon-image': icon || '',
+        'icon-size': 0.5,
+        'icon-overlap': 'always'
+      }
+    },
+    {
+      'id': 'cluster_labels',
+      type: 'symbol',
+      filter: ['has', 'point_count'],
+      layout: {
+        'text-field': '{point_count_abbreviated}',
+        'text-font': labelFont,
+        'text-size': 14
+      },
+      paint: {
+        'text-color': '#000',
+        'text-halo-color': '#fff',
+        'text-halo-width': 2
+      }
+    }]
 }
 
 export function setSource (style, sourceName) {
