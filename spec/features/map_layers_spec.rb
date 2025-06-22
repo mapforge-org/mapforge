@@ -81,6 +81,13 @@ describe 'Map' do
       expect(page).to have_text('opass')
     end
 
+    it 'can add overpass layer' do
+      expect(page).to have_text('opass')
+      click_button 'Add query'
+      find('li', text: 'Drinking water').click
+      wait_for { Layer.find_by(name: 'Drinking water') }.not_to be_nil
+    end
+
     it 'can edit overpass layer' do
       expect(page).to have_text('opass')
       find(".layer-edit").click

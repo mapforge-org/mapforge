@@ -61,6 +61,12 @@ describe 'Map public view' do
       click_coord('.map', 400, 0)
       expect(page).not_to have_text('Poly Desc')
     end
+
+    it 'shows layers modal' do
+      find('.maplibregl-ctrl-layers').click
+      expect(page).to have_css('#layers-modal')
+      expect(page).to have_text('Poly Title')
+    end
   end
 
   context 'with feature id in url' do

@@ -63,12 +63,15 @@ export const queries = [
          f.properties["marker-color"] = "transparent"
          f.properties["stroke"] = "transparent"
       }
-  }},
+    },
+    cluster: true,
+    clusterIcon: '/emojis/noto/🚰.png'
+  },
   { name: 'Hiking routes',
-    query: "relation[type=route][route=hiking];out geom 150;",
+    query: "relation[type=route][route=hiking];out geom 100;",
   },
   { name: 'Bicycle routes',
-    query: "relation[type=route][route=bicycle];out geom 150;",
+    query: "relation[type=route][route=bicycle];out geom 100;",
   },
   { name: 'Camping',
     query: "nwr[tourism=camp_site];out center;",
@@ -86,7 +89,7 @@ export const queries = [
   { name: 'Trains',
     query: '(relation["route"="tracks"]; // Train tracks (railways)\n' +
            'node["railway"="station"]; // Train stations\n' +
-           'node["railway"="halt"];\n' +
+           'node["railway"="halt"][usage!=leisure];\n' +
            '//way["railway"="station"];\n' +
            '//relation["railway"="station"];\n' +
            ');\n' +
