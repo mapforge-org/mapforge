@@ -104,14 +104,16 @@ export function initLayersModal () {
   functions.e('#layers', e => {
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')
-    let ul = document.querySelector('#layers-modal #query-dropdown')
-    ul.innerHTML = '<li data-query-name="Custom query">Custom query</li><li>-----</li>'
-    queries.sort((a, b) => a.name.localeCompare(b.name)).forEach(q => {
-      let li = document.createElement('li')
-      li.dataset.queryName = q['name']
-      li.innerHTML = q['name']
-      ul.appendChild(li)
-    })
+    if (window.gon.map_mode === "rw") {
+      let ul = document.querySelector('#layers-modal #query-dropdown')
+      ul.innerHTML = '<li data-query-name="Custom query">Custom query</li><li>-----</li>'
+      queries.sort((a, b) => a.name.localeCompare(b.name)).forEach(q => {
+        let li = document.createElement('li')
+        li.dataset.queryName = q['name']
+        li.innerHTML = q['name']
+        ul.appendChild(li)
+      })
+    }
     layers.forEach(layer => {
       let features = layer?.geojson?.features || []
       const layerElement = template.cloneNode(true)
