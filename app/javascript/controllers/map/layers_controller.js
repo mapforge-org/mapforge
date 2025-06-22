@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { map, layers, upsert, mapProperties, redrawGeojson } from 'maplibre/map'
+import { map, layers, upsert, mapProperties, redrawGeojson, removeGeoJSONSource } from 'maplibre/map'
 import { initLayersModal, resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
@@ -179,6 +179,7 @@ export default class extends Controller {
     const layer = layers.find(f => f.id === layerId)
     const { geojson: _geojson, ...sendLayer } = layer
     layers.splice(layers.indexOf(layer), 1)
+    removeGeoJSONSource('overpass-source-' + layerId)
     mapChannel.send_message('delete_layer', sendLayer)
     initLayersModal()
     redrawGeojson()

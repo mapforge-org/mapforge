@@ -89,7 +89,7 @@ export const queries = [
   { name: 'Trains',
     query: '(relation["route"="tracks"]; // Train tracks (railways)\n' +
            'node["railway"="station"]; // Train stations\n' +
-           'node["railway"="halt"];\n' +
+           'node["railway"="halt"][usage!=leisure];\n' +
            '//way["railway"="station"];\n' +
            '//relation["railway"="station"];\n' +
            ');\n' +
