@@ -76,7 +76,7 @@ function applyOverpassStyle(geojson, query) {
   geojson.features.forEach( f => {
     f.properties["label"] = f.properties["name"]
     f.properties["desc"] = overpassDescription(f.properties)
-    if (query.includes("out skel;")) { f.properties["heatmap"] = true }
+    if (query.includes("out skel")) { f.properties["heatmap"] = true }
     if (f.properties['amenity'] === 'post_box') {
       f.properties["marker-symbol"] = "📯"
     }
