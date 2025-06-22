@@ -48,12 +48,12 @@ class ImagesController < ApplicationController
     end
 
     if text && !text.blank? && text.size <= 4
-      raise ActionController::BadRequest, "Invalid text" unless text =~ /\A(?:[\p{L}\p{M}\d.\-\+\=€]|\p{Emoji})+\z/u
       pointsize = 11
       pointsize = 10 if text.size == 2
       pointsize = 8 if text.size == 3
       pointsize = 7 if text.size == 4
       # Add text on top
+      text = text.gsub(/[^[:alpha:] .,_-]/, " ")
       result.combine_options do |c|
         c.gravity "center"
         c.pointsize pointsize

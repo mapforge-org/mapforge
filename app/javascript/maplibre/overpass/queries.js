@@ -68,10 +68,17 @@ export const queries = [
     clusterIcon: '/emojis/noto/🚰.png'
   },
   { name: 'Hiking routes',
-    query: "relation[type=route][route=hiking];out geom 100;",
+    query: "relation[type=route][route=hiking];out geom 75;",
+    style: (f) => {
+      // TODO: Find a way to not select the points in the query
+      if (f.geometry.type === 'Point') {
+        f.properties["marker-color"] = "transparent"
+        f.properties["stroke"] = "transparent"
+      }
+    }
   },
   { name: 'Bicycle routes',
-    query: "relation[type=route][route=bicycle];out geom 100;",
+    query: "relation[type=route][route=bicycle];out geom 75;",
   },
   { name: 'Camping',
     query: "nwr[tourism=camp_site];out center;",

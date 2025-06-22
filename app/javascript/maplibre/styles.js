@@ -1,4 +1,4 @@
-import { map, frontFeature } from 'maplibre/map'
+import { map, frontFeature, removeStyleLayers } from 'maplibre/map'
 import {
   highlightedFeatureId, stickyFeatureHighlight,
   resetHighlightedFeature, highlightFeature
@@ -25,10 +25,11 @@ export const viewStyleNames = [
 export function setStyleDefaultFont (font) { labelFont = [font] }
 
 export function initializeViewStyles (sourceName) {
+  removeStyleLayers(sourceName)
   viewStyleNames.forEach(styleName => {
     map.addLayer(setSource(styles()[styleName], sourceName))
   })
-  console.log('View styles added for source ' + sourceName)
+  // console.log('View styles added for source ' + sourceName)
 
   // click is needed to select on mobile and for sticky highlight
   map.on('click', styleNames(sourceName), function (e) {

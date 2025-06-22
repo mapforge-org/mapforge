@@ -179,7 +179,7 @@ export function addGeoJSONSource (sourceName, cluster=false ) {
   })
 }
 
-export function removeGeoJSONSource(sourceName) {
+export function removeStyleLayers(sourceName) {
   if (map.getStyle && map.getStyle().layers) {
     // Remove all layers that use this source
     map.getStyle().layers
@@ -188,6 +188,10 @@ export function removeGeoJSONSource(sourceName) {
         if (map.getLayer(l.id)) map.removeLayer(l.id)
       })
   }
+}
+
+export function removeGeoJSONSource(sourceName) {
+  removeStyleLayers(sourceName)
   if (map.getSource(sourceName)) {
     map.removeSource(sourceName)
   }
