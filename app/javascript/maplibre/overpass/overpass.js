@@ -28,7 +28,7 @@ export function loadOverpassLayer(id) {
 
   const beforeSemicolon = query.split(';')[0]
   // query already comes with a settings block
-  if (/bbox|timeout|out/.test(beforeSemicolon)) {
+  if (/\[bbox|\[timeout|\[out/.test(beforeSemicolon)) {
     if (!query.includes("[bbox")) { query = "[bbox:{{bbox}}]" + query } 
     if (!query.includes("[timeout")) { query = "[timeout:25]" + query }
     if (!query.includes("[out")) { query = "[out:json]" + query }
