@@ -2,27 +2,41 @@ import { map, layers, redrawGeojson, addGeoJSONSource } from 'maplibre/map'
 import { applyOverpassQueryStyle, getQueryTemplate } from 'maplibre/overpass/queries'
 import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
+import { initLayersModal } from 'maplibre/controls/shared'
 
-export function loadOverpassLayers() {
-  layers.filter(l => l.type === 'overpass').forEach((layer) => {
-    addGeoJSONSource('overpass-source-' + layer.id, true)
+export function initializeOverpassLayers(id = null) {
+  let initLayers = layers.filter(l => l.type === 'overpass')
+  if (id) { initLayers = initLayers.filter(l => l.id === id)  }
+  initLayers.forEach((layer) => {
+    const clustered = !!getQueryTemplate(layer.name)?.cluster
+    addGeoJSONSource('overpass-source-' + layer.id, clustered)
     initializeViewStyles('overpass-source-' + layer.id)
-    if (getQueryTemplate(layer.name)?.cluster) { 
+    if (clustered) {
       initializeClusterStyles('overpass-source-' + layer.id, getQueryTemplate(layer.name).clusterIcon)
     }
-    if (!layer.geojson) { loadOverpassLayer(layer.id) }
+    if (!layer.geojson) { 
+      // layer with id comes from the layers modal, reload modal
+      loadOverpassLayer(layer.id).then(() => { if (id) { initLayersModal() } })
+    }
   })
 }
 
 export function loadOverpassLayer(id) {
   const layer = layers.find(f => f.id === id)
   if (!layer?.query) { return Promise.resolve() }
-  console.log('Loading overpass layer', layer)
   let query = layer.query
 
-  // settings block
-  query = "[out:json][timeout:25][bbox:{{bbox}}];" + query
+  const beforeSemicolon = query.split(';')[0]
+  // query already comes with a settings block
+  if (/bbox|timeout|out/.test(beforeSemicolon)) {
+    if (!query.includes("[bbox")) { query = "[bbox:{{bbox}}]" + query } 
+    if (!query.includes("[timeout")) { query = "[timeout:25]" + query }
+    if (!query.includes("[out")) { query = "[out:json]" + query }
+  } else {
+    query = "[out:json][timeout:25][bbox:{{bbox}}];" + query
+  }
   query = replaceBboxWithMapRectangle(query)
+  console.log('Loading overpass layer', layer, query)
 
   return fetch("https://overpass-api.de/api/interpreter",
     {
@@ -34,7 +48,7 @@ export function loadOverpassLayer(id) {
   // overpass xml to geojson: https://github.com/tyrasd/osmtogeojson
   .then( response => { return response.json() } )
   .then( data => {
-    //console.log('Received from overpass-api.de', data)
+    // console.log('Received from overpass-api.de', data)
     let geojson = osmtogeojson(data)
     // console.log('osmtogeojson', geojson)
     geojson = applyOverpassStyle(geojson, query)
@@ -62,7 +76,7 @@ function applyOverpassStyle(geojson, query) {
   geojson.features.forEach( f => {
     f.properties["label"] = f.properties["name"]
     f.properties["desc"] = overpassDescription(f.properties)
-    if (query.includes("out skel;")) { f.properties["heatmap"] = true }
+    if (query.includes("out skel")) { f.properties["heatmap"] = true }
     if (f.properties['amenity'] === 'post_box') {
       f.properties["marker-symbol"] = "📯"
     }
