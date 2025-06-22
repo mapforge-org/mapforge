@@ -2,16 +2,22 @@ import { map, layers, redrawGeojson, addGeoJSONSource } from 'maplibre/map'
 import { applyOverpassQueryStyle, getQueryTemplate } from 'maplibre/overpass/queries'
 import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
+import { initLayersModal } from 'maplibre/controls/shared'
 
-export function loadOverpassLayers() {
-  layers.filter(l => l.type === 'overpass').forEach((layer) => {
+export function initializeOverpassLayers(id = null) {
+  let initLayers = layers.filter(l => l.type === 'overpass')
+  if (id) { initLayers = initLayers.filter(l => l.id === id)  }
+  initLayers.forEach((layer) => {
     const clustered = !!getQueryTemplate(layer.name)?.cluster
     addGeoJSONSource('overpass-source-' + layer.id, clustered)
     initializeViewStyles('overpass-source-' + layer.id)
     if (clustered) {
       initializeClusterStyles('overpass-source-' + layer.id, getQueryTemplate(layer.name).clusterIcon)
     }
-    if (!layer.geojson) { loadOverpassLayer(layer.id) }
+    if (!layer.geojson) { 
+      // layer with id comes from the layers modal, reload modal
+      loadOverpassLayer(layer.id).then(() => { if (id) { initLayersModal() } })
+    }
   })
 }
 

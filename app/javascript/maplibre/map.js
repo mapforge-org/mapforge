@@ -12,7 +12,7 @@ import { draw } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
   renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
-import { loadOverpassLayers } from 'maplibre/overpass/overpass'
+import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
 
 export let map
 export let layers // [{ id:, geojson: { type: 'FeatureCollection', features: [] } }]
@@ -223,7 +223,7 @@ export function loadLayers () {
       redrawGeojson()
       functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
       map.fire('geojson.load', { detail: { message: 'geojson-source loaded' } })
-      loadOverpassLayers()
+      initializeOverpassLayers()
     })
     .catch(error => {
       console.error('Failed to fetch GeoJSON:', error)

@@ -6,7 +6,7 @@ import { highlightFeature } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
-import { loadOverpassLayer } from 'maplibre/overpass/overpass'
+import { loadOverpassLayer, initializeOverpassLayers } from 'maplibre/overpass/overpass'
 import { queries } from 'maplibre/overpass/queries'
 
 export default class extends Controller {
@@ -168,7 +168,7 @@ export default class extends Controller {
     mapChannel.send_message('new_layer', layer)
     initLayersModal()
     document.querySelector('#layer-list-' + layerId + ' .reload-icon').classList.add('layer-refresh-animate')
-    loadOverpassLayer(layerId).then( () => { initLayersModal() })
+    initializeOverpassLayers(layerId)
   }
 
   deleteOverpassLayer (event) {
