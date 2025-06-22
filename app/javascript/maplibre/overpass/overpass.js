@@ -5,9 +5,10 @@ import * as functions from 'helpers/functions'
 
 export function loadOverpassLayers() {
   layers.filter(l => l.type === 'overpass').forEach((layer) => {
-    addGeoJSONSource('overpass-source-' + layer.id, true)
+    const clustered = !!getQueryTemplate(layer.name)?.cluster
+    addGeoJSONSource('overpass-source-' + layer.id, clustered)
     initializeViewStyles('overpass-source-' + layer.id)
-    if (getQueryTemplate(layer.name)?.cluster) { 
+    if (clustered) {
       initializeClusterStyles('overpass-source-' + layer.id, getQueryTemplate(layer.name).clusterIcon)
     }
     if (!layer.geojson) { loadOverpassLayer(layer.id) }
