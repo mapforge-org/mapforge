@@ -85,6 +85,14 @@ export const queries = [
   },
   { name: 'Feuerwehr',
     query: "nwr[amenity=fire_station];out center 250;",
+    style: (f) => {
+      if (['fire_station'].includes(f.properties['amenity'])) {
+        f.properties["marker-symbol"] = "🚒"
+        f.properties["marker-color"] = "#000"
+      }
+    },
+    cluster: true,
+    clusterIcon: '/emojis/noto/🚒.png',
   },
   { name: 'Trains',
     query: '(relation["route"="tracks"]; // Train tracks (railways)\n' +
@@ -139,5 +147,23 @@ export const queries = [
     },
     cluster: true,
     clusterIcon: '/emojis/noto/🥨.png'
+  },
+  {
+    name: 'Swimming pools 🏊',
+    query: 'nwr[leisure = water_park];\n' +
+      'out center 250;\n' +
+      'nwr[leisure = water_park];\n' +
+      'out geom 250;',
+    style: (f) => {
+      if (f.geometry.type === 'Point'){
+        f.properties["marker-symbol"] = "🏊"
+        f.properties["marker-color"] = "transparent"
+      }
+      if (f.geometry.type === 'Polygon') {
+        f.properties["label"] = ""
+      }
+    },
+    cluster: false,
+    clusterIcon: '/emojis/noto/🏊.png'
   }
 ]
