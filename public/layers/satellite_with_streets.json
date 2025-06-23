@@ -13,7 +13,7 @@
                 "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
             ],
             "minzoom": 0,
-            "maxzoom": 20,
+            "maxzoom": 18.5,
             "tileSize": 256,
             "attribution": "Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community"
         }
@@ -24,6 +24,7 @@
       "type": "raster",
       "source": "satellite",
       "minzoom": 0,
+      "maxzoom": 18.5,
       "layout": {
         "visibility": "visible"
       },

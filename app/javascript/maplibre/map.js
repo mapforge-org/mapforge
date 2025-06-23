@@ -151,6 +151,7 @@ export function initializeMap (divId = 'maplibre-map') {
     mapInteracted = true
     // block zooming in closer than defined max zoom level
     let bgMap = basemaps()[backgroundMapLayer]
+    // TODO: max zoom doesn't work for style urls
     if (!bgMap.style.layers) { return }
     let maxzoom = bgMap.style.layers[0].maxzoom
     if (map.getZoom() > maxzoom - 0.2) {
@@ -200,6 +201,8 @@ export function removeGeoJSONSource(sourceName) {
 export function loadLayers () {
   // return if all layers already loaded (eg. in case of basemap style change)
   if (gon.map_layers.length == layers.length) {
+    // console.log('All layers already loaded, re-rendering from cache', layers)
+    initializeOverpassLayers()
     redrawGeojson()
     map.fire('geojson.load', { detail: { message: 'redraw cached geojson-source' } })
     return
@@ -377,10 +380,7 @@ export function redrawGeojson (resetDraw = true) {
   // https://github.com/mapbox/mapbox-gl-js/issues/2716
   // because to highlight a feature we need the id,
   // and in the style layers it only accepts mumeric ids in the id field initially
-  mergedGeoJSONLayers('overpass').features.forEach((feature) => { feature.properties.id = feature.id })
   mergedGeoJSONLayers('geojson').features.forEach((feature) => { feature.properties.id = feature.id })
-  //geojsonData = mergedGeoJSONLayers('geojson')
-  geojsonData.features.forEach((feature, _index) => { feature.properties.id = feature.id })
 
   // draw has its own style layers based on editStyles
   if (draw) {
@@ -403,7 +403,6 @@ export function redrawGeojson (resetDraw = true) {
 
   map.triggerRepaint()
   // drop the properties.id after sending to the map
-  mergedGeoJSONLayers('overpass').features.forEach((feature) => { delete feature.properties.id })
   mergedGeoJSONLayers('geojson').features.forEach((feature) => { delete feature.properties.id })
 }
 
