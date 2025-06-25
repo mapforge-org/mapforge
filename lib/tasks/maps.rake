@@ -18,7 +18,7 @@ namespace :maps do
           browser.create_incognito_browser_context
           page = browser.new_page
           page.default_timeout = 90000
-          map_url = base_url + map.public_id + "?static=true"
+          map_url = base_url + ERB::Util.url_encode(map.id) + "?static=true"
           failure = false
 
           page.on("response") do |response|
@@ -51,6 +51,7 @@ namespace :maps do
          browser.close
         end
       rescue => e
+        # TODO: Screenshots from private-edit maps fail
         puts "Error creating map screenshot: #{e}, #{e.message}"
       end
     end

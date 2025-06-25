@@ -77,7 +77,7 @@ export function initializeMap (divId = 'maplibre-map') {
     bearing: mapProperties.bearing || 0,
     maxPitch: 72,
     maplibreLogo: !functions.isMobileDevice(),
-    hash: true,
+    hash: true, // enable hash in URL for map center/zoom
     interactive: (window.gon.map_mode !== 'static') // can move/zoom map
     // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
   })

@@ -240,6 +240,10 @@ class Map
   end
 
   def safe_public_id
-    public_id.gsub(/\/|\.\./, "_")
+    separator = "_"
+    public_id.strip
+        .gsub(/[^\w\.\-]+/, separator)
+        .gsub(/#{separator}+/, separator)
+        .gsub(/\A#{separator}+|#{separator}+\z/, "")
   end
 end
