@@ -455,7 +455,7 @@ export function styles () {
         ['has', 'label']],
       layout: {
         'symbol-placement': 'line',
-        'text-field': ['get', 'label'],
+        'text-field': ['coalesce', ['get', 'user_label'], ['get', 'label']],
         'text-font': labelFont,
         'text-size': 14,
         'text-max-angle': 30,

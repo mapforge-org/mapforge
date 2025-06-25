@@ -91,16 +91,28 @@ export const queries = [
     clusterIcon: '/emojis/noto/🏕️.png'
   },
   { name: 'Feuerwehr',
-    query: "nwr[amenity=fire_station];out center 250;",
+    query: "nwr[amenity=fire_station];\nout center 500;",
     style: (f) => {
       if (['fire_station'].includes(f.properties['amenity'])) {
         f.properties["marker-symbol"] = "🚒"
-        f.properties["marker-color"] = "#000"
+        f.properties["marker-color"] = "#fff"
       }
     },
     cluster: true,
     clusterIcon: '/emojis/noto/🚒.png',
   },
+  {
+    name: 'Hydranten',
+    query: 'node["emergency"="fire_hydrant"];\nout body 1000;',
+    style: (f) => {
+      if (['fire_hydrant'].includes(f.properties['emergency'])) {
+        f.properties["marker-symbol"] = "🌊"
+        f.properties["marker-color"] = "#fff"
+      }
+    },
+    cluster: true,
+    clusterIcon: '/emojis/noto/🌊.png',
+  },  
   { name: 'Trains',
     query: '(relation["route"="tracks"]; // Train tracks (railways)\n' +
            'node["railway"="station"]; // Train stations\n' +
