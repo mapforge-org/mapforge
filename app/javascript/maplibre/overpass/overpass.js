@@ -1,4 +1,4 @@
-import { map, layers, redrawGeojson, addGeoJSONSource } from 'maplibre/map'
+import { map, layers, redrawGeojson, addGeoJSONSource, viewUnchanged } from 'maplibre/map'
 import { applyOverpassQueryStyle, getQueryTemplate } from 'maplibre/overpass/queries'
 import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
@@ -14,7 +14,12 @@ export function initializeOverpassLayers(id = null) {
     if (clustered) {
       initializeClusterStyles('overpass-source-' + layer.id, getQueryTemplate(layer.name).clusterIcon)
     }
-    if (!layer.geojson) { 
+    // use server's pre-loaded geojson if available and map is at default center
+    if (layer.geojson?.features?.length && viewUnchanged()) { 
+      layer.geojson = applyOverpassStyle(layer.geojson, layer.query)
+      layer.geojson = applyOverpassQueryStyle(layer.geojson, layer.name)      
+      redrawGeojson()
+    } else {
       // layer with id comes from the layers modal, reload modal
       loadOverpassLayer(layer.id).then(() => { if (id) { initLayersModal() } })
     }

@@ -382,6 +382,7 @@ export function redrawGeojson (resetDraw = true) {
   // because to highlight a feature we need the id,
   // and in the style layers it only accepts mumeric ids in the id field initially
   mergedGeoJSONLayers('geojson').features.forEach((feature) => { feature.properties.id = feature.id })
+  mergedGeoJSONLayers('overpass').features.forEach((feature) => { feature.properties.id = feature.id })
 
   // draw has its own style layers based on editStyles
   if (draw) {
@@ -561,3 +562,13 @@ export function frontFeature(frontFeature) {
   }
   redrawGeojson()
 }
+
+export function viewUnchanged() {
+  const tolerance = 0.01
+  const mapInitCenter= (mapProperties.center || mapProperties.default_center)
+  const lngMatch = Math.abs(map.getCenter().lng - mapInitCenter[0]) < tolerance
+  const latMatch = Math.abs(map.getCenter().lat - mapInitCenter[1]) < tolerance
+  // console.log(lngMatch && latMatch)
+  return lngMatch && latMatch
+}
+
