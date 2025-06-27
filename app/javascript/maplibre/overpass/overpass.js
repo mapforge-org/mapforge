@@ -9,6 +9,7 @@ export function initializeOverpassLayers(id = null) {
   if (id) { initLayers = initLayers.filter(l => l.id === id)  }
   initLayers.forEach((layer) => {
     const clustered = layer.query.includes("cluster=true")
+    // TODO: changing cluster setup requires a map reload
     addGeoJSONSource('overpass-source-' + layer.id, clustered)
     initializeViewStyles('overpass-source-' + layer.id)
     if (clustered) {
@@ -39,7 +40,7 @@ export function loadOverpassLayer(id) {
     if (!query.includes("[timeout")) { query = "[timeout:25]" + query }
     if (!query.includes("[out")) { query = "[out:json]" + query }
   } else {
-    query = "[out:json][timeout:25][bbox:{{bbox}}];" + query
+    query = "[out:json][timeout:25][bbox:{{bbox}}];\n" + query
   }
   query = replaceBboxWithMapRectangle(query)
   console.log('Loading overpass layer', layer, query)

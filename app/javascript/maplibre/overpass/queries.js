@@ -12,16 +12,11 @@ export function applyOverpassQueryStyle (geojson, queryName) {
 
 export const queries = [
   { name: 'Public toilets',
-    query: "nwr[amenity=toilets];out center 250;",
-    style: (f) => {
-      if (['toilets'].includes(f.properties.amenity)) {
-         f.properties["marker-symbol"] = "🚻"
-         f.properties["marker-color"] = "transparent"
-      }
-  }},
+    query: "// marker-symbol=🚻\nnwr[amenity=toilets];out center 250;"
+  },
   // Brewery restaurants are tagged with microbrewery=yes (https://wiki.openstreetmap.org/wiki/Brewery)
   { name: 'Breweries',
-    query: '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];nwr["industrial"="brewery"];);out center 250;',
+    query: '// cluster-symbol=🍻\n(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];nwr["industrial"="brewery"];);out center 250;',
     style: (f) => {
       if (f.properties?.microbrewery === 'yes') {
         f.properties["marker-symbol"] = "🍻"
@@ -38,8 +33,7 @@ export const queries = [
         f.properties["marker-color"] = "transparent"
         f.properties["stroke"] = "transparent"
       }
-    },
-    clusterIcon: '/emojis/noto/🍻.png'
+    }
   },
   { name: 'Subway',
     query: '(relation["railway"="subway"];way["railway"="subway"];); \n' +
@@ -55,16 +49,10 @@ export const queries = [
       }
   }},
   { name: 'Drinking water',
-    query: "nwr[amenity=drinking_water];out center 250;",
-    style: (f) => {
-      if (f.properties.amenity === 'drinking_water') {
-         f.properties["marker-symbol"] = "🚰"
-         f.properties["marker-color"] = "transparent"
-         f.properties["stroke"] = "transparent"
-      }
-    },
-    cluster: true,
-    clusterIcon: '/emojis/noto/🚰.png'
+    query: '// marker-symbol=🚰\n' +
+      '// cluster=true\n' +
+      '// cluster-symbol=🚰\n' +
+      'nwr[amenity=drinking_water];out center 250;'
   },
   { name: 'Hiking routes',
     query: "relation[type=route][route=hiking];out geom 75;",
@@ -80,37 +68,28 @@ export const queries = [
     query: "relation[type=route][route=bicycle];out geom 75;",
   },
   { name: 'Camping',
-    query: "nwr[tourism=camp_site];out center;",
-    style: (f) => {
-      if (f.properties.tourism === 'camp_site') {
-        f.properties["marker-symbol"] = "🏕️"
-      }
-    }, 
-    cluster: true,
-    clusterIcon: '/emojis/noto/🏕️.png'
+    query: '// marker-symbol=🏕️\n' + 
+      '// cluster=true\n' +
+      '// cluster-symbol=🏕️\n' +
+      'nwr[tourism=camp_site];out center;'
   },
   { name: 'Feuerwehr',
-    query: "nwr[amenity=fire_station];\nout center 500;",
-    style: (f) => {
-      if (['fire_station'].includes(f.properties['amenity'])) {
-        f.properties["marker-symbol"] = "🚒"
-        f.properties["marker-color"] = "#fff"
-      }
-    },
-    cluster: true,
-    clusterIcon: '/emojis/noto/🚒.png',
+    query: '// marker-symbol=🚒\n' +
+      '// cluster=true\n' +
+      '// cluster-symbol=🚒\n' +
+      'nwr[amenity=fire_station];\nout center 500;'
   },
   {
     name: 'Hydranten',
-    query: 'node["emergency"="fire_hydrant"];\nout body 1000;',
+    query: '// cluster=true\n' +
+      '// cluster-symbol=🌊\n' +
+      'node["emergency"="fire_hydrant"];\nout body 1000;',
     style: (f) => {
       if (['fire_hydrant'].includes(f.properties['emergency'])) {
         f.properties["marker-symbol"] = "🌊"
         f.properties["marker-color"] = "#fff"
       }
-    },
-    cluster: true,
-    clusterIcon: '/emojis/noto/🌊.png',
+    }
   },  
   { name: 'Trains',
     query: '(relation["route"="tracks"]; // Train tracks (railways)\n' +
@@ -143,11 +122,13 @@ export const queries = [
     }
   },
   { name: 'Food Shops',
-    query: '(nwr[shop=supermarket];\n' +
-           'nwr[amenity=fuel][shop=yes];\n' +
-           'nwr[shop=bakery];\n' +
-           // 'nwr[shop=butcher];\n' +
-           ');out center 250;',
+    query: '// cluster=true\n' +
+      '// cluster-symbol=🥨\n' +
+      '(nwr[shop=supermarket];\n' +
+      'nwr[amenity=fuel][shop=yes];\n' +
+      'nwr[shop=bakery];\n' +
+      // 'nwr[shop=butcher];\n' +
+      ');out center 250;',
     style: (f) => {
       if (['supermarket'].includes(f.properties['shop'])) {
         f.properties["marker-symbol"] = "🛒"
@@ -162,13 +143,13 @@ export const queries = [
       if (['butcher'].includes(f.properties['shop'])) {
         f.properties["marker-symbol"] = "🥩"
       }
-    },
-    cluster: true,
-    clusterIcon: '/emojis/noto/🥨.png'
+    }
   },
   {
     name: 'Swimming pools 🏊',
-    query: 'nwr[leisure = water_park];\n' +
+    query: '// cluster=true\n' +
+      '// cluster-symbol=🏊\n' +
+      'nwr[leisure = water_park];\n' +
       'out center 250;\n' +
       'nwr[leisure = water_park];\n' +
       'out geom 250;',
@@ -180,8 +161,6 @@ export const queries = [
       if (f.geometry.type === 'Polygon') {
         f.properties["label"] = ""
       }
-    },
-    cluster: false,
-    clusterIcon: '/emojis/noto/🏊.png'
+    }
   }
 ]
