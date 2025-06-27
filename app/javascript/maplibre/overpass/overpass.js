@@ -1,5 +1,5 @@
 import { map, layers, redrawGeojson, addGeoJSONSource, viewUnchanged } from 'maplibre/map'
-import { applyOverpassQueryStyle, getQueryTemplate } from 'maplibre/overpass/queries'
+import { applyOverpassQueryStyle } from 'maplibre/overpass/queries'
 import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
 import { initLayersModal } from 'maplibre/controls/shared'
@@ -8,11 +8,13 @@ export function initializeOverpassLayers(id = null) {
   let initLayers = layers.filter(l => l.type === 'overpass')
   if (id) { initLayers = initLayers.filter(l => l.id === id)  }
   initLayers.forEach((layer) => {
-    const clustered = !!getQueryTemplate(layer.name)?.cluster
+    const clustered = layer.query.includes("cluster=true")
+    // TODO: changing cluster setup requires a map reload
     addGeoJSONSource('overpass-source-' + layer.id, clustered)
     initializeViewStyles('overpass-source-' + layer.id)
     if (clustered) {
-      initializeClusterStyles('overpass-source-' + layer.id, getQueryTemplate(layer.name).clusterIcon)
+      const clusterIcon = getCommentValue(layer.query, 'cluster-symbol')
+      initializeClusterStyles('overpass-source-' + layer.id, clusterIcon)
     }
     // use server's pre-loaded geojson if available and map is at default center
     if (layer.geojson?.features?.length && viewUnchanged()) { 
@@ -38,7 +40,7 @@ export function loadOverpassLayer(id) {
     if (!query.includes("[timeout")) { query = "[timeout:25]" + query }
     if (!query.includes("[out")) { query = "[out:json]" + query }
   } else {
-    query = "[out:json][timeout:25][bbox:{{bbox}}];" + query
+    query = "[out:json][timeout:25][bbox:{{bbox}}];\n" + query
   }
   query = replaceBboxWithMapRectangle(query)
   console.log('Loading overpass layer', layer, query)
@@ -81,21 +83,22 @@ function applyOverpassStyle(geojson, query) {
   geojson.features.forEach( f => {
     f.properties["label"] = f.properties["name"]
     f.properties["desc"] = overpassDescription(f.properties)
-    if (query.includes("out skel")) { f.properties["heatmap"] = true }
-    if (f.properties['amenity'] === 'post_box') {
-      f.properties["marker-symbol"] = "📯"
+    if (query.includes("heatmap=true")) { f.properties["heatmap"] = true }
+    if (getCommentValue(query, 'marker-symbol')) {
+      f.properties["marker-symbol"] = getCommentValue(query, 'marker-symbol')
+      f.properties["marker-size"] = "20"
+      f.properties["marker-color"] = "transparent"
+      f.properties["stroke"] = "transparent"
     }
-
     // https://wiki.openstreetmap.org/wiki/Key:osmc:symbol?uselang=en
     // osmc:symbol=waycolor:background[:foreground][:foreground2][:text:textcolor]
     if ((f.geometry.type === 'LineString' || f.geometry.type === 'MultiLineString')
       && f.properties['osmc:symbol']) {
       const parts = f.properties['osmc:symbol'].split(':')
-
       f.properties["stroke"] = parts[0]
       f.properties["stroke-width"] = "2"
       f.properties["stroke-image-url"] = "/icon/osmc/" + f.properties['osmc:symbol']
-    // render 'ref' name as label on bike routes without osmc:symbol
+      // render 'ref' name as label on bike routes without osmc:symbol
     } else if (f.properties["route"] === 'bicycle' && f.properties["ref"]){
       f.properties["label"] = f.properties["ref"]
     }
@@ -115,4 +118,12 @@ function overpassDescription(props) {
   desc += '\n' + '[' + props['id'] + '](https://www.openstreetmap.org/' + props['id'] + ')'
 
   return desc
+}
+
+function getCommentValue(query, key) {
+  // Match lines like: // key=value (with possible spaces)
+  const regex = new RegExp(`^\\s*\\/\\/\\s*${key}\\s*=\\s*(.*)$`, "m")
+  const match = query.match(regex)
+
+  return match ? match[1].trim() : null
 }

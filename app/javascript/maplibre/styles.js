@@ -377,9 +377,9 @@ export function styles () {
         ["has", "heatmap"],
         ["has", "user_heatmap"]],
       paint: {
-        'heatmap-opacity': 0.8,
-        'heatmap-intensity': 1,
-        'heatmap-radius': 10
+        'heatmap-opacity': 0.7,
+        'heatmap-intensity': 1.3,
+        'heatmap-radius': 17
       }
     },
     // background + border for symbols
@@ -533,7 +533,7 @@ export function clusterStyles(icon) {
       type: 'symbol',
       filter: ['has', 'point_count'],
       layout: {
-        'icon-image': icon || '',
+        'icon-image': (icon ? '/emojis/noto/' + icon + '.png' : ''),
         'icon-size': 0.5,
         'icon-overlap': 'always'
       }
