@@ -39,7 +39,6 @@ export const queries = [
         f.properties["stroke"] = "transparent"
       }
     },
-    cluster: true,
     clusterIcon: '/emojis/noto/🍻.png'
   },
   { name: 'Subway',
