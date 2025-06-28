@@ -14,13 +14,16 @@ class Layer
   field :query
   field :features_count, type: Integer, default: 0
 
+  after_save :broadcast_update, if: proc { |record| record.map.present? }
+
   def to_summary_json
-    { id: id, type: type, name: name }
+    json = { id: id, type: type, name: name }
+    json[:query] = query if type == "overpass"
+    json
   end
 
   def to_json
-    json = { id: id, type: type, name: name }
-    json[:query] = query if type == "overpass"
+    json = to_summary_json
     json[:geojson] = to_geojson
     json
   end
@@ -35,5 +38,15 @@ class Layer
     clone.update(created_at: DateTime.now, map: nil)
     features.each { |f| clone.features << f.dup }
     clone
+  end
+
+  def broadcast_update
+    if saved_change_to_name? || saved_change_to_query?
+      # broadcast to private + public channel
+      [ map.id, map.public_id ].each do |id|
+        ActionCable.server.broadcast("map_channel_#{id}",
+                                    { event: "update_layer", layer: to_summary_json.as_json })
+      end
+    end
   end
 end

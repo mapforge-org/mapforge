@@ -16,7 +16,8 @@ export const queries = [
   },
   // Brewery restaurants are tagged with microbrewery=yes (https://wiki.openstreetmap.org/wiki/Brewery)
   { name: 'Breweries',
-    query: '// cluster-symbol=🍻\n(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];nwr["industrial"="brewery"];);out center 250;',
+    query: '// cluster=true\n' + 
+      '// cluster-symbol=🍻\n(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];nwr["industrial"="brewery"];);out center 250;',
     style: (f) => {
       if (f.properties?.microbrewery === 'yes') {
         f.properties["marker-symbol"] = "🍻"

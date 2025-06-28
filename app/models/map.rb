@@ -72,8 +72,9 @@ class Map
 
   after_save :broadcast_update
   after_destroy :delete_screenshot
-  # broadcast updates when the layer changed because of default_center + default_zoom
-  after_update :broadcast_update, unless: proc { |record| record.center && record.zoom }
+  # broadcast updates when the layer changed because of potential changes to
+  # calculated_center + calculated_zoom
+  after_touch :broadcast_update, unless: proc { |record| record.center && record.zoom }
   before_create :create_public_id, :create_default_layer
   validate :public_id_must_be_unique
 
@@ -83,9 +84,9 @@ class Map
       public_id: public_id,
       base_map: get_base_map,
       center: center,
-      default_center: default_center,
+      default_center: calculated_center,
       zoom: zoom,
-      default_zoom: default_zoom,
+      default_zoom: calculated_zoom,
       pitch: pitch || DEFAULT_PITCH,
       bearing: bearing || DEFAULT_BEARING,
       terrain: terrain || DEFAULT_TERRAIN,
@@ -176,7 +177,7 @@ class Map
     coordinates.flatten.each_slice(2).to_a
   end
 
-  def default_center
+  def calculated_center
     if features.present?
       # setting center to average of all coordinates
       coordinates = all_points
@@ -188,7 +189,7 @@ class Map
     end
   end
 
-  def default_zoom
+  def calculated_zoom
     if features.present?
       point1 = RGeo::Geographic.spherical_factory.point(all_points.map(&:first).max, all_points.map(&:last).max)
       point2 = RGeo::Geographic.spherical_factory.point(all_points.map(&:first).min, all_points.map(&:last).min)
