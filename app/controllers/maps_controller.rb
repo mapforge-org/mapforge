@@ -6,6 +6,7 @@ class MapsController < ApplicationController
   before_action :check_permissions, only: %i[show properties]
   before_action :require_login, only: %i[my]
   before_action :require_map_owner, only: %i[destroy]
+  skip_before_action :set_user, only: %i[catchall]
 
   layout "map", only: [ :show ]
 
@@ -60,9 +61,11 @@ class MapsController < ApplicationController
     render json: feature.to_geojson
   end
 
-  # some maplibre style tries to load eg. /atm_11; catching those calls here
+  # some maplibre styles (openfreemap liberty) try to load eg. ./swimming_pool
+  # from local server instead of style host... catching those calls here
   # :nocov:
   def catchall
+    expires_in 48.hours, public: true
     head :ok
   end
   # :nocov:

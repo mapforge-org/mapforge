@@ -9,9 +9,16 @@ Rails.application.routes.draw do
   get "/login", to: "sessions#new"
   get "/logout", to: "sessions#logout"
 
-  # some maplibre style tries to load eg. /atm_11; catching those calls here
-  get "/:map_resource" => "maps#catchall", as: :catchall, constraints: { map_resource: /[a-z]+_11/ }
-  get "/m/:map_resource" => "maps#catchall", constraints: { map_resource: /[a-z]+_11/ }
+  # some maplibre styles (openfreemap liberty) try to load eg. ./swimming_pool
+  # from local server instead of style host... catching those calls here
+  CATCH_ASSETS = %w[
+    swimming_pool bollard office gate recycling
+    bicycle_parking reservoir sports_centre basin atm lift_gate
+    cycle_barrier running brownfield water_park equestrian theme_park
+    athletics motorcycle_parking yoga table_tennis cycling chess billiards canoe
+    rowing multi hackerspace
+  ]
+  get "/m/:resource", to: "maps#catchall", constraints: { resource: Regexp.union(CATCH_ASSETS) }
 
   scope "/m" do
     get "", to: "maps#index", as: "maps"
