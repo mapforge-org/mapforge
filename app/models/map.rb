@@ -183,6 +183,7 @@ class Map
       coordinates = all_points
       average_latitude = coordinates.map(&:first).reduce(:+) / coordinates.size.to_f
       average_longitude = coordinates.map(&:last).reduce(:+) / coordinates.size.to_f
+      Rails.logger.info("Calculated map (#{id}) center: #{[ average_latitude, average_longitude ]}")
       [ average_latitude, average_longitude ]
     else
      DEFAULT_CENTER
@@ -194,7 +195,7 @@ class Map
       point1 = RGeo::Geographic.spherical_factory.point(all_points.map(&:first).max, all_points.map(&:last).max)
       point2 = RGeo::Geographic.spherical_factory.point(all_points.map(&:first).min, all_points.map(&:last).min)
       distance_km = point1.distance(point2) / 1000
-      Rails.logger.info("Map feature distance: #{distance_km} km")
+      Rails.logger.info("Calculated map (#{id}) feature distance: #{distance_km} km")
       case distance_km
       when 0 then DEFAULT_ZOOM
       when 0..1 then 16
