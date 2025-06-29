@@ -2,10 +2,13 @@ class ImagesController < ApplicationController
   before_action :set_image, only: %i[icon image]
   before_action :set_map, only: %i[upload]
 
+  IMAGE_CACHE_TIME = 24.hours
+
   # render image as 200x200px icon with white border
   def icon
     redirect_to "/images/image-not-found_100.webp" and return unless @image
-    expires_in 60.minutes, public: true
+    # Sets Cache-Control headers for HTTP caching and rack_cache
+    expires_in IMAGE_CACHE_TIME, public: true
 
     # resize, crop if necessary to maintain aspect ratio (centre gravity)
     # TODO: skip first `rounded` for icons with transparency
@@ -16,7 +19,8 @@ class ImagesController < ApplicationController
   # render image as uploaded
   def image
     redirect_to "/images/image-not-found.webp" and return unless @image
-    expires_in 60.minutes, public: true
+    # Sets Cache-Control headers for HTTP caching and rack_cache
+    expires_in IMAGE_CACHE_TIME, public: true
     image_url = @image.img.url
     redirect_to image_url
   end
@@ -29,7 +33,7 @@ class ImagesController < ApplicationController
 
     head :not_found and return unless result
 
-    expires_in 720.minutes, public: true
+    expires_in IMAGE_CACHE_TIME, public: true
     send_data result.to_blob, type: "image/png", disposition: "inline"
   end
 

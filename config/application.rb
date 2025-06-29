@@ -46,16 +46,6 @@ module Mapforge
     # Don't generate system test files.
     config.generators.system_tests = nil
 
-    # https://snippets.aktagon.com/snippets/302-how-to-setup-and-use-rack-cache-with-rails
-    # rails sets "cache-control", "private" by default
-    config.action_dispatch.rack_cache = {
-       verbose: true,
-       etag: true,
-       max_age: 60.minutes.to_i,
-       metastore:   "file:tmp/cache/rack/meta",
-       entitystore: "file:tmp/cache/rack/body"
-    }
-
     config.session_store :cookie_store, key: "_mapforge_session", expire_after: 48.hours
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
