@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :map do
     base_map { 'test' }
     center { Map::DEFAULT_CENTER }
+    zoom { Map::DEFAULT_ZOOM }
     pitch { 0 }
 
     transient do
