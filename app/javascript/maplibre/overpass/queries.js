@@ -82,7 +82,7 @@ export const queries = [
   },
   {
     name: 'Hydranten',
-    query: 'marker-image-url=/icons/hydrant.png\n' + 
+    query: '// marker-image-url=/icons/hydrant.png\n' +
       '// cluster=true\n' +
       '// cluster-image-url=/icons/hydrant.png\n' +
       'node["emergency"="fire_hydrant"];\nout body 1000;',
