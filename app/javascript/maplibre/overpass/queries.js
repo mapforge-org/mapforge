@@ -82,8 +82,9 @@ export const queries = [
   },
   {
     name: 'Hydranten',
-    query: '// cluster=true\n' +
-      '// cluster-symbol=🌊\n' +
+    query: 'marker-image-url=/icons/hydrant.png\n' + 
+      '// cluster=true\n' +
+      '// cluster-image-url=/icons/hydrant.png\n' +
       'node["emergency"="fire_hydrant"];\nout body 1000;',
     style: (f) => {
       if (['fire_hydrant'].includes(f.properties['emergency'])) {

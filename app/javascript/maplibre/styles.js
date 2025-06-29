@@ -527,13 +527,16 @@ export function styles () {
 }
 
 export function clusterStyles(icon) {
+  let icon_image = '/emojis/noto/' + icon + '.png'
+  if (icon?.includes('/')) { icon_image = icon }
+
   return [
     {
       id: 'cluster_circles',
       type: 'symbol',
       filter: ['has', 'point_count'],
       layout: {
-        'icon-image': (icon ? '/emojis/noto/' + icon + '.png' : ''),
+        'icon-image': (icon ? icon_image : ''),
         'icon-size': 0.5,
         'icon-overlap': 'always'
       }

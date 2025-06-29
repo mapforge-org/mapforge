@@ -133,7 +133,7 @@ export default class extends Controller {
     event.target.closest('.layer-item').querySelector('.layer-name').innerHTML = layer.name
     const { geojson: _geojson, ...sendLayer } = layer
     mapChannel.send_message('update_layer', sendLayer)
-    this.refreshOverpassLayer(event)
+    initializeOverpassLayers(layerId)
   }
 
   refreshOverpassLayer (event) {

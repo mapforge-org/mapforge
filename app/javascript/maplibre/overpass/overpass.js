@@ -13,7 +13,7 @@ export function initializeOverpassLayers(id = null) {
     addGeoJSONSource('overpass-source-' + layer.id, clustered)
     initializeViewStyles('overpass-source-' + layer.id)
     if (clustered) {
-      const clusterIcon = getCommentValue(layer.query, 'cluster-symbol')
+      const clusterIcon = getCommentValue(layer.query, 'cluster-symbol') || getCommentValue(layer.query, 'cluster-image-url')
       initializeClusterStyles('overpass-source-' + layer.id, clusterIcon)
     }
     // use server's pre-loaded geojson if available and map is at default center
@@ -86,6 +86,11 @@ function applyOverpassStyle(geojson, query) {
     if (query.includes("heatmap=true")) { f.properties["heatmap"] = true }
     if (getCommentValue(query, 'marker-symbol')) {
       f.properties["marker-symbol"] = getCommentValue(query, 'marker-symbol')
+      f.properties["marker-size"] = "20"
+      f.properties["marker-color"] = "transparent"
+      f.properties["stroke"] = "transparent"
+    } else if (getCommentValue(query, 'marker-image-url')) {
+      f.properties["marker-image-url"] = getCommentValue(query, 'marker-image-url')
       f.properties["marker-size"] = "20"
       f.properties["marker-color"] = "transparent"
       f.properties["stroke"] = "transparent"
