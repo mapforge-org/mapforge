@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 2025-06
 
 * Option to cluster overpass results
+* Option to style overpass results
 
 ## 2025-05
 

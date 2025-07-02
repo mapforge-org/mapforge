@@ -43,3 +43,5 @@ coverage/
 
 public/previews/*.png
 public/previews/*.jpg
+
+db/GeoLite2-City.mmdb
