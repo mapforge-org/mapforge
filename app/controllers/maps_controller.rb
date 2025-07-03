@@ -96,12 +96,14 @@ class MapsController < ApplicationController
     # https://github.com/yhirose/maxminddb
     db = MaxMindDB.new("./db/GeoLite2-City.mmdb")
     ret = db.lookup(request.remote_ip)
-    ip_coordinates = [ ret.location.latitude, ret.location.longitude ] if ret.found?
+    return nil unless ret.found?
+    ip_coordinates = [ ret.location.latitude, ret.location.longitude ]
     Rails.logger.info "Client IP: #{request.remote_ip}, coords: #{ip_coordinates.inspect}, loc: #{ret.country.name}/#{ret.city.name}"
     ip_coordinates
   rescue => e
     Rails.logger.error "Error getting IP coordinates: #{e.message}"
     Rails.logger.error "See README for instructions on how to set up the MaxMind DB"
+    nil
   end
   # :nocov:
 
