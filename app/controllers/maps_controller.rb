@@ -97,7 +97,7 @@ class MapsController < ApplicationController
     db = MaxMindDB.new("./db/GeoLite2-City.mmdb")
     ret = db.lookup(request.remote_ip)
     return nil unless ret.found?
-    ip_coordinates = [ ret.location.latitude, ret.location.longitude ]
+    ip_coordinates = [ ret.location.longitude, ret.location.latitude ]
     Rails.logger.info "Client IP: #{request.remote_ip}, coords: #{ip_coordinates.inspect}, loc: #{ret.country.name}/#{ret.city.name}"
     ip_coordinates
   rescue => e
