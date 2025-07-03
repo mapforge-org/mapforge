@@ -14,6 +14,8 @@ A reference installation is running at [mapforge.org](https://mapforge.org), see
 GeoJSON layers can get styled to your needs using an extended version of the [geojson](https://macwright.com/2015/03/23/geojson-second-bite.html)
 [mapbox simplestyle spec](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0). See [docs/geojson.md](docs/geojson.md) for supported attributes.
 
+[Overpass](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) layers can get added to the map, allowing for custom queries and display 
+of all possible OpenStreetMap nodes. Read more about that in the [overpass doc](docs/overpass.md).
 
 ## Development Setup
  
@@ -30,13 +32,16 @@ zypper in npm # for running eslint
 bundle
 ```
 
+To resolve users' client IPs to coordinates for centering new maps at their 
+location, please download the [Maxmind GeoLite2](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data/) database and save it at `db/GeoLite2-City.mmdb`.
+
 ### Run develoment server:
 
 `bin/thrust rails server`
 
-* To use [Maptiler](https://www.maptiler.com/) base maps, provide the env MAPTILER_KEY
 * To use routing features provided by [openrouteservice.org](https://openrouteservice.org/), set env OPENROUTESERVICE_KEY
 * MongoDB backend is expected at: `ENV.fetch("MONGO_URL") { "localhost:27017" }`
+  You can run a local MongoDB like this: `docker run -d --name mongo -v <local db folder>:/data/db -p 27017:27017 mongo:7.0`
 * Redis (for action cable) is expected at: `ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" }`
 * To allow login via Github and Google, create oauth apps there, and set `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET` and `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`
 * The first user that logs in automatically gets set as admin
@@ -46,11 +51,7 @@ In development, the ENV vars can get set in the file `.env.development`.
 
 ### Base maps
 
-Available base maps are defined in app/javascript/maplibre/basemaps.js.
-
-Some base maps are only available with a https://www.maptiler.com/cloud/ key, provided as ENV `MAPTILER_KEY`.
-There are also examples for using maptiler vector maps with custom styles, for example created with [maputnik](https://maplibre.org/maputnik/).
-
+Available base maps can get customized in `app/javascript/maplibre/basemaps.js`.
 
 ## Rake tasks
 
@@ -60,7 +61,7 @@ There are also examples for using maptiler vector maps with custom styles, for e
 
 * Import map from geojson (samples in db/seeds):
 
-  `bin/rake seed:geojson_file['db/seeds/examples/germany_areas.json']`
+  `bin/rake seed:geojson_file['db/seeds/examples/germany_areas.geojson']`
 
   More geojson example files at: https://exploratory.io/map
 

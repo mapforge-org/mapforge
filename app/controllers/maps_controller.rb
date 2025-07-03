@@ -1,4 +1,5 @@
 class MapsController < ApplicationController
+  before_action :set_ip_coordinates, only: %i[show properties]
   before_action :set_map_ro, only: %i[show properties feature]
   before_action :set_map_rw, only: %i[destroy]
   before_action :set_map_mode, only: %i[show]
@@ -80,6 +81,19 @@ class MapsController < ApplicationController
   end
 
   private
+
+  # :nocov:
+  def set_ip_coordinates
+    # https://github.com/yhirose/maxminddb
+    db = MaxMindDB.new("./db/GeoLite2-City.mmdb")
+    ret = db.lookup(request.remote_ip)
+    @ip_coordinates = [ ret.location.latitude, ret.location.longitude ] if ret.found?
+    Rails.logger.info "Client IP: #{request.remote_ip}, coords: #{@ip_coordinates.inspect}, loc: #{ret.country.name}/#{ret.city.name}"
+  rescue => e
+    Rails.logger.error "Error getting IP coordinates: #{e.message}"
+    Rails.logger.error "See README for instructions on how to set up the MaxMind DB"
+  end
+  # :nocov:
 
   def require_map_owner
     redirect_to maps_path unless @user&.admin? || (@map.user && @map.user == @user)
