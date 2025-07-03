@@ -253,6 +253,7 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
+    maxminddb (0.1.22)
     mime-types (3.5.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2024.0903)
@@ -422,7 +423,7 @@ GEM
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.4)
+    rspec-core (3.13.5)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -439,7 +440,7 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.4)
-    rspec-wait (1.0.1)
+    rspec-wait (1.0.2)
       rspec (>= 3.4)
     rszr (1.5.0)
     rubocop (1.77.0)
@@ -501,7 +502,7 @@ GEM
       virtus (~> 2.0)
     rubyzip (2.4.1)
     securerandom (0.4.1)
-    selenium-webdriver (4.33.0)
+    selenium-webdriver (4.34.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -586,6 +587,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   listen
+  maxminddb
   mini_magick
   mongo_logs_on_roids
   mongoid (>= 9.0.2)

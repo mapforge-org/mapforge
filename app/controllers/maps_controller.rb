@@ -20,12 +20,12 @@ class MapsController < ApplicationController
 
   def show
     if request.format.html?
-      @map_properties = @map.properties
+      @map_properties = map_properties
       gon.map_id = params[:id]
       gon.edit_id = @map.id.to_s if @user&.admin? || (@user && @map.user == @user)
       gon.map_mode = @map_mode
       gon.csrf_token = form_authenticity_token
-      gon.map_properties = @map_properties
+      gon.map_properties = map_properties
       gon.map_layers = @map.layers.map(&:to_summary_json)
     end
 
@@ -51,8 +51,10 @@ class MapsController < ApplicationController
     redirect_to map_url(@map), notice: "Map was successfully created."
   end
 
+  # Endpoint for reloading map properties
   def properties
-    render json: { properties: @map.properties, layers: @map.layers.map(&:to_summary_json) }
+    properties = { properties: map_properties, layers: @map.layers.map(&:to_summary_json) }
+    render json: properties
   end
 
   def feature
@@ -80,6 +82,30 @@ class MapsController < ApplicationController
   end
 
   private
+
+  def map_properties
+    properties = @map.properties
+    # set calculated center to user location when there are no features
+    coords = ip_coordinates
+    properties[:default_center] = coords if coords && @map.features_count.zero?
+    properties
+  end
+
+  # :nocov:
+  def ip_coordinates
+    # https://github.com/yhirose/maxminddb
+    db = MaxMindDB.new("./db/GeoLite2-City.mmdb")
+    ret = db.lookup(request.remote_ip)
+    return nil unless ret.found?
+    ip_coordinates = [ ret.location.longitude, ret.location.latitude ]
+    Rails.logger.info "Client IP: #{request.remote_ip}, coords: #{ip_coordinates.inspect}, loc: #{ret.country.name}/#{ret.city.name}"
+    ip_coordinates
+  rescue => e
+    Rails.logger.error "Error getting IP coordinates: #{e.message}"
+    Rails.logger.error "See README for instructions on how to set up the MaxMind DB"
+    nil
+  end
+  # :nocov:
 
   def require_map_owner
     redirect_to maps_path unless @user&.admin? || (@map.user && @map.user == @user)
