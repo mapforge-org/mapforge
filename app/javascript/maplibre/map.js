@@ -217,7 +217,7 @@ export function loadLayers () {
       return response.json()
     })
     .then(data => {
-      console.log('Loaded map layers from server: ', data)
+      console.log('Loaded map layers from server: ', data.layers)
       // make sure we're still showing the map the request came from
       if (window.gon.map_properties.public_id !== data.properties.public_id){
         return
