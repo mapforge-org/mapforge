@@ -40,7 +40,7 @@ class Map
   OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets", "osmRasterTiles" ]
 
   DEFAULT_CENTER = [ 11.077, 49.447 ].freeze
-  DEFAULT_ZOOM = 12
+  DEFAULT_ZOOM = 10
   DEFAULT_PITCH = 30
   DEFAULT_BEARING = 0
   DEFAULT_TERRAIN = false
