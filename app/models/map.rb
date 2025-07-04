@@ -27,6 +27,7 @@ class Map
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
   field :images_count, type: Integer, default: 0
 
+  # Only BASE_MAPS are available in the UI
   BASE_MAPS = [ "versatilesColorful", "satelliteStreets", "openTopoTiles",
     "openfreemapLiberty", "versatilesGraybeard", "versatilesEclipse",
     "stamenWatercolorTiles", "cyclosmTiles" ]
@@ -36,7 +37,7 @@ class Map
   MAPTILER_MAPS = [ "maptilerBuildings", "maptilerHybrid", "maptilerDataviz",
                     "maptilerStreets", "maptilerNoStreets", "maptilerWinter",
                     "maptilerBike", "maptilerBasic" ]
-  OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets" ]
+  OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets", "osmRasterTiles" ]
 
   DEFAULT_CENTER = [ 11.077, 49.447 ].freeze
   DEFAULT_ZOOM = 12
