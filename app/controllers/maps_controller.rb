@@ -90,7 +90,7 @@ class MapsController < ApplicationController
       coords = ip_coordinates
       properties[:default_center] = coords if coords
     end
-      properties
+    properties
   end
 
   # :nocov:

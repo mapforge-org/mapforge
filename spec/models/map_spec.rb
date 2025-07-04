@@ -45,9 +45,9 @@ describe Map do
       let(:map) { create(:map, zoom: nil) }
       let(:layer) { map.layers.first }
 
-      it 'sets default zoom to 12 on single point' do
+      it 'sets default zoom to 10 on single point' do
         create(:feature, :point, layer: layer)
-        expect(map.properties[:default_zoom]).to eq 12
+        expect(map.properties[:default_zoom]).to eq 10
       end
 
       it 'sets default zoom to 16' do
