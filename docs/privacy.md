@@ -4,7 +4,7 @@ TL;DR: For not logged in visitors, we do not use cookies and we do not collect a
 
 In this policy, we lay out what data we collect and why, how your data is handled and your rights to your data.
 
-All of the data that we collect is kept fully secured and hosted in Germany. The server is owned by Hetzner, a European company. This ensures that all of the site data is being covered by the European Union’s strict laws on data privacy. Your site data never leaves the EU. See Hetzner privacy policy for full details.
+All of the data that we collect is kept fully secured and hosted in Germany. The server is owned by Hetzner, a European company. This ensures that all of the site data is being covered by the European Union’s strict laws on data privacy. Your site data never leaves the EU. 
 
 ### As a visitor to the mapforge.org website
 
@@ -15,7 +15,7 @@ All of the data that we collect is kept fully secured and hosted in Germany. The
     No information is mined and harvested for personal and behavioral trends
     No information is monetized
 
-When you are browsing maps, the background maps can get configured to get loaded from external providers, such as opentopomap.org, stadiamaps.com, arcgisonline.com, openstreetmap.org, openfreemap.org, versatiles.org and maptiler.com. Those providers have their own policies which can get accessed via the info link in the lower right corner of the map.
+When you are browsing maps, the background maps get loaded from external providers, such as opentopomap.org, stadiamaps.com, arcgisonline.com, openstreetmap.org, openfreemap.org, versatiles.org and maptiler.com. Those providers have their own policies which can get accessed via the info link in the lower right corner of the map.
 
 ### As a logged in user
 
@@ -32,9 +32,7 @@ A persistent first-party cookie is stored to remember you’re logged in.
 
 ### As a map creator of Mapforge
 
-The geojson and image data you upload or create on Mapforge is available to other users
-by default. You can decide to configure your map as private, then it is only
-available to others that know the private or public link to it.
+The geojson and image data you upload or create on Mapforge is **not** available to other users by default. You can decide to share your map by link, or to publish it on mapforge.org to make it available to others.
 
 Users are responsible for any data they share through Mapforge and confirm that they have the permission to share it.
 
