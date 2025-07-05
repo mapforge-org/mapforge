@@ -65,7 +65,7 @@ export function initializeClusterStyles(sourceName, icon) {
   })
 
   // zoom into cluster on click
-  map.on('click', ['cluster_circles_' + sourceName], async function (e) {
+  map.on('click', ['cluster_circles_' + sourceName, 'cluster_labels_' + sourceName], async function (e) {
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
     const center = e.features[0].geometry.coordinates
     const clusterId = e.features[0].properties.cluster_id
@@ -314,7 +314,7 @@ export function styles () {
         ['!=', 'meta', 'midpoint'],
         ['!=', 'meta', 'vertex'],
         ['none', ['has', 'user_marker-image-url'], ['has', 'marker-image-url'],
-          ['has', 'user_marker-symbol'], ['has', 'marker-symbol']]
+          ['has', 'user_marker-symbol'], ['has', 'marker-symbol'], ['has', 'point_count']]
       ],
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
@@ -339,7 +339,7 @@ export function styles () {
         ['!=', 'meta', 'midpoint'],
         ['!=', 'meta', 'vertex'],
         ['none', ['has', 'user_marker-image-url'], ['has', 'marker-image-url'],
-          ['has', 'user_marker-symbol'], ['has', 'marker-symbol']]
+          ['has', 'user_marker-symbol'], ['has', 'marker-symbol'], ['has', 'point_count']]
       ],
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
@@ -530,8 +530,20 @@ export function clusterStyles(icon) {
   let icon_image = '/emojis/noto/' + icon + '.png'
   if (icon?.includes('/')) { icon_image = icon }
 
-  return [
-    {
+  // background when no cluster icon is provided
+  const clusterPoints = {
+      id: 'cluster_points',
+      type: 'circle',
+      filter: ['has', 'point_count'],
+      paint: {
+        'circle-pitch-scale': 'map', // points get bigger when camera is closer
+        'circle-radius': 12,
+        'circle-color': pointColor,
+        'circle-blur': 0.05
+      }
+    }
+    
+  const clusterCircles = {
       id: 'cluster_circles',
       type: 'symbol',
       filter: ['has', 'point_count'],
@@ -540,8 +552,9 @@ export function clusterStyles(icon) {
         'icon-size': 0.5,
         'icon-overlap': 'always'
       }
-    },
-    {
+    }
+
+  const clusterLabels = {
       'id': 'cluster_labels',
       type: 'symbol',
       filter: ['has', 'point_count'],
@@ -555,7 +568,9 @@ export function clusterStyles(icon) {
         'text-halo-color': '#fff',
         'text-halo-width': 2
       }
-    }]
+    }
+
+  return [...(!icon ? [clusterPoints] : []), ...(icon ? [clusterCircles] : []), clusterLabels ]
 }
 
 export function setSource (style, sourceName) {
