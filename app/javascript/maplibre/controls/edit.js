@@ -99,6 +99,7 @@ export function initSettingsModal () {
     e.setAttribute('data-map--settings-map-terrain-value', mapProperties.terrain)
     e.setAttribute('data-map--settings-map-hillshade-value', mapProperties.hillshade)
     e.setAttribute('data-map--settings-map-contours-value', mapProperties.contours)
+    e.setAttribute('data-map--settings-map-globe-value', mapProperties.globe)
     e.setAttribute('data-map--settings-default-pitch-value', Math.round(mapProperties.pitch))
     e.setAttribute('data-map--settings-default-zoom-value', parseFloat(mapProperties.zoom || mapProperties.default_zoom).toFixed(2))
     e.setAttribute('data-map--settings-default-bearing-value', Math.round(mapProperties.bearing))

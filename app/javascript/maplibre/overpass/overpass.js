@@ -3,6 +3,7 @@ import { applyOverpassQueryStyle } from 'maplibre/overpass/queries'
 import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
 import { initLayersModal } from 'maplibre/controls/shared'
+import { status } from '../../helpers/status'
 
 export function initializeOverpassLayers(id = null) {
   let initLayers = layers.filter(l => l.type === 'overpass')
@@ -65,6 +66,7 @@ export function loadOverpassLayer(id) {
   })
   .catch(error => {
     console.error('Failed to fetch overpass for ' + layer.id, error)
+    status('Failed to load layer ' + layer.name, 'error')
   })
 }
 
@@ -80,17 +82,21 @@ function replaceBboxWithMapRectangle(query) {
 }
 
 function applyOverpassStyle(geojson, query) {
+  const markerSymbol = getCommentValue(query, 'marker-symbol')
+  const markerImageUrl = getCommentValue(query, 'marker-image-url')
+  const heatmap = query.includes("heatmap=true")
+
   geojson.features.forEach( f => {
     f.properties["label"] = f.properties["name"]
     f.properties["desc"] = overpassDescription(f.properties)
-    if (query.includes("heatmap=true")) { f.properties["heatmap"] = true }
-    if (getCommentValue(query, 'marker-symbol')) {
-      f.properties["marker-symbol"] = getCommentValue(query, 'marker-symbol')
+    if (heatmap) { f.properties["heatmap"] = true }
+    if (markerSymbol) {
+      f.properties["marker-symbol"] = markerSymbol
       f.properties["marker-size"] = "20"
       f.properties["marker-color"] = "transparent"
       f.properties["stroke"] = "transparent"
-    } else if (getCommentValue(query, 'marker-image-url')) {
-      f.properties["marker-image-url"] = getCommentValue(query, 'marker-image-url')
+    } else if (markerImageUrl) {
+      f.properties["marker-image-url"] = markerImageUrl
       f.properties["marker-size"] = "20"
       f.properties["marker-color"] = "transparent"
       f.properties["stroke"] = "transparent"
@@ -127,7 +133,7 @@ function overpassDescription(props) {
 
 function getCommentValue(query, key) {
   // Match lines like: // key=value (with possible spaces)
-  const regex = new RegExp(`^\\s*\\/\\/\\s*${key}\\s*=\\s*(.*)$`, "m")
+  const regex = new RegExp(`^\\s*\\/\\/\\s*${key}\\s*=\\s*(.+)$`, "m")
   const match = query.match(regex)
 
   return match ? match[1].trim() : null
