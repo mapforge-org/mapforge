@@ -77,7 +77,7 @@ describe 'Feature edit' do
 
       it 'shows feature meta data' do
         find('#edit-button-edit').click
-        expect(page).to have_text('27.70 km²')
+        expect(page).to have_text('27.64 km²')
       end
     end
   end
