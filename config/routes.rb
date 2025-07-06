@@ -11,14 +11,8 @@ Rails.application.routes.draw do
 
   # some maplibre styles (openfreemap liberty) try to load eg. ./swimming_pool
   # from local server instead of style host... catching those calls here
-  CATCH_ASSETS = %w[
-    swimming_pool bollard office gate recycling
-    bicycle_parking reservoir sports_centre basin atm lift_gate
-    cycle_barrier running brownfield water_park equestrian theme_park
-    athletics motorcycle_parking yoga table_tennis cycling chess billiards canoe
-    rowing multi hackerspace ferry_terminal
-  ]
-  get "/m/:resource", to: "maps#catchall", constraints: { resource: Regexp.union(CATCH_ASSETS) }
+  get "/m/:resource", to: "maps#catchall", constraints:
+    { resource: Regexp.union(Rails.application.config.x.catch_map_assets) }
 
   scope "/m" do
     get "", to: "maps#index", as: "maps"
@@ -29,8 +23,7 @@ Rails.application.routes.draw do
     get "/:id.geojson" => "maps#show", constraints: { id: ID_PATTERN }, defaults: { format: "geojson" }
     get "/:id.gpx" => "maps#show", constraints: { id: ID_PATTERN }, defaults: { format: "gpx" }
     get "/:id/properties" => "maps#properties", as: :map_properties, constraints: { id: ID_PATTERN }
-    get "/:id/feature/:feature_id" => "maps#feature", as: :map_feature,
-constraints: { id: ID_PATTERN, feature_id: ID_PATTERN }
+    get "/:id/feature/:feature_id" => "maps#feature", as: :map_feature, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN }
     get "/:id" => "maps#show", as: :map, format: :html, constraints: { id: ID_PATTERN }
 
     post "" => "maps#create", as: :create_map

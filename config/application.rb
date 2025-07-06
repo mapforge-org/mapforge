@@ -51,3 +51,23 @@ module Mapforge
     config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
   end
 end
+
+# Do not log calls to some endpoints
+class RequestSilencer
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    paths = Rails.application.config.x.catch_map_assets.map { |a| "/m/#{a}" }
+    if paths.include? env["PATH_INFO"]
+      Rails.logger.silence do
+        @app.call(env)
+      end
+    else
+      @app.call(env)
+    end
+  end
+end
+
+Rails.application.config.middleware.insert_before Rails::Rack::Logger, RequestSilencer
