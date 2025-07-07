@@ -10,17 +10,18 @@ Rails.application.configure do
     policy.font_src    :self, :https, :data
     policy.img_src     :self, :https, :data
     policy.object_src  :none
-    policy.script_src  :self, :https, :blob
+    # TODO: It seems not possible yet to use Turbo and csp without :unsafe_inline, :unsafe_eval
+    policy.script_src  :self, :https, :blob, :unsafe_inline, :unsafe_eval
     policy.worker_src  :self, :https, :blob
-    policy.style_src   :self, :https
+    policy.style_src   :self, :https, :unsafe_inline, :unsafe_eval
     # Specify URI for violation reports
     policy.report_uri "/csp-violation-report-endpoint"
   end
 
   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
-  config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-  config.content_security_policy_nonce_directives = %w[script-src style-src]
+  # config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
+  # config.content_security_policy_nonce_directives = %w[script-src style-src]
 
   # Report violations without enforcing the policy.
-  config.content_security_policy_report_only = true
+  config.content_security_policy_report_only = false
 end

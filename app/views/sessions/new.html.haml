@@ -16,13 +16,13 @@
             and&nbsp;
             %a{ href: "https://github.com/digitaltom/mapforge/blob/main/docs/terms.md" }>Terms of service
             = '.'
-          - if ENV["GITHUB_CLIENT_ID"] && ENV["GITHUB_CLIENT_SECRET"]
+          - if ENV["GITHUB_CLIENT_ID"].present? && ENV["GITHUB_CLIENT_SECRET"].present?
             = form_tag('/auth/github', method: 'post', data: {turbo: false}) do
               = button_tag class: 'btn w-100 btn-secondary btn-green btn-social btn-github mb-2' do
                 %i.bi.bi-github.me-1
                 Login with Github
 
-          - if ENV["GOOGLE_CLIENT_ID"] && ENV["GOOGLE_CLIENT_SECRET"]
+          - if ENV["GOOGLE_CLIENT_ID"].present? && ENV["GOOGLE_CLIENT_SECRET"].present?
             = form_tag('/auth/google_oauth2', method: 'post', data: {turbo: false}) do
               = button_tag class: 'btn w-100 btn-secondary btn-green btn-social btn-google mb-2' do
                 %i.bi.bi-google.me-1
