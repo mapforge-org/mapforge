@@ -18,7 +18,7 @@ describe 'Map List' do
     sleep(1) # make sure websocket is connected
     new_map = create(:map, name: 'broadcast', view_permission: 'listed')
 
-    expect(page).to have_selector(:xpath, "//a[@href='/m/#{new_map.public_id}']")
+    expect(page).to have_selector(:xpath, "//a[@href='/m/#{new_map.public_id}/broadcast']")
   end
 
   context 'for user (/my)' do
