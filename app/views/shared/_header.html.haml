@@ -2,32 +2,76 @@
   .container-fluid
     %a.navbar-brand{href: '/'}
       %img.mapforge-logo{ src: "/icons/mapforge-logo-header_white.png", alt: "Logo" }
-      .mapforge-font.white-shadow{ href: "#" } Mapforge
+      .mapforge-font.white-shadow.d-none.d-sm-block{ href: "#" } Mapforge
 
     %button.navbar-toggler{ type: "button", "data-bs-toggle": "collapse", "data-bs-target": "#navbarSupportedContent", "aria-controls": "navbarSupportedContent", "aria-expanded": "false", "aria-label": "Toggle navigation" }
       %span.navbar-toggler-icon
 
-    #navbarSupportedContent.collapse.navbar-collapse
+    - # Desktop (>=sm, 574px)
+    #navbarSupportedContent.collapse.navbar-collapse.d-none.d-sm-block
       %ul.navbar-nav.me-auto.mb-0.mt-1
         - if menu
           %li.nav-item
             %a.nav-link{ "aria-current": "page", href: maps_path }
-              Explore
+              Browse Maps
 
       - if create_button
         = link_to create_map_path, { class: 'me-4 btn btn-orange btn-create-map', data: { turbo_method: :post } } do
           %i.bi.bi-plus-square
           Create map
 
+    - # Mobile (<sm, 574px)
+    #navbarSupportedContent.collapse.navbar-collapse
+      %ul.navbar-nav.me-auto.mb-0.mt-1.d-sm-none
+        - if menu
+          %li.nav-item
+            = link_to maps_path, { class: 'mb-2 btn btn-green w-100' } do
+              %i.bi.bi-map
+              Browse Maps
+          
+          - if @user
+            %li.nav-item
+              = link_to my_path, { class: 'mb-2 btn btn-green w-100' } do
+                %i.bi.bi-map
+                = "Your maps (#{@user.maps_count})"
+
+          - if @user&.admin?
+            %li.nav-item
+              = link_to admin_path, { class: 'mb-2 btn btn-green w-100' } do
+                %i.bi.bi-person-workspace
+                Admin
+
+
+        - if create_button
+          %li.nav-item
+            = link_to create_map_path, { class: 'mb-2 btn btn-orange btn-create-map w-100', data: { turbo_method: :post } } do
+              %i.bi.bi-plus-square
+              Create map
+
+        - if @user  
+          %li.nav-item
+            = link_to logout_path, { class: 'mb-2 btn btn-green btn-create-map w-100', data: { turbo: false } } do
+              %i.bi.bi-box-arrow-in-left
+              Logout
+
+
     - if @user
       .dropdown.profile-dropdown
 
-        %a.dropdown-toggle{ href: "#", id: "navbarDropdown", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false" }<
+        - # Mobile (<sm, 574px)
+        %a.d-sm-none{ type: "button", "data-bs-toggle": "collapse", "data-bs-target": "#navbarSupportedContent", "aria-controls": "navbarSupportedContent", "aria-expanded": "false", "aria-label": "Toggle navigation" }
           - if @user.image
             %img.profile-image{ src: @user.image, alt: '', title: @user.email }
           - else
             %i.profile-image.fs-4.bi.bi-person-circle
-        %ul.dropdown-menu{ "aria-labelledby": "navbarDropdown" }
+        
+        - # Desktop (>=sm, 574px)
+        %a.d-none.d-sm-block.dropdown-toggle{ href: "#", id: "navbarDropdown", role: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false" }<
+          - if @user.image
+            %img.profile-image{ src: @user.image, alt: '', title: @user.email }
+          - else
+            %i.profile-image.fs-4.bi.bi-person-circle
+        %ul.dropdown-menu.desktop{ "aria-labelledby": "navbarDropdown" }
           - if @user.admin?
             %li
               %a.dropdown-item{ href: "/admin" }

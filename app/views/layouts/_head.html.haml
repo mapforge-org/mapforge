@@ -45,7 +45,7 @@
   = javascript_include_tag "swiper-bundle.min.js"
   / Stats
   - if ENV['UMAMI_SCRIPT'].present? && ENV['UMAMI_SITE'].present?
-    = javascript_include_tag ENV['UMAMI_SCRIPT'], data: { website_id: ENV['UMAMI_SITE'], exclude_hash: true, exclude_search: true }, defer: true, integrity: ENV['UMAMI_INTEGRITY'], crossorigin: "anonymous"
+    = javascript_include_tag ENV['UMAMI_SCRIPT'], data: { website_id: ENV['UMAMI_SITE'], exclude_hash: true, exclude_search: true, do_not_track: true }, defer: true, integrity: ENV['UMAMI_INTEGRITY'], crossorigin: "anonymous"
 
   / dynamic head content
   = yield(:head)

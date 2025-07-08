@@ -1,6 +1,6 @@
 - content_for :title, "Mapforge: My maps"
 
-#maps.flex-container
+#maps.flex-container.flex-center
   - @maps.each do |map|
     = render map, rw: true, last_change: false, avatar: false, delete: true
 

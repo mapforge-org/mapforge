@@ -14,7 +14,7 @@
   border-style: solid;
   border-color: var(--color-light-sand);
   min-width: 15em;
-  max-width: 35em;
+  max-width: 25em;
   text-align: center;
 
   a {
@@ -32,6 +32,7 @@
 
 .preview-image {
   width: 100%;
+  min-height: 11em;
   filter: brightness(0.9);
   transition:
     filter 0.2s linear

@@ -5,6 +5,7 @@
   }
 
 .btn-green {
+  --text-color: #fff;
   --bs-btn-color: #fff;
   --bs-btn-bg: var(--color-dark-moss-green);
   --bs-btn-border-color: #6c757d;

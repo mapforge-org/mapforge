@@ -4,6 +4,9 @@ Mapforge supports adding layers defined by Overpass queries.
 There are a couple of pre-defined queries available to add to your map, 
 or you can define a custom query. 
 
+Read more about the Overpass Query Language here: 
+https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL
+
 The look of query results can be customized by adding one or more of these 
 settings as comments to the query: 
 

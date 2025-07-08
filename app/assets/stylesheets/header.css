@@ -91,6 +91,8 @@
 }
 
 /* make max space on small screen < sm */
+
+/* Show burger menu and dropdown for nav items */
 @media (width <= 574px) {
   .navbar .container-fluid {
     padding-left: 0;
@@ -102,9 +104,5 @@
 
   .navbar-collapse.collapsing, .navbar-collapse.show {
     margin-left: 0.8em;
-  }
-
-  .navbar-brand .mapforge-font {
-    display: none;
   }
 }
