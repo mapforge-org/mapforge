@@ -3,7 +3,7 @@ html:has(.map), body:has(.map) {
   overflow: hidden;
 }
 
-#map-header {
+nav {
   display: none;
 }
 
