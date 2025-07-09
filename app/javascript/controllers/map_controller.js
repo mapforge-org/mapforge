@@ -6,7 +6,7 @@ import { initializeSocket } from 'channels/map_channel'
 
 export default class extends Controller {
   connect () {
-    functions.e('nav', e => { e.style.display = 'none' })
+    functions.e('#map-header nav', e => { e.style.display = 'none' })
     initializeMap('maplibre-map')
     // static mode is used for screenshots + frontpage
     if (window.gon.map_mode === 'static') {

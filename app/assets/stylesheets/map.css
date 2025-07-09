@@ -1,10 +1,10 @@
 /* this avoids mobile to scroll vertically out the location bar */
 html:has(.map), body:has(.map) {
   overflow: hidden;
-}
 
-nav {
-  display: none;
+  #map-header nav {
+    display: none;
+  }
 }
 
 #map-head {
@@ -21,8 +21,10 @@ nav {
   cursor: pointer;
   background: #fffa;
   border-radius: 3px;
-  box-shadow: 0 0 0 2px #BBB;
-  margin-top: 0.2em;
+  box-shadow: 0 0 0 1.5px #BBB;
+  margin-top: 0.75em;
+
+  --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 #map-title {
@@ -73,7 +75,7 @@ nav {
 }
 
 #map-nav-toggle {
-  font-size: 1.3em;
+  font-size: 0.8em;
   cursor: pointer;
 }
 

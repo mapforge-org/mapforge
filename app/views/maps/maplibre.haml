@@ -25,11 +25,11 @@
 #preloader
   %img.mapforge-logo{ src: "/icons/mapforge-logo-header_white.png", alt: "Logo" }
 
-#map-head.dark-shadow{ title: "Toggle Navigation", data: { 'controller': "map header", 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom", 'bs-custom-class': 'maplibregl-ctrl-tooltip' } }
+%nav#map-head.dark-shadow{ title: "Toggle Navigation", data: { 'controller': "map header", 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom", 'bs-custom-class': 'maplibregl-ctrl-tooltip' } }
   #map-nav-toggle.navbar-toggler-icon.ms-2.me-2
   #map-title
 
-#maplibre-map.map{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
+#maplibre-map.map{ data: { 'controller': "header", 'action': "click->header#hideNav" } }
 
 - unless @map_mode == 'static'
   = render 'status'

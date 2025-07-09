@@ -7,12 +7,12 @@ export default class extends Controller {
   }
 
   hideNavBar (_event) {
-    functions.e('nav', e => { e.style.display = 'none' })
+    functions.e('#map-header nav', e => { e.style.display = 'none' })
   }
 
   showNavBar (_event) {
     resetControls()
-    functions.e('nav', e => { e.style.display = 'block' })
+    functions.e('#map-header nav', e => { e.style.display = 'block' })
   }  
 
   hideNavDropdown (event) {
@@ -37,8 +37,12 @@ export default class extends Controller {
       this.showNavBar(event)
       this.showNavDropdown(event)
     } else {
-      if (document.querySelector('.map')) { let controller = this; setTimeout(function () { controller.hideNavBar(event) }, 300) }
-      this.hideNavDropdown(event)
+      this.hideNav (event)
     }
   }
+
+  hideNav (_event) {
+    if (document.querySelector('.map')) { let controller = this; setTimeout(function () { controller.hideNavBar(event) }, 300) }
+    this.hideNavDropdown(event)
+  }  
 }
