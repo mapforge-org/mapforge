@@ -1,8 +1,8 @@
-- content_for :title, "Mapforge: Explore maps"
+- content_for :title, "Mapforge: Browse maps"
 
 = turbo_stream_from "public_maps_list"
 
-#maps.flex-container.flex-center
+#maps.flex-container.flex-center{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
   - @maps.each do |map|
     = render map, rw: false, last_change: false, avatar: false, delete: false
 

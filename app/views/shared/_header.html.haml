@@ -4,11 +4,11 @@
       %img.mapforge-logo{ src: "/icons/mapforge-logo-header_white.png", alt: "Logo" }
       .mapforge-font.white-shadow.d-none.d-sm-block{ href: "#" } Mapforge
 
-    %button.navbar-toggler{ type: "button", "data-bs-toggle": "collapse", "data-bs-target": "#navbarSupportedContent", "aria-controls": "navbarSupportedContent", "aria-expanded": "false", "aria-label": "Toggle navigation" }
+    %button.navbar-toggler{ data: { 'controller': "header", 'action': "click->header#toggleNav" }, type: "button", "aria-controls": "navbar-dropdown", "aria-expanded": "false", "aria-label": "Toggle navigation" }
       %span.navbar-toggler-icon
 
     - # Desktop (>=sm, 574px)
-    #navbarSupportedContent.collapse.navbar-collapse.d-none.d-sm-block
+    .d-none.d-sm-block
       %ul.navbar-nav.me-auto.mb-0.mt-1
         - if menu
           %li.nav-item
@@ -21,7 +21,7 @@
           Create map
 
     - # Mobile (<sm, 574px)
-    #navbarSupportedContent.collapse.navbar-collapse
+    #navbar-dropdown.collapse.navbar-collapse
       %ul.navbar-nav.me-auto.mb-0.mt-1.d-sm-none
         - if menu
           %li.nav-item
@@ -59,7 +59,7 @@
       .dropdown.profile-dropdown
 
         - # Mobile (<sm, 574px)
-        %a.d-sm-none{ type: "button", "data-bs-toggle": "collapse", "data-bs-target": "#navbarSupportedContent", "aria-controls": "navbarSupportedContent", "aria-expanded": "false", "aria-label": "Toggle navigation" }
+        %a.d-sm-none{ type: "button", "data-bs-toggle": "collapse", "data-bs-target": "#navbar-dropdown", "aria-controls": "navbar-dropdown", "aria-expanded": "false", "aria-label": "Toggle navigation" }
           - if @user.image
             %img.profile-image{ src: @user.image, alt: '', title: @user.email }
           - else
