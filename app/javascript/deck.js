@@ -21,9 +21,9 @@ async function init () {
     container: 'deck-map', // container ID
     // style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
     // style: '/layers/nostreets.json?key=' + window.gon.map_keys.maptiler,
-    style: 'https://api.maptiler.com/maps/dataviz/style.json?key=' + window.gon.map_keys.maptiler,
+    style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json',
     // center: [8.271366455078127, 50.013330503465454],
-    center: mapProperties.center,
+    center: mapProperties.default_center,
     zoom: mapProperties.zoom,
     pitch: 45 // tilt the map
   })
@@ -34,7 +34,7 @@ async function init () {
   // https://deck.gl/docs/api-reference/layers/geojson-layer
   const geojsonLayer = new deck.GeoJsonLayer({
     id: 'geojson',
-    data: '/m/' + window.gon.map_id + '/features',
+    data: '/m/' + window.gon.map_id + '.geojson',
     // Styles
     stroked: true, // Ensure strokes are visible
     filled: true,
