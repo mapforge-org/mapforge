@@ -32,6 +32,7 @@
 #maplibre-map.map{ data: { 'controller': "header", 'action': "click->header#hideNav" } }
 
 - unless @map_mode == 'static'
+  = render 'layer_loading'
   = render 'status'
   = render 'maps/modals/settings' if @map_mode == 'rw'
   = render 'maps/modals/tour' if @map_mode == 'rw'

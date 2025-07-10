@@ -44,6 +44,25 @@ html:has(.map), body:has(.map) {
     padding: 0;
 }
 
+.layer-popover {
+  position: fixed;
+  top: 3.5em;
+  z-index: 1;
+  left: 50%;
+  transform: translateX(-50%) !important;
+  color: gray;
+  background: #fffd;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1.5px #BBB;
+  padding: 0.1em 0.4em;
+}
+
+#layer-reload {
+  cursor: pointer;
+  color: #000;
+  font-weight: 400;
+}
+
 /* 640 is breakpoint for search form */
 @media (width >= 640px) {
   #map-head {

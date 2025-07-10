@@ -12,5 +12,5 @@ Rails.application.config.x.catch_map_assets = %w[
   bicycle_parking reservoir sports_centre basin atm lift_gate
   cycle_barrier running brownfield water_park equestrian theme_park
   athletics motorcycle_parking yoga table_tennis cycling chess billiards canoe
-  rowing multi hackerspace ferry_terminal
+  rowing multi hackerspace ferry_terminal shooting
 ]

@@ -143,6 +143,11 @@ export default class extends Controller {
     loadOverpassLayer(layerId).then( () => { initLayersModal() })
   }
 
+  refreshOverpassLayers(event) {
+    event.preventDefault()
+    initializeOverpassLayers()
+  }  
+
   toggleLayerList (event) {
     event.preventDefault()
     const list = event.target.closest('div').querySelector('.layer-content')

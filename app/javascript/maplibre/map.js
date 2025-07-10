@@ -15,7 +15,7 @@ import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
 import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
 
 export let map
-export let layers // [{ id:, geojson: { type: 'FeatureCollection', features: [] } }]
+export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
 export let geojsonData //= { type: 'FeatureCollection', features: [] }
 export let mapProperties
 export let lastMousePosition
@@ -147,9 +147,13 @@ export function initializeMap (divId = 'maplibre-map') {
 
   map.on('mousemove', (e) => { lastMousePosition = e.lngLat })
   map.on('touchend', (e) => { lastMousePosition = e.lngLat })
-  map.on('drag', () => { mapInteracted = true })
+  map.on('drag', () => { 
+    mapInteracted = true 
+    if (layers.filter(l => l.type === 'overpass')) { animateElement('#layer-reload', 'fade-in') }
+  })
   map.on('zoom', (_e) => {
     mapInteracted = true
+    if (layers.filter(l => l.type === 'overpass')) { animateElement('#layer-reload', 'fade-in') }
     // block zooming in closer than defined max zoom level
     let bgMap = basemaps()[backgroundMapLayer]
     // TODO: max zoom doesn't work for style urls

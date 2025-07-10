@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   # some maplibre styles (openfreemap liberty) try to load eg. ./swimming_pool
   # from local server instead of style host... catching those calls here
+  # # List defined in initializers/filter_parameter_logging.rb
   get "/m/:resource", to: "maps#catchall", constraints:
     { resource: Regexp.union(Rails.application.config.x.catch_map_assets) }
 

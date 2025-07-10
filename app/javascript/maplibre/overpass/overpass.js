@@ -45,6 +45,8 @@ export function loadOverpassLayer(id) {
   }
   query = replaceBboxWithMapRectangle(query)
   console.log('Loading overpass layer', layer, query)
+  functions.e('#layer-reload', e => { e.classList.add('hidden') })
+  functions.e('#layer-loading', e => { e.classList.remove('hidden') })
 
   return fetch("https://overpass-api.de/api/interpreter",
     {
@@ -62,6 +64,7 @@ export function loadOverpassLayer(id) {
     geojson = applyOverpassStyle(geojson, query)
     layer.geojson = applyOverpassQueryStyle(geojson, layer.name)
     redrawGeojson()
+    functions.e('#layer-loading', e => { e.classList.add('hidden') })
     functions.e('#maplibre-map', e => { e.setAttribute('data-overpass-loaded', true) })
   })
   .catch(error => {

@@ -9,7 +9,8 @@ export default class extends Controller {
 
   hideNavBar (_event) {
     functions.e('#map-header nav', e => { e.style.display = 'none' })
-    animateElement('#map-header nav', 'fade-up')
+    // aos cannot fade elements out
+    // animateElement('#map-header nav', 'fade-up')
   }
 
   showNavBar (_event) {
@@ -44,7 +45,7 @@ export default class extends Controller {
     }
   }
 
-  hideNav (_event) {
+  hideNav (event) {
     if (document.querySelector('.map')) { let controller = this; setTimeout(function () { controller.hideNavBar(event) }, 300) }
     this.hideNavDropdown(event)
   }  
