@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import * as functions from 'helpers/functions'
+import { animateElement  } from 'helpers/dom'
 import { resetControls } from 'maplibre/controls/shared'
 
 export default class extends Controller {
@@ -8,11 +9,13 @@ export default class extends Controller {
 
   hideNavBar (_event) {
     functions.e('#map-header nav', e => { e.style.display = 'none' })
+    animateElement('#map-header nav', 'fade-up')
   }
 
   showNavBar (_event) {
     resetControls()
     functions.e('#map-header nav', e => { e.style.display = 'block' })
+    animateElement('#map-header nav', 'fade-down')
   }  
 
   hideNavDropdown (event) {
