@@ -12,3 +12,7 @@ nav.fixed-top~#docs {
   font-weight: 600;
   font-style: normal;
 }
+
+.markdown-content img {
+  max-width: 100%;
+}
