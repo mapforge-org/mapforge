@@ -4,7 +4,9 @@ class DocsController < ApplicationController
 
   def tutorial
     id = params[:id]
-    file_path = Rails.root.join("docs", "tutorials", "#{id}.md")
+    safe_id = File.basename(id.to_s)               # removes any path components
+    safe_id = safe_id.sub(/\A\/*/, "")
+    file_path = Rails.root.join("docs", "tutorials", "#{safe_id}.md")
     if File.exist?(file_path)
       markdown_text = File.read(file_path)
       renderer = Redcarpet::Render::HTML.new(
