@@ -149,11 +149,11 @@ export function initializeMap (divId = 'maplibre-map') {
   map.on('touchend', (e) => { lastMousePosition = e.lngLat })
   map.on('drag', () => { 
     mapInteracted = true 
-    if (layers.filter(l => l.type === 'overpass')) { animateElement('#layer-reload', 'fade-in') }
+    if (layers.filter(l => l.type === 'overpass').length) { animateElement('#layer-reload', 'fade-in') }
   })
   map.on('zoom', (_e) => {
     mapInteracted = true
-    if (layers.filter(l => l.type === 'overpass')) { animateElement('#layer-reload', 'fade-in') }
+    if (layers.filter(l => l.type === 'overpass').length) { animateElement('#layer-reload', 'fade-in') }
     // block zooming in closer than defined max zoom level
     let bgMap = basemaps()[backgroundMapLayer]
     // TODO: max zoom doesn't work for style urls

@@ -1,4 +1,5 @@
-#maps {
+/* Add margin to body when navbar is fixed */
+nav.fixed-top~#maps {
   margin-top: 4em;
 }
 

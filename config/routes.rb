@@ -35,6 +35,8 @@ Rails.application.routes.draw do
   get "/d/:id" => "maps#show", defaults: { engine: "deck" }, as: :deck, constraints: { id: ID_PATTERN }
 
   get "/admin" => "admin#index"
+  get "/tutorials" => "docs#tutorials", as: :tutorials
+  get "/tutorial/:id" => "docs#tutorial", as: :tutorial
 
   # map icons
   get "/icon/osmc/:osmc_symbol", to: "images#osmc_symbol", as: "osmc"

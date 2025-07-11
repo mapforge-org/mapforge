@@ -1,0 +1,14 @@
+#docs {
+  padding: 2em;
+}
+
+/* Add margin to body when navbar is fixed */
+nav.fixed-top~#docs {
+  margin-top: 4em;
+}
+
+.markdown-content h1 {
+  font-family: Lobster, serif;
+  font-weight: 600;
+  font-style: normal;
+}

@@ -397,6 +397,7 @@ GEM
     rdoc (6.14.1)
       erb
       psych (>= 4.0.0)
+    redcarpet (3.6.1)
     redis (5.4.0)
       redis-client (>= 0.22.0)
     redis-client (0.24.0)
@@ -604,6 +605,7 @@ DEPENDENCIES
   puppeteer-ruby
   rack-cache
   rails
+  redcarpet
   redis (>= 4.0.1)
   rgeo
   rgeo-geojson

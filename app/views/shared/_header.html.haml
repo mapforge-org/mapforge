@@ -1,4 +1,4 @@
-%nav.navbar.navbar-expand-sm.navbar-light.background-bright{class: "#{'fixed-top' if static}"}
+%nav.navbar.navbar-expand-sm.navbar-light.background-bright{class: "#{'fixed-top' if defined?(static) && static}"}
   .container-fluid
     %a.navbar-brand{href: '/'}
       %img.mapforge-logo{ src: "/icons/mapforge-logo-header_white.png", alt: "Logo" }

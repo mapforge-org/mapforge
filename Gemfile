@@ -39,6 +39,7 @@ gem "mini_magick"
 
 gem "amazing_print"
 gem "haml"
+gem "redcarpet" # Markdown parser for docs
 
 # taking screenshots with "rake maps:screenshots"
 gem "capybara"
