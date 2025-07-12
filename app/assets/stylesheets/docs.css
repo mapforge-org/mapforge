@@ -15,4 +15,10 @@ nav.fixed-top~#docs {
 
 .markdown-content img {
   max-width: 100%;
+  width: 640px;
+}
+
+.markdown-content video {
+  max-width: 100%;
+  width: 640px;
 }

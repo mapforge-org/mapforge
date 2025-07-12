@@ -1,5 +1,11 @@
 class DocsController < ApplicationController
   def tutorials
+    @tutorials = Dir.glob(Rails.root.join("docs", "tutorials", "*.md")).map do |file|
+      {
+        id: File.basename(file, ".md"),
+        title: File.basename(file, ".md").humanize
+      }
+    end.sort_by { |t| t[:title] }
   end
 
   def tutorial
@@ -10,7 +16,7 @@ class DocsController < ApplicationController
     if File.exist?(file_path)
       markdown_text = File.read(file_path)
       renderer = Redcarpet::Render::HTML.new(
-        filter_html: true,
+        filter_html: false,
         hard_wrap: true
       )
       markdown = Redcarpet::Markdown.new(renderer, extensions = {})
