@@ -2,6 +2,7 @@
 
   %h1.mapforge-font{ 'data-aos': "fade-down" } Tutorials
 
-  - @tutorials.each do |tutorial|
-    %p
-      =link_to tutorial[:title], tutorial_path(id: tutorial[:id])
+  %h3 
+    =link_to 'Overpass Layers', tutorial_path(id: 'overpass_layers') 
+  %i How to add a 'live layer' with openstreetmap data 
+    
