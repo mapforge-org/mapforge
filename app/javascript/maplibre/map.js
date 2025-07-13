@@ -91,8 +91,8 @@ export function initializeMap (divId = 'maplibre-map') {
   // load geojson data
   map.on('style.load', () => {
     console.log('Basemap style loaded (style.load)')
-    addGeoJSONSource('geojson-source')
-    addGeoJSONSource('km-marker-source')
+    addGeoJSONSource('geojson-source', false)
+    addGeoJSONSource('km-marker-source', false)
     loadLayers()
     demSource.setupMaplibre(maplibregl)
     if (mapProperties.terrain) { addTerrain() }
@@ -171,7 +171,7 @@ export function initializeMap (divId = 'maplibre-map') {
   // })
 }
 
-export function addGeoJSONSource (sourceName, cluster=false ) {
+export function addGeoJSONSource (sourceName, cluster=true ) {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
   // console.log("Adding source: " + sourceName)
   if (map.getSource(sourceName)) { return } // source already exists

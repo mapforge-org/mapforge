@@ -174,6 +174,11 @@ export default class extends Controller {
     initLayersModal()
     document.querySelector('#layer-list-' + layerId + ' .reload-icon').classList.add('layer-refresh-animate')
     initializeOverpassLayers(layerId)
+    // open edit form for new custom queries
+    if (query === '') { 
+      new Promise(resolve => setTimeout(resolve, 50)).then(() => { 
+        document.querySelector('#layer-list-' + layerId + ' button.layer-edit').click() }) 
+      }
   }
 
   deleteOverpassLayer (event) {
