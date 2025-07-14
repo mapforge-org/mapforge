@@ -16,9 +16,11 @@
 
 .navbar-brand {
   font-weight: 600;
-  font-size: 1.5em;
+  font-size: 1.8em;
   display: flex;
   align-items: center;
+  padding-top: unset;
+  padding-bottom: unset;
 }
 
 .btn-orange {

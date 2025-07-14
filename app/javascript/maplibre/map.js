@@ -503,9 +503,9 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
 // - points
 // - text/symbol
 export function sortLayers () {
-  // console.log('Sorting layers')
   const currentStyle = map.getStyle()
   let layers = currentStyle.layers
+  // console.log('Sorting layers', layers)
 
   const mapExtrusions = functions.reduceArray(layers, (e) => e.paint && e.paint['fill-extrusion-height'])
   // increase opacity of 3D houses

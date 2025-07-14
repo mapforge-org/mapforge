@@ -1,4 +1,4 @@
-import { map, layers, redrawGeojson, addGeoJSONSource, viewUnchanged } from 'maplibre/map'
+import { map, layers, redrawGeojson, addGeoJSONSource, viewUnchanged, sortLayers } from 'maplibre/map'
 import { applyOverpassQueryStyle } from 'maplibre/overpass/queries'
 import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
@@ -9,7 +9,9 @@ export function initializeOverpassLayers(id = null) {
   let initLayers = layers.filter(l => l.type === 'overpass')
   if (id) { initLayers = initLayers.filter(l => l.id === id)  }
   initLayers.forEach((layer) => {
-    const clustered = !layer.query.includes("heatmap=true") && !layer.query.includes("cluster=false")
+    const clustered = !layer.query.includes("heatmap=true") && 
+      !layer.query.includes("cluster=false") && 
+      !layer.query.includes("geom") // clustering breaks lines & geometries
     // TODO: changing cluster setup requires a map reload
     addGeoJSONSource('overpass-source-' + layer.id, clustered)
     initializeViewStyles('overpass-source-' + layer.id)
@@ -28,6 +30,7 @@ export function initializeOverpassLayers(id = null) {
       loadOverpassLayer(layer.id).then(() => { if (id) { initLayersModal() } })
     }
   })
+  sortLayers()
 }
 
 export function loadOverpassLayer(id) {

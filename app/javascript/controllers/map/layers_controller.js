@@ -118,9 +118,15 @@ export default class extends Controller {
     contentElement.querySelector('.overpass-edit').classList.toggle('hidden')
     const queryTextarea = contentElement.querySelector('.overpass-query')
     queryTextarea.value = layer.query
-    queryTextarea.style.height = 'auto' // Reset height
-    queryTextarea.style.height = queryTextarea.scrollHeight + 'px' // Set to content height
     contentElement.querySelector('.overpass-name').value = layer.name
+    this.resizeQueryField({ target: queryTextarea })
+  }
+
+  resizeQueryField (event) {
+    console.log('resize')
+    const queryTextarea = event.target
+    queryTextarea.style.height = 'auto' // Reset height
+    queryTextarea.style.height = queryTextarea.scrollHeight + 'px' // Set to content height    
   }
 
   updateOverpassLayer (event) {
