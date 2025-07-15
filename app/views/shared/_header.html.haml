@@ -13,6 +13,7 @@
         - if menu
           %li.nav-item
             %a.nav-link{ "aria-current": "page", href: maps_path }
+              %i.bi.bi-arrow-right-short
               Browse Maps
 
       - if create_button
@@ -26,32 +27,32 @@
         - if menu
           %li.nav-item
             = link_to maps_path, { class: 'mb-2 btn btn-green w-100' } do
-              %i.bi.bi-map
+              %i.bi.bi-map.me-1
               Browse Maps
           
           - if @user
             %li.nav-item
               = link_to my_path, { class: 'mb-2 btn btn-green w-100' } do
-                %i.bi.bi-map
+                %i.bi.bi-map.me-1
                 = "Your maps (#{@user.maps_count})"
 
           - if @user&.admin?
             %li.nav-item
               = link_to admin_path, { class: 'mb-2 btn btn-green w-100' } do
-                %i.bi.bi-person-workspace
+                %i.bi.bi-person-workspace.me-1
                 Admin
 
 
         - if create_button
           %li.nav-item
             = link_to create_map_path, { class: 'mb-2 btn btn-orange btn-create-map w-100', data: { turbo_method: :post } } do
-              %i.bi.bi-plus-square
+              %i.bi.bi-plus-square.me-1
               Create map
 
         - if @user  
           %li.nav-item
             = link_to logout_path, { class: 'mb-2 btn btn-green btn-create-map w-100', data: { turbo: false } } do
-              %i.bi.bi-box-arrow-in-left
+              %i.bi.bi-box-arrow-in-left.me-1
               Logout
 
 

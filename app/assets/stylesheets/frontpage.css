@@ -166,7 +166,7 @@ section,
 }
 
 .welcome-text {
-  padding-right: 2em;
+  font-size: 1.1em;
 }
 
 .hero h1 {
@@ -201,13 +201,7 @@ section,
 
 @media (width <= 640px) {
   .hero h1 {
-    font-size: 28px;
-    line-height: 36px;
-  }
-
-  .hero .btn-get-started,
-  .hero .btn-watch-video {
-    font-size: 13px;
+    font-size: clamp(1.8rem, 10vw, 3rem);
   }
 }
 
@@ -307,7 +301,7 @@ section,
 
 @media (width <= 575px) {
   #features .swiper {
-    margin: 40px 40px 20px;
+    margin: 30px 30px 10px;
   }
 
   #hero .container {
@@ -320,5 +314,9 @@ section,
 
   #features .swiper-button-next {
     right: 0.3em;
+  }
+
+  .item ul {
+    padding-left: 1.2rem;
   }
 }
