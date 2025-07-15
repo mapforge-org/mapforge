@@ -1,10 +1,29 @@
 #docs {
-  padding: 2em;
+  padding: 1.5em;
 }
 
 /* Add margin to body when navbar is fixed */
 nav.fixed-top~#docs {
   margin-top: 4em;
+}
+
+.markdown-content {
+  font-size: 1.1em;
+
+  h1, h2, h3, h4 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  
+  h2, h3, h4 {
+    margin-top: 1em; 
+  }  
+
+  code {
+    color: var(--color-light-sand);
+    background: var(--color-mid-steel-blue);
+    padding: 0.15em; 
+  }
 }
 
 .markdown-content h1 {
@@ -15,4 +34,10 @@ nav.fixed-top~#docs {
 
 .markdown-content img {
   max-width: 100%;
+  width: 640px;
+}
+
+.markdown-content video {
+  max-width: 100%;
+  width: 640px;
 }

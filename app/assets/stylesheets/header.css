@@ -15,10 +15,18 @@
 }
 
 .navbar-brand {
-  font-weight: 600;
-  font-size: 1.5em;
   display: flex;
   align-items: center;
+  padding-top: unset;
+  padding-bottom: unset;
+
+  .mapforge-font {
+    font-size: 1.6em;
+  }
+}
+
+#navbar-dropdown .btn {
+  --bs-btn-font-size: 1.1em;
 }
 
 .btn-orange {
@@ -53,7 +61,7 @@
 .navbar-toggler {
   position: absolute;
   right: calc(50% - 27px);
-  top: 0.7em;
+  top: 0.4em;
   border-width: 0 !important;
 }
 
@@ -78,6 +86,8 @@
   overflow: hidden;
   width: 35px;
   height: 35px;
+  border: 1px solid white;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
 }
 
 .dropdown-menu[data-bs-popper] {
@@ -94,6 +104,10 @@
 
 /* Show burger menu and dropdown for nav items */
 @media (width <= 574px) {
+  .profile-dropdown {
+      top: 0.6em;
+  }
+
   .navbar .container-fluid {
     padding-left: 0;
   }
@@ -104,5 +118,6 @@
 
   .navbar-collapse.collapsing, .navbar-collapse.show {
     margin-left: 0.8em;
+    margin-top: 0.8em;
   }
 }

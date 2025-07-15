@@ -1,8 +1,8 @@
-  .btn {
-    a, .link, a:hover, a:active, .link:hover, .link:active {
-      color: unset;
-    }
+.btn {
+  a, .link, a:hover, a:active, .link:hover, .link:active {
+    color: unset;
   }
+}
 
 .btn-green {
   --text-color: #fff;
