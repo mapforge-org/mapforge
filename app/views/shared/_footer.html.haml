@@ -1,56 +1,55 @@
 %footer#footer.footer.light-background{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
-  .footer-top
-    .container
-      .row.gy-4
-        - # empty block on the left on lg screen
-        - # screen < sm, contact moves below links
-        .col-lg-5.col-0.footer-about.d-none.d-lg-block
+  .container
+    .row.gy-4
+      - # empty block on the left on lg screen
+      - # screen < sm, contact moves below links
+      .col-lg-5.col-0.footer-about.d-none.d-lg-block
 
-        .col-lg-2.col-sm-4.col-6.footer-links.footer-links-left.mb-sm-2
-          %h3.mapforge-font.white-shadow Docs
+      .col-lg-2.col-sm-4.col-6.footer-links.footer-links-left.mb-sm-2
+        %h3.mapforge-font.white-shadow Docs
+        %ul
+          %li
+            %a{ href: tutorials_path }
+              %i.bi.bi-file-text.me-1>
+              Tutorials
+          %li
+            %a{ href: "https://github.com/mapforge-org/mapforge/blob/main/docs/geojson.md" }
+              %i.bi.bi-file-text.me-1>
+              Style spec
+          %li
+            %a{ href: "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md" }
+              %i.bi.bi-file-text.me-1>
+              µlogger API
+      .col-lg-2.col-sm-4.col-6.footer-links
+        %h3.mapforge-font.white-shadow Project
+        %ul
+          %li
+            %a{ href: "https://github.com/mapforge-org/mapforge/" }
+              %i.bi.bi-github.me-1>
+              Github
+          %li
+            %a{ href: "https://github.com/mapforge-org/mapforge/blob/main/CHANGELOG.md" }
+              %i.bi.bi-file-text.me-1>
+              Changelog                
+          %li
+            %a{ href: "https://github.com/mapforge-org/mapforge/issues/new" }
+              %i.bi.bi-github.me-1>
+              Report issue
+      .col-lg-3.col-sm-4.mx-auto.footer-links.footer-links-about.text-center.text-sm-start.text-md-start.mb-2
+        %div
+          %h3.mapforge-font.white-shadow About
           %ul
             %li
-              %a{ href: tutorials_path }
+              .text-nowrap
+                %strong
+                  %i.bi.bi-envelope.me-1
+                %span mapforge@digitalflow.de
+            %li
+              %a{ href: "https://github.com/digitaltom/mapforge/blob/main/docs/terms.md" }
                 %i.bi.bi-file-text.me-1>
-                Tutorials
+                Terms of Use
             %li
-              %a{ href: "https://github.com/mapforge-org/mapforge/blob/main/docs/geojson.md" }
+              %a{ href: "https://github.com/digitaltom/mapforge/blob/main/docs/privacy.md" }
                 %i.bi.bi-file-text.me-1>
-                Style spec
-            %li
-              %a{ href: "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md" }
-                %i.bi.bi-file-text.me-1>
-                µlogger API
-        .col-lg-2.col-sm-4.col-6.footer-links
-          %h3.mapforge-font.white-shadow Project
-          %ul
-            %li
-              %a{ href: "https://github.com/mapforge-org/mapforge/" }
-                %i.bi.bi-github.me-1>
-                Github
-            %li
-              %a{ href: "https://github.com/mapforge-org/mapforge/blob/main/CHANGELOG.md" }
-                %i.bi.bi-file-text.me-1>
-                Changelog                
-            %li
-              %a{ href: "https://github.com/mapforge-org/mapforge/issues/new" }
-                %i.bi.bi-github.me-1>
-                Report issue
-        .col-lg-3.col-sm-4.mx-auto.footer-links.footer-links-about.text-center.text-sm-start.text-md-start.mb-2
-          %div
-            %h3.mapforge-font.white-shadow About
-            %ul
-              %li
-                .text-nowrap
-                  %strong
-                    %i.bi.bi-envelope.me-1
-                  %span mapforge@digitalflow.de
-              %li
-                %a{ href: "https://github.com/digitaltom/mapforge/blob/main/docs/terms.md" }
-                  %i.bi.bi-file-text.me-1>
-                  Terms of Use
-              %li
-                %a{ href: "https://github.com/digitaltom/mapforge/blob/main/docs/privacy.md" }
-                  %i.bi.bi-file-text.me-1>
-                  Privacy Policy
+                Privacy Policy
 

@@ -66,7 +66,7 @@ export const queries = [
     }
   },
   { name: 'Bicycle routes',
-    query: "relation[type=route][route=bicycle];out geom 75;",
+    query: "relation[type=route][route=bicycle];out geom 50;",
   },
   { name: 'Camping',
     query: '// marker-symbol=🏕️\n' + 

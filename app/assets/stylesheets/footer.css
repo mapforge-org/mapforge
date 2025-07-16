@@ -1,11 +1,8 @@
 .footer {
   color: var(--text-color);
   background-color: var(--background-color);
-  font-size: 14px;
+  font-size: 1em;
   position: relative;
-}
-
-.footer .footer-top {
   padding-top: 20px;
 }
 
