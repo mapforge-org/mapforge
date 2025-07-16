@@ -16,7 +16,7 @@ GeoJSON layers can get styled to your needs using an extended version of the [ge
 
 [Overpass](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) layers can get added to the map, allowing for custom queries and display 
 of all possible OpenStreetMap nodes. Read more about that in the [overpass doc](docs/overpass.md).
-
+ 
 ## Development Setup
  
 ### Install dependencies:
