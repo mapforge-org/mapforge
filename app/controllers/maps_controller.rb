@@ -119,12 +119,12 @@ class MapsController < ApplicationController
   def set_map_ro
     @map = Map.includes(:user, layers: :features)
     @map = @map.find_by(public_id: params[:id]) || @map.find_by(id: params[:id])
-    head :not_found unless @map
+    render_not_found unless @map
   end
 
   def set_map_rw
     @map = Map.includes(:user, layers: :features).find_by(id: params[:id])
-    head :not_found unless @map
+    render_not_found unless @map
   end
 
   # Only allow a list of trusted parameters through.

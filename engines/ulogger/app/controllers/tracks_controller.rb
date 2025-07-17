@@ -1,6 +1,7 @@
 class TracksController < ApplicationController
   def redirect
-    if params[:id]
+    redirect_to root_path and return if params[:id].blank?
+    if params[:id].present?
       padded = "%024d" % [ params[:id] ]
       map = Map.find(padded)
       if map
@@ -13,7 +14,7 @@ class TracksController < ApplicationController
         end
       else
         Rails.logger.warn("Ulogger map '#{params[:id]}' not found")
-        render status: :not_found
+        render_not_found
       end
     end
   end
