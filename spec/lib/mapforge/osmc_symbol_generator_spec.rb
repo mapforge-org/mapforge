@@ -29,5 +29,9 @@ RSpec.describe Mapforge::OsmcSymbolGenerator do
         described_class.generate('blue:circle:invalid/dot:1:white')
       }.to raise_error(ActionController::BadRequest, /Invalid foreground filename/)
     end
+
+    it 'skips foreground when empty' do
+      expect(described_class.generate('blue:blue::1:white')).to be_a(MiniMagick::Image)
+    end
   end
 end
