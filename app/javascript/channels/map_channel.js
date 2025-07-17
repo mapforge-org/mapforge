@@ -54,7 +54,7 @@ export function initializeSocket () {
       channelStatus = 'off'
       disableEditControls()
       // show error with delay to avoid showing it on unload/refresh
-      setTimeout(function () { status('Connection to server lost', 'error', 'medium', 60 * 60 * 1000) }, 1000)
+      setTimeout(function () { status('Connection to server lost', 'error', 'medium', 60 * 60 * 1000) }, 2000)
     },
 
     received (data) {

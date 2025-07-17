@@ -211,6 +211,7 @@ section,
 
 #features {
   border-top: 2px solid var(--color-light-sand);
+  font-size: 1.1em;
 }
 
 #features .img-bg {

@@ -2,6 +2,8 @@ require "mini_magick"
 
 module Mapforge
   class OsmcSymbolGenerator
+    # convert osmc symbol code to image
+    # https://wiki.openstreetmap.org/wiki/Key:osmc:symbol?uselang=en
     def self.generate(osmc_symbol)
       _waycolor, background, foreground, text, textcolor = osmc_symbol.split(":")
 
@@ -24,6 +26,10 @@ module Mapforge
           c.compose "Over"
           c.gravity "center"
         end
+      elsif foreground.present?
+        # shift values when there is no foreground image
+        textcolor = text
+        text = foreground
       end
 
       if text && !text.blank? && text.size <= 4
