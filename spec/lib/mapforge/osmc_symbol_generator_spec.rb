@@ -33,5 +33,9 @@ RSpec.describe Mapforge::OsmcSymbolGenerator do
     it 'skips foreground when empty' do
       expect(described_class.generate('blue:blue::1:white')).to be_a(MiniMagick::Image)
     end
+
+    it 'skips foreground when not present' do
+      expect(described_class.generate('blue:blue:1:white')).to be_a(MiniMagick::Image)
+    end
   end
 end
