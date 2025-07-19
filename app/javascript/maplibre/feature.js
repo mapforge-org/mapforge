@@ -212,26 +212,26 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
   }
 }
 
-function makePointsLayer(divisor, minzoom) {
+function makePointsLayer(divisor, minzoom, maxzoom = 24) {
   const base = { ...styles()['points-layer'] }
   return {
     ...base,
     id: `km-marker-points-${divisor}`,
     source: 'km-marker-source',
-    filter: ["any", ["==", ["%", ["get", "km"], divisor], 0], 
-                    ["==", ["get", "km-marker-numbers-end"], 1]],
-    minzoom
+    filter: ["==", ["%", ["get", "km"], divisor], 0],
+    minzoom,
+    maxzoom
   }
 }
 
-function makeNumbersLayer(divisor, minzoom) {
+function makeNumbersLayer(divisor, minzoom, maxzoom=24) {
   return {
     id: `km-marker-numbers-${divisor}`,
     type: 'symbol',
     source: 'km-marker-source',
-    filter: ["any", ["==", ["%", ["get", "km"], divisor], 0],
-                    ["==", ["get", "km-marker-numbers-end"], 1]],
+    filter: ["==", ["%", ["get", "km"], divisor], 0],
     minzoom,
+    maxzoom,
     layout: {
       'text-allow-overlap': true,
       'text-field': ['get', 'km'],
@@ -249,20 +249,49 @@ function makeNumbersLayer(divisor, minzoom) {
 export function kmMarkerStyles () {
   let layers = []
 
-  layers.push(makePointsLayer(5, 10))
-  layers.push(makeNumbersLayer(5, 10))
+  // start + end 
+  const base = { ...styles()['points-layer'] }
+  layers.push( {
+    ...base,
+    id: `km-marker-points-end`,
+      source: 'km-marker-source',
+        filter: ["==", ["get", "km-marker-numbers-end"], 1]
+  })
+  layers.push({
+      id: `km-marker-numbers-end`,
+      type: 'symbol',
+      source: 'km-marker-source',
+      filter: ["==", ["get", "km-marker-numbers-end"], 1],
+      layout: {
+        'text-allow-overlap': true,
+        'text-field': ['get', 'km'],
+        'text-size': 12,
+        'text-font': labelFont,
+        'text-justify': 'center',
+        'text-anchor': 'center'
+      },
+      paint: {
+        'text-color': '#ffffff'
+      }
+    })
 
-  layers.push(makePointsLayer(10, 9))
-  layers.push(makeNumbersLayer(10, 9))
+  layers.push(makePointsLayer(2, 11))
+  layers.push(makeNumbersLayer(2, 11))
 
-  layers.push(makePointsLayer(25, 8))
-  layers.push(makeNumbersLayer(25, 8))
+  layers.push(makePointsLayer(5, 10, 11))
+  layers.push(makeNumbersLayer(5, 10, 11))
 
-  layers.push(makePointsLayer(50, 7))
-  layers.push(makeNumbersLayer(50, 7))
+  layers.push(makePointsLayer(10, 9, 10))
+  layers.push(makeNumbersLayer(10, 9, 10))
 
-  layers.push(makePointsLayer(100, 6))
-  layers.push(makeNumbersLayer(100, 6))
+  layers.push(makePointsLayer(25, 8, 9))
+  layers.push(makeNumbersLayer(25, 8, 9))
+
+  layers.push(makePointsLayer(50, 7, 8))
+  layers.push(makeNumbersLayer(50, 7, 8))
+
+  layers.push(makePointsLayer(100, 5, 7))
+  layers.push(makeNumbersLayer(100, 5, 7))
   return layers
 }
 
@@ -279,7 +308,7 @@ export function renderKmMarkers () {
     const line = turf.lineString(f.geometry.coordinates)
     const length = turf.length(line, { units: 'kilometers' })
     // Create markers at useful intervals
-    let interval = 5
+    let interval = 1
 
     for (let i = interval; i < Math.ceil(length) + interval; i += interval) {
       // Get point at current kilometer
