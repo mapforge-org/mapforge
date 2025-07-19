@@ -22,8 +22,7 @@ There are prepared queries to cover common mapping needs for example for public 
 Overpass queries are defined in [Overpass QL](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) (short for "Overpass Query Language"). 
 This powerful language lets you query any data available in OpenStreetMap. You can browse the [official tags list](https://wiki.openstreetmap.org/wiki/Map_features), [taginfo.openstreetmap.org](https://taginfo.openstreetmap.org/), or the 'Query Features' option on [openstreetmap.org](https://openstreetmap.org) to discover interesting tags to create queries for and include in your map. 
 
-You can enhance your layers with visual customization, for example setting symbols or icons for clusters and markers. This can be achieved by adding one or more of these 
-settings as comments to the query:
+You can enhance your layers with visual customization, for example setting symbols or icons for clusters and markers. This can be achieved by adding one or more of these settings as comments to the query:
 
 `// heatmap=true` - Results will be rendered as a heat map (default=false)
 `// marker-symbol=🍻` - Nodes/points will use this symbol (emoji)
