@@ -5,9 +5,11 @@
 
 = javascript_include_tag "osmtogeojson.js"
 
-- # https://github.com/Ionaru/easy-markdown-editor
-= javascript_include_tag "https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"
-
+- if @map_mode == 'rw'
+  - # https://github.com/Ionaru/easy-markdown-editor
+  = javascript_include_tag "https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js", async: true
+  = stylesheet_link_tag "https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css"
+  
 - content_for :title, "Mapforge: #{(@map.name.presence || @map.id)}"
 - content_for :head do
   - # Open Graph protocol https://ogp.me/

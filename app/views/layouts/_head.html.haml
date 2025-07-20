@@ -41,8 +41,6 @@
 
   / Bootstrap
   = javascript_include_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js", integrity: "sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz", crossorigin: "anonymous"
-  / https://swiperjs.com/
-  = javascript_include_tag "swiper-bundle.min.js"
   / Stats
   - if ENV['UMAMI_SCRIPT'].present? && ENV['UMAMI_SITE'].present?
     = javascript_include_tag ENV['UMAMI_SCRIPT'], data: { website_id: ENV['UMAMI_SITE'], exclude_hash: true, exclude_search: true, do_not_track: true }, defer: true, integrity: ENV['UMAMI_INTEGRITY'], crossorigin: "anonymous"
