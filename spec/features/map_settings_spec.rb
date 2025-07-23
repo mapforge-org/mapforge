@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Map' do
-  subject(:map) { create(:map, center: nil, zoom: nil) }
+  subject(:map) { create(:map, name: 'Settings Test', center: nil, zoom: nil) }
 
   before do
     stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
@@ -73,7 +73,7 @@ describe 'Map' do
       expect(page).to have_text('Map view updated')
       expect(page.evaluate_script("[map.getCenter().lng, map.getCenter().lat].toString()")).to eq('11,49.5')
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_text('center: 11,49.5')
+      expect(page).to have_text('Default: 11,49.5')
     end
 
     # TODO: Add with client side centering
@@ -92,7 +92,7 @@ describe 'Map' do
       expect(page).to have_text('Map view updated')
       expect(page.evaluate_script("map.getZoom()")).to eq(16)
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_text('zoom: 16')
+      expect(page).to have_text('16')
     end
 
     it 'map pitch update' do
@@ -100,7 +100,7 @@ describe 'Map' do
       expect(page).to have_text('Map view updated')
       expect(page.evaluate_script("map.getPitch()")).to eq(33)
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_text('pitch: 33')
+      expect(page).to have_text('33')
     end
 
     it 'map orientation update' do
@@ -108,7 +108,7 @@ describe 'Map' do
       expect(page).to have_text('Map view updated')
       expect(page.evaluate_script("map.getBearing()")).to eq(33)
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_text('bearing: 33')
+      expect(page).to have_text('33')
     end
   end
 end

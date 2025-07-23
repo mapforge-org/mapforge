@@ -15,8 +15,8 @@ export default class extends Controller {
     const file = fileInput.files[0]
     const fileSize = (file.size / 1024).toFixed(2)
 
-    if (fileSize > 800) {
-      status('File exceeds 800Kb', 'error')
+    if (fileSize > 1500) {
+      status('File exceeds 1.5MB', 'error')
       return
     }
 
