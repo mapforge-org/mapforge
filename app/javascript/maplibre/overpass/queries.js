@@ -16,8 +16,8 @@ export const queries = [
   },
   // Brewery restaurants are tagged with microbrewery=yes (https://wiki.openstreetmap.org/wiki/Brewery)
   { name: 'Breweries',
-    query: '// cluster=true\n' + 
-      '// cluster-symbol=🍻\n(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];nwr["industrial"="brewery"];);out center 250;',
+    query: '// cluster-symbol=🍻\n' + 
+           '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];nwr["industrial"="brewery"];);out center 250;',
     style: (f) => {
       if (f.properties?.microbrewery === 'yes') {
         f.properties["marker-symbol"] = "🍻"
@@ -51,9 +51,7 @@ export const queries = [
   }},
   { name: 'Drinking water',
     query: '// marker-symbol=🚰\n' +
-      '// cluster=true\n' +
-      '// cluster-symbol=🚰\n' +
-      'nwr[amenity=drinking_water];out center 250;'
+           'nwr[amenity=drinking_water];out center 250;'
   },
   { name: 'Hiking routes',
     query: "relation[type=route][route=hiking];out geom 75;",
@@ -70,28 +68,17 @@ export const queries = [
   },
   { name: 'Camping',
     query: '// marker-symbol=🏕️\n' + 
-      '// cluster=true\n' +
-      '// cluster-symbol=🏕️\n' +
-      'nwr[tourism=camp_site];out center;'
+           'nwr[tourism=camp_site];out center;'
   },
   { name: 'Feuerwehr',
     query: '// marker-symbol=🚒\n' +
-      '// cluster=true\n' +
-      '// cluster-symbol=🚒\n' +
       'nwr[amenity=fire_station];\nout center 500;'
   },
   {
     name: 'Hydranten',
     query: '// marker-image-url=/icons/hydrant.png\n' +
-      '// cluster=true\n' +
-      '// cluster-image-url=/icons/hydrant.png\n' +
-      'node["emergency"="fire_hydrant"];\nout body 1000;',
-    style: (f) => {
-      if (['fire_hydrant'].includes(f.properties['emergency'])) {
-        f.properties["marker-symbol"] = "🌊"
-        f.properties["marker-color"] = "#fff"
-      }
-    }
+           'node["emergency"="fire_hydrant"];\n' + 
+           'out body 1000;'
   },  
   { name: 'Trains',
     query: '(relation["route"="tracks"]; // Train tracks (railways)\n' +
@@ -116,12 +103,10 @@ export const queries = [
     }
   },
   { name: 'Wifi',
-    query: '(nwr["internet_access:fee"=no];nwr["internet_access:fee"=customers];);out center 250;',
-    style: (f) => {
-      if (['no', 'customers'].includes(f.properties['internet_access:fee'])) {
-        f.properties["marker-symbol"] = "🛜"
-      }
-    }
+    query: '// marker-symbol=🛜\n' + 
+           '(nwr["internet_access:fee"=no];\n' +
+           'nwr["internet_access:fee"=customers];);\n' +
+           'out center 250;'
   },
   { name: 'Food Shops',
     query: '// cluster=true\n' +

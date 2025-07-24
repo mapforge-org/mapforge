@@ -105,8 +105,9 @@ export function initSettingsModal () {
     e.setAttribute('data-map--settings-default-bearing-value', Math.round(mapProperties.bearing))
     if (mapProperties.center) {
       e.setAttribute('data-map--settings-default-center-value', JSON.stringify(mapProperties.center))
+    } else {
+      e.removeAttribute('data-map--settings-default-center-value')
     }
-    e.setAttribute('data-map--settings-default-auto-center-value', JSON.stringify(mapProperties.default_center))
   })
 }
 
