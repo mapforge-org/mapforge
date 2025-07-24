@@ -1,4 +1,4 @@
-import { map, geojsonData, destroyFeature, redrawGeojson, addFeature } from 'maplibre/map'
+import { map, geojsonData, destroyFeature, redrawGeojson, addFeature, layers, mapProperties } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
 import { highlightFeature, showFeatureDetails, initializeKmMarkerStyles } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
@@ -70,6 +70,13 @@ export function initializeEditMode () {
   map.on('style.load', function (_e) {
     initializeEditStyles()
     initializeKmMarkerStyles()
+  })
+
+  // Show map settings modal on untouched map
+  map.on('load', function (_e) {
+    if (!mapProperties.name && !geojsonData?.features?.length && !layers?.filter(l => l.type !== 'geojson').length)  {
+      functions.e('.maplibregl-ctrl-map', e => { e.click() })
+    }
   })
 
   map.on('geojson.load', function (_e) {
