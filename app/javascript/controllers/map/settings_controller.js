@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { resetControls } from 'maplibre/controls/shared'
 import * as functions from 'helpers/functions'
-import { map, mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
+import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
@@ -20,7 +20,6 @@ export default class extends Controller {
     defaultBearing: String,
     currentBearing: String,
     defaultCenter: Array,
-    defaultAutoCenter: Array,
     currentCenter: Array
   }
 
@@ -57,12 +56,12 @@ export default class extends Controller {
 
   defaultPitchValueChanged (value, _previousValue) {
     // console.log('defaultPitchValueChanged(): ' + value)
-    document.querySelector('#map-pitch').innerHTML = value
+    document.querySelector('#map-pitch').innerHTML = value + '°'
   }
 
   currentPitchValueChanged (value, _previousValue) {
     // console.log('currentPitchValueChanged(): ' + value)
-    document.querySelector('#map-pitch-current').innerHTML = value
+    document.querySelector('#map-pitch-current').innerHTML = value + '°'
   }
 
   defaultZoomValueChanged (value, _previousValue) {
@@ -77,12 +76,12 @@ export default class extends Controller {
 
   defaultBearingValueChanged (value, _previousValue) {
     // console.log('defaultBearingValueChanged(): ' + value)
-    document.querySelector('#map-bearing').innerHTML = value
+    document.querySelector('#map-bearing').innerHTML = value + '°'
   }
 
   currentBearingValueChanged (value, _previousValue) {
     // console.log('currentBearingValueChanged(): ' + value)
-    document.querySelector('#map-bearing-current').innerHTML = value
+    document.querySelector('#map-bearing-current').innerHTML = value + '°'
   }
 
   defaultCenterValueChanged (value, _previousValue) {
@@ -93,14 +92,6 @@ export default class extends Controller {
       value = 'auto'
     }
     document.querySelector('#map-center').innerHTML = value
-  }
-
-  defaultAutoCenterValueChanged (value, _previousValue) {
-    // console.log('defaultAutoCenterValueChanged(): "' + value + '"')
-    if (value.length !== 0 && !window.gon.map_properties.center) {
-      value = value.map(coord => parseFloat(coord.toFixed(4)))
-      document.querySelector('#map-center').innerHTML = `${value} (auto)`
-    }
   }
 
   currentCenterValueChanged (value, _previousValue) {
@@ -156,15 +147,24 @@ export default class extends Controller {
 
   updateDefaultView (event) {
     event.preventDefault()
-    const center = [map.getCenter().lng, map.getCenter().lat]
-    const zoom = map.getZoom()
-    const pitch = map.getPitch()
-    const bearing = map.getBearing()
-    mapProperties.center = center
-    mapProperties.zoom = zoom
-    mapProperties.pitch = pitch
-    mapProperties.bearing = bearing
-    mapChannel.send_message('update_map', { center, zoom, pitch, bearing })
+    this.defaultCenterValue = this.currentCenterValue
+    this.defaultZoomValue = this.currentZoomValue
+    this.defaultPitchValue = this.currentPitchValue
+    this.defaultBearingValue = this.currentBearingValue
+    mapProperties.default_center = this.currentCenterValue
+    mapProperties.default_zoom = this.currentZoomValue
+    mapProperties.default_pitch = this.currentPitchValue
+    mapProperties.default_bearing = this.currentBearingValue
+    mapChannel.send_message('update_map', { center: this.currentCenterValue, 
+      zoom: this.currentZoomValue, pitch: this.currentPitchValue, bearing: this.currentBearingValue })
+  }
+
+  resetDefaultView(event) {
+    event.preventDefault()
+    window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    // need to receive default values from server
+    mapChannel.send_message('update_map', { center: null, 
+      zoom: null, pitch: null, bearing: null })
   }
 
   close () {
