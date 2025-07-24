@@ -122,7 +122,7 @@ class Map
   end
 
   def features
-    Feature.in(layer: layers.pluck(:id))
+    @features ||= Feature.in(layer: layers.pluck(:id))
   end
 
   def features_count
@@ -228,10 +228,12 @@ class Map
   end
 
   def broadcast_update
+    # calculate properties only once
+    map_properties = properties
     # broadcast to private + public channel
     [ id, public_id ].each do |id|
       ActionCable.server.broadcast("map_channel_#{id}",
-                                   { event: "update_map", map: properties.as_json })
+                                   { event: "update_map", map: map_properties.as_json })
     end
   end
 

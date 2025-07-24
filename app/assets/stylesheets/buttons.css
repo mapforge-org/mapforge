@@ -23,6 +23,10 @@
   max-width: 400px;
 }
 
+.mw-250 {
+  max-width: 250px;
+}
+
 .btn-light-green {
   --bs-btn-color: var(--color-dark-charcoal);
   --bs-btn-bg: var(--color-light-teagreen);
