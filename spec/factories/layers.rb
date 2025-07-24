@@ -9,7 +9,7 @@ FactoryBot.define do
 
     trait :overpass do
       type { 'overpass' }
-      query { 'nwr[highway=bus_stop];out center;' }
+      query { 'nwr[highway=bus_stop];out skel;' }
     end
   end
 end
