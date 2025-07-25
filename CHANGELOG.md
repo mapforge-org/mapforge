@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2025-07
+
+* Adaptive kilometer markers on tracks
+* First tutorial for overpass layers
+* Improved mobile navigation
+* Use IP to coordinates database for centering initial map view on user location
+
 ## 2025-06
 
 * Option to cluster overpass results
