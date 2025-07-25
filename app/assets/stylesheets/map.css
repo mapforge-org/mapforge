@@ -89,7 +89,6 @@ html:has(.map), body:has(.map) {
     font-size: 0.8em;
     max-height: 2.2em;
     white-space: unset;
-    line-height: 1em;
   }
 }
 
