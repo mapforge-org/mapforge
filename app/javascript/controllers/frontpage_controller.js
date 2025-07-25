@@ -3,41 +3,44 @@ import { Controller } from '@hotwired/stimulus'
 export default class extends Controller {
   swiper = null
 
-  connect () {
+  async connect () {
     this.swiper = this.initSwiper()
   }
 
-  initSwiper () {
+  async initSwiper () {
+
+    // Dynamically import Swiper only when this controller is connected
+    const Swiper = (await import('swiper')).default
+    const { Navigation } = (await import('swiper/modules'))
+
     const config = {
+      modules: [Navigation],
       loop: true,
       speed: 1200,
       autoplay: {
         delay: 8000
       },
-      slidesPerView: 'auto',
+      slidesPerView: 1,
       centeredSlides: true,
-      pagination: {
-        el: '.swiper-pagination',
-        type: 'bullets',
-        clickable: true
-      },
       navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev'
-      },
+      },    
       on: {
         slideChange: () => {
           this.slideChange()
         }
       }
     }
-    return new window.Swiper('.swiper', config)
+    return new Swiper('.swiper', config)
   }
 
   slideChange () {
     if (this.swiper && document.getElementById('swiper-image')) {
-      // console.log('Slide changed to:', swiper.realIndex)
-      document.getElementById('swiper-image').src = 'images/frontpage/feature' + this.swiper.realIndex + '.png'
+      this.swiper.then(sw => {
+        // console.log('Slide changed to:', sw.realIndex)
+        document.getElementById('swiper-image').src = 'images/frontpage/feature' + sw.realIndex + '.png'
+      })
     }
   }
 }

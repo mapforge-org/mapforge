@@ -4,9 +4,6 @@
   = render 'layouts/head'
 
   %body
-    / https://swiperjs.com/
-    = javascript_include_tag "swiper-bundle.min.js", async: true
-
     = render 'shared/header', menu: true, create_button: true, static: true
 
     = yield
