@@ -88,8 +88,8 @@ html:has(.map), body:has(.map) {
   #map-title {
     font-size: 0.8em;
     max-height: 2.2em;
-    white-space: unset;
-    line-height: 1em;
+    white-space: nowrap;
+    line-height: 1.3em;
   }
 }
 
