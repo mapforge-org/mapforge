@@ -7,6 +7,7 @@ import { mapChannel } from 'channels/map_channel'
 import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
 import { initializeEditControls } from 'maplibre/controls/edit'
 import { status } from 'helpers/status'
+import { undo, redo, addUndoState } from 'maplibre/undo'
 import * as functions from 'helpers/functions'
 import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
@@ -188,6 +189,18 @@ export function initializeEditMode () {
       document.querySelector('.maplibregl-ctrl-select').classList.add('active')
     }
   })
+
+  document.addEventListener('keydown', function (event) {
+    // console.log('key', event)
+    if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+      event.preventDefault()
+      undo()
+    }
+    if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
+      event.preventDefault()
+      redo()
+    }
+  })
 }
 
 // switching directly from 'simple_select' to 'direct_select',
@@ -241,13 +254,13 @@ async function handleCreate (e) {
 
 async function handleUpdate (e) {
   let feature = e.features[0] // Assuming one feature is updated at a time
-
   const geojsonFeature = geojsonData.features.find(f => f.id === feature.id)
   // mapbox-gl-draw-waypoint sends empty update when dragging on selected feature
   if (equal(geojsonFeature.geometry, feature.geometry)) {
     // console.log('Feature update event triggered without update')
     return
   }
+  addUndoState('feature_geometry_updated', geojsonFeature)
   // change route with openrouteservice
   if (selectedFeature?.properties?.route?.provider === 'ors') { feature = await getRouteUpdate(geojsonFeature, feature) }
 
@@ -257,6 +270,7 @@ async function handleUpdate (e) {
   mapChannel.send_message('update_feature', feature)
   // trigger highlight, to update eg. coordinates
   highlightFeature(feature, true)
+  // updateElevation() will trigger a second save
   if (feature.geometry.type === 'LineString') { updateElevation(geojsonFeature) }
 }
 
