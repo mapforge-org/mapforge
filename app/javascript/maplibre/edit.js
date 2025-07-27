@@ -260,7 +260,7 @@ async function handleUpdate (e) {
     // console.log('Feature update event triggered without update')
     return
   }
-  addUndoState('feature_geometry_updated', geojsonFeature)
+  addUndoState('Feature update', geojsonFeature)
   // change route with openrouteservice
   if (selectedFeature?.properties?.route?.provider === 'ors') { feature = await getRouteUpdate(geojsonFeature, feature) }
 
