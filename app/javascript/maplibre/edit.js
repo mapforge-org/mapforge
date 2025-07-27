@@ -267,11 +267,19 @@ async function handleUpdate (e) {
   status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry
   redrawGeojson(false)
-  mapChannel.send_message('update_feature', feature)
-  // trigger highlight, to update eg. coordinates
-  highlightFeature(feature, true)
-  // updateElevation() will trigger a second save
-  if (feature.geometry.type === 'LineString') { updateElevation(geojsonFeature) }
+
+  if (feature.geometry.type === 'LineString') { 
+    // gets also triggered on failure
+    updateElevation(feature).then(() => {
+      mapChannel.send_message('update_feature', feature)
+      // trigger highlight, to update eg. coordinates
+      showFeatureDetails(feature)
+    })
+  } else { 
+    mapChannel.send_message('update_feature', feature)
+    // trigger highlight, to update eg. coordinates
+    highlightFeature(feature, true)
+  }
 }
 
 export function handleDelete (e) {
@@ -284,12 +292,12 @@ export function handleDelete (e) {
 }
 
 // add elevation from openrouteservice async
-function updateElevation(feature) {
-  getRouteElevation(feature.geometry.coordinates).then(coords => {
+export function updateElevation(feature) {
+  return getRouteElevation(feature.geometry.coordinates).then(coords => {
     if (feature.geometry.coordinates.length === coords?.length) {
       feature.geometry.coordinates = coords
-      mapChannel.send_message('update_feature', feature)
-      showFeatureDetails(feature)
+    } else { 
+      console.warn('Did not receive elevation for all coords (water?)')
     }
   })
 }

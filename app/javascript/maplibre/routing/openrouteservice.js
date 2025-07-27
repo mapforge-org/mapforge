@@ -59,14 +59,15 @@ export async function getRouteElevation (waypoints) {
   try {
     const Elevation = new Openrouteservice.Elevation({api_key: window.gon.map_keys.openrouteservice})
     let response = await Elevation.lineElevation({
-    format_in: 'geojson',
-    format_out: 'geojson',
-    geometry: {
-      coordinates: functions.removeElevation(waypoints),
-      type: 'LineString'
-    }
-  })
-  return response.geometry.coordinates
+      format_in: 'geojson',
+      format_out: 'geojson',
+      geometry: {
+        coordinates: functions.removeElevation(waypoints),
+        type: 'LineString'
+      }
+    })
+    console.log('Openrouteservice elevation response:', response)
+    return response.geometry.coordinates
   } catch (err) {
     console.log("An error occurred:", err)
   }
