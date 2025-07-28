@@ -1,5 +1,3 @@
-import {CategoryScale, Chart, LinearScale, LineController,
-  LineElement, PointElement, Filler, Tooltip} from 'chart.js'
 import { featureColor } from 'maplibre/styles'
 import { map } from 'maplibre/map'
 import maplibregl from 'maplibre-gl'
@@ -7,13 +5,19 @@ import maplibregl from 'maplibre-gl'
 
 let marker
 
-export function showElevationChart (feature) {
+export async function showElevationChart (feature) {
   const chartElement = document.getElementById('route-elevation-chart')
   // skip without elevation data
   if (feature.geometry.type !== 'LineString' || feature.geometry.coordinates[0].length !== 3) {
     chartElement.classList.add('hidden')
     return null
   }
+
+  // async load chart.js 
+  const chartJs = await import('chart.js')
+  // Destructure the required modules from chartJs
+  const { CategoryScale, Chart, LinearScale, LineController, 
+    LineElement, PointElement, Filler, Tooltip } = chartJs
 
   chartElement.classList.remove('hidden')
   Chart.register([CategoryScale, LineController, LineElement, LinearScale, PointElement,

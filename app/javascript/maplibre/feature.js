@@ -68,7 +68,7 @@ function featureMeta (feature) {
 }
 
 
-export function showFeatureDetails (feature) {
+export async function showFeatureDetails (feature) {
   dom.hideElements(['#feature-edit-raw', '#edit-button-raw', '#feature-edit-ui'])
   f.e('#edit-buttons button', (e) => { e.classList.remove('active') })
   dom.showElements('#feature-details-body')
@@ -80,7 +80,7 @@ export function showFeatureDetails (feature) {
   modal.setAttribute('data-feature--edit-feature-id-value', feature.id)
 
   if (elevationChart) { elevationChart.destroy() }
-  elevationChart = showElevationChart(feature)
+  elevationChart = await showElevationChart(feature)
 
   f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
     if (!f.isTouchDevice()) return
