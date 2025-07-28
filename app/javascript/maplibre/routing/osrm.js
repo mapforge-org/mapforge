@@ -2,10 +2,10 @@ import { layersFactory } from "@maplibre/maplibre-gl-directions"
 import CustomMapLibreGlDirections from "maplibre/routing/custom_directions"
 import { map, mapProperties, upsert, geojsonData } from 'maplibre/map'
 import { highlightColor } from 'maplibre/edit_styles'
+import { updateElevation } from 'maplibre/edit'
 import { styles, featureColor } from 'maplibre/styles'
 import { decodePolyline } from 'helpers/polyline'
 import { basemaps, defaultFont } from 'maplibre/basemaps'
-import { getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { mapChannel } from 'channels/map_channel'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
@@ -89,12 +89,9 @@ export function initDirections (profile, feature) {
     currentFeature.properties.route = { "provider": "osrm",
                                         "profile": profile,
                                         "waypoints": waypoints }
-    // TODO: we're saving the feture 2 times
-    updateFeature(currentFeature,)
-
+ 
     // add elevation from openrouteservice
-    getRouteElevation(coords).then(coords => {
-      currentFeature.geometry.coordinates = coords
+    updateElevation(currentFeature).then(() => {
       updateFeature(currentFeature)
       showFeatureDetails(currentFeature)
     })

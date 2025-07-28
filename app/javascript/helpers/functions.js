@@ -92,3 +92,9 @@ export function findCoordinate (coordinates, coordinate) {
 export function featureId () {
   return Math.random().toString(36).substring(2, 18)
 }
+
+export function isFormFieldFocused() {
+  const el = document.activeElement
+  // Check if the currently focused element is an input, textarea, select, or button
+  return el && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(el.tagName)
+}

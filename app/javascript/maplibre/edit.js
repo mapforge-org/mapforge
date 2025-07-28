@@ -192,6 +192,7 @@ export function initializeEditMode () {
 
   document.addEventListener('keydown', function (event) {
     // console.log('key', event)
+    if (functions.isFormFieldFocused()) { return }
     if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
       event.preventDefault()
       undo()
