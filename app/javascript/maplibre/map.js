@@ -2,7 +2,6 @@ import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep
 import { animateElement, initTooltips } from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
-import maplibregl from 'maplibre-gl'
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { basemaps, defaultFont, elevationSource, demSource } from 'maplibre/basemaps'
 import { initSettingsModal } from 'maplibre/controls/edit'
@@ -64,9 +63,13 @@ export function resetGeojsonLayers () {
   layers = layers.filter(l => l.type !== 'geojson')
 }
 
-export function initializeMap (divId = 'maplibre-map') {
+export async function initializeMap (divId = 'maplibre-map') {
   resetLayers()
   backgroundMapLayer = null
+
+  // async load mapbox-gl-draw
+  const maplibreglModule = await import('maplibre-gl')
+  const maplibregl = maplibreglModule.default
 
   initializeMaplibreProperties()
   map = new maplibregl.Map({

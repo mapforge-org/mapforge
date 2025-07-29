@@ -1,6 +1,5 @@
 import { featureColor } from 'maplibre/styles'
 import { map } from 'maplibre/map'
-import maplibregl from 'maplibre-gl'
 
 
 let marker
@@ -146,7 +145,7 @@ function getMarker(feature) {
   markerDiv.style.backgroundColor = feature.properties['fill-extrusion-color'] ||
     feature.properties['stroke'] || featureColor
   markerDiv.className = 'elevation-marker'
-  return new maplibregl.Marker({
+  return new window.maplibregl.Marker({
     element: markerDiv,
     opacity: '0.8',
     opacityWhenCovered: '0',
