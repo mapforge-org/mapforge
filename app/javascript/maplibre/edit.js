@@ -10,21 +10,22 @@ import { status } from 'helpers/status'
 import { undo, redo, addUndoState } from 'maplibre/undo'
 import * as functions from 'helpers/functions'
 import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
-import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import PaintMode from 'mapbox-gl-draw-paint-mode'
 
 export let draw
 export let selectedFeature
 let currentMode
 let justCreated = false
 
-MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl'
-MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-'
-MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group'
-
 // https://github.com/mapbox/mapbox-gl-draw
-export function initializeEditMode () {
+export async function initializeEditMode () {
   // console.log('Initializing MapboxDraw')
+  // async load mapbox-gl-draw
+  const MapboxDrawModule = await import('@mapbox/mapbox-gl-draw')
+  const MapboxDraw = MapboxDrawModule.default
+
+  MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl'
+  MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-'
+  MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group'
 
   // Patching direct select mode to not allow dragging features
   // similar to https://github.com/zakjan/mapbox-gl-draw-waypoint
@@ -36,6 +37,10 @@ export function initializeEditMode () {
   const DirectionsCarMode = { ...DirectionsMode }
   const DirectionsBikeMode = { ...DirectionsMode }
   const DirectionsFootMode = { ...DirectionsMode }
+
+  // load mapbox-gl-draw-paint-mode on demand
+  const PaintModeModule = await import('mapbox-gl-draw-paint-mode')
+  const PaintMode = PaintModeModule.default
 
   const modes = {
     ...MapboxDraw.modes,
@@ -224,7 +229,7 @@ export function select (feature) {
   }
 }
 
-async function handleCreate (e) {
+function handleCreate (e) {
   // console.log('handleCreate')
   let feature = e.features[0] // Assuming one feature is created at a time
   const mode = draw.getMode()
@@ -240,7 +245,9 @@ async function handleCreate (e) {
   // status('Feature ' + feature.id + ' created')
   addFeature(feature)
   // redraw if the painted feature was changed in this method
-  if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') { redrawGeojson(false) }
+  if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') {
+    redrawGeojson(false)
+  }
   mapChannel.send_message('new_feature', feature)
   if (feature.geometry.type === 'LineString') { updateElevation(feature) }
 
@@ -263,7 +270,9 @@ async function handleUpdate (e) {
   }
   addUndoState('Feature update', geojsonFeature)
   // change route with openrouteservice
-  if (selectedFeature?.properties?.route?.provider === 'ors') { feature = await getRouteUpdate(geojsonFeature, feature) }
+  if (selectedFeature?.properties?.route?.provider === 'ors') {
+    feature = await getRouteUpdate(geojsonFeature, feature)
+  }
 
   status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry

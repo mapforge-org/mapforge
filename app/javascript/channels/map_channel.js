@@ -16,7 +16,10 @@ let channelStatus
 })
 
 function unload () {
-  if (mapChannel) { mapChannel.unsubscribe(); mapChannel = null; channelStatus = undefined }
+  if (mapChannel) {
+    console.log('Unsubscribing from map_channel', mapChannel.identifier)
+    mapChannel.unsubscribe(); mapChannel = null; channelStatus = undefined
+  }
 }
 
 export function initializeSocket () {

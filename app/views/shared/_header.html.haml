@@ -1,7 +1,7 @@
 %nav.navbar.navbar-expand-sm.navbar-light.background-bright{class: "#{'fixed-top' if defined?(static) && static}"}
   .container-fluid
     %a.navbar-brand{href: '/'}
-      %img.mapforge-logo{ src: "/icons/mapforge-logo-header_white.png", alt: "Logo" }
+      %img.mapforge-logo.me-1{ src: "/icons/mapforge-logo-header_white.png", alt: "Logo" }
       .mapforge-font.white-shadow.d-none.d-sm-block{ href: "#" } Mapforge
 
     %button.navbar-toggler{ data: { 'controller': "header", 'action': "click->header#toggleNav" }, type: "button", "aria-controls": "navbar-dropdown", "aria-expanded": "false", "aria-label": "Toggle navigation" }
