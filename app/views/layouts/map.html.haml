@@ -3,10 +3,11 @@
   = render 'layouts/head'
 
   %body
-    = stylesheet_link_tag "https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.css"
-    = stylesheet_link_tag "https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.css"
 
     #map-header
       = render 'shared/header', menu: true, create_button: !!@user, static: true
 
     = yield
+
+= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.css"
+= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/@maplibre/maplibre-gl-geocoder@1.5.0/dist/maplibre-gl-geocoder.css"
