@@ -81,7 +81,7 @@
   }
 }
 
-.profile-image {
+img.profile-image {
   border-radius: 50%;
   overflow: hidden;
   width: 35px;
