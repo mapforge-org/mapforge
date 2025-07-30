@@ -176,7 +176,9 @@ export function getDirectionsLayers () {
     source: "maplibre-gl-directions",
     layout: {
       "text-field": ["get", "label"],
-      "text-font": [basemaps()[mapProperties.base_map].font || defaultFont]
+      "text-font": [basemaps()[mapProperties.base_map].font || defaultFont], 
+      "text-size": 15,
+      "text-offset": [0, 0.05]
     },
     paint: {
       "text-color": "#ffffff",
