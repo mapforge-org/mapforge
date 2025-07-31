@@ -1,4 +1,4 @@
-import { geojsonData, redrawGeojson, addFeature } from 'maplibre/map'
+import { geojsonData, redrawGeojson, addFeature, destroyFeature } from 'maplibre/map'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
 
@@ -7,11 +7,11 @@ import { status } from 'helpers/status'
 let undoStack = []
 let redoStack = []
 
-export function addUndoState(type, state) {
+export function addUndoState(type, state, clearRedo = true) {
   // Deep clone to avoid mutation
   undoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
   console.log('Updated undo stack', undoStack)
-  redoStack = []
+  if (clearRedo) redoStack = []
 }
 
 function addRedoState(type, state) {
@@ -37,28 +37,27 @@ export function undo() {
   }
   status('Undo: ' + prevState.type)
   redrawGeojson()
-  // keep feature selected
-  if (selectedFeature) select(selectedFeature)
+  keepSelection()
 }
 
 export function redo() {
   // console.log('Redo from stack', redoStack)
-  if (redoStack.length > 0) {
-    const nextState = redoStack.pop()
-    // console.log('Next state: ' + JSON.stringify(nextState))
-    const idx = geojsonData.features.findIndex(f => f.id === nextState.state.id)
-    if (idx !== -1) {
-      undoStack.push({ type: nextState.type, state: JSON.parse(JSON.stringify(geojsonData.features[idx])) })
-      console.log('Updated undo stack', undoStack)
-      geojsonData.features[idx] = nextState.state
-      mapChannel.send_message('update_feature', nextState.state)
-      status('Redo: ' + nextState.type)
-      redrawGeojson()
-      keepSelection()
-    } else {
-      console.warn('Feature with id ' + nextState.state.id + ' not found in geojsonData')
-    }
+  if (redoStack.length === 0) { console.warn('Redo stack empty'); return }
+  const nextState = redoStack.pop()
+  // console.log('Next state: ' + JSON.stringify(nextState))
+  if (nextState.type === 'Feature update') {
+    redoFeatureUpdate(nextState) 
+  } else if (nextState.type === 'Feature added') {
+    redoFeatureAdded(nextState)    
+  } else if (nextState.type === 'Feature deleted') {
+    redoFeatureDelete(nextState)
+  } else {
+    console.warn('Cannot redo ', nextState)
+    return
   }
+  status('Redo: ' + nextState.type)
+  redrawGeojson()
+  keepSelection()
 }
 
 function undoFeatureUpdate(prevState) {
@@ -67,9 +66,19 @@ function undoFeatureUpdate(prevState) {
     addRedoState(prevState.type, geojsonData.features[idx])
     geojsonData.features[idx] = prevState.state
     mapChannel.send_message('update_feature', prevState.state)
-    keepSelection()
   } else {
     console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
+  }
+}
+
+  function redoFeatureUpdate(nextState) {
+  const idx = geojsonData.features.findIndex(f => f.id === nextState.state.id)
+  if (idx !== -1) {
+    addUndoState(nextState.type, geojsonData.features[idx], false)
+    geojsonData.features[idx] = nextState.state
+    mapChannel.send_message('update_feature', nextState.state)
+  } else {
+    console.warn('Feature with id ' + nextState.state.id + ' not found in geojsonData')
   }
 }
 
@@ -79,9 +88,41 @@ function undoFeatureDelete(prevState) {
     addRedoState(prevState.type, prevState.state)
     addFeature(prevState.state)
     mapChannel.send_message('new_feature', prevState.state)
-    keepSelection()
   } else {
     console.warn('Feature with id ' + prevState.state.id + ' still present in geojsonData')
+  }
+}
+
+function redoFeatureDelete(nextState) {
+  const idx = geojsonData.features.findIndex(f => f.id === nextState.state.id)
+  if (idx !== -1) {
+    addUndoState(nextState.type, geojsonData.features[idx], false)
+    destroyFeature(nextState.state.id)
+    mapChannel.send_message('delete_feature', { id: nextState.state.id })
+  } else {
+    console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
+  }
+}
+
+function undoFeatureAdded(prevState) {
+  const idx = geojsonData.features.findIndex(f => f.id === prevState.state.id)
+  if (idx !== -1) {
+    addRedoState(prevState.type, geojsonData.features[idx], false)
+    destroyFeature(prevState.state.id)
+    mapChannel.send_message('delete_feature', { id: prevState.state.id })
+  } else {
+    console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
+  }
+}
+
+function redoFeatureAdded(nextState) {
+  const idx = geojsonData.features.findIndex(f => f.id === nextState.state.id)
+  if (idx === -1) {
+    addUndoState(nextState.type, nextState.state, false)
+    addFeature(nextState.state)
+    mapChannel.send_message('new_feature', nextState.state)
+  } else {
+    console.warn('Feature with id ' + nextState.state.id + ' still present in geojsonData')
   }
 }
 
@@ -89,7 +130,9 @@ function undoFeatureDelete(prevState) {
 function keepSelection() {
   if (selectedFeature) {
     let geojsonFeature = geojsonData.features.find(f => f.id === selectedFeature.id)
-    showFeatureDetails(geojsonFeature)
-    select(geojsonFeature)
+    if (geojsonFeature) {
+      showFeatureDetails(geojsonFeature)
+      select(geojsonFeature)
+    }
   }
 }
