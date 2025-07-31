@@ -244,6 +244,7 @@ function handleCreate (e) {
   justCreated = true
   // status('Feature ' + feature.id + ' created')
   addFeature(feature)
+  addUndoState('Feature added', feature)
   // redraw if the painted feature was changed in this method
   if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') {
     redrawGeojson(false)
@@ -296,6 +297,7 @@ export function handleDelete (e) {
   selectedFeature = null
   const deletedFeature = e.features[0] // Assuming one feature is deleted at a time
   destroyFeature(deletedFeature.id)
+  addUndoState('Feature deleted', deletedFeature)
   resetDirections()
   status('Feature deleted')
   mapChannel.send_message('delete_feature', { id: deletedFeature.id })

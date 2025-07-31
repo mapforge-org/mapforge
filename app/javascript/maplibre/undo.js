@@ -1,5 +1,4 @@
-
-import { geojsonData, redrawGeojson } from 'maplibre/map'
+import { geojsonData, redrawGeojson, addFeature } from 'maplibre/map'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
 
@@ -28,6 +27,10 @@ export function undo() {
   // console.log('Undo state: ' + JSON.stringify(prevState))
   if (prevState.type === 'Feature update') {
     undoFeatureUpdate(prevState)
+  } else if (prevState.type === 'Feature added') {
+    undoFeatureAdded(prevState)
+  } else if (prevState.type === 'Feature deleted') {
+    undoFeatureDelete(prevState)  
   } else {
     console.warn('Cannot undo ', prevState)
     return 
@@ -51,12 +54,7 @@ export function redo() {
       mapChannel.send_message('update_feature', nextState.state)
       status('Redo: ' + nextState.type)
       redrawGeojson()
-      // keep feature selected
-      if (selectedFeature) {
-        let geojsonFeature = geojsonData.features.find(f => f.id === selectedFeature.id)
-        showFeatureDetails(geojsonFeature)
-        select(geojsonFeature)
-        }
+      keepSelection()
     } else {
       console.warn('Feature with id ' + nextState.state.id + ' not found in geojsonData')
     }
@@ -69,13 +67,29 @@ function undoFeatureUpdate(prevState) {
     addRedoState(prevState.type, geojsonData.features[idx])
     geojsonData.features[idx] = prevState.state
     mapChannel.send_message('update_feature', prevState.state)
-    // keep feature selected
-    if (selectedFeature) {
-      let geojsonFeature = geojsonData.features.find(f => f.id === selectedFeature.id)
-      showFeatureDetails(geojsonFeature)
-      select(geojsonFeature)
-    }
+    keepSelection()
   } else {
-    console.warn('Feature with id ' + nextState.state.id + ' not found in geojsonData')
+    console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
+  }
+}
+
+function undoFeatureDelete(prevState) {
+  const idx = geojsonData.features.findIndex(f => f.id === prevState.state.id)
+  if (idx === -1) {
+    addRedoState(prevState.type, prevState.state)
+    addFeature(prevState.state)
+    mapChannel.send_message('new_feature', prevState.state)
+    keepSelection()
+  } else {
+    console.warn('Feature with id ' + prevState.state.id + ' still present in geojsonData')
+  }
+}
+
+// keep feature selected
+function keepSelection() {
+  if (selectedFeature) {
+    let geojsonFeature = geojsonData.features.find(f => f.id === selectedFeature.id)
+    showFeatureDetails(geojsonFeature)
+    select(geojsonFeature)
   }
 }
