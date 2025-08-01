@@ -339,7 +339,7 @@ GEM
       date
       stringio
     public_suffix (6.0.2)
-    puma (6.6.0)
+    puma (6.6.1)
       nio4r (~> 2.0)
     puppeteer-ruby (0.45.6)
       concurrent-ruby (>= 1.1, < 1.4)
