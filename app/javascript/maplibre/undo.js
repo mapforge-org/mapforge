@@ -1,7 +1,7 @@
 import { geojsonData, redrawGeojson, addFeature, destroyFeature } from 'maplibre/map'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
-
+import { resetDirections } from 'maplibre/routing/osrm'
 import { status } from 'helpers/status'
 
 let undoStack = []
@@ -11,13 +11,18 @@ export function addUndoState(type, state, clearRedo = true) {
   // Deep clone to avoid mutation
   undoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
   console.log('Updated undo stack', undoStack)
-  if (clearRedo) redoStack = []
+  showUndoButton()
+  if (clearRedo) {
+    hideRedoButton()
+    redoStack = []
+  }
 }
 
 function addRedoState(type, state) {
   // Deep clone to avoid mutation
   redoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
   console.log('Updated redo stack', redoStack)
+  showRedoButton()
 }
 
 export function undo() {
@@ -31,6 +36,10 @@ export function undo() {
     undoFeatureAdded(prevState)
   } else if (prevState.type === 'Feature deleted') {
     undoFeatureDelete(prevState)  
+  } else if (prevState.type === 'Track added') {
+    undoTrackAdded(prevState)    
+  } else if (prevState.type === 'Track update') {
+    undoFeatureUpdate(prevState)
   } else {
     console.warn('Cannot undo ', prevState)
     return 
@@ -38,6 +47,7 @@ export function undo() {
   status('Undo: ' + prevState.type)
   redrawGeojson()
   keepSelection()
+  if (undoStack.length === 0) { hideUndoButton() }
 }
 
 export function redo() {
@@ -51,6 +61,10 @@ export function redo() {
     redoFeatureAdded(nextState)    
   } else if (nextState.type === 'Feature deleted') {
     redoFeatureDelete(nextState)
+  } else if (nextState.type === 'Track added') {
+    redoFeatureAdded(nextState) 
+  } else if (nextState.type === 'Track update') {
+    redoFeatureUpdate(nextState)         
   } else {
     console.warn('Cannot redo ', nextState)
     return
@@ -58,6 +72,7 @@ export function redo() {
   status('Redo: ' + nextState.type)
   redrawGeojson()
   keepSelection()
+  if (redoStack.length === 0) { hideRedoButton() }
 }
 
 function undoFeatureUpdate(prevState) {
@@ -126,6 +141,18 @@ function redoFeatureAdded(nextState) {
   }
 }
 
+function undoTrackAdded(prevState) {
+  const idx = geojsonData.features.findIndex(f => f.id === prevState.state.id)
+  if (idx !== -1) {
+    addRedoState(prevState.type, geojsonData.features[idx], false)
+    destroyFeature(prevState.state.id)
+    resetDirections()
+    mapChannel.send_message('delete_feature', { id: prevState.state.id })
+  } else {
+    console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
+  }
+}
+
 // keep feature selected
 function keepSelection() {
   if (selectedFeature) {
@@ -135,4 +162,20 @@ function keepSelection() {
       select(geojsonFeature)
     }
   }
+}
+
+function showUndoButton() {
+  document.querySelector('button.maplibregl-ctrl-undo').classList.remove('hidden')
+}
+
+function hideUndoButton() {
+  document.querySelector('button.maplibregl-ctrl-undo').classList.add('hidden')
+}
+
+function showRedoButton() {
+  document.querySelector('button.maplibregl-ctrl-redo').classList.remove('hidden')
+}
+
+function hideRedoButton() {
+  document.querySelector('button.maplibregl-ctrl-redo').classList.add('hidden')
 }
