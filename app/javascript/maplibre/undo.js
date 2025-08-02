@@ -11,13 +11,18 @@ export function addUndoState(type, state, clearRedo = true) {
   // Deep clone to avoid mutation
   undoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
   console.log('Updated undo stack', undoStack)
-  if (clearRedo) redoStack = []
+  showUndoButton()
+  if (clearRedo) {
+    hideRedoButton()
+    redoStack = []
+  }
 }
 
 function addRedoState(type, state) {
   // Deep clone to avoid mutation
   redoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
   console.log('Updated redo stack', redoStack)
+  showRedoButton()
 }
 
 export function undo() {
@@ -42,6 +47,7 @@ export function undo() {
   status('Undo: ' + prevState.type)
   redrawGeojson()
   keepSelection()
+  if (undoStack.length === 0) { hideUndoButton() }
 }
 
 export function redo() {
@@ -66,6 +72,7 @@ export function redo() {
   status('Redo: ' + nextState.type)
   redrawGeojson()
   keepSelection()
+  if (redoStack.length === 0) { hideRedoButton() }
 }
 
 function undoFeatureUpdate(prevState) {
@@ -155,4 +162,20 @@ function keepSelection() {
       select(geojsonFeature)
     }
   }
+}
+
+function showUndoButton() {
+  document.querySelector('button.maplibregl-ctrl-undo').classList.remove('hidden')
+}
+
+function hideUndoButton() {
+  document.querySelector('button.maplibregl-ctrl-undo').classList.add('hidden')
+}
+
+function showRedoButton() {
+  document.querySelector('button.maplibregl-ctrl-redo').classList.remove('hidden')
+}
+
+function hideRedoButton() {
+  document.querySelector('button.maplibregl-ctrl-redo').classList.add('hidden')
 }

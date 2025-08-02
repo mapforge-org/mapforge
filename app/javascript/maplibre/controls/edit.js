@@ -5,6 +5,7 @@ import { resetHighlightedFeature } from 'maplibre/feature'
 import { animateElement } from 'helpers/dom'
 import { ControlGroup, MapLayersControl, MapShareControl, resetControls } from 'maplibre/controls/shared'
 import { resetDirections } from 'maplibre/routing/osrm'
+import { undo, redo } from 'maplibre/undo'
 
 let lineMenu
 
@@ -30,6 +31,43 @@ export class MapSelectControl {
   }
 }
 
+export class MapUndoControl {
+  constructor(_options) {
+    this._container = document.createElement('div')
+    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-undo" type="button" title="Undo last change" aria-label="Undo last change" aria-pressed="false"><b><i class="bi bi-arrow-counterclockwise"></i></b></button>'
+    this._container.onclick = function (_e) {
+      undo()
+    }
+  }
+  onAdd(map) {
+    map.getCanvas().appendChild(this._container)
+    return this._container
+  }
+  onRemove() {
+    if (this._container.parentNode) {
+      this._container.parentNode.removeChild(this._container)
+    }
+  }
+}
+
+export class MapRedoControl {
+  constructor(_options) {
+    this._container = document.createElement('div')
+    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-redo" type="button" title="Redo last change" aria-label="Redo last change" aria-pressed="false"><b><i class="fw-bold bi bi-arrow-clockwise "></i></b></button>'
+    this._container.onclick = function (_e) {
+      redo()
+    }
+  }
+  onAdd(map) {
+    map.getCanvas().appendChild(this._container)
+    return this._container
+  }
+  onRemove() {
+    if (this._container.parentNode) {
+      this._container.parentNode.removeChild(this._container)
+    }
+  }
+}
 
 export class MapSettingsControl {
   constructor (_options) {
@@ -127,6 +165,13 @@ export function initializeEditControls () {
   document.querySelector('button.mapbox-gl-draw_polygon').setAttribute('title', 'Draw polygon')
   document.querySelector('button.mapbox-gl-draw_point').setAttribute('title', 'Draw point')
   document.querySelector('.maplibregl-ctrl:has(button.ctrl-line-menu-btn)').classList.add('hidden') // hide for aos animation
+
+  const undoGroup = new ControlGroup(
+    [new MapUndoControl(),
+    new MapRedoControl()])
+  map.addControl(undoGroup, 'top-left')
+  document.querySelector('button.maplibregl-ctrl-undo').classList.add('hidden')
+  document.querySelector('button.maplibregl-ctrl-redo').classList.add('hidden')
 
   const controlGroup = new ControlGroup(
     [new MapSettingsControl(),
