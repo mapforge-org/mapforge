@@ -1,7 +1,7 @@
 import { geojsonData, redrawGeojson, addFeature, destroyFeature } from 'maplibre/map'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
-
+import { resetDirections } from 'maplibre/routing/osrm'
 import { status } from 'helpers/status'
 
 let undoStack = []
@@ -31,6 +31,10 @@ export function undo() {
     undoFeatureAdded(prevState)
   } else if (prevState.type === 'Feature deleted') {
     undoFeatureDelete(prevState)  
+  } else if (prevState.type === 'Track added') {
+    undoTrackAdded(prevState)    
+  } else if (prevState.type === 'Track update') {
+    undoFeatureUpdate(prevState)
   } else {
     console.warn('Cannot undo ', prevState)
     return 
@@ -51,6 +55,10 @@ export function redo() {
     redoFeatureAdded(nextState)    
   } else if (nextState.type === 'Feature deleted') {
     redoFeatureDelete(nextState)
+  } else if (nextState.type === 'Track added') {
+    redoFeatureAdded(nextState) 
+  } else if (nextState.type === 'Track update') {
+    redoFeatureUpdate(nextState)         
   } else {
     console.warn('Cannot redo ', nextState)
     return
@@ -123,6 +131,18 @@ function redoFeatureAdded(nextState) {
     mapChannel.send_message('new_feature', nextState.state)
   } else {
     console.warn('Feature with id ' + nextState.state.id + ' still present in geojsonData')
+  }
+}
+
+function undoTrackAdded(prevState) {
+  const idx = geojsonData.features.findIndex(f => f.id === prevState.state.id)
+  if (idx !== -1) {
+    addRedoState(prevState.type, geojsonData.features[idx], false)
+    destroyFeature(prevState.state.id)
+    resetDirections()
+    mapChannel.send_message('delete_feature', { id: prevState.state.id })
+  } else {
+    console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
   }
 }
 
