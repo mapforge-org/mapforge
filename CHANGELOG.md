@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2025-07
 
+* Undo/Redo for features and tracks
 * Adaptive kilometer markers on tracks
 * First tutorial for overpass layers
 * Improved mobile navigation

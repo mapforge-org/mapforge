@@ -10,6 +10,7 @@ import { mapChannel } from 'channels/map_channel'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import { showFeatureDetails } from 'maplibre/feature'
+import { addUndoState } from 'maplibre/undo'
 
 // https://github.com/maplibre/maplibre-gl-directions
 // Examples: https://maplibre.org/maplibre-gl-directions/#/examples
@@ -84,7 +85,8 @@ export function initDirections (profile, feature) {
     let coords = decodePolyline(e.data.routes[0].geometry)
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords || [], "type": "LineString" },
-      "properties": currentFeature?.properties || defaultProperties
+      // deep clone properties to avoid modifying the original feature
+      "properties": JSON.parse(JSON.stringify(currentFeature?.properties || defaultProperties))
     }
     currentFeature.properties.route = { "provider": "osrm",
                                         "profile": profile,
@@ -112,12 +114,16 @@ export function initDirections (profile, feature) {
 }
 
 function updateFeature(feature) {
-  if (geojsonData.features.find(f => f.id === feature.id)) {
-    upsert(currentFeature)
+  let geojsonFeature = geojsonData.features.find(f => f.id === feature.id)
+  if (geojsonFeature) {
+    // store undo state from unchanged feature
+    addUndoState('Track update', geojsonFeature)
+    upsert(feature)
     mapChannel.send_message('update_feature', feature)
     // status('Updated track')
   } else {
-    upsert(currentFeature)
+    addUndoState('Track added', feature)
+    upsert(feature)
     mapChannel.send_message('new_feature', feature)
     // status('Added track')
   }
