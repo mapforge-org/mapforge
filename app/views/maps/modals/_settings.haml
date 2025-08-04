@@ -15,7 +15,7 @@
     .map-modal-content
 
       .form-floating.edit-ui
-        %input.form-control#map-name{"name": "map-name", type: "text", size: 27, data: { action: "input->map--settings#updateName" } }
+        %input.form-control#map-name{"name": "map-name", type: "text", size: 27, data: { action: "input->map--settings#addUndo input->map--settings#updateName" } }
         %label{ for: "map-name"}
           %b Name:
 
@@ -28,25 +28,25 @@
         - map_image = "base_maps/placeholder.jpg"
         - if Rails.application.assets.find_asset("base_maps/#{base_map}.jpg").present?
           - map_image = "base_maps/#{base_map}.jpg"
-        = image_tag(map_image, data: { base_map: base_map, action: "click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
+        = image_tag(map_image, data: { base_map: base_map, action: "input->map--settings#addUndo click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
 
       %br
       - # Default checkbox state gets set by initSettingsModal()
       %span.no-wrap.me-2
         %label{ for: "map-terrain"} 3D Terrain:
-        %input#map-terrain{type: "checkbox", data: { action: "click->map--settings#updateTerrain"} }
+        %input#map-terrain{type: "checkbox", data: { action: "input->map--settings#addUndo click->map--settings#updateTerrain"} }
 
       %span.no-wrap.me-2
         %label{ for: "map-hillshade"} Hillshade:
-        %input#map-hillshade{type: "checkbox", data: { action: "click->map--settings#updateHillshade"} }
+        %input#map-hillshade{type: "checkbox", data: { action: "input->map--settings#addUndo click->map--settings#updateHillshade"} }
 
       %span.no-wrap.me-2
         %label{ for: "map-contours"} Contour lines:
-        %input#map-contours{type: "checkbox", data: { action: "click->map--settings#updateContours"} }
+        %input#map-contours{type: "checkbox", data: { action: "input->map--settings#addUndo click->map--settings#updateContours"} }
 
       %span.no-wrap.me-2
         %label{ for: "map-globe"} Globe:
-        %input#map-globe{type: "checkbox", data: { action: "click->map--settings#updateGlobe"} }
+        %input#map-globe{type: "checkbox", data: { action: "input->map--settings#addUndo click->map--settings#updateGlobe"} }
 
       %h4.mapforge-font.mt-2 View
 
@@ -91,11 +91,11 @@
         %span.view-values#map-bearing-current>
 
       .mt-2
-        %button.btn.btn-green.mt-1.w-100.mw-250#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
+        %button.btn.btn-green.mt-1.w-100.mw-250#save-map-defaults{ data: { action: "input->map--settings#addUndo click->map--settings#updateDefaultView" } }
           %i.bi.bi-crosshair.me-1
           Set current view as default
 
-        %button.btn.btn-green.mt-1.w-100.mw-250#save-map-defaults{ data: { action: "click->map--settings#resetDefaultView" } }
+        %button.btn.btn-green.mt-1.w-100.mw-250#save-map-defaults{ data: { action: "input->map--settings#addUndo click->map--settings#resetDefaultView" } }
           %i.bi.bi-crosshair
           Reset default view
 

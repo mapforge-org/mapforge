@@ -32,6 +32,8 @@ export function undo() {
   // console.log('Undo state: ' + JSON.stringify(prevState))
   if (prevState.type === 'Feature update') {
     undoFeatureUpdate(prevState)
+  } else if (prevState.type === 'Feature property update') {
+    undoFeatureUpdate(prevState)    
   } else if (prevState.type === 'Feature added') {
     undoFeatureAdded(prevState)
   } else if (prevState.type === 'Feature deleted') {
@@ -57,6 +59,8 @@ export function redo() {
   // console.log('Next state: ' + JSON.stringify(nextState))
   if (nextState.type === 'Feature update') {
     redoFeatureUpdate(nextState) 
+  } else if (nextState.type === 'Feature property update') {
+    redoFeatureUpdate(nextState)     
   } else if (nextState.type === 'Feature added') {
     redoFeatureAdded(nextState)    
   } else if (nextState.type === 'Feature deleted') {
@@ -64,7 +68,7 @@ export function redo() {
   } else if (nextState.type === 'Track added') {
     redoFeatureAdded(nextState) 
   } else if (nextState.type === 'Track update') {
-    redoFeatureUpdate(nextState)         
+    redoFeatureUpdate(nextState)    
   } else {
     console.warn('Cannot redo ', nextState)
     return

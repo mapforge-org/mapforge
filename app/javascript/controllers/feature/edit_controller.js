@@ -6,6 +6,7 @@ import { handleDelete, draw } from 'maplibre/edit'
 import { featureColor, featureOutlineColor } from 'maplibre/styles'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
+import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
@@ -220,6 +221,11 @@ export default class extends Controller {
     // send shallow copy of feature to avoid changes during send
     mapChannel.send_message('update_feature', { ...feature })
   }
+
+  addUndo() {
+    const feature = this.getFeature()
+    addUndoState('Feature property update', feature)
+  }  
 
   getFeature () {
     const id = this.featureIdValue
