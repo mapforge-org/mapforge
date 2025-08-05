@@ -9,7 +9,7 @@ class MapsController < ApplicationController
 
   skip_before_action :set_user, only: %i[catchall]
   # site is cookie less for anonymous users, so no csrf token is set
-  skip_before_action :verify_authenticity_token, only: %i[show properties feature], unless: :set_user
+  skip_before_action :verify_authenticity_token, only: %i[create], unless: :set_user
 
   layout "map", only: [ :show ]
 
