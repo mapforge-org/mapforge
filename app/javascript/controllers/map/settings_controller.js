@@ -3,7 +3,6 @@ import { mapChannel } from 'channels/map_channel'
 import { resetControls } from 'maplibre/controls/shared'
 import * as functions from 'helpers/functions'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
-import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
@@ -170,9 +169,5 @@ export default class extends Controller {
 
   close () {
     resetControls()
-  }
-
-  addUndo() {
-    addUndoState('Map property update', mapProperties)
   }
 }
