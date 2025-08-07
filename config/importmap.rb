@@ -29,7 +29,7 @@ pin_all_from "vendor/javascript/mapbox-gl-draw-paint-mode",
   under: "mapbox-gl-draw-paint-mode", preload: false
 
 # https://github.com/maplibre/maplibre-gl-js
-pin "maplibre-gl", preload: false # @5.6.1
+pin "maplibre-gl", preload: false # @5.6.2
 # https://github.com/maplibre/maplibre-gl-geocoder
 pin "maplibre-gl-geocoder", to: "maplibre-gl-geocoder.js", preload: false
 # https://github.com/GIScience/openrouteservice-js?tab=readme-ov-file
