@@ -2,12 +2,7 @@
   "name": "Mapforge",
   "icons": [
     {
-      "src": "/icons/mapforge-logo.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    },
-    {
-      "src": "/icons/mapforge-logo.png",
+      "src": "/icons/mapforge-logo-pwa.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
@@ -17,6 +12,6 @@
   "display": "standalone",
   "scope": "/",
   "description": "Mapforge is an open source web application that lets you create and share individual maps for your locations, tracks and events.",
-  "theme_color": "red",
-  "background_color": "red"
+  "theme_color": "#DAE2C8",
+  "background_color": "#354620"
 }
