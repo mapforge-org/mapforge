@@ -165,3 +165,7 @@ button {
 .no-wrap {
   white-space: nowrap;
 }
+
+.chrome-mobile {
+  font-size: 130%;
+}

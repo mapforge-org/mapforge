@@ -4,8 +4,8 @@
 }
 
 .frontpage-title {
-  font-size: calc(min(12vw, 12em)); /* max font size is 12em; vw is % of viewport width */
-  position: absolute; top: calc(30vh - calc(min(12vw, 12em))); /* 30% of height - font size */
+  font-size: calc(min(12vw, 12rem)); /* max font size is 12em; vw is % of viewport width */
+  position: absolute; top: calc(30vh - calc(min(12vw, 12rem))); /* 30% of height - font size */
   padding-right: unset;
   padding-left: unset;
 }
@@ -170,7 +170,7 @@ section,
 }
 
 .welcome-text {
-  font-size: 1.1em;
+  font-size: 1.1rem;
 }
 
 .hero h1 {
@@ -245,7 +245,7 @@ section,
 }
 
 #features .swiper {
-  margin: 3em 5em;
+  margin: 1.5em 5em;
   overflow: hidden;
   color: var(--default-color)
 }
