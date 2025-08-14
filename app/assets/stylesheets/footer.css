@@ -1,7 +1,7 @@
 .footer {
   color: var(--text-color);
   background-color: var(--background-color);
-  font-size: 1em;
+  font-size: 1rem;
   position: relative;
   padding-top: 20px;
 }
@@ -61,7 +61,7 @@
   }
 
   .footer-links-about {
-    width: 15em;
+    width: 15rem;
   }
 }
 

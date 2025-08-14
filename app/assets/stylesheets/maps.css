@@ -1,11 +1,11 @@
 /* Add margin to body when navbar is fixed */
 nav.fixed-top~#maps {
-  margin-top: 4em;
+  margin-top: 4rem;
 }
 
 .flex-item {
  flex: 1; /* Each item will grow to take up equal space within the container */
- margin: 1em;
+ margin: 1rem;
 }
 
 .map-preview {
@@ -14,8 +14,8 @@ nav.fixed-top~#maps {
   border-width: 2px;
   border-style: solid;
   border-color: var(--color-light-sand);
-  min-width: 15em;
-  max-width: 25em;
+  min-width: 15rem;
+  max-width: 25rem;
   text-align: center;
 
   a {
@@ -33,7 +33,7 @@ nav.fixed-top~#maps {
 
 .preview-image {
   width: 100%;
-  min-height: 11em;
+  min-height: 11rem;
   filter: brightness(0.9);
   transition:
     filter 0.2s linear
@@ -42,10 +42,10 @@ nav.fixed-top~#maps {
 .map-preview-title {
   position: absolute;
   width: 95%;
-  top: 3em;
+  top: 3rem;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 1.5em;
+  font-size: 1.5rem;
   color: #fff;
   color: var(--color-dark-moss-green);
   text-shadow: 0 -4px 4px white, 4px 0 4px white, 0 4px 4px white, -4px 0 4px white;
@@ -59,40 +59,40 @@ nav.fixed-top~#maps {
 
 .map-auth {
   position: absolute;
-  top: 0.2em;
-  left: 0.2em;
+  top: 0.2rem;
+  left: 0.2rem;
   z-index: 2;
-  font-size: 1.2em;
+  font-size: 1.2rem;
   background: var(--color-light-sand);
   border-radius: 50%;
-  width: 1.5em;
-  height: 1.5em;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .map-avatar {
   position: absolute;
-  width: 1.5em;
-  height: 1.5em;
+  width: 1.5rem;
+  height: 1.5rem;
   opacity: 0.8;
   border-radius: 50%;
-  top: 0.2em;
-  right: 0.2em;
+  top: 0.2rem;
+  right: 0.2rem;
   z-index: 2;
   box-shadow: 2px 2px 6px rgb(0 0 0 / 40%);
 }
 
 .map-delete {
   position: absolute;
-  right: 0.2em;
-  bottom: 0.2em;
+  right: 0.2rem;
+  bottom: 0.2rem;
   z-index: 2;
-  font-size: 1.3em;
-  width: 1.5em;
+  font-size: 1.3rem;
+  width: 1.5rem;
   height: 1.5em;
   border-radius: 50%;
   background-color: var(--color-light-sand);
 }
 
 .empty-map-list {
-  min-height: 8em;
+  min-height: 8rem;
 }
