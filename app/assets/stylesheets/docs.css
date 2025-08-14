@@ -1,28 +1,28 @@
 #docs {
-  padding: 1.5em;
+  padding: 1.5rem;
 }
 
 /* Add margin to body when navbar is fixed */
 nav.fixed-top~#docs {
-  margin-top: 4em;
+  margin-top: 4rem;
 }
 
 .markdown-content {
-  font-size: 1.1em;
+  font-size: 1.1rem;
 
   h1, h2, h3, h4 {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
   
   h2, h3, h4 {
-    margin-top: 1em; 
+    margin-top: 1rem; 
   }  
 
   code {
     color: var(--color-light-sand);
     background: var(--color-mid-steel-blue);
-    padding: 0.15em; 
+    padding: 0.15rem; 
   }
 }
 

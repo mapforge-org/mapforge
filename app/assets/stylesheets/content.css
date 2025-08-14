@@ -5,12 +5,12 @@
 .centered {
   max-width: 920px;
   margin: 0 auto;
-  padding: 0.3em;
+  padding: 0.3rem;
   text-align: center;
 }
 
 .content-box {
   background-color: rgba(255 255 255 / 75%); /* 75% translucent white */
   backdrop-filter: blur(3px);
-  padding: 3em 1em 1em;
+  padding: 3rem 1rem 1rem;
 }

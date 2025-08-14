@@ -1,8 +1,8 @@
 #feature-details-modal {
   position: absolute;
-  padding: 0.55em;
+  padding: 0.55rem;
   overflow-y: auto;
-  margin: 0.4em 1em 1.5em;
+  margin: 0.4rem 1rem 1.5rem;
   border-radius: 3px;
   background-color: rgb(255 255 255 / 90%);
 }
@@ -10,29 +10,29 @@
 @media (width <= 574px) {
   #feature-details-modal {
     bottom: 0;
-    left: calc(50% - 1em);
+    left: calc(50% - 1rem);
     transform: translate(-50%);
     min-height: 125px;
     max-height: calc(100% - 20px); /* px here for easier calculation of scroll behavior */
     background-color: #fff;
     overflow-y: auto;
-    width: calc(100% - 1em);
-    margin: 0.5em 1em;
+    width: calc(100% - 1rem);
+    margin: 0.5rem 1rem;
   }
 
   .modal-pull-up #feature-details-body, .modal-pull-up #feature-edit-ui, .modal-pull-up #feature-edit-raw {
     overflow-y: scroll;
-    max-height: calc(100vh - 8em);
+    max-height: calc(100vh - 8rem);
   }
 }
 
 @media (width > 574px) {
   #feature-details-modal {
-    left: 2em;
-    top: 3.2em;
-    width: 25em;
-    max-height: calc(100% - 3em);
-    margin: 0.4em 1em 1.5em;
+    left: 2rem;
+    top: 4.2rem;
+    width: 25rem;
+    max-height: calc(100% - 3rem);
+    margin: 0.4rem 1rem 1.5rem;
   }
 
   .modal-pull-button {
@@ -41,20 +41,20 @@
 }
 
 #feature-edit-ui {
-  margin-top: 1.1em;
+  margin-top: 1.1rem;
 
   #fill-color, #stroke-color, #marker-symbol {
-    width: 3em;
+    width: 3rem;
   }
 }
 
 #feature-edit-raw {
-  margin-top: 1.8em;
+  margin-top: 1.8rem;
 }
 
 .feature-details-icon {
-  margin: 0.3em;
-  margin-right: 0.6em;
+  margin: 0.3rem;
+  margin-right: 0.6rem;
   width: calc(1.325rem + .9vw); /* same size as .fs-2 */
   max-height: calc(1.325rem + .9vw);
 }
@@ -79,8 +79,8 @@
 
 #edit-buttons {
   position: absolute;
-  right: 0.5em;
-  top: 0.5em;
+  right: 0.5rem;
+  top: 0.5rem;
   opacity: 0.85;
 }
 
@@ -90,6 +90,7 @@
   opacity: 0.85;
   width: 30px !important;
   height: 30px !important;
+  font-size: 1.2rem !important;
 }
 
 #feature-edit-raw textarea {
@@ -107,24 +108,24 @@
 }
 
 .edit-ui {
-  padding-top: 0.5em;
+  padding-top: 0.5rem;
   display: flex;
   align-items: center;
-  gap: 1em;
-  max-width: 25em;
+  gap: 1rem;
+  max-width: 25rem;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
 #feature-desc {
-  padding-top: 0.5em;
+  padding-top: 0.5rem;
 }
 
 .edit-ui .slider {
   flex-grow: 1;
   flex-shrink: 1;
-  min-width: 8em;
+  min-width: 8rem;
 }
 
 .edit-ui label, .edit-ui span {
