@@ -4,6 +4,11 @@
   font-size: 1.25em;
 }
 
+.maplibregl-ctrl-group button {
+  height: 2rem;
+  width: 2rem;
+}
+
 .maplibregl-ctrl button:disabled {
   opacity: 0.2;
 }
@@ -73,11 +78,15 @@
 }
 
 .maplibregl-ctrl-top-left {
-  top: 4em;
+  top: 4rem;
 }
 
 .maplibregl-ctrl-top-right {
   top: 0.4em;
+}
+
+.maplibregl-ctrl-geocoder {
+  margin-bottom: 1.5rem;
 }
 
 /* hide search form on mobile */
@@ -87,7 +96,7 @@
   }
 
   .maplibregl-ctrl-top-right {
-    top: 4em;
+    top: 4rem;
   }
 
   .maplibregl-ctrl-top-left .maplibregl-ctrl {
@@ -123,7 +132,7 @@
 
 .ctrl-line-menu {
   position: absolute;
-  left: 2.6em;
+  left: 2.6rem;
   top: 0;
   opacity: 1;
 }
