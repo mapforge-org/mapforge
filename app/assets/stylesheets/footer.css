@@ -41,6 +41,9 @@
   color: var(--text-color);
   display: inline-block;
   line-height: 1;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--color-dark-charcoal);
 }
 
 .footer .footer-links ul a:hover {
