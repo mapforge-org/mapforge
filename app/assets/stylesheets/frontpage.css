@@ -4,8 +4,8 @@
 }
 
 .frontpage-title {
-  font-size: calc(min(12vw, 12em)); /* max font size is 12em; vw is % of viewport width */
-  position: absolute; top: calc(30vh - calc(min(12vw, 12em))); /* 30% of height - font size */
+  font-size: calc(min(12vw, 12rem)); /* max font size is 12rem; vw is % of viewport width */
+  position: absolute; top: calc(30vh - calc(min(12vw, 12rem))); /* 30% of height - font size */
   padding-right: unset;
   padding-left: unset;
 }
@@ -13,12 +13,12 @@
 
 @media only screen and (orientation: portrait) {
   .frontpage-title {
-    font-size: calc(min(19vw, 12em)); /* max font size is 12em; vw is % of viewport width */
-    position: absolute; top: calc(30vh - calc(min(19vw, 12em))); /* 30% of height - font size */
+    font-size: calc(min(19vw, 12rem)); /* max font size is 12em; vw is % of viewport width */
+    position: absolute; top: calc(30vh - calc(min(19vw, 12rem))); /* 30% of height - font size */
   }
 
   .frontpage-subtitle {
-    font-size: calc(max(min(5vw, 6em), 0.75em));
+    font-size: calc(max(min(5vw, 6rem), 0.75rem));
     font-weight: 500;
   }
 }
@@ -166,11 +166,11 @@ section,
   z-index: 3;
   position: relative;
   padding-left: 0;
-  margin-left: 3em;
+  margin-left: 3rem;
 }
 
 .welcome-text {
-  font-size: 1.1em;
+  font-size: 1.1rem;
 }
 
 .hero h1 {
@@ -216,7 +216,7 @@ section,
 
 #features {
   border-top: 2px solid var(--color-light-sand);
-  font-size: 1.1em;
+  font-size: 1.1rem;
 }
 
 #features .img-bg {
@@ -245,7 +245,7 @@ section,
 }
 
 #features .swiper {
-  margin: 3em 5em;
+  margin: 1.5rem 5rem;
   overflow: hidden;
   color: var(--default-color)
 }
@@ -255,7 +255,7 @@ section,
 }
 
 #features li {
-  margin-bottom: 0.3em;
+  margin-bottom: 0.3rem;
 }
 
 #features .swiper-button-prev::after,
@@ -265,15 +265,15 @@ section,
 }
 
 #features .swiper-button-prev {
-  left: 2em;
+  left: 2rem;
 }
 
 #features .swiper-button-next {
-  right: 2em;
+  right: 2rem;
 }
 
 #features .swiper-pagination {
-  margin-top: 1em;
+  margin-top: 1rem;
   position: relative;
 }
 
@@ -292,15 +292,15 @@ section,
   }
 
   #features .swiper-button-prev {
-    left: 1em;
+    left: 1rem;
   }
 
   #features .swiper-button-next {
-    right: 1em;
+    right: 1rem;
   }
 
   #features .img-bg, #features .img-bg img {
-    height: 10em;
+    height: 10rem;
     min-height: 0;
   }
 }
@@ -311,15 +311,15 @@ section,
   }
 
   #hero .container {
-    margin-left: 1em;
+    margin-left: 1rem;
   }
 
   #features .swiper-button-prev {
-    left: 0.3em;
+    left: 0.3rem;
   }
 
   #features .swiper-button-next {
-    right: 0.3em;
+    right: 0.3rem;
   }
 
   .item ul {

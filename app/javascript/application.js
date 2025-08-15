@@ -28,3 +28,8 @@ if ('serviceWorker' in navigator) {
       console.log('Service Worker registration failed:', error)
     })
 }
+
+// Add a class to the HTML element if the browser is Chrome on mobile
+if (/Chrome/.test(navigator.userAgent) && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+  document.documentElement.classList.add('chrome-mobile')
+}

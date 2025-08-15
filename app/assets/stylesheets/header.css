@@ -10,8 +10,7 @@
 }
 
 .mapforge-logo {
-  width: 53px;
-  height: 35px;
+  width: 3.2rem;
 }
 
 .navbar-brand {
@@ -21,12 +20,12 @@
   padding-bottom: unset;
 
   .mapforge-font {
-    font-size: 1.6em;
+    font-size: 1.6rem;
   }
 }
 
 #navbar-dropdown .btn {
-  --bs-btn-font-size: 1.1em;
+  --bs-btn-font-size: 1.1rem;
 }
 
 .btn-orange {
@@ -44,15 +43,15 @@
 
 .login-link {
   position: absolute;
-  right: 1em;
-  top: 1.3em;
+  right: 1rem;
+  top: 1.3rem;
   text-decoration: none;
 }
 
 .profile-dropdown {
   position: absolute;
-  right: 1em;
-  top: 0.9em;
+  right: 1rem;
+  top: 0.9rem;
   display: flex;
   align-items: center;
   background-color: var(--color-light-sand);
@@ -61,7 +60,7 @@
 .navbar-toggler {
   position: absolute;
   right: calc(50% - 27px);
-  top: 0.4em;
+  top: 0.4rem;
   border-width: 0 !important;
 }
 
@@ -71,8 +70,8 @@
 
 .btn-create-map {
   position: absolute;
-  right: 4em;
-  top: 0.85em;
+  right: 4rem;
+  top: 0.85rem;
 }
 
 .navbar-collapse.collapsing, .navbar-collapse.show {
@@ -104,8 +103,16 @@ img.profile-image {
 
 /* Show burger menu and dropdown for nav items */
 @media (width <= 574px) {
+  .mapforge-logo {
+      width: 2.9rem; 
+    }
+
   .profile-dropdown {
-      top: 0.6em;
+      top: 0.6rem;
+  }
+
+  .login-link {
+      top: 0.9rem;  
   }
 
   .navbar .container-fluid {
@@ -117,7 +124,7 @@ img.profile-image {
   }
 
   .navbar-collapse.collapsing, .navbar-collapse.show {
-    margin-left: 0.8em;
-    margin-top: 0.8em;
+    margin-left: 0.8rem;
+    margin-top: 0.8rem;
   }
 }
