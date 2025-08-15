@@ -54,10 +54,10 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install chrome for screenshots (adds 400MB :-o)
-# Add Google's public key
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-# Write a list of Google Chrome's dependencies to a file
-RUN echo 'deb http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list
+# Add Google's public key + repo
+RUN wget -q -O /usr/share/keyrings/google-linux-signing-keyring.gpg https://dl-ssl.google.com/linux/linux_signing_key.pub
+echo "deb [signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+
 # Update packages again and install Google Chrome
 RUN apt-get update -qq && apt-get install --no-install-recommends -y google-chrome-stable fonts-noto-color-emoji
 

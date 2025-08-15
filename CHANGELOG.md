@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2025-08
+
+* Ship as PWA (progressive web app)
+
 ## 2025-07
 
 * Undo/Redo for features and tracks
