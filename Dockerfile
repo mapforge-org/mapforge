@@ -23,7 +23,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y ruby-dev build-essential git npm libvips pkg-config libproj-dev proj-bin libimlib2-dev
+    apt-get install --no-install-recommends -y libyaml-dev ruby-dev build-essential git npm libvips pkg-config libproj-dev proj-bin libimlib2-dev
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
