@@ -8,11 +8,11 @@ nav.fixed-top~#docs {
 }
 
 .markdown-content {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 
   h1, h2, h3, h4 {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 0.75rem;
   }
   
   h2, h3, h4 {

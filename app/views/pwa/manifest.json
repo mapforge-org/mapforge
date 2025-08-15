@@ -6,6 +6,25 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
+    }, 
+    {
+      "src": "/icons/mapforge-logo-pwa.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/pwa_screenshot1.png",
+      "sizes": "648x613",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/pwa_screenshot2.png",
+      "sizes": "1024x453",
+      "type": "image/png", 
+      "form_factor": "wide"
     }
   ],
   "start_url": "/",
