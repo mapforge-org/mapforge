@@ -12,11 +12,14 @@ import AOS from 'aos'
 window.AOS = AOS
 
 // https://github.com/michalsnik/aos
-AOS.init({
-  duration: 600,
-  easing: 'ease-in-out',
-  once: true
+window.addEventListener('turbo:load', function () {
+  AOS.init({
+    duration: 600,
+    easing: 'ease-in-out',
+    once: true
+  })
 })
+
 
 if ('serviceWorker' in navigator) {
   // Register the service worker

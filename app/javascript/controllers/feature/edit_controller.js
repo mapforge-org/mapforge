@@ -16,7 +16,7 @@ export default class extends Controller {
 
   delete_feature () {
     const feature = this.getFeature()
-    if (confirm('Really delete this element?')) {
+    if (confirm(`Really delete this ${feature.geometry.type}?`)) {
       handleDelete({ features: [feature] })
     }
   }
