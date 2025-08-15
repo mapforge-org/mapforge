@@ -59,4 +59,7 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
 
   config.assets.quiet = true
+
+  # allow access with any hostname
+  config.hosts.clear
 end
