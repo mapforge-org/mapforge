@@ -6,6 +6,7 @@ Overpass layers get loaded for the currently visible view of the map. When the m
 
 ![Overpass example](https://raw.githubusercontent.com/mapforge-org/mapforge/refs/heads/main/docs/tutorials/overpass1.png)
 
+
 ### Pre-defined Overpass layers 
 
 Mapforge has a couple of ready-to-use layers prepared that can easily get added to your map. 

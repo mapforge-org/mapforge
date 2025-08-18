@@ -9,7 +9,7 @@ import { status } from 'helpers/status'
 export let mapChannel
 let channelStatus
 
-['turbo:load'].forEach(function (e) {
+['turbo:before-visit'].forEach(function (e) {
   window.addEventListener(e, function () {
     unload()
   })

@@ -1,7 +1,7 @@
 .footer {
   color: var(--text-color);
   background-color: var(--background-color);
-  font-size: 1em;
+  font-size: 1rem;
   position: relative;
   padding-top: 20px;
 }
@@ -41,6 +41,9 @@
   color: var(--text-color);
   display: inline-block;
   line-height: 1;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--color-dark-charcoal);
 }
 
 .footer .footer-links ul a:hover {
@@ -58,7 +61,7 @@
   }
 
   .footer-links-about {
-    width: 15em;
+    width: 15rem;
   }
 }
 

@@ -12,19 +12,29 @@ import AOS from 'aos'
 window.AOS = AOS
 
 // https://github.com/michalsnik/aos
-AOS.init({
-  duration: 600,
-  easing: 'ease-in-out',
-  once: true
+window.addEventListener('turbo:load', function () {
+  AOS.init({
+    duration: 600,
+    easing: 'ease-in-out',
+    once: true
+  })
 })
+
 
 if ('serviceWorker' in navigator) {
   // Register the service worker
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(function (registration) {
-      console.log('Service Worker registered with scope:', registration.scope)
-    })
-    .catch(function (error) {
-      console.log('Service Worker registration failed:', error)
-    })
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(function (registration) {
+        console.log('Service Worker registered with scope:', registration.scope)
+      })
+      .catch(function (error) {
+        console.log('Service Worker registration failed:', error)
+      })
+  })
+}
+
+// Add a class to the HTML element if the browser is Chrome on mobile
+if (/Chrome/.test(navigator.userAgent) && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+  document.documentElement.classList.add('chrome-mobile')
 }

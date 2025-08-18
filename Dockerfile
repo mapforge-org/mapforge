@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1.2
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.4.1
+ARG RUBY_VERSION=3.4.5
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
 
 LABEL org.opencontainers.image.description="Web container for Mapforge"
@@ -23,7 +23,7 @@ FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y ruby-dev build-essential git npm libvips pkg-config libproj-dev proj-bin libimlib2-dev
+    apt-get install --no-install-recommends -y libyaml-dev ruby-dev build-essential git npm libvips pkg-config libproj-dev proj-bin libimlib2-dev
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -54,10 +54,10 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install chrome for screenshots (adds 400MB :-o)
-# Add Google's public key
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-# Write a list of Google Chrome's dependencies to a file
-RUN echo 'deb http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list
+# Add Google's public key + repo
+RUN wget -q -O /usr/share/keyrings/google-linux-signing-keyring.gpg https://dl-ssl.google.com/linux/linux_signing_key.pub
+RUN echo "deb [signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+
 # Update packages again and install Google Chrome
 RUN apt-get update -qq && apt-get install --no-install-recommends -y google-chrome-stable fonts-noto-color-emoji
 
