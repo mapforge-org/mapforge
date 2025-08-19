@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+  # setting session cookie to enable csrf token
   skip_before_action :disable_session_cookies
 
   layout "frontpage"

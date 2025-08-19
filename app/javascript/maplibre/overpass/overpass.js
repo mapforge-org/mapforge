@@ -130,10 +130,17 @@ function overpassDescription(props) {
   if (props["notes"]) { desc += props["notes"] + '\n' }
   if (props["website"]) { desc += props["website"] + '\n' }
   if (props["url"]) { desc += props["url"] + '\n' }
-  { desc += '```\n' + JSON.stringify(props, null, 2) + '\n```\n' }
+
+  desc += `\n**OSM tags:**\n 
+  |               |               |
+  | ------------- | ------------- |\n`
+  const keys = Object.keys(props).filter(key => !['description', 'notes', 'website', 'url', 'id'].includes(key))
+  keys.forEach(key => {
+    desc += `| **${key}** | ${props[key]} |\n`
+  })
 
   desc += '\n' + '![osm link](/icons/osm-icon-small.png)'
-  desc += '\n' + '[' + props['id'] + '](https://www.openstreetmap.org/' + props['id'] + ')'
+  desc += '\n' + '[See node in OpenStreetMap](https://www.openstreetmap.org/' + props['id'] + ')'
 
   return desc
 }
