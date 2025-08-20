@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2025-08
 
-* Ship as PWA (progressive web app)
+* Ship as PWA (progressive web app) + Android [app](https://play.google.com/store/apps/details?id=org.mapforge.twa)
 
 ## 2025-07
 

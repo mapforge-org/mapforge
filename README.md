@@ -89,7 +89,7 @@ For example `act -j test`.
 
 ## Production Setup
 
-### Container build
+### Container image
 
 Github builds a new container on each commit to `main` at: `ghcr.io/digitaltom/mapforge:main`. Or, you can build your own image with: `podman build -t mapforge .`.
 
@@ -99,3 +99,15 @@ Now, you can run the image with: `podman run -e SECRET_KEY_BASE=e3c9f2... --netw
 
 The Maxmind IP database cat get mounted to the container with: 
 `-v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb`
+
+### App
+
+Mapforge is build as a PWA (progressive web app, see [tutorial](docs/tutorials/pwa_app.md)). An Android app wrapping the pwa and is available in the [app store](https://play.google.com/store/apps/details?id=org.mapforge.twa). 
+
+To build the Android app with [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap), run: 
+
+```
+npm install -g @bubblewrap/cli
+bubblewrap init --manifest=http://localhost:3000/manifest.json
+bubblewrap build
+```
