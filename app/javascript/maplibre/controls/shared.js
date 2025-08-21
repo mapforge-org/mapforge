@@ -248,9 +248,14 @@ export function initializeDefaultControls () {
   // css: .maplibregl-user-location-dot
   // Note: This works only via https in modern browsers
   const geolocate = new maplibregl.GeolocateControl({
+    // https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition#options
     positionOptions: {
-      enableHighAccuracy: true
+      enableHighAccuracy: false,
+      timeout: 60000,
+      maximumAge: 3000
     },
+    showAccuracyCircle: true,
+    showUserLocation: true,
     trackUserLocation: functions.isMobileDevice()
   })
   geolocate.on('error', () => { status('Error detecting location', 'warning') })

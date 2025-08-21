@@ -216,8 +216,8 @@ export function select (feature) {
   console.log('select', feature)
   if (feature?.properties?.route?.provider === 'osrm') {
     let profile = feature?.properties?.route?.profile
-    draw.changeMode('directions_' + profile) // don't fire 'draw.modechange' event to avoid reset
-    map.fire('draw.modechange')
+    draw.changeMode('directions_' + profile)
+    map.fire('draw.modechange') // fire event before initDirections
     initDirections(profile, feature)
     functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
   } else if (feature.geometry.type === 'Point') {
