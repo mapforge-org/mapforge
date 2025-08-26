@@ -50,6 +50,7 @@ export class MapShareControl {
         if (draw) { resetEditControls() }
         e.target.closest('button').classList.add('active')
         modal.classList.add('show')
+        window.history.pushState({ modal: 'share' }, '', `${window.location.pathname}#share`)
       }
     }
   }
@@ -82,6 +83,7 @@ export class MapLayersControl {
         initLayersModal()
         e.target.closest('button').classList.add('active')
         modal.classList.add('show')
+        window.history.pushState({ modal: 'layers' }, '', `${window.location.pathname}#layers`)
       }
     }
   }
@@ -304,3 +306,18 @@ const updateOrientation = (event) => {
     dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
   }
 }
+
+// Restore modals on back/forward buttons
+window.addEventListener('popstate', (e) => {
+  const state = e.state || {}
+  const modalIdInState = state.modal || null
+  if (modalIdInState === 'share') {
+    document.querySelector('.maplibregl-ctrl-share').click()
+  } else if (modalIdInState === 'settings') {
+    document.querySelector('.maplibregl-ctrl-map').click()
+  } else if (modalIdInState === 'layers') {
+    document.querySelector('.maplibregl-ctrl-layers').click()
+  } else {
+    resetControls()
+  }
+})

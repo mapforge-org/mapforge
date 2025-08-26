@@ -169,5 +169,6 @@ export default class extends Controller {
 
   close () {
     resetControls()
+    window.history.pushState({ }, '', `${window.location.pathname}`)
   }
 }

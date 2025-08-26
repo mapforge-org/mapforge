@@ -83,6 +83,7 @@ export class MapSettingsControl {
         initSettingsModal()
         e.target.closest('button').classList.add('active')
         modal.classList.add('show')
+        window.history.pushState({ modal: 'settings' }, '', `${window.location.pathname}#settings`)
       }
     }
   }
