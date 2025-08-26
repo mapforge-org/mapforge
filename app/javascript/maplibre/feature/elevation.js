@@ -35,8 +35,13 @@ export async function showElevationChart (feature) {
   const chartLineColor = (feature.properties['fill-extrusion-color'] ||
     feature.properties['stroke'] || featureColor).substring(0, 7)
 
+  const canvas = document.getElementById('route-elevation-chart')
+  // If a chart already exists on this canvas, destroy it
+  const existing = Chart.getChart(canvas)
+  if (existing) existing.destroy()
+
   let chart = new Chart(
-    document.getElementById('route-elevation-chart'), {
+    canvas, {
       type: 'line',
       data: {
         labels: labels,
