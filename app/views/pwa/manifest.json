@@ -5,7 +5,7 @@
   "version": "25.08",
   "icons": [
     {
-      "src": "/icons/mapforge-logo-pwa.png",
+      "src": "/icons/mapforge-logo-pwa-round.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"
@@ -19,73 +19,73 @@
   ],
   "screenshots": [
     {
-      "src": "/images/pwa_screenshot_main_mobile.png",
+      "src": "/images/screenshots/pwa_screenshot_main_mobile.png",
       "sizes": "552x681",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
-      "src": "/images/pwa_screenshot_main_wide.png",
+      "src": "/images/screenshots/pwa_screenshot_main_wide.png",
       "sizes": "1345x669",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/images/pwa_screenshot1_mobile.png",
+      "src": "/images/screenshots/pwa_screenshot1_mobile.png",
       "sizes": "452x666",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
-      "src": "/images/pwa_screenshot1_wide.png",
+      "src": "/images/screenshots/pwa_screenshot1_wide.png",
       "sizes": "1188x686",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/images/pwa_screenshot2_mobile.png",
+      "src": "/images/screenshots/pwa_screenshot2_mobile.png",
       "sizes": "507x660",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
-      "src": "/images/pwa_screenshot2_wide.png",
+      "src": "/images/screenshots/pwa_screenshot2_wide.png",
       "sizes": "1320x671",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/images/pwa_screenshot3_mobile.png",
+      "src": "/images/screenshots/pwa_screenshot3_mobile.png",
       "sizes": "478x719",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
-      "src": "/images/pwa_screenshot3_wide.png",
+      "src": "/images/screenshots/pwa_screenshot3_wide.png",
       "sizes": "1456x663",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/images/pwa_screenshot4_mobile.png",
+      "src": "/images/screenshots/pwa_screenshot4_mobile.png",
       "sizes": "477x718",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
-      "src": "/images/pwa_screenshot4_wide.png",
+      "src": "/images/screenshots/pwa_screenshot4_wide.png",
       "sizes": "1294x721",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/images/pwa_screenshot5_mobile.png",
+      "src": "/images/screenshots/pwa_screenshot5_mobile.png",
       "sizes": "449x706",
       "type": "image/png",
       "form_factor": "narrow"
     },
     {
-      "src": "/images/pwa_screenshot5_wide.png",
+      "src": "/images/screenshots/pwa_screenshot5_wide.png",
       "sizes": "1329x725",
       "type": "image/png",
       "form_factor": "wide"
@@ -93,6 +93,10 @@
   ],
   "start_url": "/",
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "scope": "/",
   "description": "Mapforge is an open source web application that lets you create and share individual maps for your locations, tracks and events.",
   "categories": [
