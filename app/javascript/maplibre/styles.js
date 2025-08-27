@@ -1,6 +1,6 @@
 import { map, frontFeature, removeStyleLayers } from 'maplibre/map'
 import {
-  highlightedFeatureId, stickyFeatureHighlight,
+  highlightedFeatureId, stickyFeatureHighlight, highlightedFeatureSource,
   resetHighlightedFeature, highlightFeature
 } from 'maplibre/feature'
 
@@ -46,14 +46,15 @@ export function initializeViewStyles (sourceName) {
     if (document.querySelector('.maplibregl-ctrl button.active')) { return }
 
     const features = map.queryRenderedFeatures(e.point).filter(f => f.source === sourceName)
+    console.log(sourceName, features)
     if (features[0]) {
       if (features[0].properties.cluster) { return } 
       if (features[0].id === highlightedFeatureId) { return }
       frontFeature(features[0])
       highlightFeature(features[0], false, sourceName)
-      return
+    } else if (highlightedFeatureSource === sourceName) {
+      resetHighlightedFeature()
     }
-    resetHighlightedFeature()
   })
 
   map.on('styleimagemissing', loadImage)
