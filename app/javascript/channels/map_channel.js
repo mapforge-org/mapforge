@@ -79,6 +79,8 @@ export function initializeSocket () {
 
     send_message (action, data) {
       data.map_id = window.gon.map_id
+      // dropping properties.id from redrawGeojson() before sending to server
+      if (data.properties && data.properties.id) { delete data.properties.id }
       console.log('Sending: [' + action + '] :', data)
       // Call the original perform method
       this.perform(action, data)
