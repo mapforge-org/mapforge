@@ -43,10 +43,10 @@ export function initializeViewStyles (sourceName) {
   map.on('mousemove', (e) => {
     if (window.gon.map_mode === 'static') { return }
     if (stickyFeatureHighlight && highlightedFeatureId) { return }
+    // This avoids hover highlight in edit mode
     if (document.querySelector('.maplibregl-ctrl button.active')) { return }
 
     const features = map.queryRenderedFeatures(e.point).filter(f => f.source === sourceName)
-    console.log(sourceName, features)
     if (features[0]) {
       if (features[0].properties.cluster) { return } 
       if (features[0].id === highlightedFeatureId) { return }

@@ -160,6 +160,7 @@ export function initializeEditControls () {
 
   map.addControl(new ControlGroup([new MapSelectControl()]), 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-select)').classList.add('hidden')
+  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-select) button').classList.add('active')
 
   map.addControl(draw, 'top-left')
   addLineMenu()
