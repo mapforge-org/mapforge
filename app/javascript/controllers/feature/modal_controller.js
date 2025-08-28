@@ -8,7 +8,8 @@ import { showFeatureDetails } from 'maplibre/feature'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { resetControls } from 'maplibre/controls/shared'
-import { draw } from 'maplibre/edit'
+import { draw, select } from 'maplibre/edit'
+import { resetDirections } from 'maplibre/routing/osrm'
 
 let easyMDE
 
@@ -28,15 +29,31 @@ export default class extends Controller {
       document.querySelector('#edit-button-edit').classList.remove('active')
       this.show_feature_edit_raw()
     } else if (document.querySelector('#feature-edit-ui').classList.contains('hidden') && type === 'ui') {
-      // console.log('show_feature_edit_ui')
+      console.log('show_feature_edit_ui')
       document.querySelector('#edit-button-raw').classList.remove('hidden')
       document.querySelector('#edit-button-raw').classList.remove('active')
       document.querySelector('#edit-button-edit').classList.add('active')
       this.show_feature_edit_ui()
+
+      // drop feature from geojsonData and add to draw for editing
+      // this allows to use draw's editing features and snapping
+
+
+      const feature = this.getFeature()
+      draw.add(feature)
+      select(feature)
+      //draw.changeMode('direct_select', { featureId: feature.id })
+      //}
+      
+      //draw.deleteAll()
+      //draw.add(geojsonData)
+
     } else {
       // repeated click on the current edit mode returns to feature description
       document.querySelector('#edit-button-raw').classList.add('hidden')
       showFeatureDetails(this.getFeature())
+      draw.deleteAll()
+      resetDirections()
     }
     document.querySelector('#feature-edit-raw .error').innerHTML = ''
     event.stopPropagation()

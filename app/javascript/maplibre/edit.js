@@ -1,5 +1,6 @@
 import { map, geojsonData, destroyFeature, redrawGeojson, addFeature, layers, mapProperties } from 'maplibre/map'
 import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
+import { initializeViewStyles } from 'maplibre/styles'
 import { highlightFeature, showFeatureDetails, initializeKmMarkerStyles } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'
@@ -74,7 +75,8 @@ export async function initializeEditMode () {
 
   // Add edit styles when basemap style is loaded
   map.on('style.load', function (_e) {
-    initializeEditStyles()
+    // initializeEditStyles()
+    initializeViewStyles('geojson-source')
     initializeKmMarkerStyles()
   })
 
@@ -97,7 +99,7 @@ export async function initializeEditMode () {
     currentMode = draw.getMode()
 
     resetDirections()
-    resetControls()
+    //resetControls()
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
     if (draw.getMode() !== 'simple_select' && draw.getMode() !== 'direct_select') {
       functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
@@ -141,7 +143,7 @@ export async function initializeEditMode () {
     }
   })
 
-  map.on('draw.selectionchange', function (e) {
+  map.on('draw.selectionchangex', function (e) {
     // probably mapbox draw bug: map can lose drag capabilities on double click
     map.dragPan.enable()
     if (!e.features?.length) { justCreated = false; selectedFeature = null; return }

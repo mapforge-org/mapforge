@@ -129,7 +129,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     let feature = geojsonData?.features?.find(f => f.id === urlFeatureId)
     if (feature) {
-      if (!draw) { highlightFeature(feature, true) }
+      highlightFeature(feature, true)
       const centroid = window.turf.center(feature)
       map.setCenter(centroid.geometry.coordinates)
     }
@@ -397,10 +397,17 @@ export function redrawGeojson (resetDraw = true) {
       // This has a performance drawback over draw.set(), but some feature
       // properties don't get updated otherwise
       // API: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md
+      
+      // Extract the feature IDs
+      //const featureIds = draw.getAll().features.map(feature => feature.id)      
       draw.deleteAll()
-      draw.add(geojsonData)
+      // featureIds.forEach((featureId) => {
+      //   draw.add(geojsonData.features.find(f => f.id === featureId))
+      // })
+
+      //draw.add(geojsonData)
     } else {
-      draw.set(geojsonData)
+      //draw.set(geojsonData)
     }
   }
   map.getSource('geojson-source')?.setData(renderedGeojsonData())
