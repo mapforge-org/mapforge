@@ -35,19 +35,10 @@ export default class extends Controller {
       document.querySelector('#edit-button-edit').classList.add('active')
       this.show_feature_edit_ui()
 
-      // drop feature from geojsonData and add to draw for editing
-      // this allows to use draw's editing features and snapping
-
-
+      // add feature to draw
       const feature = this.getFeature()
       draw.add(feature)
       select(feature)
-      //draw.changeMode('direct_select', { featureId: feature.id })
-      //}
-      
-      //draw.deleteAll()
-      //draw.add(geojsonData)
-
     } else {
       // repeated click on the current edit mode returns to feature description
       document.querySelector('#edit-button-raw').classList.add('hidden')

@@ -94,7 +94,7 @@ export function initDirections (profile, feature) {
  
     // add elevation from openrouteservice
     updateElevation(currentFeature).then(() => {
-      updateFeature(currentFeature)
+      updateTrack(currentFeature)
       showFeatureDetails(currentFeature)
     })
   })
@@ -113,7 +113,7 @@ export function initDirections (profile, feature) {
   })
 }
 
-function updateFeature(feature) {
+function updateTrack(feature) {
   let geojsonFeature = geojsonData.features.find(f => f.id === feature.id)
   if (geojsonFeature) {
     // store undo state from unchanged feature

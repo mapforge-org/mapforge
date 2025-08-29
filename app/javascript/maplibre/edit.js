@@ -1,7 +1,7 @@
 import { map, geojsonData, destroyFeature, redrawGeojson, addFeature, layers, mapProperties } from 'maplibre/map'
-import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
+import { editStyles, _initializeEditStyles } from 'maplibre/edit_styles'
 import { initializeViewStyles } from 'maplibre/styles'
-import { highlightFeature, showFeatureDetails, initializeKmMarkerStyles } from 'maplibre/feature'
+import { highlightFeature, _showFeatureDetails, initializeKmMarkerStyles } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
@@ -94,16 +94,19 @@ export async function initializeEditMode () {
   })
 
   map.on('draw.modechange', () => {
+    // probably mapbox draw bug: map can lose drag capabilities on double click
+    map.dragPan.enable()
     if (currentMode === draw.getMode()) { return }
     console.log("Switch draw mode from '" + currentMode + "' to '" + draw.getMode() + "'")
     currentMode = draw.getMode()
 
     resetDirections()
-    //resetControls()
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
+    // any paint mode
     if (draw.getMode() !== 'simple_select' && draw.getMode() !== 'direct_select') {
       functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
     } else {
+      // select mode
       functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
       functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
     }
@@ -143,7 +146,7 @@ export async function initializeEditMode () {
     }
   })
 
-  map.on('draw.selectionchangex', function (e) {
+  map.on('_draw.selectionchange', function (e) {
     // probably mapbox draw bug: map can lose drag capabilities on double click
     map.dragPan.enable()
     if (!e.features?.length) { justCreated = false; selectedFeature = null; return }
@@ -279,19 +282,16 @@ async function handleUpdate (e) {
 
   status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry
+
   redrawGeojson(false)
 
   if (feature.geometry.type === 'LineString') { 
     // gets also triggered on failure
     updateElevation(feature).then(() => {
       mapChannel.send_message('update_feature', feature)
-      // trigger highlight, to update eg. coordinates
-      showFeatureDetails(feature)
     })
   } else { 
     mapChannel.send_message('update_feature', feature)
-    // trigger highlight, to update eg. coordinates
-    highlightFeature(feature, true)
   }
 }
 

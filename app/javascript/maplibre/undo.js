@@ -84,6 +84,7 @@ function undoFeatureUpdate(prevState) {
   if (idx !== -1) {
     addRedoState(prevState.type, geojsonData.features[idx])
     geojsonData.features[idx] = prevState.state
+    resetDirections()
     mapChannel.send_message('update_feature', prevState.state)
   } else {
     console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
@@ -95,6 +96,7 @@ function undoFeatureUpdate(prevState) {
   if (idx !== -1) {
     addUndoState(nextState.type, geojsonData.features[idx], false)
     geojsonData.features[idx] = nextState.state
+    resetDirections()
     mapChannel.send_message('update_feature', nextState.state)
   } else {
     console.warn('Feature with id ' + nextState.state.id + ' not found in geojsonData')
