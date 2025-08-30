@@ -165,6 +165,10 @@ export async function initializeMap (divId = 'maplibre-map') {
     if (map.getZoom() > maxzoom - 0.2) {
       map.setZoom(maxzoom - 0.2)
     }
+    let minzoom = bgMap.style.layers[0].minzoom
+    if (map.getZoom() < minzoom + 0.2) {
+      map.setZoom(minzoom + 0.2)
+    }    
   })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
   map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
