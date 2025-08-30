@@ -29,7 +29,7 @@ export default class extends Controller {
       document.querySelector('#edit-button-edit').classList.remove('active')
       this.show_feature_edit_raw()
     } else if (document.querySelector('#feature-edit-ui').classList.contains('hidden') && type === 'ui') {
-      console.log('show_feature_edit_ui')
+      // console.log('show_feature_edit_ui')
       document.querySelector('#edit-button-raw').classList.remove('hidden')
       document.querySelector('#edit-button-raw').classList.remove('active')
       document.querySelector('#edit-button-edit').classList.add('active')

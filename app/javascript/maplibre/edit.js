@@ -244,9 +244,7 @@ function handleCreate (e) {
     const options = { tolerance: 0.00005, highQuality: true, mutate: true }
     window.turf.simplify(feature, options)
   }
-  // std mapbox draw shapes will auto-select the feature (simple_select).
-  // This var enables special handling in draw.selectionchange
-  justCreated = true
+
   // status('Feature ' + feature.id + ' created')
   addFeature(feature)
   addUndoState('Feature added', feature)
@@ -256,6 +254,18 @@ function handleCreate (e) {
   }
   mapChannel.send_message('new_feature', feature)
   if (feature.geometry.type === 'LineString') { updateElevation(feature) }
+
+  // Switch to feature edit mode after create
+  setTimeout(() => {
+    if (draw.getMode() !== mode) {
+      highlightFeature(feature, true)
+      // switch feature details to edit mode after create
+      window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
+      draw.add(feature)
+      select(feature)
+    }
+  }, 10)
+
 
   // Switch back to draw mode to create multiple features
   // setTimeout(() => {
@@ -288,9 +298,11 @@ async function handleUpdate (e) {
     // gets also triggered on failure
     updateElevation(feature).then(() => {
       mapChannel.send_message('update_feature', feature)
+      // showFeatureDetails(feature)
     })
   } else { 
     mapChannel.send_message('update_feature', feature)
+    // highlightFeature(feature, true)
   }
 }
 
