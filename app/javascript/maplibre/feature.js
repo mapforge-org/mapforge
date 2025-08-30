@@ -207,7 +207,7 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
         window.history.pushState({}, '', newPath)
       }
     } else {
-      console.error('Feature #' + feature.id + ' not found in ' + source + '!')
+      console.error('Feature #' + feature.id + ' not found!')
     }
   }
 }

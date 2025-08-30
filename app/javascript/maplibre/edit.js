@@ -15,7 +15,6 @@ import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-
 export let draw
 export let selectedFeature
 let currentMode
-let justCreated = false
 
 // https://github.com/mapbox/mapbox-gl-draw
 export async function initializeEditMode () {
@@ -143,26 +142,6 @@ export async function initializeEditMode () {
     } else if (draw.getMode() === 'draw_line_string') {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Line Mode: Click on the map to draw a line', 'info', 'medium', 8000)
-    }
-  })
-
-  map.on('_draw.selectionchange', function (e) {
-    // probably mapbox draw bug: map can lose drag capabilities on double click
-    map.dragPan.enable()
-    if (!e.features?.length) { justCreated = false; selectedFeature = null; return }
-    // console.log('draw.selectionchange', e.features)
-    if (selectedFeature && (selectedFeature.id === e.features[0].id)) { return }
-    selectedFeature = e.features[0]
-
-    if (geojsonData.features.find(f => f.id === selectedFeature.id)) {
-      document.querySelector('#edit-buttons').classList.remove('hidden')
-      select(selectedFeature)
-      highlightFeature(selectedFeature, true)
-      // switch feature details to edit mode after create
-      if (justCreated) {
-        justCreated = false
-        window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
-      }
     }
   })
 

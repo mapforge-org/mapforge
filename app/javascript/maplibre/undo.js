@@ -10,7 +10,7 @@ let redoStack = []
 export function addUndoState(type, state, clearRedo = true) {
   // Deep clone to avoid mutation
   undoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
-  console.log('Updated undo stack', undoStack)
+  // console.log('Updated undo stack', undoStack)
   showUndoButton()
   if (clearRedo) {
     hideRedoButton()

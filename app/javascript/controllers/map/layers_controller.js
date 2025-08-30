@@ -3,7 +3,6 @@ import { mapChannel } from 'channels/map_channel'
 import { map, layers, upsert, mapProperties, redrawGeojson, removeGeoJSONSource } from 'maplibre/map'
 import { initLayersModal, resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
-import { draw } from 'maplibre/edit'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import { loadOverpassLayer, initializeOverpassLayers } from 'maplibre/overpass/overpass'
@@ -90,11 +89,7 @@ export default class extends Controller {
     console.log('Fly to: ' + feature.id + ' ' + centroid.geometry.coordinates)
     resetControls()
     map.once('moveend', function () {
-      if (draw && layer.type === 'geojson') {
-        map.fire('draw.selectionchange', { features: [feature]})
-      } else {
-        highlightFeature(feature, true, source)
-      }
+      highlightFeature(feature, true, source)
     })
     map.flyTo({
       center: centroid.geometry.coordinates,
