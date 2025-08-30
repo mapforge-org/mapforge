@@ -129,7 +129,6 @@ export function editStyles () {
       }
     },
     // inactive single point features
-    removeSource(styles()['points-border-layer']),
     removeSource(styles()['points-layer']),
     removeSource(styles()['heatmap-layer']),
 

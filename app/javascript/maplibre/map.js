@@ -519,7 +519,7 @@ export function sortLayers () {
   const userSymbols = functions.reduceArray(layers, (e) => (e.id === 'symbols-layer' || e.id === 'symbols-border-layer'))
   const userLabels = functions.reduceArray(layers, (e) => e.id === 'text-layer')
   const mapSymbols = functions.reduceArray(layers, (e) => e.type === 'symbol')
-  const points = functions.reduceArray(layers, (e) => (e.id === 'points-layer.hot' || e.id === 'points-layer.cold' || e.id === 'points-layer' || e.id === 'points-border-layer' || e.id === 'points-border-layer.cold' || e.id === 'points-border-layer.hot'))
+  const points = functions.reduceArray(layers, (e) => (e.id === 'points-layer.hot' || e.id === 'points-layer.cold' || e.id === 'points-layer'))
   const lineLayerHits = functions.reduceArray(layers, (e) => e.id === 'line-layer-hit')
   const pointsLayerHits = functions.reduceArray(layers, (e) => e.id === 'points-hit-layer')
   const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
