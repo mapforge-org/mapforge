@@ -192,7 +192,7 @@ export async function initializeEditMode () {
   // and to hide feature modal if no feature is selected
   map.on('click', () => {
     // mapbox draw type features don't fire map.click, but directions does - ignore it
-    if (!draw.getMode().startsWith('directions_')) {
+    if (draw.getMode() == 'direct_select' || draw.getMode() == 'simple_select') {
       selectedFeature = null
       resetControls()
       document.querySelector('#edit-buttons').classList.add('hidden')
