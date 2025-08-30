@@ -19,12 +19,18 @@ describe 'Feature edit' do
 
     context 'when adding features' do
       it 'adding a point to the map' do
+        # cancel map settings popup
+        find('.close-button').click
         find('.mapbox-gl-draw_point').click
         expect { click_coord('#maplibre-map', 50, 50) }.to change { Feature.point.count }.by(1)
       end
 
       it 'adding a polygon to the map' do
+        # cancel map settings popup
+        find('.close-button').click
+
         find('.mapbox-gl-draw_polygon').click
+
         click_coord('#maplibre-map', 10, 10)
         click_coord('#maplibre-map', 10, 50)
         click_coord('#maplibre-map', 50, 50)
