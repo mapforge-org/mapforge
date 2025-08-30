@@ -70,8 +70,11 @@ function featureMeta (feature) {
 
 
 export async function showFeatureDetails (feature) {
-  dom.hideElements(['#feature-edit-raw', '#edit-button-raw', '#feature-edit-ui'])
+  dom.hideElements(['#feature-edit-raw', '#feature-edit-ui', '#edit-button-raw'])
   f.e('#edit-buttons button', (e) => { e.classList.remove('active') })
+  if (window.gon.map_mode === 'rw') {
+    document.querySelector('#edit-buttons').classList.remove('hidden')
+  }
   dom.showElements('#feature-details-body')
   const modal = document.querySelector('#feature-details-modal')
   modal.classList.remove('expanded')

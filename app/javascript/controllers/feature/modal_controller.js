@@ -8,7 +8,8 @@ import { showFeatureDetails } from 'maplibre/feature'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { resetControls } from 'maplibre/controls/shared'
-import { draw } from 'maplibre/edit'
+import { draw, select } from 'maplibre/edit'
+import { resetDirections } from 'maplibre/routing/osrm'
 
 let easyMDE
 
@@ -33,10 +34,17 @@ export default class extends Controller {
       document.querySelector('#edit-button-raw').classList.remove('active')
       document.querySelector('#edit-button-edit').classList.add('active')
       this.show_feature_edit_ui()
+
+      // add feature to draw
+      const feature = this.getFeature()
+      draw.add(feature)
+      select(feature)
     } else {
       // repeated click on the current edit mode returns to feature description
       document.querySelector('#edit-button-raw').classList.add('hidden')
       showFeatureDetails(this.getFeature())
+      draw.deleteAll()
+      resetDirections()
     }
     document.querySelector('#feature-edit-raw .error').innerHTML = ''
     event.stopPropagation()

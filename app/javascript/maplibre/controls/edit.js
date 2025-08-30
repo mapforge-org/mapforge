@@ -160,6 +160,7 @@ export function initializeEditControls () {
 
   map.addControl(new ControlGroup([new MapSelectControl()]), 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-select)').classList.add('hidden')
+  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-select) button').classList.add('active')
 
   map.addControl(draw, 'top-left')
   addLineMenu()
@@ -285,6 +286,7 @@ function addPaintButton () {
     if (draw.getMode() === 'draw_paint_mode') {
       draw.changeMode('simple_select')
     } else {
+      resetControls()
       draw.changeMode('draw_paint_mode')
     }
     map.fire('draw.modechange')
@@ -307,6 +309,7 @@ function addRoadButton () {
     if (draw.getMode() === 'directions_car') {
       draw.changeMode('simple_select')
     } else {
+      resetControls()
       draw.changeMode('directions_car')
     }
     map.fire('draw.modechange')
@@ -329,6 +332,7 @@ function addBicycleButton () {
     if (draw.getMode() === 'directions_bike') {
       draw.changeMode('simple_select')
     } else {
+      resetControls()
       draw.changeMode('directions_bike')
     }
     map.fire('draw.modechange')
@@ -351,6 +355,7 @@ function addFootButton () {
     if (draw.getMode() === 'directions_foot') {
       draw.changeMode('simple_select')
     } else {
+      resetControls()
       draw.changeMode('directions_foot')
     }
     map.fire('draw.modechange')

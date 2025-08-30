@@ -129,7 +129,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     let feature = geojsonData?.features?.find(f => f.id === urlFeatureId)
     if (feature) {
-      if (!draw) { highlightFeature(feature, true) }
+      highlightFeature(feature, true)
       const centroid = window.turf.center(feature)
       map.setCenter(centroid.geometry.coordinates)
     }
@@ -396,11 +396,13 @@ export function redrawGeojson (resetDraw = true) {
     if (resetDraw) {
       // This has a performance drawback over draw.set(), but some feature
       // properties don't get updated otherwise
-      // API: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md
+      // API: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md  
+      const featureIds = draw.getAll().features.map(feature => feature.id)
       draw.deleteAll()
-      draw.add(geojsonData)
-    } else {
-      draw.set(geojsonData)
+      
+      featureIds.forEach((featureId) => {
+        draw.add(geojsonData.features.find(f => f.id === featureId))
+      })
     }
   }
   map.getSource('geojson-source')?.setData(renderedGeojsonData())
@@ -424,9 +426,12 @@ export function renderedGeojsonData () {
 
 export function upsert (updatedFeature) {
   const feature = geojsonData.features.find(f => f.id === updatedFeature.id)
-  if (!feature) {
-    addFeature(updatedFeature)
-  } else if (!equal(updatedFeature, feature)) {
+  if (!feature) { addFeature(updatedFeature); return }
+
+  // only update feature if it was changed, disregard properties.id
+  const existingFeature = JSON.parse(JSON.stringify(feature))
+  delete existingFeature.properties.id
+  if (!equal(existingFeature, updatedFeature)) {
     updateFeature(feature, updatedFeature)
   }
 }
@@ -447,14 +452,11 @@ function updateFeature (feature, updatedFeature) {
       animation.animatePoint(feature, newCoords)
     }
   }
-  // only update feature if it was changed
-  if (!equal(feature.geometry, updatedFeature.geometry) ||
-    !equal(feature.properties, updatedFeature.properties)) {
-    feature.geometry = updatedFeature.geometry
-    feature.properties = updatedFeature.properties
-    status('Updated feature ' + updatedFeature.id)
-    redrawGeojson()
-  }
+
+  feature.geometry = updatedFeature.geometry
+  feature.properties = updatedFeature.properties
+  status('Updated feature ' + updatedFeature.id)
+  redrawGeojson()
 }
 
 export function destroyFeature (featureId) {

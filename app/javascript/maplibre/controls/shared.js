@@ -175,6 +175,7 @@ export function initLayersModal () {
 }
 
 export function resetControls () {
+  if (draw) { draw.deleteAll() }
   resetHighlightedFeature()
   // reset cursor
   functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
