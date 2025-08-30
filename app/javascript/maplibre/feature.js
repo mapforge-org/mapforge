@@ -8,6 +8,7 @@ import { showElevationChart } from 'maplibre/feature/elevation'
 window.marked = marked
 
 export let highlightedFeatureId
+export let highlightedFeatureSource
 export let stickyFeatureHighlight = false
 let isDragging = false
 let dragStartY, dragStartModalHeight
@@ -166,13 +167,8 @@ export function featureIcon (feature) {
 
 export function resetHighlightedFeature () {
   if (highlightedFeatureId) {
-    const sources = map.getStyle().sources
-    let sourceNames = Object.keys(sources).filter(
-      name => name.startsWith('overpass-') || name.startsWith('geojson-')
-    )
-    sourceNames.forEach(sourceName => {
-      map.setFeatureState({ source: sourceName, id: highlightedFeatureId }, { active: false })
-    })
+    map.setFeatureState({ source: highlightedFeatureSource, id: highlightedFeatureId }, { active: false })
+    highlightedFeatureSource = null
     highlightedFeatureId = null
     // drop feature param from url
     const url = new URL(window.location.href)
@@ -191,6 +187,7 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
     // console.log('highlight', feature)
     stickyFeatureHighlight = sticky
     highlightedFeatureId = feature.id
+    highlightedFeatureSource = source
     // load feature from source, the style only returns the dimensions on screen
     const sourceFeature = layers
       .filter(l => Array.isArray(l.geojson?.features))

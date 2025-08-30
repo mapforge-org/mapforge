@@ -411,8 +411,6 @@ export function redrawGeojson (resetDraw = true) {
   })
 
   map.triggerRepaint()
-  // drop the properties.id after sending to the map
-  mergedGeoJSONLayers('geojson').features.forEach((feature) => { delete feature.properties.id })
 }
 
 // change geojson data before rendering:
