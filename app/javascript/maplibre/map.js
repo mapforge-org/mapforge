@@ -426,15 +426,12 @@ export function renderedGeojsonData () {
 
 export function upsert (updatedFeature) {
   const feature = geojsonData.features.find(f => f.id === updatedFeature.id)
-   
   if (!feature) { addFeature(updatedFeature); return }
 
   // only update feature if it was changed, disregard properties.id
   const existingFeature = JSON.parse(JSON.stringify(feature))
   delete existingFeature.properties.id
-
-  console.log(updatedFeature, existingFeature)
-  if (!equal(updatedFeature, existingFeature)) {
+  if (!equal(existingFeature, updatedFeature)) {
     updateFeature(feature, updatedFeature)
   }
 }

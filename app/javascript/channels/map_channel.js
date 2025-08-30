@@ -78,7 +78,8 @@ export function initializeSocket () {
     },
 
     send_message (action, feature) {
-      const data = { ...feature }
+      // copy feature to avoid mutation
+      const data = JSON.parse(JSON.stringify(feature))
       data.map_id = window.gon.map_id
       // dropping properties.id from redrawGeojson() before sending to server
       if (data.properties && data.properties.id) { delete data.properties.id }

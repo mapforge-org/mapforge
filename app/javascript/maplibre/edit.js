@@ -1,7 +1,7 @@
 import { map, geojsonData, destroyFeature, redrawGeojson, addFeature, layers, mapProperties } from 'maplibre/map'
-import { editStyles, _initializeEditStyles } from 'maplibre/edit_styles'
+import { editStyles } from 'maplibre/edit_styles'
 import { initializeViewStyles } from 'maplibre/styles'
-import { highlightFeature, _showFeatureDetails, initializeKmMarkerStyles } from 'maplibre/feature'
+import { highlightFeature, initializeKmMarkerStyles } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
@@ -282,7 +282,6 @@ async function handleUpdate (e) {
 
   status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry
-
   redrawGeojson(false)
 
   if (feature.geometry.type === 'LineString') { 
