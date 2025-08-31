@@ -254,9 +254,9 @@ export function initializeDefaultControls () {
   const geolocate = new maplibregl.GeolocateControl({
     // https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition#options
     positionOptions: {
-      enableHighAccuracy: false,
+      enableHighAccuracy: true,
       timeout: 60000,
-      maximumAge: 3000
+      maximumAge: 30000
     },
     showAccuracyCircle: true,
     showUserLocation: true,
@@ -265,8 +265,8 @@ export function initializeDefaultControls () {
   geolocate.on('error', () => { status('Error detecting location', 'warning') })
   geolocate.on('trackuserlocationstart', () => {
     if (functions.isMobileDevice()) {
-      window.removeEventListener('deviceorientation', updateOrientation)
-      window.addEventListener('deviceorientation', updateOrientation)
+      window.removeEventListener('deviceorientationabsolute', updateOrientation)
+      window.addEventListener('deviceorientationabsolute', updateOrientation)
     }
   })
 
