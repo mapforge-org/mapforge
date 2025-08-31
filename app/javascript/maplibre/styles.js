@@ -522,7 +522,10 @@ export function clusterStyles(icon) {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': 12,
         'circle-color': pointColor,
-        'circle-blur': 0.05
+        'circle-blur': 0.05,
+        'circle-stroke-color': pointOutlineColor,
+        'circle-stroke-width': pointOutlineSize,
+        'circle-stroke-opacity': pointOpacity + 0.2
       }
     }
     
