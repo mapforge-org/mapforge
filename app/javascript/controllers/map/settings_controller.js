@@ -103,9 +103,14 @@ export default class extends Controller {
   // alternative to https://maplibre.org/maplibre-gl-js/docs/API/classes/TerrainControl/
   updateTerrain (event) {
     this.mapTerrainValue = event.target.checked
+    // globe and 3d don't work together
+    if (this.mapTerrainValue) {
+      document.querySelector('#map-globe').checked = false
+      mapProperties.globe = false
+    }
     mapProperties.terrain = this.mapTerrainValue
     setBackgroundMapLayer()
-    mapChannel.send_message('update_map', { terrain: mapProperties.terrain })
+    mapChannel.send_message('update_map', { terrain: mapProperties.terrain, globe: mapProperties.globe })
   }
 
   updateHillshade (event) {
@@ -124,9 +129,14 @@ export default class extends Controller {
 
   updateGlobe (event) {
     this.mapGlobeValue = event.target.checked
+    // globe and 3d don't work together
+    if (this.mapGlobeValue) {
+      document.querySelector('#map-terrain').checked = false
+      mapProperties.terrain = false
+    }
     mapProperties.globe = this.mapGlobeValue
     setBackgroundMapLayer()
-    mapChannel.send_message('update_map', { globe: mapProperties.globe })
+    mapChannel.send_message('update_map', { globe: mapProperties.globe, terrain: mapProperties.terrain })
   }
 
   updateBaseMap (event) {

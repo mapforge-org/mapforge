@@ -19,12 +19,18 @@ describe 'Feature edit' do
 
     context 'when adding features' do
       it 'adding a point to the map' do
+        # cancel map settings popup
+        find('.close-button').click
         find('.mapbox-gl-draw_point').click
         expect { click_coord('#maplibre-map', 50, 50) }.to change { Feature.point.count }.by(1)
       end
 
       it 'adding a polygon to the map' do
+        # cancel map settings popup
+        find('.close-button').click
+
         find('.mapbox-gl-draw_polygon').click
+
         click_coord('#maplibre-map', 10, 10)
         click_coord('#maplibre-map', 10, 50)
         click_coord('#maplibre-map', 50, 50)
@@ -59,7 +65,7 @@ describe 'Feature edit' do
       it 'can raw update feature' do
         find('#edit-button-edit').click
         sleep(0.3) # edit triggers modal pull-up
-        find('#edit-button-raw').click
+        find('#button-edit-raw').click
         expect(page).to have_selector('textarea[name="properties"]')
         fill_in 'properties', with: '{"title": "TEST"}'
         find('.feature-update').click

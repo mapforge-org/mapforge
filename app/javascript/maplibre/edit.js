@@ -1,6 +1,7 @@
 import { map, geojsonData, destroyFeature, redrawGeojson, addFeature, layers, mapProperties } from 'maplibre/map'
-import { editStyles, initializeEditStyles } from 'maplibre/edit_styles'
-import { highlightFeature, showFeatureDetails, initializeKmMarkerStyles } from 'maplibre/feature'
+import { editStyles } from 'maplibre/edit_styles'
+import { initializeViewStyles } from 'maplibre/styles'
+import { highlightFeature, initializeKmMarkerStyles } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
@@ -14,7 +15,6 @@ import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-
 export let draw
 export let selectedFeature
 let currentMode
-let justCreated = false
 
 // https://github.com/mapbox/mapbox-gl-draw
 export async function initializeEditMode () {
@@ -74,7 +74,8 @@ export async function initializeEditMode () {
 
   // Add edit styles when basemap style is loaded
   map.on('style.load', function (_e) {
-    initializeEditStyles()
+    // initializeEditStyles()
+    initializeViewStyles('geojson-source')
     initializeKmMarkerStyles()
   })
 
@@ -92,16 +93,19 @@ export async function initializeEditMode () {
   })
 
   map.on('draw.modechange', () => {
+    // probably mapbox draw bug: map can lose drag capabilities on double click
+    map.dragPan.enable()
     if (currentMode === draw.getMode()) { return }
     console.log("Switch draw mode from '" + currentMode + "' to '" + draw.getMode() + "'")
     currentMode = draw.getMode()
 
     resetDirections()
-    resetControls()
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
+    // any paint mode
     if (draw.getMode() !== 'simple_select' && draw.getMode() !== 'direct_select') {
       functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
     } else {
+      // select mode
       functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
       functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
     }
@@ -141,26 +145,6 @@ export async function initializeEditMode () {
     }
   })
 
-  map.on('draw.selectionchange', function (e) {
-    // probably mapbox draw bug: map can lose drag capabilities on double click
-    map.dragPan.enable()
-    if (!e.features?.length) { justCreated = false; selectedFeature = null; return }
-    // console.log('draw.selectionchange', e.features)
-    if (selectedFeature && (selectedFeature.id === e.features[0].id)) { return }
-    selectedFeature = e.features[0]
-
-    if (geojsonData.features.find(f => f.id === selectedFeature.id)) {
-      document.querySelector('#edit-buttons').classList.remove('hidden')
-      select(selectedFeature)
-      highlightFeature(selectedFeature, true)
-      // switch feature details to edit mode after create
-      if (justCreated) {
-        justCreated = false
-        window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
-      }
-    }
-  })
-
   // https://github.com/mapbox/mapbox-gl-draw/blob/main/src/constants.js#L57
   map.on('draw.create', handleCreate)
   map.on('draw.update', handleUpdate)
@@ -187,7 +171,7 @@ export async function initializeEditMode () {
   // and to hide feature modal if no feature is selected
   map.on('click', () => {
     // mapbox draw type features don't fire map.click, but directions does - ignore it
-    if (!draw.getMode().startsWith('directions_')) {
+    if (draw.getMode() == 'direct_select' || draw.getMode() == 'simple_select') {
       selectedFeature = null
       resetControls()
       document.querySelector('#edit-buttons').classList.add('hidden')
@@ -239,9 +223,7 @@ function handleCreate (e) {
     const options = { tolerance: 0.00005, highQuality: true, mutate: true }
     window.turf.simplify(feature, options)
   }
-  // std mapbox draw shapes will auto-select the feature (simple_select).
-  // This var enables special handling in draw.selectionchange
-  justCreated = true
+
   // status('Feature ' + feature.id + ' created')
   addFeature(feature)
   addUndoState('Feature added', feature)
@@ -251,6 +233,18 @@ function handleCreate (e) {
   }
   mapChannel.send_message('new_feature', feature)
   if (feature.geometry.type === 'LineString') { updateElevation(feature) }
+
+  // Switch to feature edit mode after create
+  setTimeout(() => {
+    if (draw.getMode() !== mode) {
+      highlightFeature(feature, true)
+      // switch feature details to edit mode after create
+      window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
+      draw.add(feature)
+      select(feature)
+    }
+  }, 10)
+
 
   // Switch back to draw mode to create multiple features
   // setTimeout(() => {
@@ -283,13 +277,11 @@ async function handleUpdate (e) {
     // gets also triggered on failure
     updateElevation(feature).then(() => {
       mapChannel.send_message('update_feature', feature)
-      // trigger highlight, to update eg. coordinates
-      showFeatureDetails(feature)
+      // showFeatureDetails(feature)
     })
   } else { 
     mapChannel.send_message('update_feature', feature)
-    // trigger highlight, to update eg. coordinates
-    highlightFeature(feature, true)
+    // highlightFeature(feature, true)
   }
 }
 

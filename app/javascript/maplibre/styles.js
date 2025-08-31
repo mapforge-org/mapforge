@@ -12,7 +12,6 @@ export const viewStyleNames = [
   'line-label-symbol',
   'line-layer-hit',
   'line-labels',
-  'points-border-layer',
   'points-layer',
   'points-hit-layer',
   'heatmap-layer',
@@ -43,10 +42,10 @@ export function initializeViewStyles (sourceName) {
   map.on('mousemove', (e) => {
     if (window.gon.map_mode === 'static') { return }
     if (stickyFeatureHighlight && highlightedFeatureId) { return }
+    // This avoids hover highlight in edit mode
     if (document.querySelector('.maplibregl-ctrl button.active')) { return }
 
     const features = map.queryRenderedFeatures(e.point).filter(f => f.source === sourceName)
-    console.log(sourceName, features)
     if (features[0]) {
       if (features[0].properties.cluster) { return } 
       if (features[0].id === highlightedFeatureId) { return }
@@ -307,31 +306,6 @@ export function styles () {
         'line-opacity': 0 // cannot use visibility:none here
       }
     },
-    'points-border-layer': {
-      id: 'points-border-layer',
-      type: 'circle',
-      filter: ['all',
-        ['==', '$type', 'Point'],
-        ['!=', 'meta', 'midpoint'],
-        ['!=', 'meta', 'vertex'],
-        ['none', ['has', 'user_marker-image-url'], ['has', 'marker-image-url'],
-          ['has', 'user_marker-symbol'], ['has', 'marker-symbol'], ['has', 'point_count']]
-      ],
-      paint: {
-        'circle-pitch-scale': 'map', // points get bigger when camera is closer
-        'circle-radius': pointSize,
-        'circle-opacity': 0,
-        'circle-stroke-color': pointOutlineColor,
-        'circle-blur': 0.1,
-        'circle-stroke-width': [
-          'case',
-          ['boolean', ['feature-state', 'active'], false],
-          pointOutlineSizeActive,
-          pointOutlineSize
-        ],
-        'circle-stroke-opacity': pointOpacity + 0.2
-      }
-    },
     'points-layer': {
       id: 'points-layer',
       type: 'circle',
@@ -356,7 +330,15 @@ export function styles () {
             pointOpacityActive,
             pointOpacity
           ]],
-        'circle-blur': 0.05
+        'circle-blur': 0.05,
+        'circle-stroke-color': pointOutlineColor,
+        'circle-stroke-width': [
+          'case',
+          ['boolean', ['feature-state', 'active'], false],
+          pointOutlineSizeActive,
+          pointOutlineSize
+        ],
+        'circle-stroke-opacity': pointOpacity + 0.2
       }
     },
     'points-hit-layer': {
@@ -540,7 +522,10 @@ export function clusterStyles(icon) {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': 12,
         'circle-color': pointColor,
-        'circle-blur': 0.05
+        'circle-blur': 0.05,
+        'circle-stroke-color': pointOutlineColor,
+        'circle-stroke-width': pointOutlineSize,
+        'circle-stroke-opacity': pointOpacity + 0.2
       }
     }
     
@@ -562,7 +547,7 @@ export function clusterStyles(icon) {
       layout: {
         'text-field': '{point_count_abbreviated}',
         'text-font': labelFont,
-        'text-size': 14
+        'text-size': 15
       },
       paint: {
         'text-color': '#000',

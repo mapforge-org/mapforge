@@ -138,3 +138,13 @@
   top: 0;
   opacity: 1;
 }
+
+.maplibregl-ctrl-scale {
+  font-size: 0.8rem;
+}
+
+@media (height <= 390px) {
+  .maplibregl-ctrl-scale, .maplibregl-ctrl > .maplibregl-ctrl-logo {
+    display: none;
+  }
+}
