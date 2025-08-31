@@ -20,18 +20,15 @@ export default class extends Controller {
   }
 
   toggle_edit_feature (event) {
-    dom.showElements('#edit-button-edit', '#edit-button-raw')
+    dom.showElements('#edit-button-edit')
     let type = event?.currentTarget?.dataset?.editType || 'ui'
     document.querySelector('#feature-details-body').classList.add('hidden')
     if (document.querySelector('#feature-edit-raw').classList.contains('hidden') && type === 'raw') {
       // console.log('show_feature_edit_raw')
-      document.querySelector('#edit-button-raw').classList.add('active')
       document.querySelector('#edit-button-edit').classList.remove('active')
       this.show_feature_edit_raw()
     } else if (document.querySelector('#feature-edit-ui').classList.contains('hidden') && type === 'ui') {
       // console.log('show_feature_edit_ui')
-      document.querySelector('#edit-button-raw').classList.remove('hidden')
-      document.querySelector('#edit-button-raw').classList.remove('active')
       document.querySelector('#edit-button-edit').classList.add('active')
       this.show_feature_edit_ui()
 
@@ -41,7 +38,6 @@ export default class extends Controller {
       select(feature)
     } else {
       // repeated click on the current edit mode returns to feature description
-      document.querySelector('#edit-button-raw').classList.add('hidden')
       showFeatureDetails(this.getFeature())
       draw.deleteAll()
       resetDirections()

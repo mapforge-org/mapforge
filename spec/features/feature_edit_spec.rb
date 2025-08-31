@@ -65,7 +65,7 @@ describe 'Feature edit' do
       it 'can raw update feature' do
         find('#edit-button-edit').click
         sleep(0.3) # edit triggers modal pull-up
-        find('#edit-button-raw').click
+        find('#button-edit-raw').click
         expect(page).to have_selector('textarea[name="properties"]')
         fill_in 'properties', with: '{"title": "TEST"}'
         find('.feature-update').click

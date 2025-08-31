@@ -75,3 +75,8 @@
   #show-km-markers-ui.edit-ui.edit-line
     %label.edit-line{ for: "show-km-markers"} Show km markers:
     %input#show-km-markers{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateShowKmMarkers change->feature--edit#saveFeature"} }
+
+  %div
+    %button#button-edit-raw.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'raw' } 
+      %i.bi.bi-filetype-raw
+      Edit json
