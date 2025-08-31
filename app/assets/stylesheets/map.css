@@ -165,12 +165,15 @@ html:has(.map), body:has(.map) {
 
 .maplibregl-user-location-dot{
   --user-dot-rotation: rotate(0deg);
+
+  transform: var(--user-dot-rotation);
+  background-color: unset;
+  background-image: url('view-direction.png');
 }
 
 .maplibregl-user-location-dot::after{
-  background-image: url('view-direction.png');
-  color: #fff;
-  transform: var(--user-dot-rotation);
+  border: unset;
+  box-shadow: unset;
 }
 
 .km-marker {
