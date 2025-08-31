@@ -547,7 +547,7 @@ export function clusterStyles(icon) {
       layout: {
         'text-field': '{point_count_abbreviated}',
         'text-font': labelFont,
-        'text-size': 14
+        'text-size': 15
       },
       paint: {
         'text-color': '#000',

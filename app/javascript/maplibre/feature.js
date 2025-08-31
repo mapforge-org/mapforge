@@ -72,7 +72,8 @@ function featureMeta (feature) {
 export async function showFeatureDetails (feature) {
   dom.hideElements(['#feature-edit-raw', '#feature-edit-ui', '#edit-button-raw'])
   f.e('#edit-buttons button', (e) => { e.classList.remove('active') })
-  if (window.gon.map_mode === 'rw') {
+  // allow edit in rw mode for geojson features only
+  if (window.gon.map_mode === 'rw' && geojsonData.features.find(f => f.id === feature.id)) {
     document.querySelector('#edit-buttons').classList.remove('hidden')
   }
   dom.showElements('#feature-details-body')
