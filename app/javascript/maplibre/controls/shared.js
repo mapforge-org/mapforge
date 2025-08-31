@@ -282,7 +282,7 @@ export function initializeDefaultControls () {
   scale.setUnit('metric')
 
   map.once('load', function (_e) {
-    if (window.location.protocol !== 'https:') {
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
       document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('disabled', '1')
       document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('data-bs-original-title', 'Location (https only)')
     }

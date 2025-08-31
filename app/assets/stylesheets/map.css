@@ -160,20 +160,32 @@ html:has(.map), body:has(.map) {
 
 /* maptiler-sdk messes with the geolocate marker animation */
 .maplibregl-user-location-dot::before{
-  left: 0;
+  left: -0.12rem;
+  top: -0.1rem;
 }
 
 .maplibregl-user-location-dot{
   --user-dot-rotation: rotate(0deg);
 
-  transform: var(--user-dot-rotation);
-  background-color: unset;
-  background-image: url('view-direction.png');
+  border: 2px solid #fff;
+  box-shadow: 0 0 3px rgb(0 0 0 / 35%);
 }
 
 .maplibregl-user-location-dot::after{
   border: unset;
   box-shadow: unset;
+  transform: var(--user-dot-rotation);
+  background: conic-gradient(
+    rgb(192 192 192 / 50%) 0deg 30deg,
+    #c0c0c0 30deg 35deg,
+    transparent 35deg 325deg,
+    #c0c0c0 325deg 330deg,
+    rgb(192 192 192 / 50%) 330deg 360deg);
+  background-color: unset;
+  top: -1.15rem;
+  height: 3rem;
+  width: 3rem;
+  left: -1.14rem;
 }
 
 .km-marker {
