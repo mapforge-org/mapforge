@@ -293,6 +293,7 @@ export function initializeDefaultControls () {
   })
 }
 
+// orientation test page: https://chrishewett.com/blog/device-orientation-test-page/
 const updateOrientation = (event) => {
   // console.log("Orientation:", event.alpha)
   let dot = document.querySelector('.maplibregl-user-location-dot')
