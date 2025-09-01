@@ -27,6 +27,7 @@ export default class extends Controller {
         let geoJSON
 
         // https://github.com/mapbox/togeojson?tab=readme-ov-file#api
+        // console.log('Reading from file type ' + file.type)
         if (file.type === 'application/gpx+xml') {
           const xmlDoc = parser.parseFromString(content, 'application/xml')
           geoJSON = window.toGeoJSON.gpx(xmlDoc)
@@ -51,6 +52,9 @@ export default class extends Controller {
           if (mapforgeJSON.layers) {
             // mapforge export file, importing only the first geojson layer for now
             geoJSON = mapforgeJSON.layers.find(f => f.type === 'geojson').geojson
+          } else {
+            // standard geojson file
+            geoJSON = mapforgeJSON
           }
         }
 
