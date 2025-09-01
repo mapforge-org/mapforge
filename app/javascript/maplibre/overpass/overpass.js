@@ -134,7 +134,7 @@ function overpassDescription(props) {
   desc += `\n**OSM tags:**\n 
   |               |               |
   | ------------- | ------------- |\n`
-  const keys = Object.keys(props).filter(key => !['description', 'notes', 'website', 'url', 'id'].includes(key))
+  const keys = Object.keys(props).filter(key => !['description', 'notes', 'website', 'url', 'id', 'label'].includes(key))
   keys.forEach(key => {
     desc += `| **${key}** | ${props[key]} |\n`
   })

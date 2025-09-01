@@ -15,7 +15,7 @@ export default class extends Controller {
     const fileSize = (file.size / 1024).toFixed(2)
 
     if (fileSize > 1500) {
-      status('File exceeds 1.5MB', 'error')
+      status('File exceeds 1.5MB, please consider simplifying it', 'error', 'medium', 8000)
       return
     }
 

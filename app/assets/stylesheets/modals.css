@@ -43,7 +43,7 @@
 .map-modal-content {
   margin-top: 1em;
   overflow: hidden auto;
-  max-height: calc(100vh - 10em);
+  max-height: calc(100vh - 11em);
   padding-right: 5px; /* Prevents scrollbar from overlapping content */
 }
 
