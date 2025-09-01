@@ -9,7 +9,7 @@ import { resetEditControls } from 'maplibre/controls/edit'
 import { animateElement } from 'helpers/dom'
 import { status } from 'helpers/status'
 import { queries } from 'maplibre/overpass/queries'
-import * as FULLTILT from 'fulltilt.min'
+import * as _fulltilt from 'fulltilt.min'
 
 export class ControlGroup {
   constructor (controls) {
@@ -266,8 +266,6 @@ export function initializeDefaultControls () {
   geolocate.on('error', () => { status('Error detecting location', 'warning') })
   geolocate.on('trackuserlocationstart', () => {
     if (functions.isMobileDevice()) {
-      //window.removeEventListener('deviceorientationabsolute', updateOrientation)
-      //window.addEventListener('deviceorientationabsolute', updateOrientation)
       var promise = FULLTILT.getDeviceOrientation({ 'type': 'world' })
       promise.then(function (orientationControl) {
         orientationControl.listen(function () {
@@ -276,6 +274,8 @@ export function initializeDefaultControls () {
           let heading = screenAdjustedEvent.alpha + map.getBearing()
           dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
         })
+      }).catch(function (message) {
+        console.error('Cannot get device orientation: ' + message)
       })
     }
   })
@@ -301,23 +301,6 @@ export function initializeDefaultControls () {
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)
   })
-}
-
-// orientation test page: https://chrishewett.com/blog/device-orientation-test-page/
-const _updateOrientation = (event) => {
-  // console.log("Orientation:", event.alpha)
-  let dot = document.querySelector('.maplibregl-user-location-dot')
-  if (dot) {
-    // Prefer webkitCompassHeading on iOS Safari
-    let heading;
-    if (event.webkitCompassHeading !== undefined) {
-      heading = event.webkitCompassHeading // 0 = North
-    } else {
-      heading = event.alpha // 0 = North
-    }
-    heading += map.getBearing()
-    dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
-  }
 }
 
 // Restore modals on back/forward buttons
