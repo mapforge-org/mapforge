@@ -401,11 +401,12 @@ export function redrawGeojson (resetDraw = true) {
       // This has a performance drawback over draw.set(), but some feature
       // properties don't get updated otherwise
       // API: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md  
-      const featureIds = draw.getAll().features.map(feature => feature.id)
+      const drawFeatureIds = draw.getAll().features.map(feature => feature.id)
       draw.deleteAll()
       
-      featureIds.forEach((featureId) => {
-        draw.add(geojsonData.features.find(f => f.id === featureId))
+      drawFeatureIds.forEach((featureId) => {
+        let feature = geojsonData.features.find(f => f.id === featureId)
+        if (feature) { draw.add(feature) }
       })
     }
   }
