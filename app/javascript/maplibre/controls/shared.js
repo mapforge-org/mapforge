@@ -9,6 +9,7 @@ import { resetEditControls } from 'maplibre/controls/edit'
 import { animateElement } from 'helpers/dom'
 import { status } from 'helpers/status'
 import { queries } from 'maplibre/overpass/queries'
+import * as FULLTILT from 'fulltilt.min'
 
 export class ControlGroup {
   constructor (controls) {
@@ -265,8 +266,17 @@ export function initializeDefaultControls () {
   geolocate.on('error', () => { status('Error detecting location', 'warning') })
   geolocate.on('trackuserlocationstart', () => {
     if (functions.isMobileDevice()) {
-      window.removeEventListener('deviceorientationabsolute', updateOrientation)
-      window.addEventListener('deviceorientationabsolute', updateOrientation)
+      //window.removeEventListener('deviceorientationabsolute', updateOrientation)
+      //window.addEventListener('deviceorientationabsolute', updateOrientation)
+      var promise = FULLTILT.getDeviceOrientation({ 'type': 'world' })
+      promise.then(function (orientationControl) {
+        orientationControl.listen(function () {
+          // Get latest screen-adjusted deviceorientation data
+          let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
+          let heading = screenAdjustedEvent.alpha + map.getBearing()
+          dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
+        })
+      })
     }
   })
 
@@ -294,7 +304,7 @@ export function initializeDefaultControls () {
 }
 
 // orientation test page: https://chrishewett.com/blog/device-orientation-test-page/
-const updateOrientation = (event) => {
+const _updateOrientation = (event) => {
   // console.log("Orientation:", event.alpha)
   let dot = document.querySelector('.maplibregl-user-location-dot')
   if (dot) {
