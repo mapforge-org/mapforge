@@ -269,10 +269,13 @@ export function initializeDefaultControls () {
       var promise = FULLTILT.getDeviceOrientation({ 'type': 'world' })
       promise.then(function (orientationControl) {
         orientationControl.listen(function () {
-          // Get latest screen-adjusted deviceorientation data
-          let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
-          let heading = screenAdjustedEvent.alpha + map.getBearing()
-          dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
+          const dot = document.querySelector('.maplibregl-user-location-dot')
+          if (dot) {
+            // Get latest screen-adjusted deviceorientation data
+            let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
+            let heading = screenAdjustedEvent.alpha + map.getBearing()
+            dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
+          }
         })
       }).catch(function (message) {
         console.error('Cannot get device orientation: ' + message)
