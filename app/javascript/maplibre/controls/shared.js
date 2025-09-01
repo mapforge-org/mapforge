@@ -274,7 +274,7 @@ export function initializeDefaultControls () {
             // Get latest screen-adjusted deviceorientation data
             let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
             let heading = screenAdjustedEvent.alpha + map.getBearing()
-            dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
+            dot.style.setProperty('--user-dot-rotation', `rotate(${heading}deg)`)
           }
         })
       }).catch(function (message) {
