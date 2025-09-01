@@ -11,7 +11,7 @@ namespace :maps do
         last_update = File.mtime(map.screenshot_file) if File.exist?(map.screenshot_file)
         # Scheduled job is running each 10 minutes
         next if File.exist?(map.screenshot_file) && map.updated_at < last_update - 5.minutes
-        puts "Map #{map.public_id} updated #{map.updated_at}, last screenshot from #{last_update || 'n/a'}"
+        puts "Map (#{map.public_id}, #{map.name}) updated #{map.updated_at}, last screenshot from #{last_update || 'n/a'}"
 
         # https://github.com/YusukeIwaki/puppeteer-ruby
         Puppeteer.launch(headless: true, ignore_https_errors: true) do |browser|
@@ -38,7 +38,7 @@ namespace :maps do
           page.viewport = Puppeteer::Viewport.new(width: 800, height: 600)
           puts "Loading #{map_url}"
           page.goto(map_url, wait_until: "networkidle0")
-          page.wait_for_selector("#maplibre-map[data-map-loaded='true']", timeout: 30000)
+          page.wait_for_selector("#maplibre-map[data-map-loaded='true']", timeout: 45000)
           page.wait_for_selector("#maplibre-map[data-geojson-loaded='true']", timeout: 30000)
 
           unless failure

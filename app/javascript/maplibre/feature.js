@@ -137,6 +137,7 @@ export async function showFeatureDetails (feature) {
     // set feature id in export link
     const link = document.querySelector('#feature-export a')
     link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id)
+    if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/\s+/g, "_")) }
   }
   const desc = marked(feature?.properties?.desc || '')
   document.querySelector('#feature-details-body p').innerHTML = desc
