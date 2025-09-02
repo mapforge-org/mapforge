@@ -265,29 +265,38 @@ export function initializeDefaultControls () {
   })
   geolocate.on('error', () => { status('Error detecting location', 'warning') })
   geolocate.on('trackuserlocationstart', () => {
-    if (functions.isMobileDevice()) {
-      var promise = FULLTILT.getDeviceOrientation({ 'type': 'world' })
-      promise.then(function (orientationControl) {
-        orientationControl.listen(function () {
-          const dot = document.querySelector('.maplibregl-user-location-dot')
-          if (dot) {
-            // Get latest screen-adjusted deviceorientation data
-            let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
-            let heading
-            if (87 < Math.abs(screenAdjustedEvent.beta) && Math.abs(screenAdjustedEvent.beta) < 93) {
-              // when the phone is vertical, alpha is unreliable
-            } else {
-              heading = screenAdjustedEvent.alpha
-              // adjust to map rotation
-              heading += map.getBearing()
-              dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
-            }
+    // https://github.com/adtile/Full-Tilt/wiki/Full-Tilt-API-Documentation
+    var promise = FULLTILT.getDeviceOrientation({ 'type': 'world' })
+    promise.then(function (orientationControl) {
+      orientationControl.listen(function () {
+        const dot = document.querySelector('.maplibregl-user-location-dot')
+        if (dot) {
+          // Get latest screen-adjusted deviceorientation data
+          let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
+          console.log(screenAdjustedEvent)
+          console.log(orientationControl.getScreenAdjustedMatrix())
+          console.log(orientationControl.getFixedFrameEuler())
+          let heading
+          if (87 < Math.abs(screenAdjustedEvent.beta) && Math.abs(screenAdjustedEvent.beta) < 93) {
+            // when the phone is vertical, alpha is unreliable
+          } else {
+            heading = screenAdjustedEvent.alpha
+            // adjust to map rotation
+            heading += map.getBearing()
+            dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
           }
-        })
-      }).catch(function (message) {
-        console.error('Cannot get device orientation: ' + message)
+
+          // // stretch angle when map is tilted
+          // let view = document.querySelector('.maplibregl-user-location-dot')
+          // let pitch = map.getPitch()
+          // // pitch is 0-72, default view size is 3rem
+          // let scale = 1 / pitch * 31
+          // view.style.setProperty('height', scale * 3 + 'rem')
+        }
       })
-    }
+    }).catch(function (message) {
+      console.error('Cannot get device orientation: ' + message)
+    })
   })
 
   map.addControl(geolocate, 'top-right')
