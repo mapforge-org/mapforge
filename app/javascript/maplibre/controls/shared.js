@@ -273,8 +273,15 @@ export function initializeDefaultControls () {
           if (dot) {
             // Get latest screen-adjusted deviceorientation data
             let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
-            let heading = screenAdjustedEvent.alpha + map.getBearing()
-            dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
+            let heading
+            // when the phone is vertical, alpha is unreliable
+            if (87 < Math.abs(screenAdjustedEvent.beta) < 93) {
+              heading = screenAdjustedEvent.alpha
+              // adjust to map rotation
+              heading += map.getBearing()
+              dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
+            }
+
           }
         })
       }).catch(function (message) {
