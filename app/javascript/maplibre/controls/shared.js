@@ -273,9 +273,8 @@ export function initializeDefaultControls () {
           if (dot) {
             // Get latest screen-adjusted deviceorientation data
             let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
-            console.log(screenAdjustedEvent)
             let heading
-            if (screenAdjustedEvent.isAvailable(screenAdjustedEvent.BETA) && (87 < Math.abs(screenAdjustedEvent.beta) < 93)) {
+            if (87 < Math.abs(screenAdjustedEvent.beta) && Math.abs(screenAdjustedEvent.beta) < 93) {
               // when the phone is vertical, alpha is unreliable
             } else {
               heading = screenAdjustedEvent.alpha
