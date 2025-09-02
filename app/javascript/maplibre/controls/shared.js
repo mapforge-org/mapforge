@@ -224,6 +224,27 @@ export const geocoderConfig = {
   }
 }
 
+// turn on screen wake lock when tracking position
+// https://developer.chrome.com/docs/capabilities/web-apis/wake-lock
+let wakeLock = null
+const requestWakeLock = async () => {
+  if (!('wakeLock' in navigator)) {
+    console.warn('Screen Wake Lock API not supported')
+    return
+  }
+  try {
+    wakeLock = await navigator.wakeLock.request()
+    console.log('Screen Wake Lock aquired:', wakeLock.released)
+    wakeLock.addEventListener('release', () => {
+      console.log('Screen Wake Lock released:', wakeLock.released)
+      wakeLock = null
+    })
+  } catch (err) {
+    console.error(`Screen Wake Lock error: ${err.name}, ${err.message}`)
+    wakeLock = null
+  }
+}
+
 export function initCtrlTooltips () {
   functions.e('.maplibregl-ctrl button', e => {
     e.setAttribute('data-toggle', 'tooltip')
@@ -263,11 +284,14 @@ export function initializeDefaultControls () {
     showUserLocation: true,
     trackUserLocation: functions.isMobileDevice()
   })
+
   geolocate.on('error', e => {
     console.warn('Error detecting location', e)
     status('Error detecting location', 'warning')
   })
+
   geolocate.on('trackuserlocationstart', () => {
+    requestWakeLock()
     // https://github.com/adtile/Full-Tilt/wiki/Full-Tilt-API-Documentation
     var promise = FULLTILT.getDeviceOrientation({ 'type': 'world' })
     promise.then(function (orientationControl) {
@@ -277,13 +301,12 @@ export function initializeDefaultControls () {
           // Get latest screen-adjusted deviceorientation data
           let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
           let heading
-          if (87 < Math.abs(screenAdjustedEvent.beta) && Math.abs(screenAdjustedEvent.beta) < 93) {
+          if (86 < Math.abs(screenAdjustedEvent.beta) && Math.abs(screenAdjustedEvent.beta) < 94) {
             // when the phone is vertical, alpha is unreliable
           } else {
             heading = screenAdjustedEvent.alpha
-            heading -= 90 // FULLTILT is offsetted 90°??
-            // adjust to map rotation
-            heading += map.getBearing()
+            heading -= 180 // dot icon points upwards
+            heading += map.getBearing() // adjust to map rotation
             dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
           }
         }
@@ -291,6 +314,11 @@ export function initializeDefaultControls () {
     }).catch(function (message) {
       console.error('Cannot get device orientation: ' + message)
     })
+  })
+
+  geolocate.on('trackuserlocationend', () => {
+    wakeLock.release()
+    wakeLock = null
   })
 
   map.addControl(geolocate, 'top-right')
