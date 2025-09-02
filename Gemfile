@@ -94,4 +94,6 @@ group :test do
   gem "simplecov"
   gem "database_cleaner-mongoid"
   gem "mongoid-rspec"
+  gem "puffing-billy"
+  gem "table_print"
 end

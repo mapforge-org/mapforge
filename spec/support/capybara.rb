@@ -9,6 +9,10 @@ def chrome_driver_arguments(headless: false)
   options.args << '--window-size=1024,860'
   options.args << '--lang=en_US'
   options.args << '--enable-logging'
+  if defined?(Billy)
+    options.args << '--ignore-certificate-errors'
+    options.args << '--proxy-server=' + "#{Billy.proxy.host}:#{Billy.proxy.port}" if defined?(Billy)
+  end
 
   options.logging_prefs = {
     browser: 'ALL', # Capture all JavaScript errors
@@ -48,6 +52,7 @@ Capybara.register_driver :headless_chrome do |app|
   Capybara::Selenium::Driver.new(app, **chrome_driver_arguments(headless: true))
 end
 
+require 'billy/capybara/rspec'
 Capybara.javascript_driver = :headless_chrome
 
 # Register our custom driver name. otherwise 'screenshot_failed_tests' would fail

@@ -305,8 +305,9 @@ export function initializeDefaultControls () {
             // when the phone is vertical, alpha is unreliable
           } else {
             heading = screenAdjustedEvent.alpha
-            heading -= 180 // dot icon points upwards
+            heading += 180 // dot icon points upwards
             heading += map.getBearing() // adjust to map rotation
+            heading %= 360
             dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
           }
         }
