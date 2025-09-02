@@ -276,28 +276,16 @@ export function initializeDefaultControls () {
         if (dot) {
           // Get latest screen-adjusted deviceorientation data
           let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
-          console.log('getScreenAdjustedEuler')
-          console.log(screenAdjustedEvent)
-          console.log('getScreenAdjustedMatrix')
-          console.log(orientationControl.getScreenAdjustedMatrix())
-          console.log('getFixedFrameEuler')
-          console.log(orientationControl.getFixedFrameEuler())
           let heading
           if (87 < Math.abs(screenAdjustedEvent.beta) && Math.abs(screenAdjustedEvent.beta) < 93) {
             // when the phone is vertical, alpha is unreliable
           } else {
             heading = screenAdjustedEvent.alpha
+            heading -= 90 // FULLTILT is offsetted 90°??
             // adjust to map rotation
             heading += map.getBearing()
             dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
           }
-
-          // // stretch angle when map is tilted
-          // let view = document.querySelector('.maplibregl-user-location-dot')
-          // let pitch = map.getPitch()
-          // // pitch is 0-72, default view size is 3rem
-          // let scale = 1 / pitch * 31
-          // view.style.setProperty('height', scale * 3 + 'rem')
         }
       })
     }).catch(function (message) {
@@ -307,7 +295,6 @@ export function initializeDefaultControls () {
 
   map.addControl(geolocate, 'top-right')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)').classList.add('hidden')
-
 
   const scale = new maplibregl.ScaleControl({
     maxWidth: 100,
