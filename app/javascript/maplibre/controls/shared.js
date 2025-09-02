@@ -263,7 +263,10 @@ export function initializeDefaultControls () {
     showUserLocation: true,
     trackUserLocation: functions.isMobileDevice()
   })
-  geolocate.on('error', () => { status('Error detecting location', 'warning') })
+  geolocate.on('error', e => {
+    console.warn('Error detecting location', e)
+    status('Error detecting location', 'warning')
+  })
   geolocate.on('trackuserlocationstart', () => {
     // https://github.com/adtile/Full-Tilt/wiki/Full-Tilt-API-Documentation
     var promise = FULLTILT.getDeviceOrientation({ 'type': 'world' })
@@ -273,8 +276,11 @@ export function initializeDefaultControls () {
         if (dot) {
           // Get latest screen-adjusted deviceorientation data
           let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
+          console.log('getScreenAdjustedEuler')
           console.log(screenAdjustedEvent)
+          console.log('getScreenAdjustedMatrix')
           console.log(orientationControl.getScreenAdjustedMatrix())
+          console.log('getFixedFrameEuler')
           console.log(orientationControl.getFixedFrameEuler())
           let heading
           if (87 < Math.abs(screenAdjustedEvent.beta) && Math.abs(screenAdjustedEvent.beta) < 93) {
