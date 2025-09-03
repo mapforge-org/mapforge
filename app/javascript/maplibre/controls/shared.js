@@ -9,7 +9,6 @@ import { resetEditControls } from 'maplibre/controls/edit'
 import { animateElement } from 'helpers/dom'
 import { status } from 'helpers/status'
 import { queries } from 'maplibre/overpass/queries'
-import * as _fulltilt from 'fulltilt.min'
 
 export class ControlGroup {
   constructor (controls) {
@@ -292,29 +291,28 @@ export function initializeDefaultControls () {
 
   geolocate.on('trackuserlocationstart', () => {
     requestWakeLock()
-    // https://github.com/adtile/Full-Tilt/wiki/Full-Tilt-API-Documentation
-    var promise = FULLTILT.getDeviceOrientation({ 'type': 'world' })
-    promise.then(function (orientationControl) {
-      orientationControl.listen(function () {
-        const dot = document.querySelector('.maplibregl-user-location-dot')
-        if (dot) {
-          // Get latest screen-adjusted deviceorientation data
-          let screenAdjustedEvent = orientationControl.getScreenAdjustedEuler()
-          let heading
-          if (86 < Math.abs(screenAdjustedEvent.beta) && Math.abs(screenAdjustedEvent.beta) < 94) {
-            // when the phone is vertical, alpha is unreliable
-          } else {
-            heading = screenAdjustedEvent.alpha
-            heading += 180 // dot icon points upwards
-            heading += map.getBearing() // adjust to map rotation
-            heading %= 360
-            dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
+
+    if (!('ondeviceorientationabsolute' in window)) {
+      status('Device Orientation not supported', 'info')
+      // hiding the direction view
+      const dot = document.querySelector('.maplibregl-user-location-dot')
+      dot.style.setProperty('--display-view', 'none')
+    }
+
+    // Some mobile browsers (iOS Safari) require permission to access device orientation
+    if (
+      typeof DeviceOrientationEvent.requestPermission === 'function'
+    ) {
+      DeviceOrientationEvent.requestPermission()
+        .then(permissionState => {
+          if (permissionState === 'granted') {
+            window.addEventListener('deviceorientationabsolute', setLocationOrientation)
           }
-        }
-      })
-    }).catch(function (message) {
-      console.error('Cannot get device orientation: ' + message)
-    })
+        })
+        .catch(console.error)
+    } else {
+      window.addEventListener('deviceorientationabsolute', setLocationOrientation)
+    }
   })
 
   geolocate.on('trackuserlocationend', () => {
@@ -342,6 +340,25 @@ export function initializeDefaultControls () {
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)
   })
+}
+
+function setLocationOrientation(event) {
+  // event.alpha: 0-360 (compass direction)
+  // event.beta: -180 to 180 (front to back tilt)
+  // event.gamma: -90 to 90 (left to right tilt)
+  const dot = document.querySelector('.maplibregl-user-location-dot')
+  if (dot) {
+    let heading
+    if (86 < Math.abs(event.beta) && Math.abs(event.beta) < 94) {
+      // when the phone is vertical, alpha is unreliable
+    } else {
+      heading = event.alpha
+      heading += 180 // dot icon points upwards
+      heading += map.getBearing() // adjust to map rotation
+      heading %= 360
+      dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
+    }
+  }
 }
 
 // Restore modals on back/forward buttons
