@@ -5,7 +5,7 @@ Billy.configure do |c|
   # c.record_requests = true # needed for the table output below
   c.non_successful_error_level = :error
   c.cache = true
-  c.persist_cache = true
+  c.persist_cache = false
   c.cache_path = 'tmp/req_cache/'
 end
 
