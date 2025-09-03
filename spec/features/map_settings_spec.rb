@@ -73,7 +73,7 @@ describe 'Map' do
       expect(page).to have_text('Map view updated')
       expect(page.evaluate_script("[map.getCenter().lng, map.getCenter().lat].toString()")).to eq('11,49.5')
       find('.maplibregl-ctrl-map').click
-      expect(page).to have_text('Default: 11,49.5')
+      expect(page).to have_text('Map default: 11,49.5')
     end
 
     # TODO: Add with client side centering
