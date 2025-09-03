@@ -44,9 +44,11 @@ export function animateElement (selector, effect = 'fade-in', delay = 0) {
 export function initTooltips () {
   if (!functions.isTouchDevice()) {
     document.querySelectorAll('[data-toggle="tooltip"]').forEach(element => {
-      let tooltip = bootstrap.Tooltip.getInstance(element)
-      if (tooltip) tooltip.dispose()
-      return new window.bootstrap.Tooltip(element)
+      if (typeof bootstrap !== 'undefined') {
+        let tooltip = bootstrap.Tooltip.getInstance(element)
+        if (tooltip) tooltip.dispose()
+        return new window.bootstrap.Tooltip(element)
+      }
     })
   }
 }

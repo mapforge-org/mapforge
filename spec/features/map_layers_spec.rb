@@ -68,6 +68,11 @@ describe 'Map' do
 
   context 'overpass layer' do
     before do
+      proxy.stub('https://overpass-api.de:443/api/interpreter', method: 'post')
+        .and_return(
+          headers: { 'Access-Control-Allow-Origin' => '*' },
+          text: File.read(Rails.root.join("spec", "fixtures", "files", "overpass.json")))
+
       map.layers << layer
       visit map_path(map)
       expect_map_loaded

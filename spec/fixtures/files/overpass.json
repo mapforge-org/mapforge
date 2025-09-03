@@ -1,0 +1,43 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.8 e802775f",
+  "osm3s": {
+    "timestamp_osm_base": "2025-09-02T20:55:01Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+    {
+      "type": "way",
+      "id": 1328090198,
+      "center": {
+        "lat": 44.9165141,
+        "lon": 12.3651437
+      },
+      "nodes": [
+        12287629765,
+        12287629766,
+        12287629767,
+        12287629768,
+        12287629765
+      ],
+      "tags": {
+        "caravans": "yes",
+        "contact:mobile": "",
+        "contact:phone": "",
+        "contact:whatsapp": "",
+        "fee": "yes",
+        "motorhome": "yes",
+        "name": "Agriturismo Caprissio",
+        "power_supply": "yes",
+        "shower": "yes",
+        "socket:cee_blue": "yes",
+        "tents": "yes",
+        "toilets": "yes",
+        "toilets:wheelchair": "yes",
+        "tourism": "camp_site",
+        "website": "",
+        "wheelchair": "yes"
+      }
+    }
+  ]
+}
