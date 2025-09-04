@@ -317,8 +317,6 @@ export function initializeDefaultControls () {
   })
 
   map.on('pitch', () => {
-    console.log('pitch: ' + map.getPitch().toFixed(1))
-
     const dot = document.querySelector('.maplibregl-user-location-dot')
     if (dot) {
       // pitch = 0 -> scaleY(1); pitch = 90 -> scaleY(0)
