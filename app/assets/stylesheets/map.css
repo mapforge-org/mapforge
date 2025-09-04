@@ -189,7 +189,7 @@ html:has(.map), body:has(.map) {
   height: var(--view-height);
   width: var(--view-width);
   left: -1.145rem;
-  transform: var(--view-scale-y);
+  transform: var(--user-dot-rotation) var(--view-scale-y);
 }
 
 .km-marker {
