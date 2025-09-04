@@ -311,6 +311,7 @@ export function initializeDefaultControls () {
         })
         .catch(console.error)
     } else {
+      // https://developer.mozilla.org/en-US/docs/Web/API/Window/deviceorientationabsolute_event
       window.addEventListener('deviceorientationabsolute', setLocationOrientation)
     }
   })
@@ -346,13 +347,22 @@ function setLocationOrientation(event) {
   // event.alpha: 0-360 (compass direction)
   // event.beta: -180 to 180 (front to back tilt)
   // event.gamma: -90 to 90 (left to right tilt)
+
+  // some browsers respond to deviceorientationabsolute with non-absolute values
+  if (!event.absolute) {
+    // hiding the direction view
+    const dot = document.querySelector('.maplibregl-user-location-dot')
+    dot.style.setProperty('--display-view', 'none')
+    return
+  }
+
   const dot = document.querySelector('.maplibregl-user-location-dot')
   if (dot) {
     let heading
     if (86 < Math.abs(event.beta) && Math.abs(event.beta) < 94) {
-      // when the phone is vertical, alpha is unreliable
+      // when the phone is around vertical, alpha is unreliable
     } else {
-      heading = event.alpha
+      heading = event.alpha + (screen?.orientation?.angle || 0)
       heading += map.getBearing() // adjust to map rotation
       heading %= 360
       dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
