@@ -100,6 +100,25 @@ export class MapLayersControl {
   }
 }
 
+export class ConnectionStatusControl {
+  constructor(_options) {
+    this._container = document.createElement('div')
+    this._container.classList.add('hidden')
+    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-connection" type="button" title="Connection error" aria-label="Connection error" aria-pressed="false"><b><i class="bi bi-wifi-off"></i></b></button>'
+  }
+
+  onAdd(map) {
+    map.getCanvas().appendChild(this._container)
+    return this._container
+  }
+
+  onRemove() {
+    if (this._container.parentNode) {
+      this._container.parentNode.removeChild(this._container)
+    }
+  }
+}
+
 // create the list of layers + features
 export function initLayersModal () {
   console.log("Re-draw layers modal")
@@ -374,9 +393,10 @@ function setLocationOrientation(event) {
     } else {
       console.log('Device Angles', event.alpha, event.beta, event.gamma)
       console.log('Device Orientation', (screen?.orientation?.angle || 0))
-      heading = event.alpha + (screen?.orientation?.angle || 0)
+      heading = event.alpha - (screen?.orientation?.angle || 0)
       heading += map.getBearing() // adjust to map rotation
-      heading %= 360
+      heading = (heading + 360) % 360
+      console.log('Heading', heading)
       dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
     }
   }

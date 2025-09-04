@@ -3,7 +3,7 @@ import * as functions from 'helpers/functions'
 import { draw } from 'maplibre/edit'
 import { resetHighlightedFeature } from 'maplibre/feature'
 import { animateElement } from 'helpers/dom'
-import { ControlGroup, MapLayersControl, MapShareControl, resetControls } from 'maplibre/controls/shared'
+import { ControlGroup, MapLayersControl, MapShareControl, ConnectionStatusControl, resetControls } from 'maplibre/controls/shared'
 import { resetDirections } from 'maplibre/routing/osrm'
 import { undo, redo } from 'maplibre/undo'
 
@@ -182,6 +182,8 @@ export function initializeEditControls () {
   map.addControl(controlGroup, 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)').classList.add('hidden') // hide for aos animation
 
+  map.addControl(new ControlGroup([new ConnectionStatusControl()]), 'top-left')
+ 
   // map.addControl(new ControlGroup([new TourControl()]), 'top-left')
   // document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-tour)').classList.add('hidden') // hide for aos animation
 
