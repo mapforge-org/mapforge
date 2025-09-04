@@ -167,6 +167,9 @@ html:has(.map), body:has(.map) {
 .maplibregl-user-location-dot{
   --user-dot-rotation: rotate(0deg);
   --display-view: block;
+  --view-height: 3rem;
+  --view-width: 3rem;
+  --view-scale-y: scaleY(1);
 
   border: 2px solid #fff;
   box-shadow: 0 0 3px rgb(0 0 0 / 35%);
@@ -176,18 +179,17 @@ html:has(.map), body:has(.map) {
   display: var(--display-view);
   border: unset;
   box-shadow: unset;
-  transform: var(--user-dot-rotation);
   background: conic-gradient(
-    rgb(29 161 242 / 50%) 0deg 30deg,
-    #c0c0c0 30deg 35deg,
-    transparent 35deg 325deg,
-    #c0c0c0 325deg 330deg,
-    rgb(29 161 242 / 50%) 330deg 360deg);
+    rgb(29 161 242 / 50%) 0deg 40deg,
+    transparent 40deg 320deg,
+    rgb(29 161 242 / 50%) 320deg 360deg);
+  mask-image: radial-gradient(circle, white 35%, transparent 90%);
   background-color: unset;
   top: -1.15rem;
-  height: 3rem;
-  width: 3rem;
+  height: var(--view-height);
+  width: var(--view-width);
   left: -1.145rem;
+  transform: var(--view-scale-y);
 }
 
 .km-marker {

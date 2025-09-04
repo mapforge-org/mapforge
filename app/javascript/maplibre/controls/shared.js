@@ -316,6 +316,17 @@ export function initializeDefaultControls () {
     }
   })
 
+  map.on('pitch', () => {
+    console.log('pitch: ' + map.getPitch().toFixed(1))
+
+    const dot = document.querySelector('.maplibregl-user-location-dot')
+    if (dot) {
+      // pitch = 0 -> scaleY(1); pitch = 90 -> scaleY(0)
+      const scale = 1 - (map.getPitch() / 90) / 2
+      dot.style.setProperty('--view-scale-y', `scaleY(${scale})`)
+    }
+  })
+
   geolocate.on('trackuserlocationend', () => {
     wakeLock.release()
     wakeLock = null
@@ -362,7 +373,7 @@ function setLocationOrientation(event) {
     if (86 < Math.abs(event.beta) && Math.abs(event.beta) < 94) {
       // when the phone is around vertical, alpha is unreliable
     } else {
-      heading = event.alpha + (screen?.orientation?.angle || 0)
+      heading = event.alpha - (screen?.orientation?.angle || 0)
       heading += map.getBearing() // adjust to map rotation
       heading %= 360
       dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
