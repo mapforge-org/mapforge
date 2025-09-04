@@ -297,6 +297,7 @@ export function initializeDefaultControls () {
       // hiding the direction view
       const dot = document.querySelector('.maplibregl-user-location-dot')
       dot.style.setProperty('--display-view', 'none')
+      return
     }
 
     // Some mobile browsers (iOS Safari) require permission to access device orientation
@@ -371,7 +372,9 @@ function setLocationOrientation(event) {
     if (86 < Math.abs(event.beta) && Math.abs(event.beta) < 94) {
       // when the phone is around vertical, alpha is unreliable
     } else {
-      heading = event.alpha - (screen?.orientation?.angle || 0)
+      console.log('Device Angles', event.alpha, event.beta, event.gamma)
+      console.log('Device Orientation', (screen?.orientation?.angle || 0))
+      heading = event.alpha + (screen?.orientation?.angle || 0)
       heading += map.getBearing() // adjust to map rotation
       heading %= 360
       dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
