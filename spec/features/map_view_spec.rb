@@ -116,24 +116,23 @@ describe 'Map public view' do
   end
 
   context 'with server gone' do
-    it 'shows warning' do
+    it 'shows connection error icon' do
       ActionCable.server.connections.each(&:close)
-      expect(page).to have_text('Connection to server lost')
+      expect(page).to have_css('div:not(.hidden):has(> button.maplibregl-ctrl-connection)')
     end
   end
 
   context 'with client going offline' do
-    it 'shows warning' do
+    it 'shows connection error icon' do
       go_offline
-      expect(page).to have_text('Connection to server lost')
+      expect(page).to have_css('div:not(.hidden):has(> button.maplibregl-ctrl-connection)')
     end
 
     it 'catches up with new features on reconnect' do
       go_offline
-      expect(page).to have_text('Connection to server lost')
+      expect(page).to have_css('div:not(.hidden):has(> button.maplibregl-ctrl-connection)')
       create(:feature, :polygon_middle, layer: map.layers.geojson.first, title: 'Poly Title')
       go_online
-      expect(page).to have_text(/Connection to server re-established|Map view updated/)
       expect_map_loaded
       click_coord('#maplibre-map', 50, 50)
       expect(page).to have_text('Poly Title')
@@ -141,10 +140,10 @@ describe 'Map public view' do
 
     it 'catches up with map property changes on reconnect' do
       go_offline
-      expect(page).to have_text('Connection to server lost')
+      expect(page).to have_css('div:not(.hidden):has(> button.maplibregl-ctrl-connection)')
       map.update!(base_map: 'test2')
       go_online
-      expect(page).to have_text(/Connection to server re-established|Map view updated/)
+      expect_map_loaded
       base_map = page.driver.evaluate_script("window.gon.map_properties['base_map']")
       expect(base_map).to eq 'test2'
     end

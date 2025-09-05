@@ -92,6 +92,10 @@
   margin-bottom: 1.5rem;
 }
 
+.maplibregl-ctrl-group button.maplibregl-ctrl-connection {
+  color: var(--color-mid-chili);
+}
+
 /* hide search form on mobile */
 @media (width < 640px) {
   .maplibregl-ctrl-geocoder {

@@ -351,6 +351,8 @@ export function initializeDefaultControls () {
   map.addControl(geolocate, 'top-right')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)').classList.add('hidden')
 
+  map.addControl(new ControlGroup([new ConnectionStatusControl()]), 'bottom-left')
+
   const scale = new maplibregl.ScaleControl({
     maxWidth: 100,
     unit: 'metric'
@@ -367,6 +369,13 @@ export function initializeDefaultControls () {
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)
+  })
+
+  map.on('online', (_e) => {
+    functions.e('div:has(> button.maplibregl-ctrl-connection)', e => { e.classList.add('hidden') })
+  })
+  map.on('offline', (_e) => {
+    functions.e('div:has(> button.maplibregl-ctrl-connection)', e => { e.classList.remove('hidden') })
   })
 }
 
