@@ -38,6 +38,7 @@
   --default-color: var(--color-light-sand);
   --bs-btn-border-radius: 0px;
   --bs-border-radius: 0px;
+  --ctrl-button-color: rgb(68 73 82);
 }
 
 html,

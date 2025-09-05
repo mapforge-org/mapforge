@@ -9,6 +9,7 @@
   width: 2rem;
   background-size: 1.2rem;
   font-size: 1rem;
+  color: var(--ctrl-button-color)
 }
 
 .maplibregl-ctrl button:disabled {
