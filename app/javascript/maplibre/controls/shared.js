@@ -146,7 +146,7 @@ export function initLayersModal () {
       const featureCount = document.createElement('span')
       featureCount.classList.add('small')
       featureCount.textContent = '(' + features.length + ')'
-      head.appendChild(featureCount)
+      head.parentNode.insertBefore(featureCount, head.nextSibling)
       e.appendChild(layerElement)
       if (layer.type === 'overpass') {
         layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
@@ -395,12 +395,13 @@ function setLocationOrientation(event) {
   const dot = document.querySelector('.maplibregl-user-location-dot')
   if (dot) {
     let heading
+    const screen_angle = (screen?.orientation?.angle || 0)
     if (86 < Math.abs(event.beta) && Math.abs(event.beta) < 94) {
       // when the phone is around vertical, alpha is unreliable
     } else {
-      console.log('Device Angles', event.alpha, event.beta, event.gamma)
-      console.log('Device Orientation', (screen?.orientation?.angle || 0))
-      heading = event.alpha - (screen?.orientation?.angle || 0)
+      // console.log('Device Angles', event.alpha, event.beta, event.gamma)
+      // console.log('Device Orientation', screen_angle)
+      heading = event.alpha - screen_angle
       heading += map.getBearing() // adjust to map rotation
       heading = (heading + 360) % 360
       console.log('Heading', heading)

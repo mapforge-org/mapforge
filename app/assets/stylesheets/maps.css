@@ -49,8 +49,9 @@ nav.fixed-top~#maps {
   color: #fff;
   color: var(--color-dark-moss-green);
   text-shadow: 0 -4px 4px white, 4px 0 4px white, 0 4px 4px white, -4px 0 4px white;
-  font-weight: bold;
-  font-family: Lobster, serif;
+  font-weight: 400;
+  font-family: "Noto Sans", sans-serif;
+  font-style: italic;
   text-overflow: ellipsis;
 
   /* white-space: nowrap; */
