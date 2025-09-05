@@ -308,6 +308,11 @@ export function initializeDefaultControls () {
     status('Error detecting location', 'warning')
   })
 
+  geolocate.on('geolocate', () => {
+    pitchUserView()
+  })
+
+  // follow mode
   geolocate.on('trackuserlocationstart', () => {
     requestWakeLock()
 
@@ -336,14 +341,7 @@ export function initializeDefaultControls () {
     }
   })
 
-  map.on('pitch', () => {
-    const dot = document.querySelector('.maplibregl-user-location-dot')
-    if (dot) {
-      // pitch = 0 -> scaleY(1); pitch = 90 -> scaleY(0)
-      const scale = 1 - (map.getPitch() / 90) / 2
-      dot.style.setProperty('--view-scale-y', `scaleY(${scale})`)
-    }
-  })
+  map.on('pitch', pitchUserView)
 
   geolocate.on('trackuserlocationend', () => {
     wakeLock.release()
@@ -370,6 +368,15 @@ export function initializeDefaultControls () {
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)
   })
+}
+
+function pitchUserView() {
+  const dot = document.querySelector('.maplibregl-user-location-dot')
+  if (dot) {
+    // pitch = 0 -> scaleY(1); pitch = 90 -> scaleY(0)
+    const scale = 1 - (map.getPitch() / 90) / 2
+    dot.style.setProperty('--view-scale-y', `scaleY(${scale})`)
+  }
 }
 
 function setLocationOrientation(event) {
