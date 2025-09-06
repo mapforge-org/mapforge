@@ -1,6 +1,5 @@
 class TracksController < ApplicationController
   def redirect
-    redirect_to root_path and return if params[:id].blank?
     if params[:id].present?
       padded = "%024d" % [ params[:id] ]
       map = Map.find(padded)

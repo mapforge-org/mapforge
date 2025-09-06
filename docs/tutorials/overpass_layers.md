@@ -13,7 +13,7 @@ Mapforge has a couple of ready-to-use layers prepared that can easily get added 
 Open the 'Layers' window, click on 'Add query' and chose the query to add. 
 There are prepared queries to cover common mapping needs for example for public toilets, camp sites and hiking tracks.
 
-<video controls>
+<video  poster="https://github.com/user-attachments/assets/8a41306e-bf5b-4204-b681-e337b9ce975d" controls>
   <source src="https://raw.githubusercontent.com/mapforge-org/mapforge/refs/heads/main/docs/tutorials/overpass_predefined.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
@@ -32,7 +32,7 @@ You can enhance your layers with visual customization, for example setting symbo
 `// cluster-symbol=🍻` - Emoji/icon path used for clusters 
 `// cluster-image-url=/icons/hydrant.png` - URL pointing to icon image for clusters
 
-<video controls>
+<video poster="https://github.com/user-attachments/assets/ae7a6366-563d-4a63-9dfc-5d4825c53565" controls>
   <source src="https://raw.githubusercontent.com/mapforge-org/mapforge/refs/heads/main/docs/tutorials/overpass_custom.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>

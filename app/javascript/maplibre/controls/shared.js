@@ -100,6 +100,25 @@ export class MapLayersControl {
   }
 }
 
+export class ConnectionStatusControl {
+  constructor(_options) {
+    this._container = document.createElement('div')
+    this._container.classList.add('hidden')
+    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-connection" type="button" title="Connection error" aria-label="Connection error" aria-pressed="false"><b><i class="bi bi-wifi-off"></i></b></button>'
+  }
+
+  onAdd(map) {
+    map.getCanvas().appendChild(this._container)
+    return this._container
+  }
+
+  onRemove() {
+    if (this._container.parentNode) {
+      this._container.parentNode.removeChild(this._container)
+    }
+  }
+}
+
 // create the list of layers + features
 export function initLayersModal () {
   console.log("Re-draw layers modal")
@@ -127,7 +146,7 @@ export function initLayersModal () {
       const featureCount = document.createElement('span')
       featureCount.classList.add('small')
       featureCount.textContent = '(' + features.length + ')'
-      head.appendChild(featureCount)
+      head.parentNode.insertBefore(featureCount, head.nextSibling)
       e.appendChild(layerElement)
       if (layer.type === 'overpass') {
         layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
@@ -289,6 +308,11 @@ export function initializeDefaultControls () {
     status('Error detecting location', 'warning')
   })
 
+  geolocate.on('geolocate', () => {
+    pitchUserView()
+  })
+
+  // follow mode
   geolocate.on('trackuserlocationstart', () => {
     requestWakeLock()
 
@@ -297,6 +321,7 @@ export function initializeDefaultControls () {
       // hiding the direction view
       const dot = document.querySelector('.maplibregl-user-location-dot')
       dot.style.setProperty('--display-view', 'none')
+      return
     }
 
     // Some mobile browsers (iOS Safari) require permission to access device orientation
@@ -311,9 +336,12 @@ export function initializeDefaultControls () {
         })
         .catch(console.error)
     } else {
+      // https://developer.mozilla.org/en-US/docs/Web/API/Window/deviceorientationabsolute_event
       window.addEventListener('deviceorientationabsolute', setLocationOrientation)
     }
   })
+
+  map.on('pitch', pitchUserView)
 
   geolocate.on('trackuserlocationend', () => {
     wakeLock.release()
@@ -322,6 +350,8 @@ export function initializeDefaultControls () {
 
   map.addControl(geolocate, 'top-right')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)').classList.add('hidden')
+
+  map.addControl(new ControlGroup([new ConnectionStatusControl()]), 'bottom-left')
 
   const scale = new maplibregl.ScaleControl({
     maxWidth: 100,
@@ -340,21 +370,50 @@ export function initializeDefaultControls () {
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)
   })
+
+  map.on('online', (_e) => {
+    functions.e('div:has(> button.maplibregl-ctrl-connection)', e => { e.classList.add('hidden') })
+  })
+  map.on('offline', (_e) => {
+    functions.e('div:has(> button.maplibregl-ctrl-connection)', e => { e.classList.remove('hidden') })
+  })
+}
+
+function pitchUserView() {
+  const dot = document.querySelector('.maplibregl-user-location-dot')
+  if (dot) {
+    // pitch = 0 -> scaleY(1); pitch = 90 -> scaleY(0)
+    const scale = 1 - (map.getPitch() / 90) / 2
+    dot.style.setProperty('--view-scale-y', `scaleY(${scale})`)
+  }
 }
 
 function setLocationOrientation(event) {
   // event.alpha: 0-360 (compass direction)
   // event.beta: -180 to 180 (front to back tilt)
   // event.gamma: -90 to 90 (left to right tilt)
+
+  // some browsers respond to deviceorientationabsolute with non-absolute values
+  if (!event.absolute) {
+    // hiding the direction view
+    const dot = document.querySelector('.maplibregl-user-location-dot')
+    dot.style.setProperty('--display-view', 'none')
+    return
+  }
+
   const dot = document.querySelector('.maplibregl-user-location-dot')
   if (dot) {
     let heading
+    const screen_angle = (screen?.orientation?.angle || 0)
     if (86 < Math.abs(event.beta) && Math.abs(event.beta) < 94) {
-      // when the phone is vertical, alpha is unreliable
+      // when the phone is around vertical, alpha is unreliable
     } else {
-      heading = event.alpha
+      // console.log('Device Angles', event.alpha, event.beta, event.gamma)
+      // console.log('Device Orientation', screen_angle)
+      heading = event.alpha - screen_angle
       heading += map.getBearing() // adjust to map rotation
-      heading %= 360
+      heading = (heading + 360) % 360
+      console.log('Heading', heading)
       dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
     }
   }

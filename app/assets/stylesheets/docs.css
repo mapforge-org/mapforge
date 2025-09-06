@@ -13,10 +13,11 @@ nav.fixed-top~#docs {
   h1, h2, h3, h4 {
     margin-top: 1rem;
     margin-bottom: 0.75rem;
+    font-weight: 300;
   }
   
   h2, h3, h4 {
-    margin-top: 1rem; 
+    margin-top: 2rem; 
   }  
 
   code {
@@ -27,9 +28,8 @@ nav.fixed-top~#docs {
 }
 
 .markdown-content h1 {
-  font-family: Lobster, serif;
-  font-weight: 600;
-  font-style: normal;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 100;
 }
 
 .markdown-content img {

@@ -4,9 +4,9 @@
 }
 
 .mapforge-font {
-  font-family: Lobster, serif;
-  font-weight: 600;
-  font-style: normal;
+  font-family: "Lobster Two", sans-serif;
+  font-weight: 400;
+  font-style: italic;
 }
 
 .mapforge-logo {
@@ -32,13 +32,26 @@
   background-color: #f60;
   border-color: #f60;
   color: #fff !important;
+
+  --text-color: #fff;
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #f60;
+  --bs-btn-border-color: #f60;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #f60;
+  --bs-btn-hover-border-color: #f60;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #FF781F;
+  --bs-btn-active-border-color: #FF781F;
 }
 
-.btn-orange:hover,
-.btn-orange:focus,
-.btn-orange:active {
-  background-color: #FF781F !important;
-  color: #fff !important;
+/* only add hover effects to supported browsers */
+@media (hover: hover) {
+  .btn-orange:hover {
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #FF781F;
+    --bs-btn-hover-border-color: #FF781F;
+  }
 }
 
 .login-link {
