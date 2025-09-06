@@ -6,7 +6,7 @@ import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteser
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
 import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
-import { initializeEditControls } from 'maplibre/controls/edit'
+import { initializeEditControls, disableEditControls, enableEditControls } from 'maplibre/controls/edit'
 import { status } from 'helpers/status'
 import { undo, redo, addUndoState } from 'maplibre/undo'
 import * as functions from 'helpers/functions'
@@ -166,6 +166,9 @@ export async function initializeEditMode () {
       map.fire('click', e) // attach original event for coordinates
     }
   })
+
+  map.on('online', (_e) => { enableEditControls() })
+  map.on('offline', (_e) => { disableEditControls() })
 
   // in edit mode, map click handler is needed to hide modals
   // and to hide feature modal if no feature is selected

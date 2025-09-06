@@ -181,7 +181,7 @@ export function initializeEditControls () {
       new MapShareControl()])
   map.addControl(controlGroup, 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)').classList.add('hidden') // hide for aos animation
-
+ 
   // map.addControl(new ControlGroup([new TourControl()]), 'top-left')
   // document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-tour)').classList.add('hidden') // hide for aos animation
 

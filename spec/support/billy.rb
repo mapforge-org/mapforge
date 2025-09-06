@@ -4,7 +4,7 @@ require 'table_print' # Add this dependency to your gemfile
 Billy.configure do |c|
   # c.record_requests = true # needed for the table output below
   c.non_successful_error_level = :error
-  c.cache = true
+  c.cache = false
   c.persist_cache = false
   c.cache_path = 'tmp/req_cache/'
 end

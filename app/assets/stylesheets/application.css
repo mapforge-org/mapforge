@@ -38,6 +38,7 @@
   --default-color: var(--color-light-sand);
   --bs-btn-border-radius: 0px;
   --bs-border-radius: 0px;
+  --ctrl-button-color: rgb(68 73 82);
 }
 
 html,
@@ -45,7 +46,7 @@ body {
   overscroll-behavior: none; /* disable pull-to-refresh on mobile */
   overflow-x: hidden;
   width: 100%;
-  font-family: system-ui, sans-serif;
+  font-family: "Noto Sans", system-ui, sans-serif;
   font-weight: 300;
   color: var(--text-color);
 }
@@ -60,8 +61,14 @@ a, .link {
   cursor: pointer;
 }
 
-a:hover, a:active, .link:hover, .link:active {
+a:active, .link:active {
   color: var(--hover-color);
+}
+
+@media (hover: hover) {
+  a:hover, .link:hover {
+    color: var(--hover-color);
+  }
 }
 
 .flex-container {
@@ -103,7 +110,7 @@ a:hover, a:active, .link:hover, .link:active {
 }
 
 .small {
-  size: 85%;
+  font-size: 75%;
 }
 
 .shadow {
@@ -124,8 +131,15 @@ a:hover, a:active, .link:hover, .link:active {
     cursor: pointer;
   }
 
-  a:hover, a:active, .link:hover, .link:active {
+  a:active, .link:active {
     color: var(--color-light-teagreen);
+  }
+
+  /* only add hover effects to supported browsers */
+  @media (hover: hover) {
+    a:hover, .link:hover {
+      color: var(--color-light-teagreen);
+    }
   }
 }
 
@@ -138,8 +152,15 @@ a:hover, a:active, .link:hover, .link:active {
     cursor: pointer;
   }
 
-  a:hover, a:active, .link:hover, .link:active {
+  a:active, .link:active {
     color: var(--hover-color);
+  }
+
+  /* only add hover effects to supported browsers */
+  @media (hover: hover) {
+    a:hover, .link:hover {
+      color: var(--hover-color);
+    }
   }
 }
 
@@ -150,9 +171,17 @@ button {
     text-decoration: none;
   }
 
-  a:hover, a:active, .link:hover, .link:active { /* stylelint-disable-line */
+  a:active, .link:active { /* stylelint-disable-line */
     color: var(--default-color);
     text-decoration: none;
+  }
+
+  /* only add hover effects to supported browsers */
+  @media (hover: hover) {
+    a:hover, .link:hover {
+      color: var(--default-color);
+      text-decoration: none;
+    }
   }
 }
 
@@ -168,4 +197,8 @@ button {
 
 .chrome-mobile {
   font-size: 130%;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 300;
 }
