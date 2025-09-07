@@ -55,6 +55,9 @@ RSpec/ExpectInHook:
 RSpec/AnyInstance:
   Enabled: false
 
+RSpec/IndexedLet:
+  Enabled: false
+
 RSpec/NoExpectationExample:
   AllowedPatterns:
   - ^assert_

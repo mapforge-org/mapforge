@@ -1,11 +1,18 @@
+#maps {
+  padding: 1.5rem;
+}
+
 /* Add margin to body when navbar is fixed */
 nav.fixed-top~#maps {
   margin-top: 4rem;
 }
 
+#maps .flex-container {
+  gap: 1rem;
+}
+
 .flex-item {
- flex: 1; /* Each item will grow to take up equal space within the container */
- margin: 1rem;
+  flex: 1; /* Each item will grow to take up equal space within the container */
 }
 
 .map-preview {

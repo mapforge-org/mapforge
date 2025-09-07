@@ -1,15 +1,33 @@
 - content_for :title, "Mapforge: My maps"
 
-#maps.flex-container.flex-center{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
-  - @maps.each do |map|
-    = render map, rw: true, last_change: false, avatar: false, delete: true
+#maps
 
-- if @maps.empty?
-  .container.pt-4.mt-4.mb-4.empty-map-list.background-bright
-    %p.text-center
-      In this gallery, your maps will be shown.
-      %br
-      You can browse maps of other users via the 'Explore' link, or
-      you can start with your first map by clicking on the "Create Map" button above.
+  - if @recent_map_ids.present?
+    %h3.mapforge-font Recent Maps
+    .flex-container.flex-center
+
+
+    .flex-container.flex-center.mb-4
+      - @recent_map_ids.each do |map_id|
+        - recent_map = Map.unscoped.find_by(id: map_id)
+        - if recent_map.present?
+          = render recent_map, rw: true
+        - recent_map = Map.unscoped.find_by(public_id: map_id)
+        - if recent_map.present?
+          = render recent_map, rw: false
+
+
+  %h3.mapforge-font Your Maps
+  .flex-container.flex-center
+    - @my_maps.each do |map|
+      = render map, rw: true, last_change: false, avatar: false, delete: true
+
+  - if @my_maps.empty?
+    .container.pt-4.mt-4.mb-4.empty-map-list.background-bright
+      %p.text-center
+        In this gallery, your maps will be shown.
+        %br
+        You can browse maps of other users via the 'Browse Maps' link, or
+        you can start with your first map by clicking on the "Create Map" button above.
 
 
