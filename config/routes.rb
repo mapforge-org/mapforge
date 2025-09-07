@@ -51,7 +51,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "frontpage#index"
-  get "/frontpage" => "frontpage#index"
+  get "/home" => "frontpage#home", as: :frontpage
 
   mount Ulogger::Engine, at: "/ulogger"
 end
