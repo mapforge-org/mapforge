@@ -4,8 +4,10 @@ module Mapforge
   class OsmcSymbolGenerator
     # convert osmc symbol code to image
     # https://wiki.openstreetmap.org/wiki/Key:osmc:symbol?uselang=en
+    # syntax: waycolor:background:foreground[:foreground2]:text:textcolor
     def self.generate(osmc_symbol)
       _waycolor, background, foreground, text, textcolor = osmc_symbol.split(":")
+      # Rails.logger.info "Generating OSMC symbol for background:'#{background}', foreground:'#{foreground}', text:'#{text}', textcolor:'#{textcolor}'"
 
       raise ActionController::BadRequest, "Invalid background filename '#{background}'" unless background =~ /\A[\w.-]+\z/
       raise ActionController::BadRequest, "Invalid foreground filename '#{foreground}'" unless foreground.blank? || foreground =~ /\A[\w.-]+\z/
