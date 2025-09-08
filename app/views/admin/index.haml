@@ -1,8 +1,12 @@
 = turbo_stream_from "admin_maps_list"
 
-#maps.flex-container
-  - @maps.each do |map|
-    = render map, rw: true, last_change: true, avatar: true, delete: true
+#maps
+
+  %h3.mapforge-font Admin
+
+  .grid-container.flex-center.mb-4
+    - @maps.each do |map|
+      = render map, rw: true, last_change: true, avatar: true, delete: true
 
 - if @maps.empty?
   .container.pt-4.mt-4.mb-4.empty-map-list.background-bright

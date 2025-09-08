@@ -11,8 +11,21 @@ nav.fixed-top~#maps {
   gap: 1rem;
 }
 
-.flex-item {
-  flex: 1; /* Each item will grow to take up equal space within the container */
+#maps .flex-item {
+  flex: 1 1 15rem; /* Each item will grow to take up equal space within the container */
+  min-width: 15rem;
+  max-width: 25rem;
+}
+
+#maps .grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 1rem;
+}
+
+#maps .grid-item {
+  min-width: 15rem;
+  max-width: 25rem;
 }
 
 .map-preview {
@@ -21,8 +34,6 @@ nav.fixed-top~#maps {
   border-width: 2px;
   border-style: solid;
   border-color: var(--color-light-sand);
-  min-width: 15rem;
-  max-width: 25rem;
   text-align: center;
 
   a {
