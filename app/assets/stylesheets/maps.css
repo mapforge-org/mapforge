@@ -60,7 +60,7 @@ nav.fixed-top~#maps {
 .map-preview-title {
   position: absolute;
   width: 95%;
-  top: 3rem;
+  top: 5rem;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 1.5rem;
@@ -70,10 +70,12 @@ nav.fixed-top~#maps {
   font-weight: 400;
   font-family: "Noto Sans", sans-serif;
   font-style: italic;
-  text-overflow: ellipsis;
-
-  /* white-space: nowrap; */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .map-auth {
@@ -81,7 +83,7 @@ nav.fixed-top~#maps {
   top: 0.2rem;
   left: 0.2rem;
   z-index: 2;
-  font-size: 1.2rem;
+  font-size: 1rem;
   background: var(--color-light-sand);
   border-radius: 50%;
   width: 1.5rem;
@@ -106,7 +108,7 @@ nav.fixed-top~#maps {
   bottom: 0.2rem;
   z-index: 2;
   font-size: 1.3rem;
-  width: 1.5rem;
+  width: 1.9rem;
   height: 1.5em;
   border-radius: 50%;
   background-color: var(--color-light-sand);

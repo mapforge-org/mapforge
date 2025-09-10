@@ -309,7 +309,7 @@ export function initializeDefaultControls () {
   })
 
   geolocate.on('geolocate', () => {
-    pitchUserView()
+    pitchCompassView()
   })
 
   // follow mode
@@ -341,11 +341,13 @@ export function initializeDefaultControls () {
     }
   })
 
-  map.on('pitch', pitchUserView)
+  map.on('pitch', pitchCompassView)
 
   geolocate.on('trackuserlocationend', () => {
     wakeLock.release()
     wakeLock = null
+    // probably mapbox draw bug: map can lose drag capabilities
+    map.dragPan.enable()
   })
 
   map.addControl(geolocate, 'top-right')
@@ -379,7 +381,8 @@ export function initializeDefaultControls () {
   })
 }
 
-function pitchUserView() {
+// pitch compass view like map
+function pitchCompassView() {
   const dot = document.querySelector('.maplibregl-user-location-dot')
   if (dot) {
     // pitch = 0 -> scaleY(1); pitch = 90 -> scaleY(0)
