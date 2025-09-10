@@ -1,6 +1,6 @@
 ## Mapforge Privacy Policy
 
-TL;DR: For not logged in visitors, we do not use cookies and we do not collect any personal data. If you decide to log in, we store the bare minimum and do not share it with third party companies or services.
+TL;DR: For not logged in visitors, we do **not** use cookies and we do **not** collect any personal data. If you decide to log in, we store the bare minimum and do **not** share it with third party companies or services.
 
 In this policy, we lay out what data we collect and why, how your data is handled and your rights to your data.
 
@@ -25,8 +25,9 @@ Here’s what that means in practice. When you log in via one of the supported l
 
     Your name
     Your email address
-    Your profile picture
+    A link to your profile picture
     Your login provider
+    A list of your [recently viewed](https://mapforge.org/my) maps
 
 A persistent first-party cookie is stored to remember you’re logged in.
 
@@ -53,3 +54,4 @@ Please see the privacy policies and terms of service of used services here:
 * OSM: https://osmfoundation.org/wiki/Privacy_Policy
 * Maptiler: https://www.maptiler.com/privacy-policy/
 * ESRI: https://developers.arcgis.com/maplibre-gl-js/terms-of-use/
+* OpenRouteService: https://heigit.org/privacy-policy/

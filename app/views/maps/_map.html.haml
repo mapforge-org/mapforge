@@ -3,7 +3,7 @@
 - delete = local_assigns[:delete] || false
 - last_change = local_assigns[:last_change] || false
 
-.flex-item.map-preview.background-bright{id: dom_id(map)}
+.grid-item.map-preview.background-bright{id: dom_id(map)}
 
   - unless map.view_permission == 'listed'
     .map-auth{title: 'This map is private and not linked from the public listing.'}

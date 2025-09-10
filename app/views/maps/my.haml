@@ -3,11 +3,8 @@
 #maps
 
   - if @recent_map_ids.present?
-    %h3.mapforge-font Recent Maps
-    .flex-container.flex-center
-
-
-    .flex-container.flex-center.mb-4
+    %h3.mapforge-font Recently viewed Maps
+    .grid-container.flex-center.mb-4
       - @recent_map_ids.each do |map_id|
         - recent_map = Map.unscoped.find_by(id: map_id)
         - if recent_map.present?
@@ -18,7 +15,7 @@
 
 
   %h3.mapforge-font Your Maps
-  .flex-container.flex-center
+  .grid-container.flex-center
     - @my_maps.each do |map|
       = render map, rw: true, last_change: false, avatar: false, delete: true
 

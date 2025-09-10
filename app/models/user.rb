@@ -25,7 +25,7 @@ class User
   # The list can stotr private as well as public map ids
   # @param map [Map] the map being viewed
   # @param max_history [Integer] the maximum number of maps to keep in history
-  def track_map_view(id, max_history: 10)
+  def track_map_view(id, max_history: 4)
     # Remove the map if it's already in the list
     # byebug
     self.recent_map_ids.delete(id.to_s)
