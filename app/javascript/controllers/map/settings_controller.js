@@ -25,7 +25,7 @@ export default class extends Controller {
 
   mapNameValueChanged (value, _previousValue) {
     // console.log('mapNameValueChanged(): ' + value)
-    document.querySelector('#map-name').value = value
+    functions.e('#map-name', e => { e.value = value })
   }
 
   mapTerrainValueChanged (value, _previousValue) {
@@ -110,21 +110,27 @@ export default class extends Controller {
     }
     mapProperties.terrain = this.mapTerrainValue
     setBackgroundMapLayer()
-    mapChannel.send_message('update_map', { terrain: mapProperties.terrain, globe: mapProperties.globe })
+    if (window.gon.map_mode === 'rw') {
+      mapChannel.send_message('update_map', { terrain: mapProperties.terrain, globe: mapProperties.globe })
+    }
   }
 
   updateHillshade (event) {
     this.mapHillshadeValue = event.target.checked
     mapProperties.hillshade = this.mapHillshadeValue
     setBackgroundMapLayer()
-    mapChannel.send_message('update_map', { hillshade: mapProperties.hillshade })
+    if (window.gon.map_mode === 'rw') {
+      mapChannel.send_message('update_map', { hillshade: mapProperties.hillshade })
+    }
   }
 
   updateContours (event) {
     this.mapContoursValue = event.target.checked
     mapProperties.contours = this.mapContoursValue
     setBackgroundMapLayer()
-    mapChannel.send_message('update_map', { contours: mapProperties.contours })
+    if (window.gon.map_mode === 'rw') {
+      mapChannel.send_message('update_map', { contours: mapProperties.contours })
+    }
   }
 
   updateGlobe (event) {
@@ -136,14 +142,18 @@ export default class extends Controller {
     }
     mapProperties.globe = this.mapGlobeValue
     setBackgroundMapLayer()
-    mapChannel.send_message('update_map', { globe: mapProperties.globe, terrain: mapProperties.terrain })
+    if (window.gon.map_mode === 'rw') {
+      mapChannel.send_message('update_map', { globe: mapProperties.globe, terrain: mapProperties.terrain })
+    }
   }
 
   updateBaseMap (event) {
     this.baseMapValue = event.target.dataset.baseMap
     mapProperties.base_map = this.baseMapValue
     setBackgroundMapLayer()
-    mapChannel.send_message('update_map', { base_map: mapProperties.base_map })
+    if (window.gon.map_mode === 'rw') {
+      mapChannel.send_message('update_map', { base_map: mapProperties.base_map })
+    }
   }
 
   updateName (event) {
