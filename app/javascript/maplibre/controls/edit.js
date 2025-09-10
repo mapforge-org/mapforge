@@ -1,9 +1,9 @@
-import { map, mapProperties } from 'maplibre/map'
+import { map } from 'maplibre/map'
 import * as functions from 'helpers/functions'
 import { draw } from 'maplibre/edit'
 import { resetHighlightedFeature } from 'maplibre/feature'
 import { animateElement } from 'helpers/dom'
-import { ControlGroup, MapLayersControl, MapShareControl, resetControls } from 'maplibre/controls/shared'
+import { ControlGroup, MapLayersControl, MapShareControl, MapSettingsControl, resetControls, initSettingsModal } from 'maplibre/controls/shared'
 import { resetDirections } from 'maplibre/routing/osrm'
 import { undo, redo } from 'maplibre/undo'
 
@@ -69,37 +69,6 @@ export class MapRedoControl {
   }
 }
 
-export class MapSettingsControl {
-  constructor (_options) {
-    this._container = document.createElement('div')
-    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-map" type="button" title="Map settings" aria-label="Map settings" aria-pressed="false"><b><i class="bi bi-globe-americas"></i></b></button>'
-    this._container.onclick = function (e) {
-      const modal = document.querySelector('#settings-modal')
-      if (modal.classList.contains('show')) {
-        resetControls()
-      } else {
-        resetControls()
-        if (draw) { resetEditControls() }
-        initSettingsModal()
-        e.target.closest('button').classList.add('active')
-        modal.classList.add('show')
-        window.history.pushState({ modal: 'settings' }, '', `${window.location.pathname}#settings`)
-      }
-    }
-  }
-
-  onAdd (map) {
-    map.getCanvas().appendChild(this._container)
-    return this._container
-  }
-
-  onRemove () {
-    if (this._container.parentNode) {
-      this._container.parentNode.removeChild(this._container)
-    }
-  }
-}
-
 export class TourControl {
   constructor (_options) {
     this._container = document.createElement('div')
@@ -128,26 +97,6 @@ export class TourControl {
       this._container.parentNode.removeChild(this._container)
     }
   }
-}
-
-// initialize settings modal with default map values from mapProperties
-export function initSettingsModal () {
-  functions.e('#settings-modal', e => {
-    if (mapProperties.name) { e.setAttribute('data-map--settings-map-name-value', mapProperties.name) }
-    e.setAttribute('data-map--settings-base-map-value', mapProperties.base_map)
-    e.setAttribute('data-map--settings-map-terrain-value', mapProperties.terrain)
-    e.setAttribute('data-map--settings-map-hillshade-value', mapProperties.hillshade)
-    e.setAttribute('data-map--settings-map-contours-value', mapProperties.contours)
-    e.setAttribute('data-map--settings-map-globe-value', mapProperties.globe)
-    e.setAttribute('data-map--settings-default-pitch-value', Math.round(mapProperties.pitch))
-    e.setAttribute('data-map--settings-default-zoom-value', parseFloat(mapProperties.zoom || mapProperties.default_zoom).toFixed(2))
-    e.setAttribute('data-map--settings-default-bearing-value', Math.round(mapProperties.bearing))
-    if (mapProperties.center) {
-      e.setAttribute('data-map--settings-default-center-value', JSON.stringify(mapProperties.center))
-    } else {
-      e.removeAttribute('data-map--settings-default-center-value')
-    }
-  })
 }
 
 export function resetEditControls () {

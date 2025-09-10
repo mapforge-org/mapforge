@@ -1,5 +1,5 @@
 import { map } from 'maplibre/map'
-import { ControlGroup, MapLayersControl, MapShareControl } from 'maplibre/controls/shared'
+import { ControlGroup, MapSettingsControl, MapLayersControl, MapShareControl } from 'maplibre/controls/shared'
 import { animateElement } from 'helpers/dom'
 
 export class MapEditControl {
@@ -31,8 +31,7 @@ export function initializeViewControls () {
   }
 
   const controlGroup = new ControlGroup(
-    [new MapLayersControl(),
-      new MapShareControl()])
+    [new MapSettingsControl(), new MapLayersControl(), new MapShareControl()])
   map.addControl(controlGroup, 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-layers)').classList.add('hidden') // hide for aos animation
 
