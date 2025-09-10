@@ -1,4 +1,4 @@
-import { map, layers } from 'maplibre/map'
+import { map, layers, mapProperties } from 'maplibre/map'
 import * as functions from 'helpers/functions'
 // import * as dom from 'helpers/dom'
 import { draw } from 'maplibre/edit'
@@ -36,6 +36,36 @@ export class ControlGroup {
   }
 }
 
+export class MapSettingsControl {
+  constructor (_options) {
+    this._container = document.createElement('div')
+    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-map" type="button" title="Map settings" aria-label="Map settings" aria-pressed="false"><b><i class="bi bi-globe-americas"></i></b></button>'
+    this._container.onclick = function (e) {
+      const modal = document.querySelector('#settings-modal')
+      if (modal.classList.contains('show')) {
+        resetControls()
+      } else {
+        resetControls()
+        if (draw) { resetEditControls() }
+        initSettingsModal()
+        e.target.closest('button').classList.add('active')
+        modal.classList.add('show')
+        window.history.pushState({ modal: 'settings' }, '', `${window.location.pathname}#settings`)
+      }
+    }
+  }
+
+  onAdd (map) {
+    map.getCanvas().appendChild(this._container)
+    return this._container
+  }
+
+  onRemove () {
+    if (this._container.parentNode) {
+      this._container.parentNode.removeChild(this._container)
+    }
+  }
+}
 
 export class MapShareControl {
   constructor (_options) {
@@ -117,6 +147,26 @@ export class ConnectionStatusControl {
       this._container.parentNode.removeChild(this._container)
     }
   }
+}
+
+// initialize settings modal with default map values from mapProperties
+export function initSettingsModal () {
+  functions.e('#settings-modal', e => {
+    if (mapProperties.name) { e.setAttribute('data-map--settings-map-name-value', mapProperties.name) }
+    e.setAttribute('data-map--settings-base-map-value', mapProperties.base_map)
+    e.setAttribute('data-map--settings-map-terrain-value', mapProperties.terrain)
+    e.setAttribute('data-map--settings-map-hillshade-value', mapProperties.hillshade)
+    e.setAttribute('data-map--settings-map-contours-value', mapProperties.contours)
+    e.setAttribute('data-map--settings-map-globe-value', mapProperties.globe)
+    e.setAttribute('data-map--settings-default-pitch-value', Math.round(mapProperties.pitch))
+    e.setAttribute('data-map--settings-default-zoom-value', parseFloat(mapProperties.zoom || mapProperties.default_zoom).toFixed(2))
+    e.setAttribute('data-map--settings-default-bearing-value', Math.round(mapProperties.bearing))
+    if (mapProperties.center) {
+      e.setAttribute('data-map--settings-default-center-value', JSON.stringify(mapProperties.center))
+    } else {
+      e.removeAttribute('data-map--settings-default-center-value')
+    }
+  })
 }
 
 // create the list of layers + features
@@ -309,7 +359,7 @@ export function initializeDefaultControls () {
   })
 
   geolocate.on('geolocate', () => {
-    pitchUserView()
+    pitchCompassView()
   })
 
   // follow mode
@@ -341,11 +391,13 @@ export function initializeDefaultControls () {
     }
   })
 
-  map.on('pitch', pitchUserView)
+  map.on('pitch', pitchCompassView)
 
   geolocate.on('trackuserlocationend', () => {
     wakeLock.release()
     wakeLock = null
+    // probably mapbox draw bug: map can lose drag capabilities
+    map.dragPan.enable()
   })
 
   map.addControl(geolocate, 'top-right')
@@ -379,7 +431,8 @@ export function initializeDefaultControls () {
   })
 }
 
-function pitchUserView() {
+// pitch compass view like map
+function pitchCompassView() {
   const dot = document.querySelector('.maplibregl-user-location-dot')
   if (dot) {
     // pitch = 0 -> scaleY(1); pitch = 90 -> scaleY(0)

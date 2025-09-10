@@ -1,6 +1,3 @@
-require "selenium-webdriver"
-require_relative "../../spec/support/capybara.rb"
-
 namespace :maps do
   desc "Take preview screenshots of updated maps"
   task screenshots: :environment do |_, args|
@@ -11,13 +8,16 @@ namespace :maps do
         last_update = File.mtime(map.screenshot_file) if File.exist?(map.screenshot_file)
         # Scheduled job is running each 10 minutes
         next if File.exist?(map.screenshot_file) && map.updated_at < last_update - 5.minutes
-        puts "Map (#{map.public_id}, #{map.name}) updated #{map.updated_at}, last screenshot from #{last_update || 'n/a'}"
+
+        puts "Skipping personal map (#{map.public_id}, #{map.name})" && next if map.edit_permission == "private"
+        puts "Updating map (#{map.public_id}, #{map.name}) updated #{map.updated_at}, last screenshot from #{last_update || 'n/a'}"
 
         # https://github.com/YusukeIwaki/puppeteer-ruby
         Puppeteer.launch(headless: true, ignore_https_errors: true) do |browser|
           browser.create_incognito_browser_context
           page = browser.new_page
           page.default_timeout = 90000
+          # Use private id, because map might be private
           map_url = base_url + ERB::Util.url_encode(map.id) + "?static=true"
           failure = false
 
@@ -46,12 +46,11 @@ namespace :maps do
             # image = Rszr::Image.load(map.screenshot_file)
             # image.resize!(600, :auto)
             # image.save(map.screenshot_file)
-            puts "Updated #{map.screenshot_file}"
+            puts "Map preview stored at: #{map.screenshot_file}"
           end
          browser.close
         end
       rescue => e
-        # TODO: Screenshots from private-edit maps fail
         puts "Error creating map screenshot: #{e}, #{e.message}"
       end
     end

@@ -14,10 +14,11 @@
 
     .map-modal-content
 
-      .form-floating.edit-ui
-        %input.form-control#map-name{"name": "map-name", type: "text", size: 27, data: { action: "input->map--settings#updateName" } }
-        %label{ for: "map-name"}
-          %b Name:
+      - if @map_mode == 'rw'
+        .form-floating.edit-ui
+          %input.form-control#map-name{"name": "map-name", type: "text", size: 27, data: { action: "input->map--settings#updateName" } }
+          %label{ for: "map-name"}
+            %b Name:
 
       %h4.mapforge-font.mt-2
         Background map
@@ -48,12 +49,14 @@
         %label{ for: "map-globe"} Globe:
         %input#map-globe{type: "checkbox", data: { action: "click->map--settings#updateGlobe"} }
 
+      
       %h4.mapforge-font.mt-2 View
 
-      %p 
-        Set the default view that is shown when opening this map. 
-        When 'center' is set to 'auto', the map will start centered 
-        on your content. 
+      - if @map_mode == 'rw'
+        %p 
+          Set the default view that is shown when opening this map. 
+          When 'center' is set to 'auto', the map will start centered 
+          on your content. 
       %p
         %b.me-1 Map default: 
         %span.no-wrap
@@ -89,12 +92,13 @@
         %i.bi.bi-arrow-counterclockwise.me-2.mb-2
         %span.view-values#map-bearing-current>
 
-      .mt-2
-        %button.btn.btn-green.mt-1.w-100.mw-245#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
-          %i.bi.bi-crosshair.me-1
-          Set current view as default
+      - if @map_mode == 'rw'
+        .mt-2
+          %button.btn.btn-green.mt-1.w-100.mw-245#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
+            %i.bi.bi-crosshair.me-1
+            Set current view as default
 
-        %button.btn.btn-green.mt-1.w-100.mw-245#save-map-defaults{ data: { action: "click->map--settings#resetDefaultView" } }
-          %i.bi.bi-crosshair
-          Reset default view
+          %button.btn.btn-green.mt-1.w-100.mw-245#save-map-defaults{ data: { action: "click->map--settings#resetDefaultView" } }
+            %i.bi.bi-crosshair
+            Reset default view
 
