@@ -8,6 +8,7 @@ end
 
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
+ENV["DEFAULT_MAP"] = 'test'
 
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production

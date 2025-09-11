@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     post "" => "maps#create", as: :create_map
     delete "/:id" => "maps#destroy", as: :destroy_map, constraints: { id: ID_PATTERN }
   end
+  get "/playground" => "maps#playground", as: "playground"
   get "/my" => "maps#my", as: "my"
 
   get "/d/:id" => "maps#show", defaults: { engine: "deck" }, as: :deck, constraints: { id: ID_PATTERN }

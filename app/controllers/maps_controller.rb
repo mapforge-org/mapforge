@@ -2,7 +2,7 @@ class MapsController < ApplicationController
   before_action :set_map_ro, only: %i[show properties feature]
   before_action :set_map_rw, only: %i[destroy]
   before_action :set_map_mode, only: %i[show]
-  before_action :set_global_js_values, only: %i[show]
+  before_action :set_global_js_values, only: %i[show playground]
   before_action :check_permissions, only: %i[show properties]
   before_action :require_login, only: %i[my]
   before_action :require_map_owner, only: %i[destroy]
@@ -11,7 +11,7 @@ class MapsController < ApplicationController
   # site is cookie less for anonymous users, so no csrf token is set
   skip_before_action :verify_authenticity_token, only: %i[create], unless: :set_user
 
-  layout "map", only: [ :show ]
+  layout "map", only: [ :show, :playground ]
 
   def index
     @maps = Map.unscoped.listed.includes(:layers, :user).order(updated_at: :desc)
@@ -47,6 +47,17 @@ class MapsController < ApplicationController
       format.geojson { render json: @map.to_geojson }
       format.gpx { send_data @map.to_gpx, filename: @map.public_id + ".gpx" }
     end
+  end
+
+  def playground
+    @map = Map.find_by(public_id: "playground")
+    # Create playground map if it doesn't exist yet
+    unless @map
+      @map = Map.create_from_file(Rails.root.join("db/seeds/playground.json"))
+    end
+    @map_mode = "rw"
+    params["id"] = @map.id.to_s
+    show
   end
 
   def create
