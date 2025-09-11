@@ -232,15 +232,18 @@ export function loadLayers () {
       if (window.gon.map_properties.public_id !== data.properties.public_id){
         return
       }
-      data.layers.forEach((layer) => {
-        if (!layers.find( l => l.id === layer.id) ) {
-          layers.push(layer)
-        }
+      data.layers.filter(f => f.type === 'geojson').forEach((layer) => {
+        if (!layers.find( l => l.id === layer.id) ) { layers.push(layer) }
       })
+      // draw geojson layer before loading overpass layers
       geojsonData = mergedGeoJSONLayers()
       redrawGeojson()
       functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
       map.fire('geojson.load', { detail: { message: 'geojson-source loaded' } })
+
+      data.layers.filter(f => f.type === 'overpass').forEach((layer) => {
+        if (!layers.find(l => l.id === layer.id)) { layers.push(layer) }
+      })
       initializeOverpassLayers()
     })
     .catch(error => {
@@ -409,13 +412,13 @@ export function redrawGeojson (resetDraw = true) {
       })
     }
   }
-  map.getSource('geojson-source')?.setData(renderedGeojsonData())
+  map.getSource('geojson-source').setData(renderedGeojsonData())
   layers.filter(f => f.type === 'overpass').forEach((layer) => {
-    if (layer.geojson && layer.geojson.features.length > 0) {
-      map.getSource('overpass-source-' + layer.id)?.setData(layer.geojson)
+    if (layer.geojson) {
+      // console.log("Setting overpass layer data", layer.id, layer.geojson)
+      map.getSource('overpass-source-' + layer.id).setData(layer.geojson)
     }
   })
-
   map.triggerRepaint()
 }
 

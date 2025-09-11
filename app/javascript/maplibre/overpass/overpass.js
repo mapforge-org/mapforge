@@ -108,6 +108,7 @@ function applyOverpassStyle(geojson, query) {
       f.properties["marker-color"] = "transparent"
       f.properties["stroke"] = "transparent"
     }
+    if (getCommentValue(query, 'stroke')) { f.properties["stroke"] = getCommentValue(query, 'stroke') }
     // https://wiki.openstreetmap.org/wiki/Key:osmc:symbol?uselang=en
     // osmc:symbol=waycolor:background[:foreground][:foreground2][:text:textcolor]
     if ((f.geometry.type === 'LineString' || f.geometry.type === 'MultiLineString')

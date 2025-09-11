@@ -14,7 +14,10 @@
           = render recent_map, rw: false
 
 
-  %h3.mapforge-font Your Maps
+  %h3.mapforge-font 
+    Your Maps 
+    %span.fs-5
+      (#{@my_maps.size})
   .grid-container.flex-center
     - @my_maps.each do |map|
       = render map, rw: true, last_change: false, avatar: false, delete: true

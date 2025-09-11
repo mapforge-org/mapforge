@@ -2,7 +2,10 @@
 
 #maps
 
-  %h3.mapforge-font Admin
+  %h3.mapforge-font 
+    Admin
+    %span.fs-5
+      (#{@maps.size})
 
   .grid-container.flex-center.mb-4
     - @maps.each do |map|

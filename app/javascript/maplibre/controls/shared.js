@@ -171,7 +171,6 @@ export function initSettingsModal () {
 
 // create the list of layers + features
 export function initLayersModal () {
-  console.log("Re-draw layers modal")
   functions.e('#layers', e => {
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')

@@ -122,7 +122,6 @@ export default class extends Controller {
   }
 
   resizeQueryField (event) {
-    console.log('resize')
     const queryTextarea = event.target
     queryTextarea.style.height = 'auto' // Reset height
     queryTextarea.style.height = queryTextarea.scrollHeight + 'px' // Set to content height    
@@ -138,6 +137,7 @@ export default class extends Controller {
     event.target.closest('.layer-item').querySelector('.layer-name').innerHTML = layer.name
     const { geojson: _geojson, ...sendLayer } = layer
     mapChannel.send_message('update_layer', sendLayer)
+    event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
     initializeOverpassLayers(layerId)
   }
 
