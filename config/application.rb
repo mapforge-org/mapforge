@@ -46,7 +46,7 @@ module Mapforge
     # Don't generate system test files.
     config.generators.system_tests = nil
 
-    config.session_store :cookie_store, key: "_mapforge_session", expire_after: 48.hours
+    config.session_store :cookie_store, key: "_mapforge_session", expire_after: 1.week
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
   end
