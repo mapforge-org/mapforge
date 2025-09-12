@@ -4,7 +4,7 @@
   = render 'layouts/head'
 
   %body
-    = render 'shared/header', menu: true, create_button: true, static: true
+    = render 'shared/header', menu: true, create_button: !!@user, static: true
 
     = yield
 

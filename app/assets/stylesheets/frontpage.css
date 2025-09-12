@@ -173,6 +173,15 @@ section,
   font-size: 1.1rem;
 }
 
+.call-to-action {
+  font-weight: 600;
+
+  --bs-btn-padding-y: 0.25rem;
+  --bs-btn-padding-x: 0.25rem;
+
+  margin-bottom: 0.3rem;
+}
+
 .hero h1 {
   margin: 0;
   font-size: 3rem;
