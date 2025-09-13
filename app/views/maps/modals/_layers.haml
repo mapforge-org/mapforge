@@ -13,8 +13,8 @@
               %label.no-wrap.form-control.btn.btn-green#file-input-label{ for: "fileInput", title: 'WGS84 format, max. 1.5MB' }
                 %i.bi.bi-upload.me-1
                 Import
-                %span.d-none.d-sm-inline
-                  (gpx/kml/geojson)
+                .d-none.d-sm-inline
+                  (track / image)
               %input.hidden#fileInput{ type: "file", data: { action: "change->map--layers#upload" } }
             - else
               %i.bi.bi-info-circle

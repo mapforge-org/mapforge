@@ -76,10 +76,49 @@ export default class extends Controller {
         file.type === 'application/geo+json' ||
         file.type === 'application/json') {
         reader.readAsText(file)
+      } else if (file.type.startsWith('image/')) {
+        this.addImageMarker(file)
       } else {
         console.log('Unsupported file type: ' + file.type)
       }
     }
+  }
+
+  addImageMarker(file) {
+    const formData = new FormData()
+    formData.append('image', file)
+    fetch('/images', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRF-Token': window.gon.csrf_token
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+      console.log('Setting icon: ' + data.icon)
+      let feature = {
+        "id": functions.featureId(),
+        "type": "Feature",
+        "geometry": {
+          "coordinates": [map.getCenter().lng, map.getCenter().lat],
+          "type": "Point"
+        },
+        "properties": {
+          'marker-image-url': data.icon,
+          'marker-size': 15,
+          'stroke': 'transparent',
+          'marker-color': 'transparent',
+          'desc': `\n[![image](${data.image})](${data.image})\n`
+        }
+      }
+      upsert(feature)
+      redrawGeojson(false)
+      mapChannel.send_message('update_feature', { ...feature })
+      status('Added image')
+      initLayersModal()
+    })
+    .catch(error => console.error('Error:', error))
   }
 
   flyto () {

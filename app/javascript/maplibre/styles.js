@@ -96,7 +96,7 @@ export async function loadImage (e) {
 // Mapbox.Draw layers prefix user properties with 'user_'
 
 export const featureColor = '#0A870A' // green
-export const featureOutlineColor = '#ffffff'
+export const featureOutlineColor = '#cfcfcf'
 
 const fillColor = ['coalesce',
   ['get', 'fill'], ['get', 'user_fill'], featureColor]

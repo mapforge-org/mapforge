@@ -74,6 +74,7 @@ export function loadOverpassLayer(id) {
   .catch(error => {
     console.error('Failed to fetch overpass for ' + layer.id, error)
     status('Failed to load layer ' + layer.name, 'error')
+    functions.e(`#layer-list-${layer.id} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
   })
 }
 
