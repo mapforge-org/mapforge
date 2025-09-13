@@ -7,7 +7,7 @@ describe 'Playground' do
     end
 
     it 'links to playground' do
-      expect(page).to have_link('playground', href: playground_path)
+      expect(page).to have_link('demo map', href: playground_path)
     end
   end
 
