@@ -176,8 +176,8 @@ section,
 .call-to-action {
   font-weight: 600;
 
-  --bs-btn-padding-y: 0.25rem;
-  --bs-btn-padding-x: 0.25rem;
+  --bs-btn-padding-y: 0.0rem;
+  --bs-btn-padding-x: 0.1rem;
 
   margin-bottom: 0.3rem;
 }
@@ -192,31 +192,13 @@ section,
   padding-left: 20px;
   border-left: 2px solid var(--accent-color);
   margin: 40px 0;
-  font-weight: 400;
-}
-
-.hero .btn-get-started {
-  color: var(--contrast-color);
-  background: var(--accent-color);
-  font-family: var(--heading-font);
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 1px;
-  display: inline-block;
-  padding: 12px 30px;
-  border-radius: 50px;
-  transition: 0.5s;
-}
-
-.hero .btn-get-started:hover {
-  background: color-mix(in srgb, var(--accent-color) 90%, white 15%);
+  font-weight: 300;
 }
 
 @media (width <= 640px) {
   .hero h1 {
     font-size: clamp(1.8rem, 10vw, 3rem);
   }
-
 }
 
 /* --------------------------------------------------------------

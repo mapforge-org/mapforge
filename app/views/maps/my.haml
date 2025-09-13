@@ -3,7 +3,7 @@
 #maps
 
   - if @recent_map_ids.present?
-    %h3.mapforge-font Recently viewed Maps
+    %h1.mapforge-font Recently viewed Maps
     .grid-container.flex-center.mb-4
       - @recent_map_ids.each do |map_id|
         - recent_map = Map.unscoped.find_by(id: map_id)
@@ -14,7 +14,7 @@
           = render recent_map, rw: false
 
 
-  %h3.mapforge-font 
+  %h1.mapforge-font 
     Your Maps 
     %span.fs-5
       (#{@my_maps.size})
@@ -23,11 +23,12 @@
       = render map, rw: true, last_change: false, avatar: false, delete: true
 
   - if @my_maps.empty?
-    .container.pt-4.mt-4.mb-4.empty-map-list.background-bright
+    .container.pt-4.pb-2.mt-4.mb-4.empty-map-list.background-bright
       %p.text-center
-        In this gallery, your maps will be shown.
+        In this gallery, your personal maps will be shown.
         %br
-        You can browse maps of other users via the 'Browse Maps' link, or
-        you can start with your first map by clicking on the "Create Map" button above.
-
-
+        You can try out the 
+        = link_to 'demo map', playground_path, class: 'btn btn-orange call-to-action'
+        to learn how Mapforge works, or you can       
+        = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
+        your first map right away.

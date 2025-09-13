@@ -14,6 +14,7 @@
 
 .footer .footer-links {
   margin-bottom: 0;
+  padding-right: unset;
 }
 
 .footer .footer-links ul {

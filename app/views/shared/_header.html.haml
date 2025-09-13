@@ -14,7 +14,7 @@
           %li.nav-item
             %a.nav-link{ "aria-current": "page", href: maps_path }
               %i.bi.bi-arrow-right-short
-              Browse Maps
+              Map Gallery
 
       - if create_button
         = link_to create_map_path, { class: 'me-4 btn btn-orange btn-create-map', data: { turbo_method: :post } } do
@@ -28,7 +28,7 @@
           %li.nav-item
             = button_to maps_path, { method: :get, class: 'mb-2 btn btn-green w-100' } do
               %i.bi.bi-map.me-1
-              Browse Maps
+              Map Gallery
           
           - if @user
             %li.nav-item

@@ -7,17 +7,25 @@
         .col-lg-6.welcome-text
           %h1.mapforge-font{ 'data-aos': "fade-up" } Create your own maps
           %blockquote{ 'data-aos': "fade-up" }
-            %p Create and share individual maps for your locations, tracks and events. Layer your data onto various base maps. Share your maps in real-time.
             %p 
-              Test it on the 
-              = link_to 'playground', playground_path, class: 'btn btn-orange call-to-action'
+              Build individual maps for your locations, tracks and events. 
+              Layer your data onto various base maps. 
+              Share your maps in real-time.
+            %p 
+              Try the 
+              = link_to 'demo map', playground_path, class: 'btn btn-orange call-to-action'
               = ' or '
               - unless @user
                 = link_to 'log in', login_path, class: 'btn btn-orange call-to-action'
                 to create your own maps.
               - else
-                create your own maps.
-            %p Mapforge.org is open-source and free to use and also available for self-hosting, giving you full control over your data.
+                = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
+                a new map.
+            %p 
+              Mapforge.org is open-source and free to use. 
+              
+              %span.d-none.d-sm-inline
+                It is available for self-hosting, giving you full control over your data.
 
 
   %section#features.why-us.section
@@ -30,16 +38,33 @@
             .swiper-slide
               .item
                 %h2.mb-3.mapforge-font Map tools
-                %h4.mb-3 Use these features to create your customized map:
+                %h4.mb-3 Customize your map
                 %ul
-                  %li Choose your base map: Streets, Satellite, Topographic, Biking, 3D houses etc.
-                  %li Add your own data: Import your data from GeoJSON, GPX and KML
-                  %li Draw shapes and style them: Add pictures, customize colors, symbols, labels, (3D) polygons and more
+                  %li 
+                    Choose your base map: 
+                    Streets, Satellite, Topographic, Biking
+                    %span.d-none.d-sm-inline
+                      , 3D houses etc.
+                  %li 
+                    Add your own data: 
+                    Import 
+                    %span.d-none.d-sm-inline
+                      your data 
+                    from GeoJSON, GPX and KML
+                  %li 
+                    Draw shapes and style them: 
+                    Add pictures, customize colors, symbols, labels
+                    %span.d-none.d-sm-inline
+                      , (3D) polygons and more
                   %li 
                     Dynamic layers: Use 
                     =link_to 'Overpass', tutorial_path(id: 'overpass_layers')
                     to add custom layers from OpenStreetMap data
-                  %li 3D Terrain: View your map with realistic elevation
+                  %li 
+                    3D Terrain: View your map with 
+                    %span.d-none.d-sm-inline
+                      realistic 
+                    elevation
             .swiper-slide
               .item
                 %h2.mb-3.mapforge-font Collaboration

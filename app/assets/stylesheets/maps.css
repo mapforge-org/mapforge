@@ -4,7 +4,13 @@
 
 /* Add margin to body when navbar is fixed */
 nav.fixed-top~#maps {
-  margin-top: 4rem;
+  margin-top: 3rem;
+}
+
+@media (width <=640px) {
+  #maps h1 {
+    text-align: center;
+  }
 }
 
 #maps .flex-container {
