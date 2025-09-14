@@ -10,6 +10,7 @@ class Map
   default_scope { order(created_at: :asc) }
   scope :listed, -> { where(view_permission: "listed") }
   scope :ulogger, -> { where(:_id.lt => BSON::ObjectId("000000000000002147483647")) }
+  scope :demo, -> { where(demo: true) }
 
   field :base_map, type: String, default: -> { default_base_map }
   field :center, type: Array
@@ -23,6 +24,7 @@ class Map
   field :name, type: String
   field :description, type: String
   field :public_id, type: String
+  field :demo, type: Boolean, default: false
   field :edit_permission, type: String, default: "link" # 'private', 'link'
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
   field :images_count, type: Integer, default: 0

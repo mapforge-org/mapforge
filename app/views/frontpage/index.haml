@@ -8,24 +8,38 @@
           %h1.mapforge-font{ 'data-aos': "fade-up" } Create your own maps
           %blockquote{ 'data-aos': "fade-up" }
             %p 
-              Build individual maps for your locations, tracks and events. 
+              Craft individual maps for your locations, tracks and events. 
               Layer your data onto various base maps. 
               Share your maps in real-time.
-            %p 
-              Try the 
-              = link_to 'demo map', playground_path, class: 'btn btn-orange call-to-action'
-              = ' or '
-              - unless @user
-                = link_to 'log in', login_path, class: 'btn btn-orange call-to-action'
-                to create your own maps.
-              - else
-                = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
-                a new map.
-            %p 
-              Mapforge.org is open-source and free to use. 
-              
-              %span.d-none.d-sm-inline
-                It is available for self-hosting, giving you full control over your data.
+
+              - if @user
+                %p 
+                  Browse
+                  = link_to('your maps', my_path, class: 'btn btn-orange call-to-action') + ','
+                  try the 
+                  = link_to 'demo map', demo_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
+                  = ' or '
+                  = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
+                  a new map.
+              - else 
+                %p 
+                  Browse the 
+                  = link_to('gallery', maps_path, class: 'btn btn-orange call-to-action') + ','
+                  try the 
+                  = link_to 'demo map', demo_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
+                  = ' or '
+                  - unless @user
+                    = link_to 'log in', login_path, class: 'btn btn-orange call-to-action'
+                    to create your own maps.
+                  - else
+                    = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
+                    a new map.
+              %p 
+                Mapforge.org is open-source and free to use. 
+                
+                %span.d-none.d-sm-inline
+                  It is ad-free and respects your privacy.
+                  Also available for self-hosting, giving you full control over your data.
 
 
   %section#features.why-us.section

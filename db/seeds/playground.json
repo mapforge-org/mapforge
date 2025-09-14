@@ -1,1 +1,77 @@
-{"properties":{"name":"Playground","description":"A playground map to test out Mapforge features.","public_id":"playground","base_map":"versatilesColorful","center":null,"default_center":[10.604023335503967,49.666558141135454],"zoom":null,"default_zoom":10,"pitch":30,"bearing":0,"terrain":false,"hillshade":false,"contours":false,"globe":false,"view_permission":"link","edit_permission":"link"},"layers":[{"id":"68c34ecd42261c0c1b35725d","type":"geojson","name":null,"geojson":{"type":"FeatureCollection","features":[{"id":"MsjVEYhS9szzXKxwCjaMueXzOzOsGkUG","type":"Feature","geometry":{"coordinates":[10.604023335503967,49.666558141135454],"type":"Point"},"properties":{"label":"Welcome to the Mapforge playground"}}]}}]}
+{
+  "properties": {
+    "name": "Mapforge Demo",
+    "description": "A playground map to test out Mapforge features.",
+    "base_map": "versatilesColorful",
+    "center": null,
+    "default_center": [
+      10.606853317119715,
+      49.620924983419144
+    ],
+    "zoom": null,
+    "default_zoom": 10,
+    "pitch": "30",
+    "bearing": "0",
+    "terrain": false,
+    "hillshade": false,
+    "contours": false,
+    "globe": false,
+    "view_permission": "link",
+    "edit_permission": "link"
+  },
+  "layers": [
+    {
+      "id": "68c73cdcbd0d80e40589370d",
+      "type": "geojson",
+      "name": null,
+      "geojson": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "id": "MsjVEYhS9szzXKxwCjaMueXzOzOsGkUG",
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                10.604023335503967,
+                49.666558141135454
+              ]
+            },
+            "properties": {
+              "label": "Welcome to the Mapforge Demo map"
+            }
+          },
+          {
+            "id": "We088PPf2KlAMNPjooUpgJCxcAYfRFkg",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                10.605365629170592,
+                49.621471084189466
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "label": "You can try out all the features here"
+            }
+          },
+          {
+            "id": "E17kmlaRWZDXuu9NPxglqt5gXmLPP1eZ",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                10.611170986684584,
+                49.57474572493251
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "label": "Use the buttons on the left to create points, lines or polygons",
+              "desc": ""
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

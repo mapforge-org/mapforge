@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     post "" => "maps#create", as: :create_map
     delete "/:id" => "maps#destroy", as: :destroy_map, constraints: { id: ID_PATTERN }
   end
-  get "/playground" => "maps#playground", as: "playground"
+  post "/demo" => "maps#demo", as: "demo"
   get "/my" => "maps#my", as: "my"
 
   get "/d/:id" => "maps#show", defaults: { engine: "deck" }, as: :deck, constraints: { id: ID_PATTERN }
@@ -51,8 +51,9 @@ Rails.application.routes.draw do
   get "sitemap", to: "application#sitemap", defaults: { format: "xml" }
 
   # Defines the root path route ("/")
-  root "frontpage#index"
-  get "/home" => "frontpage#home", as: :frontpage
+  root "frontpage#index", as: :frontpage
+  get "/" => "frontpage#index", as: :root
+  get "/home" => "frontpage#index"
 
   mount Ulogger::Engine, at: "/ulogger"
 end

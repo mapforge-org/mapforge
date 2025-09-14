@@ -28,7 +28,7 @@
         In this gallery, your personal maps will be shown.
         %br
         You can try out the 
-        = link_to 'demo map', playground_path, class: 'btn btn-orange call-to-action'
+        = link_to 'demo map', demo_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
         to learn how Mapforge works, or you can       
         = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
         your first map right away.
