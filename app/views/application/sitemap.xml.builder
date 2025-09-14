@@ -11,7 +11,7 @@ xml.urlset xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" do
 
   @maps.each do |map|
     xml.url do
-      xml.loc map_url(map.public_id)
+      xml.loc map_url(map.public_id, name: map.name)
       xml.lastmod map.updated_at.iso8601
       xml.changefreq "monthly"
       xml.priority "0.6"

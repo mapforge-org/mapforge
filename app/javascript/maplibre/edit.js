@@ -140,6 +140,8 @@ export async function initializeEditMode () {
     } else if (draw.getMode() === 'draw_polygon') {
       status('Polygon Mode: Click on the map to draw a polygon', 'info', 'medium', 8000)
     } else if (draw.getMode() === 'draw_line_string') {
+      resetControls() // this is needed to reset the active button
+      functions.e('.mapbox-gl-draw_line', e => { e.classList.add('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Line Mode: Click on the map to draw a line', 'info', 'medium', 8000)
     }
