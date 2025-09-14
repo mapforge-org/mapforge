@@ -85,6 +85,12 @@ jobs:
         with:
           name: rails-logs
           path: ./log/test.log
+      - name: Upload coverage
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: ./coverage         
       - name: Coveralls
         uses: coverallsapp/github-action@v2
         with:
