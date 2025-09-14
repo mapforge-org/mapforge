@@ -20,7 +20,7 @@ describe 'Frontpage' do
     end
 
     it 'redirects to /my path' do
-      expect(page).to have_current_path(my_path)
+      expect(page).to have_current_path(frontpage_path)
     end
 
     it 'logo links to frontpage' do
