@@ -1,7 +1,6 @@
 import { map, geojsonData, destroyFeature, redrawGeojson, addFeature, layers, mapProperties } from 'maplibre/map'
 import { editStyles } from 'maplibre/edit_styles'
-import { initializeViewStyles } from 'maplibre/styles'
-import { highlightFeature, initializeKmMarkerStyles } from 'maplibre/feature'
+import { highlightFeature } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'
 import { mapChannel } from 'channels/map_channel'
@@ -71,13 +70,6 @@ export async function initializeEditMode () {
 
   initializeEditControls()
   initializeDefaultControls()
-
-  // Add edit styles when basemap style is loaded
-  map.on('style.load', function (_e) {
-    // initializeEditStyles()
-    initializeViewStyles('geojson-source')
-    initializeKmMarkerStyles()
-  })
 
   // Show map settings modal on untouched map
   map.once('load', function (_e) {

@@ -383,9 +383,14 @@ export function initializeViewMode () {
   map.once('style.load', () => {
     initializeViewControls()
     initializeDefaultControls()
+  })
+
+  // Add styles when basemap style is loaded
+  map.on('style.load', function (_e) {
     initializeViewStyles('geojson-source')
     initializeKmMarkerStyles()
   })
+
   map.on('click', resetControls)
 }
 
