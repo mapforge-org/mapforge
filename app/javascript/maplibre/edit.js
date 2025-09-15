@@ -54,9 +54,9 @@ export async function initializeEditMode () {
   draw = new MapboxDraw({
     displayControlsDefault: false,
     controls: {
-      polygon: true,
-      line_string: true,
-      point: true,
+      polygon: false,
+      line_string: false,
+      point: false,
       trash: false,
       combine_features: false
       // uncombine_features
@@ -116,21 +116,18 @@ export async function initializeEditMode () {
         'info', 'medium', 8000)
     } else if (draw.getMode() === 'directions_car') {
       functions.e('.mapbox-gl-draw_road', e => { e.classList.add('active') })
-      functions.e('.mapbox-gl-draw_line', e => { e.classList.remove('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Road Mode: Click on the map to set waypoints, double click to finish',
         'info', 'medium', 8000)
       initDirections('car')
     } else if (draw.getMode() === 'directions_bike') {
       functions.e('.mapbox-gl-draw_bicycle', e => { e.classList.add('active') })
-      functions.e('.mapbox-gl-draw_line', e => { e.classList.remove('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Bicycle Mode: Click on the map to set waypoints, double click to finish',
         'info', 'medium', 8000)
       initDirections('bike')
     } else if (draw.getMode() === 'directions_foot') {
       functions.e('.mapbox-gl-draw_foot', e => { e.classList.add('active') })
-      functions.e('.mapbox-gl-draw_line', e => { e.classList.remove('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       status('Walk Mode: Click on the map to set waypoints, double click to finish',
         'info', 'medium', 8000)
@@ -140,9 +137,8 @@ export async function initializeEditMode () {
     } else if (draw.getMode() === 'draw_polygon') {
       status('Polygon Mode: Click on the map to draw a polygon', 'info', 'medium', 8000)
     } else if (draw.getMode() === 'draw_line_string') {
-      resetControls() // this is needed to reset the active button
-      functions.e('.mapbox-gl-draw_line', e => { e.classList.add('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
+      functions.e('.ctrl-line-menu .mapbox-gl-draw_line', e => { e.classList.add('active') })
       status('Line Mode: Click on the map to draw a line', 'info', 'medium', 8000)
     }
   })

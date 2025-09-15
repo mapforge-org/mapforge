@@ -251,6 +251,8 @@ export function resetControls () {
   // reset ctrl buttons
   functions.e('.maplibregl-ctrl-btn, .mapbox-gl-draw_ctrl-draw-btn',
     e => { e.classList.remove('active') })
+  // reset line submenu
+  functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
 
   // reset active modals
   functions.e('.modal-center', e => { e.classList.remove('show') })

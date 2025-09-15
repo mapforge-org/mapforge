@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Feature edit' do
-  let(:map) { create(:map) }
+  let(:map) { create(:map, name: 'Feature edit test') }
   let(:user) { create(:user) }
 
   before do
@@ -19,16 +19,22 @@ describe 'Feature edit' do
 
     context 'when adding features' do
       it 'adding a point to the map' do
-        # cancel map settings popup
-        find('.close-button').click
         find('.mapbox-gl-draw_point').click
         expect { click_coord('#maplibre-map', 50, 50) }.to change { Feature.point.count }.by(1)
       end
 
-      it 'adding a polygon to the map' do
-        # cancel map settings popup
-        find('.close-button').click
+      it 'adding a line to the map' do
+        find('.line-menu-btn').click
+        find('.ctrl-line-menu .mapbox-gl-draw_line').click
+        click_coord('#maplibre-map', 50, 50)
+        click_coord('#maplibre-map', 70, 70)
+        click_coord('#maplibre-map', 70, 70)
 
+        # need to wait until feature is saved server side
+        wait_for { Feature.line_string.count }.to eq(1)
+      end
+
+      it 'adding a polygon to the map' do
         find('.mapbox-gl-draw_polygon').click
 
         click_coord('#maplibre-map', 10, 10)
