@@ -98,3 +98,19 @@ export function isFormFieldFocused() {
   // Check if the currently focused element is an input, textarea, select, or button
   return el && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(el.tagName)
 }
+
+export function isCrawler() {
+  const ua = navigator.userAgent.toLowerCase()
+  return (
+    ua.includes('googlebot') ||
+    ua.includes('bingbot') ||
+    ua.includes('slurp') ||
+    ua.includes('duckduckbot') ||
+    ua.includes('baiduspider') ||
+    ua.includes('yandexbot') ||
+    ua.includes('sogou') ||
+    ua.includes('exabot') ||
+    ua.includes('facebot') ||
+    ua.includes('ia_archiver')
+  )
+}

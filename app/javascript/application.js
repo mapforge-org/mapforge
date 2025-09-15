@@ -6,6 +6,7 @@ import '@hotwired/turbo-rails'
 // before the module finished loading
 import 'controllers'
 
+import * as functions from 'helpers/functions'
 import AOS from 'aos'
 
 // for debugging
@@ -13,11 +14,13 @@ window.AOS = AOS
 
 // https://github.com/michalsnik/aos
 window.addEventListener('turbo:load', function () {
-  AOS.init({
-    duration: 600,
-    easing: 'ease-in-out',
-    once: true
-  })
+  if (!functions.isCrawler()) {
+    AOS.init({
+      duration: 600,
+      easing: 'ease-in-out',
+      once: true
+    })
+  }
 })
 
 
