@@ -44,8 +44,12 @@
 
   %section#features.why-us.section
     .row.g-0
-      .col-lg-5.img-bg
-        %img{ src: "images/frontpage/feature0.png", id: 'swiper-image', alt: "Background", loading: 'lazy' }
+      .col-lg-5.img-bg.d-none.d-sm-block
+        %img{ src: "images/frontpage/feature0.png",
+              id: 'swiper-image', alt: "Background", loading: 'lazy' }
+      .col-lg-5.img-bg.d-sm-none
+        %img{ src: "images/frontpage/feature0_small.png",
+              id: 'swiper-image', alt: "Background", loading: 'lazy' }
       .col-lg-7.background-dark.slides.position-relative
         .swiper.init-swiper
           .swiper-wrapper
