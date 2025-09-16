@@ -81,6 +81,7 @@ class Map
   def properties
     { name: name,
       description: description,
+      public_id: public_id,
       base_map: get_base_map,
       demo: demo,
       center: center,
@@ -143,8 +144,7 @@ class Map
     file = File.read(path)
     map_hash = JSON.parse(file)
 
-    map = Map.find_or_create_by(public_id: map_hash["properties"]["public_id"])
-    map.update(map_hash["properties"].except("default_center", "default_zoom"))
+    map = Map.create!(map_hash["properties"].except("default_center", "default_zoom", "public_id"))
     map.layers.delete_all
     map_hash["layers"].each do |layer|
       features = Feature.from_collection(layer["geojson"], collection_format: collection_format)

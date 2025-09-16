@@ -20,7 +20,8 @@ class Feature
   validate :require_coords
 
   def geojson
-    { type:,
+    { id: _id.to_s,
+      type:,
       geometry:,
       properties: properties || {} }
   end
@@ -39,12 +40,11 @@ class Feature
     feature_collection.map do |feature|
       next unless feature.geometry
       # transform coords from input to db format
-      transformed_geometry = RGeo::Feature.cast(feature.geometry, factory: db_format, project: true)
-      transformed_feature = RGeo::GeoJSON::Feature.new(transformed_geometry, feature.feature_id, feature.properties)
-      transformed_feature = RGeo::GeoJSON.encode(transformed_feature)
-      f = find_or_initialize_by(id: transformed_feature["id"])
-      f.update!(transformed_feature)
-      f
+      if collection_format != db_format
+        transformed_geometry = RGeo::Feature.cast(feature.geometry, factory: db_format, project: true)
+        feature = RGeo::GeoJSON::Feature.new(transformed_geometry, feature.feature_id, feature.properties)
+      end
+      Feature.create!(RGeo::GeoJSON.encode(feature).reject { |k, _v| k == "id" })
     end
   end
 

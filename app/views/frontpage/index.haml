@@ -16,7 +16,7 @@
                 %p 
                   Browse
                   = link_to('your maps', my_path, class: 'btn btn-orange call-to-action') + ','
-                  try the 
+                  learn more on the 
                   = link_to 'demo map', demo_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
                   = ' or '
                   = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
@@ -25,7 +25,7 @@
                 %p 
                   Browse the 
                   = link_to('gallery', maps_path, class: 'btn btn-orange call-to-action') + ','
-                  try the 
+                  learn how to use it on the 
                   = link_to 'demo map', demo_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
                   = ' or '
                   - unless @user
