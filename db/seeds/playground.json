@@ -3,14 +3,17 @@
     "name": "Mapforge Demo",
     "description": "A playground map to test out Mapforge features.",
     "base_map": "versatilesColorful",
-    "center": null,
-    "default_center": [
-      10.606853317119715,
-      49.620924983419144
+    "center": [
+      11.125048230715038,
+      49.425667806721606
     ],
-    "zoom": null,
-    "default_zoom": 10,
-    "pitch": "30",
+    "default_center": [
+      11.126293273438959,
+      49.425503517954866
+    ],
+    "zoom": "16.41",
+    "default_zoom": 16,
+    "pitch": "48",
     "bearing": "0",
     "terrain": false,
     "hillshade": false,
@@ -21,53 +24,365 @@
   },
   "layers": [
     {
-      "id": "68c73cdcbd0d80e40589370d",
+      "id": "68c8035fc266cd8bc566da6c",
       "type": "geojson",
       "name": null,
       "geojson": {
         "type": "FeatureCollection",
         "features": [
           {
-            "id": "MsjVEYhS9szzXKxwCjaMueXzOzOsGkUG",
+            "id": "QWB7SftsFCPIlbWsMjGWJkV3JmksWGjK",
             "type": "Feature",
             "geometry": {
-              "type": "Point",
               "coordinates": [
-                10.604023335503967,
-                49.666558141135454
+                [
+                  [
+                    11.125022383570894,
+                    49.42665002185697
+                  ],
+                  [
+                    11.125390024149766,
+                    49.425695036345616
+                  ],
+                  [
+                    11.126346929335597,
+                    49.42584761513379
+                  ],
+                  [
+                    11.126019883066931,
+                    49.42680739376166
+                  ],
+                  [
+                    11.125022383570894,
+                    49.42665002185697
+                  ]
+                ]
+              ],
+              "type": "Polygon"
+            },
+            "properties": {}
+          },
+          {
+            "id": "WJmxqvnPpVyd9nVUDcMsmtSgfYpJThIz",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.124661136957116,
+                49.42479766600118
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🏊"
+            }
+          },
+          {
+            "id": "z4DMvIuZcRQALoREgQGdDrEuNRUbwnfN",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.12565083005876,
+                49.42623175459951
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "⚽"
+            }
+          },
+          {
+            "id": "6dCARPCXofp7WeWJZ07DHDsc1IiWCd0G",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.12616281320291,
+                49.42440724462162
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-image-url": "/icon/fad046cd",
+              "marker-size": "42",
+              "stroke": "transparent",
+              "marker-color": "transparent",
+              "desc": "\n[![image](/image/fad046cd)](/image/fad046cd)\n",
+              "label": "You can edit / delete an item on the map by clicking the icons in the details popup"
+            }
+          },
+          {
+            "id": "LRye1M3KBTK4hi5yDE7lBsJzHSqYezuj",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.124492119020317,
+                49.428118527922834
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "label": "Welcome to the Mapforge Demo map",
+              "stroke": "transparent",
+              "marker-color": "transparent"
+            }
+          },
+          {
+            "id": "L1Q8lrsFs1Gv9JtspvFblrSA39GOXwmn",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.123296723060577,
+                49.426181055116274
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "label": "Add new points, lines and polygons to the map with the buttons on the left",
+              "stroke": "transparent",
+              "marker-color": "transparent",
+              "marker-image-url": "/icon/53669491",
+              "marker-size": "37",
+              "desc": "\n[![image](/image/53669491)](/image/53669491)\n"
+            }
+          },
+          {
+            "id": "aHnNPEP3SWra6a91EFoKoGXHNX71uDZs",
+            "type": "Feature",
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  11.128025,
+                  49.424515,
+                  323
+                ],
+                [
+                  11.129392,
+                  49.425925,
+                  319
+                ],
+                [
+                  11.12942,
+                  49.426316,
+                  319
+                ],
+                [
+                  11.128792,
+                  49.427272,
+                  320
+                ],
+                [
+                  11.129548,
+                  49.42752,
+                  319
+                ]
               ]
             },
             "properties": {
-              "label": "Welcome to the Mapforge Demo map"
+              "stroke-width": "3",
+              "stroke": "#63452c",
+              "label": "Track",
+              "fill-extrusion-height": 35
             }
           },
           {
-            "id": "We088PPf2KlAMNPjooUpgJCxcAYfRFkg",
+            "id": "XUdLCh8rinsUCP8s01g93PBYen0ARptt",
             "type": "Feature",
             "geometry": {
               "coordinates": [
-                10.605365629170592,
-                49.621471084189466
+                11.130398335758827,
+                49.42625821866062
               ],
               "type": "Point"
             },
             "properties": {
-              "label": "You can try out all the features here"
+              "marker-image-url": "/icon/9d3aa14a",
+              "marker-size": "46",
+              "stroke": "transparent",
+              "marker-color": "transparent",
+              "desc": "\n[![image](/image/9d3aa14a)](/image/9d3aa14a)\n"
             }
           },
           {
-            "id": "E17kmlaRWZDXuu9NPxglqt5gXmLPP1eZ",
+            "id": "Pk5tkV0eG9nPhNVPChqHLu2jv3ikpaQt",
             "type": "Feature",
             "geometry": {
               "coordinates": [
-                10.611170986684584,
-                49.57474572493251
+                11.129534008697505,
+                49.425413355828795
               ],
               "type": "Point"
             },
             "properties": {
-              "label": "Use the buttons on the left to create points, lines or polygons",
-              "desc": ""
+              "label": "Change an items properties, like colour, symbol, size",
+              "marker-color": "transparent",
+              "stroke": "transparent",
+              "title": "Change items"
+            }
+          },
+          {
+            "id": "bHrlZ0Jp58APLd1J0sDY73GUsNxiC7JY",
+            "type": "Feature",
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  11.124038372502383,
+                  49.42736446943084
+                ],
+                [
+                  11.12370418590092,
+                  49.426936298870686
+                ]
+              ]
+            },
+            "properties": {
+              "stroke-width": "6",
+              "stroke": "#63452c"
+            }
+          },
+          {
+            "id": "RmyQyEUlQtrZMmVldPFbtiw9GCIbYvH8",
+            "type": "Feature",
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  11.123500709269166,
+                  49.42718592450356
+                ],
+                [
+                  11.123640861403914,
+                  49.426823984757846
+                ],
+                [
+                  11.123851340210365,
+                  49.42694833999957
+                ],
+                [
+                  11.1241364985068,
+                  49.42697746169986
+                ]
+              ]
+            },
+            "properties": {
+              "stroke-width": "6",
+              "stroke": "#63452c"
+            }
+          },
+          {
+            "id": "NnaPv23L3oU48lseT7cBtrcrpjArvgra",
+            "type": "Feature",
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  11.123413653155723,
+                  49.424841284579315
+                ],
+                [
+                  11.123648156778302,
+                  49.42453176255444
+                ],
+                [
+                  11.124030986850983,
+                  49.424229887901845
+                ],
+                [
+                  11.12445332559048,
+                  49.42408658563113
+                ],
+                [
+                  11.124919959831573,
+                  49.424068249524396
+                ]
+              ]
+            },
+            "properties": {
+              "stroke-width": "6",
+              "stroke": "#63452c"
+            }
+          },
+          {
+            "id": "ykVQrA1zn8d9aIw6JGtuy7L9cPfr4ZSG",
+            "type": "Feature",
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  11.12474731924118,
+                  49.42430662323213
+                ],
+                [
+                  11.125025615078158,
+                  49.42406215535948
+                ],
+                [
+                  11.124820317414702,
+                  49.423889219635385
+                ]
+              ]
+            },
+            "properties": {
+              "stroke-width": "6",
+              "stroke": "#63452c"
+            }
+          },
+          {
+            "id": "8BQB50flPGXy25etOhqcEMvoBcIr5UPb",
+            "type": "Feature",
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  11.127603023193501,
+                  49.42387217587478
+                ],
+                [
+                  11.12825673324798,
+                  49.423920227146255
+                ],
+                [
+                  11.1286562030011,
+                  49.424032049170876
+                ],
+                [
+                  11.12907129594862,
+                  49.424264370981916
+                ],
+                [
+                  11.12921696507334,
+                  49.424438916958906
+                ]
+              ]
+            },
+            "properties": {
+              "stroke-width": "6",
+              "stroke": "#63452c"
+            }
+          },
+          {
+            "id": "qjV8BLnyLhf39FfSzSHBfe4sW1q930k8",
+            "type": "Feature",
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  11.128803312343791,
+                  49.42439274877063
+                ],
+                [
+                  11.12926442735494,
+                  49.42456429289368
+                ],
+                [
+                  11.129459831771271,
+                  49.42429425905661
+                ]
+              ]
+            },
+            "properties": {
+              "stroke-width": "6",
+              "stroke": "#63452c"
             }
           }
         ]
