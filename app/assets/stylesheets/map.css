@@ -84,7 +84,7 @@ html:has(.map), body:has(.map) {
   }
 }
 
-@media (width < 380px) {
+@media (width < 380px), (height < 380px) {
   #map-title {
     font-size: 1.2rem;
     max-height: 2.2rem;

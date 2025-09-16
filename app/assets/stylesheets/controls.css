@@ -80,16 +80,29 @@
   background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20">%3Cpath style="fill: %232091b0;" d="m13.5 3.5c-1.4 0-2.5 1.1-2.5 2.5 0 .3 0 .6.2.9l-3.8 3.8c-.3-.1-.6-.2-.9-.2-1.4 0-2.5 1.1-2.5 2.5s1.1 2.5 2.5 2.5 2.5-1.1 2.5-2.5c0-.3 0-.6-.2-.9l3.8-3.8c.3.1.6.2.9.2 1.4 0 2.5-1.1 2.5-2.5s-1.1-2.5-2.5-2.5z"/>%3C/svg>');
 }
 
-.maplibregl-ctrl-top-left {
+.maplibregl-ctrl-top-left, .maplibregl-ctrl-top-right {
   top: 4rem;
 }
 
-.maplibregl-ctrl-top-right {
-  top: 0.4rem;
+@media (height < 350px) {
+  .maplibregl-ctrl-top-left {
+    top: 0.5rem;
+  };
+
+  .maplibregl-ctrl-top-right {
+    top: 2.5rem;
+  }
+}
+
+/* Search box is shown >= 640px width */
+@media (width >= 640px) {
+  .maplibregl-ctrl-top-right {
+    top: 0.4rem;
+  }
 }
 
 .maplibregl-ctrl-geocoder {
-  margin-bottom: 1.5rem;
+  margin: 4px 10px 0 0 !important;
 }
 
 .maplibregl-ctrl-group button.maplibregl-ctrl-connection {
@@ -100,10 +113,6 @@
 @media (width < 640px) {
   .maplibregl-ctrl-geocoder {
     display: none !important;
-  }
-
-  .maplibregl-ctrl-top-right {
-    top: 4rem;
   }
 
   .maplibregl-ctrl-top-left .maplibregl-ctrl {
