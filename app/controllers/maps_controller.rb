@@ -50,15 +50,15 @@ class MapsController < ApplicationController
   end
 
   def demo
+    demo_file = Rails.root.join("db/seeds/demo.json")
+
     if @user
-      @map = Map.demo.where(user: @user).first
-      unless @map
-        @map = Map.create_from_file(Rails.root.join("db/seeds/playground.json"))
-        @map.update(demo: true, user: @user)
+      unless @map = Map.demo.where(user: @user).first
+        @map = Map.create_from_file(demo_file)
+        @map.update(user: @user)
       end
     else
-      @map = Map.create_from_file(Rails.root.join("db/seeds/playground.json"))
-      @map.update(demo: true)
+      @map = Map.create_from_file(demo_file)
     end
     @map_mode = "rw"
 

@@ -3,6 +3,7 @@
     "name": "Mapforge Demo",
     "description": "A playground map to test out Mapforge features.",
     "base_map": "versatilesColorful",
+    "demo": true,
     "center": [
       11.125048230715038,
       49.425667806721606

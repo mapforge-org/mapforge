@@ -83,6 +83,7 @@ class Map
       description: description,
       public_id: public_id,
       base_map: get_base_map,
+      demo: demo,
       center: center,
       default_center: calculated_center,
       zoom: zoom,
