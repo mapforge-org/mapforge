@@ -81,7 +81,6 @@ class Map
   def properties
     { name: name,
       description: description,
-      public_id: public_id,
       base_map: get_base_map,
       demo: demo,
       center: center,

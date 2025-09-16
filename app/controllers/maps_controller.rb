@@ -60,6 +60,7 @@ class MapsController < ApplicationController
     else
       @map = Map.create_from_file(demo_file)
     end
+    @map.update(demo: true)
     @map_mode = "rw"
 
     redirect_to map_url(@map)

@@ -20,8 +20,7 @@ class Feature
   validate :require_coords
 
   def geojson
-    { id: _id.to_s,
-      type:,
+    { type:,
       geometry:,
       properties: properties || {} }
   end
