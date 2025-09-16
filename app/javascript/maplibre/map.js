@@ -101,6 +101,8 @@ export async function initializeMap (divId = 'maplibre-map') {
     if (mapProperties.hillshade) { addHillshade() }
     if (mapProperties.globe) { addGlobe() }
     if (mapProperties.contours) { addContours() }
+    initializeViewStyles('geojson-source')
+    initializeKmMarkerStyles()
   })
 
   map.on('geojson.load', (_e) => {
@@ -372,10 +374,6 @@ function addGlobe () {
 }
 
 export function initializeStaticMode () {
-  map.on('style.load', () => {
-    initializeViewStyles('geojson-source')
-    initializeKmMarkerStyles ()
-  })
   functions.e('.maplibregl-ctrl-attrib, #map-head', e => { e.classList.add('hidden') })
 }
 
@@ -384,13 +382,6 @@ export function initializeViewMode () {
     initializeViewControls()
     initializeDefaultControls()
   })
-
-  // Add styles when basemap style is loaded
-  map.on('style.load', function (_e) {
-    initializeViewStyles('geojson-source')
-    initializeKmMarkerStyles()
-  })
-
   map.on('click', resetControls)
 }
 
