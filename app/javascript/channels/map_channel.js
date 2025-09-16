@@ -76,8 +76,10 @@ export function initializeSocket () {
           break
         case 'update_map':
           window.gon.map_properties = data.map
-          initializeMaplibreProperties()
-          setBackgroundMapLayer()
+          // update background if properties changed
+          if (initializeMaplibreProperties()) {
+            setBackgroundMapLayer()
+          }
           break
       }
     },

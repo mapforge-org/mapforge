@@ -46,7 +46,9 @@ export function initializeMaplibreProperties () {
     if (Object.keys(lastProperties).length === 0 || !mapProperties) { return }
     // animate to new view if map had no interaction yet
     if (!mapInteracted) { animateViewFromProperties() }
+    return true
   }
+  return false
 }
 
 // reset map data
