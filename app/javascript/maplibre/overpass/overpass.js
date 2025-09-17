@@ -100,12 +100,12 @@ function applyOverpassStyle(geojson, query) {
     if (heatmap) { f.properties["heatmap"] = true }
     if (markerSymbol) {
       f.properties["marker-symbol"] = markerSymbol
-      f.properties["marker-size"] = "20"
+      f.properties["marker-size"] = "30"
       f.properties["marker-color"] = "transparent"
       f.properties["stroke"] = "transparent"
     } else if (markerImageUrl) {
       f.properties["marker-image-url"] = markerImageUrl
-      f.properties["marker-size"] = "20"
+      f.properties["marker-size"] = "30"
       f.properties["marker-color"] = "transparent"
       f.properties["stroke"] = "transparent"
     }

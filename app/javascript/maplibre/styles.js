@@ -196,9 +196,25 @@ const pointOpacityActive = 0.9
 
 // factor of the original icon size (200x200)
 // in case of external icon url, we don't know the size
-const iconSize = ['*', 1 / 70, pointSizeMax]
+const iconSize = [
+  'interpolate',
+  ['linear'],
+  ['zoom'],
+  5, ['*', 1 / 700, pointSizeMax], // At zoom 5
+  15, ['*', 1 / 70, pointSizeMax] // At zoom 15
+]
+
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
-const labelSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], 16]]
+const labelFontSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], 16]]
+const labelSize = [
+  'interpolate',
+  ['linear'],
+  ['zoom'],
+  5, ['*', 1 / 70, labelFontSize], // At zoom 5
+  15, labelFontSize // At zoom 15
+] 
+
+
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']
 export let labelFont
 
@@ -420,7 +436,7 @@ export function styles () {
             ['concat', '/emojis/noto/', ['get', 'marker-symbol'], '.png'],
             '']
         ],
-        'icon-size': iconSize, // cannot scale on hover/zoom because it's not a paint property
+        'icon-size': iconSize,
         'icon-overlap': 'always' // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
       // 'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
       },

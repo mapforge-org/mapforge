@@ -1,20 +1,21 @@
 {
   "properties": {
-    "name": "Mapforge Demo",
+    "name": "Mapforge Tutorial Map",
     "description": "A playground map to test out Mapforge features.",
+    "public_id": "11debaf7",
     "base_map": "versatilesColorful",
     "demo": true,
     "center": [
-      11.125048230715038,
-      49.425667806721606
+      11.115969484286097,
+      49.42846012990728
     ],
     "default_center": [
-      11.126293273438959,
-      49.425503517954866
+      11.12612932774312,
+      49.4293570759216
     ],
-    "zoom": "16.41",
-    "default_zoom": 16,
-    "pitch": "48",
+    "zoom": "15.66",
+    "default_zoom": 14,
+    "pitch": "0",
     "bearing": "0",
     "terrain": false,
     "hillshade": false,
@@ -25,16 +26,17 @@
   },
   "layers": [
     {
-      "id": "68c8035fc266cd8bc566da6c",
+      "id": "68c9fb0ca3cd1c5691f8907e",
       "type": "geojson",
       "name": null,
       "geojson": {
         "type": "FeatureCollection",
         "features": [
           {
-            "id": "QWB7SftsFCPIlbWsMjGWJkV3JmksWGjK",
+            "id": "68c9f97ca3cd1c5691f8905c",
             "type": "Feature",
             "geometry": {
+              "type": "Polygon",
               "coordinates": [
                 [
                   [
@@ -58,331 +60,913 @@
                     49.42665002185697
                   ]
                 ]
-              ],
-              "type": "Polygon"
+              ]
             },
             "properties": {}
           },
           {
-            "id": "WJmxqvnPpVyd9nVUDcMsmtSgfYpJThIz",
+            "id": "68c9f97ca3cd1c5691f8905d",
             "type": "Feature",
             "geometry": {
+              "type": "Point",
               "coordinates": [
                 11.124661136957116,
                 49.42479766600118
-              ],
-              "type": "Point"
+              ]
             },
             "properties": {
               "marker-symbol": "🏊"
             }
           },
           {
-            "id": "z4DMvIuZcRQALoREgQGdDrEuNRUbwnfN",
+            "id": "68c9f97ca3cd1c5691f8905e",
             "type": "Feature",
             "geometry": {
+              "type": "Point",
               "coordinates": [
                 11.12565083005876,
                 49.42623175459951
-              ],
-              "type": "Point"
+              ]
             },
             "properties": {
               "marker-symbol": "⚽"
             }
           },
           {
-            "id": "6dCARPCXofp7WeWJZ07DHDsc1IiWCd0G",
+            "id": "68c9fb08a3cd1c5691f89073",
             "type": "Feature",
             "geometry": {
               "coordinates": [
-                11.12616281320291,
-                49.42440724462162
+                11.115707471315972,
+                49.42862449797002
               ],
               "type": "Point"
             },
             "properties": {
-              "marker-image-url": "/icon/fad046cd",
-              "marker-size": "42",
+              "label": "Welcome to the Mapforge Tutorial map",
+              "label-size": 20,
               "stroke": "transparent",
               "marker-color": "transparent",
-              "desc": "\n[![image](/image/fad046cd)](/image/fad046cd)\n",
-              "label": "You can edit / delete an item on the map by clicking the icons in the details popup"
+              "sort-key": 3
             }
           },
           {
-            "id": "LRye1M3KBTK4hi5yDE7lBsJzHSqYezuj",
+            "id": "68c9fb09a3cd1c5691f89074",
             "type": "Feature",
             "geometry": {
               "coordinates": [
-                11.124492119020317,
-                49.428118527922834
+                11.119129318193842,
+                49.428106725235835
               ],
               "type": "Point"
             },
             "properties": {
-              "label": "Welcome to the Mapforge Demo map",
+              "label": "Add new points, icons and images to the map by selecting the marker icon",
+              "stroke": "transparent",
+              "marker-color": "transparent",
+              "marker-image-url": "/images/tutorial_map/point_button.png",
+              "marker-size": "37"
+            }
+          },
+          {
+            "id": "RxSmP9IzTIvTB3TI6BqxKwQ3KjV8LUwL",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.115706443697434,
+                49.42956056469097
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-image-url": "/icons/mapforge-logo-header_white.png",
+              "marker-color": "transparent",
+              "stroke": "transparent",
+              "sort-key": 3,
+              "marker-size": "25"
+            }
+          },
+          {
+            "id": "VxE8TNDLMgHDBETYD5Fw1nX8KiwdxKYG",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.11683074665109,
+                49.42723903591684
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "label": "Follow the arrows to learn how to create a map",
+              "label-size": 14,
+              "marker-color": "transparent",
+              "stroke": "transparent"
+            }
+          },
+          {
+            "id": "1h5MrdlMjDoyATutOmig3ei7fmGBkNZd",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.125037543349038,
+                49.426074841842734
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🏟️",
+              "marker-color": "transparent",
+              "stroke": "transparent"
+            }
+          },
+          {
+            "id": "erC65BT70adVMiUCmvh80g5jpeEpX7Iu",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.1175397860641,
+                49.427588771423984
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-image-url": "/icons/arrow_right_up.png",
+              "marker-color": "transparent",
+              "stroke": "transparent",
+              "marker-size": "16"
+            }
+          },
+          {
+            "id": "OWXWus1u2S3NvmkIscT1UpHjMFjfIgka",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                [
+                  [
+                    11.119207993815508,
+                    49.42866514924924
+                  ],
+                  [
+                    11.119621872902428,
+                    49.42851212088917
+                  ],
+                  [
+                    11.120103383266581,
+                    49.42905901307364
+                  ],
+                  [
+                    11.119736554683158,
+                    49.429210884260016
+                  ],
+                  [
+                    11.119207993815508,
+                    49.42866514924924
+                  ]
+                ]
+              ],
+              "type": "Polygon"
+            },
+            "properties": {
+              "fill": "#c0bfbc"
+            }
+          },
+          {
+            "id": "Hj3YEnXd0IMg0G4obH0EL1EgoZprRFIc",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.119342774663664,
+                49.42852462997598
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🎶",
+              "marker-color": "transparent",
+              "stroke": "transparent"
+            }
+          },
+          {
+            "id": "AuyfUA5Ggbs8p9kPa9eWxoRLzAOJXdEm",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.120017687889145,
+                49.42921516913955
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🎶",
+              "marker-color": "transparent",
+              "stroke": "transparent"
+            }
+          },
+          {
+            "id": "MlekYU3A1gtWjUh8gqfvfXpDAROovQb0",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.120085962201614,
+                49.428389806614376
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🧎",
               "stroke": "transparent",
               "marker-color": "transparent"
             }
           },
           {
-            "id": "L1Q8lrsFs1Gv9JtspvFblrSA39GOXwmn",
+            "id": "7Xb1cepov3sKiROQTLWj5TFOtVgY41kH",
             "type": "Feature",
             "geometry": {
               "coordinates": [
-                11.123296723060577,
-                49.426181055116274
+                11.120165755033895,
+                49.42868991535684
               ],
               "type": "Point"
             },
             "properties": {
-              "label": "Add new points, lines and polygons to the map with the buttons on the left",
-              "stroke": "transparent",
+              "marker-symbol": "🧎",
               "marker-color": "transparent",
-              "marker-image-url": "/icon/53669491",
-              "marker-size": "37",
-              "desc": "\n[![image](/image/53669491)](/image/53669491)\n"
+              "stroke": "transparent"
             }
           },
           {
-            "id": "aHnNPEP3SWra6a91EFoKoGXHNX71uDZs",
+            "id": "i5fQnfmNQn65ULUrmxZh5qkYWYYttF2w",
             "type": "Feature",
             "geometry": {
-              "type": "LineString",
+              "coordinates": [
+                11.120451679094742,
+                49.42854715451426
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🤸"
+            }
+          },
+          {
+            "id": "o64I8c9G9LTT4wo77FoB3oMUsx7fGqwN",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.120378394781682,
+                49.42892257013824
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🧍",
+              "marker-color": "transparent",
+              "stroke": "transparent"
+            }
+          },
+          {
+            "id": "uPVAUNEj4hB72Xt1M4NLFAw9VgK27Ufw",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.120776193598374,
+                49.428659307324324
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🧍",
+              "marker-color": "transparent",
+              "stroke": "transparent"
+            }
+          },
+          {
+            "id": "g4GlGvTs7L4xBWU9039Ig3eL0XnP6KxI",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.120366958379435,
+                49.42822058399315
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🧍",
+              "marker-color": "transparent",
+              "stroke": "transparent"
+            }
+          },
+          {
+            "id": "ffowJlscjTdD8nwXZBsTXS4zHIoK2Klk",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.121546788571948,
+                49.428615889539515
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "label": "Change feature properties by clicking the edit button",
+              "stroke": "transparent",
+              "marker-color": "transparent",
+              "marker-image-url": "/images/tutorial_map/edit_button.png",
+              "marker-size": "37"
+            }
+          },
+          {
+            "id": "tCD3mxQUr0lJNrv5eAko2rJVtF9f4Nng",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.123215699524195,
+                49.42746748967036
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🏒",
+              "stroke": "transparent",
+              "marker-color": "transparent"
+            }
+          },
+          {
+            "id": "Gzu4YLeHPAkk51D6BbJIELa8uXtDlDsL",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.124363972874619,
+                49.428885497371226
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-image-url": "/icons/arrow_right_up.png",
+              "marker-color": "transparent",
+              "stroke": "transparent",
+              "marker-size": "16"
+            }
+          },
+          {
+            "id": "c3RwM3CRM27IVRFLQMAactT3mL8G0q7Z",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.123414194860857,
+                49.427692807132104
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🥅",
+              "marker-color": "transparent"
+            }
+          },
+          {
+            "id": "WMtR1bSX98VCNEsbioWUdiWlwLKAJZJZ",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.123001292764656,
+                49.42723626241397
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "marker-symbol": "🥅",
+              "marker-color": "transparent"
+            }
+          },
+          {
+            "id": "KYePpkNfFFr6ff8kHds2iauQYg7KYTrI",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                11.126644628531864,
+                49.429622474433216
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "label": "Draw different kinds of lines by clicking the line button",
+              "stroke": "transparent",
+              "marker-color": "transparent",
+              "marker-image-url": "/images/tutorial_map/line_button.png",
+              "marker-size": "37"
+            }
+          },
+          {
+            "id": "eucgha6aysw",
+            "type": "Feature",
+            "geometry": {
               "coordinates": [
                 [
-                  11.128025,
-                  49.424515,
-                  323
-                ],
-                [
-                  11.129392,
-                  49.425925,
-                  319
-                ],
-                [
-                  11.12942,
-                  49.426316,
-                  319
-                ],
-                [
-                  11.128792,
-                  49.427272,
+                  11.12851,
+                  49.42884,
                   320
                 ],
                 [
-                  11.129548,
-                  49.42752,
+                  11.12852,
+                  49.42883,
+                  320
+                ],
+                [
+                  11.12859,
+                  49.42873,
+                  320
+                ],
+                [
+                  11.12936,
+                  49.42742,
+                  322
+                ],
+                [
+                  11.12915,
+                  49.42744,
+                  320
+                ],
+                [
+                  11.12888,
+                  49.42737,
+                  320
+                ],
+                [
+                  11.1288,
+                  49.42729,
+                  320
+                ],
+                [
+                  11.12844,
+                  49.42719,
+                  320
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {
+              "fill-extrusion-height": 8,
+              "fill-extrusion-base": 3,
+              "stroke-opacity": 0.65,
+              "fill-extrusion-color": "#2d587d",
+              "fill-extrusion-width": 1.5,
+              "stroke-width": 5,
+              "stroke": "#2d587d",
+              "route": {
+                "provider": "osrm",
+                "profile": "foot",
+                "waypoints": [
+                  [
+                    11.128511,
+                    49.428841
+                  ],
+                  [
+                    11.128439,
+                    49.427189
+                  ]
+                ]
+              }
+            }
+          },
+          {
+            "id": "6exgnwj11zj",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                [
+                  11.12877,
+                  49.43071,
+                  315
+                ],
+                [
+                  11.1282,
+                  49.43092,
                   319
+                ],
+                [
+                  11.12808,
+                  49.43095,
+                  319
+                ],
+                [
+                  11.12799,
+                  49.43095,
+                  319
+                ],
+                [
+                  11.12787,
+                  49.43094,
+                  319
+                ],
+                [
+                  11.12779,
+                  49.43089,
+                  319
+                ],
+                [
+                  11.12726,
+                  49.43035,
+                  318
+                ],
+                [
+                  11.12723,
+                  49.43031,
+                  318
+                ],
+                [
+                  11.1272,
+                  49.43028,
+                  318
+                ],
+                [
+                  11.12718,
+                  49.43024,
+                  318
+                ],
+                [
+                  11.12716,
+                  49.4302,
+                  318
+                ],
+                [
+                  11.12715,
+                  49.43017,
+                  318
+                ],
+                [
+                  11.12715,
+                  49.43014,
+                  318
+                ],
+                [
+                  11.12716,
+                  49.43011,
+                  318
+                ],
+                [
+                  11.12717,
+                  49.43009,
+                  318
+                ],
+                [
+                  11.12719,
+                  49.43007,
+                  318
+                ],
+                [
+                  11.12723,
+                  49.43005,
+                  318
+                ],
+                [
+                  11.12727,
+                  49.43002,
+                  318
+                ],
+                [
+                  11.12822,
+                  49.42963,
+                  320
+                ],
+                [
+                  11.12862,
+                  49.42947,
+                  320
+                ],
+                [
+                  11.1292,
+                  49.42923,
+                  321
+                ],
+                [
+                  11.12921,
+                  49.42923,
+                  321
+                ],
+                [
+                  11.12928,
+                  49.4292,
+                  321
+                ],
+                [
+                  11.12947,
+                  49.42912,
+                  320
+                ],
+                [
+                  11.12963,
+                  49.42904,
+                  320
+                ],
+                [
+                  11.12981,
+                  49.42895,
+                  320
+                ],
+                [
+                  11.13011,
+                  49.42878,
+                  324
+                ],
+                [
+                  11.13033,
+                  49.42864,
+                  324
+                ],
+                [
+                  11.13053,
+                  49.42852,
+                  324
+                ],
+                [
+                  11.13063,
+                  49.42846,
+                  324
+                ],
+                [
+                  11.13119,
+                  49.428,
+                  322
+                ],
+                [
+                  11.13133,
+                  49.42797,
+                  322
+                ],
+                [
+                  11.13143,
+                  49.42799,
+                  322
+                ],
+                [
+                  11.13152,
+                  49.42805,
+                  322
+                ],
+                [
+                  11.13155,
+                  49.4281,
+                  322
+                ],
+                [
+                  11.13154,
+                  49.42818,
+                  322
+                ],
+                [
+                  11.13092,
+                  49.42864,
+                  328
+                ],
+                [
+                  11.13042,
+                  49.42893,
+                  324
+                ],
+                [
+                  11.1303,
+                  49.429,
+                  324
                 ]
-              ]
-            },
-            "properties": {
-              "stroke-width": "3",
-              "stroke": "#63452c",
-              "label": "Track",
-              "fill-extrusion-height": 35
-            }
-          },
-          {
-            "id": "XUdLCh8rinsUCP8s01g93PBYen0ARptt",
-            "type": "Feature",
-            "geometry": {
-              "coordinates": [
-                11.130398335758827,
-                49.42625821866062
               ],
-              "type": "Point"
+              "type": "LineString"
             },
             "properties": {
-              "marker-image-url": "/icon/9d3aa14a",
-              "marker-size": "46",
-              "stroke": "transparent",
-              "marker-color": "transparent",
-              "desc": "\n[![image](/image/9d3aa14a)](/image/9d3aa14a)\n"
+              "fill-extrusion-height": 8,
+              "fill-extrusion-base": 3,
+              "stroke-opacity": 0.65,
+              "fill-extrusion-color": "#2d587d",
+              "fill-extrusion-width": 1.5,
+              "stroke-width": 5,
+              "stroke": "#2d587d",
+              "route": {
+                "provider": "osrm",
+                "profile": "car",
+                "waypoints": [
+                  [
+                    11.128774,
+                    49.430713
+                  ],
+                  [
+                    11.130296,
+                    49.429003
+                  ]
+                ]
+              }
             }
           },
           {
-            "id": "Pk5tkV0eG9nPhNVPChqHLu2jv3ikpaQt",
+            "id": "37m3w1r69jo",
             "type": "Feature",
             "geometry": {
               "coordinates": [
-                11.129534008697505,
-                49.425413355828795
+                [
+                  11.12994,
+                  49.42953,
+                  321
+                ],
+                [
+                  11.13,
+                  49.42956,
+                  322
+                ],
+                [
+                  11.13034,
+                  49.42986,
+                  322
+                ],
+                [
+                  11.13048,
+                  49.42991,
+                  322
+                ],
+                [
+                  11.13089,
+                  49.42989,
+                  322
+                ],
+                [
+                  11.13097,
+                  49.42997,
+                  322
+                ],
+                [
+                  11.13113,
+                  49.43011,
+                  321
+                ]
               ],
-              "type": "Point"
+              "type": "LineString"
             },
             "properties": {
-              "label": "Change an items properties, like colour, symbol, size",
-              "marker-color": "transparent",
-              "stroke": "transparent",
-              "title": "Change items"
+              "fill-extrusion-height": 8,
+              "fill-extrusion-base": 3,
+              "stroke-opacity": 0.65,
+              "fill-extrusion-color": "#2d587d",
+              "fill-extrusion-width": 1.5,
+              "stroke-width": 5,
+              "stroke": "#2d587d",
+              "route": {
+                "provider": "osrm",
+                "profile": "bike",
+                "waypoints": [
+                  [
+                    11.129942,
+                    49.429531
+                  ],
+                  [
+                    11.131133,
+                    49.430108
+                  ]
+                ]
+              }
             }
           },
           {
-            "id": "bHrlZ0Jp58APLd1J0sDY73GUsNxiC7JY",
+            "id": "HHbZxNnenzEiGNHC4hN0RW4bg4Nf9ng7",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                [
+                  11.125803244675438,
+                  49.43036007653632
+                ],
+                [
+                  11.124882074210461,
+                  49.42991955743014
+                ],
+                [
+                  11.124299569356367,
+                  49.430571524302024
+                ],
+                [
+                  11.123744157751872,
+                  49.43006052397422
+                ]
+              ],
+              "type": "LineString"
+            },
+            "properties": {}
+          },
+          {
+            "id": "6nY3Spo6zGhn3uUNgPCpMOlFZkQlFoyX",
             "type": "Feature",
             "geometry": {
               "type": "LineString",
               "coordinates": [
                 [
-                  11.124038372502383,
-                  49.42736446943084
+                  11.124153,
+                  49.431519,
+                  313
                 ],
                 [
-                  11.12370418590092,
-                  49.426936298870686
+                  11.124329,
+                  49.431334,
+                  317
+                ],
+                [
+                  11.12483,
+                  49.431052,
+                  317
+                ],
+                [
+                  11.125575,
+                  49.430911,
+                  318
+                ],
+                [
+                  11.126198,
+                  49.430938,
+                  320
+                ],
+                [
+                  11.126523,
+                  49.431264,
+                  320
+                ],
+                [
+                  11.126537,
+                  49.431493,
+                  320
+                ],
+                [
+                  11.126429,
+                  49.431704,
+                  322
+                ],
+                [
+                  11.126076,
+                  49.431925,
+                  322
+                ],
+                [
+                  11.125331,
+                  49.431969,
+                  323
+                ],
+                [
+                  11.124979,
+                  49.431757,
+                  321
+                ],
+                [
+                  11.125006,
+                  49.431467,
+                  318
+                ],
+                [
+                  11.12525,
+                  49.431273,
+                  318
+                ],
+                [
+                  11.125887,
+                  49.431237,
+                  320
+                ],
+                [
+                  11.12609,
+                  49.431255,
+                  320
+                ],
+                [
+                  11.126158,
+                  49.431343,
+                  320
+                ],
+                [
+                  11.126117,
+                  49.431537,
+                  320
+                ],
+                [
+                  11.12586,
+                  49.431687,
+                  322
+                ],
+                [
+                  11.125616,
+                  49.431731,
+                  323
+                ],
+                [
+                  11.125426,
+                  49.431616,
+                  318
+                ],
+                [
+                  11.125589,
+                  49.431449,
+                  318
+                ],
+                [
+                  11.125792,
+                  49.431484,
+                  318
                 ]
               ]
             },
             "properties": {
-              "stroke-width": "6",
-              "stroke": "#63452c"
-            }
-          },
-          {
-            "id": "RmyQyEUlQtrZMmVldPFbtiw9GCIbYvH8",
-            "type": "Feature",
-            "geometry": {
-              "type": "LineString",
-              "coordinates": [
-                [
-                  11.123500709269166,
-                  49.42718592450356
-                ],
-                [
-                  11.123640861403914,
-                  49.426823984757846
-                ],
-                [
-                  11.123851340210365,
-                  49.42694833999957
-                ],
-                [
-                  11.1241364985068,
-                  49.42697746169986
-                ]
-              ]
-            },
-            "properties": {
-              "stroke-width": "6",
-              "stroke": "#63452c"
-            }
-          },
-          {
-            "id": "NnaPv23L3oU48lseT7cBtrcrpjArvgra",
-            "type": "Feature",
-            "geometry": {
-              "type": "LineString",
-              "coordinates": [
-                [
-                  11.123413653155723,
-                  49.424841284579315
-                ],
-                [
-                  11.123648156778302,
-                  49.42453176255444
-                ],
-                [
-                  11.124030986850983,
-                  49.424229887901845
-                ],
-                [
-                  11.12445332559048,
-                  49.42408658563113
-                ],
-                [
-                  11.124919959831573,
-                  49.424068249524396
-                ]
-              ]
-            },
-            "properties": {
-              "stroke-width": "6",
-              "stroke": "#63452c"
-            }
-          },
-          {
-            "id": "ykVQrA1zn8d9aIw6JGtuy7L9cPfr4ZSG",
-            "type": "Feature",
-            "geometry": {
-              "type": "LineString",
-              "coordinates": [
-                [
-                  11.12474731924118,
-                  49.42430662323213
-                ],
-                [
-                  11.125025615078158,
-                  49.42406215535948
-                ],
-                [
-                  11.124820317414702,
-                  49.423889219635385
-                ]
-              ]
-            },
-            "properties": {
-              "stroke-width": "6",
-              "stroke": "#63452c"
-            }
-          },
-          {
-            "id": "8BQB50flPGXy25etOhqcEMvoBcIr5UPb",
-            "type": "Feature",
-            "geometry": {
-              "type": "LineString",
-              "coordinates": [
-                [
-                  11.127603023193501,
-                  49.42387217587478
-                ],
-                [
-                  11.12825673324798,
-                  49.423920227146255
-                ],
-                [
-                  11.1286562030011,
-                  49.424032049170876
-                ],
-                [
-                  11.12907129594862,
-                  49.424264370981916
-                ],
-                [
-                  11.12921696507334,
-                  49.424438916958906
-                ]
-              ]
-            },
-            "properties": {
-              "stroke-width": "6",
-              "stroke": "#63452c"
-            }
-          },
-          {
-            "id": "qjV8BLnyLhf39FfSzSHBfe4sW1q930k8",
-            "type": "Feature",
-            "geometry": {
-              "type": "LineString",
-              "coordinates": [
-                [
-                  11.128803312343791,
-                  49.42439274877063
-                ],
-                [
-                  11.12926442735494,
-                  49.42456429289368
-                ],
-                [
-                  11.129459831771271,
-                  49.42429425905661
-                ]
-              ]
-            },
-            "properties": {
-              "stroke-width": "6",
+              "stroke-width": "2",
               "stroke": "#63452c"
             }
           }
