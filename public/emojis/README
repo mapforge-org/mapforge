@@ -1,6 +1,7 @@
 Using emojis from https://fonts.google.com/noto/specimen/Noto+Color+Emoji + https://openmoji.org/ (72px) to render marker symbols on the map.
 
 Download: https://github.com/googlefonts/noto-emoji/releases
+(directory png/72)
 
 After download of an emoji set, the script `convert_to_emoji_names.sh`
 can be used to convert the original filenames to the emoji name itself.

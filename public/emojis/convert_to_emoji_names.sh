@@ -13,12 +13,12 @@ for file in *.png; do
     
     new_filename=""
     for part in "${parts[@]}"; do
-        echo "Working on $part"
+        # echo "Working on $part"
         char=$(printf "\\U$part")
         new_filename+="$char"
     done
     
-    echo "$char"
+    echo "$new_filename"
     new_filename+=".png"
     
     cp "$file" "$new_filename"

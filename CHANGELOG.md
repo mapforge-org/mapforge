@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 2025-09
 
 * Show users' recently viewed maps
+* Unicode 17 emoji support
 
 ## 2025-08
 

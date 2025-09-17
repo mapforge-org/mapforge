@@ -98,6 +98,7 @@ export async function showFeatureDetails (feature) {
   })
 
   // Allow to drag up/down modal on touch devices
+  // Simulating an android bottom sheet behavior
   f.addEventListeners(modal, ['mousemove', 'touchmove', 'drag'], (event) => {
     if (!isDragging) return
 
