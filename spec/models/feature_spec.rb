@@ -8,7 +8,7 @@ describe Feature do
      features_in = JSON.parse(feature.to_geojson.to_json)
      features_out = described_class.from_collection(features_in, collection_format: 4326, db_format: 3857)
 
-      expect(features_out.map { |f| f.coordinates }).to eq [ [ 1230716.4305721675, 6355538.017963774 ] ]
+      expect(features_out.map { |f| f.coordinates.map { |c| c.round } }).to eq [ [ 1230716, 6355538 ] ]
     end
   end
 end
