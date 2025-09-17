@@ -17,6 +17,11 @@ class Tutorial
     end
   end
 
+  def title
+    headline = markdown.lines.find { |line| line.strip.match?(/^#+\s/) }
+    headline.gsub("#", "")&.strip
+  end
+
   def to_html
     renderer = Redcarpet::Render::HTML.new(
       filter_html: false,
