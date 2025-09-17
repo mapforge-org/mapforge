@@ -33,10 +33,10 @@ class Feature
 
   # input file formats are typically gps format EPSG:4326 (WGS 84) or
   # web_mercator format EPSG:3857
-  def self.from_collection(collection, collection_format: 4326, db_format: 4326)
+  def self.from_collection(geojson, collection_format: 4326, db_format: 4326)
     db_format = RGeo::Cartesian.factory(srid: db_format)
     collection_format = RGeo::Cartesian.factory(srid: collection_format)
-    feature_collection = RGeo::GeoJSON.decode(collection, geo_factory: collection_format)
+    feature_collection = RGeo::GeoJSON.decode(geojson, geo_factory: collection_format)
     feature_collection.map do |feature|
       next unless feature.geometry
       # transform coords from input to db format
