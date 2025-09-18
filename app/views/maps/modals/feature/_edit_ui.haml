@@ -60,7 +60,7 @@
   #marker-symbol-ui.edit-ui.edit-point
     %label{ for: "marker-symbol"} Symbol:
     %input.form-control#marker-symbol{ type: "text", size: '1', 'data-action': "input->feature--edit#addUndo input->feature--edit#updateMarkerSymbol change->feature--edit#saveFeature" }
-    %span<
+    %span#emoji-list-link<
       = surround '(', ')' do
         %a{ href: 'https://emojipedia.org/google/15.1', target: '_blank'}>Emoji list
 

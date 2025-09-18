@@ -14,10 +14,7 @@ pin_all_from "app/javascript/maplibre", under: "maplibre", preload: false
 pin_all_from "app/javascript/helpers", under: "helpers", preload: false
 
 # page initializers
-pin "frontpage", preload: false
 pin "deck", preload: false
-pin "maplibre", preload: false
-pin "animate", preload: false
 
 # vendor
 # examples: https://generator.jspm.io/
