@@ -23,7 +23,11 @@ class MapsController < ApplicationController
   end
 
   def show
-    @map.update(viewed_at: Time.now, view_count: (@map.view_count || 0) + 1)
+    # Avoid 'updated_at' update
+    @map.collection.update_one(
+      { _id: @map.id },
+      { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
+    )
     if request.format.html?
       @map_properties = map_properties
       gon.map_id = params[:id]

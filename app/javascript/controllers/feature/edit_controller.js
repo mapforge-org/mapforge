@@ -169,7 +169,9 @@ export default class extends Controller {
 
   updateMarkerSymbol () {
     const feature = this.getFeature()
-    const symbol = document.querySelector('#marker-symbol').value
+    let symbol = document.querySelector('#marker-symbol').value
+    // strip variation selector (emoji) U+FE0F to match icon file names
+    symbol = symbol.replace(/\uFE0F/g, '')
     feature.properties['marker-symbol'] = symbol
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
