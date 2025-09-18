@@ -1,4 +1,4 @@
-import { styles, loadImage, pointSize, pointSizeMax, _setSource } from 'maplibre/styles'
+import { styles, loadImage, pointSize, pointSizeMax } from 'maplibre/styles'
 import { map } from 'maplibre/map'
 
 

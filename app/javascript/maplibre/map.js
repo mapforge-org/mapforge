@@ -6,7 +6,7 @@ import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, a
 import { basemaps, defaultFont, elevationSource, demSource } from 'maplibre/basemaps'
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared'
 import { initializeViewControls } from 'maplibre/controls/view'
-import { draw } from 'maplibre/edit'
+import { draw, select } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
   renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
 import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
@@ -406,7 +406,11 @@ export function redrawGeojson (resetDraw = true) {
       
       drawFeatureIds.forEach((featureId) => {
         let feature = geojsonData.features.find(f => f.id === featureId)
-        if (feature) { draw.add(feature) }
+        if (feature) { 
+          draw.add(feature) 
+          // if we're in edit mode, re-select feature
+          select(feature)
+        }
       })
     }
   }
@@ -445,7 +449,7 @@ export function addFeature (feature) {
   feature.properties.id = feature.id
   layers.find(l => l.type === 'geojson').geojson.features.push(feature)
   geojsonData = mergedGeoJSONLayers()
-  redrawGeojson()
+  redrawGeojson(false)
   status('Added feature')
 }
 
