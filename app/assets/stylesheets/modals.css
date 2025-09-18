@@ -110,7 +110,7 @@
 
 .modal-close-button {
   position: absolute;
-  top: 0rem;
+  top: 0;
   right: 1rem;
   background: none;
   border: none;

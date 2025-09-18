@@ -88,7 +88,10 @@ export default class extends Controller {
 
     if (feature.geometry.type === 'Point') {
       dom.showElements(['#feature-edit-ui .edit-point'])
-      const size = feature.properties['marker-size'] || 6
+      
+      let defaultSize = feature.properties['marker-symbol'] ? 18 : 6
+      const size = feature.properties['marker-size'] || defaultSize
+
       document.querySelector('#point-size').value = size
       document.querySelector('#point-size-val').innerHTML = size
       document.querySelector('#fill-color').value = feature.properties['marker-color'] || featureColor

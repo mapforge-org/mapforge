@@ -196,24 +196,34 @@ const pointOpacityActive = 0.9
 
 // factor of the original icon size (200x200)
 // in case of external icon url, we don't know the size
+export const iconSizeDefault = ['*', 1 / 60, pointSizeMax]
+export const scaledIconSize = ['case',
+  ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
+  0, iconSizeDefault]
+
+// scaled icons stay at max size with zoom >= 15
 const iconSize = [
-  'interpolate',
-  ['linear'],
-  ['zoom'],
-  5, ['*', 1 / 700, pointSizeMax], // At zoom 5
-  15, ['*', 1 / 70, pointSizeMax] // At zoom 15
-]
+      'interpolate',
+      ["exponential", 2],
+      ['zoom'],
+      0, scaledIconSize, // At zoom 0
+      16, iconSizeDefault, // At zoom 15
+      21, iconSizeDefault, // At zoom 21
+    ]
 
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 const labelFontSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], 16]]
+export const scaledFontSize = ['case',
+  ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
+  0, labelFontSize]
 const labelSize = [
   'interpolate',
-  ['linear'],
+  ["exponential", 2],
   ['zoom'],
-  5, ['*', 1 / 70, labelFontSize], // At zoom 5
-  15, labelFontSize // At zoom 15
-] 
-
+  0, scaledFontSize, // At zoom 0
+  16, labelFontSize, // At zoom 15
+  21, labelFontSize, // At zoom 21
+]
 
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']
 export let labelFont
