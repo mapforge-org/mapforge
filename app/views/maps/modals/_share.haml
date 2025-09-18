@@ -1,6 +1,6 @@
 #share-modal.modal-center.fade
   .map-modal{'data-controller': "map--share", 'data-action': "keydown.esc@window->map--share#close"}
-    %button.close-button{ data: { action: "click->map--share#close" } } &times;
+    %button.modal-close-button{ data: { action: "click->map--share#close" } } &times;
     .map-modal-header
       %h3.mapforge-font Share Map
 

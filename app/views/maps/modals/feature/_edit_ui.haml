@@ -1,12 +1,16 @@
 #feature-edit-ui.hidden
 
-  #feature-title-input.form-floating.edit-ui.mt-2
+  #feature-title-input.edit-ui.form-floating.mt-2
     %input.form-control{ "name": "feature-title", data: { action: "input->feature--edit#addUndo input->feature--edit#updateTitle" } }
     %label{ for: "feature-title"} Title
 
   %div
-    %button#button-add-label.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#show_add_label" } Add label
-    %button#button-add-desc.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#show_add_desc" } Add description
+    %button#button-add-label.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#show_add_label" } 
+      %i.bi.bi-plus-square.me-1
+      Add label
+    %button#button-add-desc.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#show_add_desc" } 
+      %i.bi.bi-plus-square.me-1
+      Add description
 
   #feature-label.form-floating.edit-ui.hidden
     %input.form-control{"name": "feature-label", "data-action": "input->feature--edit#addUndo input->feature--edit#updateLabel"}
@@ -76,7 +80,3 @@
     %label.edit-line{ for: "show-km-markers"} Show km markers:
     %input#show-km-markers{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateShowKmMarkers change->feature--edit#saveFeature"} }
 
-  %div
-    %button#button-edit-raw.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'raw' } 
-      %i.bi.bi-filetype-raw
-      Edit json

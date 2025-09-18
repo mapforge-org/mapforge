@@ -35,10 +35,6 @@
     max-height: calc(100% - 5rem);
     margin: 0.4rem 1rem 1.5rem;
   }
-
-  .modal-pull-button {
-    visibility: hidden;
-  }
 }
 
 #feature-details-body table {
@@ -55,8 +51,6 @@
 }
 
 #feature-edit-ui {
-  margin-top: 1.1rem;
-
   #fill-color, #stroke-color, #marker-symbol {
     width: 3rem;
   }
@@ -85,26 +79,6 @@
 #feature-details-body img {
     max-width: 100%;
     height: auto;
-}
-
-.edit-button-group {
-  box-shadow: 0 0 6px 2px rgba(0 0 0 / 38%) !important;
-}
-
-#edit-buttons {
-  position: absolute;
-  right: 0.5rem;
-  top: 0.5rem;
-  opacity: 0.85;
-}
-
-.edit-button {
-  cursor: pointer;
-  display: inline-block !important;
-  opacity: 0.85;
-  width: 30px !important;
-  height: 30px !important;
-  font-size: 1.2rem !important;
 }
 
 #feature-edit-raw textarea {

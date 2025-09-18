@@ -26,10 +26,12 @@ export default class extends Controller {
     if (document.querySelector('#feature-edit-raw').classList.contains('hidden') && type === 'raw') {
       // console.log('show_feature_edit_raw')
       document.querySelector('#edit-button-edit').classList.remove('active')
+      document.querySelector('#button-edit-raw').classList.add('active')
       this.show_feature_edit_raw()
     } else if (document.querySelector('#feature-edit-ui').classList.contains('hidden') && type === 'ui') {
       // console.log('show_feature_edit_ui')
       document.querySelector('#edit-button-edit').classList.add('active')
+      document.querySelector('#button-edit-raw').classList.remove('active')
       this.show_feature_edit_ui()
 
       // add feature to draw
@@ -51,9 +53,8 @@ export default class extends Controller {
       this.pullUpModal(this.element)
     }
     const feature = this.getFeature()
-    dom.showElements(['#feature-edit-ui', '#feature-title-input', '#button-add-desc', '#button-add-label'])
-    dom.hideElements(['#feature-edit-raw', '#feature-desc', '#feature-label'])
-
+    dom.showElements(['#feature-edit-ui'])
+    dom.hideElements(['#feature-edit-raw'])
     // init ui input elements
     document.querySelector('#feature-title-input input').value = feature.properties.title || null
     if (feature.properties.label) { this.show_add_label() }

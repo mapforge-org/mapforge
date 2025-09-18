@@ -18,7 +18,7 @@ const defaultRasterLayer = [
     id: 'simple-tiles',
     type: 'raster',
     source: 'raster-tiles',
-    minzoom: 1.4,
+    minzoom: 1.5,
     maxzoom: 18
   }
 ]

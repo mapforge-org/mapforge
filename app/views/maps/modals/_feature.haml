@@ -3,15 +3,30 @@
   %a.link{ 'data-action': "click->feature--modal#toggleModalSize"}
     .modal-pull-button
 
-  #edit-buttons.hidden.maplibregl-ctrl-group.maplibregl-ctrl.edit-button-group
-    %button.edit-button.maplibregl-ctrl-btn#edit-button-edit{title: "Edit", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui'}
-      %i.bi.bi-pencil-square
-    %button.edit-button#edit-button-trash{title: "Delete", data: { action: "click->feature--edit#delete_feature" } }
-      %i.bi.bi-trash
+  %button.modal-close-button{ 'data-action': "click->feature--modal#close" } &times;
+  
+  .map-modal-header
+    %h4#feature-details-header.flex-container
+      #feature-symbol
+      #feature-title.flex-container.flex-center
 
-  %h4#feature-details-header.flex-container
-    #feature-symbol
-    #feature-title.flex-container.flex-center
+  .map-modal-header#edit-buttons.hidden
+    .btn-group-sm.mt-2.mb-2{ role: "group" }
+      %button.btn.btn-green#edit-button-edit{ type: "button", title: "Edit", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui' }
+        %i.bi.bi-pencil-square
+        Edit
+        %span.d-none.d-sm-inline
+          feature
+      %button.btn.btn-green#button-edit-raw{ type: "button", title: "Edit", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'raw' }
+        %i.bi.bi-filetype-raw
+        %span.d-none.d-sm-inline
+          Edit 
+        JSON
+      %button.btn.btn-green#edit-button-trash{ type: "button", title: "Delete", data: { action: "click->feature--edit#delete_feature" } }
+        %i.bi.bi-trash
+        Delete 
+        %span.d-none.d-sm-inline
+          feature
 
   = render 'maps/modals/feature/edit_ui'
   = render 'maps/modals/feature/edit_raw'

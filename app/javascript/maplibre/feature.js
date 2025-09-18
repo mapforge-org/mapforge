@@ -128,7 +128,6 @@ export async function showFeatureDetails (feature) {
   })
 
   document.querySelector('#feature-symbol').innerHTML = featureIcon(feature)
-  dom.hideElements('#feature-title-input')
   document.querySelector('#feature-title').innerHTML = featureTitle(feature)
   document.querySelector('#feature-size').innerHTML = featureMeta(feature)
   if (feature.geometry.type === 'Point') {

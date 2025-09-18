@@ -232,6 +232,7 @@ function handleCreate (e) {
     if (draw.getMode() !== mode) {
       highlightFeature(feature, true)
       // switch feature details to edit mode after create
+      // catched by stimulus in feature modal
       window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
     }
   }, 10)

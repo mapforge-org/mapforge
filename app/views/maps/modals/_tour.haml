@@ -1,6 +1,6 @@
 #tour-modal.modal-center.fade
   .map-modal.background-dark{'data-controller': "map--tour", 'data-action': "keydown.esc@window->map--tour#close"}
-    %button.close-button{ data: { action: "click->map--tour#close" } } &times;
+    %button.modal-close-button{ data: { action: "click->map--tour#close" } } &times;
     .map-modal-header
       %h3 Welcome to the Mapforge tour
 
