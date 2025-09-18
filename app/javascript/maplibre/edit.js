@@ -233,8 +233,6 @@ function handleCreate (e) {
       highlightFeature(feature, true)
       // switch feature details to edit mode after create
       window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
-      draw.add(feature)
-      select(feature)
     }
   }, 10)
 

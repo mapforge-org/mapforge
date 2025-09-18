@@ -1,4 +1,4 @@
-import { styles, loadImage, pointSize, pointSizeMax, setSource } from 'maplibre/styles'
+import { styles, loadImage, pointSize, pointSizeMax, _setSource } from 'maplibre/styles'
 import { map } from 'maplibre/map'
 
 
@@ -6,12 +6,13 @@ export function initializeEditStyles () {
   // MapboxDraw cannot render symbol+text styles.
   // Adding those as extra layers to the map.
   // render the extrusion layer from "source: 'geojson-source' without having it available for edit in draw
-  map.addLayer(setSource(styles()['polygon-layer-extrusion'], 'geojson-source') )
-  map.addLayer(setSource(styles()['line-labels'], 'geojson-source') )
-  map.addLayer(setSource(styles()['line-label-symbol'], 'geojson-source') )
-  map.addLayer(setSource(styles()['symbols-border-layer'], 'geojson-source') )
-  map.addLayer(setSource(styles()['symbols-layer'], 'geojson-source') )
-  map.addLayer(setSource(styles()['text-layer'], 'geojson-source') )
+  // Note: Not needed anymore, we're only adding single features to draw now
+  // map.addLayer(setSource(styles()['polygon-layer-extrusion'], 'geojson-source') )
+  // map.addLayer(setSource(styles()['line-labels'], 'geojson-source') )
+  // map.addLayer(setSource(styles()['line-label-symbol'], 'geojson-source') )
+  // map.addLayer(setSource(styles()['symbols-border-layer'], 'geojson-source') )
+  // map.addLayer(setSource(styles()['symbols-layer'], 'geojson-source') )
+  // map.addLayer(setSource(styles()['text-layer'], 'geojson-source') )
   // console.log('Edit styles added')
 
   map.on('styleimagemissing', loadImage)

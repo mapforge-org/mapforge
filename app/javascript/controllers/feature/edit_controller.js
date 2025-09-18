@@ -60,7 +60,7 @@ export default class extends Controller {
     feature.properties['marker-size'] = size
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'marker-size', size)
-    redrawGeojson(false)
+    redrawGeojson(true)
   }
 
   // called as preview on slider change
@@ -71,7 +71,7 @@ export default class extends Controller {
     feature.properties['stroke-width'] = size
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'stroke-width', size)
-    redrawGeojson(false)
+    redrawGeojson(true)
   }
 
   // called as preview on slider change
@@ -82,7 +82,7 @@ export default class extends Controller {
     feature.properties['stroke-width'] = size
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'stroke-width', size)
-    redrawGeojson(false)
+    redrawGeojson(true)
   }
 
   // called as preview on slider change
@@ -94,7 +94,7 @@ export default class extends Controller {
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'fill-extrusion-height', Number(size))
     // needs redraw to add extrusion
-    redrawGeojson(false)
+    redrawGeojson(true)
   }
 
   updateOpacity () {
@@ -104,7 +104,7 @@ export default class extends Controller {
     feature.properties['fill-opacity'] = opacity
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'fill-opacity', opacity)
-    redrawGeojson(false)
+    redrawGeojson(true)
   }
 
   updateStrokeColor () {
@@ -113,7 +113,7 @@ export default class extends Controller {
     feature.properties.stroke = color
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'stroke', color)
-    redrawGeojson(false)
+    redrawGeojson(true)
   }
 
   updateStrokeColorTransparent () {
@@ -128,7 +128,7 @@ export default class extends Controller {
       document.querySelector('#stroke-color').removeAttribute('disabled')
     }
     feature.properties.stroke = color
-    redrawGeojson(false)
+    redrawGeojson(true)
   }
 
   updateFillColor () {
@@ -136,7 +136,7 @@ export default class extends Controller {
     const color = document.querySelector('#fill-color').value
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
     if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
-    redrawGeojson(false)
+    redrawGeojson(true)
   }
 
   updateFillColorTransparent () {
@@ -152,7 +152,7 @@ export default class extends Controller {
     }
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
     if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
-    redrawGeojson(false)
+    redrawGeojson(true)
   }
 
   updateShowKmMarkers () {
@@ -175,7 +175,7 @@ export default class extends Controller {
     feature.properties['marker-symbol'] = symbol
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
-    redrawGeojson(false)
+    redrawGeojson(true)
   }
 
   async updateMarkerImage () {
@@ -211,7 +211,7 @@ export default class extends Controller {
         feature.properties['desc'] = (feature.properties['desc'] || '') + `\n[![image](${data.image})](${data.image})\n`
 
         document.querySelector('#feature-symbol').innerHTML = featureIcon(feature)
-        redrawGeojson(false)
+        redrawGeojson(true)
         this.saveFeature()
       })
       .catch(error => console.error('Error:', error))
