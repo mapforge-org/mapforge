@@ -20,9 +20,9 @@ Rails.application.routes.draw do
     get "/", to: "maps#index"
 
     # map exports
-    get "/:id.json" => "maps#show", constraints: { id: ID_PATTERN }, defaults: { format: "json" }
-    get "/:id.geojson" => "maps#show", constraints: { id: ID_PATTERN }, defaults: { format: "geojson" }
-    get "/:id.gpx" => "maps#show", constraints: { id: ID_PATTERN }, defaults: { format: "gpx" }
+    get "/:id.json" => "maps#show", as: :map_json, constraints: { id: ID_PATTERN }, defaults: { format: "json" }
+    get "/:id.geojson" => "maps#show", as: :map_geojson, constraints: { id: ID_PATTERN }, defaults: { format: "geojson" }
+    get "/:id.gpx" => "maps#show", as: :map_gpx, constraints: { id: ID_PATTERN }, defaults: { format: "gpx" }
     get "/:id/properties" => "maps#properties", as: :map_properties, constraints: { id: ID_PATTERN }
     get "/:id/feature/:feature_id(/:name)" => "maps#feature", as: :map_feature, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN, name: ID_PATTERN }
     get "/:id(/:name)" => "maps#show", as: :map, format: :html, constraints: { id: ID_PATTERN, name: ID_PATTERN }
@@ -53,6 +53,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "frontpage#index", as: :frontpage
   get "/" => "frontpage#index", as: :root
+  # legacy link, still used by search engines
   get "/home" => "frontpage#index"
 
   mount Ulogger::Engine, at: "/ulogger"
