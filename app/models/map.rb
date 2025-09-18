@@ -24,6 +24,8 @@ class Map
   field :name, type: String
   field :description, type: String
   field :public_id, type: String
+  field :viewed_at, type: DateTime
+  field :view_count, type: Integer
   field :demo, type: Boolean, default: false
   field :edit_permission, type: String, default: "link" # 'private', 'link'
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'

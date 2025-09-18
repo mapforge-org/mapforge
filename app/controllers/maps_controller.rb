@@ -23,6 +23,7 @@ class MapsController < ApplicationController
   end
 
   def show
+    @map.update(viewed_at: Time.now, view_count: (@map.view_count || 0) + 1)
     if request.format.html?
       @map_properties = map_properties
       gon.map_id = params[:id]
