@@ -14,13 +14,13 @@ describe MapsController do
   describe '#demo' do
   let(:user) { create(:user) }
 
-    it 'creates new demo map for each guest user' do
+    it 'creates new tutorial map for each guest user' do
       post demo_path()
       post demo_path()
       expect(Map.demo.count).to eq 2
     end
 
-    it 'creates persistent demo map for each logged in user' do
+    it 'creates persistent tutorial map for each logged in user' do
       allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
       post demo_path()
       post demo_path()
