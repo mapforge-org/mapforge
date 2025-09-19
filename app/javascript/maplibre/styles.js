@@ -198,33 +198,41 @@ const pointOpacityActive = 0.9
 
 // factor of the original icon size (200x200)
 // in case of external icon url, we don't know the size
+// This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
 export const iconSizeDefault = ['*', 1 / 60, pointSizeMax]
-export const scaledIconSize = ['case',
+export const iconSizeMin = ['case',
   ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
   0, iconSizeDefault]
+export const iconSizeMax = ['case',
+  ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
+  ['*', 16, iconSizeDefault], iconSizeDefault]
 
-// scaled icons stay at max size with zoom >= 15
 const iconSize = [
       'interpolate',
       ["exponential", 2],
       ['zoom'],
-      0, scaledIconSize, // At zoom 0
-      16, iconSizeDefault, // At zoom 15
-      21, iconSizeDefault, // At zoom 21
+      0, iconSizeMin,
+      16, iconSizeDefault,
+      21, iconSizeMax
     ]
 
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
+// This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
 const labelFontSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], 16]]
-export const scaledFontSize = ['case',
+export const labelFontSizeMin = ['case',
   ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
   0, labelFontSize]
+export const labelFontSizeMax = ['case',
+  ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
+  ['*', 16, labelFontSize], labelFontSize]
+
 const labelSize = [
   'interpolate',
   ["exponential", 2],
   ['zoom'],
-  0, scaledFontSize, // At zoom 0
-  16, labelFontSize, // At zoom 15
-  21, labelFontSize, // At zoom 21
+  0, labelFontSizeMin, // At zoom 0
+  16, labelFontSize,
+  21, labelFontSizeMax
 ]
 
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']
