@@ -84,16 +84,6 @@
   top: 4rem;
 }
 
-@media (height < 350px) {
-  .maplibregl-ctrl-top-left {
-    top: 0.5rem;
-  };
-
-  .maplibregl-ctrl-top-right {
-    top: 2.5rem;
-  }
-}
-
 /* Search box is shown >= 640px width */
 @media (width >= 640px) {
   .maplibregl-ctrl-top-right {
@@ -116,11 +106,25 @@
   }
 
   .maplibregl-ctrl-top-left .maplibregl-ctrl {
-    margin: 10px 0 0 5px;
+    margin-left: 5px;
   }
 
   .maplibregl-ctrl-top-right .maplibregl-ctrl {
-    margin: 10px 5px 0 0;
+    margin-right: 5px;
+  }
+}
+
+@media (height < 390px) {
+  .maplibregl-ctrl-scale, .maplibregl-ctrl>.maplibregl-ctrl-logo {
+      display: none;
+    }
+
+  .maplibregl-ctrl-top-left {
+    top: 0.5rem;
+  }
+
+  .maplibregl-ctrl-top-left .maplibregl-ctrl {
+    margin-top: 5px;
   }
 }
 
@@ -155,10 +159,4 @@
 
 .maplibregl-ctrl-scale {
   font-size: 0.8rem;
-}
-
-@media (height <= 390px) {
-  .maplibregl-ctrl-scale, .maplibregl-ctrl > .maplibregl-ctrl-logo {
-    display: none;
-  }
 }
