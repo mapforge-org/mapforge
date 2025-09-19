@@ -84,33 +84,19 @@
   top: 4rem;
 }
 
-/* Search box is shown >= 640px width */
-@media (width >= 640px) {
-  .maplibregl-ctrl-top-right {
-    top: 0.4rem;
-  }
-}
-
-.maplibregl-ctrl-geocoder {
-  margin: 4px 10px 0 0 !important;
-}
-
 .maplibregl-ctrl-group button.maplibregl-ctrl-connection {
   color: var(--color-mid-chili);
 }
 
 /* hide search form on mobile */
 @media (width < 640px) {
-  .maplibregl-ctrl-geocoder {
-    display: none !important;
-  }
-
-  .maplibregl-ctrl-top-left .maplibregl-ctrl {
+  .maplibregl-ctrl-top-left .maplibregl-ctrl, .maplibregl-ctrl-bottom-left .maplibregl-ctrl {
     margin-left: 5px;
   }
 
   .maplibregl-ctrl-top-right .maplibregl-ctrl {
-    margin-right: 5px;
+    /* !important to overwrite geocoder default */
+    margin-right: 5px !important;
   }
 }
 
@@ -119,13 +105,36 @@
       display: none;
     }
 
-  .maplibregl-ctrl-top-left {
+  .maplibregl-ctrl-top-left, .maplibregl-ctrl-top-right {
     top: 0.5rem;
   }
 
   .maplibregl-ctrl-top-left .maplibregl-ctrl {
     margin-top: 5px;
   }
+}
+
+/* overwriting geocoder defaults that get loaded afterwards */
+.maplibregl-ctrl-geocoder {
+  margin: 4px 10px 0 0 !important;
+  min-width: unset !important;
+  width: 32px !important;
+  height: 32px !important;
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 10%) !important;
+  transition: width 0.5s ease !important;
+}
+
+.maplibregl-ctrl-geocoder--input { /* stylelint-disable-line */
+  height: 32px !important;
+}
+
+.maplibregl-ctrl-geocoder .maplibregl-ctrl-geocoder--pin-right>* { /* stylelint-disable-line */
+  top: 0 !important;
+}
+
+.maplibregl-ctrl-geocoder--icon-search { /* stylelint-disable-line */
+  left: 6px !important;
+  top: 6px !important;
 }
 
 .maplibregl-ctrl-geocoder--result svg { /* stylelint-disable-line */
@@ -159,4 +168,5 @@
 
 .maplibregl-ctrl-scale {
   font-size: 0.8rem;
+  margin-bottom: 5px;
 }

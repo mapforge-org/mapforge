@@ -329,7 +329,15 @@ export function initializeDefaultControls () {
       maplibregl
     }), 'top-right'
   )
-  document.querySelector('.maplibregl-ctrl-geocoder').classList.add('hidden')
+  const geocoderButton = document.querySelector('.maplibregl-ctrl-geocoder')
+  geocoderButton.classList.add('hidden')
+  document.querySelector('.maplibregl-ctrl-geocoder--icon-search').addEventListener('click', (_e) => {
+    if (parseFloat(window.getComputedStyle(geocoderButton).width) > 100) {
+      geocoderButton.style.setProperty('width', '32px', 'important')
+    } else {
+      geocoderButton.style.setProperty('width', '14rem', 'important')
+    }
+})
 
   const nav = new maplibregl.NavigationControl({
     visualizePitch: true,
@@ -404,14 +412,13 @@ export function initializeDefaultControls () {
   map.addControl(geolocate, 'top-right')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)').classList.add('hidden')
 
-  map.addControl(new ControlGroup([new ConnectionStatusControl()]), 'bottom-left')
-
   const scale = new maplibregl.ScaleControl({
     maxWidth: 100,
     unit: 'metric'
   })
   map.addControl(scale)
   scale.setUnit('metric')
+  map.addControl(new ControlGroup([new ConnectionStatusControl()]), 'bottom-left')
 
   map.once('load', function (_e) {
     if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
