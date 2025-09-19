@@ -150,8 +150,8 @@ export async function initializeEditMode () {
   })
   map.on('touchend', (e) => {
     touchEndPosition = e.point
-    if (touchStartPosition.x === touchEndPosition.x &&
-      touchStartPosition.y === touchEndPosition.y &&
+    if (Math.abs(touchStartPosition.x - touchEndPosition.x) < 3  &&
+      Math.abs(touchStartPosition.y - touchEndPosition.y) < 3 &&
       (draw.getMode() === 'simple_select' || draw.getMode().startsWith('directions_'))) {
       map.fire('click', e) // attach original event for coordinates
     }
