@@ -457,8 +457,9 @@ export function styles () {
             '']
         ],
         'icon-size': iconSize,
-        'icon-overlap': 'always' // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
-      // 'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
+        'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
+        "icon-rotation-alignment": "viewport", // TODO: data expressions not allowed here :-(
+        // 'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
       },
       paint: {
         // circle-pitch-scale: 'map' // seems default and cannot get changed
@@ -533,6 +534,7 @@ export function styles () {
         "text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
         'text-justify': 'auto',
         'text-ignore-placement': false, // hide on collision
+        "icon-rotation-alignment": "viewport", // TODO: data expressions not allowed here :-(
         // TODO: sort keys on text are ascending, on symbols descending???
         'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
       },
