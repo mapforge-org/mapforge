@@ -31,7 +31,7 @@ let backgroundContours
 // initializeViewMode() or initializeEditMode() or initializeStaticMode()
 // setBackgroundMapLayer() -> 'style.load' event
 // 'style.load' -> initializeDefaultControls()
-// 'style.load' -> initializeViewStyles() || initializeEditStyles()
+// 'style.load' -> initializeViewStyles()
 // 'style.load' -> loadLayers() -> 'geojson.load'
 
 export function initializeMaplibreProperties () {

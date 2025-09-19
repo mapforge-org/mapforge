@@ -39,22 +39,24 @@ export function initializeViewStyles (sourceName) {
   })
 
   // highlight features on hover
-  map.on('mousemove', (e) => {
-    if (window.gon.map_mode === 'static') { return }
-    if (stickyFeatureHighlight && highlightedFeatureId) { return }
-    // This avoids hover highlight in edit mode
-    if (document.querySelector('.maplibregl-ctrl button.active')) { return }
+  if (window.gon.map_mode !== 'rw') { 
+    map.on('mousemove', (e) => {
+      if (window.gon.map_mode === 'static') { return }
+      if (stickyFeatureHighlight && highlightedFeatureId) { return }
+      // This avoids hover highlight in edit mode
+      if (document.querySelector('.maplibregl-ctrl button.active')) { return }
 
-    const features = map.queryRenderedFeatures(e.point).filter(f => f.source === sourceName)
-    if (features[0]) {
-      if (features[0].properties.cluster) { return } 
-      if (features[0].id === highlightedFeatureId) { return }
-      frontFeature(features[0])
-      highlightFeature(features[0], false, sourceName)
-    } else if (highlightedFeatureSource === sourceName) {
-      resetHighlightedFeature()
-    }
-  })
+      const features = map.queryRenderedFeatures(e.point).filter(f => f.source === sourceName)
+      if (features[0]) {
+        if (features[0].properties.cluster) { return } 
+        if (features[0].id === highlightedFeatureId) { return }
+        frontFeature(features[0])
+        highlightFeature(features[0], false, sourceName)
+      } else if (highlightedFeatureSource === sourceName) {
+        resetHighlightedFeature()
+      }
+    })
+  }
 
   map.on('styleimagemissing', loadImage)
 }

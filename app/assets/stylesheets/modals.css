@@ -226,7 +226,7 @@
 
 /* Hide emoji list link on touch devices */
 @media (pointer: coarse) {
-  .emoji-list-link {
+  #emoji-list-link {
     display: none
   }
 }

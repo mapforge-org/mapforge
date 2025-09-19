@@ -1,23 +1,4 @@
-import { styles, loadImage, pointSize, pointSizeMax } from 'maplibre/styles'
-import { map } from 'maplibre/map'
-
-
-export function initializeEditStyles () {
-  // MapboxDraw cannot render symbol+text styles.
-  // Adding those as extra layers to the map.
-  // render the extrusion layer from "source: 'geojson-source' without having it available for edit in draw
-  // Note: Not needed anymore, we're only adding single features to draw now
-  // map.addLayer(setSource(styles()['polygon-layer-extrusion'], 'geojson-source') )
-  // map.addLayer(setSource(styles()['line-labels'], 'geojson-source') )
-  // map.addLayer(setSource(styles()['line-label-symbol'], 'geojson-source') )
-  // map.addLayer(setSource(styles()['symbols-border-layer'], 'geojson-source') )
-  // map.addLayer(setSource(styles()['symbols-layer'], 'geojson-source') )
-  // map.addLayer(setSource(styles()['text-layer'], 'geojson-source') )
-  // console.log('Edit styles added')
-
-  map.on('styleimagemissing', loadImage)
-  // TODO setting feature state (hover) doesn't work on draw features
-}
+import { styles, pointSize, pointSizeMax } from 'maplibre/styles'
 
 // started from https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
 // Styling Draw: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#styling-draw
