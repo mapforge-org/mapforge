@@ -565,6 +565,7 @@ export function mergedGeoJSONLayers(type='geojson') {
 }
 
 export function frontFeature(frontFeature) {
+  // move feature to end of its layer's features array (for overpass)
   for (const layer of layers) {
     if (!layer?.geojson?.features) { continue }
     const features = layer.geojson.features
@@ -574,6 +575,13 @@ export function frontFeature(frontFeature) {
       features.push(feature) // Add to end
       break // done, exit loop
     }
+  }
+  // move feature to end of geojsonData features array
+  const features = geojsonData.features
+  const idx = features.findIndex(f => f.id === frontFeature.id)
+  if (idx !== -1) {
+    const [feature] = features.splice(idx, 1) // Remove it
+    features.push(feature) // Add to end
   }
   redrawGeojson()
 }
