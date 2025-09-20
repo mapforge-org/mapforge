@@ -7,8 +7,7 @@ import { status } from 'helpers/status'
 import { showFeatureDetails } from 'maplibre/feature'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
-import { draw, select } from 'maplibre/edit'
-import { resetDirections } from 'maplibre/routing/osrm'
+import { draw, select, unselect } from 'maplibre/edit'
 
 let easyMDE
 
@@ -40,8 +39,7 @@ export default class extends Controller {
     } else {
       // repeated click on the current edit mode returns to feature description
       showFeatureDetails(this.getFeature())
-      draw.deleteAll()
-      resetDirections()
+      unselect()
     }
     document.querySelector('#feature-edit-raw .error').innerHTML = ''
     event.stopPropagation()

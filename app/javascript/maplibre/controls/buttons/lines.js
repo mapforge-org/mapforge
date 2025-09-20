@@ -45,11 +45,9 @@ export function addLineMenu() {
   lineMenu.classList.add('hidden')
   addLineButton()
   addPaintButton()
-  if (window.gon.map_keys.openrouteservice) {
-    addFootButton()
-    addBicycleButton()
-    addRoadButton()
-  }
+  addFootButton()
+  addBicycleButton()
+  addRoadButton()
 }
 
 function addLineButton() {

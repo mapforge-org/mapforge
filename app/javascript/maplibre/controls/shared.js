@@ -1,7 +1,7 @@
 import { map, layers, mapProperties } from 'maplibre/map'
 import * as functions from 'helpers/functions'
 // import * as dom from 'helpers/dom'
-import { draw } from 'maplibre/edit'
+import { draw, unselect } from 'maplibre/edit'
 import { resetHighlightedFeature, featureIcon } from 'maplibre/feature'
 import { initTooltips } from 'helpers/dom'
 import MaplibreGeocoder from 'maplibre-gl-geocoder'
@@ -244,7 +244,7 @@ export function initLayersModal () {
 }
 
 export function resetControls () {
-  if (draw) { draw.deleteAll() }
+  if (draw) { unselect() }
   resetHighlightedFeature()
   // reset cursor
   functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })

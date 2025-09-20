@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { map, layers, upsert, mapProperties, redrawGeojson, removeGeoJSONSource } from 'maplibre/map'
-import { initLayersModal } from 'maplibre/controls/shared'
+import { initLayersModal, resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'

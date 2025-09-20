@@ -193,10 +193,14 @@ export function select (feature) {
   console.log('select', feature)
   if (feature?.properties?.route?.provider === 'osrm') {
     let profile = feature?.properties?.route?.profile
-    draw.changeMode('directions_' + profile)
-    map.fire('draw.modechange') // fire event before initDirections
-    initDirections(profile, feature)
-    functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
+    // don't re-initialize direction if already active on same feature
+    if (draw.getMode() !== 'directions_' + profile 
+      || selectedFeature?.id !== feature.id) {
+      draw.changeMode('directions_' + profile)
+      map.fire('draw.modechange') // fire event before initDirections
+      initDirections(profile, feature)
+      functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
+    }
   } else if (feature.geometry.type === 'Point') {
     draw.changeMode('simple_select', { featureIds: [feature.id] })
     map.fire('draw.modechange')
@@ -204,6 +208,13 @@ export function select (feature) {
     draw.changeMode('direct_select', { featureId: feature.id })
     map.fire('draw.modechange')
   }
+}
+
+export function unselect() {
+  draw.deleteAll()
+  resetDirections()
+  draw.changeMode('simple_select')
+  functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
 }
 
 function handleCreate (e) {
@@ -289,11 +300,20 @@ export function handleDelete (e) {
 
 // add elevation from openrouteservice async
 export function updateElevation(feature) {
-  return getRouteElevation(feature.geometry.coordinates).then(coords => {
-    if (feature.geometry.coordinates.length === coords?.length) {
-      feature.geometry.coordinates = coords
-    } else { 
-      console.warn('Did not receive elevation for all coords (water?)')
-    }
-  })
+  if (window.gon.map_keys.openrouteservice) {
+    return getRouteElevation(feature.geometry.coordinates).then(coords => {
+      if (feature.geometry.coordinates.length === coords?.length) {
+        feature.geometry.coordinates = coords
+      } else { 
+        console.warn('Did not receive elevation for all coords (water?)')
+      }
+    })
+  } else {
+    console.warn('Skipping elevation, no openrouteservice key set')
+    return new Promise((resolve) => resolve())
+  }
+}
+
+export function setSelectedFeature(feature) {
+  selectedFeature = feature
 }

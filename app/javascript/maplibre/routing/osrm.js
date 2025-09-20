@@ -2,7 +2,7 @@ import { layersFactory } from "@maplibre/maplibre-gl-directions"
 import CustomMapLibreGlDirections from "maplibre/routing/custom_directions"
 import { map, mapProperties, upsert, geojsonData } from 'maplibre/map'
 import { highlightColor } from 'maplibre/edit_styles'
-import { updateElevation } from 'maplibre/edit'
+import { updateElevation, setSelectedFeature } from 'maplibre/edit'
 import { styles, featureColor } from 'maplibre/styles'
 import { decodePolyline } from 'helpers/polyline'
 import { basemaps, defaultFont } from 'maplibre/basemaps'
@@ -92,10 +92,12 @@ export function initDirections (profile, feature) {
                                         "profile": profile,
                                         "waypoints": waypoints }
  
+    setSelectedFeature(currentFeature)
     // add elevation from openrouteservice
     updateElevation(currentFeature).then(() => {
       updateTrack(currentFeature)
       showFeatureDetails(currentFeature)
+      window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
     })
   })
 
@@ -106,6 +108,7 @@ export function initDirections (profile, feature) {
   directions.on('addwaypoint', (e) => {
     status('Waypoint added')
     console.log('Waypoint added', e)
+    
   })
 
   directions.on('removewaypoint', (e) => {
