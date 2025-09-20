@@ -1,4 +1,4 @@
-import { map, frontFeature, removeStyleLayers } from 'maplibre/map'
+import { map, mapProperties, frontFeature, removeStyleLayers } from 'maplibre/map'
 import {
   highlightedFeatureId, stickyFeatureHighlight, highlightedFeatureSource,
   resetHighlightedFeature, highlightFeature
@@ -24,6 +24,10 @@ export const viewStyleNames = [
 export function setStyleDefaultFont (font) { labelFont = [font] }
 
 export function initializeViewStyles (sourceName) {
+  
+  // TODO hack for demo map: 
+  if (mapProperties.demo) { iconRotationAlignment = 'map' }
+  
   removeStyleLayers(sourceName)
   viewStyleNames.forEach(styleName => {
     map.addLayer(setSource(styles()[styleName], sourceName))
@@ -215,6 +219,10 @@ const iconSize = [
       16, iconSizeDefault,
       21, iconSizeMax
     ]
+
+// If icons/text are projected on map surface ('map') or not ('viewport')
+// Cannot get changed with data expressions
+let iconRotationAlignment = 'viewport'
 
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
@@ -458,7 +466,7 @@ export function styles () {
         ],
         'icon-size': iconSize,
         'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
-        "icon-rotation-alignment": "viewport", // TODO: data expressions not allowed here :-(
+        "icon-rotation-alignment": iconRotationAlignment
         // 'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
       },
       paint: {
@@ -509,7 +517,7 @@ export function styles () {
             ['concat', '/emojis/noto/', ['get', 'stroke-symbol'], '.png'],
             '']],
         "icon-size": ["interpolate", ["exponential", 1.5], ["zoom"], 12, 0.85, 18, 1.4],
-        "icon-rotation-alignment": "viewport", // TODO: data expressions not allowed here :-(
+        "icon-rotation-alignment": iconRotationAlignment,
         "icon-size": ['case', ['has', 'stroke-symbol'], 0.35, 1]
       },
       paint: {
@@ -534,7 +542,7 @@ export function styles () {
         "text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
         'text-justify': 'auto',
         'text-ignore-placement': false, // hide on collision
-        "icon-rotation-alignment": "viewport", // TODO: data expressions not allowed here :-(
+        "text-rotation-alignment": iconRotationAlignment,
         // TODO: sort keys on text are ascending, on symbols descending???
         'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
       },
