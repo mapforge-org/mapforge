@@ -1,9 +1,9 @@
-#feature-details-modal.map-modal.modal-pull-down.fade{ 'data-controller': "feature--modal feature--edit", 'data-action': "keydown.esc@window->feature--modal#close toggle-edit-feature@window->feature--modal#toggle_edit_feature" }
+#feature-details-modal.map-modal.modal-pull-down.fade{ 'data-controller': "map--modal feature--modal feature--edit", 'data-action': "keydown.esc@window->feature--modal#close toggle-edit-feature@window->feature--modal#toggle_edit_feature" }
 
   %a.link{ 'data-action': "click->feature--modal#toggleModalSize"}
     .modal-pull-button
 
-  %button.modal-close-button{ 'data-action': "click->feature--modal#close" } &times;
+  %button.modal-close-button{ 'data-action': "click->map--modal#close" } &times;
   
   .map-modal-header
     %h4#feature-details-header.flex-container

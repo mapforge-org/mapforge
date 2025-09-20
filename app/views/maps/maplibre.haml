@@ -1,9 +1,9 @@
 - # https://turfjs.org/
 = javascript_include_tag "https://cdn.jsdelivr.net/npm/@turf/turf@7.0.0/turf.min.js"
-
 = javascript_include_tag "https://cdn.jsdelivr.net/npm/@mapbox/togeojson"
-
 = javascript_include_tag "osmtogeojson.js"
+
+= javascript_import_module_tag "maplibre-gl"
 
 - if @map_mode == 'rw'
   - # https://github.com/Ionaru/easy-markdown-editor
@@ -37,7 +37,6 @@
   = render 'layer_loading'
   = render 'status'
   = render 'maps/modals/settings'
-  = render 'maps/modals/tour' if @map_mode == 'rw'
   = render 'maps/modals/layers'
   = render 'maps/modals/share'
   = render 'maps/modals/feature'

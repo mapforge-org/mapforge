@@ -35,6 +35,12 @@
     max-height: calc(100% - 5rem);
     margin: 0.4rem 1rem 1.5rem;
   }
+
+  @media (height < 390px) {
+    #feature-details-modal {
+      top: 0.4rem;
+    }
+  }
 }
 
 #feature-details-body table {

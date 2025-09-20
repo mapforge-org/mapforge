@@ -7,7 +7,6 @@ import { status } from 'helpers/status'
 import { showFeatureDetails } from 'maplibre/feature'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
-import { resetControls } from 'maplibre/controls/shared'
 import { draw, select } from 'maplibre/edit'
 import { resetDirections } from 'maplibre/routing/osrm'
 
@@ -216,10 +215,5 @@ export default class extends Controller {
       new AnimatePolygonAnimation().run(feature)
     }
     animateViewFromProperties()
-  }
-
-  close () {
-    resetControls()
-    if (draw) { draw.changeMode('simple_select', { featureIds: [] }) }
   }
 }

@@ -1,6 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { resetControls } from 'maplibre/controls/shared'
 import * as functions from 'helpers/functions'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
 
@@ -185,10 +184,5 @@ export default class extends Controller {
     // need to receive default values from server
     mapChannel.send_message('update_map', { center: null, 
       zoom: null, pitch: null, bearing: null })
-  }
-
-  close () {
-    resetControls()
-    window.history.pushState({ }, '', `${window.location.pathname}`)
   }
 }

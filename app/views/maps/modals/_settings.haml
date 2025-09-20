@@ -1,5 +1,5 @@
 / default values will get up by initSettingsModal(), current values by callbacks
-- data = { controller: 'map--settings',
+- data = { controller: 'map--modal map--settings',
            map__settings_current_pitch_value: @map_properties[:pitch].to_f.round(0),
            map__settings_current_zoom_value: (@map_properties[:zoom] || @map_properties[:default_zoom]).to_f.round(2),
            map__settings_current_bearing_value: @map_properties[:bearing].to_f.round(0),
@@ -8,7 +8,7 @@
 
 #settings-modal.modal-center.fade{ data: data }
   .map-modal
-    %button.modal-close-button{ data: { action: "click->map--settings#close" } } &times;
+    %button.modal-close-button{ data: { action: "click->map--modal#close" } } &times;
     .map-modal-header
       %h3.mapforge-font Configure Map
 

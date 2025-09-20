@@ -1,6 +1,6 @@
 #layers-modal.modal-center.fade
-  .map-modal{'data-controller': "map--layers", 'data-action': "keydown.esc@window->map--layers#close"}
-    %button.modal-close-button{ data: { action: "click->map--layers#close" } } &times;
+  .map-modal{'data-controller': "map--modal map--layers", 'data-action': "keydown.esc@window->map--layers#close"}
+    %button.modal-close-button{ data: { action: "click->map--modal#close" } } &times;
     .map-modal-header
       %h3.mapforge-font Layers
 

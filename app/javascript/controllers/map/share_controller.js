@@ -1,7 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { mapProperties } from 'maplibre/map'
-import { resetControls } from 'maplibre/controls/shared'
 
 export default class extends Controller {
   connect () {
@@ -54,9 +53,5 @@ export default class extends Controller {
     .then(() => console.log('Successful share'))
     .catch((error) => console.log('Error sharing', error))
     }
-  }
-
-  close () {
-    resetControls()
   }
 }
