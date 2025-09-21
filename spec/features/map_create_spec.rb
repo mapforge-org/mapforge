@@ -1,7 +1,10 @@
 require 'rails_helper'
 
 describe 'Create map' do
+let(:user) { create :user }
+
   before do
+    allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
     visit maps_path
   end
 
