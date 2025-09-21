@@ -162,10 +162,7 @@ const outlineWidth = [
   ] // At zoom level 13, the outline width is max
 ]
 
-const pointColor = ['coalesce', ['get', 'user_marker-color'], ['get', 'marker-color'],
-  ['case',
-    ['any', ['has', 'user_marker-symbol'], ['has', 'marker-symbol']],
-    'white', featureColor]]
+const pointColor = ['coalesce', ['get', 'user_marker-color'], ['get', 'marker-color'], featureColor]
 const pointSizeMin = ['to-number', ['coalesce',
   ['get', 'user_marker-size'], ['get', 'marker-size'],
   ['case',
@@ -423,17 +420,16 @@ export function styles () {
       paint: {
         'circle-pitch-scale': 'map',
         'circle-radius': pointSize,
-        'circle-color': pointColor,
-        'circle-opacity': [
-          'match',
-          ['coalesce', ['get', 'user_marker-color'], ['get', 'marker-color']],
-          'transparent', 0, // If marker-color is 'transparent', set circle-radius to 0
-          [
-            'case',
-            ['boolean', ['feature-state', 'active'], false],
-            0.7,
-            0.5
-          ]],
+        // force white background for selected icons/images with transparent background
+        'circle-color': ["case",
+            ["all",
+              ['boolean', ['feature-state', 'active'], false],
+              ["==", pointColor, "transparent"]
+            ],
+            "white",
+            pointColor
+          ],
+        'circle-opacity': 1,
         'circle-stroke-color': pointOutlineColor,
         'circle-blur': 0.05,
         'circle-stroke-width': [
@@ -464,6 +460,7 @@ export function styles () {
             ['concat', '/emojis/noto/', ['get', 'marker-symbol'], '.png'],
             '']
         ],
+        
         'icon-size': iconSize,
         'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
         "icon-rotation-alignment": iconRotationAlignment
