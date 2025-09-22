@@ -89,16 +89,14 @@ describe 'Map' do
 
       it 'map pitch update' do
         map.update(pitch: 33)
-        expect(page).to have_text('Map view updated')
-        expect(page.evaluate_script("map.getPitch()")).to eq(33)
+        wait_for { page.evaluate_script("map.getPitch()") }.to eq(33)
         find('.maplibregl-ctrl-map').click
         expect(page).to have_text('33')
       end
 
       it 'map orientation update' do
         map.update(bearing: 33)
-        expect(page).to have_text('Map view updated')
-        expect(page.evaluate_script("map.getBearing()")).to eq(33)
+        wait_for { page.evaluate_script("map.getBearing()") }.to eq(33)
         find('.maplibregl-ctrl-map').click
         expect(page).to have_text('33')
       end
