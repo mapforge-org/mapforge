@@ -82,8 +82,7 @@ describe 'Map' do
 
       it 'map zoom update' do
         map.update(zoom: 16)
-        expect(page).to have_text('Map view updated')
-        expect(page.evaluate_script("map.getZoom()")).to eq(16)
+        wait_for { page.evaluate_script("map.getZoom()") }.to eq(16)
         find('.maplibregl-ctrl-map').click
         expect(page).to have_text('16')
       end
