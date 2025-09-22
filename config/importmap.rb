@@ -8,6 +8,7 @@ pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 
 pin_all_from "app/javascript/controllers", under: "controllers", preload: false
+pin "stimulus-controllers-index", to: "controllers/index.js", preload: false
 pin_all_from "app/javascript/channels", under: "channels", preload: false
 
 pin_all_from "app/javascript/maplibre", under: "maplibre", preload: false
@@ -42,7 +43,7 @@ pin "chart.js", to: "chart-js.js", preload: false # @4.5.0
 # pin "@kurkle/color", to: "@kurkle--color", preload: false # @0.3.4
 
 # render markdown
-pin "marked"# @15.0.8
+pin "marked", preload: false # @15.0.8
 
 # https://github.com/mapbox/mapbox-gl-draw
 # Unminified + patched version to style midpoints & vertexes (https://github.com/mapbox/mapbox-gl-draw/pull/964)

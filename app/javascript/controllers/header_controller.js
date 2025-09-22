@@ -1,7 +1,8 @@
 import { Controller } from '@hotwired/stimulus'
 import * as functions from 'helpers/functions'
 import { animateElement  } from 'helpers/dom'
-import { resetControls } from 'maplibre/controls/shared'
+
+// Note: Don't import map js here for faster frontpage load times
 
 export default class extends Controller {
   connect () {
@@ -14,7 +15,6 @@ export default class extends Controller {
   }
 
   showNavBar (_event) {
-    resetControls()
     functions.e('#map-header nav', e => { e.style.display = 'block' })
     animateElement('#map-header nav', 'fade-down')
   }  

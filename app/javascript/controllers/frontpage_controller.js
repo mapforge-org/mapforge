@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 
+// Note: Don't import map js here for faster frontpage load times
+
 export default class extends Controller {
   swiper = null
 

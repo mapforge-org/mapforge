@@ -2,6 +2,9 @@
 %html{ lang: 'en' }
   = render 'layouts/head'
 
+  = javascript_import_module_tag "maplibre-gl"
+  = javascript_import_module_tag "controllers"
+
   %body
 
     #map-header
