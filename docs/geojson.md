@@ -22,6 +22,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `stroke-width`: width of the circle border line (default: 2)
 * `stroke`: circle border color (default "white", 'transparent' for none)
 * `heatmap`: if set, points will be styled as a heatmap
+* `flat`: if set, marker + label with be projected 'flat' on the map
 
 #### *LineString* geometry:
 

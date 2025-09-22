@@ -1,4 +1,4 @@
-import { map, mapProperties, frontFeature, removeStyleLayers } from 'maplibre/map'
+import { map, frontFeature, removeStyleLayers } from 'maplibre/map'
 import {
   highlightedFeatureId, stickyFeatureHighlight, highlightedFeatureSource,
   resetHighlightedFeature, highlightFeature
@@ -12,11 +12,13 @@ export const viewStyleNames = [
   'line-label-symbol',
   'line-layer-hit',
   'line-labels',
+  'points-layer-flat',
   'points-layer',
   'points-hit-layer',
   'heatmap-layer',
-  'symbols-border-layer',
+  'symbols-layer-flat',
   'symbols-layer',
+  'text-layer-flat',
   'text-layer',
   'polygon-layer-extrusion'
 ]
@@ -24,10 +26,6 @@ export const viewStyleNames = [
 export function setStyleDefaultFont (font) { labelFont = [font] }
 
 export function initializeViewStyles (sourceName) {
-  
-  // TODO hack for demo map: 
-  if (mapProperties.demo) { iconRotationAlignment = 'map' }
-  
   removeStyleLayers(sourceName)
   viewStyleNames.forEach(styleName => {
     map.addLayer(setSource(styles()[styleName], sourceName))
@@ -217,10 +215,6 @@ const iconSize = [
       21, iconSizeMax
     ]
 
-// If icons/text are projected on map surface ('map') or not ('viewport')
-// Cannot get changed with data expressions
-let iconRotationAlignment = 'viewport'
-
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
 const labelFontSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], 16]]
@@ -347,6 +341,52 @@ export function styles () {
         'line-opacity': 0 // cannot use visibility:none here
       }
     },
+    'points-layer-flat': {
+      id: 'points-layer-flat',
+      type: 'circle',
+      filter: ['all',
+        ['==', '$type', 'Point'],
+        ['!=', 'meta', 'midpoint'],
+        ['!=', 'meta', 'vertex'],
+        ['has', 'flat']
+      ],
+      paint: {
+        "circle-pitch-alignment": "map",
+        'circle-pitch-scale': 'map', // points get bigger when camera is closer
+        'circle-radius': pointSize,
+        // force white background for selected point with transparent background
+        'circle-color': ["case",
+          ["all",
+            ['boolean', ['feature-state', 'active'], false],
+            ["==", pointColor, "transparent"]
+          ],
+          "white",
+          pointColor
+        ],
+        // force visibility for selected point with transparent background
+        'circle-opacity': ["case",
+          ["all",
+            ['boolean', ['feature-state', 'active'], false],
+            ["==", ['get', 'marker-color'], "transparent"]
+          ],
+          1,
+          ['case',
+            ['boolean', ['feature-state', 'active'], false],
+            pointOpacityActive,
+            pointOpacity
+          ]
+        ],
+        'circle-blur': 0.05,
+        'circle-stroke-color': pointOutlineColor,
+        'circle-stroke-width': [
+          'case',
+          ['boolean', ['feature-state', 'active'], false],
+          pointOutlineSizeActive,
+          pointOutlineSize
+        ],
+        'circle-stroke-opacity': pointOpacity + 0.2
+      }
+    },    
     'points-layer': {
       id: 'points-layer',
       type: 'circle',
@@ -354,23 +394,33 @@ export function styles () {
         ['==', '$type', 'Point'],
         ['!=', 'meta', 'midpoint'],
         ['!=', 'meta', 'vertex'],
-        ['none', ['has', 'user_marker-image-url'], ['has', 'marker-image-url'],
-          ['has', 'user_marker-symbol'], ['has', 'marker-symbol'], ['has', 'point_count']]
+        ['!has', 'flat']
       ],
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': pointSize,
-        'circle-color': pointColor,
-        'circle-opacity': [
-          'match',
-          ['coalesce', ['get', 'user_marker-color'], ['get', 'marker-color']],
-          'transparent', 0, // If marker-color is 'transparent', set circle-opacity to 0
-          [
-            'case',
+        // force white background for selected point with transparent background
+        'circle-color': ["case",
+          ["all",
+            ['boolean', ['feature-state', 'active'], false],
+            ["==", pointColor, "transparent"]
+          ],
+          "white",
+          pointColor
+        ],
+        // force visibility for selected point with transparent background
+        'circle-opacity': ["case",
+          ["all",
+            ['boolean', ['feature-state', 'active'], false],
+            ["==", ['get', 'marker-color'], "transparent"]
+          ],
+          1,
+          ['case',
             ['boolean', ['feature-state', 'active'], false],
             pointOpacityActive,
             pointOpacity
-          ]],
+          ]
+        ],
         'circle-blur': 0.05,
         'circle-stroke-color': pointOutlineColor,
         'circle-stroke-width': [
@@ -406,50 +456,43 @@ export function styles () {
         'heatmap-radius': 17
       }
     },
-    // background + border for symbols
-    'symbols-border-layer': {
-      id: 'symbols-border-layer',
-      type: 'circle',
+    // support symbols on all feature types (projected on map surface)
+    'symbols-layer-flat': {
+      id: 'symbols-layer-flat',
+      type: 'symbol',
       filter: ['all',
-        ['==', '$type', 'Point'],
-        ['!=', 'meta', 'midpoint'],
-        ['!=', 'meta', 'vertex'],
-        ['any', ['has', 'user_marker-image-url'], ['has', 'marker-image-url'],
-          ['has', 'user_marker-symbol'], ['has', 'marker-symbol']]
-      ],
-      paint: {
-        'circle-pitch-scale': 'map',
-        'circle-radius': pointSize,
-        // force white background for selected icons/images with transparent background
-        'circle-color': ["case",
-            ["all",
-              ['boolean', ['feature-state', 'active'], false],
-              ["==", pointColor, "transparent"]
-            ],
-            "white",
-            pointColor
+        ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']], 
+        ['has', 'flat']],
+      layout: {
+        'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
+        'icon-image': ['coalesce',
+          ['get', 'marker-image-url'],
+          // replacing marker-symbol value with path to emoji png
+          [
+          "case",
+          ["all",
+            ["has", "marker-symbol"],
+            ["!=", ["get", "marker-symbol"], ""]
           ],
-        'circle-opacity': 1,
-        'circle-stroke-color': pointOutlineColor,
-        'circle-blur': 0.05,
-        'circle-stroke-width': [
-          'case',
-          ['boolean', ['feature-state', 'active'], false],
-          pointOutlineSizeActive,
-          pointOutlineSize
+          ["concat", "/emojis/noto/", ["get", "marker-symbol"], ".png"],
+          ""
+          ]
         ],
-        'circle-stroke-opacity': pointOpacity
-      }
+        'icon-size': iconSize,
+        'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
+        // If icons/text are projected on map surface ('map') or not ('viewport', default)
+        // Cannot get changed with data expressions
+        "icon-rotation-alignment": "map",
+        'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
+      },
     },
-    // support symbols on all feature types
+    // support symbols on all feature types (default, not projected on map surface)
     'symbols-layer': {
       id: 'symbols-layer',
       type: 'symbol',
       filter: ['all',
-        ['any', ['has', 'user_marker-image-url'], ['has', 'marker-image-url'],
-          ['has', 'user_marker-symbol'], ['has', 'marker-symbol']]
-      ],
-      // minzoom: 15, // TODO: only static values possible right now
+        ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
+        ['!has', 'flat']],
       layout: {
         'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
         'icon-image': ['coalesce',
@@ -460,17 +503,16 @@ export function styles () {
             ['concat', '/emojis/noto/', ['get', 'marker-symbol'], '.png'],
             '']
         ],
-        
         'icon-size': iconSize,
         'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
-        "icon-rotation-alignment": iconRotationAlignment
-        // 'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
-      },
+        "icon-rotation-alignment": "viewport",
+        'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
+      },  
       paint: {
         // circle-pitch-scale: 'map' // seems default and cannot get changed
         // cannot set circle-pitch-scale, circle-stroke-* in the symbol layer :-(
       }
-    },
+    },  
     // Line labels sometimes get rendered wrong when line is extruded
     'line-labels': {
       id: 'line-labels',
@@ -514,11 +556,44 @@ export function styles () {
             ['concat', '/emojis/noto/', ['get', 'stroke-symbol'], '.png'],
             '']],
         "icon-size": ["interpolate", ["exponential", 1.5], ["zoom"], 12, 0.85, 18, 1.4],
-        "icon-rotation-alignment": iconRotationAlignment,
+        "icon-rotation-alignment": "map",
         "icon-size": ['case', ['has', 'stroke-symbol'], 0.35, 1]
       },
       paint: {
         "icon-opacity": 1
+      }
+    },
+    'text-layer-flat': {
+      id: 'text-layer-flat',
+      type: 'symbol',
+      filter: ['all',
+        ['!=', '$type', 'LineString'],
+        ['has', 'label'],
+        ['has', 'flat']
+      ],
+      layout: {
+        // always show flat projected labels
+        'icon-allow-overlap': true,
+        'icon-overlap': 'always',
+        'icon-ignore-placement': true,
+        'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
+        'text-size': labelSize,
+        'text-font': labelFont,
+        // arrange text to avoid collision
+        'text-variable-anchor': ['top'], // text under point
+        // distance of the text in 'em'
+        // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
+        "text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
+        'text-justify': 'auto',
+        'text-ignore-placement': true, // don't hide on collision
+        "text-rotation-alignment": "map",
+        // TODO: sort keys on text are ascending, on symbols descending???
+        'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
+      },
+      paint: {
+        'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
+        'text-halo-color': ['coalesce', ['get', 'user_label-shadow'], ['get', 'label-shadow'], '#fff'],
+        'text-halo-width': 2
       }
     },
     'text-layer': {
@@ -526,7 +601,8 @@ export function styles () {
       type: 'symbol',
       filter: ['all',
         ['!=', '$type', 'LineString'],
-        ['has', 'label']],
+        ['has', 'label'],
+        ['!has', 'flat']],
       layout: {
         'icon-overlap': 'never',
         'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
@@ -538,8 +614,8 @@ export function styles () {
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
         "text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
         'text-justify': 'auto',
-        'text-ignore-placement': false, // hide on collision
-        "text-rotation-alignment": iconRotationAlignment,
+        'text-ignore-placement': true, // don't hide on collision
+        "text-rotation-alignment": "viewport",
         // TODO: sort keys on text are ascending, on symbols descending???
         'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
       },
