@@ -54,7 +54,7 @@ Rails.application.routes.draw do
   root "frontpage#index", as: :frontpage
   get "/" => "frontpage#index", as: :root
   # legacy link, still used by search engines
-  get "/home" => "frontpage#index"
+  get "/home", to: redirect("/")
 
   mount Ulogger::Engine, at: "/ulogger"
 end
