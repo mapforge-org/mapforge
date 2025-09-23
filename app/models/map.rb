@@ -12,6 +12,8 @@ class Map
   scope :ulogger, -> { where(:_id.lt => BSON::ObjectId("000000000000002147483647")) }
   scope :demo, -> { where(demo: true) }
 
+  # Use own id scheme (used as private map id) instead of BSON::ObjectId
+  field :_id, type: String, default: -> { create_private_id }
   field :base_map, type: String, default: -> { default_base_map }
   field :center, type: Array
   field :zoom, type: String
@@ -105,6 +107,10 @@ class Map
     { mapbox: ENV["MAPBOX_KEY"],
       maptiler: ENV["MAPTILER_KEY"],
       openrouteservice: ENV["OPENROUTESERVICE_KEY"] }
+  end
+
+  def create_private_id
+    SecureRandom.hex(6).tap { |i| i[0..1] = "11" }
   end
 
   def create_public_id
