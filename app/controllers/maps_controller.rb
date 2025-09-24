@@ -23,12 +23,12 @@ class MapsController < ApplicationController
   end
 
   def show
-    # Avoid 'updated_at' update
-    @map.collection.update_one(
-      { _id: @map.id },
-      { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
-    )
     if request.format.html?
+      # Avoid 'updated_at' update
+      @map.collection.update_one(
+        { _id: @map.id },
+        { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
+      )
       @map_properties = map_properties
       gon.map_id = params[:id]
       @user.track_map_view(params[:id]) if @user
@@ -144,13 +144,13 @@ class MapsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_map_ro
-    @map = Map.includes(:user, layers: :features)
+    @map = Map.includes(layers: :features)
     @map = @map.find_by(public_id: params[:id]) || @map.find_by(private_id: params[:id])
     render_not_found unless @map
   end
 
   def set_map_rw
-    @map = Map.includes(:user, layers: :features).find_by(private_id: params[:id])
+    @map = Map.includes(layers: :features).find_by(private_id: params[:id])
     render_not_found unless @map
   end
 

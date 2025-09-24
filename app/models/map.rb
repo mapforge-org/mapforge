@@ -95,9 +95,9 @@ class Map
       base_map: get_base_map,
       demo: demo,
       center: center,
-      default_center: calculated_center,
+      default_center: center ? nil : calculated_center, # only set when no center defined
       zoom: zoom,
-      default_zoom: calculated_zoom,
+      default_zoom: zoom ? nil : calculated_zoom, # only set when no zoom defined
       pitch: pitch || DEFAULT_PITCH,
       bearing: bearing || DEFAULT_BEARING,
       terrain: terrain || DEFAULT_TERRAIN,
@@ -122,7 +122,7 @@ class Map
   # flattened geojson collection of all layers
   def to_geojson
       { type: "FeatureCollection",
-        features: layers.map(&:features).flatten.map(&:geojson) }
+        features: layers.geojson.map(&:features).flatten.map(&:geojson) }
   end
 
   def to_gpx
@@ -131,7 +131,7 @@ class Map
   end
 
   def features
-    @features ||= Feature.in(layer: layers.pluck(:id))
+    @features ||= Feature.in(layer: layers.geojson.pluck(:id))
   end
 
   def features_count
