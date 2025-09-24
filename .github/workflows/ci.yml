@@ -52,7 +52,7 @@ jobs:
       image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     services:
       mongodb:
-        image: mongo:6.0
+        image: docker.io/mongo:6.0
         ports:
         - 27017:27017
     env:

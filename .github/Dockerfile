@@ -1,6 +1,6 @@
 # Dockerfile to speed up github actions CI runs
 
-# podman build -t ghcr.io/mapforge-org/mapforge-ci-runner:latest 
+# podman build -t ghcr.io/mapforge-org/mapforge-ci-runner:latest .
 # echo 'token' | podman login ghcr.io -u mapforge-org --password-stdin
 # podman push ghcr.io/mapforge-org/mapforge-ci-runner:latest
 
