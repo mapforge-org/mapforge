@@ -13,7 +13,7 @@
         - else
           %p
             This map was created anonymously and can only get changed with the
-            = link_to 'edit link', map_path(@map)
+            = link_to 'edit link', @map.private_map_path
             = "."
 
         .row

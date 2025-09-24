@@ -5,7 +5,7 @@ describe 'Map' do
 
   context 'share links' do
     before do
-      visit map_path(map)
+      visit map.private_map_path
       find('.maplibregl-ctrl-share').click
       expect(page).to have_text('Share Map')
     end
@@ -49,7 +49,7 @@ describe 'Map' do
 
   context 'permissions' do
     before do
-      visit map_path(map)
+      visit map.private_map_path
       expect_map_loaded
       find('.maplibregl-ctrl-share').click
       expect(page).to have_text('Share Map')

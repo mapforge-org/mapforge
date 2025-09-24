@@ -3,7 +3,7 @@
 - delete = local_assigns[:delete] || false
 - last_change = local_assigns[:last_change] || false
 
-.grid-item.map-preview.background-bright{id: dom_id(map)}
+.grid-item.map-preview.background-bright{class: "map_#{map.public_id}"}
 
   - unless map.view_permission == 'listed'
     .map-auth{title: 'This map is private and not linked from the public listing.'}
@@ -14,10 +14,10 @@
       = image_tag map.user.image, class: 'map-avatar', loading: 'lazy', alt: ""
 
   - if delete
-    = link_to destroy_map_path(id: map.id), data: { turbo_method: :delete, turbo_confirm: "Do you really want to delete this map?" }, title: 'Delete map', class: 'map-delete' do
+    = link_to destroy_map_path(id: map.private_id), data: { turbo_method: :delete, turbo_confirm: "Do you really want to delete this map?" }, title: 'Delete map', class: 'map-delete' do
       %i.bi.bi-trash
 
-  = link_to(map_path(id: (rw ? map.id : map.public_id), name: map.name), 'aria-label': "Open map '#{map.name}'") do
+  = link_to(map_path(id: (rw ? map.private_id : map.public_id), name: map.name), 'aria-label': "Open map '#{map.name}'") do
     - if map.screenshot
       %img{src: map.screenshot,
            class: 'preview-image',
@@ -36,4 +36,4 @@
     = "#{map.images_count} images"
     %br
     public id:
-    = link_to map.public_id, map_path(id: map.public_id)
+    = link_to map.public_id, map.public_map_path

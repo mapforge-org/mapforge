@@ -43,7 +43,7 @@ class Layer
   def broadcast_update
     if saved_change_to_name? || saved_change_to_query?
       # broadcast to private + public channel
-      [ map.id, map.public_id ].each do |id|
+      [ map.private_id, map.public_id ].each do |id|
         ActionCable.server.broadcast("map_channel_#{id}",
                                     { event: "update_layer", layer: to_summary_json.as_json })
       end

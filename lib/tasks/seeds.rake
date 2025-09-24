@@ -17,7 +17,7 @@ namespace :seed do
     map.layers.first.features = Feature.from_collection(geojson, collection_format: collection_format)
 
     puts "Created map with #{map.features.size} features from #{path}"
-    puts "Public id: #{map.public_id}, private id: #{map.id}"
+    puts "Public id: #{map.public_id}, private id: #{map.private_id}"
   end
 
   desc "Import map from a mapforge export file"

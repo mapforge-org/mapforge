@@ -4,7 +4,7 @@ describe 'Feature directions' do
   let(:map) { create(:map, name: 'Feature directions test') }
 
   before do
-    visit map_path(map)
+    visit map.private_map_path
     expect_map_loaded
   end
 

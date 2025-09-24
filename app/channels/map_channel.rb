@@ -2,7 +2,7 @@ class MapChannel < ApplicationCable::Channel
   # Allow to subscribe to changes with public + private id,
   # Check auth on update methods by looking up map with private id
   def subscribed
-    Map.find(params[:map_id]) || Map.find_by(public_id: params[:map_id])
+    Map.find_by(private_id: params[:map_id]) || Map.find_by(public_id: params[:map_id])
     stream_from "map_channel_#{params[:map_id]}"
     Rails.logger.debug { "MapChannel subscribed for '#{params[:map_id]}'" }
   end
@@ -73,7 +73,7 @@ class MapChannel < ApplicationCable::Channel
 
   # load map with write access
   def get_map_rw!(id)
-    map = Map.find(id)
+    map = Map.find_by(private_id: id)
     raise "Cannot open map for writing with (public?) id '#{id}'" unless map
     map
   end

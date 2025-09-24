@@ -6,7 +6,7 @@ describe 'Feature edit' do
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
-    visit map_path(map)
+    visit map.private_map_path
     expect_map_loaded
   end
 
@@ -65,7 +65,7 @@ describe 'Feature edit' do
       end
 
       it 'adds feature id to url' do
-        expect(page).to have_current_path("/m/#{map.id}?f=#{polygon.id}")
+        expect(page).to have_current_path("/m/#{map.private_id}?f=#{polygon.id}")
       end
 
       it 'can raw update feature' do

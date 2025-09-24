@@ -7,7 +7,7 @@ describe 'Map' do
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
-    visit map_path(map)
+    visit map.private_map_path
     expect_map_loaded
   end
 
@@ -74,7 +74,7 @@ describe 'Map' do
           text: File.read(Rails.root.join("spec", "fixtures", "files", "overpass.json")))
 
       map.layers << layer
-      visit map_path(map)
+      visit map.private_map_path
       expect_map_loaded
       expect_overpass_loaded
       find('.maplibregl-ctrl-layers').click

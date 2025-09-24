@@ -5,7 +5,7 @@ import mlcontour from 'maplibre-contour'
 const versatilesGlyphs = "https://tiles.versatiles.org/assets/glyphs/{fontstack}/{range}.pbf"
 // const openfreemapGlyphs = "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf"
 
-const testGlyphs = 'fonts/test/{fontstack}/{range}.pbf'
+const testGlyphs = '/fonts/test/{fontstack}/{range}.pbf'
 
 // fonts must be available via glyphs:
 // openmaptiles: https://github.com/openmaptiles/fonts/tree/gh-pages

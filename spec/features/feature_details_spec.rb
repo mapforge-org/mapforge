@@ -4,7 +4,7 @@ describe 'Feature details' do
   let(:map) { create(:map) }
 
   before do
-    visit map_path(id: map.public_id)
+    visit map.public_map_path
     expect_map_loaded
   end
 

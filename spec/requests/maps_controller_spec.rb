@@ -5,7 +5,7 @@ describe MapsController do
 
   describe '#destroy' do
    it 'fails if not called from owning user or admin' do
-     response = delete destroy_map_path(id: map.id)
+     response = delete destroy_map_path(id: map.private_id)
      expect(response).to redirect_to(maps_path)
      expect(map.reload).not_to be_destroyed
    end

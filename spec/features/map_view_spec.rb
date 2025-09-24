@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'Map public view' do
   let(:map) { create(:map) }
-  let(:path) { map_path(map.public_id) }
+  let(:path) { map.public_map_path }
 
   before do
     stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
@@ -73,7 +73,7 @@ describe 'Map public view' do
     # this polygon is in the middle of nbg (default view)
     let!(:polygon) { create(:feature, :polygon_middle, layer: map.layers.first,
       properties: { title: 'F title' })}
-    let(:path) { map_path(map, f: polygon.id) }
+    let(:path) { map_path(id: map.private_id, f: polygon.id) }
 
     it 'shows feature' do
       expect(page).to have_css('#feature-details-modal')

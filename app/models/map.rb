@@ -12,8 +12,6 @@ class Map
   scope :ulogger, -> { where(:_id.lt => BSON::ObjectId("000000000000002147483647")) }
   scope :demo, -> { where(demo: true) }
 
-  # Use own id scheme (used as private map id) instead of BSON::ObjectId
-  field :_id, type: String, default: -> { create_private_id }
   field :base_map, type: String, default: -> { default_base_map }
   field :center, type: Array
   field :zoom, type: String
@@ -25,7 +23,8 @@ class Map
   field :bearing, type: String
   field :name, type: String
   field :description, type: String
-  field :public_id, type: String
+  field :private_id, type: String, default: -> { SecureRandom.hex(6).tap { |i| i[0..1] = "11" } }
+  field :public_id, type: String, default: -> { SecureRandom.hex(4).tap { |i| i[0..1] = "11" } }
   field :viewed_at, type: DateTime
   field :view_count, type: Integer
   field :demo, type: Boolean, default: false
@@ -73,13 +72,14 @@ class Map
   end
 
   after_destroy do
+    # Note: cannot broadcast well to my_maps_list because the stream is not user-specific
     broadcast_refresh_to("admin_maps_list")
     broadcast_refresh_to("public_maps_list") if view_permission == "listed"
   end
 
   after_save :broadcast_update
   after_destroy :delete_screenshot
-  before_create :create_public_id, :create_default_layer
+  before_create :create_default_layer
   validate :public_id_must_be_unique
 
   def properties
@@ -107,14 +107,6 @@ class Map
     { mapbox: ENV["MAPBOX_KEY"],
       maptiler: ENV["MAPTILER_KEY"],
       openrouteservice: ENV["OPENROUTESERVICE_KEY"] }
-  end
-
-  def create_private_id
-    SecureRandom.hex(6).tap { |i| i[0..1] = "11" }
-  end
-
-  def create_public_id
-    self.public_id = SecureRandom.hex(4).tap { |i| i[0..1] = "11" } unless public_id.present?
   end
 
   def to_json
@@ -162,7 +154,7 @@ class Map
     end
 
     Rails.logger.info "Created map with #{map.features.size} features from #{path}"
-    Rails.logger.info "Public id: #{map.public_id}, private id: #{map.id}"
+    Rails.logger.info "Public id: #{map.public_id}, private id: #{map.private_id}"
     map
   end
 
@@ -172,6 +164,14 @@ class Map
 
   def screenshot_file
     Rails.root.join("public/previews/#{safe_public_id}.jpg").to_s
+  end
+
+  def private_map_path
+    Rails.application.routes.url_helpers.map_path(id: private_id, name: name)
+  end
+
+  def public_map_path
+    Rails.application.routes.url_helpers.map_path(id: public_id, name: name)
   end
 
   private
@@ -241,7 +241,7 @@ class Map
     # calculate properties only once
     map_properties = properties
     # broadcast to private + public channel
-    [ id, public_id ].each do |id|
+    [ private_id, public_id ].each do |id|
       ActionCable.server.broadcast("map_channel_#{id}",
                                    { event: "update_map", map: map_properties.as_json })
     end

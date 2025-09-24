@@ -25,14 +25,14 @@ class MapsController < ApplicationController
   def show
     # Avoid 'updated_at' update
     @map.collection.update_one(
-      { _id: @map.id },
+      { private_id: @map.private_id },
       { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
     )
     if request.format.html?
       @map_properties = map_properties
       gon.map_id = params[:id]
       @user.track_map_view(params[:id]) if @user
-      gon.edit_id = @map.id.to_s if @user&.admin? || (@user && @map.user == @user)
+      gon.edit_id = @map.private_id.to_s if @user&.admin? || (@user && @map.user == @user)
       gon.map_mode = @map_mode
       gon.csrf_token = form_authenticity_token
       gon.map_properties = @map_properties
@@ -75,7 +75,7 @@ class MapsController < ApplicationController
     @map = Map.create!(map_params)
     @map.update(user: @user)
 
-    redirect_to map_url(@map), notice: "Map was successfully created."
+    redirect_to @map.private_map_path, notice: "Map was successfully created."
   end
 
   # Endpoint for reloading map properties
@@ -104,8 +104,8 @@ class MapsController < ApplicationController
   # To avoid turbo_stream response, force format :html
   def destroy
     @map.destroy!
-    # there is an additional broadcast from the model, for the admin page
-    render turbo_stream: turbo_stream.remove(@map)
+    # there is an additional broadcast from the model, for the public + admin lists
+    render turbo_stream: turbo_stream.action("remove_class", "map_#{@map.public_id}")
   end
 
   private
@@ -145,12 +145,12 @@ class MapsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_map_ro
     @map = Map.includes(:user, layers: :features)
-    @map = @map.find_by(public_id: params[:id]) || @map.find_by(id: params[:id])
+    @map = @map.find_by(public_id: params[:id]) || @map.find_by(private_id: params[:id])
     render_not_found unless @map
   end
 
   def set_map_rw
-    @map = Map.includes(:user, layers: :features).find_by(id: params[:id])
+    @map = Map.includes(:user, layers: :features).find_by(private_id: params[:id])
     render_not_found unless @map
   end
 
@@ -160,7 +160,7 @@ class MapsController < ApplicationController
   end
 
   def set_map_mode
-    @map_mode = (params[:id] == @map.id.to_s) ? "rw" : "ro"
+    @map_mode = (params[:id] == @map.private_id.to_s) ? "rw" : "ro"
     @map_mode = "static" if params["static"]
   end
 

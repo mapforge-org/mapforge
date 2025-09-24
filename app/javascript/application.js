@@ -39,3 +39,8 @@ if ('serviceWorker' in navigator) {
 if (/Chrome/.test(navigator.userAgent) && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
   document.documentElement.classList.add('chrome-mobile')
 }
+
+Turbo.StreamActions.remove_class = function () {
+  const className = this.getAttribute("target")
+  document.querySelectorAll(`.${className}`).forEach(el => el.remove())
+}

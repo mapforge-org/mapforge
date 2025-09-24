@@ -69,14 +69,14 @@ class Feature
 
   def broadcast_update
     # broadcast to private + public channel
-    [ map.id, map.public_id ].each do |id|
+    [ map.private_id, map.public_id ].each do |id|
       ActionCable.server.broadcast("map_channel_#{id}",
                                    { event: "update_feature", feature: geojson.as_json })
     end
   end
 
   def broadcast_destroy
-    [ map.id, map.public_id ].each do |id|
+    [ map.private_id, map.public_id ].each do |id|
       ActionCable.server.broadcast("map_channel_#{id}",
         { event: "delete_feature", feature: geojson.slice(:id).as_json })
     end

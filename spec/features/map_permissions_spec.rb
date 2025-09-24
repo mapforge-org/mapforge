@@ -5,7 +5,7 @@ describe 'Map' do
 
   context 'edit' do
     before do
-      visit map_path(map)
+      visit map.private_map_path
     end
 
     context 'private' do
@@ -17,7 +17,7 @@ describe 'Map' do
 
       it 'is accessible for owner' do
         allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
-        visit map_path(map)
+        visit map.private_map_path
         expect_map_loaded
       end
     end
@@ -33,7 +33,7 @@ describe 'Map' do
 
   context 'view' do
     before do
-      visit map_path(id: map.public_id)
+      visit map.public_map_path
     end
 
     context 'private' do
@@ -45,7 +45,7 @@ describe 'Map' do
 
       it 'is accessible for owner' do
         allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
-        visit map_path(id: map.public_id)
+        visit map.public_map_path
         expect_map_loaded
       end
     end

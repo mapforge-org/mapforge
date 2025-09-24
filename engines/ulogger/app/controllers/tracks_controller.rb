@@ -9,7 +9,7 @@ class TracksController < ApplicationController
         if track
           redirect_to map_path(id: map.public_id, f: track.id)
         else
-          redirect_to map_path(id: map.public_id)
+          redirect_to map.public_map_path
         end
       else
         Rails.logger.warn("Ulogger map '#{params[:id]}' not found")

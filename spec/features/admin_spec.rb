@@ -13,7 +13,7 @@ describe 'Admin List' do
     end
 
     it 'shows private links to maps' do
-      expect(page).to have_selector(:xpath, "//a[@href='/m/#{maps[0].id}']")
+      expect(page).to have_selector(:xpath, "//a[@href='/m/#{maps[0].private_id}']")
     end
 
     it 'shows link to destroy map' do

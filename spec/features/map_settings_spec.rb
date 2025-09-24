@@ -6,7 +6,7 @@ describe 'Map' do
   context 'in rw mode' do
     before do
       stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
-      visit map_path(map)
+      visit map.private_map_path
       expect_map_loaded
     end
 
@@ -106,7 +106,7 @@ describe 'Map' do
   context 'in ro mode' do
     before do
       stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
-      visit map_path(map.public_id)
+      visit map.public_map_path
       expect_map_loaded
     end
 
