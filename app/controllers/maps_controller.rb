@@ -25,7 +25,7 @@ class MapsController < ApplicationController
   def show
     # Avoid 'updated_at' update
     @map.collection.update_one(
-      { private_id: @map.private_id },
+      { _id: @map.id },
       { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
     )
     if request.format.html?

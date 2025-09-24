@@ -81,7 +81,12 @@ class Map
   after_save :broadcast_update
   after_destroy :delete_screenshot
   before_create :create_default_layer
-  validate :public_id_must_be_unique
+  validates :public_id, uniqueness: { message: "public_id already taken" },
+    format: { without: /\//, message: "public_id cannot contain a '/'" },
+    if: :will_save_change_to_public_id?
+  validates :private_id, uniqueness: { message: "private_id already taken" },
+    format: { without: /\//, message: "private_id cannot contain a '/'" },
+    if: :will_save_change_to_private_id?
 
   def properties
     { name: name,
@@ -131,14 +136,6 @@ class Map
 
   def features_count
     layers.sum(:features_count)
-  end
-
-  def public_id_must_be_unique
-    # public id must not contain '/'
-    errors.add(:public_id, "invalid public id") if public_id =~ /\//
-    if Map.where(public_id: public_id).where.not(id: id).exists?
-      errors.add(:public_id, "has already been taken")
-    end
   end
 
   def self.create_from_file(path, collection_format: 4326)

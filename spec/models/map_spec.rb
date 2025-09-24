@@ -15,13 +15,13 @@ describe Map do
     end
   end
 
-  describe '#public_id_must_be_unique_or_nil' do
+  describe 'validations' do
     context 'when map with same public_id already exists' do
       before { create(:map, public_id: 'frontpage') }
 
       it 'raises error' do
         expect { create(:map, public_id: 'frontpage') }
-          .to raise_error(Mongoid::Errors::Validations, /has already been taken/)
+          .to raise_error(Mongoid::Errors::Validations, /public_id already taken/)
       end
     end
   end
