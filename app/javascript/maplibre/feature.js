@@ -68,6 +68,15 @@ function featureMeta (feature) {
   return meta
 }
 
+function featureVertexes(feature) {
+  let vertexes = ''
+  if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString' ||
+    feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+    const coords = feature.geometry.coordinates.flat()
+    vertexes = ', ' + coords.length + ' points'
+  }
+ return vertexes
+}
 
 export async function showFeatureDetails (feature) {
   dom.hideElements(['#feature-edit-raw', '#feature-edit-ui'])
@@ -130,6 +139,7 @@ export async function showFeatureDetails (feature) {
   document.querySelector('#feature-symbol').innerHTML = featureIcon(feature)
   document.querySelector('#feature-title').innerHTML = featureTitle(feature)
   document.querySelector('#feature-size').innerHTML = featureMeta(feature)
+  document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
   if (feature.geometry.type === 'Point') {
     dom.hideElements('#feature-export')
   } else {
