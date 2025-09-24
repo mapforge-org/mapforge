@@ -2,7 +2,7 @@ class TracksController < ApplicationController
   def redirect
     if params[:id].present?
       padded = "%024d" % [ params[:id] ]
-      map = Map.find(padded)
+      map = Map.find_by(private_id: padded)
       if map
         # link to highlighted track
         track = map.features.line_string.first

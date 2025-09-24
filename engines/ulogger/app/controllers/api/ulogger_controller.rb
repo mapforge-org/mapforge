@@ -33,7 +33,7 @@ module Ulogger
     def addtrack
       user = User.find_by(email: session['email'])
       map_id, padded_id = create_numeric_map_id
-      @map = Map.create!(id: padded_id, name: params[:track],
+      @map = Map.create!(private_id: padded_id, name: params[:track],
                          public_id: params[:track],
                          view_permission: 'link',
                          edit_permission: 'link',
@@ -87,7 +87,7 @@ module Ulogger
     private
 
     def set_map
-      @map =  Map.find_by(id: "%024d" % [ params[:trackid] ])
+      @map =  Map.find_by(private_id: "%024d" % [ params[:trackid] ])
       render json: { error: true, message: "Invalid trackid" } unless @map
     end
 
@@ -130,7 +130,7 @@ module Ulogger
     def create_numeric_map_id
       id = SecureRandom.rand(1..JAVA_MAXINT)
       padded = "%024d" % [ id ]
-      return create_numeric_map_id if Map.exists?(id: padded)
+      return create_numeric_map_id if Map.exists?(private_id: padded)
       [ id, padded ]
     end
   end
