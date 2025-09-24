@@ -16,6 +16,8 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/mapforge-org/mapforge-ci-runner:latest    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -46,6 +48,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     services:
       mongodb:
         image: mongo:6.0
