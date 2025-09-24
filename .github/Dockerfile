@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     proj-bin \
     libimlib2 \
     libimlib2-dev \
+    libyaml-dev \
     ruby-dev \
     git \ 
     libvips \ 
