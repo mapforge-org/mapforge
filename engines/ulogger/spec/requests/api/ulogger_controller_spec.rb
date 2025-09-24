@@ -32,11 +32,11 @@ RSpec.describe Api::UloggerController do
     end
 
     it 'creates map in db with 24 digits' do
-      expect(Map.find("%024d" % [ response_body['trackid'] ])).not_to be_nil
+      expect(Map.find_by(private_id: "%024d" % [ response_body['trackid'] ])).not_to be_nil
     end
 
     it 'sets map name' do
-      expect(Map.find("%024d" % [ response_body['trackid'] ]).name).to eq 'ulogger track'
+      expect(Map.find_by(private_id: "%024d" % [ response_body['trackid'] ]).name).to eq 'ulogger track'
     end
   end
 
@@ -49,7 +49,7 @@ RSpec.describe Api::UloggerController do
     end
 
 
-    let(:map) { create(:map, id: "%024d" % [ trackid ]) }
+    let(:map) { create(:map, private_id: "%024d" % [ trackid ]) }
     let(:trackid) { 924977797 }
     let(:payload) { { action: 'addpos', altitude: 374.29, speed: 4.3,
       provider: 'network', trackid: trackid, accuracy: 16.113,

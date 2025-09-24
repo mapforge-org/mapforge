@@ -16,13 +16,13 @@ RSpec.describe TracksController do
       end
 
       it 'redirects to public map url' do
-        Map.create(id: "000000000000000000001234")
+        Map.create(private_id: "000000000000000000001234")
         get "/ulogger/?id=1234"
         expect(subject).to have_http_status(302)
       end
 
       it 'highlights track' do
-        create(:map, id: "000000000000000000001234", features: [ create(:feature, :line_string) ])
+        create(:map, private_id: "000000000000000000001234", features: [ create(:feature, :line_string) ])
 
         get "/ulogger/?id=1234"
         expect(subject).to have_http_status(302)
