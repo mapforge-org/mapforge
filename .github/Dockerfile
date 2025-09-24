@@ -6,6 +6,8 @@
 
 FROM ubuntu:22.04
 
+LABEL org.opencontainers.image.source https://github.com/mapforge-org/mapforge
+
 RUN apt-get update && apt-get install -y \
     build-essential \
     libproj-dev \

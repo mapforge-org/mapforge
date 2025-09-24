@@ -92,11 +92,11 @@ For example `act -j test`.
 
 ### Container image
 
-Github builds a new container on each commit to `main` at: `ghcr.io/digitaltom/mapforge:main`. Or, you can build your own image with: `podman build -t mapforge .`.
+Github builds a new container on each commit to `main` at: `ghcr.io/mapforge-org/mapforge:main`. Or, you can build your own image with: `podman build -t mapforge .`.
 
 Before running the container, make sure the services MongoDB (`podman run -d --name mongo -v <local_dir>:/data/db -p 27017:27017 mongo:7.0`) and Redis (`podman run -d --name redis -p 6379:6379 redis`) are running.
 
-Now, you can run the image with: `podman run -e SECRET_KEY_BASE=e3c9f2... --network=host ghcr.io/digitaltom/mapforge:main` (the container expects to be running behind SSL termination like Traefik. Use `-e RAILS_ENV=development` for a test run without SSL)
+Now, you can run the image with: `podman run -e SECRET_KEY_BASE=e3c9f2... --network=host ghcr.io/mapforge-org/mapforge:main` (the container expects to be running behind SSL termination like Traefik. Use `-e RAILS_ENV=development` for a test run without SSL)
 
 The Maxmind IP database cat get mounted to the container with: 
 `-v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb`

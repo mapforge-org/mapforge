@@ -21,10 +21,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Update OS
-        run: sudo apt-get update
-      - name: Install dependencies
-        run: sudo apt-get install -y libproj-dev proj-bin libimlib2 libimlib2-dev
+      #- name: Update OS
+      #  run: sudo apt-get update
+      #- name: Install dependencies
+      #  run: sudo apt-get install -y libproj-dev proj-bin libimlib2 libimlib2-dev
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
@@ -62,10 +62,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Update OS
-        run: sudo apt-get update
-      - name: Install dependencies
-        run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
+      #- name: Update OS
+      #  run: sudo apt-get update
+      #- name: Install dependencies
+      #  run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
