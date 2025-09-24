@@ -55,6 +55,9 @@ jobs:
         image: docker.io/mongo:6.0
         ports:
         - 27017:27017
+        credentials:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}        
     env:
       RAILS_ENV: test
       COVERAGE: true
