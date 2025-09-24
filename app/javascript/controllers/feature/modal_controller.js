@@ -50,8 +50,9 @@ export default class extends Controller {
       this.pullUpModal(this.element)
     }
     const feature = this.getFeature()
-    dom.showElements(['#feature-edit-ui'])
-    dom.hideElements(['#feature-edit-raw'])
+    dom.showElements(['#feature-edit-ui', '#button-add-label', '#button-add-desc'])
+    dom.hideElements(['#feature-edit-raw', '#feature-label', '#feature-desc'])
+
     // init ui input elements
     document.querySelector('#feature-title-input input').value = feature.properties.title || null
     if (feature.properties.label) { this.show_add_label() }
@@ -131,9 +132,9 @@ export default class extends Controller {
   }
 
   show_add_label () {
+    document.querySelector('#feature-label input').value = this.getFeature().properties.label || null
     dom.hideElements(['#button-add-label'])
     dom.showElements(['#feature-label'])
-    document.querySelector('#feature-label input').value = this.getFeature().properties.label || null
   }
 
   show_add_desc () {

@@ -7,6 +7,7 @@ class Map
   has_many :layers
   belongs_to :user, optional: true, counter_cache: true
 
+  # implicit_order_column is not supported by mongoid
   default_scope { order(created_at: :asc) }
   scope :listed, -> { where(view_permission: "listed") }
   scope :ulogger, -> { where(:_id.lt => BSON::ObjectId("000000000000002147483647")) }

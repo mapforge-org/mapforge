@@ -572,9 +572,6 @@ export function styles () {
         ['has', 'flat']
       ],
       layout: {
-        // always show flat projected labels
-        'icon-allow-overlap': true,
-        'icon-overlap': 'always',
         'icon-ignore-placement': true,
         'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
         'text-size': labelSize,
@@ -585,7 +582,7 @@ export function styles () {
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
         "text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
         'text-justify': 'auto',
-        'text-ignore-placement': true, // don't hide on collision
+        'text-ignore-placement': false, // hide on collision
         "text-rotation-alignment": "map",
         // TODO: sort keys on text are ascending, on symbols descending???
         'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
@@ -604,7 +601,6 @@ export function styles () {
         ['has', 'label'],
         ['!has', 'flat']],
       layout: {
-        'icon-overlap': 'never',
         'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
         'text-size': labelSize,
         'text-font': labelFont,
@@ -614,7 +610,7 @@ export function styles () {
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
         "text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
         'text-justify': 'auto',
-        'text-ignore-placement': true, // don't hide on collision
+        'text-ignore-placement': false, // hide on collision
         "text-rotation-alignment": "viewport",
         // TODO: sort keys on text are ascending, on symbols descending???
         'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]

@@ -48,7 +48,7 @@ namespace :maps do
             image.save(map.screenshot_file)
             puts "Map preview stored at: #{map.screenshot_file}"
           end
-         browser.close
+          browser.close
         end
       rescue => e
         puts "Error creating map screenshot: #{e}, #{e.message}"
