@@ -23,7 +23,7 @@ async function init () {
     // style: '/layers/nostreets.json?key=' + window.gon.map_keys.maptiler,
     style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json',
     // center: [8.271366455078127, 50.013330503465454],
-    center: mapProperties.default_center,
+    center: mapProperties.center || mapProperties.default_center,
     zoom: mapProperties.zoom,
     pitch: 45 // tilt the map
   })
