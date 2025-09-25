@@ -30,8 +30,9 @@ jobs:
       #  run: sudo apt-get install -y libproj-dev proj-bin libimlib2 libimlib2-dev
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+        #with:
+          # caches by Gemfile.lock checksum
+          #bundler-cache: true
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -65,18 +66,19 @@ jobs:
       RAILS_ENV: test
       COVERAGE: true
       SE_AVOID_STATS: true # skip Selenium stats
-      MONGO_URL: "mongodb:27017"
+      # MONGO_URL is only needed when not running on ubuntu-latest VM
+      # MONGO_URL: "mongodb:27017"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       #- name: Update OS
       #  run: sudo apt-get update
-      - name: Install dependencies
-        run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
+      #- name: Install dependencies
+      #  run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+        #with:
+          #bundler-cache: true
       - name: Run tests
         id: rspec
         #run: |
