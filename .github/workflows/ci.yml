@@ -19,8 +19,8 @@ jobs:
     # Building an own image is not worth it, pulling it in gh actions 
     # is about as slow as installing the dependencies and it blocks using cached gems
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
+    #container:
+    #  image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,16 +51,16 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
+    #container:
+    #  image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     services:
       mongodb:
-        image: docker.io/mongo:6.0
+        image: mongo:6.0
         ports:
         - 27017:27017
-        credentials:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}        
+        #credentials:
+        #  username: ${{ secrets.DOCKER_USERNAME }}
+        #  password: ${{ secrets.DOCKER_TOKEN }}        
     env:
       RAILS_ENV: test
       COVERAGE: true
@@ -71,12 +71,12 @@ jobs:
         uses: actions/checkout@v4
       #- name: Update OS
       #  run: sudo apt-get update
-      #- name: Install dependencies
-      #  run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
-      #- name: Install Ruby and gems
-      #  uses: ruby/setup-ruby@v1
-      #  with:
-      #    bundler-cache: true
+      - name: Install dependencies
+        run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
       - name: Run tests
         id: rspec
         #run: |
