@@ -8,7 +8,11 @@ FROM ubuntu:22.04
 
 LABEL org.opencontainers.image.source https://github.com/mapforge-org/mapforge
 
-RUN apt-get update && apt-get install -y \
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    echo "tzdata tzdata/Areas select Etc" | debconf-set-selections && \
+    echo "tzdata tzdata/Zones/Etc select UTC" | debconf-set-selections && \
+    apt-get install -y  \
     build-essential \
     libproj-dev \
     proj-bin \
@@ -16,10 +20,11 @@ RUN apt-get update && apt-get install -y \
     libimlib2-dev \
     libyaml-dev \
     ruby-dev \
-    git \ 
-    libvips \ 
+    git \
+    libvips \
     pkg-config \
     imagemagick \
+    tzdata \
     && apt-get clean
 
 # Set working directory

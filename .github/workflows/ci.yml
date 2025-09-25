@@ -15,6 +15,7 @@ on:
     branches: [ "main" ]
 jobs:
   lint:
+    # This is Ubuntu 22.04 currently
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/mapforge-org/mapforge-ci-runner:latest    
@@ -62,6 +63,7 @@ jobs:
       RAILS_ENV: test
       COVERAGE: true
       SE_AVOID_STATS: true # skip Selenium stats
+      MONGO_URL: "mongodb:27017"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
