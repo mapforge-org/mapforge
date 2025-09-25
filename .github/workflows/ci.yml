@@ -15,10 +15,10 @@ on:
     branches: [ "main" ]
 jobs:
   lint:
-    # This is Ubuntu 22.04 currently
+    # This is Ubuntu 24.04 currently: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/mapforge-org/mapforge-ci-runner:latest    
+      image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
