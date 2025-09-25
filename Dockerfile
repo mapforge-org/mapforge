@@ -11,6 +11,11 @@ LABEL org.opencontainers.image.licenses="MIT"
 FROM base as os-dependencies
 LABEL org.opencontainers.image.description="OS container for Mapforge"
 
+# Disable man-db
+RUN mv /usr/bin/mandb /usr/bin/mandb.bak \
+    echo -e '#!/bin/sh\nexit 0' | tee /usr/bin/mandb > /dev/null && \
+    chmod +x /usr/bin/mandb  
+
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y libyaml-dev ruby-dev build-essential git npm libvips pkg-config libproj-dev proj-bin libimlib2-dev

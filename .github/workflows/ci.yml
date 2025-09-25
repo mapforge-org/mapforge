@@ -70,7 +70,7 @@ jobs:
         #  password: ${{ secrets.DOCKER_TOKEN }}        
     env:
       RAILS_ENV: test
-      PARALLEL_TEST_PROCESSORS: 2
+      # PARALLEL_TEST_PROCESSORS: 2
       COVERAGE: true
       SE_AVOID_STATS: true # skip Selenium stats
       # MONGO_URL is only needed when not running on ubuntu-latest VM
