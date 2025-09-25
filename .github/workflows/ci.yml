@@ -30,9 +30,9 @@ jobs:
       #  run: sudo apt-get install -y libproj-dev proj-bin libimlib2 libimlib2-dev
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
-        #with:
+        with:
           # caches by Gemfile.lock checksum
-          #bundler-cache: true
+          bundler-cache: true
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -59,7 +59,8 @@ jobs:
         image: mongo:6.0
         ports:
         - 27017:27017
-        #credentials:
+        # credentials are only needed when not running on ubuntu-latest VM
+        # credentials:
         #  username: ${{ secrets.DOCKER_USERNAME }}
         #  password: ${{ secrets.DOCKER_TOKEN }}        
     env:
@@ -77,8 +78,9 @@ jobs:
       #  run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
-        #with:
-          #bundler-cache: true
+        with:
+          # caches by Gemfile.lock checksum
+          bundler-cache: true
       - name: Run tests
         id: rspec
         #run: |
