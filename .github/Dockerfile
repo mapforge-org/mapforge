@@ -25,6 +25,18 @@ RUN apt-get update && \
     pkg-config \
     imagemagick \
     tzdata \
+    chromium-bsu \ 
+    fonts-noto-color-emoji \
+    libjemalloc2 \ 
+    vim \ 
+    less \ 
+    curl \ 
+    iputils-ping \ 
+    libsqlite3-0 \ 
+    libvips \ 
+    wget \ 
+    gnupg \ 
+    ca-certificates \ 
     && apt-get clean
 
 # Set working directory

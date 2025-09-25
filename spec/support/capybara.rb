@@ -26,7 +26,6 @@ def chrome_driver_arguments(headless: false)
   options.args << '--disable-renderer-backgrounding'
   options.args << '--ignore-certificate-errors'
   options.args << '--no-default-browser-check'
-  options.args << "--user-data-dir=/tmp/.com.google.Chrome.#{SecureRandom.alphanumeric(6)}"
 
   if defined?(Billy)
     options.args << '--ignore-certificate-errors'
