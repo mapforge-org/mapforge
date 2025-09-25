@@ -16,6 +16,8 @@ on:
 jobs:
   lint:
     # This is Ubuntu 24.04 currently: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+    # Building an own image is not worth it, pulling it in gh actions 
+    # is about as slow as installing the dependencies and it blocks using cached gems
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
@@ -26,10 +28,10 @@ jobs:
       #  run: sudo apt-get update
       #- name: Install dependencies
       #  run: sudo apt-get install -y libproj-dev proj-bin libimlib2 libimlib2-dev
-      #- name: Install Ruby and gems
-      #  uses: ruby/setup-ruby@v1
-      #  with:
-      #    bundler-cache: true
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
       - uses: actions/setup-node@v4
         with:
           node-version: 20
