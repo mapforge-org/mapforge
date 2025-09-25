@@ -26,8 +26,8 @@ jobs:
         uses: actions/checkout@v4
       #- name: Update OS
       #  run: sudo apt-get update
-      #- name: Install dependencies
-      #  run: sudo apt-get install -y libproj-dev proj-bin libimlib2 libimlib2-dev
+      - name: Install dependencies
+        run: sudo apt-get install --no-install-recommends -y libproj-dev libimlib2-dev
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
@@ -76,7 +76,7 @@ jobs:
       #  run: sudo apt-get update
       - name: Install dependencies
       #  run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
-        run: sudo apt-get install -y libimlib2
+        run: sudo apt-get install --no-install-recommends -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
