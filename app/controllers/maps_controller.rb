@@ -68,7 +68,7 @@ class MapsController < ApplicationController
     @map.update(demo: true)
     @map_mode = "rw"
 
-    redirect_to map_url(@map)
+    redirect_to map_url(id: @map.private_id)
   end
 
   def create
