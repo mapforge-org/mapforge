@@ -73,8 +73,7 @@ nav.fixed-top~#maps {
   color: #fff;
   color: var(--color-dark-moss-green);
   text-shadow: 0 -4px 4px white, 4px 0 4px white, 0 4px 4px white, -4px 0 4px white;
-  font-weight: 400;
-  font-style: italic;
+  font-weight: 300;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
