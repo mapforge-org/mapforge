@@ -30,7 +30,7 @@
                 %i.bi.bi-google.me-1
                 Login with Google
 
-          - if Rails.env.local?
+          - if Rails.env.local? || ENV["DEVELOPER_LOGIN_ENABLED"] == "true"
             = form_tag('/auth/developer/login', method: 'post', data: {turbo: false}) do
               = button_tag class: 'btn w-100 btn-secondary btn-green btn-social btn-developer mb-2' do
                 %i.bi.bi-tools.me-1
