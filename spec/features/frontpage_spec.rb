@@ -19,14 +19,9 @@ describe 'Frontpage' do
       visit root_path
     end
 
-    it 'redirects to /my path' do
-      expect(page).to have_current_path(frontpage_path)
-    end
-
-    it 'logo links to frontpage' do
-      click_link 'Mapforge'
-      expect(page).to have_current_path(frontpage_path)
-      expect(page).to have_text('Create your own maps')
+    it 'links to your maps and create' do
+      expect(page).to have_link('your maps', href: '/my')
+      expect(page).to have_link('create', href: '/m')
     end
   end
 end

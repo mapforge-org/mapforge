@@ -15,17 +15,28 @@ on:
     branches: [ "main" ]
 jobs:
   lint:
+    # This is Ubuntu 24.04 currently: https://github.com/actions/runner-images/blob/ubuntu24/20250907.24/images/ubuntu/Ubuntu2404-Readme.md
+    # Building an own image is not worth it, pulling it in gh actions 
+    # is about as slow as installing the dependencies and it blocks using cached gems
     runs-on: ubuntu-latest
+    #container:
+    #  image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Update OS
-        run: sudo apt-get update
+      #- name: Update OS
+      #  run: sudo apt-get update
+      - name: Disable mandb updates
+        run: |
+          sudo mv /usr/bin/mandb /usr/bin/mandb.bak
+          echo -e '#!/bin/sh\nexit 0' | sudo tee /usr/bin/mandb > /dev/null
+          sudo chmod +x /usr/bin/mandb
       - name: Install dependencies
-        run: sudo apt-get install -y libproj-dev proj-bin libimlib2 libimlib2-dev
+        run: sudo apt-get install --no-install-recommends -y libproj-dev libimlib2-dev
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
+          # caches by Gemfile.lock checksum
           bundler-cache: true
       - uses: actions/setup-node@v4
         with:
@@ -46,25 +57,41 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    #container:
+    #  image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     services:
       mongodb:
         image: mongo:6.0
         ports:
         - 27017:27017
+        # credentials are only needed when not running on ubuntu-latest VM
+        # credentials:
+        #  username: ${{ secrets.DOCKER_USERNAME }}
+        #  password: ${{ secrets.DOCKER_TOKEN }}        
     env:
       RAILS_ENV: test
+      # PARALLEL_TEST_PROCESSORS: 2
       COVERAGE: true
       SE_AVOID_STATS: true # skip Selenium stats
+      # MONGO_URL is only needed when not running on ubuntu-latest VM
+      # MONGO_URL: "mongodb:27017"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Update OS
-        run: sudo apt-get update
+      #- name: Update OS
+      #  run: sudo apt-get update
+      - name: Disable mandb updates
+        run: |
+          sudo mv /usr/bin/mandb /usr/bin/mandb.bak
+          echo -e '#!/bin/sh\nexit 0' | sudo tee /usr/bin/mandb > /dev/null
+          sudo chmod +x /usr/bin/mandb      
       - name: Install dependencies
-        run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
+      #  run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
+        run: sudo apt-get install --no-install-recommends -y libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
+          # caches by Gemfile.lock checksum
           bundler-cache: true
       - name: Run tests
         id: rspec
