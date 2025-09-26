@@ -1,5 +1,5 @@
 %head
-  %title= content_for?(:title) ? yield(:title) : "Mapforge: Create and share your own maps online"
+  %title= content_for?(:title) ? yield(:title) + " | Create and share your own maps online" : "Mapforge: Create and share your own maps online"
   %meta{ charset: "UTF-8"}
   %meta{ name: 'viewport', content: 'width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=no' }
   %meta{ name: 'view-transition', content: 'same-origin' }
@@ -10,8 +10,12 @@
 
   %meta{ name: 'mobile-web-app-capable', content: 'yes' }
 
-  %meta{ name: 'description', content: (content_for?(:title) ? yield(:title) : "Create individual maps for your places, tracks and events.") }
-  %meta{ name: 'keywords', content: 'map maker, create my map, share maps, online maps, map editor, geojson, maplibre, openstreetmap, privacy, open source' }
+  %meta{ name: 'description', content: (content_for?(:title) ? yield(:title) : '') + " - Create individual maps for your places, tracks and events. Share your maps in real-time." }
+  %meta{ name: 'keywords', content: 'map maker, create map, my maps, share maps, online maps, travel maps, map editor, geojson, maplibre, openstreetmap, privacy, open source' }
+  - # Open Graph protocol https://ogp.me/
+  %meta{ property: 'og:type', content: 'website' }
+  %meta{ property: 'og:url', content: request.url }
+  %meta{ property: 'og:site_name', content: 'Mapforge' }
 
   = csrf_meta_tags
   = csp_meta_tag

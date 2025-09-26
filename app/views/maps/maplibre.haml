@@ -11,9 +11,6 @@
 - content_for :title, "Mapforge map: #{(@map.name.presence || 'Unnamed map')}"
 - content_for :head do
   - # Open Graph protocol https://ogp.me/
-  %meta{ property: 'og:type', content: 'website' }
-  %meta{ property: 'og:url', content: request.url }
-  %meta{ property: 'og:site_name', content: 'Mapforge' }
   - if @map.name
     %meta{ property: 'og:title', content: @map.name }
   - if @map.description
@@ -27,7 +24,7 @@
 
 %nav#map-head.dark-shadow{ title: "Toggle Navigation", data: { 'controller': "map header", 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom", 'bs-custom-class': 'maplibregl-ctrl-tooltip' } }
   #map-nav-toggle.navbar-toggler-icon.ms-2.me-2
-  #map-title= @map.name
+  %h1#map-title= @map.name
 
 #maplibre-map.map{ data: { 'controller': "header", 'action': "click->header#hideNav touchstart->header#hideNav" } }
 

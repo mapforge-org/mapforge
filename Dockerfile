@@ -19,9 +19,9 @@ RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
-# Install JavaScript dependencies
-COPY package.json package-lock.json ./
-RUN npm install --omit=dev
+# Install JavaScript dependencies (we only have npm dev dependencies)
+# COPY package.json package-lock.json ./
+# RUN npm install --omit=dev
 
 # Copy application code
 COPY . .

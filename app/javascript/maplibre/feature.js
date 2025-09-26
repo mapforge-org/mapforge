@@ -247,7 +247,7 @@ function makeNumbersLayer(divisor, minzoom, maxzoom=24) {
     layout: {
       'text-allow-overlap': true,
       'text-field': ['get', 'km'],
-      'text-size': 12,
+      'text-size': 11,
       'text-font': labelFont,
       'text-justify': 'center',
       'text-anchor': 'center'
@@ -327,6 +327,7 @@ export function renderKmMarkers () {
       const point = turf.along(line, i, { units: 'kilometers' })
       point.properties['marker-color'] = f.properties['stroke'] || featureColor
       point.properties['marker-size'] = 11
+      point.properties['marker-opacity'] = 1
 
       if (i >= Math.ceil(length)) {
         point.properties['marker-size'] = 14

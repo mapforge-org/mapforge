@@ -39,6 +39,8 @@ html:has(.map), body:has(.map) {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  margin-top: unset;
+  margin-bottom: unset;
 }
 
 #map-title:empty {
