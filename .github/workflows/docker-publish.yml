@@ -10,9 +10,6 @@ permissions:
   pull-requests: read
 
 on:
-  # rebuild image with updated patches each night:
-  #schedule:
-  #  - cron: '45 7 * * *'
   workflow_run:
     workflows: ["Lint & Tests"]
     types:
