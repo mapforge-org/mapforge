@@ -5,8 +5,8 @@ on:
   schedule:
     - cron: '0 4 * * *' # Runs every day at 04:00 UTC
   # to test base image build in a pr:
-  pull_request:
-    branches: [ "main" ]  
+  # pull_request:
+  #   branches: [ "main" ]
 
 env:
   REGISTRY: ghcr.io
