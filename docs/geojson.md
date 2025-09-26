@@ -16,6 +16,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 
 * `marker-color`: circle color (default "green", 'transparent' for none)
 * `marker-size`: radius of the marker (default: 6, with 'marker-symbol' fixed to 16 )
+* `marker-opacity`: opacity of the marker (default: 0.7)
 * `marker-symbol`: taken as text/emoji, emoji list: https://emojipedia.org/google/15.1
 * `marker-image-url`: URL pointing to icon image. Can point to a Mapforge hosted image like /image/<id>
 * `marker-scaling`: marker scales with zoom level (default: false)

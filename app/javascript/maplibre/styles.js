@@ -192,8 +192,8 @@ export const pointSize = [
 export const pointOutlineSize = ['to-number', ['coalesce', ['get', 'user_stroke-width'], ['get', 'stroke-width'], 2]]
 export const pointOutlineSizeActive = ['+', 1, pointOutlineSize]
 const pointOutlineColor = ['coalesce', ['get', 'user_stroke'], ['get', 'stroke'], featureOutlineColor]
-const pointOpacity = 0.7
-const pointOpacityActive = 0.9
+const pointOpacity = ['coalesce', ['get', 'marker-opacity'], 0.7]
+const pointOpacityActive = ['coalesce', ['min', ['+', ['get', 'marker-opacity'], 0.2], 1], 0.9]
 
 // factor of the original icon size (200x200)
 // in case of external icon url, we don't know the size
@@ -384,7 +384,7 @@ export function styles () {
           pointOutlineSizeActive,
           pointOutlineSize
         ],
-        'circle-stroke-opacity': pointOpacity + 0.2
+        'circle-stroke-opacity': ["min", 1, ['+', pointOpacity, 0.2]]
       }
     },    
     'points-layer': {
@@ -429,7 +429,7 @@ export function styles () {
           pointOutlineSizeActive,
           pointOutlineSize
         ],
-        'circle-stroke-opacity': pointOpacity + 0.2
+        'circle-stroke-opacity': ["min", 1, ['+', pointOpacity, 0.2]]
       }
     },
     'points-hit-layer': {
