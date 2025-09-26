@@ -11,9 +11,6 @@
 - content_for :title, "Mapforge map: #{(@map.name.presence || 'Unnamed map')}"
 - content_for :head do
   - # Open Graph protocol https://ogp.me/
-  %meta{ property: 'og:type', content: 'website' }
-  %meta{ property: 'og:url', content: request.url }
-  %meta{ property: 'og:site_name', content: 'Mapforge' }
   - if @map.name
     %meta{ property: 'og:title', content: @map.name }
   - if @map.description
