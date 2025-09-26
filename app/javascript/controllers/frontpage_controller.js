@@ -13,20 +13,24 @@ export default class extends Controller {
 
     // Dynamically import Swiper only when this controller is connected
     const Swiper = (await import('swiper')).default
-    const { Navigation } = (await import('swiper/modules'))
+    const { Navigation, Pagination } = (await import('swiper/modules'))
 
     const config = {
-      modules: [Navigation],
+      modules: [Navigation, Pagination],
       loop: true,
-      speed: 1200,
+      speed: 1000,
       autoplay: {
-        delay: 8000
+        delay: 5000
       },
       slidesPerView: 1,
       centeredSlides: true,
       navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev'
+      },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
       },    
       on: {
         slideChange: () => {

@@ -208,6 +208,7 @@ section,
 #features {
   border-top: 2px solid var(--color-light-sand);
   font-size: 1.1rem;
+  --swiper-pagination-bullet-size: 12px;
 }
 
 #features .img-bg {
