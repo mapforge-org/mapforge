@@ -5,8 +5,8 @@ Billy.configure do |c|
   # c.record_requests = true # needed for the table output below
   c.non_successful_error_level = :error
   c.cache = true
-  c.persist_cache = false
-  c.cache_path = 'tmp/req_cache/'
+  c.persist_cache = true
+  c.cache_path = 'tmp/billy_req_cache/'
 end
 
 # RSpec.configure do |config|
@@ -24,11 +24,11 @@ end
 #   end
 # end
 
-RSpec.configure do |config|
-  config.prepend_before(:suite) do
-    if defined?(Billy)
-      local_cache_path = Rails.root.join(Billy.config.cache_path)
-      FileUtils.rm_rf(local_cache_path) if File.exist?(local_cache_path)
-    end
-  end
-end
+# RSpec.configure do |config|
+#   config.prepend_before(:suite) do
+#     if defined?(Billy)
+#       local_cache_path = Rails.root.join(Billy.config.cache_path)
+#       FileUtils.rm_rf(local_cache_path) if File.exist?(local_cache_path)
+#     end
+#   end
+# end
