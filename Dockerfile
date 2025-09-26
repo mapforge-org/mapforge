@@ -1,8 +1,4 @@
-# syntax = docker/dockerfile:1.2
-
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.4.5
-FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+FROM ghcr.io/mapforge-org/mapforge-base:latest
 
 LABEL org.opencontainers.image.description="Web container for Mapforge"
 LABEL org.opencontainers.image.source="https://github.com/mapforge-org/mapforge"
@@ -16,14 +12,6 @@ ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
-
-
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y libyaml-dev ruby-dev build-essential git npm libvips pkg-config libproj-dev proj-bin libimlib2-dev
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -43,27 +31,6 @@ RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
-# Final stage for app image
-FROM base
-
-# Install packages needed for deployment
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y libjemalloc2 vim less curl iputils-ping libsqlite3-0 libvips proj-bin wget gnupg ca-certificates imagemagick libimlib2 && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Install chrome for screenshots (adds 400MB :-o)
-# Add Google's public key + repo
-RUN wget -q -O /usr/share/keyrings/google-linux-signing-keyring.gpg https://dl-ssl.google.com/linux/linux_signing_key.pub
-RUN echo "deb [signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
-
-# Update packages again and install Google Chrome
-RUN apt-get update -qq && apt-get install --no-install-recommends -y google-chrome-stable fonts-noto-color-emoji
-
-# Copy built artifacts: gems, application
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
 RUN useradd rails --create-home --shell /bin/bash && \
