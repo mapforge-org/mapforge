@@ -549,13 +549,11 @@ export function sortLayers () {
 }
 
 export function updateMapName (name) {
-  if (!document.getElementById('frontpage-map')) {
-    mapProperties.name = name
-    if (mapProperties.name) {
-      document.title = 'Mapforge.org: Map "' + mapProperties.name + '"'
-    }
-    functions.e('#map-title', e => { e.textContent = mapProperties.name })
+  mapProperties.name = name
+  if (mapProperties.name) {
+    document.title = 'Mapforge.org: Map "' + mapProperties.name + '" | Create and share your own maps online'
   }
+  functions.e('#map-title', e => { e.textContent = mapProperties.name })
 }
 
 export function mergedGeoJSONLayers(type='geojson') {
