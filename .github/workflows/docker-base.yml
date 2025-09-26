@@ -1,4 +1,4 @@
-name: Rebuild and Push Docker Image Daily
+name: Docker base image
 
 on:
   # rebuild image with updated patches each night:
@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: '/mapforge-org/mapforge-base'
+  IMAGE_NAME: 'mapforge-org/mapforge-base'
 
 jobs:
   build-and-push:
