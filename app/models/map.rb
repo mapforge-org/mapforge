@@ -256,4 +256,22 @@ class Map
         .gsub(/#{separator}+/, separator)
         .gsub(/\A#{separator}+|#{separator}+\z/, "")
   end
+
+  def self.demo_map(user)
+    demo_file = Rails.root.join("db/seeds/demo.json")
+
+    if user
+      unless map = Map.demo.where(user: user).first
+        map = Map.create_from_file(demo_file)
+        name = user.name.split.first
+        map.update(user: user, demo: true)
+        map.features.where("properties.label" => "Welcome to the Mapforge Tutorial map")
+           .update_all("properties.label" => "Welcome #{name} to the Mapforge Tutorial map")
+      end
+    else
+      map = Map.create_from_file(demo_file)
+      map.update(demo: true)
+    end
+    map
+  end
 end

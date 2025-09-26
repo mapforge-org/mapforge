@@ -31,12 +31,13 @@ nav.fixed-top~#docs {
   font-weight: 100;
 }
 
-.markdown-content img {
-  max-width: 100%;
-  width: 640px;
+.markdown-content img, .markdown-content video {
+  max-width: 640px;
+  max-height: 480px;
 }
 
-.markdown-content video {
-  max-width: 100%;
-  width: 640px;
+@media (width <=575px) {
+.markdown-content img, .markdown-content video {
+    max-width: 100%;
+  }
 }

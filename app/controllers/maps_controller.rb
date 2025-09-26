@@ -55,17 +55,7 @@ class MapsController < ApplicationController
   end
 
   def demo
-    demo_file = Rails.root.join("db/seeds/demo.json")
-
-    if @user
-      unless @map = Map.demo.where(user: @user).first
-        @map = Map.create_from_file(demo_file)
-        @map.update(user: @user)
-      end
-    else
-      @map = Map.create_from_file(demo_file)
-    end
-    @map.update(demo: true)
+    @map = Map.demo_map(@user)
     @map_mode = "rw"
 
     redirect_to map_url(id: @map.private_id)
