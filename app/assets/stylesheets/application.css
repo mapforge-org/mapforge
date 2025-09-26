@@ -46,7 +46,10 @@ body {
   overscroll-behavior: none; /* disable pull-to-refresh on mobile */
   overflow-x: hidden;
   width: 100%;
-  font-family: "Noto Sans", system-ui, sans-serif;
+
+  /* Maps use Noto Sans for labels */
+  font-family: SUSE, system-ui, sans-serif;
+  font-optical-sizing: auto;
   font-weight: 300;
   color: var(--text-color);
 }

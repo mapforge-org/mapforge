@@ -34,7 +34,6 @@ html:has(.map), body:has(.map) {
   color: var(--color-dark-moss-green);
   text-shadow: 0 -4px 4px white, 4px 0 4px white, 0 4px 4px white, -4px 0 4px white;
   font-weight: 300;
-  font-family: "Noto Sans", sans-serif;
   font-style: italic;
   text-align: center;
   text-overflow: ellipsis;
