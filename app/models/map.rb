@@ -260,7 +260,7 @@ class Map
   def self.demo_map(user)
     demo_file = Rails.root.join("db/seeds/demo.json")
 
-    if user
+    if user&.name
       unless map = Map.demo.where(user: user).first
         map = Map.create_from_file(demo_file)
         name = user.name.split.first

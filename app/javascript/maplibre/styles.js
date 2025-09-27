@@ -499,7 +499,7 @@ export function styles () {
           ['get', 'marker-image-url'],
           // replacing marker-symbol value with path to emoji png
           ['case',
-            ['has', 'marker-symbol'],
+            ['!=', ['get', 'marker-symbol'], ''],
             ['concat', '/emojis/noto/', ['get', 'marker-symbol'], '.png'],
             '']
         ],

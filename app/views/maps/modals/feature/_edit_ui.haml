@@ -63,10 +63,10 @@
 
   #marker-symbol-ui.edit-ui.edit-point
     %label{ for: "marker-symbol"} Symbol:
-    %input.form-control#marker-symbol{ type: "text", size: '1', 'data-action': "input->feature--edit#addUndo input->feature--edit#updateMarkerSymbol change->feature--edit#saveFeature" }
-    %span#emoji-list-link<
-      = surround '(', ')' do
-        %a{ href: 'https://emojipedia.org/google/15.1', target: '_blank'}>Emoji list
+    %input.form-control#marker-symbol{ type: "hidden", inputmode: 'emoji' }
+    #marker-symbol-select{ 'data-action': "click->feature--edit#openEmijiPicker" }
+      #emoji
+      %i.bi.bi-pencil-square.ms-1#no-emoji
 
   #marker-image-ui.edit-ui.edit-point
     %label{ for: "marker-image"} Image:

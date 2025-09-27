@@ -80,6 +80,7 @@ a:active, .link:active {
 }
 
 .flex-center {
+  display: flex;
   justify-content: center; /* Vertically centers the items */
   align-items: center;
 }

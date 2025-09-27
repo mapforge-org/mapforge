@@ -169,6 +169,24 @@ describe 'Feature edit' do
 
         wait_for { point.reload.properties['marker-image-url'] }.to match(/icon\/.+/)
       end
+
+      it 'can use emoji selector' do
+        find('#marker-symbol-select').click
+        expect(page).to have_selector('em-emoji-picker')
+
+        # Cannot select in shadow dom wiht capybara
+        shadow_host = find('em-emoji-picker')
+        page.execute_script(<<~JS, shadow_host)
+          const host = arguments[0];
+          const shadow = host.shadowRoot;
+          if (shadow) {
+            const el = shadow.querySelector('span.emoji-mart-emoji'); // Replace selector
+            el.click();
+          }
+        JS
+
+        wait_for { point.reload.properties['marker-symbol'] }.to match('👍')
+      end
     end
   end
 

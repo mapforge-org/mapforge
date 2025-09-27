@@ -52,6 +52,7 @@ export default class extends Controller {
     const feature = this.getFeature()
     dom.showElements(['#feature-edit-ui', '#button-add-label', '#button-add-desc'])
     dom.hideElements(['#feature-edit-raw', '#feature-label', '#feature-desc'])
+    functions.e('em-emoji-picker', e => { e.remove() })
 
     // init ui input elements
     document.querySelector('#feature-title-input input').value = feature.properties.title || null
@@ -87,13 +88,21 @@ export default class extends Controller {
     if (feature.geometry.type === 'Point') {
       dom.showElements(['#feature-edit-ui .edit-point'])
       
+      document.querySelector('#marker-symbol').value = feature.properties['marker-symbol'] || ''
+      if (feature.properties['marker-symbol']) {
+        document.querySelector('#emoji').textContent = feature.properties['marker-symbol']
+        dom.hideElements(['#no-emoji'])
+      } else {
+        document.querySelector('#emoji').textContent = ''
+        dom.showElements(['#no-emoji'])
+      }
+
       let defaultSize = feature.properties['marker-symbol'] ? 18 : 6
       const size = feature.properties['marker-size'] || defaultSize
 
       document.querySelector('#point-size').value = size
       document.querySelector('#point-size-val').innerHTML = size
       document.querySelector('#fill-color').value = feature.properties['marker-color'] || featureColor
-      document.querySelector('#marker-symbol').value = feature.properties['marker-symbol'] || ''
       functions.e('#marker-image', e => { e.value = '' })
     } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
       const size = feature.properties['stroke-width'] || defaultLineWidth

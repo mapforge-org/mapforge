@@ -130,3 +130,11 @@
   flex-grow: 0;
   flex-shrink: 0;
 }
+
+/* cannot set css inside the shadow dom from here */
+em-emoji-picker {
+  position: absolute;
+  height: unset;
+  width: calc(100% - 1rem);
+  z-index: 1000;
+}
