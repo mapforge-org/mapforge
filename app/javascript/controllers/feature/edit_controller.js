@@ -245,7 +245,7 @@ export default class extends Controller {
       }, 
       dynamicWidth: true, 
       noCountryFlags: true, // TODO country flags don't work right now
-      // set: 'google' // default is native icons (they don't match the map icons)
+      // set: 'google', // default is native icons (they don't match the map icons)
       theme: 'light',
     }
 

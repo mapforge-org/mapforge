@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 * Show users' recently viewed maps
 * Unicode 17 emoji support
 * Improved tutorial map
+* Emoji picker
 
 ## 2025-08
 
