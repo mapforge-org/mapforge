@@ -22,11 +22,14 @@
 #preloader
   %img.mapforge-logo{ src: "/icons/mapforge-logo-header_white.png", alt: "Logo" }
 
-%nav#map-head.dark-shadow{ title: "Toggle Navigation", data: { 'controller': "map header", 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom", 'bs-custom-class': 'maplibregl-ctrl-tooltip' } }
-  #map-nav-toggle.navbar-toggler-icon.ms-2.me-2
-  %h1#map-title= @map.name
+- unless params['static'] == 'true'
+  -# map header and title
+  %nav#map-head.dark-shadow{ title: "Toggle Navigation", data: { 'controller': "header", 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom", 'bs-custom-class': 'maplibregl-ctrl-tooltip' } }
+    - unless params['nomenu'] == 'true'
+      #map-nav-toggle.navbar-toggler-icon.ms-2.me-2
+    %h1#map-title= @map.name
 
-#maplibre-map.map{ data: { 'controller': "header", 'action': "click->header#hideNav touchstart->header#hideNav" } }
+#maplibre-map.map{ data: { 'controller': "map header", 'action': "click->header#hideNav touchstart->header#hideNav" } }
 
 - unless @map_mode == 'static'
   = render 'layer_loading'

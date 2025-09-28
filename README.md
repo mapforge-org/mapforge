@@ -103,12 +103,15 @@ The Maxmind IP database cat get mounted to the container with:
 
 ### App
 
-Mapforge is build as a PWA (progressive web app, see [tutorial](docs/tutorials/pwa_app.md)). An Android app wrapping the pwa and is available in the [app store](https://play.google.com/store/apps/details?id=org.mapforge.twa). 
+Mapforge is build as a PWA (progressive web app, see [tutorial](docs/tutorials/pwa_app.md)). An Android app wrapping the pwa and is available in the Android [app store](https://play.google.com/store/apps/details?id=org.mapforge.twa). 
 
 To build the Android app with [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap), run: 
 
 ```
 npm install -g @bubblewrap/cli
+# init is only needed on the first run
 bubblewrap init --manifest=http://localhost:3000/manifest.json
 bubblewrap build
 ```
+
+To create trust between the app and the website, it needs to host a file `.well-known/assetlinks.json` containing the SHA256 fingerprint of the key used to build the app. You can get the fingerprint with `keytool -list -v -keystore android.keystore` and add it to the assetlinks.json with `bubblewrap fingerprint add`.
