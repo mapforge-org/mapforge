@@ -204,14 +204,13 @@ export const iconSizeMin = ['case',
   0, iconSizeDefault]
 export const iconSizeMax = ['case',
   ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
-  ['*', 16, iconSizeDefault], iconSizeDefault]
+  ['*', 32, iconSizeDefault], iconSizeDefault]
 
 const iconSize = [
       'interpolate',
       ["exponential", 2],
       ['zoom'],
       0, iconSizeMin,
-      16, iconSizeDefault,
       21, iconSizeMax
     ]
 
@@ -230,8 +229,7 @@ const labelSize = [
   ["exponential", 2],
   ['zoom'],
   0, labelFontSizeMin, // At zoom 0
-  16, labelFontSize,
-  21, labelFontSizeMax
+  20, labelFontSizeMax
 ]
 
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']
@@ -582,7 +580,7 @@ export function styles () {
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
         "text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
         'text-justify': 'auto',
-        'text-ignore-placement': false, // hide on collision
+        'text-ignore-placement': true, // show on collision
         "text-rotation-alignment": "map",
         // TODO: sort keys on text are ascending, on symbols descending???
         'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
