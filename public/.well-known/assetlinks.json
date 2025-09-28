@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "org.mapforge.twa",
+        "sha256_cert_fingerprints": ["0A:C3:B6:2A:2B:56:CF:6D:93:D5:47:0D:D3:E4:73:2B:C5:6F:47:F6:72:24:3A:1C:E0:3B:38:F6:6C:0F:C2:1C"]
+      }
+    }]
