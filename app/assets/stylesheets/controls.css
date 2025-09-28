@@ -1,5 +1,4 @@
 .maplibregl-ctrl {
-  opacity: 0.85;
   cursor: pointer;
   font-size: 1rem;
 }
@@ -116,7 +115,6 @@
 
 /* overwriting geocoder defaults that get loaded afterwards */
 .maplibregl-ctrl-geocoder {
-  margin: 4px 10px 0 0 !important;
   min-width: unset !important;
   width: 32px !important;
   height: 32px !important;

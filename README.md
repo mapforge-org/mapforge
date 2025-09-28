@@ -101,7 +101,7 @@ Now, you can run the image with: `podman run -e SECRET_KEY_BASE=e3c9f2... -e DEV
 The Maxmind IP database cat get mounted to the container with: 
 `-v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb`
 
-### App
+### Android App
 
 Mapforge is build as a PWA (progressive web app, see [tutorial](docs/tutorials/pwa_app.md)). An Android app wrapping the pwa and is available in the Android [app store](https://play.google.com/store/apps/details?id=org.mapforge.twa). 
 
