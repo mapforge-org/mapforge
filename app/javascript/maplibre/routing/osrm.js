@@ -44,7 +44,7 @@ export function initDirections (profile, feature) {
     // api: "https://router.project-osrm.org/route/v1",
     // car | bike | foot
     api: "https://routing.openstreetmap.de/routed-" + profile + "/route/v1",
-    profile: 'driving',
+    profile: profile,
     refreshOnMove: false, // no live updates on route drag
     // https://project-osrm.org/docs/v5.24.0/api/#route-service
     requestOptions: {
@@ -74,14 +74,17 @@ export function initDirections (profile, feature) {
     let waypoints = e.data.waypoints.map(wp => wp.location)
     directions.setWaypointsFeatures(waypoints.map( (wp, index) => directions.createWaypointfeature(wp, index)))
 
+    let trackColor = "#2d587d"
+    if (profile === "bike") { trackColor = "#3bb2d0" }
+    if (profile === "foot") { trackColor = "#f28cb1" }
     const defaultProperties = { "fill-extrusion-height": 8,
                                 "fill-extrusion-base": 3,
                                 "stroke-opacity": 0.65,
                                 // "stroke-image-url": "/icons/direction-arrow.png",
-                                "fill-extrusion-color": "#2d587d",
+                                "fill-extrusion-color": trackColor,
                                 "fill-extrusion-width": 1.5,
                                 "stroke-width": 5,
-                                "stroke": "#2d587d" }
+                                "stroke": trackColor }
     let coords = decodePolyline(e.data.routes[0].geometry)
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords || [], "type": "LineString" },

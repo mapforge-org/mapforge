@@ -138,3 +138,7 @@ em-emoji-picker {
   width: calc(100% - 1rem);
   z-index: 1000;
 }
+
+input {
+  accent-color: var(--color-light-teagreen);
+}
