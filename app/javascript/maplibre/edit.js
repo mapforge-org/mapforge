@@ -96,6 +96,7 @@ export async function initializeEditMode () {
     // any paint mode
     if (draw.getMode() !== 'simple_select' && draw.getMode() !== 'direct_select') {
       functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
+      functions.e('.maplibregl-ctrl-select', e => { e.classList.remove('active') })
     } else {
       // select mode
       functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
