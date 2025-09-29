@@ -178,6 +178,7 @@ export default class extends Controller {
     feature.properties['marker-symbol'] = symbol
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
+    document.querySelector('#feature-symbol').innerHTML = featureIcon(feature)
     redrawGeojson(true)
   }
 
