@@ -116,8 +116,8 @@
 /* overwriting geocoder defaults that get loaded afterwards */
 .maplibregl-ctrl-geocoder {
   min-width: unset !important;
-  width: 32px !important;
-  height: 32px !important;
+  width: 2rem !important;
+  height: 2rem !important;
   box-shadow: 0 0 0 2px rgb(0 0 0 / 10%) !important;
   transition: width 0.5s ease !important;
 }

@@ -48,7 +48,8 @@ body {
   width: 100%;
 
   /* Maps use Noto Sans for labels */
-  font-family: SUSE, system-ui, sans-serif;
+  font-family: SUSE, system-ui, sans-serif, "Noto Color Emoji";
+  --bs-body-font-family: SUSE, system-ui, sans-serif, "Noto Color Emoji";
   font-optical-sizing: auto;
   font-weight: 300;
   color: var(--text-color);
