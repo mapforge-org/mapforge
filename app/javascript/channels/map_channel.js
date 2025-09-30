@@ -17,8 +17,8 @@ function unload () {
   if (mapChannel) {
     console.log('Unsubscribing from map_channel', mapChannel.identifier)
     mapChannel.unsubscribe(); mapChannel = null; channelStatus = undefined
-    map.fire('offline', { detail: { message: 'Unsubscribed' } })
   }
+  map.fire('offline')
 }
 
 export function initializeSocket () {

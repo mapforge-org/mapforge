@@ -33,6 +33,12 @@ port ENV.fetch("PORT", 3000)
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
 
+activate_control_app
+# Metrics: https://github.com/yabeda-rb/yabeda-puma-plugin
+plugin :yabeda
+# Exposing at 127.0.0.1:9394/metrics
+plugin :yabeda_prometheus
+
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]

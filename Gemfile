@@ -15,6 +15,11 @@ gem "bootsnap", require: false
 gem "rack-cache", require: "rack/cache"
 gem "net-pop", github: "ruby/net-pop"
 
+# Monitoring
+gem "yabeda-prometheus"
+gem "yabeda-rails"
+gem "yabeda-puma-plugin"
+
 # login
 gem "omniauth"
 gem "omniauth-rails_csrf_protection"
