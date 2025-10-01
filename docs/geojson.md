@@ -31,7 +31,8 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `stroke`: line color (default: 'darkgreen')
 * `stroke-opacity`: opacity of the line (default: 0.8)
 * `stroke-image-url`: URL pointing to icon image that will get repeated along the line. Can point to a Mapforge hosted image like /icons/direction-arrow.png
-* `stroke-symbol`: taken as text/emoji, emoji list: https://emojipedia.org/google/15.1
+* `stroke-symbol`: taken as text/emoji, emoji list: https://emojipedia.org/google/16
+* `stroke-dasharray`: true/false for making the stroke line dashed (default: false)
 * `fill-extrusion-color`: color of the extrusion (default: green)
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-width`: width in m
