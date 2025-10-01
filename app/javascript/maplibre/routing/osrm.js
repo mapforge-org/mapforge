@@ -84,7 +84,8 @@ export function initDirections (profile, feature) {
                                 "fill-extrusion-color": trackColor,
                                 "fill-extrusion-width": 1.5,
                                 "stroke-width": 5,
-                                "stroke": trackColor }
+                                "stroke": trackColor,
+                                "stroke-dasharray": true }
     let coords = decodePolyline(e.data.routes[0].geometry)
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords || [], "type": "LineString" },

@@ -326,6 +326,11 @@ export function styles () {
         'line-opacity': [
           'case', ['boolean', ['feature-state', 'active'], false],
           lineOpacityActive, lineOpacity
+        ],
+        'line-dasharray': [
+          "case",
+          ["==", ["get", "stroke-dasharray"], true], ["literal", [1, 2]],
+          ["literal", [1 , 0]]
         ]
       }
     },
