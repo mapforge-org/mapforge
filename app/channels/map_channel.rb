@@ -2,50 +2,59 @@ class MapChannel < ApplicationCable::Channel
   # Allow to subscribe to changes with public + private id,
   # Check auth on update methods by looking up map with private id
   def subscribed
+    super
     Map.find_by(private_id: params[:map_id]) || Map.find_by(public_id: params[:map_id])
     stream_from "map_channel_#{params[:map_id]}"
     Rails.logger.debug { "MapChannel subscribed for '#{params[:map_id]}'" }
   end
 
   def unsubscribed
+    super
     # Any cleanup needed when channel is unsubscribed
     # Rails.logger.debug "MapChannel unsubscribed"
   end
 
   def update_map(data)
+    Yabeda.websocket.messages_received.increment({ action: "update_map", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     map.update!(map_atts(data))
   end
 
   def update_layer(data)
+    Yabeda.websocket.messages_received.increment({ action: "update_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     layer = map.layers.find(layer_atts(data)["id"])
     layer.update!(layer_atts(data))
   end
 
   def update_feature(data)
+    Yabeda.websocket.messages_received.increment({ action: "update_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     feature = map.features.find(feature_atts(data)["id"])
     feature.update!(feature_atts(data))
   end
 
   def new_feature(data)
+    Yabeda.websocket.messages_received.increment({ action: "new_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     map.layers.geojson.first.features.create!(feature_atts(data))
   end
 
   def new_layer(data)
+    Yabeda.websocket.messages_received.increment({ action: "new_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     map.layers.create!(layer_atts(data))
   end
 
   def delete_feature(data)
+    Yabeda.websocket.messages_received.increment({ action: "delete_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     feature = map.features.find(feature_atts(data)["id"])
     feature.destroy
   end
 
   def delete_layer(data)
+    Yabeda.websocket.messages_received.increment({ action: "delete_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     layer = map.layers.find(layer_atts(data)["id"])
     layer.destroy

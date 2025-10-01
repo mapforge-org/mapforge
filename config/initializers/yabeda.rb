@@ -1,21 +1,28 @@
 Yabeda.configure do
-  # A gauge to track the number of active WebSocket connections
-  gauge :websocket_active_connections,
-        comment: "Number of currently active WebSocket connections"
+  group :websocket do
+    gauge :active_connections,
+          comment: "Number of currently active WebSocket connections"
 
-  # A counter to track the total number of WebSocket connections opened
-  counter :websocket_connections_opened,
-          comment: "Total number of WebSocket connections opened"
+    counter :connections_opened,
+            comment: "Total number of WebSocket connections opened"
 
-  # A counter to track the total number of WebSocket connections closed
-  counter :websocket_connections_closed,
-          comment: "Total number of WebSocket connections closed"
+    counter :connections_closed,
+            comment: "Total number of WebSocket connections closed"
 
-  # A counter to track the number of WebSocket messages sent
-  counter :websocket_messages_sent,
-          comment: "Total number of WebSocket messages sent"
+    counter :messages_received,
+            comment: "Total number of WebSocket messages received",
+            tags: %i[action channel]
 
-  # A counter to track the number of WebSocket messages received
-  counter :websocket_messages_received,
-          comment: "Total number of WebSocket messages received"
+    gauge :active_subscriptions,
+            comment: "Number of active WebSocket channel subscriptions",
+            tags: %i[channel]
+
+    counter :subscriptions_opened,
+            comment: "Total number of WebSocket channel subscriptions opened",
+            tags: %i[channel]
+
+    counter :subscriptions_closed,
+            comment: "Total number of WebSocket channel subscriptions closed",
+            tags: %i[channel]
+  end
 end
