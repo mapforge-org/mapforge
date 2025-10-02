@@ -3,7 +3,7 @@
 
   = render 'layouts/head'
 
-  %body.background-dark
+  %body.background-dark{ontouchstart: ""}
 
     = render 'shared/header', menu: true, create_button: !!@user, static: true
 

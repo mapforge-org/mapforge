@@ -61,36 +61,36 @@
         %b.me-1 Map default: 
         %span.no-wrap
           %i.bi.bi-crosshair.me-2.mb-2
-          %span.view-values#map-center>
+          %span.view-values.selectable#map-center>
           ,
         %span.no-wrap  
           %i.bi.bi-zoom-in.me-2.mb-2
-          %span.view-values#map-zoom>
+          %span.view-values.selectable#map-zoom>
           ,
         %span.no-wrap
           %i.bi.bi-triangle.me-2.mb-2
-          %span.view-values#map-pitch>
+          %span.view-values.selectable#map-pitch>
           ,
         %span.no-wrap
           %i.bi.bi-arrow-counterclockwise.me-2
-          %span.view-values#map-bearing>
+          %span.view-values.selectable#map-bearing>
 
       %b.me-1 Current:
       %span.no-wrap
         %i.bi.bi-crosshair.me-2.mb-2
-        %span.view-values#map-center-current>
+        %span.view-values.selectable#map-center-current>
         ,
       %span.no-wrap
         %i.bi.bi-zoom-in.me-2.mb-2
-        %span.view-values#map-zoom-current>
+        %span.view-values.selectable#map-zoom-current>
         ,
       %span.no-wrap 
         %i.bi.bi-triangle.me-2.mb-2
-        %span.view-values#map-pitch-current>
+        %span.view-values.selectable#map-pitch-current>
         ,
       %span.no-wrap  
         %i.bi.bi-arrow-counterclockwise.me-2.mb-2
-        %span.view-values#map-bearing-current>
+        %span.view-values.selectable#map-bearing-current>
 
       - if @map_mode == 'rw'
         .mt-2

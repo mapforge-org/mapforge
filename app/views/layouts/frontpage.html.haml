@@ -4,7 +4,7 @@
   = render 'layouts/head'
 
 
-  %body
+  %body{ontouchstart: ""}
     = render 'shared/header', menu: true, create_button: !!@user, static: true
 
     = yield

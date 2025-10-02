@@ -114,4 +114,4 @@ bubblewrap init --manifest=http://localhost:3000/manifest.json
 bubblewrap build
 ```
 
-To create trust between the app and the website, it needs to host a file `.well-known/assetlinks.json` containing the SHA256 fingerprint of the app signing key. You can get the fingerprint of the local key with `keytool -list -v -keystore android.keystore` and the fingerprint of the production key in the play console (Setup > App Integrity > App Signing > Settings). Add it to the assetlinks.json with `bubblewrap fingerprint add`.
+To create trust between the app and the website, it needs to host a file `.well-known/assetlinks.json` containing the SHA256 fingerprint of the app signing key. You can get the fingerprint of the local key with `keytool -list -v -keystore android.keystore` and the fingerprint of the production key in the play console (Setup > App Integrity > App Signing > Settings). Add it to the [assetlinks.json](https://developers.google.com/digital-asset-links/tools/generator) with `bubblewrap fingerprint add`.

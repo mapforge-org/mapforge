@@ -10,7 +10,7 @@
   .map-modal-header
     %h4#feature-details-header.flex-container
       #feature-symbol
-      #feature-title.flex-container.flex-center
+      #feature-title.flex-container.flex-center.selectable
 
   .map-modal-header#edit-buttons.flex-center.hidden
     .btn-group-sm.mt-2.mb-2{ role: "group" }
@@ -33,15 +33,15 @@
   = render 'maps/modals/feature/edit_ui'
   = render 'maps/modals/feature/edit_raw'
 
-  #feature-details-body
+  #feature-details-body.selectable
     %p
 
     #feature-details-elevation
       %canvas#route-elevation-chart
 
   #feature-details-meta.mt-2
-    %span#feature-size
-    %span#feature-vertexes
+    %span#feature-size.selectable
+    %span#feature-vertexes.selectable
     %span#feature-export.ms-2.link<
       =link_to map_feature_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
         %i.bi.bi-download

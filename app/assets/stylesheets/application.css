@@ -77,6 +77,24 @@ a:active, .link:active {
   }
 }
 
+/* Mobile tweaks */
+@media (width <= 574px) {
+  body {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-overflow-scrolling: auto;
+  }
+
+  .selectable {
+    user-select: text;
+    -webkit-user-select: text;
+    -webkit-touch-callout: default;
+  }
+}
+
+
 .flex-container {
   display: flex;
   flex-wrap: wrap;
