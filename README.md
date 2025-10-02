@@ -16,7 +16,7 @@ GeoJSON layers can get styled to your needs using an extended version of the [ge
 [mapbox simplestyle spec](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0). See [docs/geojson.md](docs/geojson.md) for supported attributes.
 
 [Overpass](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) layers can get added to the map, allowing for custom queries and display 
-of all possible OpenStreetMap nodes. Read more about that in the [overpass doc](docs/overpass.md).
+of all possible OpenStreetMap nodes. Read more about that in the [overpass doc](docs/tutorials/overpass_layers.md).
  
 ## Development Setup
  
@@ -103,7 +103,7 @@ The Maxmind IP database cat get mounted to the container with:
 
 ### Android App
 
-Mapforge is build as a PWA (progressive web app, see [tutorial](docs/tutorials/pwa_app.md)). An Android app wrapping the pwa and is available in the Android [app store](https://play.google.com/store/apps/details?id=org.mapforge.twa). 
+Mapforge is build as a PWA (progressive web app, see [tutorial](docs/tutorials/app.md)). An Android app wrapping the pwa and is available in the Android [app store](https://play.google.com/store/apps/details?id=org.mapforge.twa). 
 
 To build the Android app with [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap), run: 
 
