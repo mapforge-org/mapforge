@@ -69,8 +69,7 @@
 .feature-details-icon {
   margin: 0.3rem;
   margin-right: 0.6rem;
-  width: calc(1.325rem + .9vw); /* same size as .fs-2 */
-  max-height: calc(1.325rem + .9vw);
+  height: calc(1.325rem + .9vh); /* same size as .fs-2 */
 }
 
 #feature-details-meta, #feature-details-meta a {

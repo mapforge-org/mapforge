@@ -26,6 +26,11 @@
     %input.slider#point-size{ type: "range", min: "1", max: "50", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updatePointSize  change->feature--edit#saveFeature" }
     %span#point-size-val.text-muted.small
 
+  #point-scaling-ui.edit-ui.edit-point
+    %label.edit-polygon.edit-line{ for: "point-scaling"} Point scaling:
+    %input#point-scaling{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updatePointScaling change->feature--edit#saveFeature"} }
+    %label{ for: "point-scaling"} Scaled with zoom
+
   #line-width-ui.edit-ui.edit-line
     %label{ for: "line-width"} Width:
     %input.slider#line-width{ type: "range", min: "1", max: "15", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateLineWidth change->feature--edit#saveFeature" }
@@ -70,6 +75,7 @@
 
   #marker-image-ui.edit-ui.edit-point
     %label{ for: "marker-image"} Image:
+    .feature-image
     - if @user
       %input.form-control#marker-image{ type: "file", name: 'marker-image', 'data-action': "input->feature--edit#addUndo change->feature--edit#updateMarkerImage" }
     - else

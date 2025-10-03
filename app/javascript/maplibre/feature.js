@@ -136,7 +136,8 @@ export async function showFeatureDetails (feature) {
     modal.style.cursor = 'default'
   })
 
-  document.querySelector('#feature-symbol').innerHTML = featureIcon(feature)
+  f.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
+  f.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
   document.querySelector('#feature-title').innerHTML = featureTitle(feature)
   document.querySelector('#feature-size').innerHTML = featureMeta(feature)
   document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
@@ -176,6 +177,16 @@ export function featureIcon (feature) {
     image = "<i class='bi bi-bounding-box-circles me-2 fs-3'>"
   } else if (feature.geometry.type === "Point") {
     image = "<i class='bi bi-record-circle me-2 fs-3'>"
+  }
+  return image
+}
+
+export function featureImage(feature) {
+  let image = ''
+  if (feature.properties['marker-image-url']) {
+    const imageUrl = feature.properties['marker-image-url'].replace('/icon/', '/image/')
+    image = "<a href='" + imageUrl + "' target='_blank'>" +
+      "<img class='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'></a>"
   }
   return image
 }
