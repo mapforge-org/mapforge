@@ -329,7 +329,7 @@ export function styles () {
         ],
         'line-dasharray': [
           "case",
-          ["==", ["get", "stroke-dasharray"], true], ["literal", [1, 2]],
+          ["==", ["get", "stroke-dasharray"], true], ["literal", [1, 1.5]],
           ["literal", [1 , 0]]
         ]
       }

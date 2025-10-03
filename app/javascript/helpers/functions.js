@@ -58,6 +58,10 @@ export function isTouchDevice () {
          (!!window.DocumentTouch && document instanceof window.DocumentTouch)
 }
 
+export function isApp () {
+  window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
 // takes a css selector and callback method
 export function e (selector, callback) {
   const elements = document.querySelectorAll(selector)

@@ -63,28 +63,26 @@
 }
 
 .btn-orange {
-  background-color: #f60;
-  border-color: #f60;
+  background-color: var(--color-golden-brown);
+  border-color: var(--color-golden-brown);
   color: #fff !important;
 
   --text-color: #fff;
   --bs-btn-color: #fff;
-  --bs-btn-bg: #f60;
-  --bs-btn-border-color: #f60;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #f60;
-  --bs-btn-hover-border-color: #f60;
+  --bs-btn-hover-bg: var(--color-golden-brown);
+  --bs-btn-hover-border-color: var(--color-golden-brown);
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #FF781F;
-  --bs-btn-active-border-color: #FF781F;
+  --bs-btn-active-bg: var(--color-orange);
+  --bs-btn-active-border-color: var(--color-orange);
 }
 
 /* only add hover effects to supported browsers */
 @media (hover: hover) {
   .btn-orange:hover {
     --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #FF781F;
-    --bs-btn-hover-border-color: #FF781F;
+    --bs-btn-hover-bg: var(--color-orange);
+    --bs-btn-hover-border-color: var(--color-orange);
   }
 }
 

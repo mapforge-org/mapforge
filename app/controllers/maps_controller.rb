@@ -62,8 +62,8 @@ class MapsController < ApplicationController
   end
 
   def create
-    @map = Map.create!(map_params)
-    @map.update(user: @user)
+    coords = ip_coordinates
+    @map = Map.create!(user: @user, center: coords)
 
     redirect_to @map.private_map_path, notice: "Map was successfully created."
   end
@@ -142,11 +142,6 @@ class MapsController < ApplicationController
   def set_map_rw
     @map = Map.includes(layers: :features).find_by(private_id: params[:id])
     render_not_found unless @map
-  end
-
-  # Only allow a list of trusted parameters through.
-  def map_params
-    params.fetch(:map, {})
   end
 
   def set_map_mode
