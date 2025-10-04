@@ -25,4 +25,8 @@ Yabeda.configure do
             comment: "Total number of WebSocket channel subscriptions closed",
             tags: %i[channel]
   end
+
+  counter :dragonfly_transformations,
+            comment: "Total number of Dragonfly image transformations performed",
+            tags: %i[processor]
 end

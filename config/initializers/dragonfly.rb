@@ -17,6 +17,7 @@ Dragonfly.app.configure do
 
   # custom processors: http://markevans.github.io/dragonfly/processors
   processor :rounded do |content|
+    Yabeda.dragonfly_transformations.increment({ processor: "rounded" })
     content.shell_update(ext: "png") do |old_path, new_path|
       # Instagram style rounded corners, preserving inner transparency
       "/usr/bin/convert #{old_path} -alpha set \
@@ -29,6 +30,7 @@ Dragonfly.app.configure do
   end
 
   processor :crop_quadrant do |content|
+    Yabeda.dragonfly_transformations.increment({ processor: "crop_quadrant" })
     height = content.analyse(:height)
     width = content.analyse(:width)
     # Calculate the quadrant size
@@ -41,12 +43,14 @@ Dragonfly.app.configure do
   end
 
   processor :sharpen do |content, amount|
+    Yabeda.dragonfly_transformations.increment({ processor: "sharpen" })
     content.shell_update do |old_path, new_path|
       "/usr/bin/convert #{old_path} -sharpen #{amount} #{new_path}"
     end
   end
 
   processor :border do |content, width|
+    Yabeda.dragonfly_transformations.increment({ processor: "border" })
     width ||= 5
     content.shell_update(ext: "png") do |old_path, new_path|
       "/usr/bin/convert #{old_path} -bordercolor white -border #{width}x#{width} \
