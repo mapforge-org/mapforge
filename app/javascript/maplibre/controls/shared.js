@@ -213,7 +213,7 @@ export function initLayersModal () {
         const source = layer.type === 'geojson' ? 'geojson-source' : layer.type + '-source-' + layer.id
         listItem.setAttribute('data-feature-source', source)
         listItem.setAttribute('data-controller', 'map--layers')
-        listItem.setAttribute('data-action', 'click->map--layers#flyto')
+        listItem.setAttribute('data-action', 'click->map--layers#flyToLayerElement')
 
         const icon = document.createElement('span')
         icon.innerHTML = featureIcon(feature)

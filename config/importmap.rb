@@ -63,3 +63,5 @@ pin "swiper", to: "swiper-bundle.min.js", preload: false # @12.0.2
 pin "swiper/modules", to: "swiper-modules.js", preload: false # @11.2.10
 # Emoji picker: https://github.com/missive/emoji-mart (alternative: https://www.npmjs.com/package/emoji-picker-element)
 pin "emoji-mart", preload: false # @5.6.0
+# Extract coords from uploaded images
+pin "exif-reader", preload: false # @2.3.0

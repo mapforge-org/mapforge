@@ -64,6 +64,16 @@ describe 'Map' do
       expect(map.reload.bearing).to eq "50.4"
       expect(page).to have_text('TestMap')
     end
+
+    it 'import image' do
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "image_with_exif.jpg"))
+      wait_for { map.reload.features.count }.to eq 1
+      # flyTo is finished when the feature details are shown
+      expect(page).to have_text('Edit feature')
+      expect(page.evaluate_script("[map.getCenter().lng.toFixed(4), map.getCenter().lat.toFixed(4)].toString()"))
+        .to eq("9.9749,53.5445")
+    end
   end
 
   context 'overpass layer' do

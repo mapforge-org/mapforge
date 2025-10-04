@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2025-10
+
+* Using exif coordinates from uploaded images (upload in layers modal)
+
 ## 2025-09
 
 * Show users' recently viewed maps

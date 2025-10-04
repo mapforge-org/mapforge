@@ -14,7 +14,7 @@ export default class extends Controller {
     const file = fileInput.files[0]
     const fileSize = (file.size / 1024).toFixed(2)
 
-    if (fileSize > 1500) {
+    if (fileSize > 1500 && !file.type.startsWith('image/')) {
       status('File exceeds 1.5MB, please consider simplifying it', 'error', 'medium', 8000)
       return
     }
@@ -84,7 +84,12 @@ export default class extends Controller {
     }
   }
 
-  addImageMarker(file) {
+  async addImageMarker(file) {
+    // Dynamically import ExifReader (https://github.com/mattiasw/ExifReader)
+    const ExifReader = (await import('exif-reader'))
+    const tags = await ExifReader.load(file || url, { expanded: true, async: true })
+    const gpsLng = tags?.gps?.Longitude, gpsLat = tags?.gps?.Latitude
+
     const formData = new FormData()
     formData.append('image', file)
     fetch('/images', {
@@ -101,7 +106,7 @@ export default class extends Controller {
         "id": functions.featureId(),
         "type": "Feature",
         "geometry": {
-          "coordinates": [map.getCenter().lng, map.getCenter().lat],
+          "coordinates": [gpsLng || map.getCenter().lng, gpsLat || map.getCenter().lat],
           "type": "Point"
         },
         "properties": {
@@ -114,19 +119,23 @@ export default class extends Controller {
       }
       upsert(feature)
       redrawGeojson(false)
-      mapChannel.send_message('update_feature', { ...feature })
+        mapChannel.send_message('new_feature', { ...feature })
       status('Added image')
+      this.flyToFeature(feature)
       initLayersModal()
     })
     .catch(error => console.error('Error:', error))
   }
 
-  flyto () {
+  flyToLayerElement () {
     const id = this.element.getAttribute('data-feature-id')
     const source = this.element.getAttribute('data-feature-source')
     const layer = layers.find(l => l?.geojson?.features?.some(f => f.id === id))
     const feature = layer.geojson.features.find(f => f.id === id)
+    this.flyToFeature(feature, source)
+  }
 
+  flyToFeature(feature, source='geojson-source') {
     // Calculate the centroid
     const centroid = window.turf.centroid(feature)
     console.log('Fly to: ' + feature.id + ' ' + centroid.geometry.coordinates)
