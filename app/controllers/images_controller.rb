@@ -2,7 +2,7 @@ class ImagesController < ApplicationController
   before_action :set_image, only: %i[icon image]
   before_action :set_map, only: %i[upload]
 
-  IMAGE_CACHE_TIME = 24.hours
+  IMAGE_CACHE_TIME = 1.week
 
   # render image as 200x200px icon with white border
   def icon

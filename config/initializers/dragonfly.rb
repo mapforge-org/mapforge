@@ -13,7 +13,7 @@ Dragonfly.app.configure do
     root_path: "storage/dragonfly",
     server_root: Rails.root.join("public")
 
-  response_header "cache-control", "public, max-age=3600"
+  response_header "cache-control", "public, max-age=#{1.week.to_i}"
 
   # custom processors: http://markevans.github.io/dragonfly/processors
   processor :rounded do |content|
