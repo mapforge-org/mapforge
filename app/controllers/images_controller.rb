@@ -57,7 +57,7 @@ class ImagesController < ApplicationController
         image.write(tempfile.path)
       end
 
-      uid = Dragonfly.app.store(tempfile, name: filename)
+      uid = Dragonfly.app.store(tempfile, "name" => filename) # name needs to be a string here
       img = Image.create!(img_uid: uid, public_id: filename, user: @user, map: @map)
     end
     render json: { icon: "/icon/#{img.public_id}", image: "/image/#{img.public_id}" }

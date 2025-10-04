@@ -31,13 +31,13 @@ module Ulogger
     end
 
     def addtrack
-      user = User.find_by(email: session['email'])
+      @user = User.find_by(email: session['email'])
       map_id, padded_id = create_numeric_map_id
       @map = Map.create!(private_id: padded_id, name: params[:track],
                          public_id: params[:track],
                          view_permission: 'link',
                          edit_permission: 'link',
-                         user: user)
+                         user: @user)
       @map.save!
       render json: { error: false, trackid: map_id }
     end
@@ -95,9 +95,10 @@ module Ulogger
       # original filename is 'upload', we need a name with file extension
       # for Dragonfly mime_type detection:
       ext = uploaded.content_type.split('/').last
-      filename = "#{SecureRandom.hex(4)}.#{ext}"
-      uid = Dragonfly.app.store(uploaded.tempfile, 'name' => filename)
-      img = Image.create(img_uid: uid)
+      filename = "ulogger-#{SecureRandom.hex(4)}.#{ext}"
+
+      uid = Dragonfly.app.store(uploaded.tempfile, 'name' => filename) # name needs to be a string here
+      img = Image.create(img_uid: uid, public_id: filename, user: @map.user, map: @map)
       desc = "[![image](/image/#{img.public_id})](/image/#{img.public_id})\n" +
         description
       { "marker-color" => "transparent",
