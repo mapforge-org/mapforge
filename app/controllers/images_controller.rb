@@ -41,19 +41,25 @@ class ImagesController < ApplicationController
   def upload
     uploaded_file = params[:image]
     ext = uploaded_file.content_type.split("/").last
-    filename = "#{SecureRandom.hex(4)}.#{ext}"
     tempfile = uploaded_file.tempfile
+    # Avoid duplicate files by identifying uploaded files by <name>-<size>
+    filename = uploaded_file.original_filename.gsub(/[^0-9A-Za-z.\-_]/, "_")
+    filename = filename.sub(/\.[^\.]*$/, "")
+    filename = "#{filename}-#{tempfile.size}.#{ext}"
 
-    # resize image if it exceeds 1024px
-    image = MiniMagick::Image.read(uploaded_file.tempfile)
-    if image.width > 1024 || image.height > 1024
-      image.resize "1024x1024" # Maintains aspect ratio, resizes width to 1024px max
-      tempfile = Tempfile.new([ "resized-", File.extname(uploaded_file.original_filename) ])
-      image.write(tempfile.path)
+    unless img = Image.find_by(public_id: filename)
+      # resize image if it exceeds 1024px
+      image = MiniMagick::Image.read(uploaded_file.tempfile)
+      if image.width > 1024 || image.height > 1024
+        image.resize "1024x1024" # Maintains aspect ratio, resizes width to 1024px max
+        image.quality "85"
+        tempfile = Tempfile.new([ "resized-", File.extname(uploaded_file.original_filename) ])
+        image.write(tempfile.path)
+      end
+
+      uid = Dragonfly.app.store(tempfile, name: filename)
+      img = Image.create!(img_uid: uid, public_id: filename, user: @user, map: @map)
     end
-
-    uid = Dragonfly.app.store(tempfile, "name" => filename)
-    img = Image.create!(img_uid: uid, user: @user, map: @map)
     render json: { icon: "/icon/#{img.public_id}", image: "/image/#{img.public_id}" }
   end
 
