@@ -102,6 +102,7 @@ export default class extends Controller {
 
       document.querySelector('#point-size').value = size
       document.querySelector('#point-size-val').innerHTML = size
+      document.querySelector('#point-scaling').checked = feature.properties['marker-scaling']
       document.querySelector('#fill-color').value = feature.properties['marker-color'] || featureColor
       functions.e('#marker-image', e => { e.value = '' })
     } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
