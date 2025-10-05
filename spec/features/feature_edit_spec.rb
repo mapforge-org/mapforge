@@ -160,6 +160,7 @@ describe 'Feature edit' do
         attach_file('marker-image', image_path)
 
         wait_for { point.reload.properties['marker-image-url'] }.to match(/icon\/.+/)
+        expect(point.image.public_id).to match (/mapforge-logo-icon-\d+.png/)
       end
 
       it 'can upload image bigger 1024px' do

@@ -10,7 +10,8 @@ class Image
   dragonfly_accessor :img
 
   belongs_to :user, optional: true, counter_cache: true
-  belongs_to :map, optional: true, counter_cache: true
+  # belongs_to :map, optional: true, counter_cache: true
+  has_many :features, dependent: :nullify
 
   field :img_uid, type: String
   field :public_id, type: String

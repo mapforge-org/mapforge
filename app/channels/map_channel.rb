@@ -30,14 +30,16 @@ class MapChannel < ApplicationCable::Channel
   def update_feature(data)
     Yabeda.websocket.messages_received.increment({ action: "update_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
-    feature = map.features.find(feature_atts(data)["id"])
-    feature.update!(feature_atts(data))
+    @feature = map.features.find(feature_atts(data)["id"])
+    @feature.update!(feature_atts(data))
+    associate_image(data["properties"]["marker-image-url"]) if data["properties"] && data["properties"]["marker-image-url"]
   end
 
   def new_feature(data)
     Yabeda.websocket.messages_received.increment({ action: "new_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
-    map.layers.geojson.first.features.create!(feature_atts(data))
+    @feature = map.layers.geojson.first.features.create!(feature_atts(data))
+    associate_image(data["properties"]["marker-image-url"]) if data["properties"] && data["properties"]["marker-image-url"]
   end
 
   def new_layer(data)
@@ -85,5 +87,12 @@ class MapChannel < ApplicationCable::Channel
     map = Map.find_by(private_id: id)
     raise "Cannot open map for writing with (public?) id '#{id}'" unless map
     map
+  end
+
+  def associate_image(url)
+    public_id = url.to_s.sub(%r{^/icon/}, "")
+    if img = Image.find_by(public_id:)
+      @feature.update!(image: img)
+    end
   end
 end

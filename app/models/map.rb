@@ -4,7 +4,7 @@ class Map
   include Mongoid::Timestamps
   include Turbo::Broadcastable
 
-  has_many :layers
+  has_many :layers, dependent: :destroy
   belongs_to :user, optional: true, counter_cache: true
 
   # implicit_order_column is not supported by mongoid

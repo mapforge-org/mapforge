@@ -92,6 +92,7 @@ export default class extends Controller {
 
     const formData = new FormData()
     formData.append('image', file)
+    formData.append('map_id', window.gon.map_id)
     fetch('/images', {
       method: 'POST',
       body: formData,

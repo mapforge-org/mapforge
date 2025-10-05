@@ -1,6 +1,6 @@
 class ImagesController < ApplicationController
   before_action :set_image, only: %i[icon image]
-  before_action :set_map, only: %i[upload]
+  before_action :require_map, only: %i[upload]
 
   IMAGE_CACHE_TIME = 1.week
 
@@ -47,6 +47,7 @@ class ImagesController < ApplicationController
     filename = filename.sub(/\.[^\.]*$/, "")
     filename = "#{filename}-#{tempfile.size}.#{ext}"
 
+    # use existing image if already uploaded
     unless img = Image.find_by(public_id: filename)
       # resize image if it exceeds 1024px
       image = MiniMagick::Image.read(uploaded_file.tempfile)
@@ -58,7 +59,7 @@ class ImagesController < ApplicationController
       end
 
       uid = Dragonfly.app.store(tempfile, "name" => filename) # name needs to be a string here
-      img = Image.create!(img_uid: uid, public_id: filename, user: @user, map: @map)
+      img = Image.create!(img_uid: uid, public_id: filename, user: @user)
     end
     render json: { icon: "/icon/#{img.public_id}", image: "/image/#{img.public_id}" }
   end
@@ -69,7 +70,7 @@ class ImagesController < ApplicationController
     @image = Image.find_by(public_id: params[:public_id])
   end
 
-  def set_map
-    @map = Map.find_by(id: params[:map_id])
+  def require_map
+    @map = Map.find_by!(private_id: params[:map_id])
   end
 end

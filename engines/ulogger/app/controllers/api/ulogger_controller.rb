@@ -63,13 +63,14 @@ module Ulogger
       uploaded = params.fetch(:image, nil)
 
       if uploaded.is_a?(ActionDispatch::Http::UploadedFile)
-        image_properties = image_properties(uploaded)
+        image = save_image(uploaded)
+        image_properties = image_properties(image)
         properties.merge!(image_properties)
       else
         properties.merge!(location_properties)
       end
 
-      # reset waypoints to default invisible style, keep photos and labels
+      # reset standard waypoints to default invisible style, keep photos and labels
       features.reject { |f| f.properties['marker-image-url'] ||
         f.properties['label'] || f.properties["marker-color"].nil? }.each do |f|
         f.properties["marker-size"] = 3
@@ -78,7 +79,7 @@ module Ulogger
         f.save!
       end
       # set leading waypoint
-      features.create!(geometry: geometry, properties: properties)
+      features.create!(geometry: geometry, properties: properties, image: image)
       @map.update!(center: [ params[:lon].to_f, params[:lat].to_f ])
 
       render json: { error: false }
@@ -91,14 +92,17 @@ module Ulogger
       render json: { error: true, message: "Invalid trackid" } unless @map
     end
 
-    def image_properties(uploaded)
+    def save_image(uploaded)
       # original filename is 'upload', we need a name with file extension
       # for Dragonfly mime_type detection:
       ext = uploaded.content_type.split('/').last
       filename = "ulogger-#{SecureRandom.hex(4)}.#{ext}"
 
       uid = Dragonfly.app.store(uploaded.tempfile, 'name' => filename) # name needs to be a string here
-      img = Image.create(img_uid: uid, public_id: filename, user: @map.user, map: @map)
+      Image.create(img_uid: uid, public_id: filename, user: @map.user)
+    end
+
+    def image_properties(img)
       desc = "[![image](/image/#{img.public_id})](/image/#{img.public_id})\n" +
         description
       { "marker-color" => "transparent",

@@ -33,7 +33,5 @@
     - # Use to_a here to avoid additional db query. Mongoid always runs a query to sum()
     = "#{ map.layers.to_a.sum(&:features_count) } features"
     %br
-    = "#{map.images_count} images"
-    %br
     public id:
     = link_to map.public_id, map.public_map_path
