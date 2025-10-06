@@ -98,13 +98,19 @@
   .modal-pull-up {
     height: calc(100% - 1em);
     transition:
-      height 0.3s linear !important;
+      height 0.3s linear;
+  }
+
+  .modal-pull-half {
+    height: 50%;
+    transition:
+        height 0.3s linear;
   }
 
   .modal-pull-down {
     height: 25%;
     transition:
-      height 0.3s linear !important;
+      height 0.3s linear;
   }
 }
 

@@ -99,6 +99,8 @@ export async function showFeatureDetails (feature) {
   f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
     if (!f.isTouchDevice()) return
     if (isDragging) return
+    modal.classList.remove('modal-pull-up')
+    modal.classList.remove('modal-pull-down')
 
     isDragging = true
     dragStartY = event.clientY || event.touches[0].clientY
@@ -114,8 +116,6 @@ export async function showFeatureDetails (feature) {
     const dragY = event.clientY || event.touches[0].clientY
     // y < 0 -> dragging up
     const y = dragY - dragStartY
-    modal.classList.remove('modal-pull-up')
-    modal.classList.remove('modal-pull-down')
 
     // When dragging down, at first scroll up, then lower modal
     if (y < 0 || modal.scrollTop === 0) {
@@ -134,6 +134,12 @@ export async function showFeatureDetails (feature) {
   f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend'], (_event) => {
     isDragging = false
     modal.style.cursor = 'default'
+    const sheetHeight = parseInt(modal.style.height) / window.innerHeight * 100
+    if (sheetHeight < 25) {
+      modal.classList.remove('show')
+      modal.style.removeProperty('height')
+      modal.classList.add('modal-pull-down')
+    }
   })
 
   f.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })

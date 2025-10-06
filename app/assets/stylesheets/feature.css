@@ -12,7 +12,6 @@
     bottom: 0;
     left: calc(50% - 1rem);
     transform: translate(-50%);
-    min-height: 125px;
     max-height: calc(100% - 15px); /* px here for easier calculation of scroll behavior */
     background-color: #fff;
     overflow-y: auto;

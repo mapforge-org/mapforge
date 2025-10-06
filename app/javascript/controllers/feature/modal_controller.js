@@ -194,7 +194,7 @@ export default class extends Controller {
     } else {
       this.pullUpModal(modal)
     }
-    e.stopPropagation()
+    e.preventDefault()
   }
 
   pullDownModal (modal) {
