@@ -135,7 +135,8 @@ class Map
   end
 
   def features_count
-    layers.sum(:features_count)
+    # Use to_a here to avoid additional db query. Mongoid always runs a query to sum()
+    layers.to_a.sum(&:features_count)
   end
 
   def self.create_from_file(path, collection_format: 4326)

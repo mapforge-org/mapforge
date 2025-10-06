@@ -37,18 +37,8 @@ export default class extends Controller {
         } else if (file.type === 'application/geo+json') {
           geoJSON = JSON.parse(content)
         } else if (file.type === 'application/json') {
-          // geojson export file
+          // mapforge export file
           const mapforgeJSON = JSON.parse(content)
-          if (mapforgeJSON.properties) {
-            const props = mapforgeJSON.properties
-            mapProperties.base_map = props.base_map
-            mapProperties.center = props.center
-            mapProperties.zoom = props.zoom
-            mapProperties.pitch = props.pitch
-            mapProperties.bearing = props.bearing
-            mapProperties.name = props.name
-            mapChannel.send_message('update_map', mapProperties)
-          }
           if (mapforgeJSON.layers) {
             // mapforge export file, importing only the first geojson layer for now
             geoJSON = mapforgeJSON.layers.find(f => f.type === 'geojson').geojson
@@ -66,6 +56,20 @@ export default class extends Controller {
           mapChannel.send_message('new_feature', feature)
           status('Added feature ' + i++ + '/' + geoJSON.features.length)
         })
+
+        if (file.type === 'application/json') {
+          const mapforgeJSON = JSON.parse(content)
+          if (mapforgeJSON.properties) {
+            const props = mapforgeJSON.properties
+            mapProperties.base_map = props.base_map
+            mapProperties.center = props.center
+            mapProperties.zoom = props.zoom
+            mapProperties.pitch = props.pitch
+            mapProperties.bearing = props.bearing
+            mapProperties.name = props.name
+            mapChannel.send_message('update_map', mapProperties)
+          }
+        }
 
         status('File imported')
         initLayersModal()
