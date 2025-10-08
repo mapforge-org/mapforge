@@ -7,7 +7,8 @@
       "namespace": "android_app",
       "package_name": "org.mapforge.twa",
       "sha256_cert_fingerprints": [
-        "D4:D9:5D:38:DA:5E:6D:F3:B9:0B:B4:08:7F:D0:CA:D0:0A:B6:C1:FF:41:8E:E3:CD:DB:D8:99:DD:8D:97:FD:E8"
+        "D4:D9:5D:38:DA:5E:6D:F3:B9:0B:B4:08:7F:D0:CA:D0:0A:B6:C1:FF:41:8E:E3:CD:DB:D8:99:DD:8D:97:FD:E8", 
+        "0A:C3:B6:2A:2B:56:CF:6D:93:D5:47:0D:D3:E4:73:2B:C5:6F:47:F6:72:24:3A:1C:E0:3B:38:F6:6C:0F:C2:1C"
       ]
     }
   }
