@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
   before_action :set_user
   before_action :disable_session_cookies
 
+  rate_limit to: 30, within: 1.minute
+
   rescue_from ActionController::RoutingError, with: :render_not_found
 
   def sitemap

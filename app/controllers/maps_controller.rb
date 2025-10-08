@@ -11,6 +11,8 @@ class MapsController < ApplicationController
   # site is cookie less for anonymous users, so no csrf token is set
   skip_before_action :verify_authenticity_token, only: %i[create], unless: :set_user
 
+  rate_limit to: 5, within: 15.minutes, only: :create
+
   layout "map", only: [ :show, :demo ]
 
   def index
