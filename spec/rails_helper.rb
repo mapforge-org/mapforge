@@ -67,13 +67,17 @@ RSpec.configure do |config|
         exclude = [ /TypeError: Failed to fetch/,
                     /The user aborted a request/,
                     /Failed to load resource/ ]
-        errors = page.driver.browser.logs.get(:browser)
+        errors = page.driver.browser.logs.get(:browser).to_a
                    .select { |e| levels.include?(e.level) && e.message.present? }
                    .reject { |e| exclude.any? { |ex| e.message =~ ex } }
                    .map(&:message)
         if errors.present?
           raise JavaScriptError, errors.join("\n\n")
         end
+      end
+      if spec.metadata[:print_console_logs]
+        logs = page.driver.browser.logs.get(:browser).to_a.map(&:message)
+        puts logs.join("\n\n")
       end
     end
   end
