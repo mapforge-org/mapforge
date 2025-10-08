@@ -92,9 +92,11 @@ class MapChannel < ApplicationCable::Channel
   end
 
   def associate_image(url)
-    public_id = url.to_s.sub(%r{^/icon/}, "")
+    public_id = url.to_s.sub(%r{^/(icon|image)/}, "")
     if img = Image.find_by(public_id:)
       @feature.update!(image: img)
+    else
+      Rails.logger.info "Cannot associate image object '#{public_id}' to feature, not hosted on mapforge"
     end
   end
 end
