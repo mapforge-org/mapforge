@@ -43,7 +43,7 @@ pin "chart.js", to: "chart-js.js", preload: false # @4.5.0
 # pin "@kurkle/color", to: "@kurkle--color", preload: false # @0.3.4
 
 # render markdown
-pin "marked", preload: false # @15.0.8
+pin "marked", preload: false # @16.4.0
 
 # https://github.com/mapbox/mapbox-gl-draw
 # Unminified + patched version to style midpoints & vertexes (https://github.com/mapbox/mapbox-gl-draw/pull/964)
