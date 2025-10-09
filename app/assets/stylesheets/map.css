@@ -154,10 +154,10 @@ html:has(.map), body:has(.map) {
 
 #preloader img {
   position: fixed;
-  top: calc(50% - 20px);
-  left: calc(50% - 28px);
-  width: 53px;
-  height: 35px;
+  top: calc(50% - 29px);
+  left: calc(50% - 23px);
+  width: 45px;
+  height: 45px;
 }
 
 /* maptiler-sdk messes with the geolocate marker animation */

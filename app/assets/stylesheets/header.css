@@ -10,7 +10,13 @@
 }
 
 .mapforge-logo {
-  width: 3.2rem;
+  width: 2.2rem;
+  margin-top: 0.4rem;
+  position: absolute;
+}
+
+.mapforge-title {
+  margin-left: 2.8rem;
 }
 
 .navbar-brand {
@@ -91,8 +97,11 @@ img.profile-image {
 /* Show burger menu and dropdown for nav items */
 @media (width <= 574px) {
   .mapforge-logo {
-      width: 2.9rem; 
-    }
+    width: 2.3rem;
+    margin-top: 0.3rem;
+    margin-left: 0.5rem;
+    position: absolute;
+  }
 
   .profile-dropdown {
       top: 0.6rem;
@@ -100,6 +109,10 @@ img.profile-image {
 
   .login-link {
       top: 0.9rem;  
+  }
+
+  .navbar {
+    height: 3.1rem;
   }
 
   .navbar .container-fluid {
