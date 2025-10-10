@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ImagesController do
-  let(:image) { Image.create(img: File.new(Rails.root.join('public/icons/mapforge-logo.png'))) }
+  let(:image) { Image.create(img: File.new(Rails.root.join('public/icons/mapforge-logo-pwa.png'))) }
 
   describe '#image' do
    it 'redirects to image' do
