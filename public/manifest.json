@@ -15,6 +15,13 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
+    },
+    {
+      "src": "/icons/mapforge-logo-pwa-dark.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable",
+      "media": "(prefers-color-scheme: dark)"
     }
   ],
   "screenshots": [
