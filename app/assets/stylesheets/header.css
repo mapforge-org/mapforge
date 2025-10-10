@@ -98,9 +98,7 @@ img.profile-image {
 @media (width <= 574px) {
   .mapforge-logo {
     width: 2.3rem;
-    margin-top: 0.3rem;
-    margin-left: 0.5rem;
-    position: absolute;
+    left: 1rem;
   }
 
   .profile-dropdown {
@@ -112,19 +110,21 @@ img.profile-image {
   }
 
   .navbar {
-    height: 3.1rem;
+    min-height: 3.1rem;
+  }
+
+  .navbar-brand {
+    position: absolute;
+    top: 1.5rem;
+    margin-right: 0;
   }
 
   .navbar .container-fluid {
     padding-left: 0;
   }
 
-  .navbar-brand {
-    margin-right: 0;
-  }
-
   .navbar-collapse.collapsing, .navbar-collapse.show {
     margin-left: 0.8rem;
-    margin-top: 0.8rem;
+    margin-top: 2.8rem;
   }
 }
