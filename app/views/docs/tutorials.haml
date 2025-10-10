@@ -4,10 +4,12 @@
 
   %h1.mb-4.mapforge-font{ 'data-aos': "fade-down" } Tutorials
 
-  %h4 
-    =link_to 'OpenStreetMap data layers (Overpass)', tutorial_path(id: 'overpass_layers') 
-  %i How to add a custom data layer with OpenStreetMap data 
-    
-  %h4.mt-3
-    =link_to 'Install the Mapforge App', tutorial_path(id: 'app') 
-  %i The app can get installed from the browser or from the app store. 
+  .tutorial-preview 
+    %h4 
+      =link_to 'OpenStreetMap data layers (Overpass)', tutorial_path(id: 'overpass_layers') 
+    %i How to add a custom data layer with OpenStreetMap data 
+      
+  .tutorial-preview.mt-3
+    %h4
+      =link_to 'Install the Mapforge App', tutorial_path(id: 'app') 
+    %i The app can get installed from the browser or from the app store. 

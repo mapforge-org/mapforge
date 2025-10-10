@@ -98,8 +98,9 @@ export async function showFeatureDetails (feature) {
 
   f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
     if (!f.isTouchDevice()) return
-    // if (isDragging) return
     if (dom.isInputElement(event.target)) return
+    // only enable bottom sheet behavior on small screens
+    if (window.innerWidth > 574) return
 
     isDragging = true
     dragStartY = event.clientY || event.touches[0].clientY
@@ -110,8 +111,8 @@ export async function showFeatureDetails (feature) {
   // Allow to drag up/down modal on touch devices
   // Simulating an android bottom sheet behavior
   f.addEventListeners(modal, ['mousemove', 'touchmove', 'drag'], (event) => {
-    if (!isDragging) return
-    console.log(event.type)
+    if (!isDragging) { return }
+    if (dom.isInputElement(event.target)) { event.preventDefault(); return }
 
     const dragY = event.clientY || event.touches[0].clientY
     // y < 0 -> dragging up
@@ -133,7 +134,6 @@ export async function showFeatureDetails (feature) {
 
   f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend', 'mouseleave'], (_event) => {
     if (!isDragging) return
-    console.log(_event.type)
     isDragging = false
     modal.style.cursor = 'default'
     const sheetHeight = parseInt(modal.style.height) / window.innerHeight * 100

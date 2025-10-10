@@ -36,6 +36,13 @@ nav.fixed-top~#docs {
   max-height: 480px;
 }
 
+.tutorial-preview {
+  border: 2px solid var(--color-light-sand);
+  border-radius: 15px;
+  max-width: 35rem;
+  padding: 1rem;
+}
+
 @media (width <=575px) {
 .markdown-content img, .markdown-content video {
     max-width: 100%;

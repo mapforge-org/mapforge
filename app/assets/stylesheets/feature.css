@@ -136,8 +136,9 @@
 em-emoji-picker {
   position: absolute;
   height: unset;
-  width: calc(100% - 1rem);
+  width: calc(100% - 0.6rem);
   z-index: 1000;
+  left: 0rem;
 }
 
 input {
