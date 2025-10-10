@@ -198,16 +198,11 @@ export default class extends Controller {
   }
 
   pullDownModal (modal) {
-    modal.style.removeProperty('height')
-    modal.classList.add('modal-pull-down')
-    modal.classList.remove('modal-pull-up')
+    modal.style.height = 'calc(25vh)'
   }
 
   pullUpModal (modal) {
-    modal.style.removeProperty('height')
-    modal.classList.remove('modal-pull-down')
-    // console.log('screen width: ' + screen.width)
-    modal.classList.add('modal-pull-up')
+    modal.style.height = 'calc(100vh - 1rem)'
   }
 
   getFeature () {

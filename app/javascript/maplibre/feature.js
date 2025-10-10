@@ -98,9 +98,8 @@ export async function showFeatureDetails (feature) {
 
   f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
     if (!f.isTouchDevice()) return
-    if (isDragging) return
-    modal.classList.remove('modal-pull-up')
-    modal.classList.remove('modal-pull-down')
+    // if (isDragging) return
+    if (dom.isInputElement(event.target)) return
 
     isDragging = true
     dragStartY = event.clientY || event.touches[0].clientY
@@ -112,6 +111,7 @@ export async function showFeatureDetails (feature) {
   // Simulating an android bottom sheet behavior
   f.addEventListeners(modal, ['mousemove', 'touchmove', 'drag'], (event) => {
     if (!isDragging) return
+    console.log(event.type)
 
     const dragY = event.clientY || event.touches[0].clientY
     // y < 0 -> dragging up
@@ -131,14 +131,17 @@ export async function showFeatureDetails (feature) {
     }
   })
 
-  f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend'], (_event) => {
+  f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend', 'mouseleave'], (_event) => {
+    if (!isDragging) return
+    console.log(_event.type)
     isDragging = false
     modal.style.cursor = 'default'
     const sheetHeight = parseInt(modal.style.height) / window.innerHeight * 100
     if (sheetHeight < 25) {
       modal.classList.remove('show')
       modal.style.removeProperty('height')
-      modal.classList.add('modal-pull-down')
+    } else if (sheetHeight > 75) {
+      modal.style.height = 'calc(100vh - 1rem)'
     }
   })
 

@@ -59,3 +59,7 @@ export function scrollToId(elementId) {
     element.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }
+
+export function isInputElement(target) {
+  return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT'
+}
