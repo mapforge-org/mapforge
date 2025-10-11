@@ -121,7 +121,7 @@ a:active, .link:active {
 
 /* re-using bootstrap transition class */
 .fade {
-  transition: opacity 0.2s linear, visibility 0.2s linear;
+  transition: opacity 0.2s linear;
 }
 
 .fade:not(.show) {

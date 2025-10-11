@@ -189,7 +189,7 @@ export default class extends Controller {
   toggleModalSize (e) {
     const modal = this.element
     const size = (modal.offsetHeight / modal.parentElement.offsetHeight) * 100
-    if (size > 50) {
+    if (size > 55) {
       this.pullDownModal(modal)
     } else {
       this.pullUpModal(modal)
@@ -198,11 +198,19 @@ export default class extends Controller {
   }
 
   pullDownModal (modal) {
-    modal.style.height = 'calc(25vh)'
+    modal.classList.remove('modal-pull-up')
+    modal.classList.remove('modal-pull-middle')
+    modal.classList.add('modal-pull-transition')
+    modal.classList.add('modal-pull-down')
+    modal.style.removeProperty('height')
   }
 
   pullUpModal (modal) {
-    modal.style.height = 'calc(100vh - 1rem)'
+    modal.classList.remove('modal-pull-down')
+    modal.classList.remove('modal-pull-middle')
+    modal.classList.add('modal-pull-transition')
+    modal.classList.add('modal-pull-up')
+    modal.style.removeProperty('height')
   }
 
   getFeature () {

@@ -87,7 +87,11 @@ export async function showFeatureDetails (feature) {
   }
   dom.showElements('#feature-details-body')
   const modal = document.querySelector('#feature-details-modal')
-  modal.classList.remove('expanded')
+  modal.classList.remove('modal-pull-down')
+  modal.classList.add('modal-pull-middle')
+  modal.classList.remove('modal-pull-up')
+  modal.classList.add('modal-pull-transition')
+  modal.style.removeProperty('height')
   modal.classList.add('show')
   modal.scrollTo(0, 0)
   modal.setAttribute('data-feature--modal-feature-id-value', feature.id)
@@ -120,6 +124,7 @@ export async function showFeatureDetails (feature) {
 
     // When dragging down, at first scroll up, then lower modal
     if (y < 0 || modal.scrollTop === 0) {
+      modal.classList.remove('modal-pull-transition')
       modal.style.height = (dragStartModalHeight - y) + 'px'
     } else {
       dragStartY = dragY

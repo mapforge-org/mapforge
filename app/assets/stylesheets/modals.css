@@ -95,22 +95,21 @@
     background-color: rgb(124 124 124);
   }
 
-  .modal-pull-up {
-    height: calc(100% - 1em);
+  .modal-pull-transition {
     transition:
-      height 0.3s linear;
+      height 0.3s linear !important;
   }
 
-  .modal-pull-half {
+  .modal-pull-up {
+    height: calc(100% - 1rem);
+  }
+
+  .modal-pull-middle {
     height: 50%;
-    transition:
-        height 0.3s linear;
   }
 
   .modal-pull-down {
     height: 25%;
-    transition:
-      height 0.3s linear;
   }
 }
 
