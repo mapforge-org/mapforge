@@ -76,8 +76,8 @@
 img.profile-image {
   border-radius: 50%;
   overflow: hidden;
-  width: 35px;
-  height: 35px;
+  width: 2.2rem;
+  height: 2.2rem;
   border: 1px solid white;
   box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
 }
