@@ -6,7 +6,6 @@ import { handleDelete, draw } from 'maplibre/edit'
 import { featureColor, featureOutlineColor } from 'maplibre/styles'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
-import * as dom from 'helpers/dom'
 import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
@@ -14,6 +13,9 @@ export default class extends Controller {
   static values = {
     featureId: String
   }
+
+  // emoji picker
+  picker = null
 
   delete_feature () {
     const feature = this.getFeature()
@@ -181,7 +183,6 @@ export default class extends Controller {
     const feature = this.getFeature()
     let symbol = document.querySelector('#marker-symbol').value
     document.querySelector('#emoji').textContent = symbol
-    dom.hideElements(['#emoji-select'])
     // strip variation selector (emoji) U+FE0F to match icon file names
     symbol = symbol.replace(/\uFE0F/g, '')
     feature.properties['marker-symbol'] = symbol
@@ -235,32 +236,44 @@ export default class extends Controller {
   async openEmijiPicker() {
     // Dynamically import emoji-mart + its data
     const { Picker } = await import('emoji-mart')
+    const data = async () => {
+      const response = await fetch(
+        '/emojis/emoji-mart-data.json',
+      )
+      return response.json()
+    }
+    const onEmojiSelect = (emoji) => {
+      // console.log('Emoji selected:', emoji)
+      document.querySelector('#marker-symbol').value = emoji.native
+      this.updateMarkerSymbol()
+      this.addUndo()
+      this.saveFeature()
+      //this.picker.remove()
+      document.querySelector('em-emoji-picker').remove()
+    }
+    const onClickOutside = (event) => {
+      // click in the symbol input is not considered outside
+      if (event.target.id != 'marker-symbol') { document.querySelector('em-emoji-picker').remove() }
+    }
+
     const pickerOptions = {
-      data: async () => {
-        const response = await fetch(
-          '/emojis/emoji-mart-data.json',
-        )
-        return response.json()
-      }, 
-      onEmojiSelect: (emoji) => {
-        // console.log('Emoji selected:', emoji)
-        document.querySelector('#marker-symbol').value = emoji.native
-        this.updateMarkerSymbol()
-        this.addUndo()
-        this.saveFeature()
-        this.picker.remove()
-      }, 
-      onClickOutside: (event) => {
-        // click in the symbol input is not considered outside
-        if (event.target.id != 'marker-symbol') { this.picker.remove() }
-      }, 
+      data: data, 
+      onEmojiSelect: onEmojiSelect, 
+      onClickOutside: onClickOutside, 
       dynamicWidth: true, 
       noCountryFlags: true, // TODO country flags don't work right now
       // set: 'google', // default is native icons (they don't match the map icons)
       theme: 'light',
     }
-
-    this.picker = new Picker(pickerOptions)
+    if (this.picker) {
+      // In Safari the <em-emoji-picker> element needs to be re-initialized
+      this.picker.data = data
+      this.picker.onEmojiSelect = onEmojiSelect
+      this.picker.onClickOutside = onClickOutside
+    } else {
+      this.picker = new Picker(pickerOptions)
+    }
+    // adding <em-emoji-picker> element
     document.querySelector('#feature-edit-ui').prepend(this.picker)
   }
 
