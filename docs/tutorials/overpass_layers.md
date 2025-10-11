@@ -15,7 +15,7 @@ Open the 'Layers' window, click on 'Add query' and chose the query to add.
 There are prepared queries to cover common mapping needs for example for public toilets, camp sites and hiking tracks.
 
 <video controls>
-  <source src="https://mapforge.org/images/tutorials/overpass_predefined.mp4" poster="https://mapforge.org/images/tutorials/overpass_predefined_poster.png" type="video/mp4">
+  <source src="/images/tutorials/overpass_predefined.mp4" poster="/images/tutorials/overpass_predefined_poster.png" preload="metadata" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -35,7 +35,7 @@ You can enhance your layers with visual customization, for example setting symbo
 `// cluster-image-url=/icons/hydrant.png` - URL pointing to icon image for clusters
 
 <video controls>
-  <source src="https://mapforge.org/images/tutorials/overpass_custom.mp4" poster="https://mapforge.org/images/tutorials/overpass_custom_poster.png" type="video/mp4">
+  <source src="/images/tutorials/overpass_custom.mp4" poster="/images/tutorials/overpass_custom_poster.png" preload="metadata" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 

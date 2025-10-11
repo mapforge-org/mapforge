@@ -13,7 +13,7 @@ A reference installation is running at [mapforge.org](https://mapforge.org), see
 ![Mapforge Screenshot](https://github.com/digitaltom/mapforge/blob/main/docs/screenshot.png?raw=true)
 
 GeoJSON layers can get styled to your needs using an extended version of the [geojson](https://macwright.com/2015/03/23/geojson-second-bite.html)
-[mapbox simplestyle spec](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0). See [docs/geojson.md](docs/geojson.md) for supported attributes.
+[mapbox simplestyle spec](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0). See [docs/tutorials/geojson_style_spec.md](docs/tutorials/geojson_style_spec.md) for supported attributes.
 
 [Overpass](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) layers can get added to the map, allowing for custom queries and display 
 of all possible OpenStreetMap nodes. Read more about that in the [overpass doc](docs/tutorials/overpass_layers.md).
