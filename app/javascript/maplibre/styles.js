@@ -216,13 +216,13 @@ const iconSize = [
 
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
-const labelFontSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], pointSizeMax]]
+const labelFontSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], ['*', 2 / 3, pointSizeMax]]]
 export const labelFontSizeMin = ['case',
   ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
   0, labelFontSize]
 export const labelFontSizeMax = ['case',
   ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
-  ['*', 16, labelFontSize], labelFontSize]
+  ['*', 32, labelFontSize], labelFontSize]
 
 const labelSize = [
   'interpolate',
@@ -679,6 +679,7 @@ export function setSource (style, sourceName) {
   return { ...style, source: sourceName, id: style.id + '_' + sourceName }
 }
 
+// Adding sourceName suffix to style names because style layer ids must be unique on map
 function styleNames (sourceName) {
   return viewStyleNames.map(styleName => styleName + '_' + sourceName)
 }

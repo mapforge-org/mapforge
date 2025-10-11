@@ -517,20 +517,21 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
 export function sortLayers () {
   const currentStyle = map.getStyle()
   let layers = currentStyle.layers
-  // console.log('Sorting layers', layers)
 
   const mapExtrusions = functions.reduceArray(layers, (e) => e.paint && e.paint['fill-extrusion-height'])
   // increase opacity of 3D houses
   mapExtrusions.filter(l => l.id === 'Building 3D').forEach((layer) => {
     layer.paint['fill-extrusion-opacity'] = 0.8
   })
+
+  // console.log('Sorting layers', layers)
   const editLayer = functions.reduceArray(layers, (e) => (e.id.startsWith('gl-draw-')))
-  const userSymbols = functions.reduceArray(layers, (e) => (e.id === 'symbols-layer' || e.id === 'symbols-border-layer'))
-  const userLabels = functions.reduceArray(layers, (e) => e.id === 'text-layer')
+  const userSymbols = functions.reduceArray(layers, (e) => (e.id === 'symbols-layer_geojson-source' || e.id === 'symbols-border-layer_geojson-source'))
+  const userLabels = functions.reduceArray(layers, (e) => e.id === 'text-layer_geojson-source')
   const mapSymbols = functions.reduceArray(layers, (e) => e.type === 'symbol')
-  const points = functions.reduceArray(layers, (e) => (e.id === 'points-layer.hot' || e.id === 'points-layer.cold' || e.id === 'points-layer'))
-  const lineLayerHits = functions.reduceArray(layers, (e) => e.id === 'line-layer-hit')
-  const pointsLayerHits = functions.reduceArray(layers, (e) => e.id === 'points-hit-layer')
+  const points = functions.reduceArray(layers, (e) => (e.id === 'points-layer.hot' || e.id === 'points-layer.cold' || e.id === 'points-layer_geojson-source'))
+  const lineLayerHits = functions.reduceArray(layers, (e) => e.id === 'line-layer-hit_geojson-source')
+  const pointsLayerHits = functions.reduceArray(layers, (e) => e.id === 'points-hit-layer_geojson-source')
   const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
 
   layers = layers.concat(mapExtrusions).concat(directions)
