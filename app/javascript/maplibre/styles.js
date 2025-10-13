@@ -216,7 +216,7 @@ const iconSize = [
 
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
-const labelFontSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], ['*', 2 / 3, pointSizeMax]]]
+const labelFontSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], ['*', 2, pointSizeMax]]]
 export const labelFontSizeMin = ['case',
   ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
   0, labelFontSize]
@@ -609,7 +609,7 @@ export function styles () {
         'text-font': labelFont,
         'text-anchor': 'top', // text under point
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
-        "text-offset": [0, 1.5],
+        "text-offset": [0, 1.2],
         'text-justify': 'auto',
         'text-ignore-placement': false, // hide on collision
         "text-rotation-alignment": "viewport",

@@ -111,6 +111,10 @@
   .modal-pull-down {
     height: 25%;
   }
+
+  .modal-pull-fade {
+    opacity: 0.4 !important;
+  }
 }
 
 .modal-close-button {

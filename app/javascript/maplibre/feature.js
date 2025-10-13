@@ -88,8 +88,9 @@ export async function showFeatureDetails (feature) {
   dom.showElements('#feature-details-body')
   const modal = document.querySelector('#feature-details-modal')
   modal.classList.remove('modal-pull-down')
-  modal.classList.add('modal-pull-middle')
   modal.classList.remove('modal-pull-up')
+  modal.classList.remove('modal-pull-fade')
+  modal.classList.add('modal-pull-middle')
   modal.classList.add('modal-pull-transition')
   modal.style.removeProperty('height')
   modal.classList.add('show')
@@ -121,6 +122,13 @@ export async function showFeatureDetails (feature) {
     const dragY = event.clientY || event.touches[0].clientY
     // y < 0 -> dragging up
     const y = dragY - dragStartY
+    const sheetHeight = parseInt(modal.style.height) / window.innerHeight * 100
+    // fade out to show modal auto close
+    if (sheetHeight < 25) {
+      modal.classList.add('modal-pull-fade')
+    } else {
+      modal.classList.remove('modal-pull-fade')
+    }
 
     // When dragging down, at first scroll up, then lower modal
     if (y < 0 || modal.scrollTop === 0) {
@@ -137,15 +145,18 @@ export async function showFeatureDetails (feature) {
     }
   })
 
-  f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend', 'mouseleave'], (_event) => {
+  f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend', 'mouseleave'], (event) => {
     if (!isDragging) return
     isDragging = false
     modal.style.cursor = 'default'
     const sheetHeight = parseInt(modal.style.height) / window.innerHeight * 100
+    const dragY = event.clientY || event.changedTouches[0].clientY
+    const y = dragY - dragStartY
+    console.log(y)
     if (sheetHeight < 25) {
       modal.classList.remove('show')
       modal.style.removeProperty('height')
-    } else if (sheetHeight > 75) {
+    } else if (sheetHeight > 75 && y < 0) { // only 'snap' on dragging upwards
       modal.style.height = 'calc(100vh - 1rem)'
     }
   })
