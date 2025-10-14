@@ -39,7 +39,7 @@ pin "maplibre-contour", preload: false # @0.1.0
 
 # Elevation chart
 # from https://esm.sh/chart.js@4.5.0/es2022/chart.bundle.mjs
-pin "chart.js", to: "chart-js.js", preload: false # @4.5.0
+pin "chart.js", to: "chart-js.js", preload: false # @4.5.1
 # pin "@kurkle/color", to: "@kurkle--color", preload: false # @0.3.4
 
 # render markdown
@@ -65,3 +65,4 @@ pin "swiper/modules", to: "swiper-modules.js", preload: false # @11.2.10
 pin "emoji-mart", preload: false # @5.6.0
 # Extract coords from uploaded images
 pin "exif-reader", preload: false # @2.3.0
+pin "@kurkle/color", to: "@kurkle--color.js" # @0.3.4
