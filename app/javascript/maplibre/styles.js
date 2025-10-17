@@ -600,7 +600,7 @@ export function styles () {
         'text-anchor': 'top', // text under point
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
         //"text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
-        "text-offset": [0, 1.5],
+        "text-offset": labelOffset,
         'text-justify': 'auto',
         'text-ignore-placement': true, // show on collision
         "text-rotation-alignment": "map",
