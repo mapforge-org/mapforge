@@ -160,17 +160,21 @@ const outlineWidth = [
   ] // At zoom level 13, the outline width is max
 ]
 
+const shouldScale = ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false]
 const pointColor = ['coalesce', ['get', 'user_marker-color'], ['get', 'marker-color'], featureColor]
+const markerSize = ['coalesce', ['get', 'user_marker-size'], ['get', 'marker-size']]
+const hasSymbol = ['any', ['has', 'user_marker-symbol'], ['has', 'marker-symbol']]
+
 const pointSizeMin = ['to-number', ['coalesce',
-  ['get', 'user_marker-size'], ['get', 'marker-size'],
-  ['case',
-    ['any', ['has', 'user_marker-symbol'], ['has', 'marker-symbol']],
-    10, 3]]]
+  ...markerSize.slice(1),
+  ['case', hasSymbol, 10, 3]
+]]
+
 export const pointSizeMax = ['to-number', ['coalesce',
-  ['get', 'user_marker-size'], ['get', 'marker-size'],
-  ['case',
-    ['any', ['has', 'user_marker-symbol'], ['has', 'marker-symbol']],
-    24, 8]]]
+  ...markerSize.slice(1),
+  ['case', hasSymbol, 24, 8]
+]]
+
 export const pointSize = [
   'interpolate',
   ['linear'],
@@ -180,13 +184,13 @@ export const pointSize = [
     ['boolean', ['feature-state', 'active'], false],
     ['+', 1, pointSizeMin],
     pointSizeMin
-  ], // At zoom level 8, the point size is min
+  ],
   17, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
     ['+', 1, pointSizeMax],
     pointSizeMax
-  ] // At zoom level 13, the point size is max
+  ]
 ]
 
 export const pointOutlineSize = ['to-number', ['coalesce', ['get', 'user_stroke-width'], ['get', 'stroke-width'], 2]]
@@ -199,11 +203,9 @@ const pointOpacityActive = ['to-number', ['coalesce', ['min', ['+', ['get', 'mar
 // in case of external icon url, we don't know the size
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
 export const iconSizeDefault = ['*', 1 / 60, pointSizeMax]
-export const iconSizeMin = ['case',
-  ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
+export const iconSizeMin = ['case', shouldScale,
   0, iconSizeDefault]
-export const iconSizeMax = ['case',
-  ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
+export const iconSizeMax = ['case', shouldScale,
   ['*', 32, iconSizeDefault], iconSizeDefault]
 
 const iconSize = [
@@ -216,12 +218,27 @@ const iconSize = [
 
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
-const labelFontSize = ['to-number', ['coalesce', ['get', 'user_label-size'], ['get', 'label-size'], ['*', 2, pointSizeMax]]]
-export const labelFontSizeMin = ['case',
-  ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
-  0, labelFontSize]
-export const labelFontSizeMax = ['case',
-  ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false],
+const userLabelSize = ['coalesce', ['get', 'user_label-size'], ['get', 'label-size']]
+const scaledLabelSize = ['coalesce', ...userLabelSize.slice(1), ['*', 2, pointSizeMax]] // fallback to 2*pointSizeMax
+const staticLabelSize = ['coalesce', ...userLabelSize.slice(1), 16] // fallback to 16
+const labelOffset = 
+  ["interpolate", ["linear"],
+    ['to-number', ['coalesce', ["get", "marker-size"], 12]],
+    0, ["literal", [0, 0]],
+    10, ["literal", [0, 1]],
+    300, ["literal", [0, 21]]]
+
+export const labelFontSize = [
+  'case', shouldScale,
+  ['to-number', scaledLabelSize],
+  ['to-number', staticLabelSize]]
+
+export const labelFontSizeMin = [
+  'case', shouldScale,
+  0, labelFontSize ]
+
+export const labelFontSizeMax = [
+  'case', shouldScale,
   ['*', 32, labelFontSize], labelFontSize]
 
 const labelSize = [
@@ -417,7 +434,7 @@ export function styles () {
             ['boolean', ['feature-state', 'active'], false],
             ["==", ['get', 'marker-color'], "transparent"]
           ],
-          1,
+          0.7,
           ['case',
             ['boolean', ['feature-state', 'active'], false],
             pointOpacityActive,
@@ -609,7 +626,7 @@ export function styles () {
         'text-font': labelFont,
         'text-anchor': 'top', // text under point
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
-        "text-offset": [0, 1.2],
+        "text-offset": labelOffset,
         'text-justify': 'auto',
         'text-ignore-placement': false, // hide on collision
         "text-rotation-alignment": "viewport",
