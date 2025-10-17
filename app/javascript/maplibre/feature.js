@@ -104,6 +104,8 @@ export async function showFeatureDetails (feature) {
   f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
     if (!f.isTouchDevice()) return
     if (dom.isInputElement(event.target)) return
+    if (event.target.tagName.toLowerCase() === 'em-emoji-picker') return
+
     // only enable bottom sheet behavior on small screens
     if (window.innerWidth > 574) return
 

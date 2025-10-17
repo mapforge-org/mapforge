@@ -233,13 +233,6 @@
   padding-bottom: 0.2em;
 }
 
-/* Hide emoji list link on touch devices */
-@media (pointer: coarse) {
-  #emoji-list-link {
-    display: none
-  }
-}
-
 @media (width < 380px) {
   .map-modal {
     margin: 0 0.5em;
