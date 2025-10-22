@@ -414,7 +414,8 @@ export function styles () {
         ['==', '$type', 'Point'],
         ['!=', 'meta', 'midpoint'],
         ['!=', 'meta', 'vertex'],
-        ['!has', 'flat']
+        ['!has', 'flat'],
+        ['!has', 'point_count']
       ],
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
@@ -644,7 +645,7 @@ export function styles () {
 
 export function clusterStyles(icon) {
   let icon_image = '/emojis/noto/' + icon + '.png'
-  if (icon?.includes('/')) { icon_image = icon }
+  if (icon?.includes('/')) { icon_image = icon } // full url / path
 
   // background when no cluster icon is provided
   const clusterPoints = {
