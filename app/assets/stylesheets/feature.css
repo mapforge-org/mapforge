@@ -3,7 +3,6 @@
   padding: 0.55rem;
   overflow-y: auto;
   margin: 0.4rem 1rem 1.5rem;
-  border-radius: 3px;
   background-color: rgb(255 255 255 / 90%);
 }
 
@@ -74,7 +73,7 @@
 .feature-details-icon {
   margin: 0.3rem;
   margin-right: 0.6rem;
-  height: calc(1.325rem + .9vh); /* same size as .fs-2 */
+  height: 2rem; /* same size as .fs-2 */
 }
 
 #feature-details-meta, #feature-details-meta a {

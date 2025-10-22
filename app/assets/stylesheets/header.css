@@ -34,6 +34,15 @@
   --bs-btn-font-size: 1.1rem;
 }
 
+.nav-link {
+  border-radius: 0.7rem;
+  margin: 0 0.7rem;
+}
+
+.nav-link:hover {
+  background-color: rgb(0 0 0 / 12.5%);
+}
+
 .login-link {
   position: absolute;
   right: 1rem;

@@ -185,9 +185,7 @@ export async function showFeatureDetails (feature) {
 export function featureIcon (feature) {
   let image = ''
   if (feature.properties['marker-image-url']) {
-    const imageUrl = feature.properties['marker-image-url'].replace('/icon/', '/image/')
-    image = "<a href='" + imageUrl + "' target='_blank'>" +
-      "<img class='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'></a>"
+    image = "<img class='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'>"
   } else if (feature.properties['marker-symbol']) {
     image = "<img class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
   } else if (feature.properties['stroke-image-url']) {

@@ -177,7 +177,8 @@ section,
   font-weight: 600;
 
   --bs-btn-padding-y: 0.0rem;
-  --bs-btn-padding-x: 0.1rem;
+  --bs-btn-padding-x: 0.3rem;
+  --bs-btn-border-radius: 0.7rem;
 
   margin-bottom: 0.3rem;
 }

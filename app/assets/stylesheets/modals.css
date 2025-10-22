@@ -16,7 +16,7 @@
   max-width: 35em;
   overflow-y: hidden;
   margin: 0 1em;
-  border-radius: 3px;
+  border-radius: 0.7rem;
   background-color: rgb(255 255 255 / 90%);
 
   /* Todo: Looks cool, but slows down browsers */
@@ -50,7 +50,7 @@
 .layer-preview {
   width: 5.5em;
   height: 5.5em;
-  border-radius: 4px;
+  border-radius: 0.7rem;
   border-width: 2px;
   border-style: solid;
   border-color: #fff;

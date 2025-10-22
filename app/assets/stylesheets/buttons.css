@@ -1,7 +1,9 @@
 .btn {
   a, .link, a:hover, a:active, .link:hover, .link:active {
     color: unset;
-  }
+  };
+
+  --bs-btn-border-radius: 1rem;
 }
 
 .btn-green {
@@ -63,26 +65,26 @@
 }
 
 .btn-orange {
-  background-color: var(--color-golden-brown);
-  border-color: var(--color-golden-brown);
+  background-color: var(--color-orange);
+  border-color: var(--color-orange);
   color: #fff !important;
 
   --text-color: #fff;
   --bs-btn-color: #fff;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: var(--color-golden-brown);
-  --bs-btn-hover-border-color: var(--color-golden-brown);
+  --bs-btn-hover-bg: var(--color-orange);
+  --bs-btn-hover-border-color: var(--color-orange);
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: var(--color-orange);
-  --bs-btn-active-border-color: var(--color-orange);
+  --bs-btn-active-bg: var(--color-golden-brown);
+  --bs-btn-active-border-color: var(--color-golden-brown);
 }
 
 /* only add hover effects to supported browsers */
 @media (hover: hover) {
   .btn-orange:hover {
     --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: var(--color-orange);
-    --bs-btn-hover-border-color: var(--color-orange);
+    --bs-btn-hover-bg: var(--color-golden-brown);
+    --bs-btn-hover-border-color: var(--color-golden-brown);
   }
 }
 
