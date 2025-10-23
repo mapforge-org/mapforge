@@ -25,24 +25,22 @@ class MapsController < ApplicationController
   end
 
   def show
-    if request.format.html?
-      # Avoid 'updated_at' update
-      @map.collection.update_one(
-        { _id: @map.id },
-        { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
-      )
-      @map_properties = map_properties
-      gon.map_id = params[:id]
-      @user.track_map_view(params[:id]) if @user
-      gon.edit_id = @map.private_id.to_s if @user&.admin? || (@user && @map.user == @user)
-      gon.map_mode = @map_mode
-      gon.csrf_token = form_authenticity_token
-      gon.map_properties = @map_properties
-      gon.map_layers = @map.layers.map(&:to_summary_json)
-    end
-
     respond_to do |format|
       format.html do
+        # Avoid 'updated_at' update
+        @map.collection.update_one(
+          { _id: @map.id },
+          { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
+        )
+        @map_properties = map_properties
+        gon.map_id = params[:id]
+        @user.track_map_view(params[:id]) if @user
+        gon.edit_id = @map.private_id.to_s if @user&.admin? || (@user && @map.user == @user)
+        gon.map_mode = @map_mode
+        gon.csrf_token = form_authenticity_token
+        gon.map_properties = @map_properties
+        gon.map_layers = @map.layers.map(&:to_summary_json)
+
         case params["engine"]
         when "deck"
           render "deck"
