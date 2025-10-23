@@ -96,6 +96,9 @@ function applyOverpassStyle(geojson, query) {
 
   geojson.features.forEach( f => {
     f.properties["label"] = f.properties["name"]
+    if (getCommentValue(query, 'label-property')) {
+      f.properties["label"] = f.properties[getCommentValue(query, 'label-property')]
+    }
     f.properties["desc"] = overpassDescription(f.properties)
     if (heatmap) { f.properties["heatmap"] = true }
     if (markerSymbol) {

@@ -27,6 +27,7 @@ This powerful language lets you query any data available in OpenStreetMap. You c
 You can enhance your layers with visual customization, for example setting symbols or icons for clusters and markers. This can be achieved by adding one or more of these settings as comments to the query:
 
 `// heatmap=true` - Results will be rendered as a heat map (default=false)
+`// label-property` - OSM property that will be shown as label (default=name)
 `// marker-symbol=🍻` - Nodes/points will use this symbol (emoji)
 `// marker-image-url=/icons/hydrant.png` - URL pointing to icon image
 `// stroke=yellow` - Line color

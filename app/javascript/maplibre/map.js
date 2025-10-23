@@ -527,15 +527,16 @@ export function sortLayers () {
   // console.log('Sorting layers', layers)
   const editLayer = functions.reduceArray(layers, (e) => (e.id.startsWith('gl-draw-')))
   const userSymbols = functions.reduceArray(layers, (e) => (e.id === 'symbols-layer_geojson-source' || e.id === 'symbols-border-layer_geojson-source'))
-  const userLabels = functions.reduceArray(layers, (e) => e.id === 'text-layer_geojson-source' || e.id.startsWith('cluster_labels'))
+  const userLabels = functions.reduceArray(layers, (e) => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
   const mapSymbols = functions.reduceArray(layers, (e) => e.type === 'symbol')
   const points = functions.reduceArray(layers, (e) => (e.id.startsWith('points-layer') || e.id.startsWith('cluster_points')))
   const lineLayerHits = functions.reduceArray(layers, (e) => e.id === 'line-layer-hit_geojson-source')
   const pointsLayerHits = functions.reduceArray(layers, (e) => e.id === 'points-hit-layer_geojson-source')
   const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
+  const heatmap = functions.reduceArray(layers, (e) => (e.id.startsWith('heatmap-layer'))) 
 
   layers = layers.concat(mapExtrusions).concat(directions)
-    .concat(mapSymbols).concat(points).concat(editLayer)
+    .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
     .concat(userSymbols).concat(userLabels)
     .concat(lineLayerHits).concat(pointsLayerHits)
   const newStyle = { ...currentStyle, layers }
