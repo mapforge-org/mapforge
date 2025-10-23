@@ -62,4 +62,16 @@ export default class extends Controller {
       status("Embed code copied")
     })
   }
+
+  downloadImage(_e) {
+    const canvas = map.getCanvas()
+    canvas.toBlob(function (blob) {
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'map.png'
+      a.click();
+      URL.revokeObjectURL(url)
+    })
+  }
 }

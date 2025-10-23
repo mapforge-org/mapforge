@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 2025-10
 
 * Using exif coordinates from uploaded images (upload in layers modal)
-* Share option to embed as iframe
+* Share option to embed as iframe and download image
 
 ## 2025-09
 
