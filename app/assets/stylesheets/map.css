@@ -106,6 +106,16 @@ html:has(.map), body:has(.map) {
   min-width: 1.3rem;
 }
 
+.mapforge-embed-logo {
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  opacity: 0.9;
+}
+
 .map {
   height: 100%;
   width: 100%;

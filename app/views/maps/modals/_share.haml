@@ -71,7 +71,7 @@
       %span.me-2.mt-2 Embed map:
       %span.me-2
         %textarea#embed-code.form-control{ rows: "3", readonly: "readonly" }
-          = raw("<iframe width='600' height='450' style='border:0' loading='lazy' src='#{map_url(@map.public_id)}'></iframe>")
+          = raw("<iframe width='600' height='450' style='border:0' loading='lazy' src='#{map_url(@map.public_id, { nomenu: true })}'></iframe>")
         %small.link.text-muted{ data: { action: "click->map--share#copy" } }
           %i.bi.bi-copy
           Click to copy html to embed in your website

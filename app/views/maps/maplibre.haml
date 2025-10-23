@@ -29,6 +29,10 @@
       #map-nav-toggle.navbar-toggler-icon.ms-2.me-2
     %h1#map-title= @map.name
 
+- if params['nomenu'] == 'true'
+  = link_to root_url, { '_target': 'blank' } do
+    %img.mapforge-embed-logo{ src: "/icons/mapforge-logo-header_white.png", alt: "Logo" }
+
 #maplibre-map.map{ data: { 'controller': "map header", 'action': "click->header#hideNav touchstart->header#hideNav" } }
 
 - unless @map_mode == 'static'
