@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { mapProperties } from 'maplibre/map'
+import { status } from 'helpers/status'
 
 export default class extends Controller {
   connect () {
@@ -53,5 +54,12 @@ export default class extends Controller {
     .then(() => console.log('Successful share'))
     .catch((error) => console.log('Error sharing', error))
     }
+  }
+
+  copy (_e) {
+    const embedCode = document.querySelector('#embed-code').value
+    navigator.clipboard.writeText(embedCode).then(function () {
+      status("Embed code copied")
+    })
   }
 }
