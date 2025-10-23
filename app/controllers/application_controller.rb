@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   before_action :set_user
   before_action :disable_session_cookies
 
-  rate_limit to: 30, within: 1.minute
+  rate_limit to: 30, within: 1.minute, unless: -> { Rails.env.local? }
 
   rescue_from ActionController::RoutingError, with: :render_not_found
 

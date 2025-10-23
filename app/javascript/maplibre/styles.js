@@ -368,7 +368,9 @@ export function styles () {
         ['==', '$type', 'Point'],
         ['!=', 'meta', 'midpoint'],
         ['!=', 'meta', 'vertex'],
-        ['has', 'flat']
+        ['has', 'flat'],
+        ['!has', 'point_count'],
+        ["!has", "heatmap"]
       ],
       paint: {
         "circle-pitch-alignment": "map",
@@ -415,7 +417,8 @@ export function styles () {
         ['!=', 'meta', 'midpoint'],
         ['!=', 'meta', 'vertex'],
         ['!has', 'flat'],
-        ['!has', 'point_count']
+        ['!has', 'point_count'], 
+        ["!has", "heatmap"]
       ],
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
@@ -483,7 +486,7 @@ export function styles () {
       type: 'symbol',
       filter: ['all',
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']], 
-        ['has', 'flat']],
+        ['has', 'flat'], ["!has", "heatmap"]],
       layout: {
         'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
         'icon-image': ['coalesce',
@@ -513,7 +516,7 @@ export function styles () {
       type: 'symbol',
       filter: ['all',
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
-        ['!has', 'flat']],
+        ['!has', 'flat'], ["!has", "heatmap"]],
       layout: {
         'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
         'icon-image': ['coalesce',
