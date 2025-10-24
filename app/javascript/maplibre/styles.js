@@ -246,8 +246,11 @@ export const labelFontSizeMin = [
   0, labelFontSize ]
 
 export const labelFontSizeMax = [
-  'case', shouldScale,
-  ['*', 32, labelFontSize], labelFontSize]
+  "min",
+  ['case', shouldScale,
+    ['*', 32, labelFontSize], labelFontSize],
+  254 // max map font size
+]
 
 const labelSize = [
   'interpolate',
