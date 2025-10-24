@@ -13,6 +13,7 @@ export default class extends Controller {
       document.querySelector('#map-edit-permissions').value = props['edit_permission']
     }
 
+    // Update share icons for native sharing support
     if (navigator.share) {
       document.querySelector('#share-edit-link i').classList.remove('bi-link-45deg')
       document.querySelector('#share-edit-link i').classList.add('bi-share')
@@ -61,15 +62,5 @@ export default class extends Controller {
     navigator.clipboard.writeText(embedCode).then(function () {
       status("Embed code copied")
     })
-  }
-
-  downloadImage(_e) {
-    const canvas = map.getCanvas()
-    const image = canvas.toDataURL("image/png")
-    const link = document.createElement('a')
-    link.href = image;
-    alert(image)
-    link.download = 'map.png'
-    link.click()
   }
 }

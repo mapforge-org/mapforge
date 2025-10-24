@@ -35,6 +35,7 @@ gem "stimulus-rails"
 gem "redis", ">= 4.0.1"
 gem "mongoid", ">= 9.0.2" # without version, bundler tries to install 8.1.6
 gem "mongoid_rails_migrations"
+gem "mongoid_includes"
 
 # image uploads
 # https://github.com/markevans/dragonfly (rdoc: https://rubydoc.info/github/markevans/dragonfly/)

@@ -6,10 +6,6 @@ class MapsController < ApplicationController
   before_action :require_login, only: %i[my]
   before_action :require_map_owner, only: %i[destroy]
 
-  skip_before_action :set_user, only: %i[catchall]
-  # site is cookie less for anonymous users, so no csrf token is set
-  skip_before_action :verify_authenticity_token, only: %i[create], unless: :set_user
-
   rate_limit to: 5, within: 15.minutes, only: :create
 
   layout "map", only: [ :show, :demo ]
@@ -78,15 +74,6 @@ class MapsController < ApplicationController
     render json: feature.to_geojson
   end
 
-  # some maplibre styles (openfreemap liberty) try to load eg. ./swimming_pool
-  # from local server instead of style host... catching those calls here
-  # :nocov:
-  def catchall
-    expires_in 48.hours, public: true
-    head :ok
-  end
-  # :nocov:
-
   # Turbo sends the DELETE request automatically with Content-Type: text/vnd.turbo-stream.html
   # We can return a turbo stream command that removes the map element in place
   # To avoid turbo_stream response, force format :html
@@ -131,8 +118,7 @@ class MapsController < ApplicationController
   end
 
   def set_map
-    @map = Map.includes(layers: :features)
-    @map = @map.find_by(public_id: params[:id]) || @map.find_by(private_id: params[:id])
+    @map = Map.find_by(public_id: params[:id]) || Map.find_by(private_id: params[:id])
     render_not_found unless @map
   end
 

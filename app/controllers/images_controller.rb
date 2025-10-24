@@ -1,4 +1,5 @@
 class ImagesController < ApplicationController
+  skip_before_action :set_user, only: %i[icon image]
   before_action :set_image, only: %i[icon image]
   before_action :require_map, only: %i[upload]
 
