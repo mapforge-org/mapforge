@@ -139,6 +139,7 @@ class MapsController < ApplicationController
   def set_map_mode
     @map_mode = (params[:id] == @map.private_id.to_s) ? "rw" : "ro"
     @map_mode = "static" if params["static"]
+    allow_iframe if @map_mode == "ro"
   end
 
   def check_permissions

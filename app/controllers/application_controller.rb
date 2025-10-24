@@ -24,6 +24,10 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def allow_iframe
+    response.headers.delete("X-Frame-Options")
+  end
+
   def set_user
     @user = User.find_by(id: session[:user_id]) if session[:user_id]
   end
