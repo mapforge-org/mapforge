@@ -4,6 +4,10 @@
   overflow-y: auto;
   margin: 0.4rem 1rem 1.5rem;
   background-color: rgb(255 255 255 / 90%);
+
+  .modal-close-button {
+    top: 0;
+  }
 }
 
 #feature-title {
@@ -23,6 +27,10 @@
     width: calc(100% - 1rem);
     max-width: 27rem;
     margin: 0.5rem 1rem;
+
+    .modal-close-button {
+      top: 0.25rem;
+    }
   }
 
   #feature-title {

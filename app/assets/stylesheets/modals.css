@@ -119,11 +119,11 @@
 
 .modal-close-button {
   position: absolute;
-  top: -0.3rem;
+  top: 0.4rem;
   right: 0.8rem;
   background: none;
   border: none;
-  font-size: 2.5rem;
+  font-size: 2em;
   cursor: pointer;
   color: #333;
 }
