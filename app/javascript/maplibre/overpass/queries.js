@@ -43,11 +43,18 @@ export const queries = [
            'out center 250;',
     style: (f) => {
       if (f.properties?.subway === 'yes') {
-         f.properties["marker-symbol"] = "🚇"
+        f.properties["marker-color"] = "transparent"
+        f.properties["stroke"] = "transparent"
+        f.properties["marker-symbol"] = "🚇"
       }
       if (f.properties?.train === 'yes') {
-         f.properties["marker-symbol"] = "🚆"
+        f.properties["marker-color"] = "transparent"
+        f.properties["stroke"] = "transparent"
+        f.properties["marker-symbol"] = "🚆"
       }
+      if (f.properties?.railway === 'subway') {
+        f.properties["stroke"] = "red"
+      }      
   }},
   { name: 'Drinking water',
     query: '// marker-symbol=🚰\n' +

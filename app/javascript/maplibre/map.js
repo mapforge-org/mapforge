@@ -526,7 +526,7 @@ export function sortLayers () {
 
   // console.log('Sorting layers', layers)
   const editLayer = functions.reduceArray(layers, (e) => (e.id.startsWith('gl-draw-')))
-  const userSymbols = functions.reduceArray(layers, (e) => (e.id === 'symbols-layer_geojson-source' || e.id === 'symbols-border-layer_geojson-source'))
+  const userSymbols = functions.reduceArray(layers, (e) => (e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')))
   const userLabels = functions.reduceArray(layers, (e) => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
   const mapSymbols = functions.reduceArray(layers, (e) => e.type === 'symbol')
   const points = functions.reduceArray(layers, (e) => (e.id.startsWith('points-layer') || e.id.startsWith('cluster_points')))
