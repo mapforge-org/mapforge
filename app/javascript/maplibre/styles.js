@@ -81,14 +81,22 @@ export function initializeClusterStyles(sourceName, icon) {
 // loading images from 'marker-image-url' attributes
 export async function loadImage (e) {
   const imageUrl = e.id
-  const response = await map.loadImage(imageUrl)
-  if (response) {
-    if (!map.hasImage(imageUrl)) {
-      // console.log('adding ' + imageUrl + ' to map')
-      map.addImage(imageUrl, response.data)
+
+  if (imageUrl.startsWith('http') || imageUrl.startsWith('/')) {
+    try {
+      let response = await map.loadImage(imageUrl)
+      if (response) {
+        if (!map.hasImage(imageUrl)) {
+          // console.log('Adding ' + imageUrl + ' to map')
+          map.addImage(imageUrl, response.data)
+        }
+      } else {
+        console.warn(imageUrl + ' not found')
+      }
+    } catch (error) {
+      // Handle errors here
+      console.error(`Failed to load image ${imageUrl}: ` + error)
     }
-  } else {
-    console.warn(imageUrl + ' not found')
   }
 }
 

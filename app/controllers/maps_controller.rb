@@ -1,6 +1,5 @@
 class MapsController < ApplicationController
-  before_action :set_map_ro, only: %i[show properties feature]
-  before_action :set_map_rw, only: %i[destroy]
+  before_action :set_map, only: %i[show properties feature destroy]
   before_action :set_map_mode, only: %i[show]
   before_action :set_global_js_values, only: %i[show demo]
   before_action :check_permissions, only: %i[show properties]
@@ -33,8 +32,9 @@ class MapsController < ApplicationController
           { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
         )
         @map_properties = map_properties
-        gon.map_id = params[:id]
         @user.track_map_view(params[:id]) if @user
+
+        gon.map_id = params[:id]
         gon.edit_id = @map.private_id.to_s if @user&.admin? || (@user && @map.user == @user)
         gon.map_mode = @map_mode
         gon.csrf_token = form_authenticity_token
@@ -56,8 +56,6 @@ class MapsController < ApplicationController
 
   def demo
     @map = Map.demo_map(@user)
-    @map_mode = "rw"
-
     redirect_to map_url(id: @map.private_id)
   end
 
@@ -132,15 +130,9 @@ class MapsController < ApplicationController
     gon.map_keys = Map.provider_keys
   end
 
-  # Use callbacks to share common setup or constraints between actions.
-  def set_map_ro
+  def set_map
     @map = Map.includes(layers: :features)
     @map = @map.find_by(public_id: params[:id]) || @map.find_by(private_id: params[:id])
-    render_not_found unless @map
-  end
-
-  def set_map_rw
-    @map = Map.includes(layers: :features).find_by(private_id: params[:id])
     render_not_found unless @map
   end
 
