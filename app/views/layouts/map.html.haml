@@ -2,10 +2,10 @@
 %html{ lang: 'en' }
   = render 'layouts/head'
 
-  = javascript_import_module_tag "maplibre-gl"
-  = javascript_import_module_tag "controllers"
-
   %body{ontouchstart: ""}
+
+    = javascript_import_module_tag "maplibre-gl"
+    = javascript_import_module_tag "controllers"
 
     #map-header
       = render 'shared/header', menu: true, create_button: !!@user, static: true

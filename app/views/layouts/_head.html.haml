@@ -58,4 +58,4 @@
   %link{ rel: "apple-touch-icon", href: "/icons/mapforge-logo-icon.png", sizes: "100x100" }
 
   - # js config for map
-  = Gon::Base.render_data(nonce: content_security_policy_nonce).gsub(';gon.', ";\ngon.").gsub('{', "{\n  ").html_safe
+  = Gon::Base.render_data(nonce: content_security_policy_nonce).gsub(';gon.', ";\ngon.").html_safe
