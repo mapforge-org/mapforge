@@ -37,14 +37,39 @@ nav.fixed-top~#docs {
 }
 
 .tutorial-preview {
+  display: block;
   border: 2px solid var(--color-light-sand);
   border-radius: 15px;
   max-width: 35rem;
-  padding: 1rem;
+  padding: 1.2rem;
+  color: var(--color-light-sand) !important;
+  text-decoration: none;
+  cursor: pointer;
+
+  h4 {
+    font-weight: 500;
+  }
+}
+
+.tutorial-preview:active {
+  border-width: 5px;
+  padding: calc(1.5rem - 3px);
+}
+
+/* only add hover effects to supported browsers */
+@media (hover: hover) {
+  .tutorial-preview:hover {
+    border-width: 5px;
+    padding: calc(1.2rem - 3px);
+  }
 }
 
 @media (width <=575px) {
-.markdown-content img, .markdown-content video {
-    max-width: 100%;
+  .tutorial-preview {
+    text-align: center;
+  }
+
+  .markdown-content img, .markdown-content video {
+      max-width: 100%;
   }
 }

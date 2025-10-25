@@ -2,19 +2,24 @@
 
 #docs.selectable
 
-  %h1.mb-4.mapforge-font{ 'data-aos': "fade-down" } Tutorials
+  = link_to tutorial_path(id: 'CHANGELOG'), class: "tutorial-preview" do 
+    %h4
+      Change Log 
+    %i Read about the latest changes and improvements on Mapforge.
 
-  .tutorial-preview 
-    %h4 
-      =link_to 'OpenStreetMap data layers (Overpass)', tutorial_path(id: 'overpass_layers') 
-    %i How to add a custom data layer with OpenStreetMap data 
+  %h1.mt-4.mb-3.mapforge-font{ 'data-aos': "fade-right" } Tutorials
+
+  = link_to tutorial_path(id: 'overpass_layers'), class: "tutorial-preview" do 
+    %h4
+      OpenStreetMap data layers (Overpass) 
+    %i How to add a custom data layer with OpenStreetMap data.
       
-  .tutorial-preview.mt-3
+  = link_to tutorial_path(id: 'app'), class: "tutorial-preview mt-3" do 
     %h4
-      =link_to 'Install the Mapforge App', tutorial_path(id: 'app') 
-    %i The app can get installed from the browser or from the app store. 
+      Install the Mapforge App 
+    %i The app can get installed from the browser or from the app store.
 
-  .tutorial-preview.mt-3
+  = link_to tutorial_path(id: 'geojson_style_spec'), class: "tutorial-preview mt-3" do 
     %h4
-      =link_to 'Advanced feature styling', tutorial_path(id: 'geojson_style_spec') 
-    %i Learn how to style your map features with extended GeoJSON properties.     
+      Advanced feature styling 
+    %i Learn how to style your map features with extended GeoJSON properties. 

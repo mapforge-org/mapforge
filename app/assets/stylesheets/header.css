@@ -35,8 +35,10 @@
 }
 
 .nav-link {
+  padding: 0.5rem 0.7rem;
   border-radius: 0.7rem;
-  margin: 0 0.7rem;
+  margin: 0 0.9rem;
+  background-color: rgb(0 0 0 / 7.5%);
 }
 
 .nav-link:hover {

@@ -13,8 +13,10 @@
         - if menu
           %li.nav-item
             %a.nav-link{ "aria-current": "page", href: maps_path }
-              %i.bi.bi-arrow-right-short
               Map Gallery
+          %li.nav-item
+            %a.nav-link{ "aria-current": "page", href: tutorials_path }
+              Tutorials
 
       - if create_button
         = link_to create_map_path, { class: 'me-4 btn btn-orange btn-create-map', data: { turbo_method: :post } } do
