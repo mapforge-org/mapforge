@@ -565,7 +565,7 @@ GEM
     temple (0.10.3)
     thor (1.4.0)
     thread_safe (0.3.6)
-    thruster (0.1.15-x86_64-linux)
+    thruster (0.1.16-x86_64-linux)
     tilt (2.4.0)
     timeout (0.4.3)
     tsort (0.2.0)
