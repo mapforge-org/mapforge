@@ -6,6 +6,7 @@ import {
 
 export let mapChannel
 let channelStatus
+let connectionUUID
 
 ['turbo:before-visit'].forEach(function (e) {
   window.addEventListener(e, function () {
@@ -67,8 +68,15 @@ export function initializeSocket () {
     },
 
     received (data) {
+      if (data.uuid && data.uuid === connectionUUID) {
+        // console.log(`ignore message from self ('${data.uuid}')`)
+        return
+      }
       console.log('received from map_channel: ', data)
       switch (data.event) {
+        case 'connection':
+          connectionUUID = data.uuid
+          break
         case 'update_feature':
           upsert(data.feature)
           break
@@ -82,18 +90,38 @@ export function initializeSocket () {
             setBackgroundMapLayer()
           }
           break
+        case 'mouse':
+          let cursor = document.getElementById("remote-cursor-" + data.uuid)
+          if (!cursor) {
+            cursor = document.getElementById("remote-cursor-template").cloneNode(true)
+            cursor.classList.remove("hidden")
+            cursor.id = "remote-cursor-" + data.uuid
+            if (data.user_image) {
+              const img = document.createElement("img")
+              img.src = data.user_image
+              img.className = "profile-image remote-cursor-image"
+              cursor.appendChild(img)
+            }
+            document.body.appendChild(cursor)
+          }
+          
+          const point = map.project([data.lng, data.lat])
+          cursor.style.left = `${point.x}px`
+          cursor.style.top = `${point.y}px`
       }
     },
 
-    send_message (action, feature) {
+    send_message (event, data) {
       // copy feature to avoid mutation
-      const data = JSON.parse(JSON.stringify(feature))
-      data.map_id = window.gon.map_id
+      const payload = JSON.parse(JSON.stringify(data))
+      payload.map_id = window.gon.map_id
+      payload.user_id = window.gon.user_id
+      payload.uuid = connectionUUID
       // dropping properties.id from redrawGeojson() before sending to server
-      if (data.properties && data.properties.id) { delete data.properties.id }
-      console.log('Sending: [' + action + '] :', data)
+      if (payload.properties && payload.properties.id) { delete payload.properties.id }
+      if (event !== 'mouse') console.log('Sending: [' + event + '] :', payload)
       // Call the original perform method
-      this.perform(action, data)
+      this.perform(event, payload)
     }
   })
 }
