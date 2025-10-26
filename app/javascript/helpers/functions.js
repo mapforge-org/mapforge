@@ -1,4 +1,5 @@
 const debounceList = []
+const throttleList = []
 
 export function hexToRgb (hex) {
   let r = parseInt(hex.slice(1, 3), 16)
@@ -18,6 +19,14 @@ export function debounce (callback, name, delay = 1500) {
   clearTimeout(debounceList[name])
   debounceList[name] = setTimeout(() => callback(), delay)
   // console.log('debounce: setting ' + delay + 'ms timeout for ' + name)
+}
+
+export function throttle(callback, name, delay=500) {
+  const now = Date.now()
+  if (now - (throttleList[name] || 0) >= delay) {
+    throttleList[name] = now
+    callback()
+  }
 }
 
 export function sleep (ms) {
