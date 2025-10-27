@@ -238,24 +238,24 @@ html:has(.map), body:has(.map) {
 }
 
 .remote-cursor {
-  position:fixed;
-  width:20px;
-  height:20px;
-  color: #fff;
-  border-radius:50%;
+  position: fixed;
+  width: 1rem;
+  height: 1rem;
   pointer-events:none;
   z-index:9999;
 }
 
 .remote-cursor-pointer {
+  color: #fff;
+  font-size: 1.2rem;
   position: relative;
-  left: -0.7rem;
-  top: 0;
+  left: -0.35rem;
+  top: 0.15rem;
 }
 
 .remote-cursor-image {
   position: relative;
-  left: -2.4rem;
-  top: -0.4rem;
+  left: -2.6rem;
+  top: -0.3rem;
 }
 

@@ -153,7 +153,7 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   map.on('mousemove', (e) => { 
     lastMousePosition = e.lngLat 
-    if (mapChannel) {
+    if (mapChannel && window.gon.map_mode === 'rw') {
       const coords = e.lngLat
       functions.throttle(() => { 
         mapChannel.send_message('mouse', { lng: coords.lng, lat: coords.lat }) 

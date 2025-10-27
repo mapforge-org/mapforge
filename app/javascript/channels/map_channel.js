@@ -7,6 +7,7 @@ import {
 export let mapChannel
 let channelStatus
 let connectionUUID
+let remoteCursors = new Set();
 
 ['turbo:before-visit'].forEach(function (e) {
   window.addEventListener(e, function () {
@@ -72,7 +73,7 @@ export function initializeSocket () {
         // console.log(`ignore message from self ('${data.uuid}')`)
         return
       }
-      console.log('received from map_channel: ', data)
+      if (!data.event.startsWith('mouse')) console.log('received from map_channel: ', data)
       switch (data.event) {
         case 'connection':
           connectionUUID = data.uuid
@@ -91,23 +92,28 @@ export function initializeSocket () {
           }
           break
         case 'mouse':
-          let cursor = document.getElementById("remote-cursor-" + data.uuid)
-          if (!cursor) {
+          let cursor = remoteCursors[data.uuid]
+          if (cursor) {
+            cursor.setLngLat([data.lng, data.lat])
+          } else {
             cursor = document.getElementById("remote-cursor-template").cloneNode(true)
             cursor.classList.remove("hidden")
-            cursor.id = "remote-cursor-" + data.uuid
             if (data.user_image) {
               const img = document.createElement("img")
+              img.id = data.uid
               img.src = data.user_image
               img.className = "profile-image remote-cursor-image"
+              img.crossOrigin = "anonymous"
               cursor.appendChild(img)
             }
-            document.body.appendChild(cursor)
+            remoteCursors[data.uuid] = new maplibregl.Marker({ element: cursor })
+              .setLngLat([data.lng, data.lat]).addTo(map)
           }
-          
-          const point = map.project([data.lng, data.lat])
-          cursor.style.left = `${point.x}px`
-          cursor.style.top = `${point.y}px`
+          break
+        case 'mouse_disconnect':
+          // console.log('disconnect cursor ' + data.uuid)
+          remoteCursors[data.uuid]?.remove()
+          delete remoteCursors[data.uuid]
       }
     },
 

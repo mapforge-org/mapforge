@@ -11,7 +11,8 @@ class MapChannel < ApplicationCable::Channel
 
   def unsubscribed
     super
-    # Any cleanup needed when channel is unsubscribed
+    payload = { event: "mouse_disconnect", uuid: uuid }
+    ActionCable.server.broadcast("map_channel_#{params[:map_id]}", payload)
     # Rails.logger.debug "MapChannel unsubscribed"
   end
 
