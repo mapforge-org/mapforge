@@ -237,3 +237,25 @@ html:has(.map), body:has(.map) {
   border-width: 0.15rem;
 }
 
+.remote-cursor {
+  position: fixed;
+  width: 1rem;
+  height: 1rem;
+  pointer-events:none;
+  z-index:9999;
+}
+
+.remote-cursor-pointer {
+  color: #fff;
+  font-size: 1.2rem;
+  position: relative;
+  left: -0.35rem;
+  top: 0.15rem;
+}
+
+.remote-cursor-image {
+  position: relative;
+  left: -2.6rem;
+  top: -0.3rem;
+}
+

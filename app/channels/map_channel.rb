@@ -5,12 +5,14 @@ class MapChannel < ApplicationCable::Channel
     super
     Map.find_by(private_id: params[:map_id]) || Map.find_by(public_id: params[:map_id])
     stream_from "map_channel_#{params[:map_id]}"
-    Rails.logger.debug { "MapChannel subscribed for '#{params[:map_id]}'" }
+    transmit({ event: "connection", uuid: uuid })
+    Rails.logger.debug { "MapChannel subscribed '#{uuid}' for '#{params[:map_id]}'" }
   end
 
   def unsubscribed
     super
-    # Any cleanup needed when channel is unsubscribed
+    payload = { event: "mouse_disconnect", uuid: uuid }
+    ActionCable.server.broadcast("map_channel_#{params[:map_id]}", payload)
     # Rails.logger.debug "MapChannel unsubscribed"
   end
 
@@ -62,6 +64,15 @@ class MapChannel < ApplicationCable::Channel
     map = get_map_rw!(data["map_id"])
     layer = map.layers.find(layer_atts(data)["id"])
     layer.destroy
+  end
+
+  def mouse(data)
+    data[:event] = "mouse"
+    if user = User.find_by(id: data["user_id"])
+      data[:user_name] = user.name
+      data[:user_image] = user.image
+    end
+    ActionCable.server.broadcast("map_channel_#{data['map_id']}", data)
   end
 
   private

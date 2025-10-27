@@ -6,6 +6,8 @@ import {
 
 export let mapChannel
 let channelStatus
+let connectionUUID
+let remoteCursors = new Set();
 
 ['turbo:before-visit'].forEach(function (e) {
   window.addEventListener(e, function () {
@@ -67,8 +69,15 @@ export function initializeSocket () {
     },
 
     received (data) {
-      console.log('received from map_channel: ', data)
+      if (data.uuid && data.uuid === connectionUUID) {
+        // console.log(`ignore message from self ('${data.uuid}')`)
+        return
+      }
+      if (!data.event.startsWith('mouse')) console.log('received from map_channel: ', data)
       switch (data.event) {
+        case 'connection':
+          connectionUUID = data.uuid
+          break
         case 'update_feature':
           upsert(data.feature)
           break
@@ -82,18 +91,43 @@ export function initializeSocket () {
             setBackgroundMapLayer()
           }
           break
+        case 'mouse':
+          let cursor = remoteCursors[data.uuid]
+          if (cursor) {
+            cursor.setLngLat([data.lng, data.lat])
+          } else {
+            cursor = document.getElementById("remote-cursor-template").cloneNode(true)
+            cursor.classList.remove("hidden")
+            if (data.user_image) {
+              const img = document.createElement("img")
+              img.id = data.uid
+              img.src = data.user_image
+              img.className = "profile-image remote-cursor-image"
+              img.crossOrigin = "anonymous"
+              cursor.appendChild(img)
+            }
+            remoteCursors[data.uuid] = new maplibregl.Marker({ element: cursor })
+              .setLngLat([data.lng, data.lat]).addTo(map)
+          }
+          break
+        case 'mouse_disconnect':
+          // console.log('disconnect cursor ' + data.uuid)
+          remoteCursors[data.uuid]?.remove()
+          delete remoteCursors[data.uuid]
       }
     },
 
-    send_message (action, feature) {
+    send_message (event, data) {
       // copy feature to avoid mutation
-      const data = JSON.parse(JSON.stringify(feature))
-      data.map_id = window.gon.map_id
+      const payload = JSON.parse(JSON.stringify(data))
+      payload.map_id = window.gon.map_id
+      payload.user_id = window.gon.user_id
+      payload.uuid = connectionUUID
       // dropping properties.id from redrawGeojson() before sending to server
-      if (data.properties && data.properties.id) { delete data.properties.id }
-      console.log('Sending: [' + action + '] :', data)
+      if (payload.properties && payload.properties.id) { delete payload.properties.id }
+      if (event !== 'mouse') console.log('Sending: [' + event + '] :', payload)
       // Call the original perform method
-      this.perform(action, data)
+      this.perform(event, payload)
     }
   })
 }
