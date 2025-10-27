@@ -98,9 +98,9 @@ export function initializeSocket () {
           } else {
             cursor = document.getElementById("remote-cursor-template").cloneNode(true)
             cursor.classList.remove("hidden")
+            cursor.id = data.uid
             if (data.user_image) {
               const img = document.createElement("img")
-              img.id = data.uid
               img.src = data.user_image
               img.className = "profile-image remote-cursor-image"
               img.crossOrigin = "anonymous"
