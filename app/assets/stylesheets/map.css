@@ -156,22 +156,22 @@ html:has(.map), body:has(.map) {
 #preloader::before {
   content: "";
   position: fixed;
-  top: calc(50% - 30px);
-  left: calc(50% - 30px);
+  top: calc(50% - 1.9rem);
+  left: calc(50% - 1.85rem);
   border: 6px solid var(--color-mid-ecru);
   border-top-color: color-mix(in srgb, var(--color-mid-ecru), transparent 90%);
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 3.8rem;
+  height: 3.8rem;
   animation: spin 1s linear infinite;
 }
 
 #preloader img {
   position: fixed;
-  top: calc(50% - 29px);
-  left: calc(50% - 23px);
-  width: 45px;
-  height: 45px;
+  top: calc(50% - 1.8rem);
+  left: calc(50% - 1.4rem);
+  width: 2.9rem;
+  height: 2.9rem;
 }
 
 /* maptiler-sdk messes with the geolocate marker animation */
