@@ -98,7 +98,7 @@ export function initializeSocket () {
           } else {
             cursor = document.getElementById("remote-cursor-template").cloneNode(true)
             cursor.classList.remove("hidden")
-            cursor.id = data.uid
+            cursor.id = data.uuid
             if (data.user_image) {
               const img = document.createElement("img")
               img.src = data.user_image

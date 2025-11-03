@@ -249,13 +249,16 @@ html:has(.map), body:has(.map) {
   color: #fff;
   font-size: 1.2rem;
   position: relative;
-  left: -0.35rem;
-  top: 0.15rem;
+  left: 0.1rem;
+  top: 0.4rem;
+}
+
+.bi-cursor-fill::before {
+  transform: scaleX(-1);
 }
 
 .remote-cursor-image {
   position: relative;
-  left: -2.6rem;
+  left: 0.8rem;
   top: -0.3rem;
 }
-
