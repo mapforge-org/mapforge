@@ -1,3 +1,5 @@
+// @mapbox/point-geometry@1.1.0 downloaded from https://ga.jspm.io/npm:@mapbox/point-geometry@1.1.0/index.js
+
 /**
  * A standalone point geometry with useful accessor, comparison, and
  * modification methods.

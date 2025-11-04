@@ -66,7 +66,3 @@ pin "emoji-mart", preload: false # @5.6.0
 # Extract coords from uploaded images
 pin "exif-reader", preload: false # @2.3.0
 pin "@kurkle/color", to: "@kurkle--color.js" # @0.3.4
-pin "@turf/clone", to: "@turf--clone.js" # @7.2.0
-pin "@turf/helpers", to: "@turf--helpers.js" # @7.2.0
-pin "@turf/meta", to: "@turf--meta.js" # @7.2.0
-pin "@turf/projection", to: "@turf--projection.js" # @7.2.0
