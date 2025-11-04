@@ -38,8 +38,8 @@ nav.fixed-top~#docs {
 
 .tutorial-preview {
   display: block;
-  border: 2px solid var(--color-light-sand);
-  border-radius: 15px;
+  border: 0.1rem solid var(--color-light-sand);
+  border-radius: 1rem;
   max-width: 35rem;
   padding: 1.2rem;
   color: var(--color-light-sand) !important;
@@ -52,15 +52,15 @@ nav.fixed-top~#docs {
 }
 
 .tutorial-preview:active {
-  border-width: 5px;
-  padding: calc(1.5rem - 3px);
+  border-width: 0.2rem;
+  padding: 1.1rem;
 }
 
 /* only add hover effects to supported browsers */
 @media (hover: hover) {
   .tutorial-preview:hover {
-    border-width: 5px;
-    padding: calc(1.2rem - 3px);
+    border-width: 0.2rem;
+    padding: 1.1rem;
   }
 }
 
