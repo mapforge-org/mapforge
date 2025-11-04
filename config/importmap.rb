@@ -54,6 +54,10 @@ pin "@mapbox/point-geometry", to: "@mapbox--point-geometry.js", preload: false #
 pin "fast-deep-equal", preload: false # @3.1.3
 pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: false # @5.1.2
 pin "wgs84", preload: false # @0.0.0
+pin "@turf/projection", to: "@turf--projection.js", preload: false # @7.2.0
+pin "@turf/clone", to: "@turf--clone.js", preload: false # @7.2.0
+pin "@turf/helpers", to: "@turf--helpers.js", preload: false # @7.2.0
+pin "@turf/meta", to: "@turf--meta.js", preload: false # @7.2.0
 
 # Animations for frontpage: https://github.com/michalsnik/aos
 pin "aos" # @2.3.4
@@ -65,4 +69,4 @@ pin "swiper/modules", to: "swiper-modules.js", preload: false # @11.2.10
 pin "emoji-mart", preload: false # @5.6.0
 # Extract coords from uploaded images
 pin "exif-reader", preload: false # @2.3.0
-pin "@kurkle/color", to: "@kurkle--color.js" # @0.3.4
+pin "@kurkle/color", to: "@kurkle--color.js", preload: false # @0.3.4
