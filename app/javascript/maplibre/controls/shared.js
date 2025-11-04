@@ -258,7 +258,15 @@ export function resetControls () {
   functions.e('.modal-center', e => { e.classList.remove('show') })
 }
 
+// https://maplibre.org/maplibre-gl-geocoder/types/MaplibreGeocoderOptions.html
 export const geocoderConfig = {
+  clearAndBlurOnEsc: true,
+  // prioritize results near map center
+  proximity: {
+    latitude: () => { map.getCenter().lat }, longitude: () => { map.getCenter().lng } },
+  flyTo: {
+    zoom: 12
+  },
   forwardGeocode: async (config) => {
     const features = []
     try {
@@ -324,6 +332,8 @@ export function initCtrlTooltips () {
 }
 
 export function initializeDefaultControls () {
+
+  // https://maplibre.org/maplibre-gl-geocoder/
   map.addControl(
     new MaplibreGeocoder(geocoderConfig, {
       maplibregl

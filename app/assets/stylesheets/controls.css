@@ -127,7 +127,7 @@
 }
 
 .maplibregl-ctrl-geocoder .maplibregl-ctrl-geocoder--pin-right>* { /* stylelint-disable-line */
-  top: 0 !important;
+  top: 5px !important;
 }
 
 .maplibregl-ctrl-geocoder--icon-search { /* stylelint-disable-line */
