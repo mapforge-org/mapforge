@@ -3,6 +3,7 @@ import {
   highlightedFeatureId, stickyFeatureHighlight, highlightedFeatureSource,
   resetHighlightedFeature, highlightFeature
 } from 'maplibre/feature'
+import { draw } from 'maplibre/edit'
 
 export const viewStyleNames = [
   'polygon-layer',
@@ -34,6 +35,7 @@ export function initializeViewStyles (sourceName) {
 
   // click is needed to select on mobile and for sticky highlight
   map.on('click', styleNames(sourceName), function (e) {
+    if (draw && draw.getMode() !== 'simple_select') { return }
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
     if (e.features[0].properties.cluster) { return } 
     frontFeature(e.features[0])
