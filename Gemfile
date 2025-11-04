@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-ruby "3.4.7"
+ruby "3.4.5"
 
 gem "rails"
 
