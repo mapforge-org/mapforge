@@ -47,12 +47,12 @@ pin "marked", preload: false # @16.4.1
 
 # https://github.com/mapbox/mapbox-gl-draw
 # Unminified + patched version to style midpoints & vertexes (https://github.com/mapbox/mapbox-gl-draw/pull/964)
-pin "@mapbox/mapbox-gl-draw", to: "@mapbox--mapbox-gl-draw.js", preload: false # @1.5.0
+pin "@mapbox/mapbox-gl-draw", to: "@mapbox--mapbox-gl-draw.js", preload: false # @1.5.1
 pin "@mapbox/geojson-area", to: "@mapbox--geojson-area.js", preload: false # @0.2.2
 pin "@mapbox/geojson-normalize", to: "@mapbox--geojson-normalize.js", preload: false # @0.0.1
 pin "@mapbox/point-geometry", to: "@mapbox--point-geometry.js", preload: false # @1.1.0
 pin "fast-deep-equal", preload: false # @3.1.3
-pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: false # @5.1.2
+pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: false # @5.1.6
 pin "wgs84", preload: false # @0.0.0
 
 # Animations for frontpage: https://github.com/michalsnik/aos
@@ -66,3 +66,7 @@ pin "emoji-mart", preload: false # @5.6.0
 # Extract coords from uploaded images
 pin "exif-reader", preload: false # @2.3.0
 pin "@kurkle/color", to: "@kurkle--color.js" # @0.3.4
+pin "@turf/clone", to: "@turf--clone.js" # @7.2.0
+pin "@turf/helpers", to: "@turf--helpers.js" # @7.2.0
+pin "@turf/meta", to: "@turf--meta.js" # @7.2.0
+pin "@turf/projection", to: "@turf--projection.js" # @7.2.0
