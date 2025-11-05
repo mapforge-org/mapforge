@@ -60,7 +60,12 @@ export function loadOverpassLayer(id) {
       body: query
     })
   // overpass xml to geojson: https://github.com/tyrasd/osmtogeojson
-  .then( response => { return response.json() } )
+  .then( response => {
+    if (!response.ok) {
+      throw new Error(`HTTP status: ${response.status}`)
+    }
+    return response.json()
+   } )
   .then( data => {
     // console.log('Received from overpass-api.de', data)
     let geojson = osmtogeojson(data)

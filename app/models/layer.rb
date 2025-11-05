@@ -14,7 +14,8 @@ class Layer
   field :query
   field :features_count, type: Integer, default: 0
 
-  after_save :broadcast_update, if: proc { |record| record.map.present? }
+  after_save :broadcast_update, if: -> { map.present? }
+  after_destroy :broadcast_destroy, if: -> { map.present? }
 
   def to_summary_json
     json = { id: id, type: type, name: name }
@@ -43,10 +44,17 @@ class Layer
   def broadcast_update
     if saved_change_to_name? || saved_change_to_query?
       # broadcast to private + public channel
-      [ map.private_id, map.public_id ].each do |id|
-        ActionCable.server.broadcast("map_channel_#{id}",
+      [ map.private_id, map.public_id ].each do |map_id|
+        ActionCable.server.broadcast("map_channel_#{map_id}",
                                     { event: "update_layer", layer: to_summary_json.as_json })
       end
+    end
+  end
+
+  def broadcast_destroy
+    [ map.private_id, map.public_id ].each do |map_id|
+      ActionCable.server.broadcast("map_channel_#{map_id}",
+        { event: "delete_layer", layer: { id: id } })
     end
   end
 end

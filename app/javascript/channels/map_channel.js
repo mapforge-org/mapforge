@@ -1,8 +1,12 @@
 import consumer from 'channels/consumer'
 import {
   upsert, destroyFeature, setBackgroundMapLayer, mapProperties,
-  initializeMaplibreProperties, map, resetGeojsonLayers, loadLayers, reloadMapProperties
+  initializeMaplibreProperties, map, layers, resetGeojsonLayers, loadLayers, 
+  reloadMapProperties, removeGeoJSONSource, redrawGeojson
 } from 'maplibre/map'
+import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
+import { initLayersModal } from 'maplibre/controls/shared'
+
 
 export let mapChannel
 let channelStatus
@@ -89,6 +93,29 @@ export function initializeSocket () {
           // update background if properties changed
           if (initializeMaplibreProperties()) {
             setBackgroundMapLayer()
+          }
+          break
+        case 'update_layer':
+          const index = layers.findIndex(l => l.id === data.layer.id)
+          if (index > -1) {
+            // Remove geojson key before comparison
+            const { ['geojson']: _, ...layerDef } = layers[index]
+            if (JSON.stringify(layerDef) !== JSON.stringify(data.layer)) {
+              layers[index] = data.layer;
+              initializeOverpassLayers(data.layer.id);
+            }
+          } else {
+            layers.push(data.layer)
+            initializeOverpassLayers(data.layer.id)
+          }
+          break
+        case 'delete_layer':
+          const delIndex = layers.findIndex(l => l.id === data.layer.id)
+          if (delIndex > -1) {
+            layers.splice(delIndex, 1)
+            removeGeoJSONSource('overpass-source-' + data.layer.id)
+            initLayersModal()
+            redrawGeojson()
           }
           break
         case 'mouse':
