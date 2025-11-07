@@ -53,19 +53,30 @@ export function addLineMenu() {
 function addLineButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const lineButton = originalButton.cloneNode(true)
-  lineButton.title = 'Draw line'
+  lineButton.title = 'Draw line (l)'
   lineButton.removeEventListener('click', null)
-  lineButton.addEventListener('click', (_e) => {
-    if (draw.getMode() === 'draw_line_string') {
-      draw.changeMode('simple_select')
-    } else {
-      resetControls()
-      draw.changeMode('draw_line_string')
-    }
-    map.fire('draw.modechange')
+  lineButton.addEventListener('click', (e) => { toggleDrawLine(e) })
+  document.addEventListener('keydown', (e) => {
+    // skip key event when typing in input field
+    const t = e.target
+    const isTextInput = (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)
+    if (isTextInput) return
+    if (e.key === 'l') { toggleDrawLine(e) }
   })
   lineMenu.appendChild(lineButton)
 }
+
+function toggleDrawLine(e) {
+  e.preventDefault()
+  if (draw.getMode() === 'draw_line_string') {
+    draw.changeMode('simple_select')
+  } else {
+    resetControls()
+    draw.changeMode('draw_line_string')
+  }
+  map.fire('draw.modechange')
+}
+
 
 function addPaintButton() {
   const originalButton = document.querySelector('.line-menu-btn')
