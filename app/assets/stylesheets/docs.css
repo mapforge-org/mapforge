@@ -30,9 +30,10 @@ nav.fixed-top~#docs {
   }
 
   code {
-    color: var(--color-light-sand);
-    background: var(--color-mid-steel-blue);
-    padding: 0.15rem; 
+    color: var(--color-dark-smoky-black);
+    background: var(--color-light-sand); 
+    padding: 0.3rem;
+    border-radius: 0.3rem;
   }
 
   img, video {

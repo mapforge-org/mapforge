@@ -126,8 +126,10 @@ export async function initializeEditMode () {
         'info', 'medium', 8000)
       initDirections('foot')
     } else if (draw.getMode() === 'draw_point') {
+      functions.e('.mapbox-gl-draw_point', e => { e.classList.add('active') })
       status('Point Mode: Click on the map to place a marker', 'info', 'medium', 8000)
     } else if (draw.getMode() === 'draw_polygon') {
+      functions.e('.mapbox-gl-draw_polygon', e => { e.classList.add('active') })
       status('Polygon Mode: Click on the map to draw a polygon', 'info', 'medium', 8000)
     } else if (draw.getMode() === 'draw_line_string') {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
@@ -185,6 +187,17 @@ export async function initializeEditMode () {
       redo()
     }
   })
+}
+
+export function toggleDrawMode(mode) {
+  // e.preventDefault()
+  if (draw.getMode() === mode) {
+    draw.changeMode('simple_select')
+  } else {
+    resetControls()
+    draw.changeMode(mode)
+  }
+  map.fire('draw.modechange')
 }
 
 // switching directly from 'simple_select' to 'direct_select',

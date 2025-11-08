@@ -1,8 +1,9 @@
 import { resetControls } from 'maplibre/controls/shared'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { resetHighlightedFeature } from 'maplibre/feature'
-import { draw } from 'maplibre/edit'
+import { draw, toggleDrawMode } from 'maplibre/edit'
 import { map } from 'maplibre/map'
+import * as dom from 'helpers/dom'
 
 let lineMenu
 
@@ -55,33 +56,19 @@ function addLineButton() {
   const lineButton = originalButton.cloneNode(true)
   lineButton.title = 'Draw line (l)'
   lineButton.removeEventListener('click', null)
-  lineButton.addEventListener('click', (e) => { toggleDrawLine(e) })
+  lineButton.addEventListener('click', (_e) => { toggleDrawMode('draw_line_string') })
   document.addEventListener('keydown', (e) => {
     // skip key event when typing in input field
-    const t = e.target
-    const isTextInput = (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)
-    if (isTextInput) return
-    if (e.key === 'l') { toggleDrawLine(e) }
+    if (dom.isInputElement(e.target)) return
+    if (e.key === 'l') { toggleDrawMode('draw_line_string') }
   })
   lineMenu.appendChild(lineButton)
 }
 
-function toggleDrawLine(e) {
-  e.preventDefault()
-  if (draw.getMode() === 'draw_line_string') {
-    draw.changeMode('simple_select')
-  } else {
-    resetControls()
-    draw.changeMode('draw_line_string')
-  }
-  map.fire('draw.modechange')
-}
-
-
 function addPaintButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const paintButton = originalButton.cloneNode(true)
-  paintButton.title = 'Draw freehand'
+  paintButton.title = 'Draw freehand (f)'
   paintButton.classList.remove('mapbox-gl-draw_line')
   paintButton.classList.add('mapbox-gl-draw_paint')
   const icon = document.createElement('i')
@@ -90,13 +77,12 @@ function addPaintButton() {
   paintButton.appendChild(icon)
   paintButton.removeEventListener('click', null)
   paintButton.addEventListener('click', (_e) => {
-    if (draw.getMode() === 'draw_paint_mode') {
-      draw.changeMode('simple_select')
-    } else {
-      resetControls()
-      draw.changeMode('draw_paint_mode')
-    }
-    map.fire('draw.modechange')
+    toggleDrawMode('draw_paint_mode')
+  })
+  document.addEventListener('keydown', (e) => {
+    // skip key event when typing in input field
+    if (dom.isInputElement(e.target)) return
+    if (e.key === 'f') { toggleDrawMode('draw_paint_mode') }
   })
   lineMenu.appendChild(paintButton)
 }
@@ -104,7 +90,7 @@ function addPaintButton() {
 function addRoadButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const roadButton = originalButton.cloneNode(true)
-  roadButton.title = 'Calculate a car route'
+  roadButton.title = 'Calculate a car route (c)'
   roadButton.classList.remove('mapbox-gl-draw_line')
   roadButton.classList.add('mapbox-gl-draw_road')
   const icon = document.createElement('i')
@@ -113,13 +99,12 @@ function addRoadButton() {
   roadButton.appendChild(icon)
   roadButton.removeEventListener('click', null)
   roadButton.addEventListener('click', (_e) => {
-    if (draw.getMode() === 'directions_car') {
-      draw.changeMode('simple_select')
-    } else {
-      resetControls()
-      draw.changeMode('directions_car')
-    }
-    map.fire('draw.modechange')
+    toggleDrawMode('directions_car')
+  })
+  document.addEventListener('keydown', (e) => {
+    // skip key event when typing in input field
+    if (dom.isInputElement(e.target)) return
+    if (e.key === 'c') { toggleDrawMode('directions_car') }
   })
   lineMenu.appendChild(roadButton)
 }
@@ -127,7 +112,7 @@ function addRoadButton() {
 function addBicycleButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const bicycleButton = originalButton.cloneNode(true)
-  bicycleButton.title = 'Calculate a bike route'
+  bicycleButton.title = 'Calculate a bike route (b)'
   bicycleButton.classList.remove('mapbox-gl-draw_line')
   bicycleButton.classList.add('mapbox-gl-draw_bicycle')
   const icon = document.createElement('i')
@@ -135,14 +120,11 @@ function addBicycleButton() {
   icon.classList.add('bi-bicycle')
   bicycleButton.appendChild(icon)
   bicycleButton.removeEventListener('click', null)
-  bicycleButton.addEventListener('click', (_e) => {
-    if (draw.getMode() === 'directions_bike') {
-      draw.changeMode('simple_select')
-    } else {
-      resetControls()
-      draw.changeMode('directions_bike')
-    }
-    map.fire('draw.modechange')
+  bicycleButton.addEventListener('click', (_e) => { toggleDrawMode('directions_bike') })
+  document.addEventListener('keydown', (e) => {
+    // skip key event when typing in input field
+    if (dom.isInputElement(e.target)) return
+    if (e.key === 'b') { toggleDrawMode('directions_bike') }
   })
   lineMenu.appendChild(bicycleButton)
 }
@@ -150,7 +132,7 @@ function addBicycleButton() {
 function addFootButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const footButton = originalButton.cloneNode(true)
-  footButton.title = 'Calculate a walking route'
+  footButton.title = 'Calculate a walking route (w)'
   footButton.classList.remove('mapbox-gl-draw_line')
   footButton.classList.add('mapbox-gl-draw_foot')
   const icon = document.createElement('i')
@@ -158,14 +140,11 @@ function addFootButton() {
   icon.classList.add('bi-person-walking')
   footButton.appendChild(icon)
   footButton.removeEventListener('click', null)
-  footButton.addEventListener('click', (_e) => {
-    if (draw.getMode() === 'directions_foot') {
-      draw.changeMode('simple_select')
-    } else {
-      resetControls()
-      draw.changeMode('directions_foot')
-    }
-    map.fire('draw.modechange')
+  footButton.addEventListener('click', (_e) => { toggleDrawMode('directions_foot') })
+  document.addEventListener('keydown', (e) => {
+    // skip key event when typing in input field
+    if (dom.isInputElement(e.target)) return
+    if (e.key === 'w') { toggleDrawMode('directions_foot') }
   })
   lineMenu.appendChild(footButton)
 }

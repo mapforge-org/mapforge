@@ -6,6 +6,7 @@ import { handleDelete, draw } from 'maplibre/edit'
 import { featureColor, featureOutlineColor } from 'maplibre/styles'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
+import * as dom from 'helpers/dom'
 import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
@@ -18,9 +19,7 @@ export default class extends Controller {
   picker = null
 
   delete_feature (e) {
-    const t = e.target
-    const isTextInput = (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)
-    if (isTextInput) return // Don't trigger if typing in input
+    if (dom.isInputElement(e.target)) return // Don't trigger if typing in input
 
     const feature = this.getFeature()
     if (confirm(`Really delete this ${feature.geometry.type}?`)) {
