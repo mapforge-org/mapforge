@@ -33,6 +33,8 @@ gem "stimulus-rails"
 
 # Databases
 gem "redis", ">= 4.0.1"
+# TODO: mongoid is not yet compatible with Rails 8.1:
+# # https://www.mongodb.com/docs/drivers/compatibility/?driver-language=ruby&ruby-driver-framework=mongoid#ruby-on-rails-compatibility
 gem "mongoid", ">= 9.0.2" # without version, bundler tries to install 8.1.6
 gem "mongoid_rails_migrations"
 gem "mongoid_includes"

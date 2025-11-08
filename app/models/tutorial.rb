@@ -27,7 +27,7 @@ class Tutorial
       filter_html: false,
       hard_wrap: true
     )
-    markdown_parser = Redcarpet::Markdown.new(renderer, extensions = {})
+    markdown_parser = Redcarpet::Markdown.new(renderer, tables: true)
     markdown_parser.render(markdown).html_safe
   end
 end

@@ -17,7 +17,11 @@ export default class extends Controller {
   // emoji picker
   picker = null
 
-  delete_feature () {
+  delete_feature (e) {
+    const t = e.target
+    const isTextInput = (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)
+    if (isTextInput) return // Don't trigger if typing in input
+
     const feature = this.getFeature()
     if (confirm(`Really delete this ${feature.geometry.type}?`)) {
       handleDelete({ features: [feature] })
