@@ -22,10 +22,11 @@
   /* Todo: Looks cool, but slows down browsers */
 
   /* backdrop-filter: blur(3px); */
-
   z-index: 1000;
   padding: 1.5em 1em 1.5em 1.5em;
   box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
+  scrollbar-color: #888 #f1f1f1;
+  scrollbar-width: auto;
 
   p {
     margin-bottom: 0.5rem;
