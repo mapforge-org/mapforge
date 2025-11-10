@@ -37,22 +37,32 @@ export function initializeViewStyles (sourceName) {
   map.on('click', styleNames(sourceName), function (e) {
     if (draw && draw.getMode() !== 'simple_select') { return }
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
-    if (e.features[0].properties.cluster) { return } 
+    if (e.features[0].properties.cluster) { return }
     frontFeature(e.features[0])
     highlightFeature(e.features[0], true, sourceName)
   })
 
-  // highlight features on hover
-  if (window.gon.map_mode !== 'rw') { 
-    map.on('mousemove', (e) => {
-      if (window.gon.map_mode === 'static') { return }
-      if (stickyFeatureHighlight && highlightedFeatureId) { return }
-      // This avoids hover highlight in edit mode
-      if (document.querySelector('.maplibregl-ctrl button.active')) { return }
+  if (window.gon.map_mode === 'rw') {
+    map.on('click', function (e) {
+      // layers have different names per base map, select from all
+      const features = map.queryRenderedFeatures(e.point)
+      console.log(features)
+      if (draw && draw.getMode() !== 'simple_select') { return }
+      if (!features?.length) { return }
+      if (features[0]?.properties?.cluster) { return }
+      // frontFeature(features[0])
+      // highlightFeature(features[0], true, sourceName)
+    })
+  }
 
-      const features = map.queryRenderedFeatures(e.point).filter(f => f.source === sourceName)
+  // highlight features on hover (only in ro mode)
+  if (window.gon.map_mode === 'ro') {
+    map.on('mousemove', (e) => {
+      if (stickyFeatureHighlight && highlightedFeatureId) { return }
+
+      const features = map.queryRenderedFeatures(e.point, { layers: styleNames(sourceName) })
       if (features[0]) {
-        if (features[0].properties.cluster) { return } 
+        if (features[0]?.properties?.cluster) { return }
         if (features[0].id === highlightedFeatureId) { return }
         frontFeature(features[0])
         highlightFeature(features[0], false, sourceName)
@@ -61,8 +71,6 @@ export function initializeViewStyles (sourceName) {
       }
     })
   }
-
-  map.on('styleimagemissing', loadImage)
 }
 
 export function initializeClusterStyles(sourceName, icon) {
@@ -472,7 +480,6 @@ export function styles () {
     'points-hit-layer': {
       id: 'points-hit-layer',
       type: 'circle',
-      source: 'geojson-source',
       filter: ['all',
         ['==', '$type', 'Point']
       ],

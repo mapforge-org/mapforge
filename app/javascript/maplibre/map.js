@@ -9,7 +9,7 @@ import { initializeViewControls } from 'maplibre/controls/view'
 import { draw, select } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
   renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
-import { initializeViewStyles, setStyleDefaultFont } from 'maplibre/styles'
+import { initializeViewStyles, setStyleDefaultFont, loadImage } from 'maplibre/styles'
 import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
 
 export let map
@@ -106,6 +106,8 @@ export async function initializeMap (divId = 'maplibre-map') {
     initializeViewStyles('geojson-source')
     initializeKmMarkerStyles()
   })
+
+  map.on('styleimagemissing', loadImage)
 
   map.on('geojson.load', (_e) => {
     functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })

@@ -234,28 +234,24 @@ export function resetHighlightedFeature () {
 
 export function highlightFeature (feature, sticky = false, source = 'geojson-source') {
   if (highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
-  if (feature.id) {
-    // console.log('highlight', feature)
-    stickyFeatureHighlight = sticky
-    highlightedFeatureId = feature.id
-    highlightedFeatureSource = source
-    // load feature from source, the style only returns the dimensions on screen
-    const sourceFeature = layers
-      .filter(l => Array.isArray(l.geojson?.features))
-      .flatMap(layer => layer.geojson.features)
-      .find(f => f.id === feature.id)
+  // console.log('highlight', feature)
+  stickyFeatureHighlight = sticky
+  highlightedFeatureId = feature?.id
+  highlightedFeatureSource = source
+  // load feature from source, the style only returns the dimensions on screen
+  const sourceFeature = layers
+    .filter(l => Array.isArray(l.geojson?.features))
+    .flatMap(layer => layer.geojson.features)
+    .find(f => f.id === feature.id)
 
-    if (sourceFeature) {
-      showFeatureDetails(sourceFeature)
-      // A feature's state is not part of the GeoJSON or vector tile data but can get used in styles
-      map.setFeatureState({ source, id: feature.id }, { active: true })
-      // set url to feature
-      if (sticky) {
-        const newPath = `${window.location.pathname}?f=${feature.id}`
-        window.history.pushState({}, '', newPath)
-      }
-    } else {
-      console.error('Feature #' + feature.id + ' not found!')
+  showFeatureDetails(sourceFeature || feature)
+  if (sourceFeature) {
+    // A feature's state is not part of the GeoJSON or vector tile data but can get used in styles
+    map.setFeatureState({ source, id: feature.id }, { active: true })
+    // set url to feature
+    if (sticky) {
+      const newPath = `${window.location.pathname}?f=${feature.id}`
+      window.history.pushState({}, '', newPath)
     }
   }
 }
