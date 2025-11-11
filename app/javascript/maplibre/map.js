@@ -10,6 +10,7 @@ import { draw, select } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
   renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
 import { initializeViewStyles, setStyleDefaultFont, loadImage } from 'maplibre/styles'
+// import { initializeMapStyles } from 'maplibre/map_styles'
 import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
 
 export let map
@@ -104,6 +105,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     if (mapProperties.globe) { addGlobe() }
     if (mapProperties.contours) { addContours() }
     initializeViewStyles('geojson-source')
+    // initializeMapStyles('geojson-source')
     initializeKmMarkerStyles()
   })
 

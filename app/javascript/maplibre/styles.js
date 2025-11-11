@@ -42,19 +42,6 @@ export function initializeViewStyles (sourceName) {
     highlightFeature(e.features[0], true, sourceName)
   })
 
-  if (window.gon.map_mode === 'rw') {
-    map.on('click', function (e) {
-      // layers have different names per base map, select from all
-      const features = map.queryRenderedFeatures(e.point)
-      console.log(features)
-      if (draw && draw.getMode() !== 'simple_select') { return }
-      if (!features?.length) { return }
-      if (features[0]?.properties?.cluster) { return }
-      // frontFeature(features[0])
-      // highlightFeature(features[0], true, sourceName)
-    })
-  }
-
   // highlight features on hover (only in ro mode)
   if (window.gon.map_mode === 'ro') {
     map.on('mousemove', (e) => {
