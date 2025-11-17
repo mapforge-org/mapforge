@@ -124,6 +124,9 @@ GEM
     cookiejar (0.3.4)
     crass (1.0.6)
     csv (3.3.3)
+    cuprite (0.17)
+      capybara (~> 3.0)
+      ferrum (~> 0.17.0)
     database_cleaner-core (2.0.1)
     database_cleaner-mongoid (2.0.1)
       database_cleaner-core (~> 2.0.0)
@@ -201,6 +204,12 @@ GEM
       logger
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
+    ferrum (0.17.1)
+      addressable (~> 2.5)
+      base64 (~> 0.2)
+      concurrent-ruby (~> 1.1)
+      webrick (~> 1.7)
+      websocket-driver (~> 0.7)
     ffi (1.17.0)
     flay (2.13.3)
       erubi (~> 1.10)
@@ -591,6 +600,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webrick (1.9.1)
     websocket (1.2.11)
     websocket-driver (0.8.0)
       base64
@@ -628,6 +638,7 @@ DEPENDENCIES
   byebug
   capybara
   capybara-screenshot
+  cuprite
   database_cleaner-mongoid
   debug
   dotenv-rails

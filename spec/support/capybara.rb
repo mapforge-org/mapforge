@@ -70,14 +70,21 @@ Capybara.register_driver :headless_chrome do |app|
   Capybara::Selenium::Driver.new(app, **chrome_driver_arguments(headless: true))
 end
 
+Capybara.register_driver(:cuprite) do |app|
+  logger = StringIO.new
+  Capybara::Cuprite::Driver.new(app, { window_size: [ 1024, 860 ],
+    timeout: 5,
+    logger: logger })
+end
+
 require 'billy/capybara/rspec'
-Capybara.javascript_driver = :headless_chrome
+Capybara.javascript_driver = :cuprite # :headless_chrome
 
 # Register our custom driver name. otherwise 'screenshot_failed_tests' would fail
 # see https://github.com/mattheworiordan/capybara-screenshot/issues/84#issuecomment-41219326
-Capybara::Screenshot.register_driver(Capybara.javascript_driver) do |driver, path|
-  driver.browser.save_screenshot(path)
-end
+# Capybara::Screenshot.register_driver(Capybara.javascript_driver) do |driver, path|
+#  driver.browser.save_screenshot(path)
+# end
 
 Capybara.default_driver = Capybara.javascript_driver
 # Start Puma silently

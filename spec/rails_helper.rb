@@ -59,7 +59,7 @@ RSpec.configure do |config|
   # raise on js console errors
   class JavaScriptError< StandardError; end
   RSpec.configure do |config|
-    config.after(:each, type: :feature) do |spec|
+    config.after(:each, type: :feature2) do |spec|
       unless spec.metadata[:skip_console_errors]
         levels = [ "SEVERE" ]
         # "maplibre-gl.js TypeError: Failed to fetch" seems to be caused by
@@ -67,10 +67,12 @@ RSpec.configure do |config|
         exclude = [ /TypeError: Failed to fetch/,
                     /The user aborted a request/,
                     /Failed to load resource/ ]
-        errors = page.driver.browser.logs.get(:browser).to_a
-                   .select { |e| levels.include?(e.level) && e.message.present? }
-                   .reject { |e| exclude.any? { |ex| e.message =~ ex } }
-                   .map(&:message)
+        # errors = page.driver.browser.logs.get(:browser).to_a
+        #            .select { |e| levels.include?(e.level) && e.message.present? }
+        #            .reject { |e| exclude.any? { |ex| e.message =~ ex } }
+        #            .map(&:message)
+        errors = page.driver.browser.console_messages
+
         if errors.present?
           raise JavaScriptError, errors.join("\n\n")
         end

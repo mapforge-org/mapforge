@@ -58,6 +58,7 @@ describe 'Feature edit' do
     context 'with selected polygon feature' do
       before do
         click_coord('#maplibre-map', 50, 50)
+        byebug
         expect(page).to have_css('#edit-button-edit')
       end
 
