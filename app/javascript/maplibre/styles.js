@@ -321,7 +321,8 @@ export function styles () {
       id: 'line-layer-outline',
       type: 'line',
       filter: ['all',
-        ['in', '$type', 'LineString']],
+        ['==', ['geometry-type'], 'LineString'],
+        ['!', ['has', 'stroke-dasharray']]],  // Only solid lines
       layout: {
         'line-join': 'round',
         'line-cap': 'round'
