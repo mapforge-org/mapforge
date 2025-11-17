@@ -323,7 +323,7 @@ const requestWakeLock = async () => {
 }
 
 export function initCtrlTooltips () {
-  functions.e('.maplibregl-ctrl button', e => {
+  functions.e('.maplibregl-ctrl, .maplibregl-ctrl button', e => {
     e.setAttribute('data-toggle', 'tooltip')
     e.setAttribute('data-bs-custom-class', 'maplibregl-ctrl-tooltip')
     e.setAttribute('data-bs-trigger', 'hover')
@@ -341,6 +341,7 @@ export function initializeDefaultControls () {
   )
   const geocoderButton = document.querySelector('.maplibregl-ctrl-geocoder')
   geocoderButton.classList.add('hidden')
+  geocoderButton.title = 'Search location'
   document.querySelector('.maplibregl-ctrl-geocoder--icon-search').addEventListener('click', (_e) => {
     if (parseFloat(window.getComputedStyle(geocoderButton).width) > 100) {
       geocoderButton.style.setProperty('width', '32px', 'important')
