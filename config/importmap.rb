@@ -55,7 +55,7 @@ pin "fast-deep-equal", preload: false # @3.1.3
 pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: false # @5.1.2
 pin "wgs84", preload: false # @0.0.0
 pin "@turf/projection", to: "@turf--projection.js", preload: false # @7.2.0
-pin "@turf/clone", to: "@turf--clone.js", preload: false # @7.2.0
+pin "@turf/clone", to: "@turf--clone.js", preload: false # @7.3.0
 pin "@turf/helpers", to: "@turf--helpers.js", preload: false # @7.2.0
 pin "@turf/meta", to: "@turf--meta.js", preload: false # @7.2.0
 
