@@ -54,10 +54,6 @@ pin "@mapbox/point-geometry", to: "@mapbox--point-geometry.js", preload: false #
 pin "fast-deep-equal", preload: false # @3.1.3
 pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: false # @5.1.2
 pin "wgs84", preload: false # @0.0.0
-pin "@turf/projection", to: "@turf--projection.js", preload: false # @7.3.0
-pin "@turf/clone", to: "@turf--clone.js", preload: false # @7.3.0
-pin "@turf/helpers", to: "@turf--helpers.js", preload: false # @7.3.0
-pin "@turf/meta", to: "@turf--meta.js", preload: false # @7.3.0
 
 # Animations for frontpage: https://github.com/michalsnik/aos
 pin "aos" # @2.3.4
@@ -70,3 +66,30 @@ pin "emoji-mart", preload: false # @5.6.0
 # Extract coords from uploaded images
 pin "exif-reader", preload: false # @2.3.0
 pin "@kurkle/color", to: "@kurkle--color.js", preload: false # @0.3.4
+
+# https://turfjs.org/
+# pin "@turf/turf", to: "turf.min.js", preload: false # @7.3.0
+# Turf libs needed by mapbox-gl-draw
+pin "@turf/projection", to: "@turf--projection.js", preload: false # @7.3.0
+pin "@turf/clone", to: "@turf--clone.js", preload: false # @7.3.0
+pin "@turf/helpers", to: "@turf--helpers.js" # @7.3.0
+pin "@turf/meta", to: "@turf--meta.js" # @7.3.0
+# Turf libs needed by app
+pin "@turf/simplify", to: "@turf--simplify.js", preload: false # @7.3.0
+pin "@turf/boolean-point-on-line", to: "@turf--boolean-point-on-line.js", preload: false # @7.3.0
+pin "@turf/clean-coords", to: "@turf--clean-coords.js", preload: false # @7.3.0
+pin "@turf/invariant", to: "@turf--invariant.js", preload: false # @7.3.0
+pin "@turf/centroid", to: "@turf--centroid.js", preload: false # @7.3.0
+pin "@turf/distance", to: "@turf--distance.js", preload: false # @7.3.0
+pin "@turf/along", to: "@turf--along.js", preload: false # @7.3.0
+pin "@turf/bearing", to: "@turf--bearing.js", preload: false # @7.3.0
+pin "@turf/destination", to: "@turf--destination.js", preload: false # @7.3.0
+pin "@turf/length", to: "@turf--length.js", preload: false # @7.3.0
+pin "@turf/area", to: "@turf--area.js", preload: false # @7.3.0
+pin "@turf/buffer", to: "@turf--buffer.js", preload: false # @7.3.0
+pin "@turf/bbox", to: "@turf--bbox.js", preload: false # @7.3.0
+pin "@turf/center", to: "@turf--center.js", preload: false # @7.3.0
+pin "@turf/jsts", to: "@turf--jsts.js", preload: false # @2.7.2
+# dependencies of turf/buffer
+pin "d3-array", preload: false # @1.2.4
+pin "d3-geo", preload: false # @1.7.1

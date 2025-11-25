@@ -1,0 +1,4 @@
+// @turf/along@7.3.0 downloaded from https://ga.jspm.io/npm:@turf/along@7.3.0/dist/esm/index.js
+
+import{bearing as t}from"@turf/bearing";import{destination as r}from"@turf/destination";import{distance as o}from"@turf/distance";import{point as n}from"@turf/helpers";import{getGeom as e}from"@turf/invariant";function f(f,i,a={}){const m=e(f);const s=m.coordinates;let u=0;for(let e=0;e<s.length;e++){if(i>=u&&e===s.length-1)break;if(u>=i){const o=i-u;if(o){const n=t(s[e],s[e-1])-180;const f=r(s[e],o,n,a);return f}return n(s[e])}u+=o(s[e],s[e+1],a)}return n(s[s.length-1])}var i=f;export{f as along,i as default};
+

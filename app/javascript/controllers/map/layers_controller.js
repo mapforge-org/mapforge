@@ -7,6 +7,7 @@ import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import { loadOverpassLayer, initializeOverpassLayers } from 'maplibre/overpass/overpass'
 import { queries } from 'maplibre/overpass/queries'
+import { centroid } from "@turf/centroid"
 
 export default class extends Controller {
   upload () {
@@ -142,14 +143,14 @@ export default class extends Controller {
 
   flyToFeature(feature, source='geojson-source') {
     // Calculate the centroid
-    const centroid = window.turf.centroid(feature)
-    console.log('Fly to: ' + feature.id + ' ' + centroid.geometry.coordinates)
+    const center = centroid(feature)
+    console.log('Fly to: ' + feature.id + ' ' + center.geometry.coordinates)
     resetControls()
     map.once('moveend', function () {
       highlightFeature(feature, true, source)
     })
     map.flyTo({
-      center: centroid.geometry.coordinates,
+      center: center.geometry.coordinates,
       duration: 1000,
       curve: 0.3,
       essential: true

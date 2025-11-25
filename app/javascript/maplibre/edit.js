@@ -10,6 +10,7 @@ import { status } from 'helpers/status'
 import { undo, redo, addUndoState } from 'maplibre/undo'
 import * as functions from 'helpers/functions'
 import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
+import { simplify } from "@turf/simplify"
 
 export let draw
 export let selectedFeature
@@ -239,7 +240,7 @@ function handleCreate (e) {
   // simplify hand-drawing
   if (mode === 'draw_paint_mode') {
     const options = { tolerance: 0.00005, highQuality: true, mutate: true }
-    window.turf.simplify(feature, options)
+    simplify(feature, options)
   }
 
   // status('Feature ' + feature.id + ' created')

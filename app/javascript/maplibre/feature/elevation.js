@@ -1,6 +1,7 @@
 import { featureColor } from 'maplibre/styles'
 import { map } from 'maplibre/map'
-
+import { point } from "@turf/helpers"
+import { distance } from "@turf/distance"
 
 let marker
 
@@ -22,13 +23,13 @@ export async function showElevationChart (feature) {
   Chart.register([CategoryScale, LineController, LineElement, LinearScale, PointElement,
     Filler, Tooltip])
   const labels = []
-  feature.geometry.coordinates.reduce((distance, coord, index) => {
+  feature.geometry.coordinates.reduce((pointDistance, coord, index) => {
     if (index == 0) { labels.push(0); return 0 }
-    let from = turf.point(feature.geometry.coordinates[index - 1])
-    let to = turf.point(coord)
-    distance += turf.distance(from, to, { units: 'meters' })
-    labels.push(Math.round(distance))
-    return distance
+    let from = point(feature.geometry.coordinates[index - 1])
+    let to = point(coord)
+    pointDistance += distance(from, to, { units: 'meters' })
+    labels.push(Math.round(pointDistance))
+    return pointDistance
   }, 0)
 
   const values = feature.geometry.coordinates.map(coords => coords[2])

@@ -12,6 +12,7 @@ import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
 import { initializeViewStyles, setStyleDefaultFont, loadImage } from 'maplibre/styles'
 // import { initializeMapStyles } from 'maplibre/map_styles'
 import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
+import { centroid } from "@turf/centroid"
 
 export let map
 export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
@@ -137,8 +138,8 @@ export async function initializeMap (divId = 'maplibre-map') {
     let feature = geojsonData?.features?.find(f => f.id === urlFeatureId)
     if (feature) {
       highlightFeature(feature, true)
-      const centroid = window.turf.center(feature)
-      map.setCenter(centroid.geometry.coordinates)
+      const center = centroid(feature)
+      map.setCenter(center.geometry.coordinates)
     }
     const urlFeatureAnimateId = new URLSearchParams(window.location.search).get('a')
     feature = geojsonData?.features?.find(f => f.id === urlFeatureAnimateId)

@@ -4,6 +4,9 @@ import * as dom from 'helpers/dom'
 import { marked } from 'marked'
 import { featureColor, defaultLineWidth, styles, labelFont } from 'maplibre/styles'
 import { showElevationChart } from 'maplibre/feature/elevation'
+import { length } from "@turf/length"
+import { area } from "@turf/area"
+import { lineString, multiLineString, polygon, multiPolygon } from "@turf/helpers"
 
 window.marked = marked
 
@@ -25,41 +28,40 @@ function featureTitle (feature) {
 }
 
 function featureMeta (feature) {
-  const turf = window.turf
   let meta = ''
   if (feature.geometry.type === 'LineString' && feature.geometry.coordinates.length > 1) {
-    const turfLineString = turf.lineString(feature.geometry.coordinates)
-    const length = turf.length(turfLineString)
-    if (length <= 2) {
-      meta = Math.round(length * 1000) + ' m'
+    const turfLineString = lineString(feature.geometry.coordinates)
+    const turfLength = length(turfLineString)
+    if (turfLength <= 2) {
+      meta = Math.round(turfLength * 1000) + ' m'
     } else {
       // 2 decimals
-      meta = Math.round(length * 100) / 100 + ' km'
+      meta = Math.round(turfLength * 100) / 100 + ' km'
     }
   } else if (feature.geometry.type === 'MultiLineString') {
-    const turfLineString = turf.multiLineString(feature.geometry.coordinates)
-    const length = turf.length(turfLineString)
-    if (length <= 2) {
-      meta = Math.round(length * 1000) + ' m'
+    const turfLineString = multiLineString(feature.geometry.coordinates)
+    const turfLength = length(turfLineString)
+    if (turfLength <= 2) {
+      meta = Math.round(turfLength * 1000) + ' m'
     } else {
       // 2 decimals
-      meta = Math.round(length * 100) / 100 + ' km'
+      meta = Math.round(turfLength * 100) / 100 + ' km'
     }
   } else if (feature.geometry.type === 'Polygon') {
-    const turfPolygon = turf.polygon(feature.geometry.coordinates)
-    const area = turf.area(turfPolygon)
-    if (area < 100000) {
-      meta = area.toFixed(0) + ' m²'
+    const turfPolygon = polygon(feature.geometry.coordinates)
+    const turfArea = area(turfPolygon)
+    if (turfArea < 100000) {
+      meta = turfArea.toFixed(0) + ' m²'
     } else {
-      meta = (area / 1000000).toFixed(2) + ' km²'
+      meta = (turfArea / 1000000).toFixed(2) + ' km²'
     }
   } else if (feature.geometry.type === 'MultiPolygon') {
-    const turfPolygon = turf.multiPolygon(feature.geometry.coordinates)
-    const area = turf.area(turfPolygon)
-    if (area < 100000) {
-      meta = area.toFixed(0) + ' m²'
+    const turfPolygon = multiPolygon(feature.geometry.coordinates)
+    const turfArea = area(turfPolygon)
+    if (turfArea < 100000) {
+      meta = turfArea.toFixed(0) + ' m²'
     } else {
-      meta = (area / 1000000).toFixed(2) + ' km²'
+      meta = (turfArea / 1000000).toFixed(2) + ' km²'
     }
   } else if (feature.geometry.type === 'Point') {
     meta = '(' + feature.geometry.coordinates[1].toFixed(6) +
@@ -349,14 +351,14 @@ export function renderKmMarkers () {
     feature.properties['show-km-markers'] &&
     feature.geometry.coordinates.length >= 2)).forEach((f) => {
 
-    const line = turf.lineString(f.geometry.coordinates)
-    const length = turf.length(line, { units: 'kilometers' })
+    const line = lineString(f.geometry.coordinates)
+    const length = length(line, { units: 'kilometers' })
     // Create markers at useful intervals
     let interval = 1
 
     for (let i = interval; i < Math.ceil(length) + interval; i += interval) {
       // Get point at current kilometer
-      const point = turf.along(line, i, { units: 'kilometers' })
+      const point = along(line, i, { units: 'kilometers' })
       point.properties['marker-color'] = f.properties['stroke'] || featureColor
       point.properties['marker-size'] = 11
       point.properties['marker-opacity'] = 1
@@ -394,7 +396,7 @@ export function renderExtrusionLines () {
 
   extrusionLines = extrusionLines.map(feature => {
     const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
-    const extrusionLine = window.turf.buffer(feature, width, { units: 'meters' })
+    const extrusionLine = buffer(feature, width, { units: 'meters' })
     // clone properties hash, else we're writing into the original feature's properties
     extrusionLine.properties = { ...feature.properties }
     if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {

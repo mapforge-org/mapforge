@@ -1,6 +1,10 @@
 import { map, redrawGeojson, mapProperties } from 'maplibre/map'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
+import { length } from "@turf/length"
+import { point } from "@turf/helpers"
+import distance from "@turf/distance"
+import { along } from "@turf/along"
 
 export class AnimationManager {
   constructor () {
@@ -49,15 +53,14 @@ export class AnimatePointAnimation extends AnimationManager {
   }
 
   async animatePointPath (feature, path) {
-    const turf = window.turf
     const coordinates = path.geometry.coordinates
     console.log('Animating ' + feature.id + ' along ' + path.id)
     // Loop over the coordinates
     for (let i = 0; i < coordinates.length - 1; i++) {
-      const distance = turf.distance(turf.point(coordinates[i]),
-        turf.point(coordinates[i + 1]), { units: 'meters' })
+      const pointDistance = distance(point(coordinates[i]),
+        point(coordinates[i + 1]), { units: 'meters' })
       const speed = 0.6 // ~ 500m/s
-      const duration = Math.round(distance) / speed
+      const duration = Math.round(pointDistance) / speed
       this.animatePoint(feature, coordinates[i + 1], duration)
       await functions.sleep(duration)
       // if the animation was cancelled break path loop
@@ -77,15 +80,15 @@ export class AnimateLineAnimation extends AnimationManager {
         coordinates: [...line.geometry.coordinates]
       }
     }
-    const lineDistance = window.turf.lineDistance(path, 'kilometers')
-    console.log('Line length: ' + lineDistance + ' km')
+    const lineLength = length(path, 'kilometers')
+    console.log('Line length: ' + lineLength + ' km')
     const steps = 500
     let counter = 1
 
     function animate (_frame) {
       const progress = counter / steps
-      const distance = progress * lineDistance
-      const coordinate = window.turf.along(path, distance, 'kilometers').geometry.coordinates
+      const distance = progress * lineLength
+      const coordinate = along(path, distance, 'kilometers').geometry.coordinates
       // console.log("Frame #" + _frame + ", distance: " + distance + ", coord: " + coordinate)
 
       line.geometry.coordinates.push(coordinate)
