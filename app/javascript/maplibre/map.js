@@ -38,7 +38,7 @@ let backgroundContours
 export function initializeMaplibreProperties () {
   const lastProperties = JSON.parse(JSON.stringify(mapProperties || {}))
   mapProperties = window.gon.map_properties
-  if (!equal(lastProperties, mapProperties)) {
+  if (mapProperties && !equal(lastProperties, mapProperties)) {
     console.log('Update map properties:', mapProperties)
     updateMapName(mapProperties.name)
     initSettingsModal()
@@ -229,7 +229,7 @@ export function removeGeoJSONSource(sourceName) {
 
 export function loadLayers () {
   // return if all layers already loaded (eg. in case of basemap style change)
-  if (gon.map_layers.length == layers.length) {
+  if (geojsonData && gon.map_layers.length == layers.length) {
     // console.log('All layers already loaded, re-rendering from cache', layers)
     initializeOverpassLayers()
     redrawGeojson()
