@@ -59,7 +59,7 @@ export function initDirections (profile, feature) {
   if (currentFeature) {
     let waypoints = currentFeature.properties.route.waypoints
     // console.log("Waypoints: ", waypoints)
-    directions.setWaypointsFeatures(waypoints.map( (wp, index) => directions.createWaypointfeature(wp, index) ))
+    directions.setWaypointsFeatures(waypoints.map( (coords, index) => directions.createWaypointfeature(coords, index) ))
     // Generate routeline for setting new midpoints
     directions.setSnappointsFeatures(directions.createSnappointsFeatures())
     directions.setRoutelinesFeatures(directions.createRoutelinesFeatures(currentFeature))
@@ -72,7 +72,7 @@ export function initDirections (profile, feature) {
 
     // use 'snapped' waypoints
     let waypoints = e.data.directions.waypoints.map(wp => wp.location)
-    directions.setWaypointsFeatures(waypoints.map( (wp, index) => directions.createWaypointfeature(wp, index)))
+    directions.setWaypointsFeatures(waypoints.map((coords, index) => directions.createWaypointfeature(coords, index)))
 
     let trackColor = "#2d587d"
     if (profile === "bike") { trackColor = "#3bb2d0" }

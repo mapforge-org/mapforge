@@ -31,9 +31,12 @@ export default class CustomMapLibreGlDirections extends MapLibreGlDirections {
   }
 
   setWaypointsFeatures(waypointsFeatures) {
+    // console.log('setWaypointsFeatures')
     this._waypoints = waypointsFeatures
 
-    this.assignWaypointsCategories()
+    // assignWaypointsCategories() assigns "undefined" to midpoints.
+    // this breaks maplibre-gl 5.13 (https://github.com/maplibre/maplibre-gl-js/issues/6730)
+    // this.assignWaypointsCategories()
 
     const waypointEvent = new MapLibreGlDirectionsNonCancelableEvent("setwaypoints", undefined)
     this.fire(waypointEvent)
