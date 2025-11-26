@@ -10,8 +10,8 @@
       %i.bi.bi-lock-fill
 
   - if map.user && avatar
-    -if map.user.image
-      = image_tag map.user.image, class: 'map-avatar', loading: 'lazy', alt: "", crossorigin: "anonymous"
+    - if map.user.image
+      = image_tag avatar_url(map.user.image, 40), class: 'map-avatar', loading: 'lazy', alt: "", crossorigin: "anonymous"
 
   - if delete
     = link_to destroy_map_path(id: map.private_id), data: { turbo_method: :delete, turbo_confirm: "Do you really want to delete this map?" }, title: 'Delete map', class: 'map-delete' do
