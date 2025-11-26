@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 2025-11
 
 * Keyboard shortcuts
+* Show active collaborators' cursors on the map
 
 ## 2025-10
 
