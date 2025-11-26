@@ -71,7 +71,7 @@ export function initDirections (profile, feature) {
     console.log("fetchroutesend", e)
 
     // use 'snapped' waypoints
-    let waypoints = e.data.directions.waypoints.map(wp => wp.location)
+    let waypoints = e.data.waypoints.map(wp => wp.location)
     directions.setWaypointsFeatures(waypoints.map( (wp, index) => directions.createWaypointfeature(wp, index)))
 
     let trackColor = "#2d587d"
@@ -86,7 +86,7 @@ export function initDirections (profile, feature) {
                                 "stroke-width": 5,
                                 "stroke": trackColor,
                                 "stroke-dasharray": true }
-    let coords = decodePolyline(e.data.directions.routes[0].geometry)
+    let coords = decodePolyline(e.data.routes[0].geometry)
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords || [], "type": "LineString" },
       // deep clone properties to avoid modifying the original feature

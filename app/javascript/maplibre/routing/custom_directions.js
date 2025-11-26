@@ -1,5 +1,5 @@
 import MapLibreGlDirections from "@maplibre/maplibre-gl-directions"
-import { MapLibreGlDirectionsNonCancelableEvent } from "@maplibre/maplibre-gl-directions"
+import { MapLibreGlDirectionsWaypointEvent } from "@maplibre/maplibre-gl-directions"
 import * as functions from 'helpers/functions'
 import { encodePolyline } from 'helpers/polyline'
 
@@ -35,7 +35,7 @@ export default class CustomMapLibreGlDirections extends MapLibreGlDirections {
 
     this.assignWaypointsCategories()
 
-    const waypointEvent = new MapLibreGlDirectionsNonCancelableEvent("setwaypoints", undefined)
+    const waypointEvent = new MapLibreGlDirectionsWaypointEvent("setwaypoints", undefined)
     this.fire(waypointEvent)
 
     this.draw()
