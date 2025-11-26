@@ -6,6 +6,7 @@ import { featureColor, defaultLineWidth, styles, labelFont } from 'maplibre/styl
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { length } from "@turf/length"
 import { area } from "@turf/area"
+import { buffer } from "@turf/buffer"
 import { lineString, multiLineString, polygon, multiPolygon } from "@turf/helpers"
 
 window.marked = marked
