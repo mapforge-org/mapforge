@@ -358,7 +358,7 @@ export function renderKmMarkers () {
     // Create markers at useful intervals
     let interval = 1
 
-    for (let i = interval; i < Math.ceil(distance) + interval; i += interval) {
+    for (let i = 0; i < Math.ceil(distance) + interval; i += interval) {
       // Get point at current kilometer
       const point = along(line, i, { units: 'kilometers' })
       point.properties['marker-color'] = f.properties['stroke'] || featureColor
@@ -372,7 +372,7 @@ export function renderKmMarkers () {
         if (Math.ceil(distance) < 100) {
           point.properties['km'] = Math.round(distance * 10) / 10
         }
-      } else {
+      } else if (distance - i > 1) {
         point.properties['km'] = i
       }
       kmMarkerFeatures.push(point)
