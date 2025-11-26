@@ -6,6 +6,7 @@ import { featureColor, defaultLineWidth, styles, labelFont } from 'maplibre/styl
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { length } from "@turf/length"
 import { area } from "@turf/area"
+import { along } from "@turf/along"
 import { buffer } from "@turf/buffer"
 import { lineString, multiLineString, polygon, multiPolygon } from "@turf/helpers"
 
@@ -353,23 +354,23 @@ export function renderKmMarkers () {
     feature.geometry.coordinates.length >= 2)).forEach((f) => {
 
     const line = lineString(f.geometry.coordinates)
-    const length = length(line, { units: 'kilometers' })
+    const distance = length(line, { units: 'kilometers' })
     // Create markers at useful intervals
     let interval = 1
 
-    for (let i = interval; i < Math.ceil(length) + interval; i += interval) {
+    for (let i = interval; i < Math.ceil(distance) + interval; i += interval) {
       // Get point at current kilometer
       const point = along(line, i, { units: 'kilometers' })
       point.properties['marker-color'] = f.properties['stroke'] || featureColor
       point.properties['marker-size'] = 11
       point.properties['marker-opacity'] = 1
 
-      if (i >= Math.ceil(length)) {
+      if (i >= Math.ceil(distance)) {
         point.properties['marker-size'] = 14
-        point.properties['km'] = Math.round(length)
+        point.properties['km'] = Math.round(distance)
         point.properties['km-marker-numbers-end'] = 1
-        if (Math.ceil(length) < 100) {
-          point.properties['km'] = Math.round(length * 10) / 10
+        if (Math.ceil(distance) < 100) {
+          point.properties['km'] = Math.round(distance * 10) / 10
         }
       } else {
         point.properties['km'] = i
