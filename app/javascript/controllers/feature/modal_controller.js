@@ -218,6 +218,16 @@ export default class extends Controller {
     return geojsonData.features.find(f => f.id === id)
   }
 
+  async copy(event) {
+    const feature = this.getFeature()
+    if (feature) {
+      await navigator.clipboard.writeText(JSON.stringify(feature))
+      event.preventDefault()
+      event.stopPropagation()
+      status('Feature copied to clipboard')
+    }
+  }
+
   animate () {
     const feature = this.getFeature()
     console.log('Animating ' + feature.id)

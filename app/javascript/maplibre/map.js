@@ -19,7 +19,6 @@ export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson
 export let geojsonData //= { type: 'FeatureCollection', features: [] }
 export let mapProperties
 export let lastMousePosition
-export let highlightedFeature
 export let backgroundMapLayer
 
 let mapInteracted

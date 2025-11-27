@@ -31,7 +31,7 @@
   = link_to root_url, { '_target': 'blank' } do
     %img.mapforge-embed-logo{ src: "/icons/mapforge-logo-header_white.png", alt: "Logo" }
 
-#maplibre-map.map{ data: { 'controller': "map header", 'action': "click->header#hideNav touchstart->header#hideNav" } }
+#maplibre-map.map{ data: { 'controller': "map header", 'action': "click->header#hideNav touchstart->header#hideNav keydown.ctrl+v@window->map#paste" } }
 
 - unless @map_mode == 'static'
   = render 'layer_loading'

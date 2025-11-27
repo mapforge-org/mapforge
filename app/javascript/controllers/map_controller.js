@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import * as functions from 'helpers/functions'
-import { initializeMap, setBackgroundMapLayer, initializeViewMode, initializeStaticMode } from 'maplibre/map'
+import { initializeMap, setBackgroundMapLayer, initializeViewMode, 
+  initializeStaticMode, upsert } from 'maplibre/map'
 import { initializeEditMode } from 'maplibre/edit'
 import { initializeSocket } from 'channels/map_channel'
 
@@ -17,4 +18,18 @@ export default class extends Controller {
     }
     setBackgroundMapLayer()
   }
+
+  async paste(_event) {
+    if (functions.isFormFieldFocused()) { return }
+    try {
+      const text = await navigator.clipboard.readText()
+      const feature = JSON.parse(text)  // just to verify it's valid JSON
+      if (feature.type === "Feature") {
+        feature.id = null
+        upsert(feature)
+      }
+    } catch (err) {
+      console.warn("Failed to read clipboard:", err)
+    }
+  } 
 }

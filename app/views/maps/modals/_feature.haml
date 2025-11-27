@@ -1,6 +1,9 @@
 #feature-details-modal.map-modal.modal-pull-transition.fade{ 
   'data-controller': "map--modal feature--modal feature--edit", 
-  'data-action': "keydown.del@window->feature--edit#delete_feature keydown.esc@window->map--modal#close toggle-edit-feature@window->feature--modal#toggle_edit_feature" }
+  'data-action': "keydown.del@window->feature--edit#delete_feature \ 
+    keydown.esc@window->map--modal#close \ 
+    toggle-edit-feature@window->feature--modal#toggle_edit_feature \
+    keydown.ctrl+c@window->feature--modal#copy" }
 
   %a.link{ 'data-action': "click->feature--modal#toggleModalSize"}
     .modal-pull-button

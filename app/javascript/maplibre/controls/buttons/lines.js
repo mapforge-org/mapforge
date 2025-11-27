@@ -90,7 +90,7 @@ function addPaintButton() {
 function addRoadButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const roadButton = originalButton.cloneNode(true)
-  roadButton.title = 'Calculate a car route (c)'
+  roadButton.title = 'Calculate a car route (r)'
   roadButton.classList.remove('mapbox-gl-draw_line')
   roadButton.classList.add('mapbox-gl-draw_road')
   const icon = document.createElement('i')
@@ -104,7 +104,7 @@ function addRoadButton() {
   document.addEventListener('keydown', (e) => {
     // skip key event when typing in input field
     if (dom.isInputElement(e.target)) return
-    if (e.key === 'c') { toggleDrawMode('directions_car') }
+    if (e.key === 'r') { toggleDrawMode('directions_car') }
   })
   lineMenu.appendChild(roadButton)
 }

@@ -290,7 +290,7 @@ export default class extends Controller {
   addUndo() {
     const feature = this.getFeature()
     addUndoState('Feature property update', feature)
-  }  
+  }
 
   getFeature () {
     const id = this.featureIdValue
