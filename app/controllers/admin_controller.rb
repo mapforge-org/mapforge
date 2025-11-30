@@ -2,7 +2,16 @@ class AdminController < ApplicationController
   before_action :require_admin_user
 
   def index
-    @maps = Map.unscoped.includes(:layers, :user).order(updated_at: :desc)
+    @sort = params[:sort] || "updated_at"
+    @direction = params[:direction] || "desc"
+    @maps = Map.unscoped.includes(:layers, :user)
+    @maps = @maps.sorted(@sort, @direction)
+    @maps = @maps.limit(params[:limit] || 300)
+
+    respond_to do |format|
+      format.html # full page
+      format.turbo_stream # for partial updates via Turbo/Stimulus
+    end
   end
 
   private

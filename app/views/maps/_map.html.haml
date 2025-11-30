@@ -30,7 +30,11 @@
   - if last_change
     %i= "last change #{distance_of_time_in_words(DateTime.now, map.updated_at)} ago"
     %br
+    = "#{ map.view_count } views"
+    %br
     = "#{ map.features_count } features"
+    %br
+    = "#{ map.images_count } images"    
     %br
     public id:
     = link_to map.public_id, map.public_map_path

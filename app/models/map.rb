@@ -12,6 +12,11 @@ class Map
   scope :listed, -> { where(view_permission: "listed") }
   scope :ulogger, -> { where(:_id.lt => BSON::ObjectId("000000000000002147483647")) }
   scope :demo, -> { where(demo: true) }
+  scope :sorted, ->(col, dir) {
+    col = "created_at" unless col.present?
+    dir = %w[asc desc].include?(dir) ? dir : "asc"
+    order(col.to_sym => dir.to_sym)
+  }
 
   field :base_map, type: String, default: -> { default_base_map }
   field :center, type: Array
@@ -27,7 +32,7 @@ class Map
   field :private_id, type: String, default: -> { SecureRandom.hex(6).tap { |i| i[0..1] = "11" } }
   field :public_id, type: String, default: -> { SecureRandom.hex(4).tap { |i| i[0..1] = "11" } }
   field :viewed_at, type: DateTime
-  field :view_count, type: Integer
+  field :view_count, type: Integer, default: 0
   field :demo, type: Boolean, default: false
   field :edit_permission, type: String, default: "link" # 'private', 'link'
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
