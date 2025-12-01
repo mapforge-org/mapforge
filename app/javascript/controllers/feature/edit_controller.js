@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { geojsonData, redrawGeojson } from 'maplibre/map'
-import { featureIcon, featureImage } from 'maplibre/feature'
+import { featureIcon, featureImage, uploadImageToFeature } from 'maplibre/feature'
 import { handleDelete, draw } from 'maplibre/edit'
 import { featureColor, featureOutlineColor } from 'maplibre/styles'
 import { status } from 'helpers/status'
@@ -198,41 +198,23 @@ export default class extends Controller {
   async updateMarkerImage () {
     const feature = this.getFeature()
     const image = document.querySelector('#marker-image').files[0]
-    const formData = new FormData() // send using multipart/form-data
-    formData.append('image', image)
-    formData.append('map_id', window.gon.map_id)
-    fetch('/images', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'X-CSRF-Token': window.gon.csrf_token
-      }
-    })
-      .then(response => response.json())
+    
+    uploadImageToFeature(image, feature)
       .then(data => {
-        console.log(data)
-        console.log('Setting icon: ' + data.icon)
-        feature.properties['marker-image-url'] = data.icon
         draw.setFeatureProperty(this.featureIdValue, 'marker-image-url', data.icon)
 
-        // set default size + transparent background
-        feature.properties['marker-size'] = 15
         document.querySelector('#point-size').value = 15
         document.querySelector('#point-size-val').innerHTML = 15
-        feature.properties['stroke'] = 'transparent'
         document.querySelector('#stroke-color').setAttribute('disabled', 'true')
         document.querySelector('#stroke-color-transparent').checked = true
-        feature.properties['marker-color'] = 'transparent'
         document.querySelector('#fill-color').setAttribute('disabled', 'true')
         document.querySelector('#fill-color-transparent').checked = true
-        feature.properties['desc'] = (feature.properties['desc'] || '') + `\n[![image](${data.image})](${data.image})\n`
 
         functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
         functions.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
         redrawGeojson(true)
         this.saveFeature()
       })
-      .catch(error => console.error('Error:', error))
   }
 
   // https://github.com/missive/emoji-mart

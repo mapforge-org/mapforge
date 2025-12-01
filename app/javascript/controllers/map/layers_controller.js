@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { map, layers, upsert, mapProperties, redrawGeojson, removeGeoJSONSource } from 'maplibre/map'
 import { initLayersModal, resetControls } from 'maplibre/controls/shared'
-import { highlightFeature } from 'maplibre/feature'
+import { highlightFeature, uploadImageToFeature } from 'maplibre/feature'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import { loadOverpassLayer, initializeOverpassLayers } from 'maplibre/overpass/overpass'
@@ -94,43 +94,23 @@ export default class extends Controller {
     const ExifReader = (await import('exif-reader'))
     const tags = await ExifReader.load(file || url, { expanded: true, async: true })
     const gpsLng = tags?.gps?.Longitude, gpsLat = tags?.gps?.Latitude
-
-    const formData = new FormData()
-    formData.append('image', file)
-    formData.append('map_id', window.gon.map_id)
-    fetch('/images', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'X-CSRF-Token': window.gon.csrf_token
+    let feature = {
+      "id": functions.featureId(),
+      "type": "Feature",
+      "geometry": {
+        "coordinates": [gpsLng || map.getCenter().lng, gpsLat || map.getCenter().lat],
+        "type": "Point"
       }
-    })
-      .then(response => response.json())
-      .then(data => {
-      console.log('Setting icon: ' + data.icon)
-      let feature = {
-        "id": functions.featureId(),
-        "type": "Feature",
-        "geometry": {
-          "coordinates": [gpsLng || map.getCenter().lng, gpsLat || map.getCenter().lat],
-          "type": "Point"
-        },
-        "properties": {
-          'marker-image-url': data.icon,
-          'marker-size': 15,
-          'stroke': 'transparent',
-          'marker-color': 'transparent',
-          'desc': `\n[![image](${data.image})](${data.image})\n`
-        }
-      }
+    }
+    
+    uploadImageToFeature(file, feature).then( () => {
       upsert(feature)
       redrawGeojson(false)
-        mapChannel.send_message('new_feature', { ...feature })
+      mapChannel.send_message('new_feature', { ...feature })
       status('Added image')
       this.flyToFeature(feature)
       initLayersModal()
     })
-    .catch(error => console.error('Error:', error))
   }
 
   flyToLayerElement () {

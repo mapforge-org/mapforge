@@ -414,4 +414,33 @@ export function renderExtrusionLines () {
   return extrusionLines
 }
 
+export async function uploadImage(image) {
+  const formData = new FormData() // send using multipart/form-data
+  formData.append('image', image)
+  formData.append('map_id', window.gon.map_id)
+  return fetch('/images', {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-CSRF-Token': window.gon.csrf_token
+    }
+  })
+  .then(response => response.json())
+  .catch(error => console.error('Error:', error))
+}
 
+
+export async function uploadImageToFeature(image, feature) {
+  return uploadImage(image)
+    .then(data => {
+      console.log('Setting icon: ' + data.icon)
+      feature.properties = feature.properties || {}
+      feature.properties['marker-image-url'] = data.icon
+      feature.properties['marker-size'] = 15
+      feature.properties['stroke'] = 'transparent'
+      feature.properties['marker-color'] = 'transparent'
+      feature.properties['desc'] = (feature.properties['desc'] || '') + `[![image](${data.image})](${data.image})\n`
+
+      return data
+    })
+}
