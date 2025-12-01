@@ -68,6 +68,7 @@ describe 'Map' do
     it 'import image' do
       page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
       attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "image_with_exif.jpg"))
+      click_button 'Yes'
       wait_for { map.reload.features.count }.to eq 1
       # flyTo is finished when the feature details are shown
       expect(page).to have_text('Edit feature')
