@@ -54,7 +54,7 @@ class ImagesController < ApplicationController
       image = MiniMagick::Image.read(uploaded_file.tempfile)
       if image.width > 1024 || image.height > 1024
         image.resize "1024x1024" # Maintains aspect ratio, resizes width to 1024px max
-        image.quality "85"
+        image.quality "75"
         tempfile = Tempfile.new([ "resized-", File.extname(uploaded_file.original_filename) ])
         image.write(tempfile.path)
       end
