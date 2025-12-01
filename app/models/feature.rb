@@ -21,7 +21,10 @@ class Feature
   after_destroy :broadcast_destroy, if: -> { layer.present? && map.present? }
   after_destroy :destroy_image_if_last_feature
 
-  after_save :broadcast_update, if: -> { previous_changes.present? && layer.present? && map.present? }
+  after_save :broadcast_update, if: -> {
+    previous_changes.present? && layer.present? && map.present? &&
+    (previous_changes["geometry"] || previous_changes["properties"])
+  }
   validate :require_coords
 
   def geojson
