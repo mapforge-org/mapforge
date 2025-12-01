@@ -439,7 +439,7 @@ export async function uploadImageToFeature(image, feature) {
       feature.properties['marker-size'] = 15
       feature.properties['stroke'] = 'transparent'
       feature.properties['marker-color'] = 'transparent'
-      feature.properties['desc'] = (feature.properties['desc'] || '') + `[![image](${data.image})](${data.image})\n`
+      feature.properties['desc'] = `[![image](${data.image})](${data.image})\n`
 
       return data
     })
