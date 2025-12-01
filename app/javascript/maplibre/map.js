@@ -187,7 +187,7 @@ export async function initializeMap (divId = 'maplibre-map') {
 
 function updateCursorPosition(e) {
   lastMousePosition = e.lngLat
-  if (mapChannel && window.gon.map_mode === 'rw') {
+  if (mapChannel && window.gon.map_mode === 'rw' && window.gon.map_properties.share_cursor) {
     const coords = e.lngLat
     functions.throttle(() => {
       mapChannel.send_message('mouse', { lng: coords.lng, lat: coords.lat })

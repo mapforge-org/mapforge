@@ -33,7 +33,8 @@ class Map
   field :public_id, type: String, default: -> { SecureRandom.hex(4).tap { |i| i[0..1] = "11" } }
   field :viewed_at, type: DateTime
   field :view_count, type: Integer, default: 0
-  field :demo, type: Boolean, default: false
+  field :demo, type: Boolean
+  field :share_cursor, type: Boolean
   field :edit_permission, type: String, default: "link" # 'private', 'link'
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
 
@@ -59,6 +60,7 @@ class Map
   DEFAULT_CONTOURS = false
 
   # mongoid callbacks: https://www.mongodb.com/docs/mongoid/current/data-modeling/callbacks/
+  before_create :create_default_layer
   # broadcasts: https://www.rubydoc.info/github/hotwired/turbo-rails/Turbo/Streams/Broadcasts
   after_create do
     # using refresh to make sure map access is authorized
@@ -75,16 +77,15 @@ class Map
     broadcast_refresh_to("admin_maps_list")
     broadcast_refresh_to("public_maps_list") if view_permission == "listed"
   end
+  after_save :broadcast_update
 
   after_destroy do
+    delete_screenshot
     # Note: cannot broadcast well to my_maps_list because the stream is not user-specific
     broadcast_refresh_to("admin_maps_list")
     broadcast_refresh_to("public_maps_list") if view_permission == "listed"
   end
 
-  after_save :broadcast_update
-  after_destroy :delete_screenshot
-  before_create :create_default_layer
   validates :public_id, uniqueness: { message: "public_id already taken" },
     format: { without: /\//, message: "public_id cannot contain a '/'" },
     if: :will_save_change_to_public_id?
@@ -108,6 +109,7 @@ class Map
       hillshade: hillshade || DEFAULT_HILLSHADE,
       contours: contours || DEFAULT_CONTOURS,
       globe: globe || DEFAULT_GLOBE,
+      share_cursor: share_cursor || false,
       view_permission: view_permission,
       edit_permission: edit_permission
     }
@@ -188,10 +190,10 @@ class Map
     coordinates.flatten.each_slice(2).to_a
   end
 
+  # setting center to average of all coordinates
   def calculated_center
-    if features.present?
-      # setting center to average of all coordinates
-      coordinates = all_points
+    coordinates = all_points
+    if coordinates.present?
       average_latitude = coordinates.map(&:first).reduce(:+) / coordinates.size.to_f
       average_longitude = coordinates.map(&:last).reduce(:+) / coordinates.size.to_f
       Rails.logger.info("Calculated map (#{id}) center: #{[ average_latitude, average_longitude ]}")
@@ -202,9 +204,10 @@ class Map
   end
 
   def calculated_zoom
-    if features.present?
-      point1 = RGeo::Geographic.spherical_factory.point(all_points.map(&:first).max, all_points.map(&:last).max)
-      point2 = RGeo::Geographic.spherical_factory.point(all_points.map(&:first).min, all_points.map(&:last).min)
+    coordinates = all_points
+    if coordinates.present?
+      point1 = RGeo::Geographic.spherical_factory.point(coordinates.map(&:first).max, coordinates.map(&:last).max)
+      point2 = RGeo::Geographic.spherical_factory.point(coordinates.map(&:first).min, coordinates.map(&:last).min)
       distance_km = point1.distance(point2) / 1000
       Rails.logger.info("Calculated map (#{id}) feature distance: #{distance_km} km")
       case distance_km
@@ -246,7 +249,7 @@ class Map
     # broadcast to private + public channel
     [ private_id, public_id ].each do |id|
       ActionCable.server.broadcast("map_channel_#{id}",
-                                   { event: "update_map", map: map_properties.as_json })
+        { event: "update_map", map: map_properties.as_json })
     end
   end
 
