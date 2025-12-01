@@ -36,7 +36,6 @@ class Map
   field :demo, type: Boolean, default: false
   field :edit_permission, type: String, default: "link" # 'private', 'link'
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
-  field :images_count, type: Integer, default: 0
 
   # Only BASE_MAPS are available in the UI
   BASE_MAPS = [ "versatilesColorful", "satelliteStreets", "openTopoTiles",

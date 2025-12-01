@@ -12,8 +12,7 @@
                      ["updated_at", "desc", "Recently updated"],
                      ["updated_at", "asc", "Least recently updated"],
                      ["view_count", "desc", "Most viewed"],
-                     ["view_count", "asc", "Least viewed"],
-                     ["images_count", "desc", "Most images"] ]
+                     ["view_count", "asc", "Least viewed"] ]
 
   %select{ name: "sort", 'data-controller': "maps" }
     - sort_options.each do |sort, direction, label|
