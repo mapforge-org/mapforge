@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { geojsonData, redrawGeojson } from 'maplibre/map'
-import { featureIcon, featureImage, uploadImageToFeature } from 'maplibre/feature'
+import { featureIcon, featureImage, uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
 import { handleDelete, draw } from 'maplibre/edit'
 import { featureColor, featureOutlineColor } from 'maplibre/styles'
 import { status } from 'helpers/status'
@@ -198,6 +198,8 @@ export default class extends Controller {
   async updateMarkerImage () {
     const feature = this.getFeature()
     const image = document.querySelector('#marker-image').files[0]
+    const imageLocation = await confirmImageLocation(image)
+    if (imageLocation) { feature.geometry.coordinates = imageLocation }
     
     uploadImageToFeature(image, feature)
       .then(data => {
@@ -212,6 +214,7 @@ export default class extends Controller {
 
         functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
         functions.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
+
         redrawGeojson(true)
         this.saveFeature()
       })

@@ -444,3 +444,28 @@ export async function uploadImageToFeature(image, feature) {
       return data
     })
 }
+
+export async function confirmImageLocation(file) {
+  // Dynamically import ExifReader (https://github.com/mattiasw/ExifReader)
+  const ExifReader = (await import('exif-reader'))
+  const tags = await ExifReader.load(file || url, { expanded: true, async: true })
+  const gpsLng = tags?.gps?.Longitude, gpsLat = tags?.gps?.Latitude
+
+  if (gpsLng && gpsLat) {
+    return new Promise((resolve) => {
+      const yesBtn = document.getElementById('confirmation-yes')
+      const noBtn = document.getElementById('confirmation-no')
+
+      document.getElementById('confirmation-modal').classList.add('show')
+      const cleanup = () => document.getElementById('confirmation-modal').classList.remove('show')
+
+      document.getElementById('confirmation-message').innerHTML =
+        `The image contains GPS coordinates (<code>${gpsLat.toFixed(6)}, ${gpsLng.toFixed(6)}</code>).<br/>Do you want to place the marker there?`
+
+      yesBtn.addEventListener("click", () => { cleanup(); resolve([gpsLng, gpsLat]) })
+      noBtn.addEventListener("click", () => { cleanup(); resolve(false) })
+    })
+  } else {
+    return Promise.resolve(false)
+  }
+}

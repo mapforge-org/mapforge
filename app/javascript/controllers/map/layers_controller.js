@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { map, layers, upsert, mapProperties, redrawGeojson, removeGeoJSONSource } from 'maplibre/map'
 import { initLayersModal, resetControls } from 'maplibre/controls/shared'
-import { highlightFeature, uploadImageToFeature } from 'maplibre/feature'
+import { highlightFeature, uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import { loadOverpassLayer, initializeOverpassLayers } from 'maplibre/overpass/overpass'
@@ -90,15 +90,14 @@ export default class extends Controller {
   }
 
   async addImageMarker(file) {
-    // Dynamically import ExifReader (https://github.com/mattiasw/ExifReader)
-    const ExifReader = (await import('exif-reader'))
-    const tags = await ExifReader.load(file || url, { expanded: true, async: true })
-    const gpsLng = tags?.gps?.Longitude, gpsLat = tags?.gps?.Latitude
+    document.getElementById('layers-modal').classList.remove('show')
+    const imageLocation = (await confirmImageLocation(file)) || [map.getCenter().lng, map.getCenter().lat]
+
     let feature = {
       "id": functions.featureId(),
       "type": "Feature",
       "geometry": {
-        "coordinates": [gpsLng || map.getCenter().lng, gpsLat || map.getCenter().lat],
+        "coordinates": imageLocation,
         "type": "Point"
       }
     }

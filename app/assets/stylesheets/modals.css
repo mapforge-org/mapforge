@@ -240,3 +240,7 @@
   }
 }
 
+#confirmation-yes, #confirmation-no {
+  font-size: 1rem;
+}
+

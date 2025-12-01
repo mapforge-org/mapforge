@@ -1,0 +1,14 @@
+#confirmation-modal.modal-center.fade
+  .map-modal{'data-controller': "map--modal", 'data-action': "keydown.esc@window->map--modal#close"}
+    %button.modal-close-button{ data: { action: "click->map--modal#close" } } &times;
+    .map-modal-header
+      %h3.mapforge-font#confirmation-header Please confirm
+
+    .map-modal-content#confirmation-content
+      %p#confirmation-message Are you sure you want to proceed?
+
+      .btn-group-sm.mt-3{ role: "group" }
+        %button.btn.btn-green.mt-1.w-100.mw-245.no-wrap#confirmation-yes{ type: "button" }
+          Yes
+        %button.btn.btn-green.mt-1.w-100.mw-245.no-wrap#confirmation-no{ type: "button" }
+          No
