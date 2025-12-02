@@ -7,21 +7,31 @@
     %span.fs-5
       (#{@maps.size})
 
-  - sort_options = [ ["created_at", "desc", "Newest"],
-                     ["created_at", "asc", "Oldest"],
-                     ["updated_at", "desc", "Recently updated"],
-                     ["updated_at", "asc", "Least recently updated"],
-                     ["view_count", "desc", "Most viewed"],
-                     ["view_count", "asc", "Least viewed"] ]
 
-  %select{ name: "sort", 'data-controller': "maps" }
-    - sort_options.each do |sort, direction, label|
-      %option{
-        selected: (@sort == sort && @direction == direction),
-        'data-action': "click->maps#loadMaps",
-        'data-maps-sort-param': sort,
-        'data-maps-direction-param': direction
-      }
-        = label
+  .row
+    - # empty block on the left on lg screen
+    - # screen < sm, contact moves below links
+    .col-12.col-md-6.mb-3
+      Filters
+    
+    .col-12.col-md-6.text-md-end.mb-3
+      Sort
+
+      - sort_options = [ ["created_at", "desc", "Newest"],
+                        ["created_at", "asc", "Oldest"],
+                        ["updated_at", "desc", "Recently updated"],
+                        ["updated_at", "asc", "Least recently updated"],
+                        ["view_count", "desc", "Most viewed"],
+                        ["view_count", "asc", "Least viewed"] ]
+
+      %select{ name: "sort", 'data-controller': "maps" }
+        - sort_options.each do |sort, direction, label|
+          %option{
+            selected: (@sort == sort && @direction == direction),
+            'data-action': "click->maps#loadMaps",
+            'data-maps-sort-param': sort,
+            'data-maps-direction-param': direction
+          }
+            = label
 
   = render "list", maps: @maps
