@@ -221,7 +221,7 @@ export default class extends Controller {
   }
 
   // https://github.com/missive/emoji-mart
-  async openEmijiPicker() {
+  async openEmojiPicker() {
     // Dynamically import emoji-mart + its data
     const { Picker } = await import('emoji-mart')
     const data = async () => {

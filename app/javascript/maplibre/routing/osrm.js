@@ -142,7 +142,7 @@ export function getDirectionsLayers () {
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline")
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline-casing")
 
-  // display of route is already handled in view styles
+  // display of unselected route is already handled in view styles
   layers.unshift( {
     id: "maplibre-gl-directions-routeline",
     type: "line",
