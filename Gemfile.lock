@@ -340,9 +340,6 @@ GEM
     omniauth-oauth2 (1.8.0)
       oauth2 (>= 1.4, < 3)
       omniauth (~> 2.0)
-    omniauth-rails_csrf_protection (2.0.0)
-      actionpack (>= 4.2)
-      omniauth (~> 2.0)
     ostruct (0.6.3)
     parallel (1.27.0)
     parallel_tests (5.5.0)
@@ -651,7 +648,6 @@ DEPENDENCIES
   omniauth
   omniauth-github
   omniauth-google-oauth2
-  omniauth-rails_csrf_protection
   ostruct
   parallel_tests
   puffing-billy

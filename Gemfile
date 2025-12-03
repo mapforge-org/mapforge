@@ -22,7 +22,6 @@ gem "yabeda-puma-plugin"
 
 # login
 gem "omniauth"
-gem "omniauth-rails_csrf_protection"
 gem "omniauth-github"
 gem "omniauth-google-oauth2"
 

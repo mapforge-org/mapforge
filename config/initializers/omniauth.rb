@@ -12,4 +12,5 @@ Rails.application.config.middleware.use OmniAuth::Builder do
             prompt: "select_account"
 end
 
+OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection.new
 OmniAuth.config.logger = Rails.logger
