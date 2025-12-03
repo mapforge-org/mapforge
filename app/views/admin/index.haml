@@ -7,31 +7,44 @@
     %span.fs-5
       (#{@maps.size})
 
-
   .row
-    - # empty block on the left on lg screen
-    - # screen < sm, contact moves below links
+    - # screen < sm, sort moves below filters
     .col-12.col-md-6.mb-3
-      Filters
     
     .col-12.col-md-6.text-md-end.mb-3
-      Sort
 
-      - sort_options = [ ["created_at", "desc", "Newest"],
-                        ["created_at", "asc", "Oldest"],
-                        ["updated_at", "desc", "Recently updated"],
-                        ["updated_at", "asc", "Least recently updated"],
-                        ["view_count", "desc", "Most viewed"],
-                        ["view_count", "asc", "Least viewed"] ]
+      - sort_options = {created_at: "Newest",
+                        updated_at: "Recently updated",
+                        view_count: "Most viewed" }
 
-      %select{ name: "sort", 'data-controller': "maps" }
-        - sort_options.each do |sort, direction, label|
-          %option{
-            selected: (@sort == sort && @direction == direction),
-            'data-action': "click->maps#loadMaps",
-            'data-maps-sort-param': sort,
-            'data-maps-direction-param': direction
-          }
-            = label
+      .dropdown{ 'data-controller': "maps", 'data-maps-sort-value': @sort, 
+                                            'data-maps-sort_label-value': sort_options[@sort.to_sym], 
+                                            'data-maps-direction-value': @direction }
+        %button.btn.btn-green.dropdown-toggle{ type: "button", id: "sortDropdown", "data-bs-toggle": "dropdown", "aria-expanded": "false" }
+          %i.bi.me-1#sortIcon{class: (@direction == "desc" ? "bi-sort-down" : "bi-sort-up")}
+          %span#sortTitle= sort_options[@sort.to_sym]
+        %ul.background-bright.dropdown-menu{ "aria-labelledby": "sortDropdown" }
+
+          - sort_options.each do |sort, label|
+            %li
+              %a.dropdown-item{
+                'data-action': "click->maps#changeSort",
+                'data-maps-sort-param': sort,
+                'data-maps-sort-label-param': label
+              }
+                = label
+          %hr.dropdown-divider
+          %li
+            %a.dropdown-item{
+              'data-action': "click->maps#changeDirection",
+              'data-maps-direction-param': "desc"
+            }
+              %i.bi.bi-sort-down.me-1 Descending
+          %li
+            %a.dropdown-item{
+              'data-action': "click->maps#changeDirection",
+              'data-maps-direction-param': "asc"
+            }
+              %i.bi.bi-sort-up.me-1 Ascending
 
   = render "list", maps: @maps

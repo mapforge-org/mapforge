@@ -2,8 +2,9 @@
   a, .link, a:hover, a:active, .link:hover, .link:active {
     color: unset;
   };
-
-  --bs-btn-border-radius: 1rem;
+  
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.75rem;
 }
 
 .btn-green {
