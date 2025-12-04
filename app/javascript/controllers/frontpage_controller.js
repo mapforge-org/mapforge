@@ -42,10 +42,11 @@ export default class extends Controller {
   }
 
   slideChange () {
-    if (this.swiper && document.getElementById('swiper-image')) {
+    if (document.getElementById('swiper-image')) {
       this.swiper.then(sw => {
         // console.log('Slide changed to:', sw.realIndex)
-        document.getElementById('swiper-image').src = 'images/frontpage/feature' + sw.realIndex + '.png'
+        document.getElementById('swiper-image').src = '/images/frontpage/feature' + sw.realIndex + '.png'
+        document.getElementById('swiper-image-mobile').src = '/images/frontpage/feature' + sw.realIndex + '.png'
       })
     }
   }
