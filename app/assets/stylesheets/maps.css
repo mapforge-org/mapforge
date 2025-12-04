@@ -55,12 +55,23 @@ nav.fixed-top~#maps {
   text-align: center;
 }
 
+.preview-image-link {
+  position:relative
+  display: inline-block;
+  overflow: hidden;
+  user-select: none;
+}
+
 .preview-image {
+  display: block;
   width: 100%;
   min-height: 11rem;
   filter: brightness(0.9);
-  transition:
-    filter 0.2s linear
+  transition: transform 450ms ease, filter 450ms ease;
+}
+
+.preview-image:hover {
+  transform: scale(1.15);
 }
 
 .map-preview-title {
@@ -80,6 +91,7 @@ nav.fixed-top~#maps {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  pointer-events: none;
 }
 
 .map-auth {
@@ -125,6 +137,7 @@ nav.fixed-top~#maps {
 .bg-search-filter {
   background-color: var(--color-mid-steel-blue);
   margin-bottom: 0.5em;
+  margin-top: 0.3rem;
 }
 
 .search-val {

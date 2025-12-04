@@ -17,14 +17,15 @@
     = link_to destroy_map_path(id: map.private_id), data: { turbo_method: :delete, turbo_confirm: "Do you really want to delete this map?" }, title: 'Delete map', class: 'map-delete' do
       %i.bi.bi-trash
 
-  = link_to(map_path(id: (rw ? map.private_id : map.public_id), name: map.name), 'aria-label': "Open map '#{map.name}'") do
-    - if map.screenshot
-      %img{src: map.screenshot,
-           class: 'preview-image',
-           loading: 'lazy',
-           alt: "Map '#{map.name}'"}
-    - else
-      = image_tag "preview.png", class: 'preview-image', loading: 'lazy', alt: "Map '#{map.name}'"
+  .preview-image-link
+    = link_to(map_path(id: (rw ? map.private_id : map.public_id), name: map.name), 'aria-label': "Open map '#{map.name}'") do
+      - if map.screenshot
+        %img{src: map.screenshot,
+            class: 'preview-image',
+            loading: 'lazy',
+            alt: "Map '#{map.name}'"}
+      - else
+        = image_tag "preview.png", class: 'preview-image', loading: 'lazy', alt: "Map '#{map.name}'"
     .map-preview-title= map.name
 
   - if last_change
