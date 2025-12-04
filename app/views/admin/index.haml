@@ -7,19 +7,27 @@
     %span.fs-5
       (#{@maps.size})
 
-  .row
+  - sort_options = {created_at: "Newest",
+                  updated_at: "Recently updated",
+                  view_count: "Most viewed" }
+  .row{ 'data-controller': "maps", 'data-maps-sort-value': @sort, 
+                                   'data-maps-sort_label-value': sort_options[@sort.to_sym], 
+                                   'data-maps-direction-value': @direction,
+                                   'data-maps-search-value': @search }
     - # screen < sm, sort moves below filters
-    .col-12.col-md-6.mb-3
+    .col-12.col-md-4.mb-3
     
-    .col-12.col-md-6.text-md-end.mb-3
+      %div
+        %input#search.form-control.form-control{ type: "text", 
+        placeholder: "Search maps", 
+        "aria-describedby" => "searchHelp", 
+        'data-action': "keydown.enter->maps#search"}
 
-      - sort_options = {created_at: "Newest",
-                        updated_at: "Recently updated",
-                        view_count: "Most viewed" }
-
-      .dropdown{ 'data-controller': "maps", 'data-maps-sort-value': @sort, 
-                                            'data-maps-sort_label-value': sort_options[@sort.to_sym], 
-                                            'data-maps-direction-value': @direction }
+    .col-12.col-md-4.mb-3
+      #search-val= @search
+      
+    .col-12.col-md-4.text-md-end.mb-3
+      .dropdown
         %button.btn.btn-green.dropdown-toggle{ type: "button", id: "sortDropdown", "data-bs-toggle": "dropdown", "aria-expanded": "false" }
           %i.bi.me-1#sortIcon{class: (@direction == "desc" ? "bi-sort-down" : "bi-sort-up")}
           %span#sortTitle= sort_options[@sort.to_sym]

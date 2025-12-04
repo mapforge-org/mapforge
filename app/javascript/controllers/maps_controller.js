@@ -3,6 +3,7 @@ import { Controller } from '@hotwired/stimulus'
 export default class extends Controller {
 
   static values = {
+    search: String,
     sort: String,
     sortLabel: String,
     direction: String
@@ -28,8 +29,15 @@ export default class extends Controller {
     this.directionValue === 'desc' ? sortIcon.classList.add('bi-sort-down') : sortIcon.classList.add('bi-sort-up')
   }
 
+  search(event) {
+    this.searchValue = event.target.value
+
+    this.loadMaps(event)
+    document.getElementById('search-val').innerText = this.searchValue
+  }
+
   async loadMaps(_event) {
-    const url = `/admin?sort=${this.sortValue}&direction=${this.directionValue}`
+    const url = `/admin?search=${this.searchValue}&sort=${this.sortValue}&direction=${this.directionValue}`
     const response = await fetch(url, {
       headers: { "Accept": "text/vnd.turbo-stream.html" }
     })

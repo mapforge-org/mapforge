@@ -12,6 +12,10 @@ class Map
   scope :listed, -> { where(view_permission: "listed") }
   scope :ulogger, -> { where(:_id.lt => BSON::ObjectId("000000000000002147483647")) }
   scope :demo, -> { where(demo: true) }
+  scope :search, ->(term) {
+    regex = /#{Regexp.escape(term)}/i
+    where(:$or => [ { name: regex }, { description: regex } ])
+  }
   scope :sorted, ->(col, dir) {
     col = "created_at" unless col.present?
     dir = %w[asc desc].include?(dir) ? dir : "asc"
