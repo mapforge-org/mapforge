@@ -4,7 +4,7 @@
     .map-modal-header
       %h3.mapforge-font Layers
 
-    .map-modal-content
+    .map-modal-content.inline-scroll
 
       - if @map_mode == 'rw'
         .row.align-items-center
@@ -35,7 +35,7 @@
             %span.link{ data: { action: "click->map--layers#toggleLayerList" }}
               %i.bi.bi-caret-right-fill
               %span.mapforge-font.layer-name.me-2 Layer name
-            %button.hidden.btn.btn-green.btn-layer-actions.overpass-refresh{ data: { action: "click->map--layers#refreshOverpassLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Refresh layer for current view" }
+            %button.hidden.ms-3.btn.btn-light-green.btn-layer-actions.overpass-refresh{ data: { action: "click->map--layers#refreshOverpassLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Refresh layer for current view" }
               %i.bi.bi-arrow-clockwise.reload-icon
             %button.hidden.btn.btn-light-green.btn-layer-actions.layer-edit{ data: { action: "click->map--layers#toggleEdit", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Edit query" }
               %i.bi.bi-pencil-square

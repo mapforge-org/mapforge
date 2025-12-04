@@ -67,7 +67,7 @@ nav.fixed-top~#maps {
   width: 100%;
   min-height: 11rem;
   filter: brightness(0.9);
-  transition: transform 450ms ease, filter 450ms ease;
+  transition: transform 1200ms ease, filter 450ms ease;
 }
 
 .preview-image:hover {
@@ -81,10 +81,8 @@ nav.fixed-top~#maps {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 1.5rem;
-  color: #fff;
   color: var(--color-dark-moss-green);
-  text-shadow: 0 -4px 4px white, 4px 0 4px white, 0 4px 4px white, -4px 0 4px white;
-  font-weight: 300;
+  font-weight: 400;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
@@ -92,6 +90,20 @@ nav.fixed-top~#maps {
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: none;
+}
+
+.text-glow {
+  text-shadow:
+    /* cardinal directions */
+      0 -3px 3px white,
+      3px 0 3px white,
+      0 3px 3px white,
+      -3px 0 3px white,
+      /* diagonals */
+      3px -3px 3px white,
+      3px 3px 3px white,
+      -3px 3px 3px white,
+      -3px -3px 3px white;
 }
 
 .map-auth {

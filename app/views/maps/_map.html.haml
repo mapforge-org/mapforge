@@ -26,7 +26,7 @@
             alt: "Map '#{map.name}'"}
       - else
         = image_tag "preview.png", class: 'preview-image', loading: 'lazy', alt: "Map '#{map.name}'"
-    .map-preview-title= map.name
+    .map-preview-title.text-glow= map.name
 
   - if last_change
     %i= "last change #{distance_of_time_in_words(DateTime.now, map.updated_at)} ago"

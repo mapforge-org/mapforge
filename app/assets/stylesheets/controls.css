@@ -90,12 +90,12 @@
 /* hide search form on mobile */
 @media (width < 640px) {
   .maplibregl-ctrl-top-left .maplibregl-ctrl, .maplibregl-ctrl-bottom-left .maplibregl-ctrl {
-    margin-left: 5px;
+    margin-left: 0.3rem;
   }
 
   .maplibregl-ctrl-top-right .maplibregl-ctrl {
     /* !important to overwrite geocoder default */
-    margin-right: 5px !important;
+    margin-right: 0.3rem !important;
   }
 }
 
@@ -105,11 +105,7 @@
     }
 
   .maplibregl-ctrl-top-left, .maplibregl-ctrl-top-right {
-    top: 0.5rem;
-  }
-
-  .maplibregl-ctrl-top-left .maplibregl-ctrl {
-    margin-top: 5px;
+    top: 0;
   }
 }
 
@@ -127,7 +123,7 @@
 }
 
 .maplibregl-ctrl-geocoder .maplibregl-ctrl-geocoder--pin-right>* { /* stylelint-disable-line */
-  top: 5px !important;
+  top: 0.5rem !important;
 }
 
 .maplibregl-ctrl-geocoder--icon-search { /* stylelint-disable-line */

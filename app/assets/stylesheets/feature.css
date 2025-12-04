@@ -12,7 +12,7 @@
 
 #feature-title {
   max-width: 19rem;
-  overflow-x: hidden;
+  overflow: hidden;
   margin-top: 0.1rem;
 }
 
@@ -24,7 +24,7 @@
     max-height: calc(100% - 15px); /* px here for easier calculation of scroll behavior */
     background-color: #fff;
     overflow-y: auto;
-    width: calc(100% - 1rem);
+    width: calc(100% - 0.4rem);
     max-width: 27rem;
     margin: 0.5rem 1rem;
 
@@ -40,7 +40,7 @@
 
 @media (width > 574px) {
   #feature-details-modal {
-    left: 2rem;
+    left: 2.2rem;
     top: 4.2rem;
     width: 25rem;
     max-height: calc(100% - 5rem);
@@ -49,7 +49,7 @@
 
   @media (height < 390px), (width >= 1024px) {
     #feature-details-modal {
-      top: 0.4rem;
+      top: 0.2rem;
       max-height: calc(100% - 1.5rem);
     }
   }
