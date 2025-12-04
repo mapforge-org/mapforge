@@ -4,8 +4,6 @@
 #maps
   %h1.mapforge-font
     Admin
-    %span.fs-5
-      (#{@maps.size})
 
   - sort_options = {created_at: "Newest",
                   updated_at: "Recently updated",
@@ -18,14 +16,26 @@
     .col-12.col-md-4.mb-3
     
       %div
-        %input#search.form-control.form-control{ type: "text", 
+        %input#search.form-control.form-control{ type: "text", name: "search",
         placeholder: "Search maps", 
         "aria-describedby" => "searchHelp", 
         'data-action': "keydown.enter->maps#search"}
 
-    .col-12.col-md-4.mb-3
-      #search-val= @search
-      
+    .col-12.col-md-4.mb-3#search-filters-container
+
+      %span.badge.bg-search-filter.hidden#search-filter-template
+        %span.search-val
+          Template
+        %button.btn-close.btn-close-white.ms-2{ type: "button", 'aria-label': "Clear filter",
+          'data-action': "click->maps#clearFilter" }
+
+      - if @search.present?
+        %span.badge.bg-search-filter#search-filter
+          %span.search-val
+            = @search
+          %button.btn-close.btn-close-white.ms-2{ type: "button", 'aria-label': "Clear filter",
+            'data-action': "click->maps#clearFilter"}
+
     .col-12.col-md-4.text-md-end.mb-3
       .dropdown
         %button.btn.btn-green.dropdown-toggle{ type: "button", id: "sortDropdown", "data-bs-toggle": "dropdown", "aria-expanded": "false" }

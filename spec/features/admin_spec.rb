@@ -28,6 +28,20 @@ describe 'Admin List' do
     # context 'map change broadcasts' do
     # end
 
+    context 'filter list' do
+      let!(:maps) { [ create(:map, name: 'Map1'),
+                      create(:map, name: 'Map2') ] }
+
+      it 'searches in map names' do
+        fill_in "search", with: "Map1"
+        find_field("search").send_keys(:enter)
+
+        expect(page).to have_selector('.map-preview', count: 1)
+        expect(page).to have_text('Map1')
+        expect(page).not_to have_text('Map2')
+      end
+    end
+
     context 'navigating from admin list to map' do
       it 'shows map in edit mode without errors' do
         find("img[class='preview-image']", match: :first).click

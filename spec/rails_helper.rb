@@ -43,6 +43,12 @@ RSpec.configure do |config|
   config.include Features::Helpers, type: :feature
   config.include FactoryBot::Syntax::Methods
 
+  config.before(:suite) do
+    # Drop rack cache responses
+    require "fileutils"
+    FileUtils.rm_rf(Dir["tmp/cache/rack"])
+  end
+
   config.around do |spec|
     DatabaseCleaner.cleaning do
       spec.run

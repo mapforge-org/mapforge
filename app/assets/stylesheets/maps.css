@@ -121,3 +121,20 @@ nav.fixed-top~#maps {
 .empty-map-list {
   min-height: 8rem;
 }
+
+.bg-search-filter {
+  background-color: var(--color-mid-steel-blue);
+  margin-bottom: 0.5em;
+}
+
+.search-val {
+  top: 0.2rem;
+  position: relative;
+  font-size: 0.8rem;
+}
+
+#map-list-count {
+  position: relative;
+  top: -1rem;
+  font-size: 0.8rem;
+}
