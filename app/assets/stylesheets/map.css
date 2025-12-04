@@ -168,8 +168,8 @@ html:has(.map), body:has(.map) {
 
 #preloader img {
   position: fixed;
-  top: calc(50% - 1.8rem);
-  left: calc(50% - 1.4rem);
+  top: calc(50% - 1.4rem);
+  left: calc(50% - 1.35rem);
   width: 2.8rem;
   height: 2.8rem;
 }

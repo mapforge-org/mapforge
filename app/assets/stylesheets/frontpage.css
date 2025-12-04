@@ -175,11 +175,7 @@ section,
 
 .call-to-action {
   font-weight: 600;
-
-  --bs-btn-padding-y: 0.0rem;
-  --bs-btn-padding-x: 0.3rem;
-  --bs-btn-border-radius: 0.7rem;
-
+  padding: 0.0rem 0.3rem;
   margin-bottom: 0.3rem;
 }
 

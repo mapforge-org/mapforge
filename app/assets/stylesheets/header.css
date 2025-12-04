@@ -55,7 +55,7 @@
 .profile-dropdown {
   position: absolute;
   right: 1rem;
-  top: 0.9rem;
+  top: 0.7rem;
   display: flex;
   align-items: center;
   background-color: var(--color-light-sand);
