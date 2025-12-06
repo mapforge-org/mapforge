@@ -1,6 +1,7 @@
 - rw = local_assigns[:rw] || false
 - avatar = local_assigns[:avatar] || false
 - delete = local_assigns[:delete] || false
+- clone = local_assigns[:clone] || false
 - last_change = local_assigns[:last_change] || false
 
 .grid-item.map-preview.background-bright{class: "map_#{map.public_id}"}
@@ -12,6 +13,10 @@
   - if map.user && avatar
     - if map.user.image
       = image_tag avatar_url(map.user.image, 40), class: 'map-avatar', loading: 'lazy', alt: "", crossorigin: "anonymous"
+
+  - if clone
+    = link_to copy_map_path(id: map.public_id), data: { turbo_method: :post }, title: 'Copy map', class: 'map-copy' do
+      %i.bi.bi-copy
 
   - if delete
     = link_to destroy_map_path(id: map.private_id), data: { turbo_method: :delete, turbo_confirm: "Do you really want to delete this map?" }, title: 'Delete map', class: 'map-delete' do

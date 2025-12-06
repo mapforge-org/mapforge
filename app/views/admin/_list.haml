@@ -4,7 +4,7 @@
 
   .grid-container.flex-center.mb-4
     - @maps.each do |map|
-      = render map, rw: true, last_change: true, avatar: true, delete: true
+      = render map, rw: true, last_change: true, avatar: true, delete: true, clone:true
 
   - if @maps.empty?
     .container.pt-4.mt-4.mb-4.empty-map-list.background-bright

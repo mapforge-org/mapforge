@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     get "/:id(/:name)" => "maps#show", as: :map, format: :html, constraints: { id: ID_PATTERN, name: ID_PATTERN }
 
     post "" => "maps#create", as: :create_map
+    post "/:id/copy" => "maps#copy", as: :copy_map, constraints: { id: ID_PATTERN }
     delete "/:id" => "maps#destroy", as: :destroy_map, constraints: { id: ID_PATTERN }
   end
   post "/demo" => "maps#demo", as: "demo"

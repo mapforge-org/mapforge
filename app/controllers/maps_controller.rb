@@ -1,9 +1,9 @@
 class MapsController < ApplicationController
-  before_action :set_map, only: %i[show properties feature destroy]
+  before_action :set_map, only: %i[show properties feature destroy copy]
   before_action :set_map_mode, only: %i[show]
   before_action :set_global_js_values, only: %i[show demo]
   before_action :check_permissions, only: %i[show properties]
-  before_action :require_login, only: %i[my]
+  before_action :require_login, only: %i[my create copy]
   before_action :require_map_owner, only: %i[destroy]
 
   rate_limit to: 5, within: 15.minutes, only: :create
@@ -61,6 +61,13 @@ class MapsController < ApplicationController
     @map = Map.create!(user: @user, center: coords)
 
     redirect_to @map.private_map_path, notice: "Map was successfully created."
+  end
+
+  def copy
+    require_map_owner if @map.view_permission == "private"
+    cloned_map = @map.clone_with_layers
+    cloned_map.update(user: @user)
+    redirect_to cloned_map.private_map_path, notice: "Map was successfully copied."
   end
 
   # Endpoint for reloading map properties

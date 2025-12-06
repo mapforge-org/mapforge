@@ -24,6 +24,12 @@ describe 'Admin List' do
       expect(Map.count).to eq(2)
     end
 
+    it 'shows link to copy map' do
+      find("i[class='bi bi-copy']", match: :first).click
+      expect_map_loaded
+      expect(Map.count).to eq(4)
+    end
+
     # FIXME: Somehow Turbo Stream broadcasts / responses aren't visible to capybara...
     # context 'map change broadcasts' do
     # end

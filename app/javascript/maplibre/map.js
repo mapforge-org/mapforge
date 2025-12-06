@@ -435,7 +435,6 @@ export function redrawGeojson (resetDraw = true) {
       map.getSource('overpass-source-' + layer.id).setData(layer.geojson)
     }
   })
-  map.triggerRepaint()
 }
 
 // change geojson data before rendering:

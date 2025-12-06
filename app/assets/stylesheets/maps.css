@@ -142,6 +142,18 @@ nav.fixed-top~#maps {
   background-color: var(--color-light-sand);
 }
 
+.map-copy {
+  position: absolute;
+  right: 0.2rem;
+  bottom: 2rem;
+  z-index: 2;
+  font-size: 1.3rem;
+  width: 1.9rem;
+  height: 1.5em;
+  border-radius: 50%;
+  background-color: var(--color-light-sand);
+}
+
 .empty-map-list {
   min-height: 8rem;
 }

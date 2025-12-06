@@ -167,6 +167,16 @@ class Map
     map
   end
 
+  def clone_with_layers
+    clone = self.dup
+    clone.update(created_at: Time.zone.now, updated_at: Time.zone.now,
+      private_id: fields["private_id"].default_val.call,
+      public_id: fields["public_id"].default_val.call,
+      view_count: 0, viewed_at: nil)
+    clone.layers = layers.map { |l| l.clone_with_features }
+    clone
+  end
+
   def screenshot
     "/previews/#{safe_public_id}.jpg?#{updated_at.to_i}" if File.exist?(screenshot_file)
   end
