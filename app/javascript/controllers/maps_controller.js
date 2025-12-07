@@ -56,7 +56,7 @@ export default class extends Controller {
 
   async loadMaps() {
     document.getElementById('map-list-count').innerText = 'Loading...'
-    const url = `/admin?search=${this.searchValue}&sort=${this.sortValue}&direction=${this.directionValue}`
+    const url = `${location.pathname}?search=${this.searchValue}&sort=${this.sortValue}&direction=${this.directionValue}`
     const response = await fetch(url, {
       headers: { "Accept": "text/vnd.turbo-stream.html" }
     })

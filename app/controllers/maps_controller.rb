@@ -1,4 +1,6 @@
 class MapsController < ApplicationController
+  include MapListFilters
+
   before_action :set_map, only: %i[show properties feature destroy copy]
   before_action :set_map_mode, only: %i[show]
   before_action :set_global_js_values, only: %i[show tutorial]
@@ -11,7 +13,7 @@ class MapsController < ApplicationController
   layout "map", only: [ :show, :tutorial ]
 
   def index
-    @maps = Map.unscoped.listed.includes(:layers, :user).order(updated_at: :desc)
+    @maps = filter_and_sort_maps(Map.unscoped.listed.includes(:layers, :user))
   end
 
   def my

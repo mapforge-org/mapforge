@@ -5,7 +5,6 @@
 
   %h1.mapforge-font Map Gallery
 
-  .grid-container.flex-center{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
-    - @maps.each do |map|
-      = render map, rw: false, last_change: false, avatar: false, delete: false
+  = render "list_filter"
+  = render "list" 
 

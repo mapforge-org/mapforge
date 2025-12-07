@@ -1,0 +1,59 @@
+- sort_options = {created_at: "Newest",
+                updated_at: "Recently updated",
+                view_count: "Most viewed" }
+.row{ 'data-controller': "maps", 'data-maps-sort-value': @sort, 
+                                  'data-maps-sort_label-value': sort_options[@sort.to_sym], 
+                                  'data-maps-direction-value': @direction,
+                                  'data-maps-search-value': @search }
+  - # screen < sm, sort moves below filters
+  .col-12.col-md-4.mb-3
+  
+    %div
+      %input#search.form-control.form-control{ type: "text", name: "search",
+      placeholder: "Search maps", 
+      "aria-describedby" => "searchHelp", 
+      'data-action': "keydown.enter->maps#search"}
+
+  .col-12.col-md-4.mb-3#search-filters-container
+
+    %span.badge.bg-search-filter.hidden#search-filter-template
+      %span.search-val
+        Template
+      %button.btn-close.btn-close-white.ms-2{ type: "button", 'aria-label': "Clear filter",
+        'data-action': "click->maps#clearFilter" }
+
+    - if @search.present?
+      %span.badge.bg-search-filter#search-filter
+        %span.search-val
+          = @search
+        %button.btn-close.btn-close-white.ms-2{ type: "button", 'aria-label': "Clear filter",
+          'data-action': "click->maps#clearFilter"}
+
+  .col-12.col-md-4.text-md-end.mb-3
+    .dropdown
+      %button.btn.btn-green.dropdown-toggle{ type: "button", id: "sortDropdown", "data-bs-toggle": "dropdown", "aria-expanded": "false" }
+        %i.bi.me-1#sortIcon{class: (@direction == "desc" ? "bi-sort-down" : "bi-sort-up")}
+        %span#sortTitle= sort_options[@sort.to_sym]
+      %ul.background-bright.dropdown-menu{ "aria-labelledby": "sortDropdown" }
+
+        - sort_options.each do |sort, label|
+          %li
+            %a.dropdown-item{
+              'data-action': "click->maps#changeSort",
+              'data-maps-sort-param': sort,
+              'data-maps-sort-label-param': label
+            }
+              = label
+        %hr.dropdown-divider
+        %li
+          %a.dropdown-item{
+            'data-action': "click->maps#changeDirection",
+            'data-maps-direction-param': "desc"
+          }
+            %i.bi.bi-sort-down.me-1 Descending
+        %li
+          %a.dropdown-item{
+            'data-action': "click->maps#changeDirection",
+            'data-maps-direction-param': "asc"
+          }
+            %i.bi.bi-sort-up.me-1 Ascending

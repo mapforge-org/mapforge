@@ -38,7 +38,6 @@ class Map
   field :public_id, type: String, default: -> { SecureRandom.hex(4).tap { |i| i[0..1] = "11" } }
   field :viewed_at, type: DateTime
   field :view_count, type: Integer, default: 0
-  field :demo, type: Boolean
   field :type, type: String
   field :share_cursor, type: Boolean
   field :edit_permission, type: String, default: "link" # 'private', 'link'

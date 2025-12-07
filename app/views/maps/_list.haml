@@ -1,0 +1,7 @@
+#maps-list
+
+  %span#map-list-count= "Showing #{@maps.size} maps"
+
+  .grid-container.flex-center{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
+    - @maps.each do |map|
+      = render map, rw: false, last_change: false, avatar: false, delete: false
