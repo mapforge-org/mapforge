@@ -1,14 +1,14 @@
 class MapsController < ApplicationController
   before_action :set_map, only: %i[show properties feature destroy copy]
   before_action :set_map_mode, only: %i[show]
-  before_action :set_global_js_values, only: %i[show demo]
+  before_action :set_global_js_values, only: %i[show tutorial]
   before_action :check_permissions, only: %i[show properties]
   before_action :require_login, only: %i[my create copy]
   before_action :require_map_owner, only: %i[destroy]
 
   rate_limit to: 5, within: 15.minutes, only: :create
 
-  layout "map", only: [ :show, :demo ]
+  layout "map", only: [ :show, :tutorial ]
 
   def index
     @maps = Map.unscoped.listed.includes(:layers, :user).order(updated_at: :desc)
@@ -51,8 +51,8 @@ class MapsController < ApplicationController
     end
   end
 
-  def demo
-    @map = Map.demo_map(@user)
+  def tutorial
+    @map = Map.tutorial_map(@user)
     redirect_to map_url(id: @map.private_id)
   end
 
@@ -118,7 +118,10 @@ class MapsController < ApplicationController
   # :nocov:
 
   def require_map_owner
-    redirect_to maps_path unless @user&.admin? || (@map.user && @map.user == @user)
+    unless @user&.admin? || (@map.user && @map.user == @user)
+      Rails.logger.warn "Map view requires owner permissions, but current user isn't."
+      redirect_to maps_path
+    end
   end
 
   def set_global_js_values

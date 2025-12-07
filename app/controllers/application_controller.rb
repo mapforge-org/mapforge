@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
         priority: "1.0"
       },
       {
-        url: tutorials_url,
+        url: docs_url,
         lastmod: Time.current,
         changefreq: "weekly",
         priority: "0.9"

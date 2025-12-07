@@ -57,7 +57,6 @@ nav.fixed-top~#maps {
 
 .preview-image-link {
   position:relative;
-  display: inline-block;
   overflow: hidden;
   user-select: none;
 }

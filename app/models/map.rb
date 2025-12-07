@@ -12,6 +12,7 @@ class Map
   scope :listed, -> { where(view_permission: "listed") }
   scope :ulogger, -> { where(:_id.lt => BSON::ObjectId("000000000000002147483647")) }
   scope :demo, -> { where(demo: true) }
+  scope :tutorial, -> { where(type: "tutorial") }
   scope :search, ->(term) {
     regex = /#{Regexp.escape(term)}/i
     where(:$or => [ { name: regex }, { description: regex } ])
@@ -38,6 +39,7 @@ class Map
   field :viewed_at, type: DateTime
   field :view_count, type: Integer, default: 0
   field :demo, type: Boolean
+  field :type, type: String
   field :share_cursor, type: Boolean
   field :edit_permission, type: String, default: "link" # 'private', 'link'
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
@@ -102,7 +104,7 @@ class Map
       description: description,
       public_id: public_id,
       base_map: get_base_map,
-      demo: demo,
+      type: type,
       center: center,
       default_center: center ? nil : calculated_center, # only set when no center defined
       zoom: zoom,
@@ -279,20 +281,20 @@ class Map
         .gsub(/\A#{separator}+|#{separator}+\z/, "")
   end
 
-  def self.demo_map(user)
-    demo_file = Rails.root.join("db/seeds/demo.json")
+  def self.tutorial_map(user)
+    tutorial_file = Rails.root.join("db/seeds/demo.json")
 
     if user&.name
-      unless map = Map.demo.where(user: user).first
-        map = Map.create_from_file(demo_file)
+      unless map = Map.tutorial.where(user: user).first
+        map = Map.create_from_file(tutorial_file)
         name = user.name.split.first
-        map.update(user: user, demo: true)
+        map.update(user: user, type: "tutorial")
         map.features.where("properties.label" => "Welcome to the Mapforge Tutorial map")
            .update_all("properties.label" => "Welcome #{name} to the Mapforge Tutorial map")
       end
     else
-      map = Map.create_from_file(demo_file)
-      map.update(demo: true)
+      map = Map.create_from_file(tutorial_file)
+      map.update(type: "tutorial")
     end
     map
   end
