@@ -225,6 +225,12 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+
+  .feature-name {
+    flex-grow: 1;
+    margin-left: 0.5rem;
+    margin-top: 0.2rem;
+  }
 }
 
 .layer-feature-item:hover {
