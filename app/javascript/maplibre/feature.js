@@ -96,7 +96,8 @@ export async function showFeatureDetails (feature) {
   modal.classList.remove('modal-pull-fade')
   modal.classList.add('modal-pull-middle')
   modal.classList.add('modal-pull-transition')
-  modal.style.removeProperty('height')
+  // keep custom modal height on selecton change
+  // modal.style.removeProperty('height')
   modal.classList.add('show')
   modal.scrollTo(0, 0)
   modal.setAttribute('data-feature--modal-feature-id-value', feature.id)
