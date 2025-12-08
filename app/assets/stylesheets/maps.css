@@ -13,23 +13,23 @@ nav.fixed-top~#maps {
   }
 }
 
-#maps .flex-container {
+#maps-list .flex-container {
   gap: 1rem;
 }
 
-#maps .flex-item {
+#maps-list .flex-item {
   flex: 1 1 15rem; /* Each item will grow to take up equal space within the container */
   min-width: 15rem;
   max-width: 25rem;
 }
 
-#maps .grid-container {
+#maps-list .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: 1rem;
 }
 
-#maps .grid-item {
+#maps-list .grid-item {
   min-width: 15rem;
   max-width: 25rem;
 }
@@ -159,15 +159,18 @@ nav.fixed-top~#maps {
 
 .bg-search-filter {
   background-color: var(--color-mid-steel-blue);
-  margin-bottom: 0.5em;
   margin-top: 0.3rem;
+
+  --bs-badge-padding-x: 0.6rem;
+  --bs-badge-padding-y: 0.4rem;
+  --bs-badge-font-size: 1rem;
+
+  .btn-close {
+    width: 0.4rem;
+    height: 0.4rem;
+  }
 }
 
-.search-val {
-  top: 0.2rem;
-  position: relative;
-  font-size: 0.8rem;
-}
 
 #map-list-count {
   position: relative;

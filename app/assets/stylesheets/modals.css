@@ -12,10 +12,10 @@
 .map-modal {
   position: relative;
   pointer-events: auto;
-  width: calc(100% - 1em);
-  max-width: 35em;
+  width: calc(100% - 1rem);
+  max-width: 35rem;
   overflow-y: hidden;
-  margin: 0 1em;
+  margin: 0 1rem;
   border-radius: 0.7rem;
   background-color: rgb(255 255 255 / 90%);
 
@@ -23,7 +23,7 @@
 
   /* backdrop-filter: blur(3px); */
   z-index: 1000;
-  padding: 1.5em 1em 1.5em 1.5em;
+  padding: 1.5em 1rem 0.8rem 1.5rem;
   box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
   scrollbar-color: #888 #f1f1f1;
   scrollbar-width: auto;
@@ -42,8 +42,8 @@
 }
 
 .map-modal-content {
-  margin-top: 1em;
-  max-height: calc(100vh - 11em);
+  margin-top: 1rem;
+  max-height: calc(100vh - 11rem);
   padding-right: 5px; /* Prevents scrollbar from overlapping content */
 }
 
@@ -71,8 +71,8 @@
 }
 
 .layer-preview {
-  width: 5.5em;
-  height: 5.5em;
+  width: 5.5rem;
+  height: 5.5rem;
   border-radius: 0.7rem;
   border-width: 2px;
   border-style: solid;
@@ -96,8 +96,8 @@
   background: var(--color-light-alabaster);
   border: 1px solid var(--color-dark-moss-green);
   border-radius: 3px;
-  font-size: 0.9em;
-  padding: 0.15em;
+  font-size: 0.9rem;
+  padding: 0.15rem;
 }
 
 .modal-pull-button {
@@ -162,8 +162,8 @@
 /* Share modal */
 
 #share-edit-link, #share-view-link {
-  margin-top: 0.5em;
-  width: 7.3em;
+  margin-top: 0.5rem;
+  width: 7.3rem;
 }
 
 #share-modal .form-floating > .form-select {
@@ -175,7 +175,7 @@
   --bs-btn-hover-bg: var(--color-mid-steel-blue);
   --bs-btn-active-bg: var(--color-mid-steel-blue);
 
-  margin-bottom: 0.5em;
+  margin-bottom: 0.5rem;
 }
 
 /* Layers modal */
@@ -185,7 +185,7 @@
 }
 
 #file-input-label {
-  max-width: 17em;
+  max-width: 17rem;
 }
 
 #query-dropdown {
@@ -232,7 +232,7 @@
 }
 
 .layer-feature-item i.bi {
-  vertical-align: -.125em;
+  vertical-align: -.125rem;
 }
 
 .layer-feature-item .feature-details-icon {
@@ -253,12 +253,12 @@
 }
 
 .layer-osm-icon {
-  padding-bottom: 0.2em;
+  padding-bottom: 0.2rem;
 }
 
 @media (width < 380px) {
   .map-modal {
-    margin: 0 0.5em;
+    margin: 0 0.5rem;
   }
 }
 

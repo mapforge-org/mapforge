@@ -16,14 +16,14 @@
 
   .col-12.col-md-4.mb-3#search-filters-container
 
-    %span.badge.bg-search-filter.hidden#search-filter-template
+    %span.badge.bg-search-filter.hidden#search-filter-template.flex-container.align-items-center
       %span.search-val
         Template
       %button.btn-close.btn-close-white.ms-2{ type: "button", 'aria-label': "Clear filter",
-        'data-action': "click->maps#clearFilter" }
+        'data-action': "click->maps#clearFilter"}
 
     - if @search.present?
-      %span.badge.bg-search-filter#search-filter
+      %span.badge.bg-search-filter#search-filter.flex-container.align-items-center
         %span.search-val
           = @search
         %button.btn-close.btn-close-white.ms-2{ type: "button", 'aria-label': "Clear filter",

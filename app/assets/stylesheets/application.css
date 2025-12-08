@@ -96,6 +96,7 @@ a:active, .link:active {
 .flex-container {
   display: flex;
   flex-wrap: wrap;
+  width: fit-content;
 }
 
 .flex-center {
