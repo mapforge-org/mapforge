@@ -49,6 +49,7 @@ export default class extends Controller {
 
   clearFilter() {
     this.searchValue = ''
+    document.getElementById('search').value = ''
     this.loadMaps()
     let existingFilter = document.getElementById('search-filter')
     if (existingFilter) { existingFilter.remove() }

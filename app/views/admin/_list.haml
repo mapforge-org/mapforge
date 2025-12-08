@@ -1,6 +1,6 @@
 #maps-list
 
-  %span#map-list-count= "Showing #{@maps.size} maps"
+  %span#map-list-count= "Showing #{pluralize(@maps.size, 'map')}"
 
   .grid-container.flex-center.mb-4
     - @maps.each do |map|
