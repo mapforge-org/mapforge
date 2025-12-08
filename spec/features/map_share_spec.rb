@@ -15,7 +15,7 @@ describe 'Map' do
     end
 
     it 'has share private link' do
-      expect(page).to have_link('Edit link', href: '/m/' + subject.id)
+      expect(page).to have_link('Edit link', href: '/m/' + subject.private_id)
     end
 
     it 'has share geojson link' do
