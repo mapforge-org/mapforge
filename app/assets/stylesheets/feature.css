@@ -32,10 +32,6 @@
       top: 0.25rem;
     }
   }
-
-  #feature-title {
-    max-width: calc(100% - 5rem);
-  }
 }
 
 @media (width > 574px) {
