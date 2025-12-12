@@ -198,17 +198,17 @@ export function featureIcon (feature) {
   } else if (feature.properties['stroke-image-url']) {
     image = "<img class='feature-details-icon' src='" + feature.properties['stroke-image-url'] + "'>"
   } else if (feature.properties?.route?.profile === "cycling-mountain" || feature.properties?.route?.profile === "bike") {
-    image = "<i class='bi bi-bicycle me-2 fs-3'>"
+    image = "<i class='bi bi-bicycle fs-3'>"
   } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "car") {
-    image = "<i class='bi bi-car-front me-2 fs-3'>"
+    image = "<i class='bi bi-car-front fs-3'>"
   } else if (feature.properties?.route?.profile === "foot") {
-    image = "<i class='bi bi-person-walking me-2 fs-3'>"
+    image = "<i class='bi bi-person-walking fs-3'>"
   } else if (feature.geometry.type === "LineString" || feature.geometry.type === "MultiLineString") {
     image = "<i class='bi bi-signpost me-2 fs-3'>"
   } else if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-    image = "<i class='bi bi-bounding-box-circles me-2 fs-3'>"
+    image = "<span class='feature-details-icon'><i class='bi bi-bounding-box-circles fs-3'></span>"
   } else if (feature.geometry.type === "Point") {
-    image = "<i class='bi bi-record-circle me-2 fs-3'>"
+    image = "<i class='bi bi-record-circle fs-3'>"
   }
   return image
 }

@@ -223,13 +223,15 @@
 .layer-feature-item {
   cursor: pointer;
   white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  width: auto !important;
 
   .feature-name {
     flex-grow: 1;
     margin-left: 0.5rem;
     margin-top: 0.2rem;
+    overflow: hidden;
+    max-width: calc(100% - 3rem);
+    text-overflow: ellipsis;
   }
 }
 
@@ -242,7 +244,7 @@
 }
 
 .layer-feature-item .feature-details-icon {
-  margin: 0.2em 0.4em 0 0;
+  margin: 0.3em 0 0;
 }
 
 .layer-refresh-animate {

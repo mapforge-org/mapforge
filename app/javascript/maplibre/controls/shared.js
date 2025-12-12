@@ -209,7 +209,7 @@ export function initLayersModal () {
       features.slice(0, 300).forEach(feature => {
         const listItem = document.createElement('li')
         listItem.classList.add('layer-feature-item')
-        listItem.classList.add('flex-container')
+        listItem.classList.add('flex-center')
         listItem.classList.add('align-items-center')
         listItem.setAttribute('data-feature-id', feature.id)
         const source = layer.type === 'geojson' ? 'geojson-source' : layer.type + '-source-' + layer.id
@@ -218,6 +218,7 @@ export function initLayersModal () {
         listItem.setAttribute('data-action', 'click->map--layers#flyToLayerElement')
 
         const icon = document.createElement('span')
+        icon.classList.add('feature-icon')
         icon.innerHTML = featureIcon(feature)
         listItem.appendChild(icon)
         const name = document.createElement('span')
