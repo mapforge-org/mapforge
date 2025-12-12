@@ -128,7 +128,7 @@ GEM
     database_cleaner-mongoid (2.0.1)
       database_cleaner-core (~> 2.0.0)
       mongoid
-    date (3.5.0)
+    date (3.5.1)
     debug (1.11.0)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -136,9 +136,9 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.6.2)
     docile (1.4.1)
-    dotenv (3.1.8)
-    dotenv-rails (3.1.8)
-      dotenv (= 3.1.8)
+    dotenv (3.2.0)
+    dotenv-rails (3.2.0)
+      dotenv (= 3.2.0)
       railties (>= 6.1)
     dragonfly (1.4.1)
       addressable (~> 2.3)
@@ -354,7 +354,7 @@ GEM
     prism (1.6.0)
     prometheus-client (4.2.5)
       base64
-    psych (5.2.6)
+    psych (5.3.0)
       date
       stringio
     public_suffix (6.0.2)
