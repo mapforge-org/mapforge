@@ -25,14 +25,15 @@ Rails.application.routes.draw do
     post "/:id/copy" => "maps#copy", as: :copy_map, constraints: { id: ID_PATTERN }
     delete "/:id" => "maps#destroy", as: :destroy_map, constraints: { id: ID_PATTERN }
   end
+
   post "/tutorial" => "maps#tutorial", as: "tutorial"
   get "/my" => "maps#my", as: "my"
 
   get "/d/:id" => "maps#show", defaults: { engine: "deck" }, as: :deck, constraints: { id: ID_PATTERN }
 
   get "/admin" => "admin#index"
-  get "/tutorials" => "docs#tutorials", as: :docs
-  get "/tutorial/:id" => "docs#tutorial", as: :doc
+  get "/docs" => "docs#tutorials", as: :docs
+  get "/doc/:id" => "docs#tutorial", as: :doc
 
   # map icons
   get "/icon/osmc/:osmc_symbol", to: "images#osmc_symbol", as: "osmc"

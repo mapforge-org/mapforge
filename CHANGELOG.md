@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2025-12
+
+* Filter and sort Gallery map list
+
 ## 2025-11
 
 * Keyboard shortcuts
