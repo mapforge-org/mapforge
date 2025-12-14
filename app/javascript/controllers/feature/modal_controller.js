@@ -4,7 +4,7 @@ import { geojsonData } from 'maplibre/map'
 import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { status } from 'helpers/status'
-import { showFeatureDetails } from 'maplibre/feature'
+import { showFeatureDetails, highlightedFeatureId } from 'maplibre/feature'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { draw, select, unselect } from 'maplibre/edit'
@@ -219,11 +219,15 @@ export default class extends Controller {
   }
 
   async copy(event) {
+    if (functions.isFormFieldFocused()) { return }
+    if (!highlightedFeatureId) { return }
+
     const feature = this.getFeature()
     if (feature) {
       await navigator.clipboard.writeText(JSON.stringify(feature))
       event.preventDefault()
       event.stopPropagation()
+      console.log("Copied feature to clipboard ", feature)
       status('Feature copied to clipboard')
     }
   }

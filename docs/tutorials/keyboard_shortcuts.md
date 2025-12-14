@@ -15,4 +15,6 @@ points, keyboard shortcuts are available for the following activities:
 | Delete Feature| `<Del>`       |
 | Undo          | `<CTRL> + z`  |
 | Redo          | `<CTRL> + y`  |
+| Copy Feature  | `<CTRL> + c`  |
+| Paste Feature | `<CTRL> + v`  |
 | Close Modal   | `<ESC>`       |

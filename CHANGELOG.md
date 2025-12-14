@@ -5,11 +5,12 @@ All notable changes to this project will be documented in this file.
 ## 2025-12
 
 * Filter and sort Gallery map list
+* Copy & paste features with `ctrl+c` / `ctrl+v`
 
 ## 2025-11
 
 * Keyboard shortcuts
-* Show active collaborators' cursors on the map
+* Show active collaborators' cursors on the map (optional)
 
 ## 2025-10
 

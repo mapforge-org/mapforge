@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import * as functions from 'helpers/functions'
 import { initializeMap, setBackgroundMapLayer, initializeViewMode, 
-  initializeStaticMode, upsert } from 'maplibre/map'
+  initializeStaticMode, addFeature } from 'maplibre/map'
 import { initializeEditMode } from 'maplibre/edit'
 import { initializeSocket } from 'channels/map_channel'
 
@@ -19,14 +19,17 @@ export default class extends Controller {
     setBackgroundMapLayer()
   }
 
+  // paste feature from clipboard
   async paste(_event) {
+    
     if (functions.isFormFieldFocused()) { return }
+    if (window.gon.map_mode !== 'rw') { return }
     try {
       const text = await navigator.clipboard.readText()
       const feature = JSON.parse(text)  // just to verify it's valid JSON
       if (feature.type === "Feature") {
-        feature.id = null
-        upsert(feature)
+        feature.id = functions.featureId()
+        addFeature(feature)
       }
     } catch (err) {
       console.warn("Failed to read clipboard:", err)
