@@ -81,7 +81,10 @@ class MapsController < ApplicationController
   def feature
     feature = @map.features.find(params["feature_id"])
     head :not_found and return unless feature
-    render json: feature.to_geojson
+    respond_to do |format|
+      format.geojson { render json: feature.to_geojson }
+      format.gpx { send_data feature.to_gpx, filename: "#{feature.id}.gpx" }
+    end
   end
 
   # Turbo sends the DELETE request automatically with Content-Type: text/vnd.turbo-stream.html

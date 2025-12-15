@@ -45,9 +45,14 @@
   #feature-details-meta.mt-2
     %span#feature-size.selectable
     %span#feature-vertexes.selectable
-    %span#feature-export.ms-2.link<
+    %span.feature-export#feature-export-geo.ms-2.link<
       =link_to map_feature_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
         %i.bi.bi-download
+        geojson
+    %span.feature-export#feature-export-gpx.ms-2.link<
+      =link_to map_feature_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as GPX', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
+        %i.bi.bi-download
+        gpx
     / %span#feature-animation.ms-2.link
     /   %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip", 'data-action': "click->feature--modal#animate"}
 

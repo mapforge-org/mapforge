@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  ID_PATTERN = /[^\/]+/ # all characters but '/'
+  ID_PATTERN = /[^\/\.]+/ # all characters but '/' + '.'
+  NAME_PATTERN = /[^\/]+/ # all characters but '/'
 
   # login routes
   get "auth/:provider/callback", to: "sessions#create"
@@ -18,8 +19,8 @@ Rails.application.routes.draw do
     get "/:id.geojson" => "maps#show", as: :map_geojson, constraints: { id: ID_PATTERN }, defaults: { format: "geojson" }
     get "/:id.gpx" => "maps#show", as: :map_gpx, constraints: { id: ID_PATTERN }, defaults: { format: "gpx" }
     get "/:id/properties" => "maps#properties", as: :map_properties, constraints: { id: ID_PATTERN }
-    get "/:id/feature/:feature_id(/:name)" => "maps#feature", as: :map_feature, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN, name: ID_PATTERN }
-    get "/:id(/:name)" => "maps#show", as: :map, format: :html, constraints: { id: ID_PATTERN, name: ID_PATTERN }
+    get "/:id/feature/:feature_id(.:format)(/:name)" => "maps#feature", as: :map_feature, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "geojson" }
+    get "/:id(/:name)" => "maps#show", as: :map, format: :html, constraints: { id: ID_PATTERN, name: NAME_PATTERN }
 
     post "" => "maps#create", as: :create_map
     post "/:id/copy" => "maps#copy", as: :copy_map, constraints: { id: ID_PATTERN }

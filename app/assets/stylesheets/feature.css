@@ -80,9 +80,12 @@
   height: 2rem; /* same size as .fs-2 */
 }
 
-#feature-details-meta, #feature-details-meta a {
+#feature-details-meta {
   font-size: 80%;
-  color: #999;
+
+  a {
+    text-decoration: none;
+  }
 }
 
 #feature-details-body, #feature-edit-ui, #feature-edit-raw {

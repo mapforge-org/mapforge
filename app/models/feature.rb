@@ -39,6 +39,11 @@ class Feature
       features: [ geojson ] }
   end
 
+  def to_gpx
+    # https://github.com/hiroaki/ruby-gpx?tab=readme-ov-file#examples
+    GPX::GeoJSON.convert_to_gpx(geojson_data: to_geojson.to_json)
+  end
+
   # input file formats are typically gps format EPSG:4326 (WGS 84) or
   # web_mercator format EPSG:3857
   def self.from_collection(geojson, collection_format: 4326, db_format: 4326)

@@ -174,12 +174,15 @@ export async function showFeatureDetails (feature) {
   document.querySelector('#feature-size').innerHTML = featureMeta(feature)
   document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
   if (feature.geometry.type === 'Point') {
-    dom.hideElements('#feature-export')
+    dom.hideElements('.feature-export')
   } else {
-    dom.showElements('#feature-export')
-    // set feature id in export link
-    const link = document.querySelector('#feature-export a')
-    link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id)
+    dom.showElements('.feature-export')
+    // set feature id in export links
+    let link = document.querySelector('#feature-export-geo a')
+    link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id + '.geojson')
+    if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/\s+/g, "_")) }
+    link = document.querySelector('#feature-export-gpx a')
+    link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id + '.gpx')
     if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/\s+/g, "_")) }
   }
   let desc = marked(feature?.properties?.desc || '')
