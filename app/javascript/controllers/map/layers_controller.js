@@ -15,8 +15,8 @@ export default class extends Controller {
     const file = fileInput.files[0]
     const fileSize = (file.size / 1024).toFixed(2)
 
-    if (fileSize > 1600 && !file.type.startsWith('image/')) {
-      status('File exceeds 1.5MB, please consider simplifying it', 'error', 'medium', 8000)
+    if (fileSize > 100 && !file.type.startsWith('image/')) {
+      status('File exceeds 1.5MB. Please simplify it, for example with mapshaper.org', 'error', 'medium', 8000)
       return
     }
 

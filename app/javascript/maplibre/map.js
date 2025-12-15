@@ -432,7 +432,7 @@ export function redrawGeojson (resetDraw = true) {
   layers.filter(f => f.type === 'overpass').forEach((layer) => {
     if (layer.geojson) {
       // console.log("Setting overpass layer data", layer.id, layer.geojson)
-      map.getSource('overpass-source-' + layer.id).setData(layer.geojson)
+      map.getSource('overpass-source-' + layer.id).updateData(layer.geojson, false)
     }
   })
 }

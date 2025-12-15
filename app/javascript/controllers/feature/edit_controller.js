@@ -53,9 +53,8 @@ export default class extends Controller {
     const feature = this.getFeature()
     const label = document.querySelector('#feature-label input').value
     feature.properties.label = label
-    draw.setFeatureProperty(this.featureIdValue, 'label', label)
     redrawGeojson(false)
-    functions.debounce(() => { this.saveFeature() }, 'label')
+    functions.debounce(() => { this.saveFeature() }, 'label', 1000)
   }
 
   // called as preview on slider change

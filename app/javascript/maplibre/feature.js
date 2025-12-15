@@ -378,7 +378,8 @@ export function renderKmMarkers () {
         if (Math.ceil(distance) < 100) {
           point.properties['km'] = Math.round(distance * 10) / 10
         }
-      } else if (distance - i > 1) {
+      // don't rende rkm markers that are too close to the end
+      } else if (distance - i > 3) {
         point.properties['km'] = i
       }
       kmMarkerFeatures.push(point)
