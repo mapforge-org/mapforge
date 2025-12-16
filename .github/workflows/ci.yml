@@ -73,6 +73,7 @@ jobs:
       # PARALLEL_TEST_PROCESSORS: 2
       COVERAGE: true
       SE_AVOID_STATS: true # skip Selenium stats
+      SE_DISABLE_REMOTE_MANAGER: true # skip Selenium plausible telemetry
       # MONGO_URL is only needed when not running on ubuntu-latest VM
       # MONGO_URL: "mongodb:27017"
     steps:

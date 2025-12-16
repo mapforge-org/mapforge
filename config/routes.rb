@@ -19,8 +19,8 @@ Rails.application.routes.draw do
     get "/:id.json(/:name)" => "maps#show", as: :map_json, constraints: { id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "json" }
     get "/:id.geojson(/:name)" => "maps#show", as: :map_geojson, constraints: { id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "geojson" }
     get "/:id.gpx(/:name)" => "maps#show", as: :map_gpx, constraints: { id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "gpx" }
-    get "/:id(/:name)" => "maps#show", as: :map, format: :html, constraints: { id: ID_PATTERN, name: NAME_PATTERN }
     get "/:id/properties" => "maps#properties", as: :map_properties, constraints: { id: ID_PATTERN }
+    get "/:id(/:name)" => "maps#show", as: :map, format: :html, constraints: { id: ID_PATTERN, name: NAME_PATTERN }
     get "/:id/feature/:feature_id.geojson(/:name)" => "maps#feature", as: :map_feature_geo, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "geojson" }
     get "/:id/feature/:feature_id.gpx(/:name)" => "maps#feature", as: :map_feature_gpx, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "gpx" }
 

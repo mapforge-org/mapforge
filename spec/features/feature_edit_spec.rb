@@ -182,7 +182,7 @@ describe 'Feature edit' do
           const host = arguments[0];
           const shadow = host.shadowRoot;
           if (shadow) {
-            const el = shadow.querySelector('span.emoji-mart-emoji'); // Replace selector
+            const el = shadow.querySelector('span.emoji-mart-emoji');
             el.click();
           }
         JS
