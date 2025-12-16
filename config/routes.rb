@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  ID_PATTERN = /[^\/\.]+/ # all characters but '/' + '.'
+  ID_PATTERN = /[^\/]+/ # all characters but '/'
   NAME_PATTERN = /[^\/]+/ # all characters but '/'
 
   # login routes
@@ -15,12 +15,14 @@ Rails.application.routes.draw do
     get "/", to: "maps#index"
 
     # map exports
-    get "/:id.json" => "maps#show", as: :map_json, constraints: { id: ID_PATTERN }, defaults: { format: "json" }
-    get "/:id.geojson" => "maps#show", as: :map_geojson, constraints: { id: ID_PATTERN }, defaults: { format: "geojson" }
-    get "/:id.gpx" => "maps#show", as: :map_gpx, constraints: { id: ID_PATTERN }, defaults: { format: "gpx" }
-    get "/:id/properties" => "maps#properties", as: :map_properties, constraints: { id: ID_PATTERN }
-    get "/:id/feature/:feature_id(.:format)(/:name)" => "maps#feature", as: :map_feature, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "geojson" }
+    # ids can have dots, so define formats explicitly
+    get "/:id.json(/:name)" => "maps#show", as: :map_json, constraints: { id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "json" }
+    get "/:id.geojson(/:name)" => "maps#show", as: :map_geojson, constraints: { id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "geojson" }
+    get "/:id.gpx(/:name)" => "maps#show", as: :map_gpx, constraints: { id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "gpx" }
     get "/:id(/:name)" => "maps#show", as: :map, format: :html, constraints: { id: ID_PATTERN, name: NAME_PATTERN }
+    get "/:id/properties" => "maps#properties", as: :map_properties, constraints: { id: ID_PATTERN }
+    get "/:id/feature/:feature_id.geojson(/:name)" => "maps#feature", as: :map_feature_geo, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "geojson" }
+    get "/:id/feature/:feature_id.gpx(/:name)" => "maps#feature", as: :map_feature_gpx, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "gpx" }
 
     post "" => "maps#create", as: :create_map
     post "/:id/copy" => "maps#copy", as: :copy_map, constraints: { id: ID_PATTERN }
@@ -34,6 +36,7 @@ Rails.application.routes.draw do
 
   get "/admin" => "admin#index"
   get "/docs" => "docs#tutorials", as: :docs
+  get "/tutorial/:id" => "docs#tutorial" # legacy route
   get "/doc/:id" => "docs#tutorial", as: :doc
 
   # map icons
