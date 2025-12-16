@@ -27,7 +27,7 @@ describe 'Feature details' do
       end
 
       it 'can download feature export' do
-        find('#feature-export').click
+        find('#feature-export-geo').click
       end
     end
   end
