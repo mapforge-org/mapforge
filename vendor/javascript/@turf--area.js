@@ -1,4 +1,2 @@
-// @turf/area@7.3.0 downloaded from https://ga.jspm.io/npm:@turf/area@7.3.0/dist/esm/index.js
-
 import{earthRadius as t}from"@turf/helpers";import{geomReduce as n}from"@turf/meta";function e(t){return n(t,((t,n)=>t+r(n)),0)}function r(t){let n=0;let e;switch(t.type){case"Polygon":return o(t.coordinates);case"MultiPolygon":for(e=0;e<t.coordinates.length;e++)n+=o(t.coordinates[e]);return n;case"Point":case"MultiPoint":case"LineString":case"MultiLineString":return 0}return 0}function o(t){let n=0;if(t&&t.length>0){n+=Math.abs(a(t[0]));for(let e=1;e<t.length;e++)n-=Math.abs(a(t[e]))}return n}var i=t*t/2;var s=Math.PI/180;function a(t){const n=t.length-1;if(n<=2)return 0;let e=0;let r=0;while(r<n){const o=t[r];const i=t[r+1===n?0:r+1];const a=t[r+2>=n?(r+2)%n:r+2];const c=o[0]*s;const l=i[1]*s;const u=a[0]*s;e+=(u-c)*Math.sin(l);r++}return e*i}var c=e;export{e as area,c as default};
 
