@@ -77,7 +77,7 @@ pin "@turf/meta", to: "@turf--meta.js" # @7.3.0
 pin "@turf/simplify", to: "@turf--simplify.js", preload: false # @7.3.0
 pin "@turf/boolean-point-on-line", to: "@turf--boolean-point-on-line.js", preload: false # @7.3.0
 pin "@turf/clean-coords", to: "@turf--clean-coords.js", preload: false # @7.3.0
-pin "@turf/invariant", to: "@turf--invariant.js", preload: false # @7.3.0
+pin "@turf/invariant", to: "@turf--invariant.js", preload: false # @7.3.1
 pin "@turf/centroid", to: "@turf--centroid.js", preload: false # @7.3.0
 pin "@turf/distance", to: "@turf--distance.js", preload: false # @7.3.0
 pin "@turf/along", to: "@turf--along.js", preload: false # @7.3.0
