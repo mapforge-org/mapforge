@@ -222,7 +222,7 @@ GEM
       csv
       nokogiri (~> 1.7)
       rake
-    haml (7.0.2)
+    haml (7.1.0)
       temple (>= 0.8.2)
       thor
       tilt
