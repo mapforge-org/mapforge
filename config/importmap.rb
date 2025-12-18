@@ -85,7 +85,7 @@ pin "@turf/bearing", to: "@turf--bearing.js", preload: false # @7.3.1
 pin "@turf/destination", to: "@turf--destination.js", preload: false # @7.3.0
 pin "@turf/length", to: "@turf--length.js", preload: false # @7.3.1
 pin "@turf/area", to: "@turf--area.js", preload: false # @7.3.1
-pin "@turf/buffer", to: "@turf--buffer.js", preload: false # @7.3.0
+pin "@turf/buffer", to: "@turf--buffer.js", preload: false # @7.3.1
 pin "@turf/bbox", to: "@turf--bbox.js", preload: false # @7.3.1
 pin "@turf/center", to: "@turf--center.js", preload: false # @7.3.1
 pin "@turf/jsts", to: "@turf--jsts.js", preload: false # @2.7.2
