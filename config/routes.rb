@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     delete "/:id" => "maps#destroy", as: :destroy_map, constraints: { id: ID_PATTERN }
   end
 
+  post "/demo" => "maps#tutorial" # legacy route
   post "/tutorial" => "maps#tutorial", as: "tutorial"
   get "/my" => "maps#my", as: "my"
 
@@ -36,6 +37,7 @@ Rails.application.routes.draw do
 
   get "/admin" => "admin#index"
   get "/docs" => "docs#tutorials", as: :docs
+  get "/tutorials" => "docs#tutorials" # legacy route
   get "/tutorial/:id" => "docs#tutorial" # legacy route
   get "/doc/:id" => "docs#tutorial", as: :doc
 
@@ -53,6 +55,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "frontpage#index", as: :frontpage
   get "/" => "frontpage#index", as: :root
+  get "/frontpage" => "frontpage#index" # legacy route
   # legacy link, still used by search engines
   get "/home", to: redirect("/")
 
