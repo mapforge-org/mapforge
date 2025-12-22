@@ -30,6 +30,7 @@
     --bs-btn-active-color: var(--color-dark-charcoal);
     --bs-btn-active-bg: var(--color-light-teagreen);
     --bs-btn-active-border-color: #6c757d;
+    
     transition: .2s;
   }
 }
