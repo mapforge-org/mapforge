@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-ruby "3.4.5"
+ruby "4.0.0"
 
 gem "rails"
 
@@ -59,6 +59,7 @@ gem "rgeo"
 gem "rgeo-geojson"
 gem "rgeo-proj4"
 gem "gpx"
+gem "csv" # required by gpx, and not part of Ruby 4.0 standard lib anymore
 # resolving request IP addresses to coordinates
 gem "maxminddb"
 

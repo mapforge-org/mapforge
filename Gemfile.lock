@@ -125,7 +125,7 @@ GEM
     connection_pool (3.0.2)
     cookiejar (0.3.4)
     crass (1.0.6)
-    csv (3.3.3)
+    csv (3.3.5)
     database_cleaner-core (2.0.1)
     database_cleaner-mongoid (2.0.1)
       database_cleaner-core (~> 2.0.0)
@@ -220,9 +220,8 @@ GEM
       i18n (>= 0.7)
       multi_json
       request_store (>= 1.0)
-    gpx (1.2.1)
-      csv
-      nokogiri (~> 1.7)
+    gpx (0.8.3)
+      nokogiri
       rake
     haml (7.1.0)
       temple (>= 0.8.2)
@@ -280,6 +279,7 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
+    mini_portile2 (2.8.9)
     minitest (6.0.0)
       prism (~> 1.5)
     mongo (2.21.3)
@@ -319,6 +319,9 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.5)
+    nokogiri (1.18.10)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
     nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     oauth2 (2.0.9)
@@ -520,7 +523,7 @@ GEM
       rubocop-ast (>= 1.44.0, < 2.0)
     ruby-next-core (1.1.2)
     ruby-progressbar (1.13.0)
-    ruby_parser (3.21.1)
+    ruby_parser (3.22.0)
       racc (~> 1.5)
       sexp_processor (~> 4.16)
     rubycritic (4.11.0)
@@ -543,7 +546,7 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    sexp_processor (4.17.4)
+    sexp_processor (4.17.5)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -629,6 +632,7 @@ DEPENDENCIES
   byebug
   capybara
   capybara-screenshot
+  csv
   database_cleaner-mongoid
   debug
   dotenv-rails
@@ -690,7 +694,7 @@ DEPENDENCIES
   yabeda-rails
 
 RUBY VERSION
-   ruby 3.4.5
+   ruby 4.0.0p0
 
 BUNDLED WITH
    2.7.1
