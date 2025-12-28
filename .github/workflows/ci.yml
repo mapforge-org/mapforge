@@ -33,7 +33,7 @@ jobs:
           sudo chmod +x /usr/bin/mandb
       - name: Install dependencies
         run: sudo apt-get install --no-install-recommends -y libproj-dev libimlib2-dev
-      - name: Install Ruby
+      - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
           # caches by Gemfile.lock checksum

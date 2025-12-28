@@ -58,7 +58,7 @@ gem "rszr"
 gem "rgeo"
 gem "rgeo-geojson"
 gem "rgeo-proj4"
-gem "gpx"
+gem "gpx", git: "https://github.com/digitaltom/gpx"
 gem "csv" # required by gpx, and not part of Ruby 4.0 standard lib anymore
 # resolving request IP addresses to coordinates
 gem "maxminddb"
