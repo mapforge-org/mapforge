@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-ruby "3.4.5"
+ruby "4.0.0"
 
 gem "rails"
 
@@ -58,14 +58,13 @@ gem "rszr"
 gem "rgeo"
 gem "rgeo-geojson"
 gem "rgeo-proj4"
-gem "gpx"
+gem "gpx", git: "https://github.com/digitaltom/gpx" # Ruby 4.0 fork
 # resolving request IP addresses to coordinates
 gem "maxminddb"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "byebug"
-  gem "debug", platforms: %i[mri windows]
+  gem "debug"
   gem "dotenv-rails", require: "dotenv/load"
   gem "listen"
   gem "mongo_logs_on_roids"
@@ -101,6 +100,7 @@ group :test do
   gem "simplecov"
   gem "database_cleaner-mongoid"
   gem "mongoid-rspec"
-  gem "puffing-billy"
+  gem "cuprite"
+  gem "capybara_mock"
   gem "table_print"
 end

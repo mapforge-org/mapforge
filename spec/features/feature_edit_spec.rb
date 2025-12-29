@@ -57,7 +57,7 @@ describe 'Feature edit' do
 
     context 'with selected polygon feature' do
       before do
-        click_coord('#maplibre-map', 50, 50)
+        click_coord('#maplibre-map', 512, 430)
         expect(page).to have_css('#edit-button-edit')
       end
 
@@ -101,7 +101,7 @@ describe 'Feature edit' do
 
     context 'with selected point feature' do
       before do
-        click_coord('#maplibre-map', 50, 50)
+        click_coord('#maplibre-map', 512, 430)
         find('#edit-button-edit').click
       end
 
@@ -134,8 +134,10 @@ describe 'Feature edit' do
       end
 
       it 'can update fill color' do
-        find('#fill-color').set('#aabbcc')
-        wait_for { point.reload.properties['marker-color'] }.to eq('#aabbcc')
+        color = '#aa00cc'
+        set_color_input('#fill-color', color)
+
+        wait_for { point.reload.properties['marker-color'] }.to eq(color)
       end
 
       it 'can set fill color transparent' do
@@ -151,8 +153,10 @@ describe 'Feature edit' do
       end
 
       it 'can update outline color' do
-        find('#stroke-color').set('#aabbcc')
-        wait_for { point.reload.properties['stroke'] }.to eq('#aabbcc')
+        color = '#aa00cc'
+        set_color_input('#stroke-color', color)
+
+        wait_for { point.reload.properties['stroke'] }.to eq(color)
       end
 
       it 'can upload image' do
@@ -196,7 +200,7 @@ describe 'Feature edit' do
     let(:map) { create(:map, name: "Share Cursor", share_cursor: true) }
 
     it 'sends cursor positions' do
-      hover_coord('#maplibre-map', 70, 70)
+      hover_coord(70, 70)
       expect(page).to have_css('#maplibre-map')
     end
   end

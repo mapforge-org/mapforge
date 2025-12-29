@@ -3,7 +3,7 @@
 # call this from rails root: podman build -t mapforge-base -f .github/Dockerfile.base .
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.4.5
+ARG RUBY_VERSION=4.0.0
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
 
 LABEL org.opencontainers.image.source="https://github.com/mapforge-org/mapforge"

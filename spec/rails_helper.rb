@@ -19,6 +19,7 @@ require 'rspec/rails'
 require 'database_cleaner/mongoid'
 require 'capybara-screenshot/rspec'
 require 'mongoid-rspec'
+require 'capybara_mock/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -40,7 +41,6 @@ RSpec.configure do |config|
   config.use_active_record = false
 
   config.include Mongoid::Matchers, type: :model
-  config.include Features::Helpers, type: :feature
   config.include FactoryBot::Syntax::Methods
 
   config.before(:suite) do
@@ -56,10 +56,9 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :mobile) do |spec|
-    browser = Capybara.current_session.driver.browser
-    browser.manage.window.resize_to(290, 523)
+    page.driver.browser.resize(width: 290, height: 523)
     spec.run
-    browser.manage.window.resize_to(1024, 576)
+    page.driver.browser.resize(width: 1024, height: 860)
   end
 
   # raise on js console errors
@@ -67,23 +66,33 @@ RSpec.configure do |config|
   RSpec.configure do |config|
     config.after(:each, type: :feature) do |spec|
       unless spec.metadata[:skip_console_errors]
-        levels = [ "SEVERE" ]
-        # "maplibre-gl.js TypeError: Failed to fetch" seems to be caused by
-        # the js file being cached already
-        exclude = [ /TypeError: Failed to fetch/,
-                    /The user aborted a request/,
-                    /Failed to load resource/ ]
-        errors = page.driver.browser.logs.get(:browser).to_a
-                   .select { |e| levels.include?(e.level) && e.message.present? }
-                   .reject { |e| exclude.any? { |ex| e.message =~ ex } }
-                   .map(&:message)
-        if errors.present?
+
+        # https://danielabaron.me/blog/capture-browser-console-logs-capybara-cuprite/
+        browser_logs = page.driver.browser.options.logger.string
+        console_logs = browser_logs.lines.select { |line| line.include?("Runtime.consoleAPICalled") }
+        error_logs = console_logs.select { |line| line.include?('"type":"error"') }
+
+        if error_logs.present?
           raise JavaScriptError, errors.join("\n\n")
         end
-      end
-      if spec.metadata[:print_console_logs]
-        logs = page.driver.browser.logs.get(:browser).to_a.map(&:message)
-        puts logs.join("\n\n")
+
+        #       levels = [ "SEVERE" ]
+        #       # "maplibre-gl.js TypeError: Failed to fetch" seems to be caused by
+        #       # the js file being cached already
+        #       exclude = [ /TypeError: Failed to fetch/,
+        #                   /The user aborted a request/,
+        #                   /Failed to load resource/ ]
+        #       errors = page.driver.browser.logs.get(:browser).to_a
+        #                  .select { |e| levels.include?(e.level) && e.message.present? }
+        #                  .reject { |e| exclude.any? { |ex| e.message =~ ex } }
+        #                  .map(&:message)
+        #       if errors.present?
+        #         raise JavaScriptError, errors.join("\n\n")
+        #       end
+        #     end
+        #     if spec.metadata[:print_console_logs]
+        #       logs = page.driver.browser.logs.get(:browser).to_a.map(&:message)
+        #       puts logs.join("\n\n")
       end
     end
   end

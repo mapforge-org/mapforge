@@ -21,7 +21,7 @@ describe 'Admin List' do
         find("i[class='bi bi-trash']", match: :first).click
       end
       expect(page).to have_text('Mapforge')
-      expect(Map.count).to eq(2)
+      wait_for { Map.count }.to eq(2)
     end
 
     it 'shows link to copy map' do
