@@ -4,6 +4,7 @@ on:
   # rebuild image with updated patches each night:
   schedule:
     - cron: '0 4 * * *' # Runs every day at 04:00 UTC
+  :workflow_dispatch
   # to test base image build in a pr:
   # pull_request:
   #   branches: [ "main" ]
