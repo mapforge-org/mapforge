@@ -57,7 +57,7 @@ describe 'Feature edit' do
 
     context 'with selected polygon feature' do
       before do
-        click_coord('#maplibre-map', 50, 50)
+        click_coord('#maplibre-map', 512, 430)
         expect(page).to have_css('#edit-button-edit')
       end
 
@@ -101,7 +101,7 @@ describe 'Feature edit' do
 
     context 'with selected point feature' do
       before do
-        click_coord('#maplibre-map', 50, 50)
+        click_coord('#maplibre-map', 512, 430)
         find('#edit-button-edit').click
       end
 

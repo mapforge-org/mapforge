@@ -80,10 +80,15 @@ describe 'Map' do
 
   context 'overpass layer' do
     before do
-      proxy.stub('https://overpass-api.de:443/api/interpreter', method: 'post')
-        .and_return(
-          headers: { 'Access-Control-Allow-Origin' => '*' },
-          text: File.read(Rails.root.join("spec", "fixtures", "files", "overpass.json")))
+      overpass_file = File.read(Rails.root.join("spec", "fixtures", "files", "overpass.json"))
+      # https://github.com/railsware/capybara_mock
+      CapybaraMock.stub_request(
+        :post, 'https://overpass-api.de/api/interpreter'
+      ).to_return(
+        headers: { 'Access-Control-Allow-Origin' => '*' },
+        status: 200,
+        body: overpass_file
+      )
 
       map.layers << layer
       visit map.private_map_path
@@ -95,7 +100,7 @@ describe 'Map' do
     let(:layer) { create(:layer, :overpass, name: 'opass') }
 
     it 'Shows overpass layer' do
-      expect(page).to have_text('opass')
+      expect(page).to have_text('opass(1)')
     end
 
     it 'can add overpass layer' do

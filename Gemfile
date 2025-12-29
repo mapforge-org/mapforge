@@ -58,8 +58,7 @@ gem "rszr"
 gem "rgeo"
 gem "rgeo-geojson"
 gem "rgeo-proj4"
-gem "gpx", git: "https://github.com/digitaltom/gpx"
-gem "csv" # required by gpx, and not part of Ruby 4.0 standard lib anymore
+gem "gpx", git: "https://github.com/digitaltom/gpx" # Ruby 4.0 fork
 # resolving request IP addresses to coordinates
 gem "maxminddb"
 
@@ -102,6 +101,7 @@ group :test do
   gem "simplecov"
   gem "database_cleaner-mongoid"
   gem "mongoid-rspec"
-  gem "puffing-billy"
+  gem "cuprite"
+  gem "capybara_mock"
   gem "table_print"
 end
