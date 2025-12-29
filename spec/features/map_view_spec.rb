@@ -27,36 +27,38 @@ describe 'Map public view' do
     let(:map) { create(:map, features: [ polygon ]) }
 
     it 'shows feature details on hover' do
-      # coordinates are calculated from the center middle
-      hover_coord('.map', 50, 50)
+      hover_center_of_screen
+
       expect(page).to have_css('#feature-details-modal')
       expect(page).to have_text('Poly Title')
       expect(page).to have_text('Poly Desc')
     end
 
     it 'feature details are not sticky on hover' do
-      hover_coord('.map', 50, 50)
+      hover_center_of_screen
       expect(page).to have_text('Poly Title')
-      hover_coord('.map', 400, 0)
+      center = center_of_screen
+      page.driver.browser.mouse.move(x: center[:x] + 400, y: center[:y])
+
       expect(page).not_to have_text('Poly Desc')
     end
 
     it 'shows feature details on click' do
-      click_coord('.map', 50, 50)
+      click_center_of_screen
       expect(page).to have_css('#feature-details-modal')
       expect(page).to have_text('Poly Title')
       expect(page).to have_text('Poly Desc')
     end
 
     it 'updates url on feature select' do
-      click_coord('.map', 50, 50)
+      click_center_of_screen
       expect(page).to have_current_path("/m/#{map.public_id}?f=#{polygon.id}")
     end
 
     it 'feature details are sticky on click' do
-      click_coord('.map', 50, 50)
+      click_center_of_screen
       expect(page).to have_text('Poly Desc')
-      hover_coord('.map', 400, 0)
+      hover_coord(400, 0)
       expect(page).to have_text('Poly Desc')
       click_coord('.map', 400, 0)
       expect(page).not_to have_text('Poly Desc')
@@ -83,10 +85,12 @@ describe 'Map public view' do
 
   context 'with features that don\'t have properties' do
     # this polygon is in the middle of nbg (default view)
-    before { create(:feature, :polygon_middle, layer: map.layers.first, properties: nil) }
+    let(:polygon) { create(:feature, :polygon_middle, properties: nil) }
+    let(:map) { create(:map, features: [ polygon ]) }
+
 
     it 'shows feature details on hover' do
-      hover_coord('.map', 50, 50)
+      hover_center_of_screen
       expect(page).to have_css('#feature-details-modal')
     end
   end
@@ -95,7 +99,7 @@ describe 'Map public view' do
     # feature is created after loading the map, to make sure it's loaded via websocket
     it 'receives new features via websocket channel' do
       create(:feature, :polygon_middle, layer: map.layers.first, title: 'New Title')
-      click_coord('.map', 50, 50)
+      click_center_of_screen
       expect(page).to have_css('#feature-details-modal')
       expect(page).to have_text('New Title')
     end
@@ -130,11 +134,16 @@ describe 'Map public view' do
 
     it 'catches up with new features on reconnect' do
       go_offline
+
       expect(page).to have_css('div:not(.hidden):has(> button.maplibregl-ctrl-connection)')
+      expect(page).to have_css("#maplibre-map[data-online='false']")
+
       create(:feature, :polygon_middle, layer: map.layers.geojson.first, title: 'Poly Title')
       go_online
+
       expect_map_loaded
-      click_coord('#maplibre-map', 50, 50)
+      sleep 1 # give some time for the feature to be received
+      click_center_of_screen
       expect(page).to have_text('Poly Title')
     end
 

@@ -16,12 +16,13 @@ describe 'Keyboard Shortcuts' do
 
     context 'with selected point feature' do
       before do
-        click_coord('#maplibre-map', 50, 50)
+        click_center_of_screen
         expect(page).to have_text('Point Title')
       end
 
       it 'can copy & paste point' do
-        find('body').send_keys(:control, 'c')
+        page.driver.browser.keyboard.type([ :Control, "c" ])
+
         expect(page).to have_text('Feature copied to clipboard')
 
         # Clipboard read is disallowed in headless mode
