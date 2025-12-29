@@ -99,6 +99,7 @@ describe 'Map public view' do
     # feature is created after loading the map, to make sure it's loaded via websocket
     it 'receives new features via websocket channel' do
       create(:feature, :polygon_middle, layer: map.layers.first, title: 'New Title')
+      sleep 1
       click_center_of_screen
       expect(page).to have_css('#feature-details-modal')
       expect(page).to have_text('New Title')

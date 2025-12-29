@@ -67,6 +67,7 @@ RSpec.configure do |config|
     config.after(:each, type: :feature) do |spec|
       unless spec.metadata[:skip_console_errors]
 
+        # https://danielabaron.me/blog/capture-browser-console-logs-capybara-cuprite/
         browser_logs = page.driver.browser.options.logger.string
         console_logs = browser_logs.lines.select { |line| line.include?("Runtime.consoleAPICalled") }
         error_logs = console_logs.select { |line| line.include?('"type":"error"') }
