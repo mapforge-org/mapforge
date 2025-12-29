@@ -3,7 +3,9 @@ class MapChannel < ApplicationCable::Channel
   # Check auth on update methods by looking up map with private id
   def subscribed
     super
-    Map.find_by(private_id: params[:map_id]) || Map.find_by(public_id: params[:map_id])
+    map = Map.find_by(private_id: params[:map_id]) || Map.find_by(public_id: params[:map_id])
+    Rails.logger.warn "Invalid map id #{params[:map_id]} for subscribing to channel" and return unless map
+
     stream_from "map_channel_#{params[:map_id]}"
     transmit({ event: "connection", uuid: uuid })
     Rails.logger.debug { "MapChannel subscribed '#{uuid}' for '#{params[:map_id]}'" }

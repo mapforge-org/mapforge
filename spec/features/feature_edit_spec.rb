@@ -134,8 +134,10 @@ describe 'Feature edit' do
       end
 
       it 'can update fill color' do
-        find('#fill-color').set('#aabbcc')
-        wait_for { point.reload.properties['marker-color'] }.to eq('#aabbcc')
+        color = '#aa00cc'
+        set_color_input('#fill-color', color)
+
+        wait_for { point.reload.properties['marker-color'] }.to eq(color)
       end
 
       it 'can set fill color transparent' do
@@ -151,8 +153,10 @@ describe 'Feature edit' do
       end
 
       it 'can update outline color' do
-        find('#stroke-color').set('#aabbcc')
-        wait_for { point.reload.properties['stroke'] }.to eq('#aabbcc')
+        color = '#aa00cc'
+        set_color_input('#stroke-color', color)
+
+        wait_for { point.reload.properties['stroke'] }.to eq(color)
       end
 
       it 'can upload image' do
