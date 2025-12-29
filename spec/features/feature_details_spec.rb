@@ -13,6 +13,7 @@ describe 'Feature details' do
 
     context 'with selected feature' do
       before do
+        sleep 1
         click_center_of_screen
         expect(page).to have_css('#feature-details-modal')
       end
