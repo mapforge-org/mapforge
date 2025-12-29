@@ -71,10 +71,10 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 Capybara.register_driver(:cuprite) do |app|
-  logger = StringIO.new
   Capybara::Cuprite::Driver.new(app, window_size: [ 1024, 860 ],
+                                     headless: 'new',
                                      js_errors: true,
-                                     logger: logger,
+                                     logger: StringIO.new,
                                      browser_options: { 'no-sandbox': nil })
 end
 

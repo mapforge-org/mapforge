@@ -200,7 +200,7 @@ describe 'Feature edit' do
     let(:map) { create(:map, name: "Share Cursor", share_cursor: true) }
 
     it 'sends cursor positions' do
-      hover_coord('#maplibre-map', 70, 70)
+      hover_coord(70, 70)
       expect(page).to have_css('#maplibre-map')
     end
   end
