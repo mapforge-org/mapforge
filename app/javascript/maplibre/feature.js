@@ -287,7 +287,7 @@ function makeNumbersLayer(divisor, minzoom, maxzoom=24) {
     minzoom,
     maxzoom,
     layout: {
-      'text-allow-overlap': true,
+      'text-allow-overlap': false,
       'text-field': ['get', 'km'],
       'text-size': 11,
       'text-font': labelFont,
@@ -302,32 +302,7 @@ function makeNumbersLayer(divisor, minzoom, maxzoom=24) {
 
 export function kmMarkerStyles () {
   let layers = []
-
-  // start + end 
   const base = { ...styles()['points-layer'] }
-  layers.push( {
-    ...base,
-    id: `km-marker-points-end`,
-      source: 'km-marker-source',
-        filter: ["==", ["get", "km-marker-numbers-end"], 1]
-  })
-  layers.push({
-      id: `km-marker-numbers-end`,
-      type: 'symbol',
-      source: 'km-marker-source',
-      filter: ["==", ["get", "km-marker-numbers-end"], 1],
-      layout: {
-        'text-allow-overlap': true,
-        'text-field': ['get', 'km'],
-        'text-size': 12,
-        'text-font': labelFont,
-        'text-justify': 'center',
-        'text-anchor': 'center'
-      },
-      paint: {
-        'text-color': '#ffffff'
-      }
-    })
 
   layers.push(makePointsLayer(2, 11))
   layers.push(makeNumbersLayer(2, 11))
@@ -346,6 +321,32 @@ export function kmMarkerStyles () {
 
   layers.push(makePointsLayer(100, 5, 7))
   layers.push(makeNumbersLayer(100, 5, 7))
+  
+  // start + end 
+  layers.push({
+    ...base,
+    id: `km-marker-points-end`,
+    source: 'km-marker-source',
+    filter: ["==", ["get", "km-marker-numbers-end"], 1]
+  })
+  layers.push({
+    id: `km-marker-numbers-end`,
+    type: 'symbol',
+    source: 'km-marker-source',
+    filter: ["==", ["get", "km-marker-numbers-end"], 1],
+    layout: {
+      'text-allow-overlap': false,
+      'text-field': ['get', 'km'],
+      'text-size': 12,
+      'text-font': labelFont,
+      'text-justify': 'center',
+      'text-anchor': 'center'
+    },
+    paint: {
+      'text-color': '#ffffff'
+    }
+  })
+
   return layers
 }
 
@@ -357,33 +358,35 @@ export function renderKmMarkers () {
   let kmMarkerFeatures = []
   geojsonData.features.filter(feature => (feature.geometry.type === 'LineString' &&
     feature.properties['show-km-markers'] &&
-    feature.geometry.coordinates.length >= 2)).forEach((f) => {
+    feature.geometry.coordinates.length >= 2)).forEach((f, index) => {
 
     const line = lineString(f.geometry.coordinates)
     const distance = length(line, { units: 'kilometers' })
     // Create markers at useful intervals
     let interval = 1
-
-    for (let i = 0; i < Math.ceil(distance) + interval; i += interval) {
+      for (let i = 0; i < Math.ceil(distance) + interval; i += interval) {
       // Get point at current kilometer
       const point = along(line, i, { units: 'kilometers' })
       point.properties['marker-color'] = f.properties['stroke'] || featureColor
       point.properties['marker-size'] = 11
       point.properties['marker-opacity'] = 1
+      point.properties['km'] = i
 
       if (i >= Math.ceil(distance)) {
         point.properties['marker-size'] = 14
         point.properties['km'] = Math.round(distance)
-        point.properties['km-marker-numbers-end'] = 1
-        if (Math.ceil(distance) < 100) {
+        if (Math.ceil(distance) < 100) { 
           point.properties['km'] = Math.round(distance * 10) / 10
         }
-      // don't rende rkm markers that are too close to the end
-      } else if (distance - i > 3) {
-        point.properties['km'] = i
+        point.properties['km-marker-numbers-end'] = 1
+        point.properties['sort-key'] = 2 + index
+
+      // don't render km markers that are too close to the end
+      } else if (distance - i <= 3) {
+        continue
       }
       kmMarkerFeatures.push(point)
-    }
+    }  
   })
 
   let markerFeatures = {

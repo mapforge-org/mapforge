@@ -416,6 +416,9 @@ export function styles () {
           pointOutlineSize
         ],
         'circle-stroke-opacity': ['to-number', ["min", 1, ['+', pointOpacity, 0.2]]]
+      },
+      layout: {
+        'circle-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]
       }
     },    
     'points-layer': {
@@ -463,6 +466,10 @@ export function styles () {
           pointOutlineSize
         ],
         'circle-stroke-opacity': ["min", 1, ['+', pointOpacity, 0.2]]
+      }, 
+      layout: {
+        // sort-key is only effective within same layer
+        'circle-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]
       }
     },
     'points-hit-layer': {
@@ -496,6 +503,7 @@ export function styles () {
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']], 
         ['has', 'flat'], ["!has", "heatmap"]],
       layout: {
+        // sort-key is only effective within same layer
         'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
         'icon-image': ['coalesce',
           ['get', 'marker-image-url'],
@@ -526,6 +534,7 @@ export function styles () {
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
         ['!has', 'flat'], ["!has", "heatmap"]],
       layout: {
+        // sort-key is only effective within same layer
         'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
         'icon-image': ['coalesce',
           ['get', 'marker-image-url'],
@@ -616,6 +625,7 @@ export function styles () {
         'text-justify': 'auto',
         'text-ignore-placement': true, // show on collision
         "text-rotation-alignment": "map",
+        // sort-key is only effective within same layer
         // TODO: sort keys on text are ascending, on symbols descending???
         'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
       },
