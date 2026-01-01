@@ -12,7 +12,14 @@
   --bs-btn-color: #fff;
   --bs-btn-bg: var(--color-dark-moss-green);
   --bs-btn-border-color: #6c757d;
-  --bs-btn-focus-shadow-rgb: 130,138,145;
+  --bs-btn-active-color: var(--color-dark-charcoal);
+  --bs-btn-active-bg: var(--color-light-sand);
+  --bs-btn-active-border-color: #6c757d;
+
+  /* reset hover effect for browsers without hover support */
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--color-dark-moss-green);
+  --bs-btn-hover-border-color: #6c757d;
 }
 
 /* only add hover effects to supported browsers */
@@ -21,17 +28,7 @@
     --bs-btn-hover-color: var(--color-dark-charcoal);
     --bs-btn-hover-bg: var(--color-light-teagreen);
     --bs-btn-hover-border-color: #565e64;
-  }
-}
-
-/* add click effect to browsers without hover support */
-@media (hover: none) {
-  .btn-green {
-    --bs-btn-active-color: var(--color-dark-charcoal);
-    --bs-btn-active-bg: var(--color-light-teagreen);
-    --bs-btn-active-border-color: #6c757d;
-    
-    transition: .2s;
+    --bs-btn-focus-shadow-rgb: 130, 138, 145;
   }
 }
 
@@ -51,10 +48,11 @@
   --bs-btn-color: var(--color-dark-charcoal);
   --bs-btn-bg: var(--color-light-teagreen);
   --bs-btn-border-color: #565e64;
+  
+  /* reset hover effect for browsers without hover support */
   --bs-btn-hover-color: var(--color-dark-charcoal);
   --bs-btn-hover-bg: var(--color-light-teagreen);
   --bs-btn-hover-border-color: #565e64;
-  --bs-btn-focus-shadow-rgb: 130,138,145;
   --bs-btn-active-color: var(--color-dark-charcoal);
   --bs-btn-active-bg: var(--color-light-alabaster);
   --bs-btn-active-border-color: #51585e;
@@ -67,6 +65,7 @@
     --bs-btn-hover-color: #fff;
     --bs-btn-hover-bg: var(--color-dark-moss-green);
     --bs-btn-hover-border-color: #565e64;
+    --bs-btn-focus-shadow-rgb: 130, 138, 145;
   }
 }
 
@@ -77,6 +76,8 @@
 
   --text-color: #fff;
   --bs-btn-color: #fff;
+  
+  /* reset hover effect for browsers without hover support */
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: var(--color-orange);
   --bs-btn-hover-border-color: var(--color-orange);

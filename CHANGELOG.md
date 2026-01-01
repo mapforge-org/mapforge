@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2025-12
 
+* Upgrade to Ruby 4.0
 * Filter and sort Gallery map list
 * Copy & paste features with `ctrl+c` / `ctrl+v`
 

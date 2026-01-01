@@ -51,7 +51,7 @@ class ImagesController < ApplicationController
     # use existing image if already uploaded
     unless img = Image.find_by(public_id: filename)
       # resize image if it exceeds 1024px
-      image = MiniMagick::Image.read(uploaded_file.tempfile)
+      image = MiniMagick::Image.read(tempfile)
       if image.width > 1024 || image.height > 1024
         image.resize "1024x1024" # Maintains aspect ratio, resizes width to 1024px max
         image.quality "75"
