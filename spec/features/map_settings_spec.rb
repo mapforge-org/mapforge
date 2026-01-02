@@ -47,14 +47,14 @@ describe 'Map' do
 
       it 'basemap update' do
         map.update(base_map: 'test2')
-        expect(page).to have_text(/Loaded base map test2|Map properties updated/)
+        expect(page).to have_text(/Loaded base map test2|Map properties updated|Map view updated/)
         find('.maplibregl-ctrl-map').click
         expect(page).to have_css('.layer-preview[data-base-map="test2"].active')
       end
 
       it 'terrain update' do
         map.update(terrain: true)
-        expect(page).to have_text(/Loaded base map test|Map properties updated|Terrain added to map/)
+        expect(page).to have_text(/Loaded base map test|Map properties updated|Terrain added to map|Map view updated/)
         find('.maplibregl-ctrl-map').click
         expect(find('#map-terrain')).to be_checked
       end
