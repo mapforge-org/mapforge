@@ -13,7 +13,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `label-size`: font size (default 16)
 * `label-color`: font color in format "#000000" (default)
 * `label-shadow`: font shadow in format "#ffffff" (default)
-* `sort-key`: higher numbers overlay labels with lower numbers (default: 1)
+* `sort-key`: sort order of features: higher numbers overlay lower numbers (default: 1)
 * `title`: title
 * `desc`: detailed description (markdown supported)
 
