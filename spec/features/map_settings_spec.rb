@@ -47,16 +47,14 @@ describe 'Map' do
 
       it 'basemap update' do
         map.update(base_map: 'test2')
-        # 'Map view updated' is rendered at 'moveend', undetermined if that's before base map is loaded
-        expect(page).to have_text(/Loaded base map test2|Map view updated/, wait: 30)
+        expect(page).to have_text(/Loaded base map test2|Map properties updated/)
         find('.maplibregl-ctrl-map').click
         expect(page).to have_css('.layer-preview[data-base-map="test2"].active')
       end
 
       it 'terrain update' do
         map.update(terrain: true)
-        # 'Map view updated' is rendered at 'moveend', undetermined if that's before base map is loaded
-        expect(page).to have_text(/Loaded base map test|Map view updated/)
+        expect(page).to have_text(/Loaded base map test|Map properties updated|Terrain added to map/)
         find('.maplibregl-ctrl-map').click
         expect(find('#map-terrain')).to be_checked
       end
