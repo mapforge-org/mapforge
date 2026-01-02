@@ -36,6 +36,7 @@ class MapsController < ApplicationController
         gon.user_id = @user.id if @user
         gon.edit_id = @map.private_id.to_s if @user&.admin? || (@user && @map.user == @user)
         gon.map_mode = @map_mode
+        gon.rails_env = Rails.env
         gon.csrf_token = form_authenticity_token
         gon.map_properties = @map_properties
         gon.map_layers = @map.layers.map(&:to_summary_json)

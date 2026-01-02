@@ -2,7 +2,7 @@ import * as functions from 'helpers/functions'
 
 let fadeInterval = null
 
-export function status (text, status = 'info', size = 'medium', duration = 20000) {
+export function status (text, status = 'info', size = 'medium', duration = 6000) {
   console.log('Status: ' + text)
   functions.e('#status-message', e => {
     e.innerHTML = text
