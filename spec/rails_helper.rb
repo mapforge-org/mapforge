@@ -73,7 +73,7 @@ RSpec.configure do |config|
         error_logs = console_logs.select { |line| line.include?('"type":"error"') }
 
         if error_logs.present?
-          raise JavaScriptError, errors.join("\n\n")
+          raise JavaScriptError, error_logs.join("\n\n")
         end
 
         #       levels = [ "SEVERE" ]
