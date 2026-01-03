@@ -90,5 +90,6 @@ pin "@turf/bbox", to: "@turf--bbox.js", preload: false # @7.3.1
 pin "@turf/center", to: "@turf--center.js", preload: false # @7.3.1
 pin "@turf/jsts", to: "@turf--jsts.js", preload: false # @2.7.2
 # dependencies of turf/buffer
-pin "d3-array", preload: false # @1.2.4
-pin "d3-geo", preload: false # @1.7.1
+pin "d3-array", preload: false # @3.2.4
+pin "d3-geo", preload: false # @3.1.1
+pin "internmap" # @2.0.3
