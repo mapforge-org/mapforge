@@ -35,7 +35,15 @@ GeoJSON layers can be styled using an extended version of the
 See [docs/tutorials/geojson_style_spec.md](docs/tutorials/geojson_style_spec.md) for supported attributes.
 
 [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) layers can be added to a map, allowing custom queries and display of OpenStreetMap data.  
-See [docs/tutorials/overpass_layers.md](docs/tutorials/overpass_layers.md) for details.
+See [docs/tutorials/overpass_layers.md](https://mapforge.org/doc/overpass_layers) for details.
+
+### Android App / PWA
+
+Mapforge is built as a Progressive Web App (PWA), see
+[docs/tutorials/app.md](docs/tutorials/app.md).
+
+An Android app that wraps the PWA is available in the Play Store:  
+[Mapforge Android App](https://play.google.com/store/apps/details?id=org.mapforge.twa)
 
 ---
 
@@ -43,7 +51,7 @@ See [docs/tutorials/overpass_layers.md](docs/tutorials/overpass_layers.md) for d
 
 ### Container Image
 
-The latest image is available from `ghcr.io/mapforge-org/mapforge:main`. 
+The [latest image](https://github.com/mapforge-org/mapforge/pkgs/container/mapforge) is available from `ghcr.io/mapforge-org/mapforge:main`. 
 
 You can also build your own image locally from the repository with: `podman build -t mapforge .`
 
@@ -76,7 +84,7 @@ podman run \
   ghcr.io/mapforge-org/mapforge:main
 ```
 
-To enable geolocation-based centering of new maps, mount the
+To enable geolocation-based centering of maps, mount the
 [MaxMind GeoLite2](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data/) database:
 
 ```bash
@@ -86,52 +94,15 @@ podman run ... -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb 
 ### Environment Variables
 
 - `SECRET_KEY_BASE` — Rails secret key (must be set in production)
-- `DEVELOPER_LOGIN_ENABLED` — optional local developer login
-- `HTTP_PORT` — HTTP port inside the container
-- `SSL` — set to `true`/`false` depending on TLS termination
-- `MONGO_URL` — MongoDB connection string, default: `localhost:27017`
-- `REDIS_URL` — Redis URL for Action Cable, default: `redis://localhost:6379/1`
+- `DEVELOPER_LOGIN_ENABLED` — optional local developer login (only enable this in test instances)
+- `HTTP_PORT` — HTTP port inside the container (default: 3000)
+- `SSL` — set to `true` if your container is running behind a TLS terminating reverse proxy (default: true)
+- `MONGO_URL` — MongoDB connection string (default: `localhost:27017`)
+- `REDIS_URL` — Redis URL for Action Cable (default: `redis://localhost:6379/1`)
 - `OPENROUTESERVICE_KEY` — API key for routing features with [openrouteservice.org](https://openrouteservice.org/)
 - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — GitHub OAuth credentials
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth credentials
-- `DEFAULT_MAP` — default base map identifier
-
-### Android App / PWA
-
-Mapforge is built as a Progressive Web App (PWA), see
-[docs/tutorials/app.md](docs/tutorials/app.md).
-
-An Android app that wraps the PWA is available in the Play Store:  
-[Mapforge Android App](https://play.google.com/store/apps/details?id=org.mapforge.twa)
-
-To build the Android app yourself using
-[Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap):
-
-```bash
-npm install -g @bubblewrap/cli
-# init is only needed on the first run
-bubblewrap init --manifest=http://localhost:3000/manifest.json
-bubblewrap build
-```
-
-To establish trust between the app and the website, host a file
-`.well-known/assetlinks.json` containing the SHA256 fingerprint of the app signing key.
-
-- Get the fingerprint of the local key:
-
-  ```bash
-  keytool -list -v -keystore android.keystore
-  ```
-
-- Get the fingerprint of the production key in the Play Console:  
-  **Setup → App Integrity → App Signing → Settings**
-
-Then add the fingerprint(s) to `assetlinks.json` using the
-[Digital Asset Links generator](https://developers.google.com/digital-asset-links/tools/generator) or:
-
-```bash
-bubblewrap fingerprint add
-```
+- `DEFAULT_MAP` — default base map identifier (default: [versatilesColorful](https://versatiles.org/))
 
 ---
 
@@ -234,4 +205,35 @@ with [act](https://github.com/nektos/act), for example:
 
 ```bash
 act -j test
+```
+
+### Build the Android app 
+
+To build the Android app yourself using
+[Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap):
+
+```bash
+npm install -g @bubblewrap/cli
+# init is only needed on the first run
+bubblewrap init --manifest=http://localhost:3000/manifest.json
+bubblewrap build
+```
+
+To establish trust between the app and the website, host a file
+`.well-known/assetlinks.json` containing the SHA256 fingerprint of the app signing key.
+
+- Get the fingerprint of the local key:
+
+  ```bash
+  keytool -list -v -keystore android.keystore
+  ```
+
+- Get the fingerprint of the production key in the Play Console:  
+  **Setup → App Integrity → App Signing → Settings**
+
+Then add the fingerprint(s) to `assetlinks.json` using the
+[Digital Asset Links generator](https://developers.google.com/digital-asset-links/tools/generator) or:
+
+```bash
+bubblewrap fingerprint add
 ```
