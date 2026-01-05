@@ -41,7 +41,7 @@ USER rails:rails
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD-SHELL curl --connect-timeout 5 --max-time 5 -f http://localhost:3000/up > /tmp/healthcheck.log 2>&1 || exit 1
+  CMD curl --connect-timeout 5 --max-time 5 -f http://localhost:3000/up > /tmp/healthcheck.log 2>&1 || exit 1
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
