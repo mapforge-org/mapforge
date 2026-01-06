@@ -153,6 +153,7 @@ export class ConnectionStatusControl {
 export function initSettingsModal () {
   functions.e('#settings-modal', e => {
     if (mapProperties.name) { e.setAttribute('data-map--settings-map-name-value', mapProperties.name) }
+    e.setAttribute('data-map--settings-map-description-value', mapProperties.description || '')
     e.setAttribute('data-map--settings-base-map-value', mapProperties.base_map)
     e.setAttribute('data-map--settings-map-terrain-value', mapProperties.terrain)
     e.setAttribute('data-map--settings-map-hillshade-value', mapProperties.hillshade)

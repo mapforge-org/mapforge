@@ -1,12 +1,14 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
+import * as dom from 'helpers/dom'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
   static values = {
     mapName: String,
+    mapDescription: String,
     mapTerrain: Boolean,
     mapHillshade: Boolean,
     mapContours: Boolean,
@@ -22,9 +24,18 @@ export default class extends Controller {
     currentCenter: Array
   }
 
+  connect () {
+  }
+
   mapNameValueChanged (value, _previousValue) {
     // console.log('mapNameValueChanged(): ' + value)
     functions.e('#map-name', e => { e.value = value })
+  }
+
+  mapDescriptionValueChanged (value, _previousValue) {
+    // console.log('mapDescriptionValueChanged(): ' + value)
+    functions.e('#map-description', e => { e.value = value || '' })
+    if (value && value !== '') { this.showDescription() }
   }
 
   mapTerrainValueChanged (value, _previousValue) {
@@ -162,6 +173,22 @@ export default class extends Controller {
     functions.debounce(() => {
       mapChannel.send_message('update_map', { name })
     }, 'map_name', 2000)
+  }
+
+  updateDescription (event) {
+    event.preventDefault()
+    const description = document.querySelector('#map-description').value
+    mapProperties.description = description
+    functions.debounce(() => {
+      mapChannel.send_message('update_map', { description })
+    }, 'map_description', 2000)
+  }
+
+  showDescription (event) {
+    event?.preventDefault()
+    dom.hideElements(['#map-description-toggle'])
+    dom.showElements(['#map-description-field'])
+    document.querySelector('#map-description')?.focus()
   }
 
   updateDefaultView (event) {
