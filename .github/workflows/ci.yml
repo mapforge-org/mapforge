@@ -62,7 +62,7 @@ jobs:
     #  image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     services:
       mongodb:
-        image: mongo:6.0
+        image: mongo:8.0
         ports:
         - 27017:27017
         # credentials are only needed when not running on ubuntu-latest VM
