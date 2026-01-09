@@ -2,7 +2,10 @@ import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
+import { marked } from 'marked'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
+
+let easyMDE
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
@@ -34,8 +37,12 @@ export default class extends Controller {
 
   mapDescriptionValueChanged (value, _previousValue) {
     // console.log('mapDescriptionValueChanged(): ' + value)
-    functions.e('#map-description', e => { e.value = value || '' })
-    if (value && value !== '') { this.showDescription() }
+    if (window.gon.map_mode === 'rw') {
+      functions.e('#map-description-input', e => { e.value = value || '' })
+      if (value && value !== '') { this.showDescriptionEditor() }
+    } else {
+      this.renderDescription()
+    }
   }
 
   mapTerrainValueChanged (value, _previousValue) {
@@ -176,19 +183,40 @@ export default class extends Controller {
   }
 
   updateDescription (event) {
-    event.preventDefault()
-    const description = document.querySelector('#map-description').value
-    mapProperties.description = description
-    functions.debounce(() => {
-      mapChannel.send_message('update_map', { description })
-    }, 'map_description', 2000)
+    event?.preventDefault()
+    if (easyMDE && mapProperties.description !== easyMDE.value()) {
+      mapProperties.description = easyMDE.value()
+      functions.debounce(() => {
+        mapChannel.send_message('update_map', { description: easyMDE.value() })
+      }, 'map_description', 2000)
+    }
   }
 
-  showDescription (event) {
+  renderDescription() {
+    console.log(mapProperties)
+    let desc = marked(this.mapDescriptionValue || '')
+    desc = functions.sanitizeMarkdown(desc)
+    document.querySelector('#map-description p').innerHTML = desc
+  }
+
+  showDescriptionEditor (event) {
     event?.preventDefault()
+    dom.deleteElements('#map-description .EasyMDEContainer')
     dom.hideElements(['#map-description-toggle'])
-    dom.showElements(['#map-description-field'])
-    document.querySelector('#map-description')?.focus()
+    dom.showElements(['#map-description'])
+
+    easyMDE = new window.EasyMDE({
+      element: document.getElementById('map-description-input'),
+      placeholder: 'Add a description text',
+      hideIcons: ['quote', 'ordered-list', 'fullscreen', 'side-by-side', 'preview', 'guide'],
+      maxHeight: '6em',
+      spellChecker: false,
+      status: [{
+        className: 'autosave',
+        onUpdate: () => { this.updateDescription() }
+      }]
+    })
+    document.querySelector('#map-description-input')?.focus()
   }
 
   updateDefaultView (event) {

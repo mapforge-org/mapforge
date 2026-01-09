@@ -51,6 +51,7 @@
   overflow: hidden auto;
   scrollbar-width: auto; /* auto | thin | none */
   scrollbar-color: #888 #fff;
+  padding-right: 0.5rem;
 }
 
 /* WebKit-based browsers (Chrome, Edge, Safari) */
@@ -88,6 +89,7 @@
 
 .layer-preview.active, .layer-preview:hover {
   border-color: var(--color-dark-moss-green);
+  border-width: 0.2rem;
   opacity: 1;
 }
 

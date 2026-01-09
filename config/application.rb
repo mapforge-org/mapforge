@@ -71,3 +71,7 @@ class RequestSilencer
 end
 
 Rails.application.config.middleware.insert_before Rails::Rack::Logger, RequestSilencer
+
+module Kernel
+  alias_method :byebug, :debugger
+end

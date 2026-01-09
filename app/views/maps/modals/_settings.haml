@@ -19,13 +19,17 @@
           %input.form-control#map-name{"name": "map-name", type: "text", size: 27, data: { action: "input->map--settings#updateName" } }
           %label{ for: "map-name"}
             %b Name:
+        
         %button#map-description-toggle.mt-2.btn.btn-sm.btn-secondary{ type: "button", data: { action: "click->map--settings#showDescription" } }
           %i.bi.bi-plus-square.me-1
           Add description
-        .form-floating.edit-ui.mt-2.hidden#map-description-field{ style: "height: 8rem" }
-          %textarea.form-control#map-description{"name": "map-description", rows: 3, placeholder: "Describe your map", data: { action: "input->map--settings#updateDescription" } }
-          %label{ for: "map-description-input" }
-            %b Description:
+
+        #map-description.hidden.form-floating.mt-2
+          %textarea.form-control#map-description-input
+
+      - else 
+        #map-description
+          %p
 
       %h4.mapforge-font.mt-2
         Background map

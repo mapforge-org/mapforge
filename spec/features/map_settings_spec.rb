@@ -41,15 +41,16 @@ describe 'Map' do
       it 'description update gets saved' do
         find('.maplibregl-ctrl-map').click
         expect(page).to have_text('Configure Map')
-        expect(page).to have_css('#map-description-field.hidden', visible: :all)
+        expect(page).to have_css('#map-description.hidden', visible: :all)
         click_button 'Add description'
-        expect(page).to have_css('#map-description-field:not(.hidden)', visible: :all)
-        fill_in 'map-description', with: "Scenic gravel rides"
+        expect(page).to have_css('#map-description:not(.hidden)', visible: :all)
+        text_area = find(:css, '#map-description .CodeMirror textarea', visible: false)
+        text_area.set('Scenic gravel rides')
         wait_for { map.reload.description }.to eq('Scenic gravel rides')
         find('.modal-close-button').click
         find('.maplibregl-ctrl-map').click
-        expect(page).to have_css('#map-description-field:not(.hidden)', visible: :all)
-        expect(find('#map-description').value).to eq('Scenic gravel rides')
+        expect(page).to have_css('#map-description:not(.hidden)', visible: :all)
+        expect(find(:css, '#map-description .CodeMirror', visible: false).text).to eq('Scenic gravel rides')
       end
     end
 
