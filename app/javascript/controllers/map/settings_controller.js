@@ -5,7 +5,7 @@ import * as dom from 'helpers/dom'
 import { marked } from 'marked'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
 
-let easyMDE
+let descEasyMDE
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
@@ -184,10 +184,10 @@ export default class extends Controller {
 
   updateDescription (event) {
     event?.preventDefault()
-    if (easyMDE && mapProperties.description !== easyMDE.value()) {
-      mapProperties.description = easyMDE.value()
+    if (descEasyMDE && mapProperties.description !== descEasyMDE.value()) {
+      mapProperties.description = descEasyMDE.value()
       functions.debounce(() => {
-        mapChannel.send_message('update_map', { description: easyMDE.value() })
+        mapChannel.send_message('update_map', { description: descEasyMDE.value() })
       }, 'map_description', 2000)
     }
   }
@@ -199,17 +199,18 @@ export default class extends Controller {
     document.querySelector('#map-description p').innerHTML = desc
   }
 
-  showDescriptionEditor (event) {
+  async showDescriptionEditor (event) {
     event?.preventDefault()
     dom.deleteElements('#map-description .EasyMDEContainer')
     dom.hideElements(['#map-description-toggle'])
     dom.showElements(['#map-description'])
 
-    easyMDE = new window.EasyMDE({
+    await import('easymde') // import EasyMDE UMD bundle
+    descEasyMDE = new window.EasyMDE({
       element: document.getElementById('map-description-input'),
       placeholder: 'Add a description text',
-      hideIcons: ['quote', 'ordered-list', 'fullscreen', 'side-by-side', 'preview', 'guide'],
-      maxHeight: '6em',
+      toolbar: ["bold", "italic", "heading", "code", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
+      minHeight: '4em',
       spellChecker: false,
       status: [{
         className: 'autosave',

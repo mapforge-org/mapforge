@@ -3,7 +3,6 @@
 
 - if @map_mode == 'rw'
   - # https://github.com/Ionaru/easy-markdown-editor
-  = javascript_include_tag "https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js", async: true
   = stylesheet_link_tag "https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css"
   
 - content_for :title, "Mapforge map: #{(@map.name.presence || 'Unnamed map')}"
