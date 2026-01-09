@@ -106,6 +106,22 @@ describe 'Map public view' do
     end
   end
 
+  context 'with not clickable features' do
+    let(:polygon) { create(:feature, :polygon_middle,
+      properties: { title: 'Not clickable', clickable: false }) }
+    let(:map) { create(:map, features: [ polygon ]) }
+
+    it 'does not show feature details on hover' do
+      hover_center_of_screen
+      expect(page).not_to have_css('#feature-details-modal')
+    end
+
+    it 'does not show feature details on click' do
+      click_center_of_screen
+      expect(page).not_to have_css('#feature-details-modal')
+    end
+  end
+
   context 'with features added server side' do
     # feature is created after loading the map, to make sure it's loaded via websocket
     it 'receives new features via websocket channel' do

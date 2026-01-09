@@ -37,7 +37,8 @@ export function initializeViewStyles (sourceName) {
   map.on('click', styleNames(sourceName), function (e) {
     if (draw && draw.getMode() !== 'simple_select') { return }
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
-    if (e.features[0].properties.cluster) { return }
+    if (e.features[0].properties?.cluster) { return }
+    if (e.features[0].properties?.clickable === false && window.gon.map_mode === 'ro') { return }
     frontFeature(e.features[0])
     highlightFeature(e.features[0], true, sourceName)
   })
@@ -51,6 +52,7 @@ export function initializeViewStyles (sourceName) {
       const features = map.queryRenderedFeatures(e.point, { layers: styleNames(sourceName) })
       if (features[0]) {
         if (features[0]?.properties?.cluster) { return }
+        if (features[0]?.properties?.clickable === false) { return }
         if (features[0].id === highlightedFeatureId) { return }
         frontFeature(features[0])
         highlightFeature(features[0], false, sourceName)
