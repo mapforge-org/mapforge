@@ -209,7 +209,7 @@ export default class extends Controller {
     descEasyMDE = new window.EasyMDE({
       element: document.getElementById('map-description-input'),
       placeholder: 'Add a description text',
-      toolbar: ["bold", "italic", "heading", "code", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
+      toolbar: ["bold", "italic", "heading", "code", "table", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
       minHeight: '4em',
       spellChecker: false,
       status: [{

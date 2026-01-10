@@ -157,7 +157,7 @@ export default class extends Controller {
     easyMDE = new window.EasyMDE({
       element: document.getElementById('feature-desc-input'),
       placeholder: 'Add a description text',
-      toolbar: ["bold", "italic", "heading", "code", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
+      toolbar: ["bold", "italic", "heading", "code", "table", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
       minHeight: '4em',
       spellChecker: false,
       status: [{
