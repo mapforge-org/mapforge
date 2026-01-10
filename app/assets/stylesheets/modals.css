@@ -277,7 +277,9 @@
 }
 
 #map-description table td,
-#map-description table th {
+#map-description table th, 
+#description-content table td,
+#description-content table th {
   border: 1px solid #ddd;
   padding: 5px;
 }
