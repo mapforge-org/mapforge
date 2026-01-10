@@ -107,6 +107,11 @@
   color: red;
 }
 
+/* fix bootstrap overwriting style of easymde 'table' button */
+.editor-toolbar button {
+  width: unset;
+}
+
 .editor-statusbar {
   display: none;
 }

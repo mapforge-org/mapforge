@@ -37,6 +37,21 @@ describe 'Map' do
         find('#map-globe').click
         wait_for { map.reload.globe }.to be(true)
       end
+
+      it 'description update gets saved' do
+        find('.maplibregl-ctrl-map').click
+        expect(page).to have_text('Configure Map')
+        expect(page).to have_css('#map-description.hidden', visible: :all)
+        click_button 'Add description'
+        expect(page).to have_css('#map-description:not(.hidden)', visible: :all)
+        text_area = find(:css, '#map-description .CodeMirror textarea', visible: false)
+        text_area.set('Scenic gravel rides')
+        wait_for { map.reload.description }.to eq('Scenic gravel rides')
+        find('.modal-close-button').click
+        find('.maplibregl-ctrl-map').click
+        expect(page).to have_css('#map-description:not(.hidden)', visible: :all)
+        expect(find(:css, '#map-description .CodeMirror', visible: false).text).to eq('Scenic gravel rides')
+      end
     end
 
     context 'when map settings change server side' do

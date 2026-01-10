@@ -54,6 +54,9 @@ pin "fast-deep-equal", preload: false # @3.1.3
 pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: false # @5.1.2
 pin "wgs84", preload: false # @0.0.0
 
+# https://github.com/Ionaru/easy-markdown-editor
+pin "easymde", preload: false # @2.20.0
+
 # Animations for frontpage: https://github.com/michalsnik/aos
 pin "aos" # @2.3.4
 # https://swiperjs.com/, from https://esm.sh/swiper
@@ -92,4 +95,4 @@ pin "@turf/jsts", to: "@turf--jsts.js", preload: false # @2.7.2
 # dependencies of turf/buffer
 pin "d3-array", preload: false # @3.2.4
 pin "d3-geo", preload: false # @3.1.1
-pin "internmap" # @2.0.3
+pin "internmap", preload: false # @2.0.3

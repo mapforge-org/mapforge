@@ -1,12 +1,17 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
+import * as dom from 'helpers/dom'
+import { marked } from 'marked'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
+
+let descEasyMDE
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
   static values = {
     mapName: String,
+    mapDescription: String,
     mapTerrain: Boolean,
     mapHillshade: Boolean,
     mapContours: Boolean,
@@ -22,9 +27,22 @@ export default class extends Controller {
     currentCenter: Array
   }
 
+  connect () {
+  }
+
   mapNameValueChanged (value, _previousValue) {
     // console.log('mapNameValueChanged(): ' + value)
     functions.e('#map-name', e => { e.value = value })
+  }
+
+  mapDescriptionValueChanged (value, _previousValue) {
+    // console.log('mapDescriptionValueChanged(): ' + value)
+    if (window.gon.map_mode === 'rw') {
+      functions.e('#map-description-input', e => { e.value = value || '' })
+      if (value && value !== '') { this.showDescriptionEditor() }
+    } else {
+      this.renderDescription()
+    }
   }
 
   mapTerrainValueChanged (value, _previousValue) {
@@ -162,6 +180,44 @@ export default class extends Controller {
     functions.debounce(() => {
       mapChannel.send_message('update_map', { name })
     }, 'map_name', 2000)
+  }
+
+  updateDescription (event) {
+    event?.preventDefault()
+    if (descEasyMDE && mapProperties.description !== descEasyMDE.value()) {
+      mapProperties.description = descEasyMDE.value()
+      functions.debounce(() => {
+        mapChannel.send_message('update_map', { description: descEasyMDE.value() })
+      }, 'map_description', 2000)
+    }
+  }
+
+  renderDescription() {
+    console.log(mapProperties)
+    let desc = marked(this.mapDescriptionValue || '')
+    desc = functions.sanitizeMarkdown(desc)
+    document.querySelector('#map-description p').innerHTML = desc
+  }
+
+  async showDescriptionEditor (event) {
+    event?.preventDefault()
+    dom.deleteElements('#map-description .EasyMDEContainer')
+    dom.hideElements(['#map-description-toggle'])
+    dom.showElements(['#map-description'])
+
+    await import('easymde') // import EasyMDE UMD bundle
+    descEasyMDE = new window.EasyMDE({
+      element: document.getElementById('map-description-input'),
+      placeholder: 'Add a description text',
+      toolbar: ["bold", "italic", "heading", "code", "table", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
+      minHeight: '4em',
+      spellChecker: false,
+      status: [{
+        className: 'autosave',
+        onUpdate: () => { this.updateDescription() }
+      }]
+    })
+    document.querySelector('#map-description-input')?.focus()
   }
 
   updateDefaultView (event) {

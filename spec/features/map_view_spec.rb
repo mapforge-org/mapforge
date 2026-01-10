@@ -71,6 +71,17 @@ describe 'Map public view' do
     end
   end
 
+  context 'settings modal' do
+   let(:map) { create(:map, description: 'Map Description') }
+
+    it 'renders live updates to description' do
+      find('.maplibregl-ctrl-map').click
+      expect(page).to have_text('Map Description')
+      map.update(description: '**New De5cr1pt1on**')
+      expect(page).to have_text('New De5cr1pt1on')
+    end
+  end
+
   context 'with feature id in url' do
     # this polygon is in the middle of nbg (default view)
     let!(:polygon) { create(:feature, :polygon_middle, layer: map.layers.first,

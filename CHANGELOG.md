@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-01
+
+* Map description with Markdown
+
 ## 2025-12
 
 * Upgrade to Ruby 4.0

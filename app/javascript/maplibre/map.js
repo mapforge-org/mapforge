@@ -1,5 +1,5 @@
 import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep-equal
-import { animateElement, initTooltips } from 'helpers/dom'
+import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
@@ -92,6 +92,8 @@ export async function initializeMap (divId = 'maplibre-map') {
   window._layers = layers
   window.maplibregl = maplibregl
 
+  if (!!mapProperties.description?.trim()) { dom.showElements('#description-modal') }
+
   // after basemap style is ready/changed, init source layers +
   // load geojson data
   map.on('style.load', () => {
@@ -121,14 +123,14 @@ export async function initializeMap (divId = 'maplibre-map') {
     // view + edit layers are added
     sortLayers()
     // trigger map fade-in
-    animateElement('.map', 'fade-in', 250)
+    dom.animateElement('.map', 'fade-in', 250)
     initCtrlTooltips()
     functions.e('.maplibregl-ctrl button', e => {
       e.setAttribute('data-toggle', 'tooltip')
       e.setAttribute('data-bs-custom-class', 'maplibregl-ctrl-tooltip')
       e.setAttribute('data-bs-trigger', 'hover')
     })
-    initTooltips()
+    dom.initTooltips()
     functions.e('#preloader', e => { e.classList.add('hidden') })
     functions.e('.map', e => { e.setAttribute('data-map-loaded', true) })
     console.log("Map loaded ('load')")
@@ -159,11 +161,11 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('touchend', (e) => { updateCursorPosition(e) })
   map.on('drag', () => { 
     mapInteracted = true 
-    if (layers.filter(l => l.type === 'overpass').length) { animateElement('#layer-reload', 'fade-in') }
+    if (layers.filter(l => l.type === 'overpass').length) { dom.animateElement('#layer-reload', 'fade-in') }
   })
   map.on('zoom', (_e) => {
     mapInteracted = true
-    if (layers.filter(l => l.type === 'overpass').length) { animateElement('#layer-reload', 'fade-in') }
+    if (layers.filter(l => l.type === 'overpass').length) { dom.animateElement('#layer-reload', 'fade-in') }
     // block zooming in closer than defined max zoom level
     let bgMap = basemaps()[backgroundMapLayer]
     // TODO: max zoom doesn't work for style urls

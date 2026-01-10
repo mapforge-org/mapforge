@@ -147,17 +147,18 @@ export default class extends Controller {
     dom.showElements(['#feature-label'])
   }
 
-  show_add_desc () {
+  async show_add_desc () {
     dom.hideElements(['#button-add-desc'])
     dom.showElements(['#feature-desc'])
     // https://github.com/Ionaru/easy-markdown-editor
+    await import('easymde') // import EasyMDE UMD bundle
     if (easyMDE) { easyMDE.toTextArea() }
     document.querySelector('#feature-desc-input').value = this.getFeature().properties.desc || ''
     easyMDE = new window.EasyMDE({
       element: document.getElementById('feature-desc-input'),
       placeholder: 'Add a description text',
-      hideIcons: ['quote', 'ordered-list', 'fullscreen', 'side-by-side', 'preview', 'guide'],
-      maxHeight: '6em',
+      toolbar: ["bold", "italic", "heading", "code", "table", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
+      minHeight: '4em',
       spellChecker: false,
       status: [{
         className: 'autosave',

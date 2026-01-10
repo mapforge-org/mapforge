@@ -1,0 +1,13 @@
+#description-modal.modal-center.fade
+  .map-modal{'data-controller': "map--modal", 'data-action': "keydown.esc@window->map--modal#close"}
+    %button.modal-close-button{ data: { action: "click->map--modal#close" } } &times;
+    .map-modal-header
+      %h3.mapforge-font#description-header 
+        = @map.name.presence
+
+    .map-modal-content#description-content
+
+      - renderer = Redcarpet::Render::HTML.new(filter_html: false, hard_wrap: true)
+      - markdown_parser = Redcarpet::Markdown.new(renderer, tables: true)
+      %p= markdown_parser.render(@map.description || '').html_safe
+      

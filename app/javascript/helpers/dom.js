@@ -13,9 +13,7 @@ export function showElements (selectors) {
   selectors = Array.isArray(selectors) ? selectors : [selectors]
   selectors.forEach(selector => {
     const elements = document.querySelectorAll(selector)
-    elements.forEach(element => {
-      element.classList.remove('hidden')
-    })
+    elements.forEach(element => { element.classList.remove('hidden'); element.classList.add('show') })
   })
 }
 
@@ -23,9 +21,15 @@ export function hideElements (selectors) {
   selectors = Array.isArray(selectors) ? selectors : [selectors]
   selectors.forEach(selector => {
     const elements = document.querySelectorAll(selector)
-    elements.forEach(element => {
-      element.classList.add('hidden')
-    })
+    elements.forEach(element => { element.classList.add('hidden'); element.classList.remove('show') })
+  })
+}
+
+export function deleteElements(selectors) {
+  selectors = Array.isArray(selectors) ? selectors : [selectors]
+  selectors.forEach(selector => {
+    const elements = document.querySelectorAll(selector)
+    elements.forEach(element => { element.remove() })
   })
 }
 

@@ -187,7 +187,7 @@ export async function showFeatureDetails (feature) {
   }
   let desc = marked(feature?.properties?.desc || '')
   // open external and image links in new tab
-  desc = desc.replace(/<a(\s+)(href=['"]https?:\/\/|href=['"]\/image)/gi, '<a$1target="_blank" $2')
+  desc = f.sanitizeMarkdown(desc)
   document.querySelector('#feature-details-body p').innerHTML = desc
 }
 
