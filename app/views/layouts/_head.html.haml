@@ -1,5 +1,6 @@
 %head
-  %title= content_for?(:title) ? yield(:title) + " | Create and share your own maps online" : "Mapforge: Create and share your own maps online"
+  - title = content_for?(:title) ? yield(:title) + " | Create and share your own maps online" : "Mapforge: Create and share your own maps online"
+  %title= title
   %meta{ charset: "UTF-8"}
   %meta{ name: 'viewport', content: 'width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=no' }
   %meta{ name: 'view-transition', content: 'same-origin' }
@@ -9,6 +10,8 @@
   = turbo_refresh_scroll_tag :preserve
 
   %meta{ name: 'mobile-web-app-capable', content: 'yes' }
+  %meta{ name: 'apple-mobile-web-app-capable', content: 'yes' }
+  %meta{ name: 'apple-mobile-web-app-title', content: "#{title}" }
 
   %meta{ name: 'description', content: (content_for?(:title) ? yield(:title) : '') + " - Create individual maps for your places, tracks and events. Share your maps in real-time." }
   %meta{ name: 'keywords', content: 'map maker, create map, my maps, share maps, online maps, travel maps, map editor, geojson, maplibre, openstreetmap, privacy, open source, free to use' }
@@ -55,7 +58,7 @@
 
   %link{ rel: "manifest", href: "/manifest.json" }
   %link{ rel: "icon", href: "/icons/mapforge-logo-icon.png", type: "image/png" }
-  %link{ rel: "apple-touch-icon", href: "/icons/mapforge-logo-icon.png", sizes: "100x100" }
+  %link{ rel: "apple-touch-icon", href: "/icons/mapforge-logo-pwa.png" }
 
   - # js config for map
   = Gon::Base.render_data(nonce: content_security_policy_nonce).gsub(';gon.', ";\ngon.").html_safe
