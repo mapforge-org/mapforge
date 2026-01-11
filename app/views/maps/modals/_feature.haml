@@ -9,11 +9,11 @@
     .modal-pull-button
 
   %button.modal-close-button{ 'data-action': "click->map--modal#close" } &times;
-  
   .map-modal-header
-    %h4#feature-details-header.flex-container
+  
+    %h4#feature-details-header.flex-container.flex-no-wrap
       .feature-symbol
-      #feature-title.ms-2.flex-container.flex-center.selectable
+      #feature-title.ms-2.selectable.no-wrap
 
   .map-modal-header#edit-buttons.flex-center.hidden
     .btn-group-sm.mt-2.mb-2{ role: "group" }

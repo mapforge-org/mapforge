@@ -10,9 +10,13 @@
   }
 }
 
+#feature-details-header {
+  width: calc(100% - 2rem);
+}
+
 #feature-title {
-  max-width: 19rem;
   overflow: hidden;
+  text-overflow: ellipsis;
   margin-top: 0.1rem;
 }
 
@@ -153,4 +157,8 @@ em-emoji-picker {
 
 input {
   accent-color: var(--color-light-teagreen);
+}
+
+.EasyMDEContainer button { /* stylelint-disable-line */
+  color: #000;
 }

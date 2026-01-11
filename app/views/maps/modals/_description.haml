@@ -5,7 +5,7 @@
       %h3.mapforge-font#description-header 
         = @map.name.presence
 
-    .map-modal-content#description-content
+    .map-modal-content#description-content.inline-scroll
 
       - renderer = Redcarpet::Render::HTML.new(filter_html: false, hard_wrap: true)
       - markdown_parser = Redcarpet::Markdown.new(renderer, tables: true)

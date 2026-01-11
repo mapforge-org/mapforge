@@ -144,11 +144,11 @@
 
 .modal-close-button {
   position: absolute;
-  top: 0.4rem;
-  right: 0.8rem;
+  inset-block-start: 0.4rem;
+  inset-inline-end: 0.8rem;
   background: none;
   border: none;
-  font-size: 2em;
+  font-size: 2rem;
   cursor: pointer;
   color: #333;
 }
@@ -235,6 +235,10 @@
     max-width: calc(100% - 3rem);
     text-overflow: ellipsis;
   }
+}
+
+.feature-icon {
+  width: 2rem;
 }
 
 .layer-feature-item:hover {
