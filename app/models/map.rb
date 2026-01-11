@@ -138,7 +138,11 @@ class Map
 
   def to_gpx
     # https://github.com/hiroaki/ruby-gpx?tab=readme-ov-file#examples
-    GPX::GeoJSON.convert_to_gpx(geojson_data: to_geojson.to_json)
+    GPX::GeoJSON.convert_to_gpx(
+      name:,
+      description:,
+      geojson_data: to_geojson.to_json,
+      line_string_feature_to_track: ->(pt, wpt) { wpt.name = pt["properties"]["title"] || pt["properties"]["name"] })
   end
 
   def features

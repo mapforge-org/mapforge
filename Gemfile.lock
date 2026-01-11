@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/digitaltom/gpx
-  revision: 204842fc2a00dca66adb66d7d8148e7580e197bd
+  revision: 33915dcd28ad807c9e9473620bcf03d14c0ba3d3
   specs:
     gpx (1.2.1)
       csv
