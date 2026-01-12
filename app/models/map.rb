@@ -142,7 +142,8 @@ class Map
       name:,
       description:,
       geojson_data: to_geojson.to_json,
-      line_string_feature_to_track: ->(pt, wpt) { wpt.name = pt["properties"]["title"] || pt["properties"]["name"] })
+      line_string_feature_to_track: ->(ls, trk) { trk.name = ls["properties"]["title"] || ls["properties"]["name"] || ls["id"] }
+      )
   end
 
   def features
