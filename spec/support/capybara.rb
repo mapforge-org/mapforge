@@ -76,7 +76,8 @@ Capybara.register_driver(:cuprite) do |app|
                                      process_timeout: 20,
                                      js_errors: true,
                                      logger: StringIO.new,
-                                     browser_options: { 'no-sandbox': nil })
+                                     browser_options: { 'no-sandbox': nil,
+                                                        'download.default_directory': Capybara.save_path })
 end
 
 # https://github.com/rubycdp/cuprite
@@ -85,5 +86,7 @@ Capybara.javascript_driver = :cuprite
 
 Capybara.default_driver = Capybara.javascript_driver
 Capybara::Screenshot.autosave_on_failure = true
+Capybara.save_path = Rails.root.join("tmp/capybara_downloads")
+
 # Start Puma silently
 Capybara.server = :puma, { Silent: true }

@@ -32,6 +32,10 @@ describe 'Map' do
   end
 
   context 'export' do
+    subject(:map) { create(:map, user: create(:user), features: features) }
+
+    let(:features) { create_list(:feature, 3, :line_string) }
+
     it 'can download geojson export' do
       visit '/m/' + subject.public_id + '.geojson'
       expect(page).to have_text(map.to_geojson.to_json)
@@ -44,6 +48,15 @@ describe 'Map' do
 
     it 'can download gpx export' do
       visit '/m/' + subject.public_id + '.gpx'
+    end
+
+    it 'creates gpx with one track per linestring' do
+      visit map.private_map_path
+      find('.maplibregl-ctrl-share').click
+      expect(page).to have_text('Share Map')
+      click_link("GPX")
+      file = wait_for_download(subject.public_id + '.gpx', timeout: 10)
+      expect(File.read(file).scan(/<trk>/i).size).to eq(3)
     end
   end
 

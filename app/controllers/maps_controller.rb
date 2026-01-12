@@ -50,7 +50,7 @@ class MapsController < ApplicationController
       end
       format.json { render json: @map.to_json }
       format.geojson { render json: @map.to_geojson }
-      format.gpx { send_data @map.to_gpx, filename: @map.public_id + ".gpx" }
+      format.gpx { send_data @map.to_gpx, filename: @map.public_id + ".gpx", disposition: "attachment" }
     end
   end
 
