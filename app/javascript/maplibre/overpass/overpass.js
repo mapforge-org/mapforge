@@ -30,7 +30,7 @@ export function initializeOverpassLayers(id = null) {
       loadOverpassLayer(layer.id).then(() => { if (id) { initLayersModal() } })
     }
   })
-  sortLayers()
+  if (initLayers.length) { sortLayers() }
 }
 
 export function loadOverpassLayer(id) {
