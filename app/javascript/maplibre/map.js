@@ -2,6 +2,7 @@ import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
+import { mapChannel } from 'channels/map_channel'
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { basemaps, defaultFont, elevationSource, demSource } from 'maplibre/basemaps'
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared'

@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 2026-01
 
 * Map description with Markdown
-* GPX map export compatibility with Komoot
+* GPX map export compatibility with Komoot and Garmin
 
 ## 2025-12
 
