@@ -95,23 +95,6 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   if (!!mapProperties.description?.trim()) { dom.showElements('#description-modal') }
 
-  // after basemap style is ready/changed, init source layers +
-  // load geojson data
-  map.on('style.load', () => {
-    console.log('Basemap style loaded (style.load)')
-    addGeoJSONSource('geojson-source', false)
-    addGeoJSONSource('km-marker-source', false)
-    loadLayers()
-    demSource.setupMaplibre(maplibregl)
-    if (mapProperties.terrain) { addTerrain() }
-    if (mapProperties.hillshade) { addHillshade() }
-    if (mapProperties.globe) { addGlobe() }
-    if (mapProperties.contours) { addContours() }
-    initializeViewStyles('geojson-source')
-    // initializeMapStyles('geojson-source')
-    initializeKmMarkerStyles()
-  })
-
   map.on('styleimagemissing', loadImage)
 
   map.on('geojson.load', (_e) => {
@@ -120,9 +103,6 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   // NOTE: map 'load' can happen before 'geojson.load' when loading features is slow
   map.once('load', async function (_e) {
-    // on first map load, re-sort layers late, when all map,
-    // view + edit layers are added
-    sortLayers()
     // trigger map fade-in
     dom.animateElement('.map', 'fade-in', 250)
     initCtrlTooltips()
@@ -494,6 +474,22 @@ export function destroyFeature (featureId) {
   }
 }
 
+// after basemap style is ready/changed, init source layers +
+// load geojson data
+function initializeStyles() {
+  console.log('Initializing sources and layer styles after basemap load/change')
+  addGeoJSONSource('geojson-source', false)
+  addGeoJSONSource('km-marker-source', false)
+  loadLayers()
+  demSource.setupMaplibre(maplibregl)
+  if (mapProperties.terrain) { addTerrain() }
+  if (mapProperties.hillshade) { addHillshade() }
+  if (mapProperties.globe) { addGlobe() }
+  if (mapProperties.contours) { addContours() }
+  initializeViewStyles('geojson-source')
+  initializeKmMarkerStyles()
+}
+
 export function setBackgroundMapLayer (mapName = mapProperties.base_map, force = false) {
   if (backgroundMapLayer === mapName &&
       backgroundTerrain === mapProperties.terrain &&
@@ -504,6 +500,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
   if (basemap) {
     map.once('style.load', () => {
       status('Loaded base map ' + mapName)
+      initializeStyles()
       // re-sort layers after basemap style change
       sortLayers()
     })
@@ -513,10 +510,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     backgroundContours = mapProperties.contours
     backgroundGlobe = mapProperties.globe
     setStyleDefaultFont(basemap.font || defaultFont)
-    map.setStyle(basemap.style,
-      // adding 'diff: false' so that 'style.load' gets triggered (https://github.com/maplibre/maplibre-gl-js/issues/2587)
-      // which will trigger loadLayers()
-      { diff: false, strictMode: true })
+    map.setStyle(basemap.style, { diff: true, strictMode: true })
   } else {
     console.error('Base map ' + mapName + ' not available!')
   }
@@ -540,7 +534,7 @@ export function sortLayers () {
     layer.paint['fill-extrusion-opacity'] = 0.8
   })
 
-  // console.log('Sorting layers', layers)
+  console.log('Sorting layers', layers)
   const editLayer = functions.reduceArray(layers, (e) => (e.id.startsWith('gl-draw-')))
   const userSymbols = functions.reduceArray(layers, (e) => (e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')))
   const userLabels = functions.reduceArray(layers, (e) => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
