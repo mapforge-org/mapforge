@@ -29,6 +29,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `stroke`: circle border color (default "white", 'transparent' for none)
 * `heatmap`: if set, points will be styled as a heatmap
 * `flat`: if set, marker + label with be projected 'flat' on the map
+* `marker-rotate`: rotate marker by x degrees clockwise
 
 #### *LineString* geometry:
 

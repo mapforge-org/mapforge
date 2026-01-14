@@ -534,7 +534,8 @@ export function sortLayers () {
     layer.paint['fill-extrusion-opacity'] = 0.8
   })
 
-  console.log('Sorting layers', layers)
+  // console.log('Sorting layers', layers)
+  const flatLayers = functions.reduceArray(layers, (e) => (e.id.includes('-flat'))) // keep flat layers behin houses
   const editLayer = functions.reduceArray(layers, (e) => (e.id.startsWith('gl-draw-')))
   const userSymbols = functions.reduceArray(layers, (e) => (e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')))
   const userLabels = functions.reduceArray(layers, (e) => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
@@ -545,10 +546,11 @@ export function sortLayers () {
   const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
   const heatmap = functions.reduceArray(layers, (e) => (e.id.startsWith('heatmap-layer'))) 
 
-  layers = layers.concat(mapExtrusions).concat(directions)
+  layers = layers.concat(flatLayers).concat(mapExtrusions).concat(directions)
     .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
     .concat(userSymbols).concat(userLabels)
     .concat(lineLayerHits).concat(pointsLayerHits)
+
   const newStyle = { ...currentStyle, layers }
   map.setStyle(newStyle, { diff: true })
 
@@ -556,8 +558,7 @@ export function sortLayers () {
   layers.filter(layer => layer.id.includes('km-marker')).forEach((layer) => {
     map.moveLayer(layer.id, 'symbols-layer_geojson-source')
   })
-
-  // console.log(map.getStyle().layers)
+  console.log("Sorted layers:", map.getStyle().layers)
 }
 
 export function updateMapName (name) {
