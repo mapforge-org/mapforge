@@ -6,6 +6,7 @@ describe 'Map' do
   context 'share links' do
     before do
       visit map.private_map_path
+      expect_map_loaded
       find('.maplibregl-ctrl-share').click
       expect(page).to have_text('Share Map')
     end
@@ -50,8 +51,9 @@ describe 'Map' do
       visit '/m/' + subject.public_id + '.gpx'
     end
 
-    it 'creates gpx with one track per linestring' do
+    it 'exports gpx with one track per linestring' do
       visit map.private_map_path
+      expect_map_loaded
       find('.maplibregl-ctrl-share').click
       expect(page).to have_text('Share Map')
       click_link("GPX")
