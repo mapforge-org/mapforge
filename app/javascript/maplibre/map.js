@@ -105,7 +105,7 @@ export async function initializeMap (divId = 'maplibre-map') {
   // NOTE: map 'load' can happen before 'geojson.load' when loading features is slow
   map.once('load', async function (_e) {
     // trigger map fade-in
-    dom.animateElement('.map', 'fade-in', functions.isTestEnvironment() ? 1 : 250)
+    dom.animateElement('.map', 'fade-in', 250)
     initCtrlTooltips()
     functions.e('.maplibregl-ctrl button', e => {
       e.setAttribute('data-toggle', 'tooltip')

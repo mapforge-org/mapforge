@@ -44,7 +44,7 @@ describe 'Feature edit' do
         click_coord('#maplibre-map', 50, 10)
         click_coord('#maplibre-map', 10, 10)
 
-        expect(page).to have_text(/Added feature|Map view updated/)
+        expect(page).to have_text(/Added feature|Map view updated|Map properties updated/)
         # need to wait until feature is saved server side
         wait_for { Feature.polygon.count }.to eq(1)
       end

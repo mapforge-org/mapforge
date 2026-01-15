@@ -70,6 +70,7 @@ RSpec.configure do |config|
         # https://danielabaron.me/blog/capture-browser-console-logs-capybara-cuprite/
         browser_logs = page.driver.browser.options.logger.string
         console_logs = browser_logs.lines.select { |line| line.include?("Runtime.consoleAPICalled") }
+        # puts console_logs.join("\n\n")
         error_logs = console_logs.select { |line| line.include?('"type":"error"') }
 
         if error_logs.present?
