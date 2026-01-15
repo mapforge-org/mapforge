@@ -287,3 +287,7 @@
   border: 1px solid #ddd;
   padding: 5px;
 }
+
+#description-header {
+  min-height: 1rem;
+}

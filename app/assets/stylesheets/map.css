@@ -149,7 +149,6 @@ html:has(.map), body:has(.map) {
   inset: 0;
   z-index: 9999;
   overflow: hidden;
-  background-color: var(--background-color);
   transition: all 0.6s ease-out;
 }
 

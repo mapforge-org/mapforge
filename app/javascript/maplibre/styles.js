@@ -46,6 +46,7 @@ export function initializeViewStyles (sourceName) {
   if (window.gon.map_mode === 'ro') {
     map.on('mousemove', (e) => {
       if (stickyFeatureHighlight && highlightedFeatureId) { return }
+      if (document.querySelector('.show > .map-modal')) { return }
 
       const features = map.queryRenderedFeatures(e.point, { layers: styleNames(sourceName) })
       if (features[0]) {

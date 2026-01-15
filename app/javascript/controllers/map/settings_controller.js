@@ -196,7 +196,7 @@ export default class extends Controller {
     console.log(mapProperties)
     let desc = marked(this.mapDescriptionValue || '')
     desc = functions.sanitizeMarkdown(desc)
-    document.querySelector('#map-description p').innerHTML = desc
+    document.querySelector('#map-description').innerHTML = desc
   }
 
   async showDescriptionEditor (event) {
