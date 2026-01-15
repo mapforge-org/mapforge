@@ -50,6 +50,13 @@ describe 'Map' do
     it 'can download gpx export' do
       visit '/m/' + subject.public_id + '.gpx'
     end
+    # No test in this context after this one, rspec bahaves weird after the download
+  end
+
+  context 'export gpx' do
+    subject(:map) { create(:map, user: create(:user), features: features) }
+
+    let(:features) { create_list(:feature, 3, :line_string) }
 
     it 'exports gpx with one track per linestring' do
       visit map.private_map_path
