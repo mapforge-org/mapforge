@@ -1,3 +1,5 @@
+import { mapProperties } from "maplibre/map"
+
 const debounceList = []
 const throttleList = []
 
@@ -135,4 +137,8 @@ export function sanitizeMarkdown (desc) {
   desc = desc.replace(/\r?\n|\r/g, "\n")
   desc = desc.replace(/\n+$/, "").replace(/\n[^<]/g, "<br/>") // replace newlines not followed by html tag
   return desc
+}
+
+export function isTestEnvironment() {
+  mapProperties.rails_env === "test"
 }

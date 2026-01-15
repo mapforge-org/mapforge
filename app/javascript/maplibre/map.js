@@ -87,7 +87,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     interactive: (window.gon.map_mode !== 'static') // can move/zoom map
     // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
   })
-  map.setZoom(map.getZoom() - 1) // will zoom in on map:load
+  if (!functions.isTestEnvironment()) { map.setZoom(map.getZoom() - 1) } // will zoom in on map:load
 
   // for console debugging
   window.map = map
@@ -105,7 +105,7 @@ export async function initializeMap (divId = 'maplibre-map') {
   // NOTE: map 'load' can happen before 'geojson.load' when loading features is slow
   map.once('load', async function (_e) {
     // trigger map fade-in
-    dom.animateElement('.map', 'fade-in', 250)
+    dom.animateElement('.map', 'fade-in', functions.isTestEnvironment() ? 1 : 250)
     initCtrlTooltips()
     functions.e('.maplibregl-ctrl button', e => {
       e.setAttribute('data-toggle', 'tooltip')
@@ -115,7 +115,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     dom.initTooltips()
     functions.e('#preloader', e => { e.classList.add('hidden') })
     functions.e('.map', e => { e.setAttribute('data-map-loaded', true) })
-    map.easeTo({ zoom: map.getZoom() + 1, duration: 1000 })
+    if (!functions.isTestEnvironment()) { map.easeTo({ zoom: map.getZoom() + 1, duration: 1000 }) }
     console.log("Map loaded ('load')")
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
