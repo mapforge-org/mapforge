@@ -9,7 +9,7 @@ export async function showElevationChart (feature) {
   const chartElement = document.getElementById('route-elevation-chart')
   // skip without elevation data
   if (feature.geometry.type !== 'LineString' || feature.geometry.coordinates[0].length !== 3) {
-    chartElement.classList.add('hidden')
+    chartElement?.classList?.add('hidden')
     return null
   }
 

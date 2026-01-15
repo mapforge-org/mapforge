@@ -132,6 +132,7 @@ export function sanitizeMarkdown (desc) {
   // open external and image links in new tab
   desc = desc.replace(/<a(\s+)(href=['"]https?:\/\/|href=['"]\/image)/gi, '<a$1target="_blank" $2')
   // drop last newline, replace others with <br>
-  desc = desc.replace(/\n+$/, "").replace(/\n/g, "<br>")
+  desc = desc.replace(/\r?\n|\r/g, "\n")
+  desc = desc.replace(/\n+$/, "").replace(/\n[^<]/g, "<br/>") // replace newlines not followed by html tag
   return desc
 }

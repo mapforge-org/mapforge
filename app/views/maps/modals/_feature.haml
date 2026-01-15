@@ -9,13 +9,13 @@
     .modal-pull-button
 
   %button.modal-close-button{ 'data-action': "click->map--modal#close" } &times;
-  .map-modal-header
+  .map-modal-header.mb-2
   
     %h4#feature-details-header.flex-container.flex-no-wrap
       .feature-symbol
       #feature-title.ms-2.selectable.no-wrap
 
-  .map-modal-header#edit-buttons.flex-center.hidden
+  .map-modal-header#edit-buttons.flex-center.mb-2.hidden
     .btn-group-sm.mt-2.mb-2{ role: "group" }
       %button.btn.btn-green#edit-button-edit{ type: "button", title: "Edit", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui' }
         %i.bi.bi-pencil-square
@@ -36,8 +36,7 @@
   = render 'maps/modals/feature/edit_ui'
   = render 'maps/modals/feature/edit_raw'
 
-  #feature-details-body.selectable
-    %p
+  #feature-details-body.selectable.ms-1
 
     #feature-details-elevation
       %canvas#route-elevation-chart

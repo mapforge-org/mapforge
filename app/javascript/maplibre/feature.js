@@ -188,7 +188,7 @@ export async function showFeatureDetails (feature) {
   let desc = marked(feature?.properties?.desc || '')
   // open external and image links in new tab
   desc = f.sanitizeMarkdown(desc)
-  document.querySelector('#feature-details-body p').innerHTML = desc
+  document.querySelector('#feature-details-body').innerHTML = desc
 }
 
 // set title image according to feature type

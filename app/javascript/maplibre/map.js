@@ -78,7 +78,7 @@ export async function initializeMap (divId = 'maplibre-map') {
   map = new maplibregl.Map({
     container: divId,
     center: (mapProperties.center || mapProperties.default_center),
-    zoom: (mapProperties.zoom || mapProperties.default_zoom),
+    zoom: (mapProperties.zoom || mapProperties.default_zoom), // will zoom in on map:load
     pitch: mapProperties.pitch,
     bearing: mapProperties.bearing || 0,
     maxPitch: 72,
@@ -87,6 +87,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     interactive: (window.gon.map_mode !== 'static') // can move/zoom map
     // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
   })
+  map.setZoom(map.getZoom() - 1) // will zoom in on map:load
 
   // for console debugging
   window.map = map
@@ -114,11 +115,13 @@ export async function initializeMap (divId = 'maplibre-map') {
     dom.initTooltips()
     functions.e('#preloader', e => { e.classList.add('hidden') })
     functions.e('.map', e => { e.setAttribute('data-map-loaded', true) })
+    map.easeTo({ zoom: map.getZoom() + 1, duration: 1000 })
     console.log("Map loaded ('load')")
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     let feature = geojsonData?.features?.find(f => f.id === urlFeatureId)
     if (feature) {
+      resetControls()
       highlightFeature(feature, true)
       const center = centroid(feature)
       map.setCenter(center.geometry.coordinates)

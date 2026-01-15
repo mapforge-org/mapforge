@@ -142,8 +142,8 @@ function overpassDescription(props) {
   if (props["website"]) { desc += props["website"] + '\n' }
   if (props["url"]) { desc += props["url"] + '\n' }
 
-  desc += `\n**OSM tags:**\n 
-  <div class="overpass-data-table">\n
+  desc += `\n**OSM tags:**
+  <div class="overpass-data-table">
   |               |               |
   | ------------- | ------------- |\n`
   const keys = Object.keys(props).filter(key => !['description', 'notes', 'website', 'url', 'id', 'label'].includes(key))
