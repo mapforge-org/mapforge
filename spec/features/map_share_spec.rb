@@ -46,11 +46,6 @@ describe 'Map' do
       visit '/m/' + subject.public_id + '.json'
       expect(page).to have_text(map.to_json)
     end
-
-    it 'can download gpx export' do
-      visit '/m/' + subject.public_id + '.gpx'
-    end
-    # No test in this context after this one, rspec bahaves weird after the download
   end
 
   context 'export gpx' do
@@ -58,11 +53,14 @@ describe 'Map' do
 
     let(:features) { create_list(:feature, 3, :line_string) }
 
-    it 'exports gpx with one track per linestring' do
+    before do
       visit map.private_map_path
       expect_map_loaded
       find('.maplibregl-ctrl-share').click
       expect(page).to have_text('Share Map')
+    end
+
+    it 'exports gpx with one track per linestring' do
       click_link("GPX")
       file = wait_for_download(subject.public_id + '.gpx', timeout: 10)
       expect(File.read(file).scan(/<trk>/i).size).to eq(3)
