@@ -1,5 +1,3 @@
-import { mapProperties } from "maplibre/map"
-
 const debounceList = []
 const throttleList = []
 
@@ -140,5 +138,6 @@ export function sanitizeMarkdown (desc) {
 }
 
 export function isTestEnvironment() {
-  mapProperties.rails_env === "test"
+  const mapProperties = window.gon.map_properties || {}
+  return (mapProperties.rails_env === "test")
 }
