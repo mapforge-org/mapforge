@@ -1,6 +1,6 @@
 # Advanced feature styling 
 
-Mapforge stores your maps in GeoJSON format. Below you can see the list of supported properties to style your map elements (called *features* in GeoJOSN). 
+Mapforge stores your maps in GeoJSON format. Below you can see the list of supported properties to style your map elements (called *features* in GeoJSON). 
 Most of the properties are supported to be changed in the UI. For changing the properties directly, you can use the *Edit JSON* button in the feature details modal.
 
 ### Supported feature attributes:
