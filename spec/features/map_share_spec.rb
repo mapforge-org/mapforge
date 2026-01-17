@@ -51,7 +51,7 @@ describe 'Map' do
   context 'export gpx' do
     subject(:map) { create(:map, user: create(:user), features: features) }
 
-    let(:features) { create_list(:feature, 2, :line_string) }
+    let(:features) { create_list(:feature, 2, :polygon) }
 
     before do
       visit map.private_map_path
