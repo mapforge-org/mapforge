@@ -51,17 +51,14 @@ describe 'Map' do
   context 'export gpx' do
     subject(:map) { create(:map, user: create(:user), features: features) }
 
-    let(:features) { create_list(:feature, 2, :line_string) }
+    let(:features) { [ create(:feature, :line_string, coordinates: [ [ 11.041, 49.481 ], [ 11.056, 49.463 ] ]),
+      create(:feature, :line_string, coordinates: [ [ 11.056, 49.463 ], [ 11.061, 49.450 ] ]) ] }
 
     before do
-      visit map.private_map_path
-      expect_map_loaded
-      find('.maplibregl-ctrl-share').click
-      expect(page).to have_text('Share Map')
+      visit '/m/' + subject.public_id + '.gpx'
     end
 
     it 'exports gpx with one track per linestring' do
-      click_link("GPX")
       file = wait_for_download(subject.public_id + '.gpx', timeout: 10)
       expect(File.read(file).scan(/<trk>/i).size).to eq(2)
     end

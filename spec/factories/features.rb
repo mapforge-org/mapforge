@@ -12,6 +12,7 @@ FactoryBot.define do
     end
 
     after :build do |feature, evaluator|
+      raise 'Specify feature type trait' if feature.geometry.empty?
       feature.geometry['coordinates'] = evaluator.coordinates if evaluator.coordinates
       feature.properties['title'] = evaluator.title if evaluator.title
       feature.properties['desc'] = evaluator.desc if evaluator.desc
