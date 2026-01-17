@@ -51,8 +51,8 @@ describe 'Map' do
   context 'export gpx' do
     subject(:map) { create(:map, user: create(:user), features: features) }
 
-    let(:features) { [ create(:feature, geometry: [ [ 11.041, 49.481 ], [ 11.056, 49.463 ] ]),
-    create(:feature, geometry: [ [ 11.056, 49.463 ], [ 11.061, 49.450 ] ]) ] }
+    let(:features) { [ create(:feature, :line_string, coordinates: [ [ 11.041, 49.481 ], [ 11.056, 49.463 ] ]),
+      create(:feature, :line_string, coordinates: [ [ 11.056, 49.463 ], [ 11.061, 49.450 ] ]) ] }
 
     before do
       visit map.private_map_path
