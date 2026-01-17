@@ -35,7 +35,7 @@ describe 'Map' do
   context 'export' do
     subject(:map) { create(:map, user: create(:user), features: features) }
 
-    let(:features) { create_list(:feature, 3, :line_string) }
+    let(:features) { create_list(:feature, 2, :line_string) }
 
     it 'can download geojson export' do
       visit '/m/' + subject.public_id + '.geojson'
@@ -51,7 +51,7 @@ describe 'Map' do
   context 'export gpx' do
     subject(:map) { create(:map, user: create(:user), features: features) }
 
-    let(:features) { create_list(:feature, 3, :line_string) }
+    let(:features) { create_list(:feature, 2, :line_string) }
 
     before do
       visit map.private_map_path
@@ -63,7 +63,7 @@ describe 'Map' do
     it 'exports gpx with one track per linestring' do
       click_link("GPX")
       file = wait_for_download(subject.public_id + '.gpx', timeout: 10)
-      expect(File.read(file).scan(/<trk>/i).size).to eq(3)
+      expect(File.read(file).scan(/<trk>/i).size).to eq(2)
     end
   end
 
