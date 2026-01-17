@@ -55,18 +55,12 @@ describe 'Map' do
       create(:feature, :line_string, coordinates: [ [ 11.056, 49.463 ], [ 11.061, 49.450 ] ]) ] }
 
     before do
-      visit map.private_map_path
-      expect_map_loaded
-      find('.maplibregl-ctrl-share').click
-      expect(page).to have_text('Share Map')
+      visit '/m/' + subject.public_id + '.gpx'
     end
 
     it 'exports gpx with one track per linestring' do
-      expect(page).to have_text('Share Map')
-      # TODO: Clicking the download link somehow breaks the browser test env in other threads
-      # click_link("GPX")
-      # file = wait_for_download(subject.public_id + '.gpx', timeout: 10)
-      # expect(File.read(file).scan(/<trk>/i).size).to eq(2)
+      file = wait_for_download(subject.public_id + '.gpx', timeout: 10)
+      expect(File.read(file).scan(/<trk>/i).size).to eq(2)
     end
   end
 
