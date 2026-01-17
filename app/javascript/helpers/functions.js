@@ -138,6 +138,5 @@ export function sanitizeMarkdown (desc) {
 }
 
 export function isTestEnvironment() {
-  const mapProperties = window.gon.map_properties || {}
-  return (mapProperties.rails_env === "test")
+  return (window.gon.rails_env === "test")
 }

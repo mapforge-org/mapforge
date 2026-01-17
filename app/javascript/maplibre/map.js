@@ -148,7 +148,6 @@ export async function initializeMap (divId = 'maplibre-map') {
     if (layers.filter(l => l.type === 'overpass').length) { dom.animateElement('#layer-reload', 'fade-in') }
   })
   map.on('zoom', (_e) => {
-    mapInteracted = true
     if (layers.filter(l => l.type === 'overpass').length) { dom.animateElement('#layer-reload', 'fade-in') }
     // block zooming in closer than defined max zoom level
     let bgMap = basemaps()[backgroundMapLayer]
