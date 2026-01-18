@@ -29,15 +29,16 @@ Rails.application.routes.draw do
     delete "/:id" => "maps#destroy", as: :destroy_map, constraints: { id: ID_PATTERN }
   end
 
-  post "/demo" => "maps#tutorial" # legacy route
+  post "/demo", to: redirect("/tutorial") # legacy route
   post "/tutorial" => "maps#tutorial", as: "tutorial"
   get "/my" => "maps#my", as: "my"
+  get "/fosdem", to: redirect("/m/fosdem")
 
   get "/d/:id" => "maps#show", defaults: { engine: "deck" }, as: :deck, constraints: { id: ID_PATTERN }
 
   get "/admin" => "admin#index"
   get "/docs" => "docs#tutorials", as: :docs
-  get "/tutorials" => "docs#tutorials" # legacy route
+  get "/tutorials", to: redirect("/docs") # legacy route
   get "/tutorial/:id" => "docs#tutorial" # legacy route
   get "/doc/:id" => "docs#tutorial", as: :doc
 
@@ -53,10 +54,10 @@ Rails.application.routes.draw do
   get "sitemap", to: "application#sitemap", defaults: { format: "xml" }
 
   # Defines the root path route ("/")
-  root "frontpage#index", as: :frontpage
-  get "/" => "frontpage#index", as: :root
-  get "/frontpage" => "frontpage#index" # legacy route
-  # legacy link, still used by search engines
+  root "frontpage#index"
+
+  # legacy links, still used by search engines
+  get "/frontpage", to: redirect("/")
   get "/home", to: redirect("/")
 
   mount Ulogger::Engine, at: "/ulogger"
