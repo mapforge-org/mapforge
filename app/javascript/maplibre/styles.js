@@ -521,6 +521,7 @@ export function styles () {
         ],
         'icon-size': iconSize,
         'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
+        "icon-pitch-alignment": "map", // same pitch angle as map
         // If icons/text are projected on map surface ('map') or not ('viewport', default)
         // Cannot get changed with data expressions
         "icon-rotation-alignment": "map",
@@ -548,7 +549,7 @@ export function styles () {
         ],
         'icon-size': iconSize,
         'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
-        "icon-rotation-alignment": "viewport",
+        "icon-pitch-alignment": "viewport",
         "icon-rotate": ["get", "marker-rotate"],
         'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
       },  
