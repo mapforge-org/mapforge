@@ -60,5 +60,8 @@
   %link{ rel: "icon", href: "/icons/mapforge-logo-icon.png", type: "image/png" }
   %link{ rel: "apple-touch-icon", href: "/icons/mapforge-logo-pwa.png" }
 
+  - if content_for?(:alternate_md_url)
+    %link{ rel: "alternate", type: "text/markdown", title: "Markdown", href: yield(:alternate_md_url) }
+
   - # js config for map
   = Gon::Base.render_data(nonce: content_security_policy_nonce).gsub(';gon.', ";\ngon.").html_safe
