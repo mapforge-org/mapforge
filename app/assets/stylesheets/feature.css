@@ -82,7 +82,7 @@
 .feature-details-icon {
   margin: 0.3rem;
   margin-right: 0.6rem;
-  height: 2rem; /* same size as .fs-2 */
+  max-height: 2rem; /* same size as .fs-2 */
 }
 
 #feature-details-meta {
