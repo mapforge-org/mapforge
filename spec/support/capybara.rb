@@ -73,7 +73,7 @@ end
 Capybara.register_driver(:cuprite) do |app|
   Capybara::Cuprite::Driver.new(app, window_size: [ 1024, 860 ],
                                      headless: 'new',
-                                     process_timeout: 20,
+                                     process_timeout: 30,
                                      js_errors: true,
                                      logger: StringIO.new,
                                      browser_options: { 'no-sandbox': nil,
