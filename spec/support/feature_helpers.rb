@@ -1,6 +1,6 @@
 def take_a_screenshot
   filename = Rails.root.join("tmp", "capybara", "screen-#{Time.zone.now.to_i}.png")
-  puts "\033[36mINFO: Saving screenshot at: #{filename}\033[0m\n\n"
+  RSpec.configuration.reporter.message("\033[36mINFO: Saving screenshot at: #{filename}\033[0m\n\n")
   browser = page.driver.browser
   browser.screenshot(path: filename, full: true)
 end
