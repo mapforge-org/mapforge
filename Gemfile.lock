@@ -220,11 +220,11 @@ GEM
       sexp_processor (~> 4.8)
     globalid (1.3.0)
       activesupport (>= 6.1)
-    gon (6.6.0)
+    gon (7.0.0)
       actionpack (>= 3.0.20)
+      activesupport
       i18n (>= 0.7)
       multi_json
-      request_store (>= 1.0)
     haml (7.1.0)
       temple (>= 0.8.2)
       thor
@@ -306,7 +306,7 @@ GEM
       rails (>= 4.2.0)
       railties (>= 4.2.0)
     msgpack (1.8.0)
-    multi_json (1.17.0)
+    multi_json (1.19.1)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
     net-http (0.6.0)
@@ -436,8 +436,6 @@ GEM
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
-    request_store (1.7.0)
-      rack (>= 1.4)
     rexml (3.4.4)
     rgeo (3.0.1)
     rgeo-geojson (2.2.0)
