@@ -194,6 +194,7 @@ export default class extends Controller {
 
   renderDescription() {
     console.log(mapProperties)
+    marked.use({ gfm: true, breaks: true })
     let desc = marked(this.mapDescriptionValue || '')
     desc = functions.sanitizeMarkdown(desc)
     document.querySelector('#map-description').innerHTML = desc

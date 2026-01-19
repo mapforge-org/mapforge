@@ -1,10 +1,13 @@
 import { map, redrawGeojson, mapProperties } from 'maplibre/map'
+import { resetControls } from 'maplibre/controls/shared'
+import { highlightFeature } from 'maplibre/feature'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { length } from "@turf/length"
 import { point } from "@turf/helpers"
 import distance from "@turf/distance"
 import { along } from "@turf/along"
+import { centroid } from "@turf/centroid"
 
 export class AnimationManager {
   constructor () {
@@ -147,5 +150,21 @@ export function animateViewFromProperties () {
     curve: 0.3,
     essential: true,
     duration: 2000
+  })
+}
+
+export function flyToFeature(feature, source='geojson-source') {
+  // Calculate the centroid
+  const center = centroid(feature)
+  console.log('Fly to: ' + feature.id + ' ' + center.geometry.coordinates)
+  resetControls()
+  map.once('moveend', function () {
+    highlightFeature(feature, true, source)
+  })
+  map.flyTo({
+    center: center.geometry.coordinates,
+    duration: 1000,
+    curve: 0.3,
+    essential: true
   })
 }
