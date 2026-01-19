@@ -1,9 +1,10 @@
-import { map, frontFeature, removeStyleLayers } from 'maplibre/map'
+import { map, frontFeature, removeStyleLayers, geojsonData } from 'maplibre/map'
 import {
   highlightedFeatureId, stickyFeatureHighlight, highlightedFeatureSource,
   resetHighlightedFeature, highlightFeature
 } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
+import { flyToFeature } from 'maplibre/animations'
 
 export const viewStyleNames = [
   'polygon-layer',
@@ -38,7 +39,16 @@ export function initializeViewStyles (sourceName) {
     if (draw && draw.getMode() !== 'simple_select') { return }
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
     if (e.features[0].properties?.cluster) { return }
-    if (e.features[0].properties?.clickable === false && window.gon.map_mode === 'ro') { return }
+    if (window.gon.map_mode === 'ro') {
+      if (e.features[0].properties?.onclick === false) { return }
+      if (e.features[0].properties?.onclick === 'link' && e.features[0].properties?.['onclick-target']) { 
+        window.location.href = e.features[0].properties?.['onclick-target']
+      }
+      if (e.features[0].properties?.onclick === 'feature' && e.features[0].properties?.['onclick-target']) { 
+        const targetId = e.features[0].properties?.['onclick-target']
+        flyToFeature(geojsonData.features.find(f => f.id === targetId)) 
+      }
+    }
     frontFeature(e.features[0])
     highlightFeature(e.features[0], true, sourceName)
   })
@@ -52,7 +62,7 @@ export function initializeViewStyles (sourceName) {
       const features = map.queryRenderedFeatures(e.point, { layers: styleNames(sourceName) })
       if (features[0]) {
         if (features[0]?.properties?.cluster) { return }
-        if (features[0]?.properties?.clickable === false) { return }
+        if (features[0]?.properties?.onclick === false) { return }
         if (features[0].id === highlightedFeatureId) { return }
         frontFeature(features[0])
         highlightFeature(features[0], false, sourceName)

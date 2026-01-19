@@ -1,13 +1,13 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
 import { map, layers, upsert, mapProperties, redrawGeojson, removeGeoJSONSource } from 'maplibre/map'
-import { initLayersModal, resetControls } from 'maplibre/controls/shared'
-import { highlightFeature, uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
+import { initLayersModal } from 'maplibre/controls/shared'
+import { uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import { loadOverpassLayer, initializeOverpassLayers } from 'maplibre/overpass/overpass'
 import { queries } from 'maplibre/overpass/queries'
-import { centroid } from "@turf/centroid"
+import { flyToFeature } from 'maplibre/animations'
 
 export default class extends Controller {
   upload () {
@@ -107,7 +107,7 @@ export default class extends Controller {
       redrawGeojson(false)
       mapChannel.send_message('new_feature', { ...feature })
       status('Added image')
-      this.flyToFeature(feature)
+      flyToFeature(feature)
       initLayersModal()
     })
   }
@@ -117,23 +117,7 @@ export default class extends Controller {
     const source = this.element.getAttribute('data-feature-source')
     const layer = layers.find(l => l?.geojson?.features?.some(f => f.id === id))
     const feature = layer.geojson.features.find(f => f.id === id)
-    this.flyToFeature(feature, source)
-  }
-
-  flyToFeature(feature, source='geojson-source') {
-    // Calculate the centroid
-    const center = centroid(feature)
-    console.log('Fly to: ' + feature.id + ' ' + center.geometry.coordinates)
-    resetControls()
-    map.once('moveend', function () {
-      highlightFeature(feature, true, source)
-    })
-    map.flyTo({
-      center: center.geometry.coordinates,
-      duration: 1000,
-      curve: 0.3,
-      essential: true
-    })
+    flyToFeature(feature, source)
   }
 
   toggleEdit (event) {

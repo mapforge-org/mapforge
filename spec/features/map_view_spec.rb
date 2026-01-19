@@ -108,7 +108,7 @@ describe 'Map public view' do
 
   context 'with not clickable features' do
     let(:polygon) { create(:feature, :polygon_middle,
-      properties: { title: 'Not clickable', clickable: false }) }
+      properties: { title: 'Not clickable', onclick: false }) }
     let(:map) { create(:map, features: [ polygon ]) }
 
     it 'does not show feature details on hover' do
