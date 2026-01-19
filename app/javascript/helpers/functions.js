@@ -131,10 +131,7 @@ export function isCrawler() {
 export function sanitizeMarkdown (desc) {
   // open external and image links in new tab
   desc = desc.replace(/<a(\s+)(href=['"]https?:\/\/|href=['"]\/image)/gi, '<a$1target="_blank" $2')
-  desc = desc.replace(/\r?\n|\r/g, "\n") // normalize newlines
-  desc = desc.replace(/\n+$/, "") // drop last newline
-  desc = desc.replace(/(\n)(?!<[^>]+>)/g, "<br/>") // replace newlines not followed by html tag with <br>
-
+  
   return desc
 }
 

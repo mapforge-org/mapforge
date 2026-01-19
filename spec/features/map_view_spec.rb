@@ -122,6 +122,38 @@ describe 'Map public view' do
     end
   end
 
+  context 'with web link features' do
+    let(:polygon) { create(:feature, :polygon_middle,
+      properties: { title: 'web link', onclick: 'link', 'onclick-target': 'https://digitalflow.de' }) }
+    let(:map) { create(:map, features: [ polygon ]) }
+
+    it 'shows link target on hover' do
+      hover_center_of_screen
+      expect(page).to have_text('https://digitalflow.de')
+    end
+  end
+
+  context 'with feature link features' do
+    let(:point) { create(:feature, :point, title: 'Target point') }
+    let(:polygon) { create(:feature, :polygon_middle,
+      properties: { title: 'feature link', onclick: 'feature', 'onclick-target': point.id }) }
+    let(:map) { create(:map, features: [ polygon, point ]) }
+
+    it 'shows target feature on hover' do
+      hover_center_of_screen
+      expect(page).to have_text(point.id)
+    end
+
+    it 'flies to target feature on click' do
+      click_center_of_screen
+      # animation is finished when feature details are shown
+      expect(page).to have_text('Target point')
+      expect(page.evaluate_script("[map.getCenter().lng.toFixed(4), map.getCenter().lat.toFixed(4)].toString()"))
+        .to eq("11.0557,49.4732")
+      expect(page).to have_current_path("/m/#{map.public_id}?f=#{point.id}")
+    end
+  end
+
   context 'with features added server side' do
     # feature is created after loading the map, to make sure it's loaded via websocket
     it 'receives new features via websocket channel' do

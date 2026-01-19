@@ -46,7 +46,13 @@ export function initializeViewStyles (sourceName) {
       }
       if (e.features[0].properties?.onclick === 'feature' && e.features[0].properties?.['onclick-target']) { 
         const targetId = e.features[0].properties?.['onclick-target']
-        flyToFeature(geojsonData.features.find(f => f.id === targetId)) 
+        const feature = geojsonData.features.find(f => f.id === targetId)
+        if (feature) {
+          flyToFeature(feature)
+        } else {
+          console.error('Target feature with id ' + targetId + ' not found')
+        }
+        return
       }
     }
     frontFeature(e.features[0])

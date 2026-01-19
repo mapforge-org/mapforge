@@ -185,8 +185,15 @@ export async function showFeatureDetails (feature) {
     link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id + '.gpx')
     if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/\s+/g, "_")) }
   }
+  marked.use({ gfm: true, breaks: true })
   let desc = marked(feature?.properties?.desc || '')
-  // open external and image links in new tab
+  // show link target if onclick is link
+  if (feature?.properties?.onclick === 'link' && feature?.properties?.['onclick-target']) { 
+    desc = `<p><i class="bi bi-box-arrow-up-right"></i> ${feature.properties['onclick-target']}</p>`
+  } else if (feature?.properties?.onclick === 'feature' && feature?.properties?.['onclick-target']) { 
+  // show feature target if onclick is feature
+    desc = `<p><i class="bi bi-geo-alt-fill"></i> ${feature.properties['onclick-target']}</p>`
+  }
   desc = f.sanitizeMarkdown(desc)
   document.querySelector('#feature-details-description').innerHTML = desc
 }

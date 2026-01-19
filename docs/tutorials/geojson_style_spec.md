@@ -16,6 +16,8 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `sort-key`: sort order of features: higher numbers overlay lower numbers (default: 1)
 * `title`: title
 * `desc`: detailed description (markdown supported)
+* `onclick`: on hover/click behavior: 'details' (default), 'false' (do not react on hover/click), 'link' (link to url), 'feature' (link to another feature on the map)
+* `onclick-target`: required for onclick=link/feature: url or feature id of target 
 
 #### *Point* geometry:
 
