@@ -681,7 +681,7 @@ DEPENDENCIES
   yabeda-rails
 
 RUBY VERSION
-  ruby 4.0.0p0
+  ruby 4.0.1
 
 BUNDLED WITH
   4.0.3
