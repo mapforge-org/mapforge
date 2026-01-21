@@ -1,23 +1,168 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/reference/configuration-reference
 version: 2.1
 
-# Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
-# See: https://circleci.com/docs/orbs/use/orb-intro/
 orbs:
-  # See the Node orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
-  node: circleci/node@5.2
+  ruby: circleci/ruby@2
+  node: circleci/node@5
+  coveralls: coveralls/coveralls@2
 
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/guides/orchestrate/workflows/ & https://circleci.com/docs/reference/configuration-reference/#workflows
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  lint_and_tests:
     jobs:
-      - node/test:
-          # This is the node version to use for the `cimg/node` tag
-          # Relevant tags can be found on the CircleCI Developer Hub
-          # https://circleci.com/developer/images/image/cimg/node
-          version: '16.10'
-          # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: npm
+      - lint
+      - test
+
+jobs:
+  lint:
+    docker:
+      - image: cimg/ruby:3.3-node
+    working_directory: ~/project
+    steps:
+      - checkout
+
+      - run:
+          name: Update package lists
+          command: sudo apt-get update
+
+      - run:
+          name: Disable mandb updates
+          command: |
+            sudo mv /usr/bin/mandb /usr/bin/mandb.bak || true
+            echo -e '#!/bin/sh\nexit 0' | sudo tee /usr/bin/mandb > /dev/null
+            sudo chmod +x /usr/bin/mandb
+
+      - run:
+          name: Install OS dependencies
+          command: sudo apt-get install --no-install-recommends -y libproj-dev libimlib2-dev
+
+      # Bundler cache (keyed by Gemfile.lock checksum)
+      - restore_cache:
+          name: Restore bundle cache
+          keys:
+            - bundle-v1-{{ checksum "Gemfile.lock" }}
+            - bundle-v1-
+
+      - run:
+          name: Install Ruby gems
+          command: |
+            bundle config set path 'vendor/bundle'
+            bundle install --jobs=4 --retry=3
+
+      - save_cache:
+          name: Save bundle cache
+          key: bundle-v1-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      # NPM cache (keyed by package-lock.json checksum)
+      - restore_cache:
+          name: Restore npm cache
+          keys:
+            - npm-v1-{{ checksum "package-lock.json" }}
+            - npm-v1-
+
+      - run:
+          name: Install npm dependencies
+          command: npm ci
+
+      - save_cache:
+          name: Save npm cache
+          key: npm-v1-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+
+      - run:
+          name: Security audit dependencies
+          command: bin/bundler-audit --update
+
+      - run:
+          name: Security audit application code
+          command: bin/brakeman -q -w2
+
+      - run:
+          name: Lint Ruby files
+          command: bin/rubocop --parallel
+
+      - run:
+          name: Lint Javascript
+          command: npm run lint:js
+
+      - run:
+          name: Lint CSS
+          command: npm run lint:css
+
+  test:
+    docker:
+      - image: cimg/ruby:3.3
+      - image: mongo:8.2
+        name: mongodb
+        ports:
+          - "27017:27017"
+    working_directory: ~/project
+    environment:
+      RAILS_ENV: test
+      COVERAGE: "true"
+      SE_AVOID_STATS: "true"
+      SE_DISABLE_REMOTE_MANAGER: "true"
+      # If your app needs it, uncomment and use this in config/database.yml (or equivalent):
+      # MONGO_URL: "mongodb://mongodb:27017"
+
+    steps:
+      - checkout
+
+      - run:
+          name: Update package lists
+          command: sudo apt-get update
+
+      - run:
+          name: Disable mandb updates
+          command: |
+            sudo mv /usr/bin/mandb /usr/bin/mandb.bak || true
+            echo -e '#!/bin/sh\nexit 0' | sudo tee /usr/bin/mandb > /dev/null
+            sudo chmod +x /usr/bin/mandb
+
+      - run:
+          name: Install OS dependencies
+          command: sudo apt-get install --no-install-recommends -y libproj-dev proj-bin libimlib2 libimlib2-dev imagemagick
+
+      # Bundler cache (keyed by Gemfile.lock checksum)
+      - restore_cache:
+          name: Restore bundle cache
+          keys:
+            - bundle-v1-{{ checksum "Gemfile.lock" }}
+            - bundle-v1-
+
+      - run:
+          name: Install Ruby gems
+          command: |
+            bundle config set path 'vendor/bundle'
+            bundle install --jobs=4 --retry=3
+
+      - save_cache:
+          name: Save bundle cache
+          key: bundle-v1-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          name: Run tests
+          command: |
+            bin/parallel_rspec spec engines
+
+      # Upload artifacts on failure (CircleCI equivalents of upload-artifact)
+      - store_artifacts:
+          path: tmp/capybara
+          destination: screenshots
+
+      - store_artifacts:
+          path: log/test.log
+          destination: rails-logs
+
+      - store_artifacts:
+          path: coverage
+          destination: coverage
+
+      # Coveralls (expects your test run to have produced coverage data)
+      - coveralls/upload:
+          parallel: false
+          # Closest equivalent to "fail-on-error: false"
+          fail_on_error: false
