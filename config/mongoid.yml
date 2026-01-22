@@ -9,7 +9,7 @@ default: &default
       # Otherwise define the parameters separately.
       # This defines the name of the default database that Mongoid can connect to.
       # (required).
-      database: mapforge_development
+      database: <%= ENV.fetch("MONGO_DB") { "mapforge_development" } %>
       # Provides the hosts the default client can connect to. Must be an array
       # of host:port pairs. (required)
       hosts:
@@ -295,7 +295,7 @@ test:
   <<: *default
   clients:
     default:
-      database: mapforge_test<%= ENV['TEST_ENV_NUMBER'] %>
+      database: <%= ENV.fetch("MONGO_DB") { "mapforge_test#{ENV['TEST_ENV_NUMBER']}" } %>
       hosts:
         - <%= ENV.fetch("MONGO_URL") { "localhost:27017" } %>
       options:
@@ -308,7 +308,7 @@ production:
   <<: *default
   clients:
     default:
-      database: mapforge_production
+      database: <%= ENV.fetch("MONGO_DB") { "mapforge_production" } %>
       hosts:
         - <%= ENV.fetch("MONGO_URL") { "localhost:27017" } %>
       options:

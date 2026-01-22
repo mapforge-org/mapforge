@@ -85,6 +85,14 @@ podman run \
   ghcr.io/mapforge-org/mapforge:main
 ```
 
+To persist data like uploaded images in your storage, mount these to the container by adding to the podman command:
+
+```bash
+-v /path/on/host/maps:/rails/public/previews
+-v /path/on/host/rails_storage:/rails/storage
+-v /path/on/host/rack_cache:/rails/tmp/cache/rack
+```
+
 To enable geolocation-based centering of maps, mount the
 [MaxMind GeoLite2](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data/) database:
 
@@ -99,6 +107,7 @@ podman run ... -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb 
 - `HTTP_PORT` — HTTP port inside the container (default: 3000)
 - `SSL` — set to `true` if your container is running behind a TLS terminating reverse proxy (default: true)
 - `MONGO_URL` — MongoDB connection string (default: `localhost:27017`)
+- `MONGO_DB` — MongoDB database name (default: 'mapforge_production')
 - `REDIS_URL` — Redis URL for Action Cable (default: `redis://localhost:6379/1`)
 - `OPENROUTESERVICE_KEY` — API key for routing features with [openrouteservice.org](https://openrouteservice.org/)
 - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — GitHub OAuth credentials
