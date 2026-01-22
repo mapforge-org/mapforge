@@ -16,8 +16,8 @@ class ImagesController < ApplicationController
 
     # resize, crop if necessary to maintain aspect ratio (centre gravity)
     # TODO: skip first `rounded` for icons with transparency
-    image_url = @image.img.thumb("200x200#", quality: 95).rounded.border.rounded.url
-    redirect_to image_url
+    image_url = @image.img.thumb("150x150#", quality: 75).rounded.border.rounded.url
+    redirect_to image_url, status: 301
   end
 
   # render image as uploaded
@@ -26,7 +26,7 @@ class ImagesController < ApplicationController
     # Sets Cache-Control headers for HTTP caching and rack_cache
     expires_in IMAGE_CACHE_TIME, public: true
     image_url = @image.img.url
-    redirect_to image_url
+    redirect_to image_url, status: 301
   end
 
   # convert osmc symbol code to image
