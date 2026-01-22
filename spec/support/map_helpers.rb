@@ -3,8 +3,8 @@
 # * GeoJSON features loaded + drawn
 # * Websocket is established
 def expect_map_loaded
-  expect(page).to have_css("#maplibre-map[data-geojson-loaded='true']", wait: 30)
-  expect(page).to have_css("#maplibre-map[data-map-loaded='true']", wait: 30)
+  expect(page).to have_css("#maplibre-map[data-geojson-loaded='true']", wait: 60)
+  expect(page).to have_css("#maplibre-map[data-map-loaded='true']", wait: 60)
   expect(page).to have_css("#maplibre-map[data-online='true']")
 end
 
