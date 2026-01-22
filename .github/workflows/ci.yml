@@ -71,7 +71,7 @@ jobs:
         #  password: ${{ secrets.DOCKER_TOKEN }}        
     env:
       RAILS_ENV: test
-      # PARALLEL_TEST_PROCESSORS: 2
+      PARALLEL_TEST_PROCESSORS: ${{ variables.PARALLEL_TEST_PROCESSORS }} || nil
       COVERAGE: true
       SE_AVOID_STATS: true # skip Selenium stats
       SE_DISABLE_REMOTE_MANAGER: true # skip Selenium plausible telemetry
