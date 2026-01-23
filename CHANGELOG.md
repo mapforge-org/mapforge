@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-01
 
+* 1000st user that created a map!
 * Map features can directly link to urls or other features
 * Map description with Markdown
 * GPX map export compatibility with Komoot and Garmin
