@@ -28,7 +28,7 @@ class MapsController < ApplicationController
         @map.collection.update_one(
           { _id: @map.id },
           { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
-        )
+        ) unless params["viewcount"] == "false"
         @map_properties = map_properties
         @user.track_map_view(params[:id]) if @user
 

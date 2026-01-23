@@ -18,7 +18,7 @@ namespace :maps do
           page = browser.new_page
           page.default_timeout = 90000
           # Use private id, because map might be private
-          map_url = base_url + ERB::Util.url_encode(map.private_id) + "?static=true"
+          map_url = base_url + ERB::Util.url_encode(map.private_id) + "?static=true&viewcount=false"
           failure = false
 
           page.on("response") do |response|
