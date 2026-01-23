@@ -1,7 +1,14 @@
-#maps-list
+- maps = local_assigns[:maps] || @maps || []
+- rw = local_assigns[:rw] || false
+- avatar = local_assigns[:avatar] || false
+- delete = local_assigns[:delete] || false
+- clone = local_assigns[:clone] || false
+- last_change = local_assigns[:last_change] || false
 
-  %span#map-list-count= "Showing #{pluralize(@maps.size, 'map')}"
+#maps-list.maps-list
+
+  %span#map-list-count= "Showing #{pluralize(maps.size, 'map')}"
 
   .grid-container.flex-center{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
-    - @maps.each do |map|
-      = render map, rw: false, last_change: false, avatar: false, delete: false
+    - maps.each do |map|
+      = render map, rw: rw, last_change: last_change, avatar: avatar, delete: delete, clone: clone

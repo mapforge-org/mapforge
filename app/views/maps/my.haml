@@ -4,7 +4,7 @@
 
   - if @recent_map_ids.present?
     %h1.mapforge-font Recently viewed Maps
-    #maps-list
+    .maps-list
       .grid-container.flex-center.mb-4
         - @recent_map_ids.each do |map_id|
           - recent_map = Map.unscoped.find_by(id: map_id)
@@ -16,22 +16,20 @@
 
 
   %h1.mapforge-font 
-    Your Maps 
-    %span.fs-5
-      (#{@my_maps.size})
-  #maps-list
-    .grid-container.flex-center
-      - @my_maps.each do |map|
-        = render map, rw: true, last_change: false, avatar: false, delete: true
+    Your Maps
 
-    - if @my_maps.empty?
-      .container.pt-4.pb-2.mt-4.mb-4.empty-map-list.background-bright
-        %p.text-center
-          In this gallery, your personal maps will be shown.
-          %br
-          You can try out the 
-          = link_to 'tutorial map', tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
-          to learn how Mapforge works, or you can       
-          = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
-          your first map right away.
+  = render "list_filter"
+  = render "list" , maps: @my_maps, rw: true, delete: true, clone: false, last_change: false
+
+
+  - if @my_maps.empty?
+    .container.pt-4.pb-2.mt-4.mb-4.empty-map-list.background-bright
+      %p.text-center
+        In this gallery, your personal maps will be shown.
+        %br
+        You can try out the 
+        = link_to 'tutorial map', tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
+        to learn how Mapforge works, or you can       
+        = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
+        your first map right away.
           

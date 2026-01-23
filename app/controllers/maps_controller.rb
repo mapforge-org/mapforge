@@ -18,7 +18,12 @@ class MapsController < ApplicationController
 
   def my
     @recent_map_ids = @user.recent_map_ids
-    @my_maps = Map.unscoped.where(user: @user).includes(:layers, :user).order(updated_at: :desc)
+    @my_maps = filter_and_sort_maps(Map.where(user: @user).includes(:layers, :user))
+
+    respond_to do |format|
+      format.html # full page
+      format.turbo_stream # for partial updates via Turbo/Stimulus
+    end
   end
 
   def show
@@ -72,7 +77,7 @@ class MapsController < ApplicationController
   def copy
     require_map_owner if @map.view_permission == "private"
     cloned_map = @map.clone_with_layers
-    cloned_map.update(user: @user)
+    cloned_map.update(user: @user, name: "Copy of " + @map.name.to_s)
     redirect_to cloned_map.private_map_path, notice: "Map was successfully copied."
   end
 

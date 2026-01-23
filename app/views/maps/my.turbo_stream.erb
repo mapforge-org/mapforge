@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "maps-list" do %>
+  <%= render "list", maps: @my_maps, rw: true, delete: true, clone: false, last_change: false %>
+<% end %>

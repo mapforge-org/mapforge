@@ -13,23 +13,23 @@ nav.fixed-top~#maps {
   }
 }
 
-#maps-list .flex-container {
+.maps-list .flex-container {
   gap: 1rem;
 }
 
-#maps-list .flex-item {
+.maps-list .flex-item {
   flex: 1 1 15rem; /* Each item will grow to take up equal space within the container */
   min-width: 15rem;
   max-width: 25rem;
 }
 
-#maps-list .grid-container {
+.maps-list .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: 1rem;
 }
 
-#maps-list .grid-item {
+.maps-list .grid-item {
   min-width: 15rem;
   max-width: 25rem;
 }
@@ -144,7 +144,7 @@ nav.fixed-top~#maps {
 .map-copy {
   position: absolute;
   right: 0.2rem;
-  bottom: 2rem;
+  bottom: 2.3rem;
   z-index: 2;
   font-size: 1.3rem;
   width: 1.9rem;

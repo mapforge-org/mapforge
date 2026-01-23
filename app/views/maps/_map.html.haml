@@ -15,7 +15,7 @@
       = image_tag avatar_url(map.user.image, 40), class: 'map-avatar', loading: 'lazy', alt: "", crossorigin: "anonymous"
 
   - if clone
-    = link_to copy_map_path(id: map.public_id), data: { turbo_method: :post }, title: 'Copy map', class: 'map-copy' do
+    = link_to copy_map_path(id: map.public_id), data: { turbo_method: :post, turbo_confirm: "Do you want to copy this map?" }, title: 'Copy map', class: 'map-copy' do
       %i.bi.bi-copy
 
   - if delete

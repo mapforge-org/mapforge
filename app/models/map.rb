@@ -8,7 +8,7 @@ class Map
   belongs_to :user, optional: true, counter_cache: true
 
   # implicit_order_column is not supported by mongoid
-  default_scope { order(created_at: :asc) }
+  default_scope { sorted(:created_at, :desc) }
   scope :listed, -> { where(view_permission: "listed") }
   scope :ulogger, -> { where(:_id.lt => BSON::ObjectId("000000000000002147483647")) }
   scope :demo, -> { where(demo: true) }
@@ -20,7 +20,7 @@ class Map
   scope :sorted, ->(col, dir) {
     col = "created_at" unless col.present?
     dir = %w[asc desc].include?(dir) ? dir : "asc"
-    order(col.to_sym => dir.to_sym)
+    reorder(col.to_sym => dir.to_sym)
   }
 
   field :base_map, type: String, default: -> { default_base_map }
