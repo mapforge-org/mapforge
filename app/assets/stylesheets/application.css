@@ -43,7 +43,9 @@
 
 html,
 body {
-  overscroll-behavior: none; /* disable pull-to-refresh on mobile */
+  /* disable pull-to-refresh on mobile */
+  /* Seems to mess with latest chrome mobile */
+  /* overscroll-behavior: none; */
   overflow-x: hidden;
   width: 100%;
 
