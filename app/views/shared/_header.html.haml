@@ -31,6 +31,11 @@
             = button_to maps_path, { method: :get, class: 'mb-2 btn btn-green w-100' } do
               %i.bi.bi-map.me-1
               Map Gallery
+
+          %li.nav-item
+            = button_to docs_path, { method: :get, class: 'mb-2 btn btn-green w-100' } do
+              %i.bi.bi-map.me-1
+              Tutorials
           
           - if @user
             %li.nav-item
