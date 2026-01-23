@@ -4,7 +4,7 @@ class AdminController < ApplicationController
   before_action :require_admin_user
 
   def index
-    @maps = filter_and_sort_maps(Map.unscoped.includes(:layers, :user))
+    @maps = filter_and_sort_maps(Map.includes(:layers, :user))
 
     respond_to do |format|
       format.html # full page

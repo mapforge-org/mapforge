@@ -1,0 +1,15 @@
+#search-filters-container.flex-container
+
+  - if @filter.present?
+    %span.badge.bg-search-filter#search-filter.flex-container.align-items-center.me-2
+      %span.search-val
+        = @filter
+      %button.btn-close.btn-close-white.ms-2{ type: "button", 'aria-label': "Clear filter",
+        'data-action': "click->maps#clearFilter"}
+
+  - if @searchuser.present?
+    %span.badge.bg-search-filter#search-filter.flex-container.align-items-center.me-2
+      %span.search-val
+        = @searchuser.id
+      %button.btn-close.btn-close-white.ms-2{ type: "button", 'aria-label': "Clear filter",
+        'data-action': "click->maps#clearFilter"}

@@ -4,6 +4,7 @@ export default class extends Controller {
 
   static values = {
     search: String,
+    user: String,
     sort: String,
     sortLabel: String,
     direction: String
@@ -31,28 +32,13 @@ export default class extends Controller {
 
   search(event) {
     this.searchValue = event.target.value
-
     this.loadMaps()
-    let template = document.getElementById('search-filter-template')
-    
-    let existingFilter = document.getElementById('search-filter')
-    if (existingFilter) { existingFilter.remove() }
-    if (this.searchValue !== '') {
-      let searchFilter = template.cloneNode(true)
-      searchFilter.id = 'search-filter'
-      searchFilter.classList.remove('hidden')
-      // searchFilter.innerText = this.searchValue
-      searchFilter.querySelector('.search-val').innerText = this.searchValue
-      template.after(searchFilter)
-    }
   }
 
   clearFilter() {
     this.searchValue = ''
     document.getElementById('search').value = ''
     this.loadMaps()
-    let existingFilter = document.getElementById('search-filter')
-    if (existingFilter) { existingFilter.remove() }
   }
 
   async loadMaps() {

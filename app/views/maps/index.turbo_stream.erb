@@ -1,3 +1,7 @@
 <%= turbo_stream.replace "maps-list" do %>
   <%= render "list", maps: @maps %>
 <% end %>
+
+<%= turbo_stream.replace "search-filters-container" do %>
+  <%= render "maps/search_filters", filter: @filter, user: @searchuser %>
+<% end %>
