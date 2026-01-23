@@ -108,7 +108,6 @@ export default class extends Controller {
       mapChannel.send_message('new_feature', { ...feature })
       status('Added image')
       flyToFeature(feature)
-      initLayersModal()
     })
   }
 

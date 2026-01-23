@@ -157,12 +157,13 @@ html:has(.map), body:has(.map) {
   position: fixed;
   top: calc(50% - 1.9rem);
   left: calc(50% - 1.85rem);
-  border: 6px solid var(--color-mid-ecru);
-  border-top-color: color-mix(in srgb, var(--color-mid-ecru), transparent 90%);
-  border-radius: 50%;
+  border: 6px solid var(--color-dark-moss-green);
+  border-top-color: color-mix(in srgb, var(--color-dark-moss-green), transparent 90%);
   width: 3.8rem;
   height: 3.8rem;
   animation: spin 1s linear infinite;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 75%);
 }
 
 #preloader img {
