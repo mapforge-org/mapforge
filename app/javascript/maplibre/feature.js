@@ -451,7 +451,7 @@ export async function uploadImageToFeature(image, feature) {
       console.log('Setting icon: ' + data.icon)
       feature.properties = feature.properties || {}
       feature.properties['marker-image-url'] = data.icon
-      feature.properties['marker-size'] = 15
+      feature.properties['marker-size'] = 20
       feature.properties['stroke'] = 'transparent'
       feature.properties['marker-color'] = 'transparent'
       feature.properties['desc'] = `[![image](${data.image})](${data.image})\n`
