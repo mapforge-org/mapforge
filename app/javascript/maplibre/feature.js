@@ -183,10 +183,10 @@ export async function showFeatureDetails (feature) {
     // set feature id in export links
     let link = document.querySelector('#feature-export-geo a')
     link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id + '.geojson')
-    if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/\s+/g, "_")) }
+    if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/[\s\/]+/g, "_")) }
     link = document.querySelector('#feature-export-gpx a')
     link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id + '.gpx')
-    if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/\s+/g, "_")) }
+    if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/[\s\/]+/g, "_")) }
   }
   marked.use({ gfm: true, breaks: true })
   let desc = marked(feature?.properties?.desc || '')
