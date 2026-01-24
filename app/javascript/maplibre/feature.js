@@ -76,8 +76,11 @@ function featureVertexes(feature) {
   let vertexes = ''
   if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString' ||
     feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
-    const coords = feature.geometry.coordinates.flat()
-    vertexes = ', ' + coords.length + ' points'
+    let coords = feature.geometry.coordinates.flat().length
+    if (feature.geometry.type === 'Polygon') {
+      coords -= 1 // don't count duplicate last point
+    }
+    vertexes = ', ' + coords + ' points'
   }
  return vertexes
 }
