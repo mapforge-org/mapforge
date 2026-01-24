@@ -73,9 +73,7 @@ export class AnimatePointAnimation extends AnimationManager {
 }
 
 export class AnimateLineAnimation extends AnimationManager {
-  run = (line) => {
-    map.setZoom(15)
-    map.setPitch(60)
+  run = (line, follow = true, steps=500) => {
     const path = {
       type: line.type,
       geometry: {
@@ -85,7 +83,7 @@ export class AnimateLineAnimation extends AnimationManager {
     }
     const lineLength = length(path, 'kilometers')
     console.log('Line length: ' + lineLength + ' km')
-    const steps = 500
+    const self = this
     let counter = 1
 
     function animate (_frame) {
@@ -99,18 +97,20 @@ export class AnimateLineAnimation extends AnimationManager {
       redrawGeojson(false)
 
       // Update camera position
-      map.setCenter(coordinate)
+      if (follow) { map.setCenter(coordinate) }
       // map.setBearing(map.getBearing() + 1)
       counter++
 
       if (counter <= steps) {
-        requestAnimationFrame(animate)
+        self.animationId = requestAnimationFrame(animate)
+      } else {
+        self.animationId = null
       }
     }
 
     line.geometry.coordinates = [line.geometry.coordinates[0]]
     //redrawGeojson(false)
-    animate(0)
+    this.animationId = requestAnimationFrame(animate)
   }
 }
 
@@ -119,6 +119,7 @@ export class AnimatePolygonAnimation extends AnimationManager {
     const height = polygon.properties['fill-extrusion-height']
     console.log('Polygon height: ' + height + 'm')
     const steps = 100
+    const self = this
     let counter = 0
 
     function animate (_timestamp) {
@@ -130,13 +131,15 @@ export class AnimatePolygonAnimation extends AnimationManager {
       counter++
 
       if (counter <= steps) {
-        requestAnimationFrame(animate)
+        self.animationId = requestAnimationFrame(animate)
+      } else {
+        self.animationId = null
       }
     }
 
     polygon.properties['fill-extrusion-height'] = 0
     redrawGeojson()
-    animate(0)
+    this.animationId = requestAnimationFrame(animate)
   }
 }
 
