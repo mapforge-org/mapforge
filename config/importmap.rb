@@ -83,9 +83,9 @@ pin "@turf/clean-coords", to: "@turf--clean-coords.js", preload: false # @7.3.2
 pin "@turf/invariant", to: "@turf--invariant.js", preload: false # @7.3.2
 pin "@turf/centroid", to: "@turf--centroid.js", preload: false # @7.3.2
 pin "@turf/distance", to: "@turf--distance.js", preload: false # @7.3.2
-pin "@turf/along", to: "@turf--along.js", preload: false # @7.3.1
+pin "@turf/along", to: "@turf--along.js", preload: false # @7.3.2
 pin "@turf/bearing", to: "@turf--bearing.js", preload: false # @7.3.2
-pin "@turf/destination", to: "@turf--destination.js", preload: false # @7.3.1
+pin "@turf/destination", to: "@turf--destination.js", preload: false # @7.3.2
 pin "@turf/length", to: "@turf--length.js", preload: false # @7.3.2
 pin "@turf/area", to: "@turf--area.js", preload: false # @7.3.2
 pin "@turf/buffer", to: "@turf--buffer.js", preload: false # @7.3.1
