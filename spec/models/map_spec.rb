@@ -115,7 +115,7 @@ describe Map do
       clone = subject.clone_with_layers
 
       expect(clone.id).not_to eq subject.id
-      expect(clone.layers.count).to eq 1
+      expect(clone.layers.count).to eq 2
       expect(clone.layers.first.id).not_to eq(subject.layers.first.id)
       expect(clone.features.count).to eq 3
       expect(clone.features.map(&:id)).not_to match_array(subject.features.map(&:id))
