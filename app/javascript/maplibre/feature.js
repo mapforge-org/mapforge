@@ -345,7 +345,7 @@ export function kmMarkerStyles () {
     source: 'km-marker-source',
     filter: ["==", ["get", "km-marker-numbers-end"], 1],
     layout: {
-      'text-allow-overlap': false,
+      'text-allow-overlap': true,
       'text-field': ['get', 'km'],
       'text-size': 12,
       'text-font': labelFont,

@@ -74,42 +74,36 @@ export class AnimatePointAnimation extends AnimationManager {
 
 export class AnimateLineAnimation extends AnimationManager {
   run = (line, follow = true, steps=500) => {
-    const path = {
-      type: line.type,
-      geometry: {
-        type: line.geometry.type,
-        coordinates: [...line.geometry.coordinates]
-      }
-    }
-    const lineLength = length(path, 'kilometers')
-    console.log('Line length: ' + lineLength + ' km')
-    const self = this
-    let counter = 1
+    
+    const lineLength = length(line, { units: "kilometers" })
+    const stepLength = lineLength / (steps - 1)
+    console.log('Line length: ' + lineLength + ' km, step length: ' + stepLength + ' km')
+    const stepCoords = Array.from({ length: steps }, (_, i) =>
+      along(line, i * stepLength, { units: "kilometers" })
+    )
+
+    const self = this // for setting animationId
+    let step = 0 // iterating coordinates along track
+    line.geometry.coordinates = []
 
     function animate (_frame) {
-      const progress = counter / steps
-      const distance = progress * lineLength
-      const coordinate = along(path, distance, 'kilometers').geometry.coordinates
+      const coordinate = stepCoords[step].geometry.coordinates
       // console.log("Frame #" + _frame + ", distance: " + distance + ", coord: " + coordinate)
 
       line.geometry.coordinates.push(coordinate)
-      // console.log("New line coords: " + line.geometry.coordinates)
       redrawGeojson(false)
 
       // Update camera position
-      if (follow) { map.setCenter(coordinate) }
-      // map.setBearing(map.getBearing() + 1)
-      counter++
+      if (follow) { map.jumpTo({ center: coordinate }) }
+      step++
 
-      if (counter <= steps) {
+      if (step < steps) {
         self.animationId = requestAnimationFrame(animate)
       } else {
         self.animationId = null
       }
     }
 
-    line.geometry.coordinates = [line.geometry.coordinates[0]]
-    //redrawGeojson(false)
     this.animationId = requestAnimationFrame(animate)
   }
 }
