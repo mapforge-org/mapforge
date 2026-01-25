@@ -60,9 +60,10 @@ module Ulogger
       properties = { "title" => timestamp,
                      "desc" => description || "",
                      "marker-size" => 4,
-                     # excludes waypoints from pointsLayerHits layer, so the 
-                     # lineLayerHits from the track overlays them 
-                     "ulogger-waypoint" => true 
+                     # excludes waypoints from pointsLayerHits layer, so the
+                     # lineLayerHits from the track overlays them
+                     "ulogger-waypoint" => true
+                   }
       properties['label'] = params['comment'] if params['comment']
 
       uploaded = params.fetch(:image, nil)
