@@ -22,7 +22,7 @@ export default class extends Controller {
 
     if (file) {
       const reader = new FileReader()
-      reader.onload = function (event) {
+      reader.onload = (event) => {
         const content = event.target.result
         const parser = new DOMParser()
         let geoJSON
@@ -43,6 +43,9 @@ export default class extends Controller {
           if (mapforgeJSON.layers) {
             // mapforge export file, importing only the first geojson layer for now
             geoJSON = mapforgeJSON.layers.find(f => f.type === 'geojson').geojson
+            mapforgeJSON.layers.filter(f => f.type === 'overpass').forEach(layer => {
+              this.createOverpassLayer(layer.name, layer.query)
+            })
           } else {
             // standard geojson file
             geoJSON = mapforgeJSON
@@ -179,23 +182,29 @@ export default class extends Controller {
     list.classList.toggle('hidden')
   }
 
-  createOverpassLayer (event) {
+  createSelectedOverpassLayer(event) {
     event.preventDefault()
-    let layerId = functions.featureId()
     let queryName = event.target.dataset.queryName
     // empty query for custom
     let query = queries.find(q => q.name === queryName)?.query || ''
+    let layerId = this.createOverpassLayer(queryName, query)
+    // open edit form for new custom queries
+    if (query === '') {
+      new Promise(resolve => setTimeout(resolve, 50)).then(() => {
+        document.querySelector('#layer-list-' + layerId + ' button.layer-edit').click()
+      })
+    }
+  }
+
+  createOverpassLayer(queryName, query) {
+    let layerId = functions.featureId()
     let layer = { "id": layerId, "type":"overpass", "name": queryName, "query": query }
     layers.push(layer)
     mapChannel.send_message('new_layer', layer)
     initLayersModal()
     document.querySelector('#layer-list-' + layerId + ' .reload-icon').classList.add('layer-refresh-animate')
     initializeOverpassLayers(layerId)
-    // open edit form for new custom queries
-    if (query === '') { 
-      new Promise(resolve => setTimeout(resolve, 50)).then(() => { 
-        document.querySelector('#layer-list-' + layerId + ' button.layer-edit').click() }) 
-      }
+    return layerId
   }
 
   deleteOverpassLayer (event) {

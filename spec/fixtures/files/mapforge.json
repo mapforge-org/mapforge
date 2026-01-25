@@ -16,6 +16,16 @@
       {"id":"279a0f8b5d604c06041af08445bd1e29","type":"Feature","geometry":{"coordinates":[11.0528335673568,49.468579449140435],"type":"Point"},"properties":{}},
       {"id":"e82015441a251162247612aa13056c6e","type":"Feature","geometry":{"coordinates":[11.065589925310917,49.47111081921241],"type":"Point"},"properties":{}}
     ]
-    }}
+    }}, 
+    {
+      "id": "5hvf625cl7t",
+      "type": "overpass",
+      "name": "Hiking routes",
+      "query": "nwr[tourism=camp_site];out center 1;",
+      "geojson": {
+        "type": "FeatureCollection",
+        "features": []
+      }
+    }
   ]
 }
