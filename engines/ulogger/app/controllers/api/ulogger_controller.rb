@@ -20,7 +20,7 @@ module Ulogger
       "fill-extrusion-height": 8,
       "fill-extrusion-base": 3,
       "fill-extrusion-width": 1.5,
-      "stroke-opacity": 0.45,
+      "stroke-opacity": 0.75,
       "stroke-width": 5,
       "stroke": "#62a0ea"
     }
@@ -44,7 +44,7 @@ module Ulogger
 
     def addpos
       coords = [ params[:lon].to_f, params[:lat].to_f, params[:altitude].to_f.round(2) ]
-      features = @map.layers.first.features
+      features = @map.layers.geojson.first.features
 
       # if the map has no track yet, create one, else append
       track = features.line_string.first
