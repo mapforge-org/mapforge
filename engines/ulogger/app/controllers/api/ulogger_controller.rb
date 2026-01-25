@@ -57,7 +57,12 @@ module Ulogger
       geometry = { "type" => "Point", "coordinates" => coords }
 
       timestamp = Time.at(params[:time].to_i).to_datetime.strftime("%Y-%m-%d %H:%M:%S")
-      properties = { "title" => timestamp, "desc" => description || "", "marker-size" => 4 }
+      properties = { "title" => timestamp,
+                     "desc" => description || "",
+                     "marker-size" => 4,
+                     # excludes waypoints from pointsLayerHits layer, so the 
+                     # lineLayerHits from the track overlays them 
+                     "ulogger-waypoint" => true 
       properties['label'] = params['comment'] if params['comment']
 
       uploaded = params.fetch(:image, nil)

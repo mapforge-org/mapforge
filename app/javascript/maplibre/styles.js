@@ -495,7 +495,8 @@ export function styles () {
       id: 'points-hit-layer',
       type: 'circle',
       filter: ['all',
-        ['==', '$type', 'Point']
+        ['==', '$type', 'Point'], 
+        ["!has", "ulogger-waypoint"]
       ],
       paint: {
         'circle-radius': ['+', 5, pointSizeMax],

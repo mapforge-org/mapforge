@@ -73,7 +73,7 @@ export class AnimatePointAnimation extends AnimationManager {
 }
 
 export class AnimateLineAnimation extends AnimationManager {
-  run = (line, follow = true, steps=500) => {
+  run = (line, follow = true, steps=750) => {
     
     const lineLength = length(line, { units: "kilometers" })
     const stepLength = lineLength / (steps - 1)
@@ -84,6 +84,7 @@ export class AnimateLineAnimation extends AnimationManager {
 
     const self = this // for setting animationId
     let step = 0 // iterating coordinates along track
+    const lineCoords = line.geometry.coordinates
     line.geometry.coordinates = []
 
     function animate (_frame) {
@@ -101,6 +102,8 @@ export class AnimateLineAnimation extends AnimationManager {
         self.animationId = requestAnimationFrame(animate)
       } else {
         self.animationId = null
+        // reset coords, else line will stay with extrapolated coordinates
+        line.geometry.coordinates = lineCoords
       }
     }
 

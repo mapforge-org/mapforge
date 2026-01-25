@@ -131,6 +131,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     feature = geojsonData?.features?.find(f => f.id === urlFeatureAnimateId)
     if (feature) {
       console.log('Animating ' + feature.id)
+      resetControls()
       if (feature.geometry.type === 'LineString') {
         new AnimateLineAnimation().run(feature)
       } else if (feature?.geometry?.type === 'Polygon') {
