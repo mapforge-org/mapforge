@@ -414,6 +414,8 @@ export function redrawGeojson (resetDraw = true) {
       })
     }
   }
+
+  // updateData requires a 'GeoJSONSourceDiff', with add/update/remove lists
   map.getSource('geojson-source').setData(renderedGeojsonData())
   layers.filter(f => f.type === 'overpass').forEach((layer) => {
     if (layer.geojson) {

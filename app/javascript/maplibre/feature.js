@@ -390,10 +390,6 @@ export function renderKmMarkers () {
         }
         point.properties['km-marker-numbers-end'] = 1
         point.properties['sort-key'] = 2 + index
-
-      // don't render km markers that are too close to the end
-      } else if (distance - i <= 3) {
-        continue
       }
       kmMarkerFeatures.push(point)
     }  
