@@ -555,8 +555,8 @@ export function sortLayers () {
 
   layers = layers.concat(flatLayers).concat(lineLayers).concat(mapExtrusions).concat(directions)
     .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
-    .concat(userSymbols).concat(userLabels)
     .concat(lineLayerHits).concat(pointsLayerHits)
+    .concat(userSymbols).concat(userLabels)
 
   const newStyle = { ...currentStyle, layers }
   map.setStyle(newStyle, { diff: true })

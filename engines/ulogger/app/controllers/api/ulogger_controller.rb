@@ -57,12 +57,10 @@ module Ulogger
       geometry = { "type" => "Point", "coordinates" => coords }
 
       timestamp = Time.at(params[:time].to_i).to_datetime.strftime("%Y-%m-%d %H:%M:%S")
+      # properties of leading point
       properties = { "title" => timestamp,
                      "desc" => description || "",
-                     "marker-size" => 4,
-                     # excludes waypoints from pointsLayerHits layer, so the
-                     # lineLayerHits from the track overlays them
-                     "ulogger-waypoint" => true
+                     "marker-size" => 4
                    }
       properties['label'] = params['comment'] if params['comment']
 
@@ -76,12 +74,17 @@ module Ulogger
         properties.merge!(location_properties)
       end
 
-      # reset standard waypoints to default invisible style, keep photos and labels
+      # reset standard waypoints to default style,
+      # keep photos and labels, exclude already styled waypoints
       features.reject { |f| f.properties['marker-image-url'] ||
-        f.properties['label'] || f.properties["marker-color"].nil? }.each do |f|
-        f.properties["marker-size"] = 3
-        f.properties["marker-color"] = "transparent"
+        f.properties['label'] || f.properties["marker-color"].nil? ||
+        f.geometry['type'] == "LineString" }.each do |f|
+        f.properties["marker-size"] = 2
+        f.properties["marker-color"] = "#f6f5f4"
         f.properties["stroke"] = "transparent"
+        # excludes waypoints from pointsLayerHits layer, so the
+        # lineLayerHits from the track overlays them
+        f.properties["ulogger-waypoint"] = true
         f.save!
       end
       # set leading waypoint
