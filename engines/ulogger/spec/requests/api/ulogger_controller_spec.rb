@@ -89,7 +89,7 @@ RSpec.describe Api::UloggerController do
       post '/ulogger/client/index.php', params: payload
 
       expect(map.reload.features.point.count).to eq 2
-      expect(map.reload.features.point.first.properties["marker-color"]).to eq("transparent")
+      expect(map.reload.features.point.first.properties["marker-color"]).to eq("#f6f5f4")
     end
 
     context "with attached image file" do
