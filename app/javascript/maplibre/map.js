@@ -290,11 +290,11 @@ function addHillshade () {
     id: 'hills',
     type: 'hillshade',
     source: 'hillshade',
-    layout: {visibility: 'visible'},
+    layout: { visibility: 'visible' },
     paint: {
       "hillshade-method": "standard",
       'hillshade-shadow-color': '#473B24',
-      "hillshade-exaggeration": 0.1
+      "hillshade-exaggeration": 0.2
     }
   })
   status('Hillshade added to map')
@@ -318,6 +318,8 @@ function addContours () {
         elevationKey: "ele",
         levelKey: "level",
         contourLayer: "contours",
+        buffer: 1,
+        overzoom: 2
       }),
     ],
     maxzoom: 16,

@@ -27,6 +27,7 @@ const host = new URL(window.location.href).origin
 // provides caching for dem tiles used by 3d, hillshade + contour
 export let demSource = new mlcontour.DemSource({
   url: "https://elevation-tiles-prod.s3.amazonaws.com/terrarium/{z}/{x}/{y}.png",
+  // url: "https://tiles.mapterhorn.com/tilejson.json",
   encoding: "terrarium",
   maxzoom: 13,
   worker: true, // offload isoline computation to a web worker to reduce jank
