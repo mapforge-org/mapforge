@@ -8,6 +8,10 @@ nav.fixed-top~#maps {
 }
 
 @media (width <=640px) {
+  #maps {
+    padding: 0.75rem;
+  }
+  
   #maps h1 {
     text-align: center;
   }
