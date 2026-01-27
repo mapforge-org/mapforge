@@ -284,7 +284,8 @@ export function styles () {
     'polygon-layer': {
       id: 'polygon-layer',
       type: 'fill',
-      filter: ['==', ['geometry-type'], 'Polygon'],
+      filter: ['all',
+        ['in', '$type', 'Polygon']],
       paint: {
         'fill-color': fillColor,
         'fill-opacity': fillOpacity
@@ -294,8 +295,8 @@ export function styles () {
       id: 'polygon-layer-extrusion',
       type: 'fill-extrusion',
       filter: ['all',
-        ['==', ['geometry-type'], 'Polygon'],
-        ['>', ['to-number', ['coalesce', ['get', 'fill-extrusion-height'], ['get', 'user_fill-extrusion-height'], 0]], 0]],
+        ['in', '$type', 'Polygon'],
+        ['>', 'fill-extrusion-height', 0]],
       paint: {
         'fill-extrusion-color': ['coalesce',
             ['get', 'fill-extrusion-color'],
@@ -316,7 +317,8 @@ export function styles () {
     'polygon-layer-outline': {
       id: 'polygon-layer-outline',
       type: 'line',
-      filter: ['==', ['geometry-type'], 'Polygon'],
+      filter: ['all',
+        ['in', '$type', 'Polygon']],
       layout: {
         'line-join': 'round',
         'line-cap': 'round'
@@ -357,7 +359,8 @@ export function styles () {
     'line-layer': {
       id: 'line-layer',
       type: 'line',
-      filter: ['==', ['geometry-type'], 'LineString'],
+      filter: ['all',
+        ['in', '$type', 'LineString']],
       layout: {
         'line-join': 'round',
         'line-cap': 'round'
@@ -379,7 +382,8 @@ export function styles () {
     'line-layer-hit': {
       id: 'line-layer-hit',
       type: 'line',
-      filter: ['==', ['geometry-type'], 'LineString'],
+      filter: ['all',
+        ['in', '$type', 'LineString']],
       paint: {
         'line-width': ['+', 10, outlineWidthMax],
         'line-opacity': 0 // cannot use visibility:none here
@@ -596,7 +600,7 @@ export function styles () {
       id: 'line-labels',
       type: 'symbol',
       filter: ['all',
-        ['==', ['geometry-type'], 'LineString'],
+        ['in', '$type', 'LineString'],
         ['has', 'label']],
       layout: {
         'symbol-placement': 'line',
@@ -616,12 +620,9 @@ export function styles () {
       id: "line-label-symbol",
       type: "symbol",
       filter: ['all',
-        ['==', ['geometry-type'], 'LineString'],
+        ['==', '$type', 'LineString'],
         // Line symbols don't work in combination with extrusion
-        ['none',
-          ['>', ['to-number', ['coalesce', ['get', 'fill-extrusion-height'], 0]], 0],
-          ['>', ['to-number', ['coalesce', ['get', 'user_fill-extrusion-height'], 0]], 0]
-        ],
+        ['none', ['>', 'fill-extrusion-height', 0], ['>', 'user_fill-extrusion-height', 0]],
         ['any',
           ["has", "stroke-image-url"],
           ["has", "stroke-symbol"]
@@ -648,7 +649,7 @@ export function styles () {
       id: 'text-layer-flat',
       type: 'symbol',
       filter: ['all',
-        ['!=', ['geometry-type'], 'LineString'],
+        ['!=', '$type', 'LineString'],
         ['has', 'label'],
         ['has', 'flat']
       ],
@@ -679,7 +680,7 @@ export function styles () {
       id: 'text-layer',
       type: 'symbol',
       filter: ['all',
-        ['!=', ['geometry-type'], 'LineString'],
+        ['!=', '$type', 'LineString'],
         ['has', 'label'],
         ['!has', 'flat']],
       layout: {
