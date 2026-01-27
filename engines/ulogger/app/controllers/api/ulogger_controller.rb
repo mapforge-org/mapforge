@@ -82,7 +82,9 @@ module Ulogger
         f.properties["marker-size"] = 2
         f.properties["marker-color"] = "#f6f5f4"
         f.properties["stroke"] = "transparent"
-        f.properties["minzoom"] = 14
+        # excludes waypoints from pointsLayerHits layer, so the
+        # lineLayerHits from the track overlays them
+        f.properties["ulogger-waypoint"] = true
         f.save!
       end
       # set leading waypoint
