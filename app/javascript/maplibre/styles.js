@@ -392,13 +392,19 @@ export function styles () {
     'points-layer-flat': {
       id: 'points-layer-flat',
       type: 'circle',
-      filter: ['all',
-        ['==', '$type', 'Point'],
-        ['!=', 'meta', 'midpoint'],
-        ['!=', 'meta', 'vertex'],
-        ['has', 'flat'],
-        ['!has', 'point_count'],
-        ["!has", "heatmap"]
+      filter: [
+        "all",
+        ["==", ["geometry-type"], "Point"],
+        ["!=", ["get", "meta"], "midpoint"],
+        ["!=", ["get", "meta"], "vertex"],
+        ["has", "flat"],
+        ["!", ["has", "point_count"]],
+        ["!", ["has", "heatmap"]],
+        [
+          ">=",
+          ["zoom"],
+          ["coalesce", ["to-number", ["get", "minzoom"]], 0]
+        ]
       ],
       paint: {
         "circle-pitch-alignment": "map",
@@ -443,13 +449,19 @@ export function styles () {
     'points-layer': {
       id: 'points-layer',
       type: 'circle',
-      filter: ['all',
-        ['==', '$type', 'Point'],
-        ['!=', 'meta', 'midpoint'],
-        ['!=', 'meta', 'vertex'],
-        ['!has', 'flat'],
-        ['!has', 'point_count'], 
-        ["!has", "heatmap"]
+      filter: [
+        "all",
+        ["==", ["geometry-type"], "Point"],
+        ["!=", ["get", "meta"], "midpoint"],
+        ["!=", ["get", "meta"], "vertex"],
+        ["!", ["has", "flat"]],
+        ["!", ["has", "point_count"]],
+        ["!", ["has", "heatmap"]],
+        [
+          ">=",
+          ["zoom"],
+          ["coalesce", ["to-number", ["get", "minzoom"]], 0]
+        ]
       ],
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
@@ -494,12 +506,18 @@ export function styles () {
     'points-hit-layer': {
       id: 'points-hit-layer',
       type: 'circle',
-      filter: ['all',
-        ['==', '$type', 'Point'], 
-        ["!has", "ulogger-waypoint"]
+      filter: [
+        "all",
+        ["==", ["geometry-type"], "Point"],
+        [
+          ">=",
+          ["zoom"],
+          ["coalesce", ["to-number", ["get", "minzoom"]], 0]
+        ]
       ],
       paint: {
         'circle-radius': ['+', 5, pointSizeMax],
+        // 'circle-opacity': 0.3 // debug click area
         'circle-opacity': 0
       }
     },
