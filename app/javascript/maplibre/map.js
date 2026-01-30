@@ -536,7 +536,7 @@ export function sortLayers () {
   const currentStyle = map.getStyle()
   let layers = currentStyle.layers
 
-  const mapExtrusions = functions.reduceArray(layers, (e) => e.paint && e.paint['fill-extrusion-height'])
+  const mapExtrusions = functions.reduceArray(layers, (e) => e.paint && e.paint['fill-extrusion-height'] && !e.id.startsWith('polygon-layer-extrusion'))
   // increase opacity of 3D houses
   mapExtrusions.filter(l => l.id === 'Building 3D').forEach((layer) => {
     layer.paint['fill-extrusion-opacity'] = 0.8
