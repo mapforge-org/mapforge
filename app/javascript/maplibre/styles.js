@@ -22,6 +22,7 @@ export const viewStyleNames = [
   'symbols-layer',
   'text-layer-flat',
   'text-layer',
+  'polygon-layer-extruded-shadow',
   'polygon-layer-extrusion'
 ]
 
@@ -281,6 +282,22 @@ export let labelFont
 
 export function styles () {
   return {
+    'polygon-layer-extruded-shadow': {
+      id: 'gl-draw-polygon-layer-extruded-shadow',
+        type: 'fill',
+          filter: ['all',
+            ["==", ["geometry-type"], "Polygon"],
+            ['>', ['get', 'fill-extrusion-height'], 0],
+            [
+              ">=",
+              ["zoom"],
+              ["coalesce", ["to-number", ["get", "minzoom"]], 0]
+            ]],
+            paint: {
+        'fill-color': 'gray',
+        'fill-opacity': 0.1
+      }
+    },
     'polygon-layer': {
       id: 'polygon-layer',
       type: 'fill',
@@ -320,7 +337,7 @@ export function styles () {
         'fill-extrusion-base': ['to-number', ['coalesce',
           ['get', 'fill-extrusion-base'],
           ['get', 'user_fill-extrusion-base']]],
-        // opacity does not support data expressions!?!
+        // opacity does not support data expressions, it's a constant per layer
         'fill-extrusion-opacity': 0.9
       }
     },
