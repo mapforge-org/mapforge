@@ -270,7 +270,7 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
     map.setFeatureState({ source, id: feature.id }, { active: true })
     // set url to feature
     if (sticky) {
-      const newPath = `${window.location.pathname}?f=${feature.id}`
+      const newPath = `${window.location.pathname}?f=${feature.id}${window.location.hash}`
       window.history.pushState({}, '', newPath)
     }
   }

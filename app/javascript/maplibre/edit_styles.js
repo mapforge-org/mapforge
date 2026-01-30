@@ -15,10 +15,10 @@ const vertexSize = 6
 
 export function editStyles () {
   return [
-    removeSource(styles()['polygon-layer']), // gl-draw-polygon-fill-inactive
+    // removeSource(styles()['polygon-layer']), // gl-draw-polygon-fill-inactive
     removeSource(styles()['polygon-layer-outline']),
     removeSource(styles()['line-layer-outline']), // line outline below line, because it's a wider line
-    removeSource(styles()['line-layer']),
+    // removeSource(styles()['line-layer']),
 
     // active polygon outline
     {
