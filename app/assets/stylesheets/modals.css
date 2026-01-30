@@ -238,7 +238,7 @@
 }
 
 .feature-icon {
-  width: 2rem;
+  min-width: 2rem;
 }
 
 .layer-feature-item:hover {

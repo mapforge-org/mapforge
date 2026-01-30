@@ -285,7 +285,13 @@ export function styles () {
       id: 'polygon-layer',
       type: 'fill',
       filter: ['all',
-        ['in', '$type', 'Polygon']],
+        ["==", ["geometry-type"], "Polygon"],
+        ['!', ['has', 'fill-extrusion-height']],
+        [
+          ">=",
+          ["zoom"],
+          ["coalesce", ["to-number", ["get", "minzoom"]], 0]
+        ]],
       paint: {
         'fill-color': fillColor,
         'fill-opacity': fillOpacity
@@ -295,8 +301,13 @@ export function styles () {
       id: 'polygon-layer-extrusion',
       type: 'fill-extrusion',
       filter: ['all',
-        ['in', '$type', 'Polygon'],
-        ['>', 'fill-extrusion-height', 0]],
+        ['==', ['geometry-type'], 'Polygon'],
+        ['>', ['get', 'fill-extrusion-height'], 0],
+        [
+          ">=",
+          ["zoom"],
+          ["coalesce", ["to-number", ["get", "minzoom"]], 0]
+        ]],
       paint: {
         'fill-extrusion-color': ['coalesce',
             ['get', 'fill-extrusion-color'],
@@ -318,7 +329,13 @@ export function styles () {
       id: 'polygon-layer-outline',
       type: 'line',
       filter: ['all',
-        ['in', '$type', 'Polygon']],
+        ["==", ["geometry-type"], "Polygon"],
+        ['!', ['has', 'fill-extrusion-height']],
+        [
+          ">=",
+          ["zoom"],
+          ["coalesce", ["to-number", ["get", "minzoom"]], 0]
+        ]],
       layout: {
         'line-join': 'round',
         'line-cap': 'round'
@@ -330,7 +347,7 @@ export function styles () {
         ],
         'line-width': [
           'case', ['boolean', ['feature-state', 'active'], false],
-          ['+', outlineWidthPolygon, 2], outlineWidthPolygon
+          ['+', outlineWidthPolygon, 1], outlineWidthPolygon
         ],
         'line-opacity': lineOpacity
       }
