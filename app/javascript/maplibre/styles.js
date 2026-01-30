@@ -291,8 +291,10 @@ export function styles () {
             ['>', ['get', 'fill-extrusion-height'], 0],
             minZoomFilter],
             paint: {
-        'fill-color': 'gray',
-        'fill-opacity': 0.1
+              'fill-color': 'gray',
+              'fill-opacity': [
+                "case",
+                ['boolean', ['feature-state', 'active'], false], 0.4, 0.1]
       }
     },
     'polygon-layer': {
@@ -300,7 +302,8 @@ export function styles () {
       type: 'fill',
       filter: ['all',
         ["==", ["geometry-type"], "Polygon"],
-        ['!', ['has', 'fill-extrusion-height']],
+        ['any', ['==', ['get', 'fill-extrusion-height'], 0],
+        ['!', ['has', 'fill-extrusion-height']]],
         minZoomFilter],
       paint: {
         'fill-color': fillColor,
@@ -336,7 +339,8 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ["==", ["geometry-type"], "Polygon"],
-        ['!', ['has', 'fill-extrusion-height']],
+        ['any', ['==', ['get', 'fill-extrusion-height'], 0],
+          ['!', ['has', 'fill-extrusion-height']]],
         minZoomFilter],
       layout: {
         'line-join': 'round',
