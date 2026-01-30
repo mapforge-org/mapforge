@@ -14,6 +14,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `label-color`: font color in format "#000000" (default)
 * `label-shadow`: font shadow in format "#ffffff" (default)
 * `sort-key`: sort order of features: higher numbers overlay lower numbers (default: 1)
+* `min-zoom`: Display feature only on zoom levels bigger than min-zoom
 * `title`: title
 * `desc`: detailed description (markdown supported)
 * `onclick`: on hover/click behavior: 'details' (default), 'false' (do not react on hover/click), 'link' (link to url), 'feature' (link to another feature on the map)
