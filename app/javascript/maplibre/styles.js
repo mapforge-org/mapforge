@@ -222,7 +222,7 @@ export const pointSize = [
 export const pointOutlineSize = ['to-number', ['coalesce', ['get', 'user_stroke-width'], ['get', 'stroke-width'], 2]]
 export const pointOutlineSizeActive = ['+', 1, pointOutlineSize]
 const pointOutlineColor = ['coalesce', ['get', 'user_stroke'], ['get', 'stroke'], featureOutlineColor]
-const pointOpacity = ['to-number', ['coalesce', ['get', 'marker-opacity'], 0.7]]
+const pointOpacity = ['to-number', ['coalesce', ['get', 'marker-opacity'], 0.9]]
 const pointOpacityActive = ['to-number', ['coalesce', ['min', ['+', ['get', 'marker-opacity'], 0.2], 1], 0.9]]
 
 // factor of the original icon size (200x200)
