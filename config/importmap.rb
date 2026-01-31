@@ -75,7 +75,7 @@ pin "@kurkle/color", to: "@kurkle--color.js", preload: false # @0.4.0
 pin "@turf/projection", to: "@turf--projection.js", preload: false # @7.3.2
 pin "@turf/clone", to: "@turf--clone.js", preload: false # @7.3.2
 pin "@turf/helpers", to: "@turf--helpers.js" # @7.3.3
-pin "@turf/meta", to: "@turf--meta.js" # @7.3.2
+pin "@turf/meta", to: "@turf--meta.js" # @7.3.3
 # Turf libs needed by app
 pin "@turf/simplify", to: "@turf--simplify.js", preload: false # @7.3.2
 pin "@turf/boolean-point-on-line", to: "@turf--boolean-point-on-line.js", preload: false # @7.3.2
