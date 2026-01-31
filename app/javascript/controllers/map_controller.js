@@ -3,7 +3,8 @@ import * as functions from 'helpers/functions'
 import { initializeMap, setBackgroundMapLayer, initializeViewMode, 
   initializeStaticMode, addFeature } from 'maplibre/map'
 import { initializeEditMode } from 'maplibre/edit'
-import { initializeSocket } from 'channels/map_channel'
+import { initializeSocket, mapChannel } from 'channels/map_channel'
+import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
   async connect () {
@@ -30,6 +31,8 @@ export default class extends Controller {
       if (feature.type === "Feature") {
         feature.id = functions.featureId()
         addFeature(feature)
+        addUndoState('Feature added', feature)
+        mapChannel.send_message('new_feature', feature)
       }
     } catch (err) {
       console.warn("Failed to read clipboard:", err)

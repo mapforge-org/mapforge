@@ -35,6 +35,7 @@ class MapChannel < ApplicationCable::Channel
     Yabeda.websocket.messages_received.increment({ action: "update_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     @feature = map.features.find(feature_atts(data)["id"])
+    raise "Feature #{data['id']} not found on map #{data['map_id']}" unless @feature
     @feature.update!(feature_atts(data))
     associate_image(data["properties"]["marker-image-url"]) if data["properties"] && data["properties"]["marker-image-url"]
   end
