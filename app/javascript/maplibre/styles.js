@@ -423,7 +423,7 @@ export function styles () {
         ["==", ["geometry-type"], "Point"],
         ["!=", ["get", "meta"], "midpoint"],
         ["!=", ["get", "meta"], "vertex"],
-        ["has", "flat"],
+        ['==', ['get', 'flat'], true],
         ["!", ["has", "point_count"]],
         ["!", ["has", "heatmap"]],
         minZoomFilter],
@@ -475,7 +475,7 @@ export function styles () {
         ["==", ["geometry-type"], "Point"],
         ["!=", ["get", "meta"], "midpoint"],
         ["!=", ["get", "meta"], "vertex"],
-        ["!", ["has", "flat"]],
+        ['!=', ['get', 'flat'], true],
         ["!", ["has", "point_count"]],
         ["!", ["has", "heatmap"]],
         minZoomFilter
@@ -552,7 +552,7 @@ export function styles () {
       type: 'symbol',
       filter: ['all',
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']], 
-        ['has', 'flat'], ['!', ['has', 'heatmap']], minZoomFilter],
+        ['==', ['get', 'flat'], true], ['!', ['has', 'heatmap']], minZoomFilter],
       layout: {
         // sort-key is only effective within same layer
         'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
@@ -569,6 +569,7 @@ export function styles () {
           ""
           ]
         ],
+        
         'icon-size': iconSize,
         'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
         "icon-pitch-alignment": "map", // same pitch angle as map
@@ -578,6 +579,13 @@ export function styles () {
         "icon-rotate": ["get", "marker-rotate"],
         'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
       },
+      paint: {
+        "icon-opacity": ['case',
+          ['boolean', ['feature-state', 'active'], false],
+          pointOpacityActive,
+          pointOpacity
+        ],
+      }
     },
     // support symbols on all feature types (default, not projected on map surface)
     'symbols-layer': {
@@ -585,7 +593,7 @@ export function styles () {
       type: 'symbol',
       filter: ['all',
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
-        ['!', ['has', 'heatmap']], ['!', ['has', 'flat']], minZoomFilter],
+        ['!', ['has', 'heatmap']], ['!=', ['get', 'flat'], true], minZoomFilter],
       layout: {
         // sort-key is only effective within same layer
         'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
@@ -606,6 +614,11 @@ export function styles () {
       paint: {
         // circle-pitch-scale: 'map' // seems default and cannot get changed
         // cannot set circle-pitch-scale, circle-stroke-* in the symbol layer :-(
+        "icon-opacity": ['case',
+          ['boolean', ['feature-state', 'active'], false],
+          pointOpacityActive,
+          pointOpacity
+        ],
       }
     },  
     // Line labels sometimes get rendered wrong when line is extruded
@@ -667,7 +680,7 @@ export function styles () {
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
         ['has', 'label'],
-        ['has', 'flat'], 
+        ['==', ['get', 'flat'], true], 
         minZoomFilter
       ],
       layout: {
@@ -699,7 +712,7 @@ export function styles () {
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
         ['has', 'label'],
-        ['!', ['has', 'flat']], 
+        ['!=', ['get', 'flat'], true], 
         minZoomFilter],
       layout: {
         'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
