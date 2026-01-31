@@ -710,7 +710,6 @@ export function styles () {
       id: 'text-layer',
       type: 'symbol',
       filter: ['all',
-        ['==', ['geometry-type'], 'LineString'],
         ['has', 'label'],
         ['!=', ['get', 'flat'], true], 
         minZoomFilter],
@@ -725,7 +724,8 @@ export function styles () {
         'text-ignore-placement': false, // hide on collision
         "text-rotation-alignment": "viewport",
         // TODO: sort keys on text are ascending, on symbols descending???
-        'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
+        'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]],
+        'symbol-placement': 'point' // TODO: cannot set proper value for polygons and lines here?
       },
       paint: {
         'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
