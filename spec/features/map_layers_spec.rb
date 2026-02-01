@@ -105,7 +105,7 @@ describe 'Map' do
 
     it 'can add overpass layer' do
       expect(page).to have_text('opass')
-      click_button 'Add query'
+      click_button 'Add layer'
       find('li', text: 'Drinking water').click
       wait_for { Layer.find_by(name: 'Drinking water') }.not_to be_nil
     end
@@ -135,7 +135,7 @@ describe 'Map' do
     end
 
     it 'can add predefined query layer' do
-      click_button 'Add query'
+      click_button 'Add layer'
       within('#query-dropdown') do
         first('li', text: 'Breweries').click
       end
@@ -143,7 +143,7 @@ describe 'Map' do
     end
 
     it 'can add custom query layer' do
-      click_button 'Add query'
+      click_button 'Add layer'
       within('#query-dropdown') do
         first('li', text: 'Custom query').click
       end
