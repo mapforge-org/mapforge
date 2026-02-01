@@ -182,6 +182,7 @@
 
 /* Layers modal */
 
+/* add layers dropdown should overflow modal window */
 #layers-modal .map-modal {
   overflow-y: visible;
 }
@@ -194,11 +195,20 @@
   background-color: var(--color-light-alabaster);
   overflow-y: auto;
   max-height: 50vh;
+  width: 100%;
+  max-width: 15.5rem;
+
+  --bs-dropdown-item-padding-y: 0.1rem;
+  --bs-dropdown-padding-y: 0.3rem;
 }
 
 #query-dropdown li {
   margin: 0.1em 0.5em;
   cursor: pointer;
+}
+
+#query-dropdown .dropdown-item {
+  border-radius: .375rem;
 }
 
 .layer-item-header {

@@ -8,7 +8,6 @@ import MaplibreGeocoder from 'maplibre-gl-geocoder'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { animateElement } from 'helpers/dom'
 import { status } from 'helpers/status'
-import { queries } from 'maplibre/overpass/queries'
 
 export class ControlGroup {
   constructor (controls) {
@@ -175,16 +174,6 @@ export function initLayersModal () {
   functions.e('#layers', e => {
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')
-    if (window.gon.map_mode === "rw") {
-      let ul = document.querySelector('#layers-modal #query-dropdown')
-      ul.innerHTML = '<li data-query-name="Custom query">Custom query</li><li>-----</li>'
-      queries.sort((a, b) => a.name.localeCompare(b.name)).forEach(q => {
-        let li = document.createElement('li')
-        li.dataset.queryName = q['name']
-        li.innerHTML = q['name']
-        ul.appendChild(li)
-      })
-    }
     layers.forEach(layer => {
       let features = layer?.geojson?.features || []
       const layerElement = template.cloneNode(true)

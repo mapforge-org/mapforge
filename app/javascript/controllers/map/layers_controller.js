@@ -43,8 +43,8 @@ export default class extends Controller {
           if (mapforgeJSON.layers) {
             // mapforge export file, importing only the first geojson layer for now
             geoJSON = mapforgeJSON.layers.find(f => f.type === 'geojson').geojson
-            mapforgeJSON.layers.filter(f => f.type === 'overpass').forEach(layer => {
-              this.createOverpassLayer(layer.name, layer.query)
+            mapforgeJSON.layers.filter(f => f.type !== 'geojson').forEach(layer => {
+              this.createLayer(layer.type, layer.name, layer.query)
             })
           } else {
             // standard geojson file
@@ -182,12 +182,16 @@ export default class extends Controller {
     list.classList.toggle('hidden')
   }
 
+  createWikipediaLayer(_event) {
+    let _layerId = this.createLayer('wikipedia', 'Wikipedia', '')
+  }
+
   createSelectedOverpassLayer(event) {
     event.preventDefault()
     let queryName = event.target.dataset.queryName
     // empty query for custom
     let query = queries.find(q => q.name === queryName)?.query || ''
-    let layerId = this.createOverpassLayer(queryName, query)
+    let layerId = this.createLayer('overpass', queryName, query)
     // open edit form for new custom queries
     if (query === '') {
       new Promise(resolve => setTimeout(resolve, 50)).then(() => {
@@ -196,9 +200,9 @@ export default class extends Controller {
     }
   }
 
-  createOverpassLayer(queryName, query) {
+  createLayer(type, name, query) {
     let layerId = functions.featureId()
-    let layer = { "id": layerId, "type":"overpass", "name": queryName, "query": query }
+    let layer = { "id": layerId, "type": type, "name": name, "query": query }
     layers.push(layer)
     mapChannel.send_message('new_layer', layer)
     initLayersModal()

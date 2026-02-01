@@ -19,14 +19,45 @@
             - else
               %i.bi.bi-info-circle
                 Please log in to upload tracks
+
           .col-6
-            %button.no-wrap.form-control.btn.btn-green.dropdown-toggle{ type: "button",
-                  id: "newLayerDropdown", 'data-bs-toggle': "dropdown", 'aria-expanded': "false" }
+            %button#newLayerDropdown.no-wrap.form-control.btn.btn-green.dropdown-toggle{
+              type: "button",
+              "data-bs-toggle": "dropdown",
+              "aria-expanded": "false"
+            }
               %i.bi.bi-plus-square.me-1
               Add
               %span.d-none.d-sm-inline
-                query
-            %ul#query-dropdown.dropdown-menu{ 'aria-labelledby': "newLayerDropdown", data: { action: "click->map--layers#createSelectedOverpassLayer" } }
+                layer
+
+            %ul#query-dropdown.dropdown-menu{ "aria-labelledby": "newLayerDropdown" }
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: "Custom query" }
+                }
+                  Custom query
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createWikipediaLayer" }
+                }
+                  Places with Wikipedia articles              
+              %li
+                %hr.dropdown-divider
+              / Predefined queries, must match definitions in maplibre/overpass/queries.js
+              :ruby 
+                overpass_queries = ['Public toilets', 'Breweries', 'Subway', 'Drinking water',
+                'Hiking routes', 'Bicycle routes', 'Camping', 'Feuerwehr', 'Hydranten', 'Trains', 
+                'Wifi', 'Food Shops', 'Swimming pools 🏊' ]
+              - overpass_queries.each do |query_name|
+                %li
+                  %button.dropdown-item{
+                    type: "button",
+                    data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: query_name }
+                  }
+                    = query_name
 
       - # used by controls/shared.js
       .hidden
