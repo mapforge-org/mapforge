@@ -4,7 +4,7 @@ import {
   initializeMaplibreProperties, map, layers, resetGeojsonLayers, loadLayers, 
   reloadMapProperties, removeGeoJSONSource, redrawGeojson
 } from 'maplibre/map'
-import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
+import { initializeLayers } from 'maplibre/layers/layers'
 import { initLayersModal } from 'maplibre/controls/shared'
 
 
@@ -101,12 +101,12 @@ export function initializeSocket () {
             // Remove geojson key before comparison
             const { ['geojson']: _, ...layerDef } = layers[index]
             if (JSON.stringify(layerDef) !== JSON.stringify(data.layer)) {
-              layers[index] = data.layer;
-              initializeOverpassLayers(data.layer.id);
+              layers[index] = data.layer
+              initializeLayers(data.layer.id)
             }
           } else {
             layers.push(data.layer)
-            initializeOverpassLayers(data.layer.id)
+            initializeLayers(data.layer.id)
           }
           break
         case 'delete_layer':

@@ -11,8 +11,7 @@ import { draw, select } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
   renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
 import { initializeViewStyles, setStyleDefaultFont, loadImage } from 'maplibre/styles'
-// import { initializeMapStyles } from 'maplibre/map_styles'
-import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
+import { initializeLayers } from 'maplibre/layers/layers'
 import { centroid } from "@turf/centroid"
 
 export let map
@@ -147,10 +146,10 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('touchend', (e) => { updateCursorPosition(e) })
   map.on('drag', () => { 
     mapInteracted = true 
-    if (layers.filter(l => l.type === 'overpass').length) { dom.animateElement('#layer-reload', 'fade-in') }
+    if (layers.filter(l => l.type !== 'geojson').length) { dom.animateElement('#layer-reload', 'fade-in') }
   })
   map.on('zoom', (_e) => {
-    if (layers.filter(l => l.type === 'overpass').length) { dom.animateElement('#layer-reload', 'fade-in') }
+    if (layers.filter(l => l.type !== 'geojson').length) { dom.animateElement('#layer-reload', 'fade-in') }
     // block zooming in closer than defined max zoom level
     let bgMap = basemaps()[backgroundMapLayer]
     // TODO: max zoom doesn't work for style urls
@@ -218,7 +217,7 @@ export function loadLayers () {
   // return if all layers already loaded (eg. in case of basemap style change)
   if (geojsonData && gon.map_layers.length == layers.length) {
     // console.log('All layers already loaded, re-rendering from cache', layers)
-    initializeOverpassLayers()
+    initializeLayers()
     redrawGeojson()
     map.fire('geojson.load', { detail: { message: 'redraw cached geojson-source' } })
     return
@@ -246,10 +245,10 @@ export function loadLayers () {
       functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
       map.fire('geojson.load', { detail: { message: 'geojson-source loaded' } })
 
-      data.layers.filter(f => f.type === 'overpass').forEach((layer) => {
+      data.layers.filter(f => f.type !== 'geojson').forEach((layer) => {
         if (!layers.find(l => l.id === layer.id)) { layers.push(layer) }
       })
-      initializeOverpassLayers()
+      initializeLayers()
     })
     .catch(error => {
       console.error('Failed to fetch GeoJSON:', error)
@@ -397,6 +396,8 @@ export function redrawGeojson (resetDraw = true) {
   // and in the style layers it only accepts mumeric ids in the id field initially
   mergedGeoJSONLayers('geojson').features.forEach((feature) => { feature.properties.id = feature.id })
   mergedGeoJSONLayers('overpass').features.forEach((feature) => { feature.properties.id = feature.id })
+  mergedGeoJSONLayers('wikipedia').features.forEach((feature) => { feature.properties.id = feature.id })
+
 
   // draw has its own style layers based on editStyles
   if (draw) {
@@ -420,10 +421,11 @@ export function redrawGeojson (resetDraw = true) {
 
   // updateData requires a 'GeoJSONSourceDiff', with add/update/remove lists
   map.getSource('geojson-source').setData(renderedGeojsonData())
-  layers.filter(f => f.type === 'overpass').forEach((layer) => {
+  console.log('layers:', layers)
+  layers.filter(f => f.type !== 'geojson').forEach((layer) => {
     if (layer.geojson) {
-      // console.log("Setting overpass layer data", layer.id, layer.geojson)
-      map.getSource('overpass-source-' + layer.id).setData(layer.geojson, false)
+      console.log("Setting layer data", layer.type, layer.id, layer.geojson)
+      map.getSource(layer.type + '-source-' + layer.id).setData(layer.geojson, false)
     }
   })
 }

@@ -187,10 +187,12 @@ export function initLayersModal () {
       featureCount.textContent = '(' + features.length + ')'
       head.parentNode.insertBefore(featureCount, head.nextSibling)
       e.appendChild(layerElement)
+      if (layer.type !== 'geojson') {
+        layerElement.querySelector('button.layer-refresh').classList.remove('hidden')
+      }
       if (layer.type === 'overpass') {
         layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
-        layerElement.querySelector('button.overpass-refresh').classList.remove('hidden')
-        if (window.gon.map_mode === "rw"){
+        if (window.gon.map_mode === "rw") {
           layerElement.querySelector('button.layer-edit').classList.remove('hidden')
         }
       }

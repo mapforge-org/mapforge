@@ -5,9 +5,10 @@ import { initLayersModal } from 'maplibre/controls/shared'
 import { uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
-import { loadOverpassLayer, initializeOverpassLayers } from 'maplibre/overpass/overpass'
+import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
 import { queries } from 'maplibre/overpass/queries'
 import { flyToFeature } from 'maplibre/animations'
+import { initializeLayers, loadLayer } from 'maplibre/layers/layers'
 
 export default class extends Controller {
   upload () {
@@ -156,16 +157,16 @@ export default class extends Controller {
     initializeOverpassLayers(layerId)
   }
 
-  refreshOverpassLayer (event) {
+  refreshLayer (event) {
     event.preventDefault()
     const layerId = event.target.closest('.layer-item').getAttribute('data-layer-id')
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
-    loadOverpassLayer(layerId).then( () => { initLayersModal() })
+    loadLayer(layerId).then( () => { initLayersModal() })
   }
 
-  refreshOverpassLayers(event) {
+  refreshLayers(event) {
     event.preventDefault()
-    initializeOverpassLayers()
+    initializeLayers()
   }  
 
   toggleLayerList (event) {
@@ -182,8 +183,8 @@ export default class extends Controller {
     list.classList.toggle('hidden')
   }
 
-  createWikipediaLayer(_event) {
-    let _layerId = this.createLayer('wikipedia', 'Wikipedia', '')
+  createWikipediaLayer() {
+    this.createLayer('wikipedia', 'Wikipedia', '')
   }
 
   createSelectedOverpassLayer(event) {
@@ -207,7 +208,7 @@ export default class extends Controller {
     mapChannel.send_message('new_layer', layer)
     initLayersModal()
     document.querySelector('#layer-list-' + layerId + ' .reload-icon').classList.add('layer-refresh-animate')
-    initializeOverpassLayers(layerId)
+    initializeLayers(layerId)
     return layerId
   }
 

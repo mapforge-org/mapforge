@@ -37,15 +37,17 @@
                   type: "button",
                   data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: "Custom query" }
                 }
+                  %i.bi.bi-pencil-square.me-2
                   Custom query
+              %li
+                %hr.dropdown-divider                  
               %li
                 %button.dropdown-item{
                   type: "button",
                   data: { action: "click->map--layers#createWikipediaLayer" }
                 }
-                  Places with Wikipedia articles              
-              %li
-                %hr.dropdown-divider
+                  %i.bi.bi-wikipedia.me-2
+                  Wikipedia articles              
               / Predefined queries, must match definitions in maplibre/overpass/queries.js
               :ruby 
                 overpass_queries = ['Public toilets', 'Breweries', 'Subway', 'Drinking water',
@@ -66,7 +68,7 @@
             %span.link{ data: { action: "click->map--layers#toggleLayerList" }}
               %i.bi.bi-caret-right-fill
               %span.mapforge-font.layer-name.me-2 Layer name
-            %button.hidden.ms-3.btn.btn-light-green.btn-layer-actions.overpass-refresh{ data: { action: "click->map--layers#refreshOverpassLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Refresh layer for current view" }
+            %button.hidden.ms-3.btn.btn-light-green.btn-layer-actions.layer-refresh{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Refresh layer for current view" }
               %i.bi.bi-arrow-clockwise.reload-icon
             %button.hidden.btn.btn-light-green.btn-layer-actions.layer-edit{ data: { action: "click->map--layers#toggleEdit", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Edit query" }
               %i.bi.bi-pencil-square

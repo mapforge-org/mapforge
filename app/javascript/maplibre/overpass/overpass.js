@@ -3,7 +3,7 @@ import { applyOverpassQueryStyle } from 'maplibre/overpass/queries'
 import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
 import { initLayersModal } from 'maplibre/controls/shared'
-import { status } from '../../helpers/status'
+import { status } from 'helpers/status'
 
 export function initializeOverpassLayers(id = null) {
   let initLayers = layers.filter(l => l.type === 'overpass')
