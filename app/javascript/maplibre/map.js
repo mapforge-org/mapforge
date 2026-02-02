@@ -11,12 +11,11 @@ import { draw, select } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
   renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
 import { initializeViewStyles, setStyleDefaultFont, loadImage } from 'maplibre/styles'
-import { initializeLayers } from 'maplibre/layers/layers'
+import { initializeLayers, getFeature } from 'maplibre/layers/layers'
 import { centroid } from "@turf/centroid"
 
 export let map
 export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
-export let geojsonData //= { type: 'FeatureCollection', features: [] }
 export let mapProperties
 export let lastMousePosition
 export let backgroundMapLayer
@@ -55,13 +54,11 @@ export function initializeMaplibreProperties () {
 // reset map data
 export function resetLayers () {
   functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', false) })
-  geojsonData = null
   layers = []
 }
 
 export function resetGeojsonLayers () {
   functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', false) })
-  geojsonData = null
   layers = layers.filter(l => l.type !== 'geojson')
 }
 
@@ -119,7 +116,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     console.log("Map loaded ('load')")
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
-    let feature = geojsonData?.features?.find(f => f.id === urlFeatureId)
+    let feature = getFeature(urlFeatureId)
     if (feature) {
       resetControls()
       highlightFeature(feature, true)
@@ -127,7 +124,7 @@ export async function initializeMap (divId = 'maplibre-map') {
       map.setCenter(center.geometry.coordinates)
     }
     const urlFeatureAnimateId = new URLSearchParams(window.location.search).get('a')
-    feature = geojsonData?.features?.find(f => f.id === urlFeatureAnimateId)
+    feature = getFeature(urlFeatureAnimateId)
     if (feature) {
       console.log('Animating ' + feature.id)
       resetControls()
@@ -188,7 +185,7 @@ export function addGeoJSONSource (sourceName, cluster=true ) {
   map.addSource(sourceName, {
     type: 'geojson',
     promoteId: 'id',
-    data: { type: 'FeatureCollection', features: [] }, // geojsonData,
+    data: { type: 'FeatureCollection', features: [] },
     cluster: cluster,
     clusterMaxZoom: 14, 
     clusterRadius: 50 
@@ -214,8 +211,8 @@ export function removeGeoJSONSource(sourceName) {
 }
 
 export function loadLayers () {
-  // return if all layers already loaded (eg. in case of basemap style change)
-  if (geojsonData && gon.map_layers.length == layers.length) {
+  // do not reload from server if all layers already loaded (eg. in case of basemap style change)
+  if (gon.map_layers.length == layers.length) {
     // console.log('All layers already loaded, re-rendering from cache', layers)
     initializeLayers()
     redrawGeojson()
@@ -233,26 +230,14 @@ export function loadLayers () {
     .then(data => {
       console.log('Loaded map layers from server: ', data.layers)
       // make sure we're still showing the map the request came from
-      if (window.gon.map_properties.public_id !== data.properties.public_id){
-        return
-      }
-      data.layers.filter(f => f.type === 'geojson').forEach((layer) => {
+      if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
+      data.layers.forEach((layer) => {
         if (!layers.find( l => l.id === layer.id) ) { layers.push(layer) }
-      })
-      // draw geojson layer before loading overpass layers
-      geojsonData = mergedGeoJSONLayers()
-      redrawGeojson()
-      functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
-      map.fire('geojson.load', { detail: { message: 'geojson-source loaded' } })
-
-      data.layers.filter(f => f.type !== 'geojson').forEach((layer) => {
-        if (!layers.find(l => l.id === layer.id)) { layers.push(layer) }
       })
       initializeLayers()
     })
     .catch(error => {
-      console.error('Failed to fetch GeoJSON:', error)
-      console.error('GeoJSONData:', geojsonData)
+      console.error('Failed to fetch map layers:', error)
     })
 }
 
@@ -409,7 +394,7 @@ export function redrawGeojson (resetDraw = true) {
       draw.deleteAll()
       
       drawFeatureIds.forEach((featureId) => {
-        let feature = geojsonData.features.find(f => f.id === featureId)
+        let feature = getFeature(featureId)
         if (feature) { 
           draw.add(feature) 
           // if we're in edit mode, re-select feature
@@ -420,9 +405,9 @@ export function redrawGeojson (resetDraw = true) {
   }
 
   // updateData requires a 'GeoJSONSourceDiff', with add/update/remove lists
-  map.getSource('geojson-source').setData(renderedGeojsonData())
+  //map.getSource('geojson-source').setData(renderedGeojsonData())
   console.log('layers:', layers)
-  layers.filter(f => f.type !== 'geojson').forEach((layer) => {
+  layers.forEach((layer) => {
     if (layer.geojson) {
       console.log("Setting layer data", layer.type, layer.id, layer.geojson)
       map.getSource(layer.type + '-source-' + layer.id).setData(layer.geojson, false)
@@ -440,7 +425,7 @@ export function renderedGeojsonData () {
 }
 
 export function upsert (updatedFeature) {
-  const feature = geojsonData.features.find(f => f.id === updatedFeature.id)
+  const feature = getFeature(updatedFeature.id)
   if (!feature) { addFeature(updatedFeature); return }
 
   // only update feature if it was changed, disregard properties.id
@@ -454,7 +439,7 @@ export function upsert (updatedFeature) {
 export function addFeature (feature) {
   feature.properties.id = feature.id
   layers.find(l => l.type === 'geojson').geojson.features.push(feature)
-  geojsonData = mergedGeoJSONLayers()
+  //geojsonData = mergedGeoJSONLayers()
   redrawGeojson(false)
   status('Added feature')
 }
@@ -475,9 +460,8 @@ function updateFeature (feature, updatedFeature) {
 }
 
 export function destroyFeature (featureId) {
-  if (geojsonData.features.find(f => f.id === featureId)) {
+  if (getFeature(featureId)) {
     status('Deleting feature ' + featureId)
-    geojsonData.features = geojsonData.features.filter(f => f.id !== featureId)
     layers.forEach(l => l.geojson.features = l.geojson.features.filter(f => f.id !== featureId))
     redrawGeojson()
     resetHighlightedFeature()
@@ -488,7 +472,7 @@ export function destroyFeature (featureId) {
 // load geojson data
 function initializeStyles() {
   console.log('Initializing sources and layer styles after basemap load/change')
-  addGeoJSONSource('geojson-source', false)
+  
   addGeoJSONSource('km-marker-source', false)
   loadLayers()
   demSource.setupMaplibre(maplibregl)
@@ -496,7 +480,7 @@ function initializeStyles() {
   if (mapProperties.hillshade) { addHillshade() }
   if (mapProperties.globe) { addGlobe() }
   if (mapProperties.contours) { addContours() }
-  initializeViewStyles('geojson-source')
+  // initializeViewStyles('geojson-source')
   initializeKmMarkerStyles()
 }
 
@@ -556,19 +540,15 @@ export function sortLayers () {
   const pointsLayerHits = functions.reduceArray(layers, (e) => e.id === 'points-hit-layer_geojson-source')
   const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
   const heatmap = functions.reduceArray(layers, (e) => (e.id.startsWith('heatmap-layer'))) 
+  const kmMarkers = functions.reduceArray(layers, (e) => (e.id.includes('km-marker')))
 
   layers = layers.concat(flatLayers).concat(lineLayers).concat(mapExtrusions).concat(directions)
     .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
     .concat(lineLayerHits).concat(pointsLayerHits)
-    .concat(userSymbols).concat(userLabels)
+    .concat(kmMarkers).concat(userSymbols).concat(userLabels)
 
   const newStyle = { ...currentStyle, layers }
   map.setStyle(newStyle, { diff: true })
-
-  // place km markers under symbols layer (icons)
-  layers.filter(layer => layer.id.includes('km-marker')).forEach((layer) => {
-    map.moveLayer(layer.id, 'symbols-layer_geojson-source')
-  })
   console.log("Sorted layers:", map.getStyle().layers)
 }
 
@@ -587,7 +567,7 @@ export function mergedGeoJSONLayers(type='geojson') {
 }
 
 export function frontFeature(frontFeature) {
-  // move feature to end of its layer's features array (for overpass)
+  // move feature to end of its layer's features array 
   for (const layer of layers) {
     if (!layer?.geojson?.features) { continue }
     const features = layer.geojson.features
@@ -597,13 +577,6 @@ export function frontFeature(frontFeature) {
       features.push(feature) // Add to end
       break // done, exit loop
     }
-  }
-  // move feature to end of geojsonData features array
-  const features = geojsonData.features
-  const idx = features.findIndex(f => f.id === frontFeature.id)
-  if (idx !== -1) {
-    const [feature] = features.splice(idx, 1) // Remove it
-    features.push(feature) // Add to end
   }
   redrawGeojson()
 }

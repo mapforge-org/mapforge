@@ -12,13 +12,15 @@ class Layer
   field :type
   field :name
   field :query
+  field :heatmap, type: Boolean
+  field :cluster, type: Boolean
   field :features_count, type: Integer, default: 0
 
   after_save :broadcast_update, if: -> { map.present? }
   after_destroy :broadcast_destroy, if: -> { map.present? }
 
   def to_summary_json
-    json = { id: id, type: type, name: name }
+    json = { id: id, type: type, name: name, heatmap: !!heatmap, cluster: !!cluster }
     json[:query] = query if type == "overpass"
     json
   end

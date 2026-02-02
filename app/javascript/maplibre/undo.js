@@ -1,4 +1,4 @@
-import { geojsonData, redrawGeojson, addFeature, destroyFeature } from 'maplibre/map'
+import { redrawGeojson, addFeature, destroyFeature } from 'maplibre/map'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
 import { resetDirections } from 'maplibre/routing/osrm'

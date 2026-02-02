@@ -1,6 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { geojsonData } from 'maplibre/map'
 import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { status } from 'helpers/status'
@@ -33,12 +32,12 @@ export default class extends Controller {
       this.show_feature_edit_ui()
 
       // add feature to draw
-      const feature = this.getFeature()
+      const feature = this.getSelectedFeature()
       draw.add(feature)
       select(feature)
     } else {
       // repeated click on the current edit mode returns to feature description
-      showFeatureDetails(this.getFeature())
+      showFeatureDetails(this.getSelectedFeature())
       unselect()
     }
     document.querySelector('#feature-edit-raw .error').innerHTML = ''
@@ -49,7 +48,7 @@ export default class extends Controller {
     if (this.element.classList.contains('modal-pull-down')) {
       this.pullUpModal(this.element)
     }
-    const feature = this.getFeature()
+    const feature = this.getSelectedFeature()
     dom.showElements(['#feature-edit-ui', '#button-add-label', '#button-add-desc'])
     dom.hideElements(['#feature-edit-raw', '#feature-label', '#feature-desc'])
     functions.e('em-emoji-picker', e => { e.remove() })
@@ -134,7 +133,7 @@ export default class extends Controller {
     if (this.element.classList.contains('modal-pull-down')) {
       this.pullUpModal(this.element)
     }
-    const feature = this.getFeature()
+    const feature = this.getSelectedFeature()
     dom.hideElements(['#feature-edit-ui'])
     dom.showElements(['#feature-edit-raw'])
     document.querySelector('#feature-edit-raw textarea')
@@ -142,7 +141,7 @@ export default class extends Controller {
   }
 
   show_add_label () {
-    document.querySelector('#feature-label input').value = this.getFeature().properties.label || null
+    document.querySelector('#feature-label input').value = this.getSelectedFeature().properties.label || null
     dom.hideElements(['#button-add-label'])
     dom.showElements(['#feature-label'])
   }
@@ -153,7 +152,7 @@ export default class extends Controller {
     // https://github.com/Ionaru/easy-markdown-editor
     await import('easymde') // import EasyMDE UMD bundle
     if (easyMDE) { easyMDE.toTextArea() }
-    document.querySelector('#feature-desc-input').value = this.getFeature().properties.desc || ''
+    document.querySelector('#feature-desc-input').value = this.getSelectedFeature().properties.desc || ''
     easyMDE = new window.EasyMDE({
       element: document.getElementById('feature-desc-input'),
       placeholder: 'Add a description text',
@@ -168,7 +167,7 @@ export default class extends Controller {
   }
 
   updateDesc () {
-    const feature = this.getFeature()
+    const feature = this.getSelectedFeature()
     try {
       if (easyMDE && feature.properties.desc !== easyMDE.value()) {
         feature.properties.desc = easyMDE.value()
@@ -181,7 +180,7 @@ export default class extends Controller {
   }
 
   saveFeature () {
-    const feature = this.getFeature()
+    const feature = this.getSelectedFeature()
     status('Saving feature ' + feature.id)
     // send shallow copy of feature to avoid changes during send
     mapChannel.send_message('update_feature', { ...feature })
@@ -214,16 +213,16 @@ export default class extends Controller {
     modal.style.removeProperty('height')
   }
 
-  getFeature () {
+  getSelectedFeature () {
     const id = this.featureIdValue
-    return geojsonData.features.find(f => f.id === id)
+    return getFeature(id)
   }
 
   async copy(event) {
     if (functions.isFormFieldFocused()) { return }
     if (!highlightedFeatureId) { return }
 
-    const feature = this.getFeature()
+    const feature = this.getSelectedFeature()
     if (feature) {
       await navigator.clipboard.writeText(JSON.stringify(feature))
       event.preventDefault()
@@ -234,7 +233,7 @@ export default class extends Controller {
   }
 
   animate () {
-    const feature = this.getFeature()
+    const feature = this.getSelectedFeature()
     console.log('Animating ' + feature.id)
     if (feature.geometry.type === 'LineString') {
       new AnimateLineAnimation().run(feature)

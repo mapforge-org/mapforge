@@ -1,6 +1,6 @@
 import { layersFactory } from "@maplibre/maplibre-gl-directions"
 import CustomMapLibreGlDirections from "maplibre/routing/custom_directions"
-import { map, mapProperties, upsert, geojsonData } from 'maplibre/map'
+import { map, mapProperties, upsert } from 'maplibre/map'
 import { highlightColor } from 'maplibre/edit_styles'
 import { updateElevation, setSelectedFeature } from 'maplibre/edit'
 import { styles, featureColor } from 'maplibre/styles'
@@ -11,6 +11,7 @@ import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import { showFeatureDetails } from 'maplibre/feature'
 import { addUndoState } from 'maplibre/undo'
+import { getFeature } from 'maplibre/layers/layers'
 
 // https://github.com/maplibre/maplibre-gl-directions
 // Examples: https://maplibre.org/maplibre-gl-directions/#/examples
@@ -121,7 +122,7 @@ export function initDirections (profile, feature) {
 }
 
 function updateTrack(feature) {
-  let geojsonFeature = geojsonData.features.find(f => f.id === feature.id)
+  let geojsonFeature = getFeature(feature.id)
   if (geojsonFeature) {
     // store undo state from unchanged feature
     addUndoState('Track update', geojsonFeature)

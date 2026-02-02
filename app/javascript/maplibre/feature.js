@@ -1,4 +1,4 @@
-import { map, geojsonData, layers, mapProperties } from 'maplibre/map'
+import { map, layers, mapProperties } from 'maplibre/map'
 import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
@@ -9,6 +9,7 @@ import { area } from "@turf/area"
 import { along } from "@turf/along"
 import { buffer } from "@turf/buffer"
 import { lineString, multiLineString, polygon, multiPolygon } from "@turf/helpers"
+import { getFeature, getFeatures } from "maplibre/layers/layers"
 
 window.marked = marked
 
@@ -89,7 +90,7 @@ export async function showFeatureDetails (feature) {
   dom.hideElements(['#feature-edit-raw', '#feature-edit-ui'])
   f.e('#edit-buttons button', (e) => { e.classList.remove('active') })
   // allow edit in rw mode for geojson features only
-  if (window.gon.map_mode === 'rw' && geojsonData.features.find(f => f.id === feature.id)) {
+  if (window.gon.map_mode === 'rw' && getFeature(feature.id)) {
     document.querySelector('#edit-buttons').classList.remove('hidden')
   }
   dom.showElements('#feature-details-body')
@@ -366,7 +367,7 @@ export function initializeKmMarkerStyles () {
 
 export function renderKmMarkers () {
   let kmMarkerFeatures = []
-  geojsonData.features.filter(feature => (feature.geometry.type === 'LineString' &&
+  getFeatures('geojson').filter(feature => (feature.geometry.type === 'LineString' &&
     feature.properties['show-km-markers'] &&
     feature.geometry.coordinates.length >= 2)).forEach((f, index) => {
 
@@ -406,7 +407,7 @@ export function renderExtrusionLines () {
   // Disable extrusionlines on 3D terrain, it does not work
   if (mapProperties.terrain) { return [] }
 
-  let extrusionLines = geojsonData.features.filter(feature => (
+  let extrusionLines = getFeatures('geojson').filter(feature => (
     feature.geometry.type === 'LineString' &&
       feature.properties['fill-extrusion-height'] &&
       feature.geometry.coordinates.length !== 1 // don't break line animation

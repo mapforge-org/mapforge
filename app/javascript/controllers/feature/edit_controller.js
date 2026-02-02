@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { geojsonData, redrawGeojson } from 'maplibre/map'
+import { redrawGeojson } from 'maplibre/map'
 import { featureIcon, featureImage, uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
 import { handleDelete, draw } from 'maplibre/edit'
 import { featureColor, featureOutlineColor } from 'maplibre/styles'
@@ -21,14 +21,14 @@ export default class extends Controller {
   delete_feature (e) {
     if (dom.isInputElement(e.target)) return // Don't trigger if typing in input
 
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     if (confirm(`Really delete this ${feature.geometry.type}?`)) {
       handleDelete({ features: [feature] })
     }
   }
 
   update_feature_raw () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     document.querySelector('#feature-edit-raw .error').innerHTML = ''
     try {
       feature.properties = JSON.parse(document.querySelector('#feature-edit-raw textarea').value)
@@ -42,7 +42,7 @@ export default class extends Controller {
   }
 
   updateTitle () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const title = document.querySelector('#feature-title-input input').value
     feature.properties.title = title
     document.querySelector('#feature-title').textContent = title
@@ -50,7 +50,7 @@ export default class extends Controller {
   }
 
   updateLabel () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const label = document.querySelector('#feature-label input').value
     feature.properties.label = label
     redrawGeojson(false)
@@ -59,7 +59,7 @@ export default class extends Controller {
 
   // called as preview on slider change
   updatePointSize () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const size = document.querySelector('#point-size').value
     document.querySelector('#point-size-val').textContent = size
     feature.properties['marker-size'] = size
@@ -69,7 +69,7 @@ export default class extends Controller {
   }
 
   updatePointScaling() {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const val = document.querySelector('#point-scaling').checked
     feature.properties['marker-scaling'] = val
     // draw layer feature properties aren't getting updated by draw.set()
@@ -79,7 +79,7 @@ export default class extends Controller {
 
   // called as preview on slider change
   updateLineWidth () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const size = document.querySelector('#line-width').value
     document.querySelector('#line-width-val').textContent = size
     feature.properties['stroke-width'] = size
@@ -90,7 +90,7 @@ export default class extends Controller {
 
   // called as preview on slider change
   updateOutLineWidth () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const size = document.querySelector('#outline-width').value
     document.querySelector('#outline-width-val').textContent = size
     feature.properties['stroke-width'] = size
@@ -101,7 +101,7 @@ export default class extends Controller {
 
   // called as preview on slider change
   updateFillExtrusionHeight () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const size = document.querySelector('#fill-extrusion-height').value
     document.querySelector('#fill-extrusion-height-val').textContent = size + 'm'
     feature.properties['fill-extrusion-height'] = Number(size)
@@ -112,7 +112,7 @@ export default class extends Controller {
   }
 
   updateOpacity () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const opacity = document.querySelector('#opacity').value / 10
     document.querySelector('#opacity-val').textContent = opacity * 100 + '%'
     feature.properties['fill-opacity'] = opacity
@@ -122,7 +122,7 @@ export default class extends Controller {
   }
 
   updateStrokeColor () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const color = document.querySelector('#stroke-color').value
     feature.properties.stroke = color
     // draw layer feature properties aren't getting updated by draw.set()
@@ -131,7 +131,7 @@ export default class extends Controller {
   }
 
   updateStrokeColorTransparent () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     let color
     if (document.querySelector('#stroke-color-transparent').checked) {
       color = 'transparent'
@@ -146,7 +146,7 @@ export default class extends Controller {
   }
 
   updateFillColor () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const color = document.querySelector('#fill-color').value
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
     if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
@@ -154,7 +154,7 @@ export default class extends Controller {
   }
 
   updateFillColorTransparent () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     let color
     if (document.querySelector('#fill-color-transparent').checked) {
       color = 'transparent'
@@ -170,7 +170,7 @@ export default class extends Controller {
   }
 
   updateShowKmMarkers () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     if (document.querySelector('#show-km-markers').checked) {
       feature.properties['show-km-markers'] = true
       // feature.properties['stroke-image-url'] = "/icons/direction-arrow.png"
@@ -182,7 +182,7 @@ export default class extends Controller {
   }
 
   updateMarkerSymbol () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     let symbol = document.querySelector('#marker-symbol').value
     document.querySelector('#emoji').textContent = symbol
     // strip variation selector (emoji) U+FE0F to match icon file names
@@ -195,7 +195,7 @@ export default class extends Controller {
   }
 
   async updateMarkerImage () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     const image = document.querySelector('#marker-image').files[0]
     const imageLocation = await confirmImageLocation(image)
     if (imageLocation) { feature.geometry.coordinates = imageLocation }
@@ -265,19 +265,19 @@ export default class extends Controller {
   }
 
   saveFeature () {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     status('Saving feature ' + feature.id)
     // send shallow copy of feature to avoid changes during send
     mapChannel.send_message('update_feature', { ...feature })
   }
 
   addUndo() {
-    const feature = this.getFeature()
+    const feature = this.getEditFeature()
     addUndoState('Feature property update', feature)
   }
 
-  getFeature () {
+  getEditFeature () {
     const id = this.featureIdValue
-    return geojsonData.features.find(f => f.id === id)
+    return getFeature(id)
   }
 }
