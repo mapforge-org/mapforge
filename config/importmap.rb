@@ -75,10 +75,10 @@ pin "@kurkle/color", to: "@kurkle--color.js", preload: false # @0.4.0
 pin "@turf/projection", to: "@turf--projection.js", preload: false # @7.3.2
 pin "@turf/clone", to: "@turf--clone.js", preload: false # @7.3.2
 pin "@turf/helpers", to: "@turf--helpers.js" # @7.3.3
-pin "@turf/meta", to: "@turf--meta.js" # @7.3.2
+pin "@turf/meta", to: "@turf--meta.js" # @7.3.3
 # Turf libs needed by app
 pin "@turf/simplify", to: "@turf--simplify.js", preload: false # @7.3.2
-pin "@turf/boolean-point-on-line", to: "@turf--boolean-point-on-line.js", preload: false # @7.3.2
+pin "@turf/boolean-point-on-line", to: "@turf--boolean-point-on-line.js", preload: false # @7.3.3
 pin "@turf/clean-coords", to: "@turf--clean-coords.js", preload: false # @7.3.2
 pin "@turf/invariant", to: "@turf--invariant.js", preload: false # @7.3.3
 pin "@turf/centroid", to: "@turf--centroid.js", preload: false # @7.3.2
@@ -89,7 +89,7 @@ pin "@turf/destination", to: "@turf--destination.js", preload: false # @7.3.2
 pin "@turf/length", to: "@turf--length.js", preload: false # @7.3.2
 pin "@turf/area", to: "@turf--area.js", preload: false # @7.3.2
 pin "@turf/buffer", to: "@turf--buffer.js", preload: false # @7.3.2
-pin "@turf/bbox", to: "@turf--bbox.js", preload: false # @7.3.2
+pin "@turf/bbox", to: "@turf--bbox.js", preload: false # @7.3.3
 pin "@turf/center", to: "@turf--center.js", preload: false # @7.3.2
 pin "@turf/jsts", to: "@turf--jsts.js", preload: false # @2.7.2
 # dependencies of turf/buffer
