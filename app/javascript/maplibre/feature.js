@@ -9,7 +9,7 @@ import { area } from "@turf/area"
 import { along } from "@turf/along"
 import { buffer } from "@turf/buffer"
 import { lineString, multiLineString, polygon, multiPolygon } from "@turf/helpers"
-import { getFeature, getFeatures } from "maplibre/layers/layers"
+import { getFeature, getFeatures, getFeatureSource } from "maplibre/layers/layers"
 
 window.marked = marked
 
@@ -253,9 +253,10 @@ export function resetHighlightedFeature () {
   f.e('#feature-details-modal', e => { e.classList.remove('show') })
 }
 
-export function highlightFeature (feature, sticky = false, source = 'geojson-source') {
+export function highlightFeature (feature, sticky = false, source) {
   if (highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
   // console.log('highlight', feature)
+  if (!source) { source = getFeatureSource(feature.id) }
   stickyFeatureHighlight = sticky
   highlightedFeatureId = feature?.id
   highlightedFeatureSource = source

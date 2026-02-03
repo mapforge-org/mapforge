@@ -1,4 +1,4 @@
-import { map, layers, addGeoJSONSource, redrawGeojson } from 'maplibre/map'
+import { map, layers, redrawGeojson } from 'maplibre/map'
 import { initializeViewStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
@@ -9,7 +9,6 @@ export function initializeWikipediaLayers(id = null) {
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   initLayers.forEach((layer) => {
-    addGeoJSONSource('wikipedia-source-' + layer.id, false)
     initializeViewStyles('wikipedia-source-' + layer.id)
     loadWikipediaLayer(layer.id)
     })

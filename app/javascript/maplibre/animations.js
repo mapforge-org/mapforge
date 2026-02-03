@@ -153,7 +153,7 @@ export function animateViewFromProperties () {
   })
 }
 
-export function flyToFeature(feature, source='geojson-source') {
+export function flyToFeature(feature, source) {
   // Calculate the centroid
   const center = centroid(feature)
   console.log('Fly to: ' + feature.id + ' ' + center.geometry.coordinates)

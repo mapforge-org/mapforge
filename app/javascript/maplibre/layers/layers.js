@@ -8,16 +8,17 @@ import * as functions from 'helpers/functions'
 
 // initialize layers: create source, apply styles and load data
 export function initializeLayers(id = null) {
+  let initLayers = layers
+  if (id) { initLayers = initLayers.filter(l => l.id === id) }
+  initLayers.forEach((layer) => {
+    console.log('Adding source for layer', layer.type, layer.id, layer.cluster)
+    addGeoJSONSource(layer.type + '-source-' + layer.id, layer.cluster)
+  })
 
   // draw geojson layer before loading overpass layers
-  //geojsonData = mergedGeoJSONLayers()
-  
-  let initLayers = layers.filter(l => l.type === 'geojson')
-  if (id) { initLayers = initLayers.filter(l => l.id === id) }
-  console.log('Initializing geojson layers: ', initLayers)
-  initLayers.forEach((layer) => {
-    addGeoJSONSource('geojson-source-' + layer.id, false)
-    initializeViewStyles('geojson-source-' + layer.id)
+  console.log('Initializing geojson layers')
+  initLayers.filter(l => l.type === 'geojson').forEach((layer) => {
+    initializeViewStyles('geojson-source-' + layer.id, !!layer.cluster)
   })
   redrawGeojson()
   functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
@@ -43,7 +44,7 @@ export function loadLayer(id) {
 export function getFeature(id) {
   for (const layer of layers) {
     if (layer.geojson) {
-      const feature = layer.geojson.features.find(f => f.id === id)
+      let feature = layer.geojson.features.find(f => f.id === id)
       if (feature) { return feature }
     }
   }
@@ -56,4 +57,14 @@ export function getFeatures(type = 'geojson') {
 
 export function hasFeatures(type = 'geojson') {
   return layers.some(l => l.type === type && l.geojson?.features?.length > 0)
+}
+
+export function getFeatureSource(featureId) {
+  for (const layer of layers) {
+    if (layer.geojson) {
+      let feature = layer.geojson.features.find(f => f.id === featureId)
+      if (feature) { return layer.type + '-source-' + layer.id }
+    }
+  }
+  return null
 }

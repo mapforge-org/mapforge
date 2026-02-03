@@ -10,7 +10,7 @@ import { initializeViewControls } from 'maplibre/controls/view'
 import { draw, select } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
   renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
-import { initializeViewStyles, setStyleDefaultFont, loadImage } from 'maplibre/styles'
+import { setStyleDefaultFont, loadImage } from 'maplibre/styles'
 import { initializeLayers, getFeature } from 'maplibre/layers/layers'
 import { centroid } from "@turf/centroid"
 
@@ -178,10 +178,15 @@ function updateCursorPosition(e) {
   }
 }
 
-export function addGeoJSONSource (sourceName, cluster=true ) {
+// Each map layer has its own source, so different style layers can be applied
+// sourceName convention: layer.type + '-source-' + layer.id
+export function addGeoJSONSource(sourceName, cluster=false) {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
   // console.log("Adding source: " + sourceName)
-  if (map.getSource(sourceName)) { return } // source already exists
+  if (map.getSource(sourceName)) { 
+    console.log('Source ' + sourceName + ' already exists, skipping add')
+    return 
+  }
   map.addSource(sourceName, {
     type: 'geojson',
     promoteId: 'id',
@@ -409,7 +414,7 @@ export function redrawGeojson (resetDraw = true) {
   console.log('layers:', layers)
   layers.forEach((layer) => {
     if (layer.geojson) {
-      console.log("Setting layer data", layer.type, layer.id, layer.geojson)
+      console.log("Setting source data for layer", layer.type, layer.id, layer.geojson)
       map.getSource(layer.type + '-source-' + layer.id).setData(layer.geojson, false)
     }
   })

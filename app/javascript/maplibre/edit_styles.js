@@ -13,7 +13,7 @@ export const highlightColor = '#fbb03b'
 const midpointSize = 6
 const vertexSize = 6
 
-export function editStyles () {
+export function editStyles() {
   return [
     // removeSource(styles()['polygon-layer']), // gl-draw-polygon-fill-inactive
     removeSource(styles()['polygon-layer-outline']),
@@ -112,7 +112,7 @@ export function editStyles () {
     },
     // inactive single point features
     removeSource(styles()['points-layer']),
-    removeSource(styles()['heatmap-layer']),
+    // removeSource(styles()['heatmap-layer']),
 
     // outline border of inactive vertex points on lines + polygons,
     // rendering outline seperately to generate nicer overlay effect

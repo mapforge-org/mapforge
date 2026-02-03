@@ -7,6 +7,7 @@ import { showFeatureDetails, highlightedFeatureId } from 'maplibre/feature'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { draw, select, unselect } from 'maplibre/edit'
+import { getFeature } from 'maplibre/layers/layers'
 
 let easyMDE
 
