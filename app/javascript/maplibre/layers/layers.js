@@ -41,7 +41,7 @@ export function loadLayer(id) {
   }
 }
 
-export function getFeature(id, type = 'geojson') {
+export function getFeature(id, type = null) {
   const searchLayers = type ? layers.filter(l => l.type === type) : layers
   for (const layer of searchLayers) {
     if (layer.geojson) {

@@ -82,7 +82,7 @@ export async function initializeEditMode () {
 
   map.on('geojson.load', function (_e) {
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
-    const feature = getFeature(urlFeatureId)
+    const feature = getFeature(urlFeatureId, 'geojson')
     if (feature) { map.fire('draw.selectionchange', {features: [feature]}) }
   })
 
