@@ -1,4 +1,4 @@
-import { map, layers, mapProperties } from 'maplibre/map'
+import { map, mapProperties } from 'maplibre/map'
 import * as functions from 'helpers/functions'
 // import * as dom from 'helpers/dom'
 import { draw, unselect } from 'maplibre/edit'
@@ -8,6 +8,7 @@ import MaplibreGeocoder from 'maplibre-gl-geocoder'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { animateElement } from 'helpers/dom'
 import { status } from 'helpers/status'
+import { layers } from 'maplibre/layers/layers'
 
 export class ControlGroup {
   constructor (controls) {

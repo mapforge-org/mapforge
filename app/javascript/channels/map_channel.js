@@ -1,10 +1,10 @@
 import consumer from 'channels/consumer'
 import {
   upsert, destroyFeature, setBackgroundMapLayer, mapProperties,
-  initializeMaplibreProperties, map, layers, resetGeojsonLayers, loadLayers, 
+  initializeMaplibreProperties, map, resetGeojsonLayers, 
   reloadMapProperties, removeGeoJSONSource, redrawGeojson
 } from 'maplibre/map'
-import { initializeLayers } from 'maplibre/layers/layers'
+import { layers, initializeLayers } from 'maplibre/layers/layers'
 import { initLayersModal } from 'maplibre/controls/shared'
 
 
@@ -42,7 +42,7 @@ export function initializeSocket () {
         reloadMapProperties().then(() => {
           initializeMaplibreProperties()
           resetGeojsonLayers()
-          loadLayers()
+          initializeLayers()
           setBackgroundMapLayer(mapProperties.base_map, false)
           map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
           // status('Connection to server re-established')

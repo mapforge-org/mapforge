@@ -11,11 +11,10 @@ import { draw, select } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
   renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
 import { setStyleDefaultFont, loadImage } from 'maplibre/styles'
-import { initializeLayers, getFeature } from 'maplibre/layers/layers'
+import { layers, loadLayerDefinitions, initializeLayers, getFeature } from 'maplibre/layers/layers'
 import { centroid } from "@turf/centroid"
 
 export let map
-export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
 export let mapProperties
 export let lastMousePosition
 export let backgroundMapLayer
@@ -51,19 +50,12 @@ export function initializeMaplibreProperties () {
   return false
 }
 
-// reset map data
-export function resetLayers () {
-  functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', false) })
-  layers = []
-}
-
 export function resetGeojsonLayers () {
   functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', false) })
   layers = layers.filter(l => l.type !== 'geojson')
 }
 
 export async function initializeMap (divId = 'maplibre-map') {
-  resetLayers()
   backgroundMapLayer = null
 
   // async load mapbox-gl-draw
@@ -88,7 +80,6 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   // for console debugging
   window.map = map
-  window._layers = layers
   window.maplibregl = maplibregl
 
   if (!!mapProperties.description?.trim()) { dom.showElements('#description-modal') }
@@ -213,37 +204,6 @@ export function removeGeoJSONSource(sourceName) {
   if (map.getSource(sourceName)) {
     map.removeSource(sourceName)
   }
-}
-
-export function loadLayers () {
-  // do not reload from server if all layers already loaded (eg. in case of basemap style change)
-  if (gon.map_layers.length == layers.length) {
-    // console.log('All layers already loaded, re-rendering from cache', layers)
-    initializeLayers()
-    redrawGeojson()
-    map.fire('geojson.load', { detail: { message: 'redraw cached geojson-source' } })
-    return
-  }
-
-  const host = new URL(window.location.href).origin
-  const url = host + '/m/' + window.gon.map_id + '.json'
-  fetch(url)
-    .then(response => {
-      if (!response.ok) { throw new Error('Network response was not ok') }
-      return response.json()
-    })
-    .then(data => {
-      console.log('Loaded map layers from server: ', data.layers)
-      // make sure we're still showing the map the request came from
-      if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
-      data.layers.forEach((layer) => {
-        if (!layers.find( l => l.id === layer.id) ) { layers.push(layer) }
-      })
-      initializeLayers()
-    })
-    .catch(error => {
-      console.error('Failed to fetch map layers:', error)
-    })
 }
 
 export function reloadMapProperties () {
@@ -473,19 +433,18 @@ export function destroyFeature (featureId) {
   }
 }
 
-// after basemap style is ready/changed, init source layers +
-// load geojson data
-function initializeStyles() {
+// after basemap style is ready/changed, init layers + load their data if needed
+async function initializeStyles() {
   console.log('Initializing sources and layer styles after basemap load/change')
   
   addGeoJSONSource('km-marker-source', false)
-  loadLayers()
+  // TODO: only on first load
+  loadLayerDefinitions().then(() => { initializeLayers() })
   demSource.setupMaplibre(maplibregl)
   if (mapProperties.terrain) { addTerrain() }
   if (mapProperties.hillshade) { addHillshade() }
   if (mapProperties.globe) { addGlobe() }
   if (mapProperties.contours) { addContours() }
-  // initializeViewStyles('geojson-source')
   initializeKmMarkerStyles()
 }
 

@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { map, layers, upsert, mapProperties, redrawGeojson, removeGeoJSONSource } from 'maplibre/map'
+import { map, upsert, mapProperties, redrawGeojson, removeGeoJSONSource } from 'maplibre/map'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
 import { status } from 'helpers/status'
@@ -8,7 +8,7 @@ import * as functions from 'helpers/functions'
 import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
 import { queries } from 'maplibre/overpass/queries'
 import { flyToFeature } from 'maplibre/animations'
-import { initializeLayers, loadLayer } from 'maplibre/layers/layers'
+import { layers, initializeLayers, loadLayer } from 'maplibre/layers/layers'
 
 export default class extends Controller {
   upload () {

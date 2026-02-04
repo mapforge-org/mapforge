@@ -1,9 +1,10 @@
-import { map, layers, redrawGeojson, viewUnchanged, sortLayers } from 'maplibre/map'
+import { map, redrawGeojson, viewUnchanged, sortLayers } from 'maplibre/map'
 import { applyOverpassQueryStyle } from 'maplibre/overpass/queries'
 import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { status } from 'helpers/status'
+import { layers } from 'maplibre/layers/layers'
 
 export function initializeOverpassLayers(id = null) {
   let initLayers = layers.filter(l => l.type === 'overpass')

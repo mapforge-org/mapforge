@@ -1,4 +1,4 @@
-import { map, layers, mapProperties } from 'maplibre/map'
+import { map, mapProperties } from 'maplibre/map'
 import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
@@ -9,7 +9,7 @@ import { area } from "@turf/area"
 import { along } from "@turf/along"
 import { buffer } from "@turf/buffer"
 import { lineString, multiLineString, polygon, multiPolygon } from "@turf/helpers"
-import { getFeature, getFeatures, getFeatureSource } from "maplibre/layers/layers"
+import { layers, getFeature, getFeatures, getFeatureSource } from "maplibre/layers/layers"
 
 window.marked = marked
 

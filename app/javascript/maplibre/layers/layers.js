@@ -1,10 +1,32 @@
 import { initializeWikipediaLayers, loadWikipediaLayer } from 'maplibre/layers/wikipedia'
 import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/overpass/overpass'
-import { layers } from 'maplibre/map'
 import { initializeViewStyles } from 'maplibre/styles'
 import { map, addGeoJSONSource, redrawGeojson } from 'maplibre/map'
 import * as functions from 'helpers/functions'
 
+export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
+window._layers = layers
+
+// Loads initial layer definitions from server
+export function loadLayerDefinitions() {
+  const host = new URL(window.location.href).origin
+  const url = host + '/m/' + window.gon.map_id + '.json'
+  layers = fetch(url)
+    .then(response => {
+      if (!response.ok) { throw new Error('Network response was: ', response) }
+      return response.json()
+    })
+    .then(data => {
+      console.log('Loaded map layers from server: ', data.layers)
+      // make sure we're still showing the map the request came from
+      if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
+      layers = data.layers
+    })
+    .catch(error => {
+      console.error('Failed to fetch map layers:', error)
+    })
+  return layers
+}
 
 // initialize layers: create source, apply styles and load data
 export function initializeLayers(id = null) {
@@ -15,11 +37,14 @@ export function initializeLayers(id = null) {
     addGeoJSONSource(layer.type + '-source-' + layer.id, layer.cluster)
   })
 
-  // draw geojson layer before loading overpass layers
+  // geojson, TODO: factor out
   console.log('Initializing geojson layers')
   initLayers.filter(l => l.type === 'geojson').forEach((layer) => {
     initializeViewStyles('geojson-source-' + layer.id, !!layer.cluster)
   })
+
+  
+
   redrawGeojson()
   functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
   map.fire('geojson.load', { detail: { message: 'geojson source loaded' } })

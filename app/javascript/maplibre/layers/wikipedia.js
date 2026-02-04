@@ -1,7 +1,8 @@
-import { map, layers, redrawGeojson } from 'maplibre/map'
+import { map, redrawGeojson } from 'maplibre/map'
 import { initializeViewStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
+import { layers } from 'maplibre/layers/layers'
 
 export function initializeWikipediaLayers(id = null) {
   console.log('Initializing Wikipedia layers')
