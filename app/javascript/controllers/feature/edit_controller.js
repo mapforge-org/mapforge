@@ -8,6 +8,7 @@ import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { addUndoState } from 'maplibre/undo'
+import { getFeature } from 'maplibre/layers/layers'
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
