@@ -1,8 +1,7 @@
 import { initializeWikipediaLayers, loadWikipediaLayer } from 'maplibre/layers/wikipedia'
 import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/overpass/overpass'
-import { initializeViewStyles } from 'maplibre/styles'
-import { map, addGeoJSONSource, redrawGeojson } from 'maplibre/map'
-import * as functions from 'helpers/functions'
+import { addGeoJSONSource } from 'maplibre/map'
+import { initializeGeoJSONLayers } from 'maplibre/layers/geojson'
 
 export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
 window._layers = layers
@@ -17,7 +16,7 @@ export function loadLayerDefinitions() {
       return response.json()
     })
     .then(data => {
-      console.log('Loaded map layers from server: ', data.layers)
+      console.log('Loaded map layer definitions from server: ', data.layers)
       // make sure we're still showing the map the request came from
       if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
       layers = data.layers
@@ -28,37 +27,32 @@ export function loadLayerDefinitions() {
   return layers
 }
 
-// initialize layers: create source, apply styles and load data
-export function initializeLayers(id = null) {
+// initialize layers: create source
+export function initializeLayerSources(id = null) {
   let initLayers = layers
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
+
   initLayers.forEach((layer) => {
     console.log('Adding source for layer', layer.type, layer.id, layer.cluster)
     addGeoJSONSource(layer.type + '-source-' + layer.id, layer.cluster)
   })
-
-  // geojson, TODO: factor out
-  console.log('Initializing geojson layers')
-  initLayers.filter(l => l.type === 'geojson').forEach((layer) => {
-    initializeViewStyles('geojson-source-' + layer.id, !!layer.cluster)
-  })
-
-  
-
-  redrawGeojson()
-  functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
-  map.fire('geojson.load', { detail: { message: 'geojson source loaded' } })
-
-  //initializeGeoJSONLayers(id) 
-  initializeOverpassLayers(id) 
-  initializeWikipediaLayers(id)
 }
 
-export function loadLayer(id) {
+// initialize layers: apply styles and load data
+export function initializeLayerStyles() {
+  // let initLayers = layers
+  // if (id) { initLayers = initLayers.filter(l => l.id === id) }
+
+  // TODO: per layer
+  initializeGeoJSONLayers() 
+  initializeOverpassLayers() 
+  initializeWikipediaLayers()
+}
+
+// triggered by layer reload in the UI
+export function loadLayerData(id) {
   const layer = layers.find(f => f.id === id)
-  //if (layer.type === 'geojson') {
-  //  return loadGeoJSONLayer(id)
-  //} else if (layer.type === 'wikipedia') {
+  // geojson layers are loaded in loadLayerDefinitions
   if (layer.type === 'wikipedia') {
     return loadWikipediaLayer(id)
   } else if (layer.type === 'overpass') {

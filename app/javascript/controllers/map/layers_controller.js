@@ -8,7 +8,7 @@ import * as functions from 'helpers/functions'
 import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
 import { queries } from 'maplibre/overpass/queries'
 import { flyToFeature } from 'maplibre/animations'
-import { layers, initializeLayers, loadLayer } from 'maplibre/layers/layers'
+import { layers, initializeLayerStyles, initializeLayerSources, loadLayerData } from 'maplibre/layers/layers'
 
 export default class extends Controller {
   upload () {
@@ -161,12 +161,12 @@ export default class extends Controller {
     event.preventDefault()
     const layerId = event.target.closest('.layer-item').getAttribute('data-layer-id')
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
-    loadLayer(layerId).then( () => { initLayersModal() })
+    loadLayerData(layerId).then( () => { initLayersModal() })
   }
 
   refreshLayers(event) {
     event.preventDefault()
-    initializeLayers()
+    loadLayerData()
   }  
 
   toggleLayerList (event) {
@@ -205,10 +205,11 @@ export default class extends Controller {
     let layerId = functions.featureId()
     let layer = { "id": layerId, "type": type, "name": name, "query": query }
     layers.push(layer)
+    initializeLayerSources(layerId)
     mapChannel.send_message('new_layer', layer)
     initLayersModal()
     document.querySelector('#layer-list-' + layerId + ' .reload-icon').classList.add('layer-refresh-animate')
-    initializeLayers(layerId)
+    initializeLayerStyles(layerId)
     return layerId
   }
 

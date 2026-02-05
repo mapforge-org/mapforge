@@ -4,7 +4,7 @@ import {
   initializeMaplibreProperties, map, resetGeojsonLayers, 
   reloadMapProperties, removeGeoJSONSource, redrawGeojson
 } from 'maplibre/map'
-import { layers, initializeLayers } from 'maplibre/layers/layers'
+import { layers, initializeLayerStyles } from 'maplibre/layers/layers'
 import { initLayersModal } from 'maplibre/controls/shared'
 
 
@@ -42,7 +42,7 @@ export function initializeSocket () {
         reloadMapProperties().then(() => {
           initializeMaplibreProperties()
           resetGeojsonLayers()
-          initializeLayers()
+          initializeLayerStyles()
           setBackgroundMapLayer(mapProperties.base_map, false)
           map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
           // status('Connection to server re-established')
@@ -102,11 +102,11 @@ export function initializeSocket () {
             const { ['geojson']: _, ...layerDef } = layers[index]
             if (JSON.stringify(layerDef) !== JSON.stringify(data.layer)) {
               layers[index] = data.layer
-              initializeLayers(data.layer.id)
+              initializeLayerStyles(data.layer.id)
             }
           } else {
             layers.push(data.layer)
-            initializeLayers(data.layer.id)
+            initializeLayerStyles(data.layer.id)
           }
           break
         case 'delete_layer':

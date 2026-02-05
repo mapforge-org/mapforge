@@ -80,14 +80,14 @@ export function redo() {
 }
 
 function undoFeatureUpdate(prevState) {
-  const idx = geojsonData.features.findIndex(f => f.id === prevState.state.id)
-  if (idx !== -1) {
-    addRedoState(prevState.type, geojsonData.features[idx])
-    geojsonData.features[idx] = prevState.state
+  let feature = getFeature(prevState.state.id, 'geojson')
+  if (feature) {
+    addRedoState(prevState.type, feature)
+    feature = prevState.state
     resetDirections()
     mapChannel.send_message('update_feature', prevState.state)
   } else {
-    console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
+    console.warn('Feature with id ' + prevState.state.id + ' not found for undo')
   }
 }
 

@@ -44,7 +44,7 @@ class Layer
   end
 
   def broadcast_update
-    if (%i[name query heatmap cluster] & saved_changes.keys).any?
+    if (%w[name query heatmap cluster] & previous_changes.keys).any?
       # broadcast to private + public channel
       [ map.private_id, map.public_id ].each do |map_id|
         ActionCable.server.broadcast("map_channel_#{map_id}",

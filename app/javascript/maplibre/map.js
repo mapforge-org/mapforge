@@ -11,7 +11,7 @@ import { draw, select } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
   renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
 import { setStyleDefaultFont, loadImage } from 'maplibre/styles'
-import { layers, loadLayerDefinitions, initializeLayers, getFeature } from 'maplibre/layers/layers'
+import { layers, initializeLayerSources, loadLayerDefinitions, initializeLayerStyles, getFeature } from 'maplibre/layers/layers'
 import { centroid } from "@turf/centroid"
 
 export let map
@@ -29,9 +29,9 @@ let backgroundContours
 // page calls: initializeMap(), [initializeSocket()],
 // initializeViewMode() or initializeEditMode() or initializeStaticMode()
 // setBackgroundMapLayer() -> 'style.load' event
-// 'style.load' -> initializeDefaultControls()
-// 'style.load' -> initializeViewStyles()
-// 'style.load' -> loadLayers() -> 'geojson.load'
+// 'style.load' (once) -> initializeDefaultControls()
+// 'style.load' -> initializeStyles()
+// loadLayerDefinitions() -> 'geojson.load'
 
 export function initializeMaplibreProperties () {
   const lastProperties = JSON.parse(JSON.stringify(mapProperties || {}))
@@ -77,6 +77,10 @@ export async function initializeMap (divId = 'maplibre-map') {
     // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
   })
   if (!functions.isTestEnvironment()) { map.setZoom(map.getZoom() - 1) } // will zoom in on map:load
+
+  loadLayerDefinitions().then(() => {
+    map.fire('geojson.load', { detail: { message: 'Initial map geojson layers loaded' } }) 
+  })
 
   // for console debugging
   window.map = map
@@ -217,7 +221,6 @@ export function reloadMapProperties () {
     .then(data => {
       // console.log('reloaded map properties', data)
       window.gon.map_properties = data.properties
-      window.gon.map_layers = data.layers
     })
     .catch(error => { console.error('Failed to fetch map properties', error) })
 }
@@ -374,7 +377,7 @@ export function redrawGeojson (resetDraw = true) {
   console.log('layers:', layers)
   layers.forEach((layer) => {
     if (layer.geojson) {
-      console.log("Setting source data for layer", layer.type, layer.id, layer.geojson)
+      console.log("Redraw: Setting source data for layer", layer.type, layer.id, layer.geojson)
       map.getSource(layer.type + '-source-' + layer.id).setData(layer.geojson, false)
     }
   })
@@ -403,8 +406,8 @@ export function upsert (updatedFeature) {
 
 export function addFeature (feature) {
   feature.properties.id = feature.id
+  // Adding new features to the first geojson layer
   layers.find(l => l.type === 'geojson').geojson.features.push(feature)
-  //geojsonData = mergedGeoJSONLayers()
   redrawGeojson(false)
   status('Added feature')
 }
@@ -437,9 +440,13 @@ export function destroyFeature (featureId) {
 async function initializeStyles() {
   console.log('Initializing sources and layer styles after basemap load/change')
   
+  // in case layer data is not yet loaded, wait for it 
+  if (!layers) { await functions.waitForEvent(map, 'geojson.load') }
+
   addGeoJSONSource('km-marker-source', false)
-  // TODO: only on first load
-  loadLayerDefinitions().then(() => { initializeLayers() })
+  initializeLayerSources()
+
+  initializeLayerStyles()
   demSource.setupMaplibre(maplibregl)
   if (mapProperties.terrain) { addTerrain() }
   if (mapProperties.hillshade) { addHillshade() }
