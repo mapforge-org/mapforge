@@ -205,8 +205,6 @@ export function initLayersModal () {
         listItem.classList.add('flex-center')
         listItem.classList.add('align-items-center')
         listItem.setAttribute('data-feature-id', feature.id)
-        const source = layer.type + '-source-' + layer.id
-        listItem.setAttribute('data-feature-source', source)
         listItem.setAttribute('data-controller', 'map--layers')
         listItem.setAttribute('data-action', 'click->map--layers#flyToLayerElement')
 

@@ -8,6 +8,7 @@ import { point } from "@turf/helpers"
 import distance from "@turf/distance"
 import { along } from "@turf/along"
 import { centroid } from "@turf/centroid"
+import { getFeatureSource } from 'maplibre/layers/layers'
 
 export class AnimationManager {
   constructor () {
@@ -153,7 +154,8 @@ export function animateViewFromProperties () {
   })
 }
 
-export function flyToFeature(feature, source) {
+export function flyToFeature(feature) {
+  const source = getFeatureSource(feature.id)
   // Calculate the centroid
   const center = centroid(feature)
   console.log('Fly to: ' + feature.id + ' ' + center.geometry.coordinates)
