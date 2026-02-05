@@ -8,8 +8,7 @@ import { basemaps, defaultFont, elevationSource, demSource } from 'maplibre/base
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared'
 import { initializeViewControls } from 'maplibre/controls/view'
 import { draw, select } from 'maplibre/edit'
-import { highlightFeature, resetHighlightedFeature, renderKmMarkers,
-  renderExtrusionLines, initializeKmMarkerStyles } from 'maplibre/feature'
+import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { setStyleDefaultFont, loadImage } from 'maplibre/styles'
 import { layers, initializeLayerSources, loadLayerDefinitions, initializeLayerStyles, getFeature } from 'maplibre/layers/layers'
 import { centroid } from "@turf/centroid"
@@ -383,15 +382,6 @@ export function redrawGeojson (resetDraw = true) {
   })
 }
 
-// change geojson data before rendering:
-export function renderedGeojsonData () {
-  // - For LineStrings with 'show-km-markers', show markers each X km
-  renderKmMarkers()
-  // - For LineStrings with a 'fill-extrusion-height', add a polygon to render extrusion
-  let extrusionLines = renderExtrusionLines()
-  return { type: 'FeatureCollection', features: geojsonData.features.concat(extrusionLines) }
-}
-
 export function upsert (updatedFeature) {
   const feature = getFeature(updatedFeature.id)
   if (!feature) { addFeature(updatedFeature); return }
@@ -443,16 +433,14 @@ async function initializeStyles() {
   // in case layer data is not yet loaded, wait for it 
   if (!layers) { await functions.waitForEvent(map, 'geojson.load') }
 
-  addGeoJSONSource('km-marker-source', false)
   initializeLayerSources()
-
   initializeLayerStyles()
+
   demSource.setupMaplibre(maplibregl)
   if (mapProperties.terrain) { addTerrain() }
   if (mapProperties.hillshade) { addHillshade() }
   if (mapProperties.globe) { addGlobe() }
   if (mapProperties.contours) { addContours() }
-  initializeKmMarkerStyles()
 }
 
 export function setBackgroundMapLayer (mapName = mapProperties.base_map, force = false) {

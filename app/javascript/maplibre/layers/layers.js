@@ -2,6 +2,7 @@ import { initializeWikipediaLayers, loadWikipediaLayer } from 'maplibre/layers/w
 import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/overpass/overpass'
 import { addGeoJSONSource } from 'maplibre/map'
 import { initializeGeoJSONLayers } from 'maplibre/layers/geojson'
+import { initializeKmMarkerStyles } from 'maplibre/feature'
 
 export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
 window._layers = layers
@@ -36,6 +37,7 @@ export function initializeLayerSources(id = null) {
     console.log('Adding source for layer', layer.type, layer.id, layer.cluster)
     addGeoJSONSource(layer.type + '-source-' + layer.id, layer.cluster)
   })
+  addGeoJSONSource('km-marker-source', false)
 }
 
 // initialize layers: apply styles and load data
@@ -44,7 +46,8 @@ export function initializeLayerStyles() {
   // if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   // TODO: per layer
-  initializeGeoJSONLayers() 
+  initializeGeoJSONLayers()
+  initializeKmMarkerStyles()
   initializeOverpassLayers() 
   initializeWikipediaLayers()
 }
@@ -80,10 +83,18 @@ export function hasFeatures(type = 'geojson') {
 }
 
 export function getFeatureSource(featureId) {
+  const layer = getLayer(featureId)
+  if (layer) {
+    return layer.type + '-source-' + layer.id
+  }
+  return null
+}
+
+export function getLayer(featureId) {
   for (const layer of layers) {
     if (layer.geojson) {
       let feature = layer.geojson.features.find(f => f.id === featureId)
-      if (feature) { return layer.type + '-source-' + layer.id }
+      if (feature) { return layer }
     }
   }
   return null

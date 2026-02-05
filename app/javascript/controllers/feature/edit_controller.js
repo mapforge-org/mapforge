@@ -8,16 +8,24 @@ import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { addUndoState } from 'maplibre/undo'
-import { getFeature } from 'maplibre/layers/layers'
+import { getFeature, getLayer } from 'maplibre/layers/layers'
+import { renderGeoJSONLayer } from 'maplibre/layers/geojson'
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
   static values = {
-    featureId: String
+    featureId: String,
+    layerId: String
   }
 
   // emoji picker
   picker = null
+
+  featureIdValueChanged(value) {
+    if (value) {
+      this.layerIdValue = getLayer(value).id
+    }
+  }
 
   delete_feature (e) {
     if (dom.isInputElement(e.target)) return // Don't trigger if typing in input
@@ -86,7 +94,7 @@ export default class extends Controller {
     feature.properties['stroke-width'] = size
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'stroke-width', size)
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, false) 
   }
 
   // called as preview on slider change
