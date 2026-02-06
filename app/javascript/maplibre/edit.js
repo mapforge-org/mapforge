@@ -74,7 +74,8 @@ export async function initializeEditMode () {
   initializeDefaultControls()
 
   // Show map settings modal on untouched map
-  map.once('load', function (_e) {
+  map.once('load', async function (_e) {
+    if (!layers) { await functions.waitForEvent(map, 'layers.load') }
     if (!mapProperties.name && !hasFeatures('geojson') && !layers?.filter(l => l.type !== 'geojson').length)  {
       functions.e('.maplibregl-ctrl-map', e => { e.click() })
     }

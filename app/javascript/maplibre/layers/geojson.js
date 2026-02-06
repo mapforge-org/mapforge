@@ -135,7 +135,7 @@ function makeNumbersLayer(divisor, minzoom, maxzoom=24) {
   }
 }
 
-export function kmMarkerStyles (id) {
+export function kmMarkerStyles (_id) {
   let layers = []
   const base = { ...styles()['points-layer'] }
 

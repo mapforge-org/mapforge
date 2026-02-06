@@ -6,6 +6,15 @@ describe 'Map' do
   let(:user) { create(:user) }
 
   before do
+    overpass_file = File.read(Rails.root.join("spec", "fixtures", "files", "overpass.json"))
+    CapybaraMock.stub_request(
+      :post, 'https://overpass-api.de/api/interpreter'
+    ).to_return(
+      headers: { 'Access-Control-Allow-Origin' => '*' },
+      status: 200,
+      body: overpass_file
+    )
+
     allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
     visit map.private_map_path
     expect_map_loaded
@@ -82,16 +91,6 @@ describe 'Map' do
 
   context 'overpass layer' do
     before do
-      overpass_file = File.read(Rails.root.join("spec", "fixtures", "files", "overpass.json"))
-      # https://github.com/railsware/capybara_mock
-      CapybaraMock.stub_request(
-        :post, 'https://overpass-api.de/api/interpreter'
-      ).to_return(
-        headers: { 'Access-Control-Allow-Origin' => '*' },
-        status: 200,
-        body: overpass_file
-      )
-
       map.layers << layer
       visit map.private_map_path
       expect_map_loaded
