@@ -11,7 +11,7 @@ window._layers = layers
 export function loadLayerDefinitions() {
   const host = new URL(window.location.href).origin
   const url = host + '/m/' + window.gon.map_id + '.json'
-  layers = fetch(url)
+  return fetch(url)
     .then(response => {
       if (!response.ok) { throw new Error('Network response was: ', response) }
       return response.json()
@@ -25,7 +25,6 @@ export function loadLayerDefinitions() {
     .catch(error => {
       console.error('Failed to fetch map layers:', error)
     })
-  return layers
 }
 
 // initialize layers: create source

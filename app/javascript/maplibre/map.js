@@ -75,11 +75,11 @@ export async function initializeMap (divId = 'maplibre-map') {
     interactive: (window.gon.map_mode !== 'static') // can move/zoom map
     // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
   })
-  if (!functions.isTestEnvironment()) { map.setZoom(map.getZoom() - 1) } // will zoom in on map:load
 
   loadLayerDefinitions().then(() => {
-    map.fire('geojson.load', { detail: { message: 'Initial map geojson layers loaded' } }) 
+    map.fire('geojson.load', { detail: { message: 'Initial map geojson layers loaded' } })
   })
+  if (!functions.isTestEnvironment()) { map.setZoom(map.getZoom() - 1) } // will zoom in on map:load
 
   // for console debugging
   window.map = map
@@ -110,16 +110,15 @@ export async function initializeMap (divId = 'maplibre-map') {
     console.log("Map loaded ('load')")
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
-    let feature = getFeature(urlFeatureId)
-    if (feature) {
+    let feature
+    if (urlFeatureId && (feature = getFeature(urlFeatureId))) {
       resetControls()
       highlightFeature(feature, true)
       const center = centroid(feature)
       map.setCenter(center.geometry.coordinates)
     }
     const urlFeatureAnimateId = new URLSearchParams(window.location.search).get('a')
-    feature = getFeature(urlFeatureAnimateId)
-    if (feature) {
+    if (urlFeatureAnimateId && (feature = getFeature(urlFeatureAnimateId))) {
       console.log('Animating ' + feature.id)
       resetControls()
       if (feature.geometry.type === 'LineString') {
@@ -140,6 +139,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     if (layers.filter(l => l.type !== 'geojson').length) { dom.animateElement('#layer-reload', 'fade-in') }
   })
   map.on('zoom', (_e) => {
+    if (!layers) { return }
     if (layers.filter(l => l.type !== 'geojson').length) { dom.animateElement('#layer-reload', 'fade-in') }
     // block zooming in closer than defined max zoom level
     let bgMap = basemaps()[backgroundMapLayer]
@@ -431,7 +431,10 @@ async function initializeStyles() {
   console.log('Initializing sources and layer styles after basemap load/change')
   
   // in case layer data is not yet loaded, wait for it 
-  if (!layers) { await functions.waitForEvent(map, 'geojson.load') }
+  if (!layers) { 
+    console.log('Waiting for layers to load before initializing styles...')
+    await functions.waitForEvent(map, 'geojson.load') 
+  }
 
   initializeLayerSources()
   initializeLayerStyles()
