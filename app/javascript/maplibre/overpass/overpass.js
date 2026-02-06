@@ -76,7 +76,7 @@ export function loadOverpassLayer(id) {
     functions.e('#maplibre-map', e => { e.setAttribute('data-overpass-loaded', true) })
   })
   .catch(error => {
-    console.error('Failed to fetch overpass for ' + layer.id, error)
+    console.error('Failed to fetch overpass for ' + layer.id, layer.query, error)
     status('Failed to load layer ' + layer.name, 'error')
     functions.e(`#layer-list-${layer.id} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
     functions.e('#layer-loading', e => { e.classList.add('hidden') })

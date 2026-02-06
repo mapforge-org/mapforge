@@ -2,9 +2,8 @@ import { initializeWikipediaLayers, loadWikipediaLayer } from 'maplibre/layers/w
 import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/overpass/overpass'
 import { addGeoJSONSource, map } from 'maplibre/map'
 import { initializeGeoJSONLayers } from 'maplibre/layers/geojson'
-import { initializeKmMarkerStyles } from 'maplibre/feature'
 
-export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
+export let layers = null // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
 window._layers = layers
 
 // Loads initial layer definitions from server
@@ -36,21 +35,18 @@ export function initializeLayerSources(id = null) {
   initLayers.forEach((layer) => {
     console.log('Adding source for layer', layer.type, layer.id, layer.cluster)
     addGeoJSONSource(layer.type + '-source-' + layer.id, layer.cluster)
+    // add one source for km markers per geojson layer
+    if (layer.type === 'geojson') {
+      addGeoJSONSource('km-marker-source-' + layer.id, false)
+    }
   })
-  addGeoJSONSource('km-marker-source', false)
 }
 
 // initialize layers: apply styles and load data
-export function initializeLayerStyles() {
-  // let initLayers = layers
-  // if (id) { initLayers = initLayers.filter(l => l.id === id) }
-
-  // TODO: per layer
-  initializeGeoJSONLayers()
-  // TODO fix repeated loading of km markers
-  // initializeKmMarkerStyles()
-  initializeOverpassLayers() 
-  initializeWikipediaLayers()
+export function initializeLayerStyles(id = null) {
+  initializeGeoJSONLayers(id)
+  initializeOverpassLayers(id)
+  initializeWikipediaLayers(id)
 }
 
 // triggered by layer reload in the UI
