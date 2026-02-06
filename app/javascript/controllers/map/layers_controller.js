@@ -42,7 +42,7 @@ export default class extends Controller {
           // mapforge export file
           const mapforgeJSON = JSON.parse(content)
           if (mapforgeJSON.layers) {
-            // mapforge export file, importing only the first geojson layer for now
+            // mapforge export file, TODO: importing only the first geojson layer for now
             geoJSON = mapforgeJSON.layers.find(f => f.type === 'geojson').geojson
             mapforgeJSON.layers.filter(f => f.type !== 'geojson').forEach(layer => {
               this.createLayer(layer.type, layer.name, layer.query)

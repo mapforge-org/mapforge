@@ -30,7 +30,7 @@ let backgroundContours
 // setBackgroundMapLayer() -> 'style.load' event
 // 'style.load' (once) -> initializeDefaultControls()
 // 'style.load' -> initializeStyles()
-// loadLayerDefinitions() -> 'geojson.load'
+// loadLayerDefinitions() -> 'layers.load'
 
 export function initializeMaplibreProperties () {
   const lastProperties = JSON.parse(JSON.stringify(mapProperties || {}))
@@ -47,11 +47,6 @@ export function initializeMaplibreProperties () {
     return true
   }
   return false
-}
-
-export function resetGeojsonLayers () {
-  functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', false) })
-  layers = layers.filter(l => l.type !== 'geojson')
 }
 
 export async function initializeMap (divId = 'maplibre-map') {
@@ -76,9 +71,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
   })
 
-  loadLayerDefinitions().then(() => {
-    map.fire('geojson.load', { detail: { message: 'Initial map geojson layers loaded' } })
-  })
+  loadLayerDefinitions()
   if (!functions.isTestEnvironment()) { map.setZoom(map.getZoom() - 1) } // will zoom in on map:load
 
   // for console debugging
@@ -93,7 +86,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
   })
 
-  // NOTE: map 'load' can happen before 'geojson.load' when loading features is slow
+  // NOTE: map 'load' can happen before 'layers.load'/'geojson.load' when loading features is slow
   map.once('load', async function (_e) {
     // trigger map fade-in
     dom.animateElement('.map', 'fade-in', 250)
@@ -373,7 +366,6 @@ export function redrawGeojson (resetDraw = true) {
 
   // updateData requires a 'GeoJSONSourceDiff', with add/update/remove lists
   //map.getSource('geojson-source').setData(renderedGeojsonData())
-  console.log('layers:', layers)
   layers.forEach((layer) => {
     if (layer.geojson) {
       console.log("Redraw: Setting source data for layer", layer.type, layer.id, layer.geojson)
@@ -433,7 +425,7 @@ async function initializeStyles() {
   // in case layer data is not yet loaded, wait for it 
   if (!layers) { 
     console.log('Waiting for layers to load before initializing styles...')
-    await functions.waitForEvent(map, 'geojson.load') 
+    await functions.waitForEvent(map, 'layers.load') 
   }
 
   initializeLayerSources()
@@ -456,6 +448,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
   if (basemap) {
     map.once('style.load', () => {
       status('Loaded base map ' + mapName)
+      // on map style change, all sources and layers are removed, so we need to re-initialize them
       initializeStyles()
       // re-sort layers after basemap style change
       sortLayers()

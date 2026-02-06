@@ -1,6 +1,6 @@
 import { initializeWikipediaLayers, loadWikipediaLayer } from 'maplibre/layers/wikipedia'
 import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/overpass/overpass'
-import { addGeoJSONSource } from 'maplibre/map'
+import { addGeoJSONSource, map } from 'maplibre/map'
 import { initializeGeoJSONLayers } from 'maplibre/layers/geojson'
 import { initializeKmMarkerStyles } from 'maplibre/feature'
 
@@ -21,6 +21,7 @@ export function loadLayerDefinitions() {
       // make sure we're still showing the map the request came from
       if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
       layers = data.layers
+      map.fire('layers.load', { detail: { message: 'Map layer data loaded from server' } })
     })
     .catch(error => {
       console.error('Failed to fetch map layers:', error)
@@ -46,7 +47,8 @@ export function initializeLayerStyles() {
 
   // TODO: per layer
   initializeGeoJSONLayers()
-  initializeKmMarkerStyles()
+  // TODO fix repeated loading of km markers
+  // initializeKmMarkerStyles()
   initializeOverpassLayers() 
   initializeWikipediaLayers()
 }

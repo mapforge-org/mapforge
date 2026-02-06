@@ -1,6 +1,5 @@
 import { map } from 'maplibre/map'
 import { initializeViewStyles } from 'maplibre/styles'
-import * as functions from 'helpers/functions'
 import { layers } from 'maplibre/layers/layers'
 import { draw, select } from 'maplibre/edit'
 import { getFeature } from 'maplibre/layers/layers'
@@ -17,7 +16,6 @@ export function initializeGeoJSONLayers(id = null) {
     renderGeoJSONLayer(layer.id)
   })
 
-  functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
   map.fire('geojson.load', { detail: { message: 'geojson source loaded' } })
 }
 

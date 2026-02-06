@@ -1,6 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { redrawGeojson } from 'maplibre/map'
 import { featureIcon, featureImage, uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
 import { handleDelete, draw } from 'maplibre/edit'
 import { featureColor, featureOutlineColor } from 'maplibre/styles'
@@ -41,7 +40,7 @@ export default class extends Controller {
     document.querySelector('#feature-edit-raw .error').innerHTML = ''
     try {
       feature.properties = JSON.parse(document.querySelector('#feature-edit-raw textarea').value)
-      redrawGeojson()
+      renderGeoJSONLayer(this.layerIdValue, true)
       mapChannel.send_message('update_feature', feature)
     } catch (error) {
       console.error('Error updating feature:', error.message)
@@ -62,7 +61,7 @@ export default class extends Controller {
     const feature = this.getEditFeature()
     const label = document.querySelector('#feature-label input').value
     feature.properties.label = label
-    redrawGeojson(false)
+    renderGeoJSONLayer(this.layerIdValue, false)
     functions.debounce(() => { this.saveFeature() }, 'label', 1000)
   }
 
@@ -74,7 +73,7 @@ export default class extends Controller {
     feature.properties['marker-size'] = size
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'marker-size', size)
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   updatePointScaling() {
@@ -83,7 +82,7 @@ export default class extends Controller {
     feature.properties['marker-scaling'] = val
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'marker-scaling', val)
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   // called as preview on slider change
@@ -94,7 +93,7 @@ export default class extends Controller {
     feature.properties['stroke-width'] = size
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'stroke-width', size)
-    renderGeoJSONLayer(this.layerIdValue, false) 
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   // called as preview on slider change
@@ -105,7 +104,7 @@ export default class extends Controller {
     feature.properties['stroke-width'] = size
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'stroke-width', size)
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   // called as preview on slider change
@@ -117,7 +116,7 @@ export default class extends Controller {
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'fill-extrusion-height', Number(size))
     // needs redraw to add extrusion
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   updateOpacity () {
@@ -127,7 +126,7 @@ export default class extends Controller {
     feature.properties['fill-opacity'] = opacity
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'fill-opacity', opacity)
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   updateStrokeColor () {
@@ -136,7 +135,7 @@ export default class extends Controller {
     feature.properties.stroke = color
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'stroke', color)
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   updateStrokeColorTransparent () {
@@ -151,7 +150,7 @@ export default class extends Controller {
       document.querySelector('#stroke-color').removeAttribute('disabled')
     }
     feature.properties.stroke = color
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   updateFillColor () {
@@ -159,7 +158,7 @@ export default class extends Controller {
     const color = document.querySelector('#fill-color').value
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
     if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   updateFillColorTransparent () {
@@ -175,7 +174,7 @@ export default class extends Controller {
     }
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
     if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   updateShowKmMarkers () {
@@ -187,7 +186,7 @@ export default class extends Controller {
       delete feature.properties['show-km-markers']
       delete feature.properties['stroke-image-url']
     }
-    redrawGeojson(false)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   updateMarkerSymbol () {
@@ -200,7 +199,7 @@ export default class extends Controller {
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
     functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
-    redrawGeojson(true)
+    renderGeoJSONLayer(this.layerIdValue, true)
   }
 
   async updateMarkerImage () {
@@ -223,7 +222,7 @@ export default class extends Controller {
         functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
         functions.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
 
-        redrawGeojson(true)
+        renderGeoJSONLayer(this.layerIdValue, true)
         this.saveFeature()
       })
   }
