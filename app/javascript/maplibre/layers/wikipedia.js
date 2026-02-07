@@ -48,6 +48,10 @@ export function renderWikipediaLayer(id) {
   console.log("Redraw: Setting source data for wikipedia layer", layer)
 
   // TODO: only needed once, not each render
+  // this + `promoteId: 'id'` is a workaround for the maplibre limitation:
+  // https://github.com/mapbox/mapbox-gl-js/issues/2716
+  // because to highlight a feature we need the id,
+  // and in the style layers it only accepts mumeric ids in the id field initially
   layer.geojson.features.forEach((feature) => { feature.properties.id = feature.id })
   map.getSource(layer.type + '-source-' + layer.id).setData(layer.geojson, false)
 }

@@ -7,11 +7,13 @@ import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, a
 import { basemaps, defaultFont, elevationSource, demSource } from 'maplibre/basemaps'
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared'
 import { initializeViewControls } from 'maplibre/controls/view'
-import { draw, select } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { setStyleDefaultFont, loadImage } from 'maplibre/styles'
 import { layers, initializeLayerSources, loadLayerDefinitions, initializeLayerStyles, getFeature } from 'maplibre/layers/layers'
 import { centroid } from "@turf/centroid"
+import { renderGeoJSONLayer, renderGeoJSONLayers } from 'maplibre/layers/geojson'
+import { renderWikipediaLayer } from 'maplibre/layers/wikipedia'
+import { renderOverpassLayer } from 'maplibre/overpass/overpass'
 
 export let map
 export let mapProperties
@@ -334,46 +336,6 @@ export function initializeViewMode () {
   map.on('click', resetControls)
 }
 
-export function redrawGeojson (resetDraw = true) {
-  // this + `promoteId: 'id'` is a workaround for the maplibre limitation:
-  // https://github.com/mapbox/mapbox-gl-js/issues/2716
-  // because to highlight a feature we need the id,
-  // and in the style layers it only accepts mumeric ids in the id field initially
-  mergedGeoJSONLayers('geojson').features.forEach((feature) => { feature.properties.id = feature.id })
-  mergedGeoJSONLayers('overpass').features.forEach((feature) => { feature.properties.id = feature.id })
-  mergedGeoJSONLayers('wikipedia').features.forEach((feature) => { feature.properties.id = feature.id })
-
-
-  // draw has its own style layers based on editStyles
-  if (draw) {
-    if (resetDraw) {
-      // This has a performance drawback over draw.set(), but some feature
-      // properties don't get updated otherwise
-      // API: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md  
-      const drawFeatureIds = draw.getAll().features.map(feature => feature.id)
-      draw.deleteAll()
-      
-      drawFeatureIds.forEach((featureId) => {
-        let feature = getFeature(featureId)
-        if (feature) { 
-          draw.add(feature) 
-          // if we're in edit mode, re-select feature
-          select(feature)
-        }
-      })
-    }
-  }
-
-  // updateData requires a 'GeoJSONSourceDiff', with add/update/remove lists
-  //map.getSource('geojson-source').setData(renderedGeojsonData())
-  layers.forEach((layer) => {
-    if (layer.geojson) {
-      console.log("Legacy Redraw: Setting source data for layer", layer.type, layer.id, layer.geojson)
-      map.getSource(layer.type + '-source-' + layer.id).setData(layer.geojson, false)
-    }
-  })
-}
-
 export function upsert (updatedFeature) {
   const feature = getFeature(updatedFeature.id)
   if (!feature) { addFeature(updatedFeature); return }
@@ -390,7 +352,7 @@ export function addFeature (feature) {
   feature.properties.id = feature.id
   // Adding new features to the first geojson layer
   layers.find(l => l.type === 'geojson').geojson.features.push(feature)
-  redrawGeojson(false)
+  renderGeoJSONLayers()
   status('Added feature')
 }
 
@@ -406,14 +368,14 @@ function updateFeature (feature, updatedFeature) {
   feature.geometry = updatedFeature.geometry
   feature.properties = updatedFeature.properties
   status('Updated feature ' + updatedFeature.id)
-  redrawGeojson()
+  renderGeoJSONLayers()
 }
 
 export function destroyFeature (featureId) {
   if (getFeature(featureId)) {
     status('Deleting feature ' + featureId)
     layers.forEach(l => l.geojson.features = l.geojson.features.filter(f => f.id !== featureId))
-    redrawGeojson()
+    renderGeoJSONLayers()
     resetHighlightedFeature()
   }
 }
@@ -515,12 +477,6 @@ export function updateMapName (name) {
   functions.e('#map-title', e => { e.textContent = mapProperties.name })
 }
 
-export function mergedGeoJSONLayers(type='geojson') {
-  return { type: "FeatureCollection",
-    features: layers.filter(f => f.type === type)
-      .flatMap(layer => (layer?.geojson?.features || [])) }
-}
-
 export function frontFeature(frontFeature) {
   // move feature to end of its layer's features array 
   for (const layer of layers) {
@@ -530,10 +486,14 @@ export function frontFeature(frontFeature) {
     if (idx !== -1) {
       const [feature] = features.splice(idx, 1) // Remove it
       features.push(feature) // Add to end
+      // TODO: refactor to call this dynamically in the right way
+      if (layer.type === 'geojson') { renderGeoJSONLayer(layer.id) }
+      if (layer.type === 'overpass') { renderOverpassLayer(layer.id) }
+      if (layer.type === 'wikipedia') { renderWikipediaLayer(layer.id) }
+
       break // done, exit loop
     }
   }
-  redrawGeojson()
 }
 
 export function viewUnchanged() {

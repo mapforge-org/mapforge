@@ -1,4 +1,4 @@
-import { map, destroyFeature, redrawGeojson, addFeature, mapProperties } from 'maplibre/map'
+import { map, destroyFeature, addFeature, mapProperties } from 'maplibre/map'
 import { editStyles } from 'maplibre/edit_styles'
 import { highlightFeature } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
@@ -12,6 +12,7 @@ import { undo, redo, addUndoState } from 'maplibre/undo'
 import * as functions from 'helpers/functions'
 import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
 import { simplify } from "@turf/simplify"
+import { renderGeoJSONLayers } from 'maplibre/layers/geojson'
 
 export let draw
 export let selectedFeature
@@ -250,7 +251,7 @@ function handleCreate (e) {
   addUndoState('Feature added', feature)
   // redraw if the painted feature was changed in this method
   if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') {
-    redrawGeojson(false)
+    renderGeoJSONLayers(false)
   }
   mapChannel.send_message('new_feature', feature)
   if (feature.geometry.type === 'LineString') { updateElevation(feature) }
@@ -291,7 +292,7 @@ async function handleUpdate (e) {
 
   status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry
-  redrawGeojson(false)
+  renderGeoJSONLayers(false)
 
   if (feature.geometry.type === 'LineString') { 
     // gets also triggered on failure

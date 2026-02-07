@@ -206,7 +206,7 @@ export default class extends Controller {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
     let layer = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": false}
-    if (query) { layer["query"] = query }
+    if (type == 'overpass') { layer["query"] = query }
     layers.push(layer)
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)

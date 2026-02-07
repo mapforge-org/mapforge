@@ -51,14 +51,18 @@ export function initializeLayerStyles(id = null) {
 }
 
 // triggered by layer reload in the UI
-export function loadLayerData(id) {
-  const layer = layers.find(f => f.id === id)
-  // geojson layers are loaded in loadLayerDefinitions
-  if (layer.type === 'wikipedia') {
-    return loadWikipediaLayer(id)
-  } else if (layer.type === 'overpass') {
-    return loadOverpassLayer(id)
-  }
+export function loadLayerData(id = null) {
+  let initLayers = layers
+  if (id) { initLayers = initLayers.filter(l => l.id === id) }
+
+  initLayers.forEach((layer) => {
+    // geojson layers are loaded in loadLayerDefinitions
+    if (layer.type === 'wikipedia') {
+      return loadWikipediaLayer(layer.id)
+    } else if (layer.type === 'overpass') {
+      return loadOverpassLayer(layer.id)
+    }
+  })
 }
 
 export function getFeature(id, type = null) {
