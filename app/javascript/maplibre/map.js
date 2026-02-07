@@ -220,9 +220,9 @@ export function reloadMapProperties () {
 
 function addTerrain () {
   if (backgroundMapLayer === 'test') { return }
-  map.addSource('terrain', elevationSource)
+  map.addSource('map-terrain', elevationSource)
   map.setTerrain({
-    source: 'terrain',
+    source: 'map-terrain',
     exaggeration: 0.05
   })
   status('Terrain added to map')
@@ -230,11 +230,11 @@ function addTerrain () {
 
 function addHillshade () {
   if (backgroundMapLayer === 'test') { return }
-  map.addSource('hillshade', elevationSource)
+  map.addSource('map-hillshade', elevationSource)
   map.addLayer({
     id: 'hills',
     type: 'hillshade',
-    source: 'hillshade',
+    source: 'map-hillshade',
     layout: { visibility: 'visible' },
     paint: {
       "hillshade-method": "standard",
@@ -247,7 +247,7 @@ function addHillshade () {
 
 function addContours () {
   if (backgroundMapLayer === 'test') { return }
-  map.addSource('contours', {
+  map.addSource('map-contours', {
     type: "vector",
     tiles: [
       demSource.contourProtocolUrl({
@@ -272,7 +272,7 @@ function addContours () {
   map.addLayer({
     id: "contours",
     type: "line",
-    source: "contours",
+    source: "map-contours",
     "source-layer": "contours",
     paint: {
       "line-color": "rgba(0,0,0, 50%)",
@@ -285,7 +285,7 @@ function addContours () {
   map.addLayer({
     id: "contour-text",
     type: "symbol",
-    source: "contours",
+    source: "map-contours",
     "source-layer": "contours",
     filter: [">", ["get", "level"], 0],
     paint: {

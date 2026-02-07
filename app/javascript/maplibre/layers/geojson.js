@@ -1,5 +1,5 @@
 import { map } from 'maplibre/map'
-import { initializeViewStyles, styles, featureColor, labelFont, setSource } from 'maplibre/styles'
+import { initializeViewStyles, initializeClusterStyles, styles, featureColor, labelFont, setSource } from 'maplibre/styles'
 import { layers } from 'maplibre/layers/layers'
 import { draw, select } from 'maplibre/edit'
 import { getFeature } from 'maplibre/layers/layers'
@@ -14,7 +14,9 @@ export function initializeGeoJSONLayers(id = null) {
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   initLayers.forEach((layer) => {
-    initializeViewStyles('geojson-source-' + layer.id, !!layer.cluster)
+    initializeViewStyles('geojson-source-' + layer.id, !!layer.heatmap)
+    if (!!layer.cluster) { initializeClusterStyles('geojson-source-' + layer.id, null) }
+
     initializeKmMarkerStyles(layer.id)
     renderGeoJSONLayer(layer.id)
   })
