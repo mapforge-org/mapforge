@@ -652,10 +652,7 @@ export function styles () {
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
         // Line symbols don't work in combination with extrusion
-        ['!', ['any',
-          ['>', ['get', 'fill-extrusion-height'], 0],
-          ['>', ['get', 'user_fill-extrusion-height'], 0]
-        ]],
+        ['==', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
         ['any',
           ["has", "stroke-image-url"],
           ["has", "stroke-symbol"]
@@ -682,7 +679,7 @@ export function styles () {
       id: 'text-layer-flat',
       type: 'symbol',
       filter: ['all',
-        ['==', ['geometry-type'], 'LineString'],
+        ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
         ['has', 'label'],
         ['==', ['get', 'flat'], true], 
         minZoomFilter
@@ -714,6 +711,7 @@ export function styles () {
       id: 'text-layer',
       type: 'symbol',
       filter: ['all',
+        ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
         ['has', 'label'],
         ['!=', ['get', 'flat'], true], 
         minZoomFilter],
