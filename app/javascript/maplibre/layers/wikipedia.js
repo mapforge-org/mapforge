@@ -1,5 +1,5 @@
 import { map } from 'maplibre/map'
-import { initializeViewStyles } from 'maplibre/styles'
+import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { status } from 'helpers/status'
@@ -12,6 +12,8 @@ export function initializeWikipediaLayers(id = null) {
 
   return initLayers.map((layer) => {
     initializeViewStyles('wikipedia-source-' + layer.id)
+    initializeClusterStyles('wikipedia-source-' + layer.id, "/icons/wikipedia.png")
+
     return loadWikipediaLayer(layer.id).then(() => { if (id) { initLayersModal() } })
   })
 }
@@ -65,6 +67,7 @@ function wikipediatoGeoJSON(data) {
       },
       "properties": {
         "title": entry.title,
+        "label": entry.title,
         "pageid": entry.pageid,
         "dist": entry.dist,
         "desc": "https://en.wikipedia.org/?curid=" + entry.pageid,

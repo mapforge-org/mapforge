@@ -220,7 +220,7 @@ export default class extends Controller {
   createLayer(type, name, query) {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
-    let layer = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": false}
+    let layer = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": true}
     if (type == 'overpass') { 
       layer["query"] = query 
       // TODO: move cluster + heatmap to layer checkboxes 
