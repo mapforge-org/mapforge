@@ -1,17 +1,18 @@
-import { map, redrawGeojson } from 'maplibre/map'
+import { map } from 'maplibre/map'
 import { initializeViewStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
+import { initLayersModal } from 'maplibre/controls/shared'
 import { status } from 'helpers/status'
 import { layers } from 'maplibre/layers/layers'
 
 export function initializeWikipediaLayers(id = null) {
-  console.log('Initializing Wikipedia layers')
+  // console.log('Initializing Wikipedia layers')
   let initLayers = layers.filter(l => l.type === 'wikipedia')
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   initLayers.forEach((layer) => {
     initializeViewStyles('wikipedia-source-' + layer.id)
-    loadWikipediaLayer(layer.id)
+    loadWikipediaLayer(layer.id).then(() => { if (id) { initLayersModal() } })
     })
 }
 
@@ -31,7 +32,7 @@ export function loadWikipediaLayer(id) {
     })
     .then(data => {
       layer.geojson = wikipediatoGeoJSON(data)
-      redrawGeojson()
+      renderWikipediaLayer(layer.id)
       functions.e('#layer-loading', e => { e.classList.add('hidden') })
     })
     .catch(error => {
@@ -42,6 +43,14 @@ export function loadWikipediaLayer(id) {
     })
 }
 
+export function renderWikipediaLayer(id) {
+  let layer = layers.find(l => l.id === id)
+  console.log("Redraw: Setting source data for wikipedia layer", layer)
+
+  // TODO: only needed once, not each render
+  layer.geojson.features.forEach((feature) => { feature.properties.id = feature.id })
+  map.getSource(layer.type + '-source-' + layer.id).setData(layer.geojson, false)
+}
 
 function wikipediatoGeoJSON(data) {
   let geoJSON = {

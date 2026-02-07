@@ -9,8 +9,7 @@ import { length } from "@turf/length"
 import { along } from "@turf/along"
 
 export function initializeGeoJSONLayers(id = null) {
-  console.log('Initializing geojson layers')
-
+  // console.log('Initializing geojson layers')
   let initLayers = layers.filter(l => l.type === 'geojson')
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
@@ -31,7 +30,7 @@ export function renderGeoJSONLayers(resetDraw = true) {
 
 export function renderGeoJSONLayer(id, resetDraw = true) {
   let layer = layers.find(l => l.id === id)
-  console.log("Redraw: Setting source data for layer", layer.type, layer.id, layer.geojson)
+  console.log("Redraw: Setting source data for geojson layer", layer)
 
   // TODO: only needed once, not each render
   layer.geojson.features.forEach((feature) => { feature.properties.id = feature.id })

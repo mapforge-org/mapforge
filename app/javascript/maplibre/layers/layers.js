@@ -3,11 +3,12 @@ import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/overpass/o
 import { addGeoJSONSource, map } from 'maplibre/map'
 import { initializeGeoJSONLayers } from 'maplibre/layers/geojson'
 
-export let layers = null // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
+export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
 window._layers = layers
 
 // Loads initial layer definitions from server
 export function loadLayerDefinitions() {
+  layers = null
   const host = new URL(window.location.href).origin
   const url = host + '/m/' + window.gon.map_id + '.json'
   return fetch(url)

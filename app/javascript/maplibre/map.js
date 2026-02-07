@@ -368,7 +368,7 @@ export function redrawGeojson (resetDraw = true) {
   //map.getSource('geojson-source').setData(renderedGeojsonData())
   layers.forEach((layer) => {
     if (layer.geojson) {
-      console.log("Redraw: Setting source data for layer", layer.type, layer.id, layer.geojson)
+      console.log("Legacy Redraw: Setting source data for layer", layer.type, layer.id, layer.geojson)
       map.getSource(layer.type + '-source-' + layer.id).setData(layer.geojson, false)
     }
   })

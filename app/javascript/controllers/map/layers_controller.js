@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { map, upsert, mapProperties, redrawGeojson, removeGeoJSONSource } from 'maplibre/map'
+import { map, upsert, mapProperties, removeGeoJSONSource } from 'maplibre/map'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
 import { status } from 'helpers/status'
@@ -9,6 +9,7 @@ import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
 import { queries } from 'maplibre/overpass/queries'
 import { flyToFeature } from 'maplibre/animations'
 import { layers, initializeLayerStyles, initializeLayerSources, loadLayerData } from 'maplibre/layers/layers'
+import { renderGeoJSONLayer } from 'maplibre/layers/geojson'
 
 export default class extends Controller {
   upload () {
@@ -108,7 +109,8 @@ export default class extends Controller {
     
     uploadImageToFeature(file, feature).then( () => {
       upsert(feature)
-      redrawGeojson(false)
+      // redraw first geojson layer
+      renderGeoJSONLayer(layers.find(l => l.type === 'geojson').id)
       mapChannel.send_message('new_feature', { ...feature })
       status('Added image')
       flyToFeature(feature)
@@ -202,13 +204,15 @@ export default class extends Controller {
 
   createLayer(type, name, query) {
     let layerId = functions.featureId()
-    let layer = { "id": layerId, "type": type, "name": name, "query": query }
+    // must match server attribute order, for proper comparison in map_channel
+    let layer = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": false}
+    if (query) { layer["query"] = query }
     layers.push(layer)
     initializeLayerSources(layerId)
+    initializeLayerStyles(layerId)
     mapChannel.send_message('new_layer', layer)
     initLayersModal()
     document.querySelector('#layer-list-' + layerId + ' .reload-icon').classList.add('layer-refresh-animate')
-    initializeLayerStyles(layerId)
     return layerId
   }
 
@@ -223,7 +227,5 @@ export default class extends Controller {
     removeGeoJSONSource('overpass-source-' + layerId)
     mapChannel.send_message('delete_layer', sendLayer)
     initLayersModal()
-    redrawGeojson()
   }
-
 }
