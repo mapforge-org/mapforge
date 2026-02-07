@@ -1,7 +1,8 @@
 import { initializeWikipediaLayers, loadWikipediaLayer } from 'maplibre/layers/wikipedia'
 import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/overpass/overpass'
-import { addGeoJSONSource, map } from 'maplibre/map'
+import { addGeoJSONSource, map, sortLayers } from 'maplibre/map'
 import { initializeGeoJSONLayers } from 'maplibre/layers/geojson'
+import * as functions from 'helpers/functions'
 
 export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
 window._layers = layers
@@ -44,25 +45,34 @@ export function initializeLayerSources(id = null) {
 }
 
 // initialize layers: apply styles and load data
-export function initializeLayerStyles(id = null) {
+export async function initializeLayerStyles(id = null) {
+  functions.e('#layer-reload', e => { e.classList.add('hidden') })
+  functions.e('#layer-loading', e => { e.classList.remove('hidden') })
   initializeGeoJSONLayers(id)
-  initializeOverpassLayers(id)
-  initializeWikipediaLayers(id)
+  let overpassPromises = initializeOverpassLayers(id)
+  let wikipediaPromises = initializeWikipediaLayers(id)
+  
+  await Promise.all(overpassPromises.concat(wikipediaPromises)).then(_results => {
+    // re-sort layers after style changes
+    sortLayers()
+    functions.e('#layer-loading', e => { e.classList.add('hidden') })
+  })
+}
+
+// triggered by layer reload in the layers modal
+export function loadLayerData(id) {
+  let layer = layers.find(l => l.id === id)
+  // geojson layers are loaded in loadLayerDefinitions
+  if (layer.type === 'wikipedia') {
+    return loadWikipediaLayer(layer.id)
+  } else if (layer.type === 'overpass') {
+    return loadOverpassLayer(layer.id)
+  }
 }
 
 // triggered by layer reload in the UI
-export function loadLayerData(id = null) {
-  let initLayers = layers
-  if (id) { initLayers = initLayers.filter(l => l.id === id) }
-
-  initLayers.forEach((layer) => {
-    // geojson layers are loaded in loadLayerDefinitions
-    if (layer.type === 'wikipedia') {
-      return loadWikipediaLayer(layer.id)
-    } else if (layer.type === 'overpass') {
-      return loadOverpassLayer(layer.id)
-    }
-  })
+export async function loadAllLayerData() {
+  await Promise.all(layers.map((layer) => { return loadLayerData(layer.id) }))
 }
 
 export function getFeature(id, type = null) {

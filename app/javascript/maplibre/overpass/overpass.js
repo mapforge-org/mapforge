@@ -1,4 +1,4 @@
-import { map, sortLayers } from 'maplibre/map'
+import { map } from 'maplibre/map'
 import { applyOverpassQueryStyle } from 'maplibre/overpass/queries'
 import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
@@ -9,7 +9,7 @@ import { layers } from 'maplibre/layers/layers'
 export function initializeOverpassLayers(id = null) {
   let initLayers = layers.filter(l => l.type === 'overpass')
   if (id) { initLayers = initLayers.filter(l => l.id === id)  }
-  initLayers.forEach((layer) => {
+  return initLayers.map((layer) => {
     const clustered = !layer.query.includes("heatmap=true") && 
       !layer.query.includes("cluster=false") && 
       !layer.query.includes("geom") // clustering breaks lines & geometries
@@ -20,9 +20,8 @@ export function initializeOverpassLayers(id = null) {
       initializeClusterStyles('overpass-source-' + layer.id, clusterIcon)
     }
     // layer with id comes from the layers modal, reload modal
-    loadOverpassLayer(layer.id).then(() => { if (id) { initLayersModal() } })
+    return loadOverpassLayer(layer.id).then(() => { if (id) { initLayersModal() } })
   })
-  if (initLayers.length) { sortLayers() }
 }
 
 export function renderOverpassLayer(id) {
@@ -54,8 +53,6 @@ export function loadOverpassLayer(id) {
   }
   query = replaceBboxWithMapRectangle(query)
   console.log('Loading overpass layer', layer)
-  functions.e('#layer-reload', e => { e.classList.add('hidden') })
-  functions.e('#layer-loading', e => { e.classList.remove('hidden') })
 
   return fetch("https://overpass-api.de/api/interpreter",
     {
@@ -78,14 +75,11 @@ export function loadOverpassLayer(id) {
     geojson = applyOverpassStyle(geojson, query)
     layer.geojson = applyOverpassQueryStyle(geojson, layer.name)
     renderOverpassLayer(layer.id)
-    functions.e('#layer-loading', e => { e.classList.add('hidden') })
     functions.e('#maplibre-map', e => { e.setAttribute('data-overpass-loaded', true) })
   })
   .catch(error => {
-    console.error('Failed to fetch overpass for ' + layer.id, layer.query, error)
+    console.error('Failed to fetch overpass for ' + layer.id, layer.query, error.message)
     status('Failed to load layer ' + layer.name, 'error')
-    functions.e(`#layer-list-${layer.id} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
-    functions.e('#layer-loading', e => { e.classList.add('hidden') })
   })
 }
 

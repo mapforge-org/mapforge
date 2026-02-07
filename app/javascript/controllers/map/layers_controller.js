@@ -8,7 +8,7 @@ import * as functions from 'helpers/functions'
 import { initializeOverpassLayers } from 'maplibre/overpass/overpass'
 import { queries } from 'maplibre/overpass/queries'
 import { flyToFeature } from 'maplibre/animations'
-import { layers, initializeLayerStyles, initializeLayerSources, loadLayerData } from 'maplibre/layers/layers'
+import { layers, initializeLayerStyles, initializeLayerSources, loadLayerData, loadAllLayerData } from 'maplibre/layers/layers'
 import { renderGeoJSONLayer } from 'maplibre/layers/geojson'
 
 export default class extends Controller {
@@ -161,13 +161,22 @@ export default class extends Controller {
   refreshLayer (event) {
     event.preventDefault()
     const layerId = event.target.closest('.layer-item').getAttribute('data-layer-id')
+    functions.e('#layer-reload', e => { e.classList.add('hidden') })
+    functions.e('#layer-loading', e => { e.classList.remove('hidden') })
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
-    loadLayerData(layerId).then( () => { initLayersModal() })
+    loadLayerData(layerId).then( () => { 
+      initLayersModal()
+      functions.e('#layer-loading', e => { e.classList.add('hidden') })
+      functions.e(`#layer-list-${layer.id} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
+    })
   }
 
-  refreshLayers(event) {
+  async refreshLayers(event) {
     event.preventDefault()
-    loadLayerData()
+    functions.e('#layer-reload', e => { e.classList.add('hidden') })
+    functions.e('#layer-loading', e => { e.classList.remove('hidden') })
+    await loadAllLayerData()
+    functions.e('#layer-loading', e => { e.classList.add('hidden') })
   }  
 
   toggleLayerList (event) {

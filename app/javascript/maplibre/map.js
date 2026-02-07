@@ -135,7 +135,6 @@ export async function initializeMap (divId = 'maplibre-map') {
   })
   map.on('zoom', (_e) => {
     if (!layers) { return }
-    if (layers.filter(l => l.type !== 'geojson').length) { dom.animateElement('#layer-reload', 'fade-in') }
     // block zooming in closer than defined max zoom level
     let bgMap = basemaps()[backgroundMapLayer]
     // TODO: max zoom doesn't work for style urls
@@ -412,8 +411,6 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
       status('Loaded base map ' + mapName)
       // on map style change, all sources and layers are removed, so we need to re-initialize them
       initializeStyles()
-      // re-sort layers after basemap style change
-      sortLayers()
     })
     backgroundMapLayer = mapName
     backgroundTerrain = mapProperties.terrain

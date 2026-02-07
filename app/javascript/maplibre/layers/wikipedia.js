@@ -10,10 +10,10 @@ export function initializeWikipediaLayers(id = null) {
   let initLayers = layers.filter(l => l.type === 'wikipedia')
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
-  initLayers.forEach((layer) => {
+  return initLayers.map((layer) => {
     initializeViewStyles('wikipedia-source-' + layer.id)
-    loadWikipediaLayer(layer.id).then(() => { if (id) { initLayersModal() } })
-    })
+    return loadWikipediaLayer(layer.id).then(() => { if (id) { initLayersModal() } })
+  })
 }
 
 // similar: https://github.com/styluslabs/maps/blob/master/assets/plugins/wikipedia-search.js
@@ -21,9 +21,6 @@ export function loadWikipediaLayer(id) {
   const layer = layers.find(f => f.id === id)
   const url = "https://en.wikipedia.org/w/api.php?origin=*&action=query&format=json&list=geosearch&gslimit=500&gsradius="
     + "5000&gscoord=" + map.getCenter().lat + "%7C" + map.getCenter().lng
-
-  functions.e('#layer-reload', e => { e.classList.add('hidden') })
-  functions.e('#layer-loading', e => { e.classList.remove('hidden') })
 
   return fetch(url)
     .then(response => {
@@ -33,13 +30,10 @@ export function loadWikipediaLayer(id) {
     .then(data => {
       layer.geojson = wikipediatoGeoJSON(data)
       renderWikipediaLayer(layer.id)
-      functions.e('#layer-loading', e => { e.classList.add('hidden') })
     })
     .catch(error => {
       console.error('Failed to fetch wikipedia for ' + layer.id, error)
       status('Failed to load layer ' + layer.name, 'error')
-      functions.e(`#layer-list-${layer.id} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
-      functions.e('#layer-loading', e => { e.classList.add('hidden') })
     })
 }
 
@@ -81,7 +75,6 @@ function wikipediatoGeoJSON(data) {
     }
     geoJSON.features.push(feature)
   })
-  console.log(geoJSON)
   return geoJSON
 }
 
