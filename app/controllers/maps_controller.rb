@@ -44,7 +44,6 @@ class MapsController < ApplicationController
         gon.rails_env = Rails.env
         gon.csrf_token = form_authenticity_token
         gon.map_properties = @map_properties
-        gon.map_layers = @map.layers.map(&:to_summary_json)
 
         case params["engine"]
         when "deck"

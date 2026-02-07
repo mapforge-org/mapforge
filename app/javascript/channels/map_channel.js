@@ -1,11 +1,9 @@
 import consumer from 'channels/consumer'
 import {
   upsert, destroyFeature, setBackgroundMapLayer, mapProperties,
-  initializeMaplibreProperties, map, layers, resetGeojsonLayers, loadLayers, 
-  reloadMapProperties, removeGeoJSONSource, redrawGeojson
-} from 'maplibre/map'
-import { initializeLayers } from 'maplibre/layers/layers'
-import { initLayersModal } from 'maplibre/controls/shared'
+  initializeMaplibreProperties, map, 
+  reloadMapProperties } from 'maplibre/map'
+import { layers, initializeLayerStyles, loadLayerDefinitions } from 'maplibre/layers/layers'
 
 
 export let mapChannel
@@ -41,10 +39,10 @@ export function initializeSocket () {
       if (channelStatus === 'off') {
         reloadMapProperties().then(() => {
           initializeMaplibreProperties()
-          resetGeojsonLayers()
-          loadLayers()
-          setBackgroundMapLayer(mapProperties.base_map, false)
-          map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
+          loadLayerDefinitions().then(() => {
+            setBackgroundMapLayer(mapProperties.base_map, true)
+            map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
+          })
           // status('Connection to server re-established')
         })
       } else {
@@ -102,20 +100,20 @@ export function initializeSocket () {
             const { ['geojson']: _, ...layerDef } = layers[index]
             if (JSON.stringify(layerDef) !== JSON.stringify(data.layer)) {
               layers[index] = data.layer
-              initializeLayers(data.layer.id)
+              console.log('Layer updated on server, reloading layer styles', data.layer)
+              initializeLayerStyles(data.layer.id)
             }
           } else {
             layers.push(data.layer)
-            initializeLayers(data.layer.id)
+            initializeLayerStyles(data.layer.id)
           }
           break
         case 'delete_layer':
           const delIndex = layers.findIndex(l => l.id === data.layer.id)
           if (delIndex > -1) {
             layers.splice(delIndex, 1)
-            removeGeoJSONSource('overpass-source-' + data.layer.id)
-            initLayersModal()
-            redrawGeojson()
+            // trigger a full map redraw
+            setBackgroundMapLayer(mapProperties.base_map, true)
           }
           break
         case 'mouse':
@@ -150,7 +148,7 @@ export function initializeSocket () {
       payload.map_id = window.gon.map_id
       payload.user_id = window.gon.user_id
       payload.uuid = connectionUUID
-      // dropping properties.id from redrawGeojson() before sending to server
+      // dropping properties.id before sending to server
       if (payload.properties && payload.properties.id) { delete payload.properties.id }
       if (event !== 'mouse') console.log('Sending: [' + event + '] :', payload)
       // Call the original perform method

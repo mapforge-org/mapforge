@@ -138,3 +138,9 @@ export function sanitizeMarkdown (desc) {
 export function isTestEnvironment() {
   return (window.gon.rails_env === "test")
 }
+
+export function waitForEvent(emitter, eventName) {
+  return new Promise((resolve) => {
+    emitter.once(eventName, (data) => resolve(data))
+  })
+}

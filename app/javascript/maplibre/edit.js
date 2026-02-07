@@ -1,4 +1,4 @@
-import { map, geojsonData, destroyFeature, redrawGeojson, addFeature, layers, mapProperties } from 'maplibre/map'
+import { map, destroyFeature, addFeature, mapProperties } from 'maplibre/map'
 import { editStyles } from 'maplibre/edit_styles'
 import { highlightFeature } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
@@ -7,10 +7,12 @@ import { mapChannel } from 'channels/map_channel'
 import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
 import { initializeEditControls, disableEditControls, enableEditControls } from 'maplibre/controls/edit'
 import { status } from 'helpers/status'
+import { hasFeatures, getFeature, layers } from 'maplibre/layers/layers'
 import { undo, redo, addUndoState } from 'maplibre/undo'
 import * as functions from 'helpers/functions'
 import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
 import { simplify } from "@turf/simplify"
+import { renderGeoJSONLayers } from 'maplibre/layers/geojson'
 
 export let draw
 export let selectedFeature
@@ -73,15 +75,16 @@ export async function initializeEditMode () {
   initializeDefaultControls()
 
   // Show map settings modal on untouched map
-  map.once('load', function (_e) {
-    if (!mapProperties.name && !geojsonData?.features?.length && !layers?.filter(l => l.type !== 'geojson').length)  {
+  map.once('load', async function (_e) {
+    if (!layers) { await functions.waitForEvent(map, 'layers.load') }
+    if (!mapProperties.name && !hasFeatures('geojson') && !layers?.filter(l => l.type !== 'geojson').length)  {
       functions.e('.maplibregl-ctrl-map', e => { e.click() })
     }
   })
 
   map.on('geojson.load', function (_e) {
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
-    const feature = geojsonData.features.find(f => f.id === urlFeatureId)
+    const feature = getFeature(urlFeatureId, 'geojson')
     if (feature) { map.fire('draw.selectionchange', {features: [feature]}) }
   })
 
@@ -248,7 +251,7 @@ function handleCreate (e) {
   addUndoState('Feature added', feature)
   // redraw if the painted feature was changed in this method
   if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') {
-    redrawGeojson(false)
+    renderGeoJSONLayers(false)
   }
   mapChannel.send_message('new_feature', feature)
   if (feature.geometry.type === 'LineString') { updateElevation(feature) }
@@ -275,7 +278,7 @@ function handleCreate (e) {
 
 async function handleUpdate (e) {
   let feature = e.features[0] // Assuming one feature is updated at a time
-  const geojsonFeature = geojsonData.features.find(f => f.id === feature.id)
+  const geojsonFeature = getFeature(feature.id)
   // mapbox-gl-draw-waypoint sends empty update when dragging on selected feature
   if (equal(geojsonFeature.geometry, feature.geometry)) {
     // console.log('Feature update event triggered without update')
@@ -289,7 +292,7 @@ async function handleUpdate (e) {
 
   status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry
-  redrawGeojson(false)
+  renderGeoJSONLayers(false)
 
   if (feature.geometry.type === 'LineString') { 
     // gets also triggered on failure

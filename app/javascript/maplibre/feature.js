@@ -1,14 +1,14 @@
-import { map, geojsonData, layers, mapProperties } from 'maplibre/map'
+import { map, mapProperties } from 'maplibre/map'
 import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
-import { featureColor, defaultLineWidth, styles, labelFont } from 'maplibre/styles'
+import { defaultLineWidth } from 'maplibre/styles'
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { length } from "@turf/length"
 import { area } from "@turf/area"
-import { along } from "@turf/along"
 import { buffer } from "@turf/buffer"
 import { lineString, multiLineString, polygon, multiPolygon } from "@turf/helpers"
+import { layers, getFeature, getFeatures, getFeatureSource } from "maplibre/layers/layers"
 
 window.marked = marked
 
@@ -89,7 +89,7 @@ export async function showFeatureDetails (feature) {
   dom.hideElements(['#feature-edit-raw', '#feature-edit-ui'])
   f.e('#edit-buttons button', (e) => { e.classList.remove('active') })
   // allow edit in rw mode for geojson features only
-  if (window.gon.map_mode === 'rw' && geojsonData.features.find(f => f.id === feature.id)) {
+  if (window.gon.map_mode === 'rw' && getFeature(feature.id, 'geojson')) {
     document.querySelector('#edit-buttons').classList.remove('hidden')
   }
   dom.showElements('#feature-details-body')
@@ -252,9 +252,10 @@ export function resetHighlightedFeature () {
   f.e('#feature-details-modal', e => { e.classList.remove('show') })
 }
 
-export function highlightFeature (feature, sticky = false, source = 'geojson-source') {
+export function highlightFeature (feature, sticky = false, source) {
   if (highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
   // console.log('highlight', feature)
+  if (!source) { source = getFeatureSource(feature.id) }
   stickyFeatureHighlight = sticky
   highlightedFeatureId = feature?.id
   highlightedFeatureSource = source
@@ -276,137 +277,11 @@ export function highlightFeature (feature, sticky = false, source = 'geojson-sou
   }
 }
 
-function makePointsLayer(divisor, minzoom, maxzoom = 24) {
-  const base = { ...styles()['points-layer'] }
-  return {
-    ...base,
-    id: `km-marker-points-${divisor}`,
-    source: 'km-marker-source',
-    filter: ["==", ["%", ["get", "km"], divisor], 0],
-    minzoom,
-    maxzoom
-  }
-}
-
-function makeNumbersLayer(divisor, minzoom, maxzoom=24) {
-  return {
-    id: `km-marker-numbers-${divisor}`,
-    type: 'symbol',
-    source: 'km-marker-source',
-    filter: ["==", ["%", ["get", "km"], divisor], 0],
-    minzoom,
-    maxzoom,
-    layout: {
-      'text-allow-overlap': false,
-      'text-field': ['get', 'km'],
-      'text-size': 11,
-      'text-font': labelFont,
-      'text-justify': 'center',
-      'text-anchor': 'center'
-    },
-    paint: {
-      'text-color': '#ffffff'
-    }
-  }
-}
-
-export function kmMarkerStyles () {
-  let layers = []
-  const base = { ...styles()['points-layer'] }
-
-  layers.push(makePointsLayer(2, 11))
-  layers.push(makeNumbersLayer(2, 11))
-
-  layers.push(makePointsLayer(5, 10, 11))
-  layers.push(makeNumbersLayer(5, 10, 11))
-
-  layers.push(makePointsLayer(10, 9, 10))
-  layers.push(makeNumbersLayer(10, 9, 10))
-
-  layers.push(makePointsLayer(25, 8, 9))
-  layers.push(makeNumbersLayer(25, 8, 9))
-
-  layers.push(makePointsLayer(50, 7, 8))
-  layers.push(makeNumbersLayer(50, 7, 8))
-
-  layers.push(makePointsLayer(100, 5, 7))
-  layers.push(makeNumbersLayer(100, 5, 7))
-  
-  // start + end 
-  layers.push({
-    ...base,
-    id: `km-marker-points-end`,
-    source: 'km-marker-source',
-    filter: ["==", ["get", "km-marker-numbers-end"], 1]
-  })
-  layers.push({
-    id: `km-marker-numbers-end`,
-    type: 'symbol',
-    source: 'km-marker-source',
-    filter: ["==", ["get", "km-marker-numbers-end"], 1],
-    layout: {
-      'text-allow-overlap': true,
-      'text-field': ['get', 'km'],
-      'text-size': 12,
-      'text-font': labelFont,
-      'text-justify': 'center',
-      'text-anchor': 'center'
-    },
-    paint: {
-      'text-color': '#ffffff'
-    }
-  })
-
-  return layers
-}
-
-export function initializeKmMarkerStyles () {
-  kmMarkerStyles().forEach(style => { map.addLayer(style) })
-}
-
-export function renderKmMarkers () {
-  let kmMarkerFeatures = []
-  geojsonData.features.filter(feature => (feature.geometry.type === 'LineString' &&
-    feature.properties['show-km-markers'] &&
-    feature.geometry.coordinates.length >= 2)).forEach((f, index) => {
-
-    const line = lineString(f.geometry.coordinates)
-    const distance = length(line, { units: 'kilometers' })
-    // Create markers at useful intervals
-    let interval = 1
-      for (let i = 0; i < Math.ceil(distance) + interval; i += interval) {
-      // Get point at current kilometer
-      const point = along(line, i, { units: 'kilometers' })
-      point.properties['marker-color'] = f.properties['stroke'] || featureColor
-      point.properties['marker-size'] = 11
-      point.properties['marker-opacity'] = 1
-      point.properties['km'] = i
-
-      if (i >= Math.ceil(distance)) {
-        point.properties['marker-size'] = 14
-        point.properties['km'] = Math.round(distance)
-        if (Math.ceil(distance) < 100) { 
-          point.properties['km'] = Math.round(distance * 10) / 10
-        }
-        point.properties['km-marker-numbers-end'] = 1
-        point.properties['sort-key'] = 2 + index
-      }
-      kmMarkerFeatures.push(point)
-    }  
-  })
-
-  let markerFeatures = {
-        type: 'FeatureCollection',
-        features: kmMarkerFeatures
-      }
-  map.getSource('km-marker-source').setData(markerFeatures)
-}
-
 export function renderExtrusionLines () {
   // Disable extrusionlines on 3D terrain, it does not work
   if (mapProperties.terrain) { return [] }
 
-  let extrusionLines = geojsonData.features.filter(feature => (
+  let extrusionLines = getFeatures('geojson').filter(feature => (
     feature.geometry.type === 'LineString' &&
       feature.properties['fill-extrusion-height'] &&
       feature.geometry.coordinates.length !== 1 // don't break line animation

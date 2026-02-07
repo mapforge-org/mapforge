@@ -12,13 +12,15 @@ class Layer
   field :type
   field :name
   field :query
+  field :heatmap, type: Boolean
+  field :cluster, type: Boolean
   field :features_count, type: Integer, default: 0
 
   after_save :broadcast_update, if: -> { map.present? }
   after_destroy :broadcast_destroy, if: -> { map.present? }
 
   def to_summary_json
-    json = { id: id, type: type, name: name }
+    json = { id: id, type: type, name: name, heatmap: !!heatmap, cluster: !!cluster }
     json[:query] = query if type == "overpass"
     json
   end
@@ -42,7 +44,7 @@ class Layer
   end
 
   def broadcast_update
-    if saved_change_to_name? || saved_change_to_query?
+    if (%w[name query heatmap cluster] & previous_changes.keys).any?
       # broadcast to private + public channel
       [ map.private_id, map.public_id ].each do |map_id|
         ActionCable.server.broadcast("map_channel_#{map_id}",

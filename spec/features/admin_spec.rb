@@ -25,7 +25,9 @@ describe 'Admin List' do
     end
 
     it 'shows link to copy map' do
-      find("i[class='bi bi-copy']", match: :first).click
+      accept_confirm do
+        find("i[class='bi bi-copy']", match: :first).click
+      end
       expect_map_loaded
       expect(Map.count).to eq(4)
     end

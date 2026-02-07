@@ -1,10 +1,11 @@
-import { map, frontFeature, removeStyleLayers, geojsonData } from 'maplibre/map'
+import { map, frontFeature, removeStyleLayers } from 'maplibre/map'
 import {
   highlightedFeatureId, stickyFeatureHighlight, highlightedFeatureSource,
   resetHighlightedFeature, highlightFeature
 } from 'maplibre/feature'
 import { draw } from 'maplibre/edit'
 import { flyToFeature } from 'maplibre/animations'
+import { getFeature } from 'maplibre/layers/layers'
 
 export const viewStyleNames = [
   'polygon-layer',
@@ -17,7 +18,6 @@ export const viewStyleNames = [
   'points-layer-flat',
   'points-layer',
   'points-hit-layer',
-  'heatmap-layer',
   'symbols-layer-flat',
   'symbols-layer',
   'text-layer-flat',
@@ -28,11 +28,13 @@ export const viewStyleNames = [
 
 export function setStyleDefaultFont (font) { labelFont = [font] }
 
-export function initializeViewStyles (sourceName) {
+export function initializeViewStyles (sourceName, heatmap=false) {
+  console.log('Initializing view styles for source ' + sourceName)
   removeStyleLayers(sourceName)
   viewStyleNames.forEach(styleName => {
     map.addLayer(setSource(styles()[styleName], sourceName))
   })
+  if (heatmap) { map.addLayer(setSource(styles()['heatmap-layer'], sourceName)) }
   // console.log('View styles added for source ' + sourceName)
 
   // click is needed to select on mobile and for sticky highlight
@@ -47,7 +49,7 @@ export function initializeViewStyles (sourceName) {
       }
       if (e.features[0].properties?.onclick === 'feature' && e.features[0].properties?.['onclick-target']) { 
         const targetId = e.features[0].properties?.['onclick-target']
-        const feature = geojsonData.features.find(f => f.id === targetId)
+        const feature = getFeature(targetId)
         if (feature) {
           flyToFeature(feature)
         } else {
@@ -537,9 +539,11 @@ export function styles () {
     'heatmap-layer': {
       id: 'heatmap-layer',
       type: 'heatmap',
-      filter: ['all', 
-        ['any', ["has", "heatmap"], ["has", "user_heatmap"]], 
-        minZoomFilter],
+      filter: [
+        "all",
+        ["==", ["geometry-type"], "Point"],
+        minZoomFilter
+      ],
       paint: {
         'heatmap-opacity': 0.7,
         'heatmap-intensity': 1.3,
@@ -648,10 +652,7 @@ export function styles () {
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
         // Line symbols don't work in combination with extrusion
-        ['!', ['any',
-          ['>', ['get', 'fill-extrusion-height'], 0],
-          ['>', ['get', 'user_fill-extrusion-height'], 0]
-        ]],
+        ['==', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
         ['any',
           ["has", "stroke-image-url"],
           ["has", "stroke-symbol"]
@@ -678,7 +679,7 @@ export function styles () {
       id: 'text-layer-flat',
       type: 'symbol',
       filter: ['all',
-        ['==', ['geometry-type'], 'LineString'],
+        ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
         ['has', 'label'],
         ['==', ['get', 'flat'], true], 
         minZoomFilter
@@ -710,6 +711,7 @@ export function styles () {
       id: 'text-layer',
       type: 'symbol',
       filter: ['all',
+        ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
         ['has', 'label'],
         ['!=', ['get', 'flat'], true], 
         minZoomFilter],

@@ -19,6 +19,7 @@ def hover_center_of_screen
   browser.mouse.move(x: center[:x], y: center[:y])
 end
 
+
 def click_coord(_selector, x, y)
   browser = page.driver.browser
   browser.mouse.click(x: x, y: y)

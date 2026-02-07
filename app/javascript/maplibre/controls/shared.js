@@ -1,4 +1,4 @@
-import { map, layers, mapProperties } from 'maplibre/map'
+import { map, mapProperties } from 'maplibre/map'
 import * as functions from 'helpers/functions'
 // import * as dom from 'helpers/dom'
 import { draw, unselect } from 'maplibre/edit'
@@ -8,6 +8,7 @@ import MaplibreGeocoder from 'maplibre-gl-geocoder'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { animateElement } from 'helpers/dom'
 import { status } from 'helpers/status'
+import { layers } from 'maplibre/layers/layers'
 
 export class ControlGroup {
   constructor (controls) {
@@ -204,8 +205,6 @@ export function initLayersModal () {
         listItem.classList.add('flex-center')
         listItem.classList.add('align-items-center')
         listItem.setAttribute('data-feature-id', feature.id)
-        const source = layer.type === 'geojson' ? 'geojson-source' : layer.type + '-source-' + layer.id
-        listItem.setAttribute('data-feature-source', source)
         listItem.setAttribute('data-controller', 'map--layers')
         listItem.setAttribute('data-action', 'click->map--layers#flyToLayerElement')
 

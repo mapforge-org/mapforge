@@ -1,4 +1,4 @@
-import { map, redrawGeojson, mapProperties } from 'maplibre/map'
+import { map, mapProperties } from 'maplibre/map'
 import { resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
 import * as functions from 'helpers/functions'
@@ -8,6 +8,8 @@ import { point } from "@turf/helpers"
 import distance from "@turf/distance"
 import { along } from "@turf/along"
 import { centroid } from "@turf/centroid"
+import { getFeatureSource } from 'maplibre/layers/layers'
+import { renderGeoJSONLayers } from 'maplibre/layers/geojson'
 
 export class AnimationManager {
   constructor () {
@@ -49,7 +51,7 @@ export class AnimatePointAnimation extends AnimationManager {
         start[1] + (end[1] - start[1]) * progress
       ]
       feature.geometry.coordinates = newCoordinates
-      redrawGeojson(false)
+      renderGeoJSONLayers(false)
       if (progress < 1) { this.animationId = requestAnimationFrame(animate) }
     }
     this.animationId = requestAnimationFrame(animate)
@@ -92,7 +94,7 @@ export class AnimateLineAnimation extends AnimationManager {
       // console.log("Frame #" + _frame + ", distance: " + distance + ", coord: " + coordinate)
 
       line.geometry.coordinates.push(coordinate)
-      redrawGeojson(false)
+      renderGeoJSONLayers(false)
 
       // Update camera position
       if (follow) { map.jumpTo({ center: coordinate }) }
@@ -123,7 +125,7 @@ export class AnimatePolygonAnimation extends AnimationManager {
       const progress = counter / steps
       polygon.properties['fill-extrusion-height'] = progress * height
       // console.log('New height: ' + polygon.properties['fill-extrusion-height'])
-      redrawGeojson(false)
+      renderGeoJSONLayers(false)
 
       counter++
 
@@ -135,7 +137,7 @@ export class AnimatePolygonAnimation extends AnimationManager {
     }
 
     polygon.properties['fill-extrusion-height'] = 0
-    redrawGeojson()
+    renderGeoJSONLayers(true)
     this.animationId = requestAnimationFrame(animate)
   }
 }
@@ -153,7 +155,8 @@ export function animateViewFromProperties () {
   })
 }
 
-export function flyToFeature(feature, source='geojson-source') {
+export function flyToFeature(feature) {
+  const source = getFeatureSource(feature.id)
   // Calculate the centroid
   const center = centroid(feature)
   console.log('Fly to: ' + feature.id + ' ' + center.geometry.coordinates)

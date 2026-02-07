@@ -82,7 +82,7 @@ module Ulogger
         f.properties["marker-size"] = 2
         f.properties["marker-color"] = "#f6f5f4"
         f.properties["stroke"] = "transparent"
-        f.properties["minzoom"] = 14
+        f.properties["min-zoom"] = 14
         f.save!
       end
       # set leading waypoint

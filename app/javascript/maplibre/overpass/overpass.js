@@ -1,36 +1,40 @@
-import { map, layers, redrawGeojson, addGeoJSONSource, viewUnchanged, sortLayers } from 'maplibre/map'
+import { map } from 'maplibre/map'
 import { applyOverpassQueryStyle } from 'maplibre/overpass/queries'
 import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { status } from 'helpers/status'
+import { layers } from 'maplibre/layers/layers'
 
 export function initializeOverpassLayers(id = null) {
   let initLayers = layers.filter(l => l.type === 'overpass')
   if (id) { initLayers = initLayers.filter(l => l.id === id)  }
-  initLayers.forEach((layer) => {
+  return initLayers.map((layer) => {
     const clustered = !layer.query.includes("heatmap=true") && 
       !layer.query.includes("cluster=false") && 
       !layer.query.includes("geom") // clustering breaks lines & geometries
-    // TODO: changing cluster setup requires a map reload
-    addGeoJSONSource('overpass-source-' + layer.id, clustered)
-    initializeViewStyles('overpass-source-' + layer.id)
+    initializeViewStyles('overpass-source-' + layer.id, layer.heatmap)
     if (clustered) {
       const clusterIcon = getCommentValue(layer.query, 'cluster-symbol') || getCommentValue(layer.query, 'cluster-image-url') || 
         getCommentValue(layer.query, 'marker-symbol') || getCommentValue(layer.query, 'marker-image-url')
       initializeClusterStyles('overpass-source-' + layer.id, clusterIcon)
     }
-    // use server's pre-loaded geojson if available and map is at default center
-    if (layer.geojson?.features?.length && viewUnchanged()) { 
-      layer.geojson = applyOverpassStyle(layer.geojson, layer.query)
-      layer.geojson = applyOverpassQueryStyle(layer.geojson, layer.name)      
-      redrawGeojson()
-    } else {
-      // layer with id comes from the layers modal, reload modal
-      loadOverpassLayer(layer.id).then(() => { if (id) { initLayersModal() } })
-    }
+    // layer with id comes from the layers modal, reload modal
+    return loadOverpassLayer(layer.id).then(() => { if (id) { initLayersModal() } })
   })
-  if (initLayers.length) { sortLayers() }
+}
+
+export function renderOverpassLayer(id) {
+  let layer = layers.find(l => l.id === id)
+  console.log("Redraw: Setting source data for overpass layer", layer)
+  
+  // TODO: only needed once, not each render
+  // this + `promoteId: 'id'` is a workaround for the maplibre limitation:
+  // https://github.com/mapbox/mapbox-gl-js/issues/2716
+  // because to highlight a feature we need the id,
+  // and in the style layers it only accepts mumeric ids in the id field initially
+  layer.geojson.features.forEach((feature) => { feature.properties.id = feature.id })
+  map.getSource(layer.type + '-source-' + layer.id).setData(layer.geojson, false)
 }
 
 export function loadOverpassLayer(id) {
@@ -48,9 +52,7 @@ export function loadOverpassLayer(id) {
     query = "[out:json][timeout:25][bbox:{{bbox}}];\n" + query
   }
   query = replaceBboxWithMapRectangle(query)
-  console.log('Loading overpass layer', layer, query)
-  functions.e('#layer-reload', e => { e.classList.add('hidden') })
-  functions.e('#layer-loading', e => { e.classList.remove('hidden') })
+  console.log('Loading overpass layer', layer)
 
   return fetch("https://overpass-api.de/api/interpreter",
     {
@@ -72,15 +74,12 @@ export function loadOverpassLayer(id) {
     // console.log('osmtogeojson', geojson)
     geojson = applyOverpassStyle(geojson, query)
     layer.geojson = applyOverpassQueryStyle(geojson, layer.name)
-    redrawGeojson()
-    functions.e('#layer-loading', e => { e.classList.add('hidden') })
+    renderOverpassLayer(layer.id)
     functions.e('#maplibre-map', e => { e.setAttribute('data-overpass-loaded', true) })
   })
   .catch(error => {
-    console.error('Failed to fetch overpass for ' + layer.id, error)
+    console.error('Failed to fetch overpass for ' + layer.id, layer.query, error.message)
     status('Failed to load layer ' + layer.name, 'error')
-    functions.e(`#layer-list-${layer.id} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
-    functions.e('#layer-loading', e => { e.classList.add('hidden') })
   })
 }
 

@@ -1,18 +1,21 @@
-import { map, layers, addGeoJSONSource, redrawGeojson } from 'maplibre/map'
-import { initializeViewStyles } from 'maplibre/styles'
+import { map } from 'maplibre/map'
+import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
 import * as functions from 'helpers/functions'
+import { initLayersModal } from 'maplibre/controls/shared'
 import { status } from 'helpers/status'
+import { layers } from 'maplibre/layers/layers'
 
 export function initializeWikipediaLayers(id = null) {
-  console.log('Initializing Wikipedia layers')
+  // console.log('Initializing Wikipedia layers')
   let initLayers = layers.filter(l => l.type === 'wikipedia')
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
-  initLayers.forEach((layer) => {
-    addGeoJSONSource('wikipedia-source-' + layer.id, false)
+  return initLayers.map((layer) => {
     initializeViewStyles('wikipedia-source-' + layer.id)
-    loadWikipediaLayer(layer.id)
-    })
+    initializeClusterStyles('wikipedia-source-' + layer.id, "/icons/wikipedia.png")
+
+    return loadWikipediaLayer(layer.id).then(() => { if (id) { initLayersModal() } })
+  })
 }
 
 // similar: https://github.com/styluslabs/maps/blob/master/assets/plugins/wikipedia-search.js
@@ -21,9 +24,6 @@ export function loadWikipediaLayer(id) {
   const url = "https://en.wikipedia.org/w/api.php?origin=*&action=query&format=json&list=geosearch&gslimit=500&gsradius="
     + "5000&gscoord=" + map.getCenter().lat + "%7C" + map.getCenter().lng
 
-  functions.e('#layer-reload', e => { e.classList.add('hidden') })
-  functions.e('#layer-loading', e => { e.classList.remove('hidden') })
-
   return fetch(url)
     .then(response => {
       if (!response.ok) { throw new Error('Network response was not ok') }
@@ -31,17 +31,26 @@ export function loadWikipediaLayer(id) {
     })
     .then(data => {
       layer.geojson = wikipediatoGeoJSON(data)
-      redrawGeojson()
-      functions.e('#layer-loading', e => { e.classList.add('hidden') })
+      renderWikipediaLayer(layer.id)
     })
     .catch(error => {
       console.error('Failed to fetch wikipedia for ' + layer.id, error)
       status('Failed to load layer ' + layer.name, 'error')
-      functions.e(`#layer-list-${layer.id} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
-      functions.e('#layer-loading', e => { e.classList.add('hidden') })
     })
 }
 
+export function renderWikipediaLayer(id) {
+  let layer = layers.find(l => l.id === id)
+  console.log("Redraw: Setting source data for wikipedia layer", layer)
+
+  // TODO: only needed once, not each render
+  // this + `promoteId: 'id'` is a workaround for the maplibre limitation:
+  // https://github.com/mapbox/mapbox-gl-js/issues/2716
+  // because to highlight a feature we need the id,
+  // and in the style layers it only accepts mumeric ids in the id field initially
+  layer.geojson.features.forEach((feature) => { feature.properties.id = feature.id })
+  map.getSource(layer.type + '-source-' + layer.id).setData(layer.geojson, false)
+}
 
 function wikipediatoGeoJSON(data) {
   let geoJSON = {
@@ -58,6 +67,7 @@ function wikipediatoGeoJSON(data) {
       },
       "properties": {
         "title": entry.title,
+        "label": entry.title,
         "pageid": entry.pageid,
         "dist": entry.dist,
         "desc": "https://en.wikipedia.org/?curid=" + entry.pageid,
@@ -68,7 +78,6 @@ function wikipediatoGeoJSON(data) {
     }
     geoJSON.features.push(feature)
   })
-  console.log(geoJSON)
   return geoJSON
 }
 
