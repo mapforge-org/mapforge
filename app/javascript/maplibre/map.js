@@ -352,7 +352,7 @@ export function addFeature (feature) {
   feature.properties.id = feature.id
   // Adding new features to the first geojson layer
   layers.find(l => l.type === 'geojson').geojson.features.push(feature)
-  renderGeoJSONLayers()
+  renderGeoJSONLayers(false)
   status('Added feature')
 }
 

@@ -27,9 +27,10 @@ describe 'Feature edit' do
       it 'adding a line to the map' do
         find('.line-menu-btn').click
         find('.ctrl-line-menu .mapbox-gl-draw_line').click
-        click_coord('#maplibre-map', 50, 50)
-        click_coord('#maplibre-map', 70, 70)
-        click_coord('#maplibre-map', 70, 70)
+        click_coord('#maplibre-map', 250, 250)
+        click_coord('#maplibre-map', 350, 350)
+        click_coord('#maplibre-map', 450, 450)
+        click_coord('#maplibre-map', 450, 450)
 
         # need to wait until feature is saved server side
         wait_for { Feature.line_string.count }.to eq(1)
