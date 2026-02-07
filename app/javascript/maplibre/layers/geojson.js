@@ -160,7 +160,7 @@ export function kmMarkerStyles (_id) {
   layers.push(makePointsLayer(100, 5, 7))
   layers.push(makeNumbersLayer(100, 5, 7))
   
-  // start + end 
+  // end point has different style 
   layers.push({
     ...base,
     id: `km-marker-points-end`,

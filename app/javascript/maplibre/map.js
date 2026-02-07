@@ -447,6 +447,7 @@ export function sortLayers () {
 
   // console.log('Sorting layers', layers)
   const flatLayers = functions.reduceArray(layers, (e) => (e.id.includes('-flat'))) // keep flat layers behin houses
+  const kmMarkers = functions.reduceArray(layers, (e) => (e.id.startsWith('km-marker')))
   const editLayer = functions.reduceArray(layers, (e) => (e.id.startsWith('gl-draw-')))
   const userSymbols = functions.reduceArray(layers, (e) => (e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')))
   const userLabels = functions.reduceArray(layers, (e) => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
@@ -457,7 +458,6 @@ export function sortLayers () {
   const pointsLayerHits = functions.reduceArray(layers, (e) => e.id === 'points-hit-layer_geojson-source')
   const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
   const heatmap = functions.reduceArray(layers, (e) => (e.id.startsWith('heatmap-layer'))) 
-  const kmMarkers = functions.reduceArray(layers, (e) => (e.id.includes('km-marker')))
 
   layers = layers.concat(flatLayers).concat(lineLayers).concat(mapExtrusions).concat(directions)
     .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
