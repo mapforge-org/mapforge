@@ -151,6 +151,12 @@ export default class extends Controller {
     const layer = layers.find(f => f.id === layerId)
     layer.query = layerElement.querySelector('.overpass-query').value
     layer.name = layerElement.querySelector('.overpass-name').value
+    // TODO: move cluster + heatmap to layer checkboxes 
+    const clustered = !layer.query.includes("heatmap=true") &&
+      !layer.query.includes("cluster=false") &&
+      !layer.query.includes("geom") // clustering breaks lines & geometries
+    layer["cluster"] = clustered
+    layer["heatmap"] = layer.query.includes("heatmap=true")
     event.target.closest('.layer-item').querySelector('.layer-name').innerHTML = layer.name
     const { geojson: _geojson, ...sendLayer } = layer
     mapChannel.send_message('update_layer', sendLayer)
@@ -167,7 +173,7 @@ export default class extends Controller {
     loadLayerData(layerId).then( () => { 
       initLayersModal()
       functions.e('#layer-loading', e => { e.classList.add('hidden') })
-      functions.e(`#layer-list-${layer.id} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
+      functions.e(`#layer-list-${layerId} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
     })
   }
 
@@ -215,7 +221,15 @@ export default class extends Controller {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
     let layer = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": false}
-    if (type == 'overpass') { layer["query"] = query }
+    if (type == 'overpass') { 
+      layer["query"] = query 
+      // TODO: move cluster + heatmap to layer checkboxes 
+      const clustered = !layer.query.includes("heatmap=true") &&
+        !layer.query.includes("cluster=false") &&
+        !layer.query.includes("geom") // clustering breaks lines & geometries
+      layer["cluster"] = clustered
+      layer["heatmap"] = layer.query.includes("heatmap=true")
+    }
     layers.push(layer)
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)

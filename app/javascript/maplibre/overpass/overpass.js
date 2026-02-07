@@ -13,7 +13,7 @@ export function initializeOverpassLayers(id = null) {
     const clustered = !layer.query.includes("heatmap=true") && 
       !layer.query.includes("cluster=false") && 
       !layer.query.includes("geom") // clustering breaks lines & geometries
-    initializeViewStyles('overpass-source-' + layer.id)
+    initializeViewStyles('overpass-source-' + layer.id, layer.heatmap)
     if (clustered) {
       const clusterIcon = getCommentValue(layer.query, 'cluster-symbol') || getCommentValue(layer.query, 'cluster-image-url') || 
         getCommentValue(layer.query, 'marker-symbol') || getCommentValue(layer.query, 'marker-image-url')

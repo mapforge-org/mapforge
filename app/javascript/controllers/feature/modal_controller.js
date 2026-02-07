@@ -18,18 +18,17 @@ export default class extends Controller {
   }
 
   toggle_edit_feature (event) {
-    dom.showElements('#edit-button-edit')
+    document.querySelector('#edit-button-edit').classList.remove('active')
+    document.querySelector('#button-edit-raw').classList.remove('active')
     let type = event?.currentTarget?.dataset?.editType || 'ui'
     document.querySelector('#feature-details-body').classList.add('hidden')
     if (document.querySelector('#feature-edit-raw').classList.contains('hidden') && type === 'raw') {
       // console.log('show_feature_edit_raw')
-      document.querySelector('#edit-button-edit').classList.remove('active')
       document.querySelector('#button-edit-raw').classList.add('active')
       this.show_feature_edit_raw()
     } else if (document.querySelector('#feature-edit-ui').classList.contains('hidden') && type === 'ui') {
       // console.log('show_feature_edit_ui')
       document.querySelector('#edit-button-edit').classList.add('active')
-      document.querySelector('#button-edit-raw').classList.remove('active')
       this.show_feature_edit_ui()
 
       // add feature to draw
