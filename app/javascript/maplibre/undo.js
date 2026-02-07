@@ -1,8 +1,10 @@
-import { redrawGeojson, addFeature, destroyFeature } from 'maplibre/map'
+import { addFeature, destroyFeature } from 'maplibre/map'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
 import { resetDirections } from 'maplibre/routing/osrm'
 import { status } from 'helpers/status'
+import { renderGeoJSONLayers } from 'maplibre/layers/geojson'
+import { getFeature } from 'maplibre/layers/layers'
 
 let undoStack = []
 let redoStack = []
@@ -47,7 +49,7 @@ export function undo() {
     return 
   }
   status('Undo: ' + prevState.type)
-  redrawGeojson()
+  renderGeoJSONLayers(true)
   keepSelection()
   if (undoStack.length === 0) { hideUndoButton() }
 }
@@ -74,7 +76,7 @@ export function redo() {
     return
   }
   status('Redo: ' + nextState.type)
-  redrawGeojson()
+  renderGeoJSONLayers(true)
   keepSelection()
   if (redoStack.length === 0) { hideRedoButton() }
 }
@@ -91,11 +93,11 @@ function undoFeatureUpdate(prevState) {
   }
 }
 
-  function redoFeatureUpdate(nextState) {
-  const idx = geojsonData.features.findIndex(f => f.id === nextState.state.id)
-  if (idx !== -1) {
-    addUndoState(nextState.type, geojsonData.features[idx], false)
-    geojsonData.features[idx] = nextState.state
+function redoFeatureUpdate(nextState) {
+  let feature = getFeature(nextState.state.id, 'geojson')
+  if (feature) {
+    addUndoState(nextState.type, feature, false)
+    feature = nextState.state
     resetDirections()
     mapChannel.send_message('update_feature', nextState.state)
   } else {
@@ -104,65 +106,65 @@ function undoFeatureUpdate(prevState) {
 }
 
 function undoFeatureDelete(prevState) {
-  const idx = geojsonData.features.findIndex(f => f.id === prevState.state.id)
-  if (idx === -1) {
+  let feature = getFeature(prevState.state.id, 'geojson')
+  if (!feature) {
     addRedoState(prevState.type, prevState.state)
     addFeature(prevState.state)
     mapChannel.send_message('new_feature', prevState.state)
   } else {
-    console.warn('Feature with id ' + prevState.state.id + ' still present in geojsonData')
+    console.warn('Feature with id ' + prevState.state.id + ' still present in layer geojson')
   }
 }
 
 function redoFeatureDelete(nextState) {
-  const idx = geojsonData.features.findIndex(f => f.id === nextState.state.id)
-  if (idx !== -1) {
-    addUndoState(nextState.type, geojsonData.features[idx], false)
+  let feature = getFeature(nextState.state.id, 'geojson')
+  if (feature) {
+    addUndoState(nextState.type, feature, false)
     destroyFeature(nextState.state.id)
     mapChannel.send_message('delete_feature', { id: nextState.state.id })
   } else {
-    console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
+    console.warn('Feature with id ' + prevState.state.id + ' not found in layer geojson')
   }
 }
 
 function undoFeatureAdded(prevState) {
-  const idx = geojsonData.features.findIndex(f => f.id === prevState.state.id)
-  if (idx !== -1) {
-    addRedoState(prevState.type, geojsonData.features[idx], false)
+  let feature = getFeature(prevState.state.id, 'geojson')
+  if (feature) {
+    addRedoState(prevState.type, feature, false)
     destroyFeature(prevState.state.id)
     mapChannel.send_message('delete_feature', { id: prevState.state.id })
   } else {
-    console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
+    console.warn('Feature with id ' + prevState.state.id + ' not found in layer geojson')
   }
 }
 
 function redoFeatureAdded(nextState) {
-  const idx = geojsonData.features.findIndex(f => f.id === nextState.state.id)
-  if (idx === -1) {
+  let feature = getFeature(nextState.state.id, 'geojson')
+  if (!feature) {
     addUndoState(nextState.type, nextState.state, false)
     addFeature(nextState.state)
     mapChannel.send_message('new_feature', nextState.state)
   } else {
-    console.warn('Feature with id ' + nextState.state.id + ' still present in geojsonData')
+    console.warn('Feature with id ' + nextState.state.id + ' still present in layer geojson')
   }
 }
 
 function undoTrackAdded(prevState) {
-  const idx = geojsonData.features.findIndex(f => f.id === prevState.state.id)
-  if (idx !== -1) {
-    addRedoState(prevState.type, geojsonData.features[idx], false)
+  let feature = getFeature(prevState.state.id, 'geojson')
+  if (feature) {
+    addRedoState(prevState.type, feature, false)
     destroyFeature(prevState.state.id)
     resetDirections()
     mapChannel.send_message('delete_feature', { id: prevState.state.id })
   } else {
-    console.warn('Feature with id ' + prevState.state.id + ' not found in geojsonData')
+    console.warn('Feature with id ' + prevState.state.id + ' not found in layer geojson')
   }
 }
 
 // keep feature selected
 function keepSelection() {
   if (selectedFeature) {
-    let geojsonFeature = geojsonData.features.find(f => f.id === selectedFeature.id)
+    let geojsonFeature = getFeature(selectedFeature.id, 'geojson')
     if (geojsonFeature) {
       showFeatureDetails(geojsonFeature)
       select(geojsonFeature)
