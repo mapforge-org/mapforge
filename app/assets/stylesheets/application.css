@@ -104,8 +104,13 @@ a:active, .link:active {
 
 .flex-center {
   display: flex;
-  justify-content: center; /* Vertically centers the items */
-  align-items: center;
+  justify-content: center; /* Horizontally centers the items */
+  align-items: center; /* Vertically centers the items */
+}
+
+.flex-vcenter {
+  display: flex;
+  align-items: center; /* Vertically centers the items */
 }
 
 .flex-no-wrap {

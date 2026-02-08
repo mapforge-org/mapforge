@@ -19,6 +19,7 @@
   text-overflow: ellipsis;
   margin-top: 0.1rem;
   line-height: 1.5;
+  font-weight: 400;
 }
 
 @media (width <= 574px) {
@@ -100,6 +101,10 @@
 #feature-details-body img {
   max-width: 100%;
   height: auto;
+}
+
+#feature-details-body .icon {
+  max-height: 1rem;
 }
 
 #feature-edit-raw textarea {

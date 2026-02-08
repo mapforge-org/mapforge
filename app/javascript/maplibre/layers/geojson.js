@@ -1,12 +1,13 @@
-import { map } from 'maplibre/map'
+import { map, mapProperties } from 'maplibre/map'
 import { initializeViewStyles, initializeClusterStyles, styles, featureColor, labelFont, setSource } from 'maplibre/styles/styles'
-import { layers } from 'maplibre/layers/layers'
+import { layers, getFeatures } from 'maplibre/layers/layers'
 import { draw, select } from 'maplibre/edit'
 import { getFeature } from 'maplibre/layers/layers'
-import { renderExtrusionLines } from 'maplibre/feature'
 import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { along } from "@turf/along"
+import { buffer } from "@turf/buffer"
+import { defaultLineWidth } from 'maplibre/styles/styles'
 
 export function initializeGeoJSONLayers(id = null) {
   // console.log('Initializing geojson layers')
@@ -193,4 +194,30 @@ export function initializeKmMarkerStyles(id) {
     style = setSource (style, 'km-marker-source-' + id)
     map.addLayer(style) 
   })
+}
+
+function renderExtrusionLines() {
+  // Disable extrusionlines on 3D terrain, it does not work
+  if (mapProperties.terrain) { return [] }
+
+  let extrusionLines = getFeatures('geojson').filter(feature => (
+    feature.geometry.type === 'LineString' &&
+    feature.properties['fill-extrusion-height'] &&
+    feature.geometry.coordinates.length !== 1 // don't break line animation
+  ))
+
+  extrusionLines = extrusionLines.map(feature => {
+    const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
+    const extrusionLine = buffer(feature, width, { units: 'meters' })
+    // clone properties hash, else we're writing into the original feature's properties
+    extrusionLine.properties = { ...feature.properties }
+    if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
+      extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
+    }
+    extrusionLine.properties['stroke-width'] = 0
+    extrusionLine.properties['stroke-opacity'] = 0
+    extrusionLine.properties['fill-opacity'] = 0
+    return extrusionLine
+  })
+  return extrusionLines
 }
