@@ -1,14 +1,12 @@
-import { map, mapProperties } from 'maplibre/map'
+import { map } from 'maplibre/map'
 import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
-import { defaultLineWidth } from 'maplibre/styles'
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { length } from "@turf/length"
 import { area } from "@turf/area"
-import { buffer } from "@turf/buffer"
 import { lineString, multiLineString, polygon, multiPolygon } from "@turf/helpers"
-import { layers, getFeature, getFeatures, getFeatureSource } from "maplibre/layers/layers"
+import { layers, getFeature, getFeatureSource } from "maplibre/layers/layers"
 
 window.marked = marked
 
@@ -173,7 +171,12 @@ export async function showFeatureDetails (feature) {
 
   f.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
   f.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
-  document.querySelector('#feature-title').innerHTML = featureTitle(feature)
+  
+  const title = featureTitle(feature)
+  const titleElement = document.querySelector('#feature-title')
+  titleElement.innerHTML = title
+  titleElement.style.fontSize = titleElement.textContent.length > 24 ? '1rem' : null;
+
   document.querySelector('#feature-size').innerHTML = featureMeta(feature)
   document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
   if (feature.geometry.type === 'Point') {
@@ -188,18 +191,43 @@ export async function showFeatureDetails (feature) {
     link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id + '.gpx')
     if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/[\s\/]+/g, "_")) }
   }
-  marked.use({ gfm: true, breaks: true })
-  let desc = marked(feature?.properties?.desc || '')
-  // show link target if onclick is link
-  if (feature?.properties?.onclick === 'link' && feature?.properties?.['onclick-target']) { 
-    desc = `<p><i class="bi bi-box-arrow-up-right"></i> ${feature.properties['onclick-target']}</p>`
-  } else if (feature?.properties?.onclick === 'feature' && feature?.properties?.['onclick-target']) { 
-  // show feature target if onclick is feature
-    desc = `<p><i class="bi bi-geo-alt-fill"></i> ${feature.properties['onclick-target']}</p>`
-  }
-  desc = f.sanitizeMarkdown(desc)
-  document.querySelector('#feature-details-description').innerHTML = desc
+
+  document.querySelector('#feature-details-description').innerHTML = 'Loading description...'
+  featureDescription(feature).then(desc => {
+    document.querySelector('#feature-details-description').innerHTML = desc
+  })
+
 }
+
+async function featureDescription (feature) {
+  marked.use({ gfm: true, breaks: true })
+  let desc = ''
+  // show link target if onclick is link
+  if (feature?.properties?.onclick === 'link' && feature?.properties?.['onclick-target']) {
+    desc = `<p><i class="bi bi-box-arrow-up-right"></i> ${feature.properties['onclick-target']}</p>`
+  } else if (feature?.properties?.onclick === 'feature' && feature?.properties?.['onclick-target']) {
+    // show feature target if onclick is feature
+    desc = `<p><i class="bi bi-geo-alt-fill"></i> ${feature.properties['onclick-target']}</p>`
+  } else if (feature?.properties?.wikipediaId) {
+    const page = encodeURIComponent(feature.properties.title)
+    const api = `https://en.wikipedia.org/api/rest_v1/page/summary/${page}`
+    const url = `https://en.wikipedia.org/wiki/${page}`
+
+    const data = await fetch(api).then(r => r.json())
+    if (data.thumbnail?.source) {
+      desc += `<p><a target="_blank" href="${url}">` + 
+              `<img class="w-100" src="${data.thumbnail.source}"></a></p>`
+    }
+    desc += `<p>${data.extract}</p>`
+    desc += `<p>Read the full <img src="/icons/wikipedia.png" class="me-1 ms-1 icon"/><a target="_blank" href="${url}">Wikipedia article</a></p>`
+
+  } else {
+    desc = f.sanitizeMarkdown(marked(feature?.properties?.desc || ''))
+  }
+  return desc
+}
+
+
 
 // set title image according to feature type
 export function featureIcon (feature) {
@@ -275,32 +303,6 @@ export function highlightFeature (feature, sticky = false, source) {
       window.history.pushState({}, '', newPath)
     }
   }
-}
-
-export function renderExtrusionLines () {
-  // Disable extrusionlines on 3D terrain, it does not work
-  if (mapProperties.terrain) { return [] }
-
-  let extrusionLines = getFeatures('geojson').filter(feature => (
-    feature.geometry.type === 'LineString' &&
-      feature.properties['fill-extrusion-height'] &&
-      feature.geometry.coordinates.length !== 1 // don't break line animation
-  ))
-
-  extrusionLines = extrusionLines.map(feature => {
-    const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
-    const extrusionLine = buffer(feature, width, { units: 'meters' })
-    // clone properties hash, else we're writing into the original feature's properties
-    extrusionLine.properties = { ...feature.properties }
-    if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
-      extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
-    }
-    extrusionLine.properties['stroke-width'] = 0
-    extrusionLine.properties['stroke-opacity'] = 0
-    extrusionLine.properties['fill-opacity'] = 0
-    return extrusionLine
-  })
-  return extrusionLines
 }
 
 export async function uploadImage(image) {

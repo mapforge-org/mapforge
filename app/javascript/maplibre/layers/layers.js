@@ -1,5 +1,5 @@
 import { initializeWikipediaLayers, loadWikipediaLayer } from 'maplibre/layers/wikipedia'
-import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/overpass/overpass'
+import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/layers/overpass'
 import { addGeoJSONSource, map, sortLayers } from 'maplibre/map'
 import { initializeGeoJSONLayers } from 'maplibre/layers/geojson'
 import * as functions from 'helpers/functions'

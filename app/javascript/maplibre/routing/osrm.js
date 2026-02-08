@@ -1,11 +1,11 @@
 import { layersFactory } from "@maplibre/maplibre-gl-directions"
 import CustomMapLibreGlDirections from "maplibre/routing/custom_directions"
 import { map, mapProperties, upsert } from 'maplibre/map'
-import { highlightColor } from 'maplibre/edit_styles'
+import { highlightColor } from 'maplibre/styles/edit_styles'
 import { updateElevation, setSelectedFeature } from 'maplibre/edit'
-import { styles, featureColor } from 'maplibre/styles'
+import { styles, featureColor } from 'maplibre/styles/styles'
 import { decodePolyline } from 'helpers/polyline'
-import { basemaps, defaultFont } from 'maplibre/basemaps'
+import { basemaps, defaultFont } from 'maplibre/styles/basemaps'
 import { mapChannel } from 'channels/map_channel'
 import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'

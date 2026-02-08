@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles'
+import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles/styles'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { status } from 'helpers/status'
 import { showFeatureDetails, highlightedFeatureId } from 'maplibre/feature'

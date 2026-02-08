@@ -1,4 +1,4 @@
-import { featureColor } from 'maplibre/styles'
+import { featureColor } from 'maplibre/styles/styles'
 import { map } from 'maplibre/map'
 import { point } from "@turf/helpers"
 import { distance } from "@turf/distance"

@@ -48,11 +48,11 @@
                 }
                   %i.bi.bi-wikipedia.me-2
                   Wikipedia articles              
-              / Predefined queries, must match definitions in maplibre/overpass/queries.js
+              / Predefined queries, must match definitions in maplibre/layers/queries.js
               :ruby 
-                overpass_queries = ['Public toilets', 'Breweries', 'Subway', 'Drinking water',
-                'Hiking routes', 'Bicycle routes', 'Camping', 'Feuerwehr', 'Hydranten', 'Trains', 
-                'Wifi', 'Food Shops', 'Swimming pools 🏊' ]
+                overpass_queries = ['🚻 Public toilets', '🍻 Breweries', '🚇 Subway', '🚰 Drinking water',
+                '🚶🏾 Hiking routes', '🚴 Bicycle routes', '🏕️ Camping', '🚒 Feuerwehr', '👨🏻‍🚒 Hydranten', '🚆 Trains', 
+                '🛜 Wifi', '🏪 Food Shops', '🏊 Swimming pools' ]
               - overpass_queries.each do |query_name|
                 %li
                   %button.dropdown-item{

@@ -1,5 +1,5 @@
 import { map } from 'maplibre/map'
-import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
+import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles/styles'
 import * as functions from 'helpers/functions'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { status } from 'helpers/status'
@@ -18,11 +18,12 @@ export function initializeWikipediaLayers(id = null) {
   })
 }
 
-// similar: https://github.com/styluslabs/maps/blob/master/assets/plugins/wikipedia-search.js
 export function loadWikipediaLayer(id) {
   const layer = layers.find(f => f.id === id)
+  // query API docs: https://en.wikipedia.org/w/api.php?action=help&modules=query
+  // Cannot include article previews in geo search
   const url = "https://en.wikipedia.org/w/api.php?origin=*&action=query&format=json&list=geosearch&gslimit=500&gsradius="
-    + "5000&gscoord=" + map.getCenter().lat + "%7C" + map.getCenter().lng
+    + "8000&gscoord=" + map.getCenter().lat + "%7C" + map.getCenter().lng
 
   return fetch(url)
     .then(response => {
@@ -30,6 +31,7 @@ export function loadWikipediaLayer(id) {
       return response.json()
     })
     .then(data => {
+      if (data.error) { throw new Error('API error: ' + data.error.info ) }
       layer.geojson = wikipediatoGeoJSON(data)
       renderWikipediaLayer(layer.id)
     })
@@ -68,9 +70,7 @@ function wikipediatoGeoJSON(data) {
       "properties": {
         "title": entry.title,
         "label": entry.title,
-        "pageid": entry.pageid,
-        "dist": entry.dist,
-        "desc": "https://en.wikipedia.org/?curid=" + entry.pageid,
+        "wikipediaId": entry.pageid,
         "marker-image-url": "/icons/wikipedia.png",
         "marker-color": "white",
         "marker-size": "20"

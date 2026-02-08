@@ -1,6 +1,6 @@
 import { map } from 'maplibre/map'
-import { applyOverpassQueryStyle } from 'maplibre/overpass/queries'
-import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
+import { applyOverpassQueryStyle } from 'maplibre/layers/queries'
+import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles/styles'
 import * as functions from 'helpers/functions'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { status } from 'helpers/status'

@@ -1,4 +1,4 @@
-import { styles, pointSize, pointSizeMax } from 'maplibre/styles'
+import { styles, pointSize, pointSizeMax } from 'maplibre/styles/styles'
 
 // started from https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
 // Styling Draw: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#styling-draw
