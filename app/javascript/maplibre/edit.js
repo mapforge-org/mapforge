@@ -1,5 +1,5 @@
 import { map, destroyFeature, addFeature, mapProperties } from 'maplibre/map'
-import { editStyles } from 'maplibre/edit_styles'
+import { editStyles } from 'maplibre/styles/edit_styles'
 import { highlightFeature } from 'maplibre/feature'
 import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
 import { initDirections, resetDirections } from 'maplibre/routing/osrm'

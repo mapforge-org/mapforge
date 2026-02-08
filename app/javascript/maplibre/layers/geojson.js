@@ -1,5 +1,5 @@
 import { map } from 'maplibre/map'
-import { initializeViewStyles, initializeClusterStyles, styles, featureColor, labelFont, setSource } from 'maplibre/styles'
+import { initializeViewStyles, initializeClusterStyles, styles, featureColor, labelFont, setSource } from 'maplibre/styles/styles'
 import { layers } from 'maplibre/layers/layers'
 import { draw, select } from 'maplibre/edit'
 import { getFeature } from 'maplibre/layers/layers'

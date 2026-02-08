@@ -2,7 +2,7 @@ import { map, mapProperties } from 'maplibre/map'
 import * as f from 'helpers/functions'
 import * as dom from 'helpers/dom'
 import { marked } from 'marked'
-import { defaultLineWidth } from 'maplibre/styles'
+import { defaultLineWidth } from 'maplibre/styles/styles'
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { length } from "@turf/length"
 import { area } from "@turf/area"

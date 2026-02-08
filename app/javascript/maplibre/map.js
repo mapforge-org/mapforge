@@ -4,16 +4,16 @@ import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { mapChannel } from 'channels/map_channel'
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
-import { basemaps, defaultFont, elevationSource, demSource } from 'maplibre/basemaps'
+import { basemaps, defaultFont, elevationSource, demSource } from 'maplibre/styles/basemaps'
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared'
 import { initializeViewControls } from 'maplibre/controls/view'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
-import { setStyleDefaultFont, loadImage } from 'maplibre/styles'
+import { setStyleDefaultFont, loadImage } from 'maplibre/styles/styles'
 import { layers, initializeLayerSources, loadLayerDefinitions, initializeLayerStyles, getFeature } from 'maplibre/layers/layers'
 import { centroid } from "@turf/centroid"
 import { renderGeoJSONLayer, renderGeoJSONLayers } from 'maplibre/layers/geojson'
 import { renderWikipediaLayer } from 'maplibre/layers/wikipedia'
-import { renderOverpassLayer } from 'maplibre/overpass/overpass'
+import { renderOverpassLayer } from 'maplibre/layers/overpass'
 
 export let map
 export let mapProperties

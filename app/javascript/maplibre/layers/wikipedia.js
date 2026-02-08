@@ -1,5 +1,5 @@
 import { map } from 'maplibre/map'
-import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles'
+import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles/styles'
 import * as functions from 'helpers/functions'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { status } from 'helpers/status'
@@ -68,9 +68,7 @@ function wikipediatoGeoJSON(data) {
       "properties": {
         "title": entry.title,
         "label": entry.title,
-        "pageid": entry.pageid,
-        "dist": entry.dist,
-        "desc": "https://en.wikipedia.org/?curid=" + entry.pageid,
+        "wikipediaId": entry.pageid,
         "marker-image-url": "/icons/wikipedia.png",
         "marker-color": "white",
         "marker-size": "20"
