@@ -108,7 +108,7 @@ describe 'Map' do
       expect(page).to have_text('opass')
       click_button 'Add layer'
       find('li', text: '🚰 Drinking water').click
-      wait_for { Layer.find_by(name: 'Drinking water') }.not_to be_nil
+      wait_for { Layer.find_by(name: '🚰 Drinking water') }.not_to be_nil
     end
 
     it 'can edit overpass layer' do
@@ -140,7 +140,7 @@ describe 'Map' do
       within('#query-dropdown') do
         first('li', text: '🍻 Breweries').click
       end
-      wait_for { map.layers.find { |m| m.name == 'Breweries' } }.to be_present
+      wait_for { map.layers.find { |m| m.name == '🍻 Breweries' } }.to be_present
     end
 
     it 'can add custom query layer' do
