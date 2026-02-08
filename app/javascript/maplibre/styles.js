@@ -764,7 +764,7 @@ export function clusterStyles(icon) {
       filter: ['has', 'point_count'],
       layout: {
         'icon-image': (icon ? icon_image : ''),
-        'icon-size': 0.5,
+        'icon-size': ['min', ['+', 0.5, ['*', 0.01, ['get', 'point_count']]], 0.75],
         'icon-overlap': 'always'
       }
     }
