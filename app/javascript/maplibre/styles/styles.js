@@ -1,11 +1,14 @@
-import { map, frontFeature, removeStyleLayers } from 'maplibre/map'
-import {
-  highlightedFeatureId, stickyFeatureHighlight, highlightedFeatureSource,
-  resetHighlightedFeature, highlightFeature
-} from 'maplibre/feature'
-import { draw } from 'maplibre/edit'
 import { flyToFeature } from 'maplibre/animations'
+import { draw } from 'maplibre/edit'
+import {
+  highlightedFeatureId,
+  highlightedFeatureSource,
+  highlightFeature,
+  resetHighlightedFeature,
+  stickyFeatureHighlight
+} from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
+import { frontFeature, map, removeStyleLayers } from 'maplibre/map'
 
 export const viewStyleNames = [
   'polygon-layer',
@@ -44,10 +47,10 @@ export function initializeViewStyles (sourceName, heatmap=false) {
     if (e.features[0].properties?.cluster) { return }
     if (window.gon.map_mode === 'ro') {
       if (e.features[0].properties?.onclick === false) { return }
-      if (e.features[0].properties?.onclick === 'link' && e.features[0].properties?.['onclick-target']) { 
+      if (e.features[0].properties?.onclick === 'link' && e.features[0].properties?.['onclick-target']) {
         window.location.href = e.features[0].properties?.['onclick-target']
       }
-      if (e.features[0].properties?.onclick === 'feature' && e.features[0].properties?.['onclick-target']) { 
+      if (e.features[0].properties?.onclick === 'feature' && e.features[0].properties?.['onclick-target']) {
         const targetId = e.features[0].properties?.['onclick-target']
         const feature = getFeature(targetId)
         if (feature) {
@@ -249,7 +252,7 @@ const iconSize = [
 const userLabelSize = ['coalesce', ['get', 'user_label-size'], ['get', 'label-size']]
 const scaledLabelSize = ['coalesce', ...userLabelSize.slice(1), ['*', 2, pointSizeMax]] // fallback to 2*pointSizeMax
 const staticLabelSize = ['coalesce', ...userLabelSize.slice(1), 16] // fallback to 16
-const labelOffset = 
+const labelOffset =
   ["interpolate", ["linear"],
     ['to-number', ['coalesce', ["get", "marker-size"], 8]],
     0, ["literal", [0, 0]],
@@ -366,8 +369,8 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
-        ['!', ['has', 'stroke-dasharray']], // Only solid lines 
-        minZoomFilter],  
+        ['!', ['has', 'stroke-dasharray']], // Only solid lines
+        minZoomFilter],
       layout: {
         'line-join': 'round',
         'line-cap': 'round'
@@ -386,7 +389,7 @@ export function styles () {
       id: 'line-layer',
       type: 'line',
       filter: ['all',
-        ['==', ['geometry-type'], 'LineString'], 
+        ['==', ['geometry-type'], 'LineString'],
         minZoomFilter],
       layout: {
         'line-join': 'round',
@@ -410,7 +413,7 @@ export function styles () {
       id: 'line-layer-hit',
       type: 'line',
       filter: ['all',
-        ['==', ['geometry-type'], 'LineString'], 
+        ['==', ['geometry-type'], 'LineString'],
         minZoomFilter],
       paint: {
         'line-width': ['+', 10, outlineWidthMax],
@@ -468,7 +471,7 @@ export function styles () {
       layout: {
         'circle-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]
       }
-    },    
+    },
     'points-layer': {
       id: 'points-layer',
       type: 'circle',
@@ -516,7 +519,7 @@ export function styles () {
           pointOutlineSize
         ],
         'circle-stroke-opacity': ["min", 1, ['+', pointOpacity, 0.2]]
-      }, 
+      },
       layout: {
         // sort-key is only effective within same layer
         'circle-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]
@@ -555,7 +558,7 @@ export function styles () {
       id: 'symbols-layer-flat',
       type: 'symbol',
       filter: ['all',
-        ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']], 
+        ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
         ['==', ['get', 'flat'], true], ['!', ['has', 'heatmap']], minZoomFilter],
       layout: {
         // sort-key is only effective within same layer
@@ -573,7 +576,7 @@ export function styles () {
           ""
           ]
         ],
-        
+
         'icon-size': iconSize,
         'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
         "icon-pitch-alignment": "map", // same pitch angle as map
@@ -614,7 +617,7 @@ export function styles () {
         "icon-pitch-alignment": "viewport",
         "icon-rotate": ["get", "marker-rotate"],
         'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
-      },  
+      },
       paint: {
         // circle-pitch-scale: 'map' // seems default and cannot get changed
         // cannot set circle-pitch-scale, circle-stroke-* in the symbol layer :-(
@@ -624,7 +627,7 @@ export function styles () {
           pointOpacity
         ],
       }
-    },  
+    },
     // Line labels sometimes get rendered wrong when line is extruded
     'line-labels': {
       id: 'line-labels',
@@ -681,7 +684,7 @@ export function styles () {
       filter: ['all',
         ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
         ['has', 'label'],
-        ['==', ['get', 'flat'], true], 
+        ['==', ['get', 'flat'], true],
         minZoomFilter
       ],
       layout: {
@@ -713,12 +716,13 @@ export function styles () {
       filter: ['all',
         ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
         ['has', 'label'],
-        ['!=', ['get', 'flat'], true], 
+        ['!=', ['get', 'flat'], true],
         minZoomFilter],
       layout: {
         'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
         'text-size': labelSize,
-        'text-font': labelFont,
+        //'text-font': labelFont,
+        "text-font": ["Lobster Two"],
         'text-anchor': 'top', // text under point
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
         "text-offset": labelOffset,
@@ -757,7 +761,7 @@ export function clusterStyles(icon) {
         'circle-stroke-opacity': ["min", 1, ['+', pointOpacity, 0.2]]
       }
     }
-    
+
   const clusterCircles = {
       id: 'cluster_circles',
       type: 'symbol',

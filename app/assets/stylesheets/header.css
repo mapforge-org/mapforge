@@ -48,7 +48,7 @@
 .login-link {
   position: absolute;
   right: 1rem;
-  top: 1.3rem;
+  top: 0.8rem;
   text-decoration: none;
 }
 
@@ -117,7 +117,8 @@ img.profile-image {
   }
 
   .login-link {
-      top: 0.9rem;  
+      top: 0.5rem;
+      right: 0.7rem;
   }
 
   .navbar {

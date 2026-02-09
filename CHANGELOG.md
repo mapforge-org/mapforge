@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-02
+
+* Support Wikipedia layer
+
 ## 2026-01
 
 * 1000st user that created a map!

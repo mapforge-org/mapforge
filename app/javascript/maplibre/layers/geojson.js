@@ -1,13 +1,11 @@
-import { map, mapProperties } from 'maplibre/map'
-import { initializeViewStyles, initializeClusterStyles, styles, featureColor, labelFont, setSource } from 'maplibre/styles/styles'
-import { layers, getFeatures } from 'maplibre/layers/layers'
-import { draw, select } from 'maplibre/edit'
-import { getFeature } from 'maplibre/layers/layers'
-import { lineString } from "@turf/helpers"
-import { length } from "@turf/length"
 import { along } from "@turf/along"
 import { buffer } from "@turf/buffer"
-import { defaultLineWidth } from 'maplibre/styles/styles'
+import { lineString } from "@turf/helpers"
+import { length } from "@turf/length"
+import { draw, select } from 'maplibre/edit'
+import { getFeature, getFeatures, layers } from 'maplibre/layers/layers'
+import { map, mapProperties } from 'maplibre/map'
+import { defaultLineWidth, featureColor, initializeClusterStyles, initializeViewStyles, labelFont, setSource, styles } from 'maplibre/styles/styles'
 
 export function initializeGeoJSONLayers(id = null) {
   // console.log('Initializing geojson layers')
@@ -53,7 +51,7 @@ export function renderGeoJSONLayer(id, resetDraw = true) {
     if (resetDraw) {
       // This has a performance drawback over draw.set(), but some feature
       // properties don't get updated otherwise
-      // API: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md  
+      // API: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md
       const drawFeatureIds = draw.getAll().features.map(feature => feature.id)
       draw.deleteAll()
 
@@ -71,7 +69,7 @@ export function renderGeoJSONLayer(id, resetDraw = true) {
 
 export function renderKmMarkersLayer(id) {
    let layer = layers.find(l => l.id === id)
-  
+
   let kmMarkerFeatures = []
   layer.geojson.features.filter(feature => (feature.geometry.type === 'LineString' &&
     feature.properties['show-km-markers'] &&
@@ -92,14 +90,14 @@ export function renderKmMarkersLayer(id) {
       if (i >= Math.ceil(distance)) {
         point.properties['marker-size'] = 14
         point.properties['km'] = Math.round(distance)
-        if (Math.ceil(distance) < 100) { 
+        if (Math.ceil(distance) < 100) {
           point.properties['km'] = Math.round(distance * 10) / 10
         }
         point.properties['km-marker-numbers-end'] = 1
         point.properties['sort-key'] = 2 + index
       }
       kmMarkerFeatures.push(point)
-    }  
+    }
   })
 
   let markerFeatures = {
@@ -162,8 +160,8 @@ export function kmMarkerStyles (_id) {
 
   layers.push(makePointsLayer(100, 5, 7))
   layers.push(makeNumbersLayer(100, 5, 7))
-  
-  // end point has different style 
+
+  // end point has different style
   layers.push({
     ...base,
     id: `km-marker-points-end`,
@@ -190,9 +188,9 @@ export function kmMarkerStyles (_id) {
 }
 
 export function initializeKmMarkerStyles(id) {
-  kmMarkerStyles(id).forEach(style => { 
+  kmMarkerStyles(id).forEach(style => {
     style = setSource (style, 'km-marker-source-' + id)
-    map.addLayer(style) 
+    map.addLayer(style)
   })
 }
 
