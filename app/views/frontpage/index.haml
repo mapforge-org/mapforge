@@ -8,25 +8,25 @@
           %h1.mapforge-font{ 'data-aos': "fade-up" } Create your own maps
           %div{ 'data-aos': "fade-up" }
             %blockquote{ 'data-aos': "fade-up" }
-              %p 
-                Create individual maps for your places, tracks and events. 
-                Layer your data onto various base maps. 
+              %p
+                Create individual maps for your places, tracks and events.
+                Layer your data onto various base maps.
                 Share your maps in real-time.
 
                 - if @user
-                  %p 
+                  %p
                     Browse
                     = link_to('your maps', my_path, class: 'btn btn-orange call-to-action') + ','
-                    learn more on the 
+                    learn more on the
                     = link_to 'tutorial map', tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
                     = ' or '
                     = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
                     a new map.
-                - else 
-                  %p 
-                    Browse the 
+                - else
+                  %p
+                    Browse the
                     = link_to('gallery', maps_path, class: 'btn btn-orange call-to-action') + ','
-                    learn how to use it on the 
+                    learn how to use it on the
                     = link_to 'tutorial map', tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
                     = ' or '
                     - unless @user
@@ -35,13 +35,16 @@
                     - else
                       = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
                       a new map.
-                %p 
-                  Mapforge.org is open-source and free to use. 
-                  
+                %p
+                  Mapforge.org is open-source and free to use.
+
                   %span.d-none.d-sm-inline
                     It is ad-free and respects your privacy.
                     Also available for self-hosting, giving you full control over your data.
-
+                  %span.d-sm-none
+                    Also available as
+                    = link_to 'app', doc_path(id: 'app'), class: 'btn btn-orange call-to-action'
+                    = '.'
             %p.fs-4.mapforge-font
               %i Happy mapping!
 
@@ -61,30 +64,30 @@
                 %h2.mb-3.mapforge-font Map tools
                 %h4.mb-3 Customize your map
                 %ul
-                  %li 
-                    Choose your base map: 
+                  %li
+                    Choose your base map:
                     Streets, Satellite, Topographic, Biking
                     %span.d-none.d-sm-inline
                       , 3D houses etc.
-                  %li 
-                    Add your own data: 
-                    Import 
+                  %li
+                    Add your own data:
+                    Import
                     %span.d-none.d-sm-inline
-                      your data 
+                      your data
                     from GeoJSON, GPX and KML
                   %li
-                    Draw shapes and style them: 
+                    Draw shapes and style them:
                     Add pictures, customize colors, symbols, labels
                     %span.d-none.d-sm-inline
                       , (3D) polygons and more
-                  %li 
-                    Dynamic layers: Use 
+                  %li
+                    Dynamic layers: Use
                     =link_to 'Overpass', doc_path(id: 'overpass_layers')
                     to add custom layers from OpenStreetMap data
-                  %li 
-                    3D Terrain: View your map with 
+                  %li
+                    3D Terrain: View your map with
                     %span.d-none.d-sm-inline
-                      realistic 
+                      realistic
                     elevation
             .swiper-slide
               .item
@@ -100,10 +103,10 @@
                 %h4.mb-3 Use Mapforge with different clients + apps
                 %ul
                   %li Responsive Design: Works well both on desktop and mobile
-                  %li 
-                    Run from your home screen as 
+                  %li
+                    Run from your home screen as
                     = link_to 'app on your phone', doc_path(id: 'app')
-                  %li 
+                  %li
                     Map your track: Use
                     = link_to "µlogger", "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md"
                     to visualize and share your tracks live
@@ -124,7 +127,7 @@
                     = link_to("Turf.js", "https://turfjs.org/") + ','
                     = link_to "Openrouteservice", "https://openrouteservice.org/"
                     as helping libraries.
-                  %li 
+                  %li
                     Storing only minimal data about you, no sharing of data with ad- or analytics companies.
                   %li
                     Self-Hosted Solution:
