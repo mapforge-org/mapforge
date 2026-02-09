@@ -1,12 +1,13 @@
-import { map } from 'maplibre/map'
-import * as f from 'helpers/functions'
-import * as dom from 'helpers/dom'
-import { marked } from 'marked'
-import { showElevationChart } from 'maplibre/feature/elevation'
-import { length } from "@turf/length"
 import { area } from "@turf/area"
-import { lineString, multiLineString, polygon, multiPolygon } from "@turf/helpers"
-import { layers, getFeature, getFeatureSource } from "maplibre/layers/layers"
+import { lineString, multiLineString, multiPolygon, polygon } from "@turf/helpers"
+import { length } from "@turf/length"
+import * as dom from 'helpers/dom'
+import * as f from 'helpers/functions'
+import { showElevationChart } from 'maplibre/feature/elevation'
+import { getFeature, getFeatureSource, layers } from "maplibre/layers/layers"
+import { wikipediaFeatureDescription } from 'maplibre/layers/wikipedia'
+import { map } from 'maplibre/map'
+import { marked } from 'marked'
 
 window.marked = marked
 
@@ -171,7 +172,7 @@ export async function showFeatureDetails (feature) {
 
   f.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
   f.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
-  
+
   const title = featureTitle(feature)
   const titleElement = document.querySelector('#feature-title')
   titleElement.innerHTML = title
@@ -209,25 +210,12 @@ async function featureDescription (feature) {
     // show feature target if onclick is feature
     desc = `<p><i class="bi bi-geo-alt-fill"></i> ${feature.properties['onclick-target']}</p>`
   } else if (feature?.properties?.wikipediaId) {
-    const page = encodeURIComponent(feature.properties.title)
-    const api = `https://en.wikipedia.org/api/rest_v1/page/summary/${page}`
-    const url = `https://en.wikipedia.org/wiki/${page}`
-
-    const data = await fetch(api).then(r => r.json())
-    if (data.thumbnail?.source) {
-      desc += `<p><a target="_blank" href="${url}">` + 
-              `<img class="w-100" src="${data.thumbnail.source}"></a></p>`
-    }
-    desc += `<p>${data.extract}</p>`
-    desc += `<p>Read the full <img src="/icons/wikipedia.png" class="me-1 ms-1 icon"/><a target="_blank" href="${url}">Wikipedia article</a></p>`
-
+    desc = wikipediaFeatureDescription(feature)
   } else {
     desc = f.sanitizeMarkdown(marked(feature?.properties?.desc || ''))
   }
   return desc
 }
-
-
 
 // set title image according to feature type
 export function featureIcon (feature) {
