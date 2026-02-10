@@ -1,13 +1,12 @@
-import { map, mapProperties } from 'maplibre/map'
 import * as functions from 'helpers/functions'
+import { map, mapProperties } from 'maplibre/map'
 // import * as dom from 'helpers/dom'
-import { draw, unselect } from 'maplibre/edit'
-import { resetHighlightedFeature, featureIcon } from 'maplibre/feature'
-import { initTooltips } from 'helpers/dom'
+import { animateElement, initTooltips } from 'helpers/dom'
+import { status } from 'helpers/status'
 import MaplibreGeocoder from 'maplibre-gl-geocoder'
 import { resetEditControls } from 'maplibre/controls/edit'
-import { animateElement } from 'helpers/dom'
-import { status } from 'helpers/status'
+import { draw, unselect } from 'maplibre/edit'
+import { featureIcon, resetHighlightedFeature } from 'maplibre/feature'
 import { layers } from 'maplibre/layers/layers'
 
 export class ControlGroup {
@@ -255,13 +254,6 @@ export function resetControls () {
 
 // https://maplibre.org/maplibre-gl-geocoder/types/MaplibreGeocoderOptions.html
 export const geocoderConfig = {
-  clearAndBlurOnEsc: true,
-  // prioritize results near map center
-  proximity: {
-    latitude: () => { map.getCenter().lat }, longitude: () => { map.getCenter().lng } },
-  flyTo: {
-    zoom: 12
-  },
   forwardGeocode: async (config) => {
     const features = []
     try {
@@ -331,7 +323,13 @@ export function initializeDefaultControls () {
   // https://maplibre.org/maplibre-gl-geocoder/
   map.addControl(
     new MaplibreGeocoder(geocoderConfig, {
-      maplibregl
+      maplibregl,
+      zoom: 15,
+      clearAndBlurOnEsc: true,
+      // prioritize results near map center
+      proximity: {
+        latitude: () => { map.getCenter().lat }, longitude: () => { map.getCenter().lng }
+      }
     }), 'top-right'
   )
   const geocoderButton = document.querySelector('.maplibregl-ctrl-geocoder')
