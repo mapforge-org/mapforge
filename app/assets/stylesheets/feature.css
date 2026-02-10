@@ -57,6 +57,10 @@
   }
 }
 
+#feature-details-body strong {
+  font-weight: 600;
+}
+
 #feature-details-body table {
   border-radius: 1rem;
   border-collapse: separate;

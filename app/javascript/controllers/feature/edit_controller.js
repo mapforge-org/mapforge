@@ -1,14 +1,15 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { featureIcon, featureImage, uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
-import { handleDelete, draw } from 'maplibre/edit'
-import { featureColor, featureOutlineColor } from 'maplibre/styles/styles'
-import { status } from 'helpers/status'
-import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
-import { addUndoState } from 'maplibre/undo'
-import { getFeature, getLayer } from 'maplibre/layers/layers'
+import * as functions from 'helpers/functions'
+import { status } from 'helpers/status'
+import { flyToFeature } from 'maplibre/animations'
+import { draw, handleDelete } from 'maplibre/edit'
+import { confirmImageLocation, featureIcon, featureImage, uploadImageToFeature } from 'maplibre/feature'
 import { renderGeoJSONLayer } from 'maplibre/layers/geojson'
+import { getFeature, getLayer } from 'maplibre/layers/layers'
+import { featureColor, featureOutlineColor } from 'maplibre/styles/styles'
+import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
@@ -206,8 +207,7 @@ export default class extends Controller {
     const feature = this.getEditFeature()
     const image = document.querySelector('#marker-image').files[0]
     const imageLocation = await confirmImageLocation(image)
-    if (imageLocation) { feature.geometry.coordinates = imageLocation }
-    
+
     uploadImageToFeature(image, feature)
       .then(data => {
         draw.setFeatureProperty(this.featureIdValue, 'marker-image-url', data.icon)
@@ -222,6 +222,10 @@ export default class extends Controller {
         functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
         functions.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
 
+        if (imageLocation) {
+          feature.geometry.coordinates = imageLocation
+          flyToFeature(feature)
+        }
         renderGeoJSONLayer(this.layerIdValue, true)
         this.saveFeature()
       })
@@ -252,10 +256,10 @@ export default class extends Controller {
     }
 
     const pickerOptions = {
-      data: data, 
-      onEmojiSelect: onEmojiSelect, 
-      onClickOutside: onClickOutside, 
-      dynamicWidth: true, 
+      data: data,
+      onEmojiSelect: onEmojiSelect,
+      onClickOutside: onClickOutside,
+      dynamicWidth: true,
       noCountryFlags: true, // TODO country flags don't work right now
       // set: 'google', // default is native icons (they don't match the map icons)
       theme: 'light',
