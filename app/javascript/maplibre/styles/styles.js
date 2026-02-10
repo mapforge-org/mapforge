@@ -430,7 +430,6 @@ export function styles () {
         ["!=", ["get", "meta"], "vertex"],
         ['==', ['get', 'flat'], true],
         ["!", ["has", "point_count"]],
-        ["!", ["has", "heatmap"]],
         minZoomFilter],
       paint: {
         "circle-pitch-alignment": "map",
@@ -482,7 +481,6 @@ export function styles () {
         ["!=", ["get", "meta"], "vertex"],
         ['!=', ['get', 'flat'], true],
         ["!", ["has", "point_count"]],
-        ["!", ["has", "heatmap"]],
         minZoomFilter
       ],
       paint: {
@@ -559,7 +557,7 @@ export function styles () {
       type: 'symbol',
       filter: ['all',
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
-        ['==', ['get', 'flat'], true], ['!', ['has', 'heatmap']], minZoomFilter],
+        ['==', ['get', 'flat'], true], minZoomFilter],
       layout: {
         // sort-key is only effective within same layer
         'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
@@ -600,7 +598,7 @@ export function styles () {
       type: 'symbol',
       filter: ['all',
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
-        ['!', ['has', 'heatmap']], ['!=', ['get', 'flat'], true], minZoomFilter],
+        ['!=', ['get', 'flat'], true], minZoomFilter],
       layout: {
         // sort-key is only effective within same layer
         'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],

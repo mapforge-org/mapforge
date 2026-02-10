@@ -5,10 +5,10 @@
     %label{ for: "feature-title"} Title
 
   %div
-    %button#button-add-label.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#show_add_label" } 
+    %button#button-add-label.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#show_add_label" }
       %i.bi.bi-plus-square.me-1
       Add label
-    %button#button-add-desc.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#show_add_desc" } 
+    %button#button-add-desc.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#show_add_desc" }
       %i.bi.bi-plus-square.me-1
       Add description
 
@@ -70,7 +70,7 @@
     %label{ for: "marker-symbol"} Symbol:
     %input.form-control#marker-symbol{ type: "hidden", inputmode: 'emoji' }
     #marker-symbol-select{ 'data-action': "click->feature--edit#openEmojiPicker" }
-      #emoji
+      %span#emoji
       %i.bi.bi-pencil-square.ms-1#no-emoji
 
   #marker-image-ui.edit-ui.edit-point
@@ -85,4 +85,3 @@
   #show-km-markers-ui.edit-ui.edit-line
     %label.edit-line{ for: "show-km-markers"} Show km markers:
     %input#show-km-markers{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateShowKmMarkers change->feature--edit#saveFeature"} }
-

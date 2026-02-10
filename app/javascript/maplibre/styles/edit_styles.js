@@ -1,4 +1,4 @@
-import { styles, pointSize, pointSizeMax } from 'maplibre/styles/styles'
+import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
 
 // started from https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
 // Styling Draw: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#styling-draw
@@ -110,8 +110,6 @@ export function editStyles() {
         'circle-stroke-width': 3
       }
     },
-    // inactive single point features
-    removeSource(styles()['points-layer']),
 
     // outline border of inactive vertex points on lines + polygons,
     // rendering outline seperately to generate nicer overlay effect

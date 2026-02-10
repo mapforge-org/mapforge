@@ -1,8 +1,8 @@
-import { initializeWikipediaLayers, loadWikipediaLayer } from 'maplibre/layers/wikipedia'
-import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/layers/overpass'
-import { addGeoJSONSource, map, sortLayers } from 'maplibre/map'
-import { initializeGeoJSONLayers } from 'maplibre/layers/geojson'
 import * as functions from 'helpers/functions'
+import { initializeGeoJSONLayers } from 'maplibre/layers/geojson'
+import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/layers/overpass'
+import { initializeWikipediaLayers, loadWikipediaLayer } from 'maplibre/layers/wikipedia'
+import { addGeoJSONSource, map, sortLayers } from 'maplibre/map'
 
 export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
 window._layers = layers
@@ -35,8 +35,10 @@ export function initializeLayerSources(id = null) {
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   initLayers.forEach((layer) => {
-    console.log('Adding source for layer', layer.type, layer.id, layer.cluster)
-    addGeoJSONSource(layer.type + '-source-' + layer.id, layer.cluster)
+    // drop cluster when heatmap is set
+    const cluster = !!layer.cluster && !layer.heatmap
+    console.log('Adding source for layer', layer.type, layer.id, cluster)
+    addGeoJSONSource(layer.type + '-source-' + layer.id, cluster)
     // add one source for km markers per geojson layer
     if (layer.type === 'geojson') {
       addGeoJSONSource('km-marker-source-' + layer.id, false)
@@ -51,7 +53,7 @@ export async function initializeLayerStyles(id = null) {
   initializeGeoJSONLayers(id)
   let overpassPromises = initializeOverpassLayers(id)
   let wikipediaPromises = initializeWikipediaLayers(id)
-  
+
   await Promise.all(overpassPromises.concat(wikipediaPromises)).then(_results => {
     // re-sort layers after style changes
     sortLayers()

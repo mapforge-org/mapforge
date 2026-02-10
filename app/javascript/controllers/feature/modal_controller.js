@@ -1,13 +1,13 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles/styles'
-import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
-import { status } from 'helpers/status'
-import { showFeatureDetails, highlightedFeatureId } from 'maplibre/feature'
-import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
+import * as functions from 'helpers/functions'
+import { status } from 'helpers/status'
+import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { draw, select, unselect } from 'maplibre/edit'
+import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
+import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles/styles'
 
 let easyMDE
 
@@ -86,14 +86,12 @@ export default class extends Controller {
 
     if (feature.geometry.type === 'Point') {
       dom.showElements(['#feature-edit-ui .edit-point'])
-      
+
       document.querySelector('#marker-symbol').value = feature.properties['marker-symbol'] || ''
       if (feature.properties['marker-symbol']) {
         document.querySelector('#emoji').textContent = feature.properties['marker-symbol']
-        dom.hideElements(['#no-emoji'])
       } else {
         document.querySelector('#emoji').textContent = ''
-        dom.showElements(['#no-emoji'])
       }
 
       let defaultSize = feature.properties['marker-symbol'] ? 18 : 6
