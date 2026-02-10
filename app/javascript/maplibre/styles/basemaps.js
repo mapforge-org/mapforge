@@ -151,6 +151,9 @@ export function basemaps () {
     },
     satelliteStreets: { style: host + '/layers/satellite_with_streets.json' },
 
+    // basemap.de
+    basemapWorld: { style: 'https://sgx.geodatenzentrum.de/gdz_basemapworld_vektor/styles/bm_web_wld_col.json', font: 'Noto Sans Regular' },
+
     // openfreemap.org
     openfreemapPositron: { style: 'https://tiles.openfreemap.org/styles/positron', font: 'Noto Sans Regular' },
     openfreemapBright: { style: 'https://tiles.openfreemap.org/styles/bright', font: 'Noto Sans Regular' },

@@ -46,7 +46,7 @@ class Map
   # Only BASE_MAPS are available in the UI
   BASE_MAPS = [ "versatilesColorful", "satelliteStreets", "openTopoTiles",
     "openfreemapLiberty", "versatilesGraybeard", "versatilesEclipse",
-    "stamenWatercolorTiles", "cyclosmTiles" ]
+    "stamenWatercolorTiles", "cyclosmTiles", "basemapWorld" ]
   STADIA_MAPS = [ "stamenTonerTiles", "stamenWatercolorTiles" ]
   OPENFREE_MAPS = [ "openfreemapPositron", "openfreemapBright", "openfreemapLiberty" ]
   VERSATILES_MAPS = [ "versatilesColorful", "versatilesGraybeard" ]
