@@ -12,14 +12,14 @@ export function applyOverpassQueryStyle (geojson, queryName) {
 
 export const queries = [
   { name: '🚻 Public toilets',
-    query: '// cluster=true\n' + 
+    query: '// cluster=true\n' +
            "// marker-symbol=🚻\nnwr[amenity=toilets];out center 250;"
   },
   // Brewery restaurants are tagged with microbrewery=yes (https://wiki.openstreetmap.org/wiki/Brewery)
   {
     name: '🍻 Breweries',
-    query: '// cluster=true\n' + 
-           '// cluster-symbol=🍻\n' + 
+    query: '// cluster=true\n' +
+           '// cluster-symbol=🍻\n' +
            '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];nwr["industrial"="brewery"];);out center 250;',
     style: (f) => {
       if (f.properties?.microbrewery === 'yes') {
@@ -58,11 +58,11 @@ export const queries = [
       }
       if (f.properties?.railway === 'subway') {
         f.properties["stroke"] = "red"
-      }      
+      }
   }},
   {
     name: '🚰 Drinking water',
-    query: '// cluster=true\n' + 
+    query: '// cluster=true\n' +
            '// marker-symbol=🚰\n' +
            'nwr[amenity=drinking_water];out center 250;'
   },
@@ -83,21 +83,21 @@ export const queries = [
   },
   {
     name: '🏕️ Camping',
-    query: '// marker-symbol=🏕️\n' + 
+    query: '// marker-symbol=🏕️\n' +
            'nwr[tourism=camp_site];out center;'
   },
   {
     name: '🚒 Feuerwehr',
-    query: '// cluster=true\n' + 
+    query: '// cluster=true\n' +
            '// marker-symbol=🚒\n' +
       'nwr[amenity=fire_station];\nout center 500;'
   },
   {
     name: '👨🏻‍🚒 Hydranten',
     query: '// marker-image-url=/icons/hydrant.png\n' +
-           'node["emergency"="fire_hydrant"];\n' + 
+           'node["emergency"="fire_hydrant"];\n' +
            'out body 1000;'
-  },  
+  },
   {
     name: '🚆 Trains',
     query: '(relation["route"="tracks"]; // Train tracks (railways)\n' +
@@ -123,7 +123,7 @@ export const queries = [
   },
   {
     name: '🛜 Wifi',
-    query: '// marker-symbol=🛜\n' + 
+    query: '// marker-symbol=🛜\n' +
            '(nwr["internet_access:fee"=no];\n' +
            'nwr["internet_access:fee"=customers];);\n' +
            'out center 250;'

@@ -721,8 +721,7 @@ export function styles () {
       layout: {
         'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
         'text-size': labelSize,
-        //'text-font': labelFont,
-        "text-font": ["Lobster Two"],
+        'text-font': labelFont,
         'text-anchor': 'top', // text under point
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
         "text-offset": labelOffset,
