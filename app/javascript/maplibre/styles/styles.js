@@ -1,9 +1,10 @@
+import * as functions from 'helpers/functions'
 import { flyToFeature } from 'maplibre/animations'
 import { draw } from 'maplibre/edit'
 import {
+  highlightFeature,
   highlightedFeatureId,
   highlightedFeatureSource,
-  highlightFeature,
   resetHighlightedFeature,
   stickyFeatureHighlight
 } from 'maplibre/feature'
@@ -45,6 +46,7 @@ export function initializeViewStyles (sourceName, heatmap=false) {
     if (draw && draw.getMode() !== 'simple_select') { return }
     if (!e.features?.length || window.gon.map_mode === 'static') { return }
     if (e.features[0].properties?.cluster) { return }
+
     if (window.gon.map_mode === 'ro') {
       if (e.features[0].properties?.onclick === false) { return }
       if (e.features[0].properties?.onclick === 'link' && e.features[0].properties?.['onclick-target']) {
@@ -66,7 +68,7 @@ export function initializeViewStyles (sourceName, heatmap=false) {
   })
 
   // highlight features on hover (only in ro mode)
-  if (window.gon.map_mode === 'ro') {
+  if (window.gon.map_mode === 'ro' && !functions.isMobileDevice()) {
     map.on('mousemove', (e) => {
       if (stickyFeatureHighlight && highlightedFeatureId) { return }
       if (document.querySelector('.show > .map-modal')) { return }
