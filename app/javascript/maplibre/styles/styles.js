@@ -689,7 +689,7 @@ export function styles () {
         'icon-ignore-placement': true,
         'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
         'text-size': labelSize,
-        'text-font':
+        'text-field':
           [
             'format',
             ['coalesce', ['get', 'label'], ['get', 'room']],
@@ -702,6 +702,7 @@ export function styles () {
               ]
             }
           ],
+        'text-font': labelFont,
         // arrange text to avoid collision
         'text-anchor': 'top', // text under point
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536

@@ -17,9 +17,7 @@ const defaultRasterLayer = [
   {
     id: 'simple-tiles',
     type: 'raster',
-    source: 'raster-tiles',
-    minzoom: 1.5,
-    maxzoom: 18
+    source: 'raster-tiles'
   }
 ]
 const host = new URL(window.location.href).origin
@@ -64,10 +62,12 @@ export function basemaps () {
               'https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg'
             ],
             tileSize: 256,
+            maxzoom: 14,
+            minzoom: 1.5,
             attribution: 'Map tiles by <a target="_blank" href="http://stamen.com">Stamen Design</a>; Hosting by <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>. Data &copy; <a href="https://www.openstreetmap.org/about" target="_blank">OpenStreetMap</a> contributors'
           }
         },
-        layers: [{ ...defaultRasterLayer[0], maxzoom: 14, minzoom: 1.5 }],
+        layers: defaultRasterLayer,
         glyphs: versatilesGlyphs
       }
     },
@@ -103,6 +103,7 @@ export function basemaps () {
               'https://a.tile.opentopomap.org/{z}/{x}/{y}.png'
             ],
             tileSize: 256,
+            maxzoom: 17,
             attribution: 'Kartendaten: © ' +
              '<a href="https://openstreetmap.org/copyright" target="_blank">OpenStreetMap-Mitwirkende</a> ' +
              'SRTM | Kartendarstellung: © ' +
@@ -142,6 +143,7 @@ export function basemaps () {
               'https://b.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png'
             ],
             tileSize: 256,
+            maxzoom: 17,
             attribution: '<a href="https://www.cyclosm.org/" title="CyclOSM - Open Bicycle render">CyclOSM</a> | <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap Contributors</a>'
           }
         },

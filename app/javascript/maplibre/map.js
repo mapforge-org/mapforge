@@ -1,19 +1,19 @@
+import { centroid } from "@turf/centroid";
+import { mapChannel } from 'channels/map_channel';
 import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep-equal
-import * as dom from 'helpers/dom'
-import * as functions from 'helpers/functions'
-import { status } from 'helpers/status'
-import { mapChannel } from 'channels/map_channel'
-import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
-import { basemaps, defaultFont, elevationSource, demSource } from 'maplibre/styles/basemaps'
-import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared'
-import { initializeViewControls } from 'maplibre/controls/view'
-import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
-import { setStyleDefaultFont, loadImage } from 'maplibre/styles/styles'
-import { layers, initializeLayerSources, loadLayerDefinitions, initializeLayerStyles, getFeature } from 'maplibre/layers/layers'
-import { centroid } from "@turf/centroid"
-import { renderGeoJSONLayer, renderGeoJSONLayers } from 'maplibre/layers/geojson'
-import { renderWikipediaLayer } from 'maplibre/layers/wikipedia'
-import { renderOverpassLayer } from 'maplibre/layers/overpass'
+import * as dom from 'helpers/dom';
+import * as functions from 'helpers/functions';
+import { status } from 'helpers/status';
+import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
+import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
+import { initializeViewControls } from 'maplibre/controls/view';
+import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
+import { renderGeoJSONLayer, renderGeoJSONLayers } from 'maplibre/layers/geojson';
+import { getFeature, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers';
+import { renderOverpassLayer } from 'maplibre/layers/overpass';
+import { renderWikipediaLayer } from 'maplibre/layers/wikipedia';
+import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
+import { loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
 
 export let map
 export let mapProperties
@@ -129,31 +129,35 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   map.on('mousemove', (e) => { updateCursorPosition(e) })
   map.on('touchend', (e) => { updateCursorPosition(e) })
-  map.on('drag', () => { 
-    mapInteracted = true 
+  map.on('drag', () => {
+    mapInteracted = true
     if (layers.filter(l => l.type !== 'geojson').length) { dom.animateElement('#layer-reload', 'fade-in') }
   })
-  map.on('zoom', (_e) => {
-    if (!layers) { return }
-    // block zooming in closer than defined max zoom level
-    let bgMap = basemaps()[backgroundMapLayer]
-    // TODO: max zoom doesn't work for style urls
-    if (!bgMap.style.layers) { return }
-    let maxzoom = bgMap.style.layers[0].maxzoom
-    if (map.getZoom() > maxzoom - 0.2) {
-      map.setZoom(maxzoom - 0.2)
-    }
-    let minzoom = bgMap.style.layers[0].minzoom
-    if (map.getZoom() < minzoom + 0.2) {
-      map.setZoom(minzoom + 0.2)
-    }    
-  })
+  map.on('zoom', (_e) => { limitZoom() })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
   map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
 
   // map.on('error', (err) => {
   //   console.log('map error >>> ', err)
   // })
+}
+
+function limitZoom() {
+  if (!layers) { return }
+
+  const style = map.getStyle()
+  const rasterSource = Object.entries(style.sources)
+    .find(([_name, source]) => source.type === 'raster')
+  const maxZoom = rasterSource ? rasterSource[1].maxzoom : null
+  const minZoom = rasterSource ? rasterSource[1].minzoom : null
+
+  // block zooming in closer than defined max zoom level
+  if (maxZoom && (map.getZoom() > maxZoom - 0.2)) {
+    map.setZoom(maxZoom - 0.2)
+  }
+  if (minZoom && (map.getZoom() < minZoom + 0.2)) {
+    map.setZoom(minZoom + 0.2)
+  }
 }
 
 function updateCursorPosition(e) {
@@ -171,17 +175,17 @@ function updateCursorPosition(e) {
 export function addGeoJSONSource(sourceName, cluster=false) {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
   // console.log("Adding source: " + sourceName)
-  if (map.getSource(sourceName)) { 
+  if (map.getSource(sourceName)) {
     console.log('Source ' + sourceName + ' already exists, skipping add')
-    return 
+    return
   }
   map.addSource(sourceName, {
     type: 'geojson',
     promoteId: 'id',
     data: { type: 'FeatureCollection', features: [] },
     cluster: cluster,
-    clusterMaxZoom: 14, 
-    clusterRadius: 50 
+    clusterMaxZoom: 14,
+    clusterRadius: 50
   })
 }
 
@@ -382,11 +386,11 @@ export function destroyFeature (featureId) {
 // after basemap style is ready/changed, init layers + load their data if needed
 async function initializeStyles() {
   console.log('Initializing sources and layer styles after basemap load/change')
-  
-  // in case layer data is not yet loaded, wait for it 
-  if (!layers) { 
+
+  // in case layer data is not yet loaded, wait for it
+  if (!layers) {
     console.log('Waiting for layers to load before initializing styles...')
-    await functions.waitForEvent(map, 'layers.load') 
+    await functions.waitForEvent(map, 'layers.load')
   }
 
   initializeLayerSources()
@@ -411,6 +415,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
       status('Loaded base map ' + mapName)
       // on map style change, all sources and layers are removed, so we need to re-initialize them
       initializeStyles()
+      limitZoom()
     })
     backgroundMapLayer = mapName
     backgroundTerrain = mapProperties.terrain
@@ -454,7 +459,7 @@ export function sortLayers () {
   const lineLayerHits = functions.reduceArray(layers, (e) => e.id === 'line-layer-hit_geojson-source')
   const pointsLayerHits = functions.reduceArray(layers, (e) => e.id === 'points-hit-layer_geojson-source')
   const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
-  const heatmap = functions.reduceArray(layers, (e) => (e.id.startsWith('heatmap-layer'))) 
+  const heatmap = functions.reduceArray(layers, (e) => (e.id.startsWith('heatmap-layer')))
 
   layers = layers.concat(flatLayers).concat(lineLayers).concat(mapExtrusions).concat(directions)
     .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
@@ -475,7 +480,7 @@ export function updateMapName (name) {
 }
 
 export function frontFeature(frontFeature) {
-  // move feature to end of its layer's features array 
+  // move feature to end of its layer's features array
   for (const layer of layers) {
     if (!layer?.geojson?.features) { continue }
     const features = layer.geojson.features
@@ -501,4 +506,3 @@ export function viewUnchanged() {
   // console.log(lngMatch && latMatch)
   return lngMatch && latMatch
 }
-
