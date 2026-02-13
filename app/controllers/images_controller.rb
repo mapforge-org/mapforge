@@ -3,8 +3,8 @@ class ImagesController < ApplicationController
   before_action :set_image, only: %i[icon image]
   before_action :require_map, only: %i[upload]
 
-  rate_limit to: 250, within: 2.minute, unless: -> { Rails.env.local? }, except: :upload
-  rate_limit to: 10, within: 1.minute, unless: -> { Rails.env.local? }, only: :upload
+  rate_limit to: 500, within: 5.minute, unless: -> { Rails.env.local? }, except: :upload
+  rate_limit to: 6, within: 1.minute, unless: -> { Rails.env.local? }, only: :upload
 
   IMAGE_CACHE_TIME = 1.week
 

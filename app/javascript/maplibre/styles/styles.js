@@ -535,6 +535,10 @@ export function styles () {
         'circle-radius': ['+', 5, pointSizeMax],
         // 'circle-opacity': 0.3 // debug click area
         'circle-opacity': 0
+      },
+      layout: {
+        // sort-key is only effective within same layer
+        'circle-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]
       }
     },
     'heatmap-layer': {
