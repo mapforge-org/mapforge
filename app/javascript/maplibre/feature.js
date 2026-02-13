@@ -14,8 +14,6 @@ window.marked = marked
 export let highlightedFeatureId
 export let highlightedFeatureSource
 export let stickyFeatureHighlight = false
-let isDragging = false
-let dragStartY, dragStartModalHeight
 let elevationChart
 
 function featureTitle (feature) {
@@ -98,7 +96,7 @@ export async function showFeatureDetails (feature) {
   modal.classList.remove('modal-pull-fade')
   modal.classList.add('modal-pull-middle')
   modal.classList.add('modal-pull-transition')
-  // keep custom modal height on selecton change
+  // keep custom modal height on selection change
   // modal.style.removeProperty('height')
   modal.classList.add('show')
   modal.scrollTo(0, 0)
@@ -107,68 +105,6 @@ export async function showFeatureDetails (feature) {
 
   if (elevationChart) { elevationChart.destroy() }
   elevationChart = await showElevationChart(feature)
-
-  f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
-    if (!f.isTouchDevice()) return
-    if (dom.isInputElement(event.target)) return
-    if (event.target.tagName.toLowerCase() === 'em-emoji-picker') return
-
-    // only enable bottom sheet behavior on small screens
-    if (window.innerWidth > 574) return
-
-    isDragging = true
-    dragStartY = event.clientY || event.touches[0].clientY
-    dragStartModalHeight = modal.offsetHeight
-    modal.style.cursor = 'move'
-  })
-
-  // Allow to drag up/down modal on touch devices
-  // Simulating an android bottom sheet behavior
-  f.addEventListeners(modal, ['mousemove', 'touchmove', 'drag'], (event) => {
-    if (!isDragging) { return }
-    if (dom.isInputElement(event.target)) { event.preventDefault(); return }
-
-    const dragY = event.clientY || event.touches[0].clientY
-    // y < 0 -> dragging up
-    const y = dragY - dragStartY
-    const sheetHeight = parseInt(modal.style.height) / window.innerHeight * 100
-    // fade out to show modal auto close
-    if (sheetHeight < 25) {
-      modal.classList.add('modal-pull-fade')
-    } else {
-      modal.classList.remove('modal-pull-fade')
-    }
-
-    // When dragging down, at first scroll up, then lower modal
-    if (y < 0 || modal.scrollTop === 0) {
-      modal.classList.remove('modal-pull-transition')
-      modal.style.height = (dragStartModalHeight - y) + 'px'
-    } else {
-      dragStartY = dragY
-    }
-
-    // disable scrolling until modal is fully dragged up (#feature-details-modal class)
-    const max_height = parseInt(window.getComputedStyle(document.querySelector('.map')).height, 10) - 20
-    if (y < 0 && parseInt(modal.style.height, 10) < max_height) {
-      event.preventDefault()
-    }
-  })
-
-  f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend', 'mouseleave'], (event) => {
-    if (!isDragging) return
-    isDragging = false
-    modal.style.cursor = 'default'
-    const sheetHeight = parseInt(modal.style.height) / window.innerHeight * 100
-    const dragY = event.clientY || event.changedTouches[0].clientY
-    const y = dragY - dragStartY
-    // console.log(y)
-    if (sheetHeight < 25) {
-      modal.classList.remove('show')
-      modal.style.removeProperty('height')
-    } else if (sheetHeight > 75 && y < 0) { // only 'snap' on dragging upwards
-      modal.style.height = 'calc(100vh - 1rem)'
-    }
-  })
 
   f.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
   f.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
