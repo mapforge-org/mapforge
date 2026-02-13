@@ -122,7 +122,7 @@ export async function loadImage (e) {
   }
 }
 
-// https://maplibre.org/maplibre-style-spec/layers/
+// Layer properties: https://maplibre.org/maplibre-style-spec/layers/
 // Expressions: https://maplibre.org/maplibre-style-spec/expressions/
 // layout is fixed, paint flexible
 
@@ -284,7 +284,7 @@ const labelSize = [
 ]
 
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']
-export let labelFont
+export let labelFont // array
 
 export function styles () {
   return {
@@ -689,7 +689,19 @@ export function styles () {
         'icon-ignore-placement': true,
         'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
         'text-size': labelSize,
-        'text-font': labelFont,
+        'text-font':
+          [
+            'format',
+            ['coalesce', ['get', 'label'], ['get', 'room']],
+            {
+              'text-font': [
+                'case',
+                ['has', 'label-font'],
+                ['get', 'label-font'],
+                ['literal', labelFont]
+              ]
+            }
+          ],
         // arrange text to avoid collision
         'text-anchor': 'top', // text under point
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
@@ -717,7 +729,18 @@ export function styles () {
         ['!=', ['get', 'flat'], true],
         minZoomFilter],
       layout: {
-        'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
+        'text-field':
+        [
+          'format',
+          ['coalesce', ['get', 'label'], ['get', 'room']],
+            {
+              'text-font': [
+                'case',
+                ['has', 'label-font'],
+                ['get', 'label-font'],
+                ['literal', labelFont]
+              ] }
+        ],
         'text-size': labelSize,
         'text-font': labelFont,
         'text-anchor': 'top', // text under point

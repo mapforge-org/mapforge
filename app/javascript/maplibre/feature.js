@@ -161,7 +161,7 @@ export async function showFeatureDetails (feature) {
     const sheetHeight = parseInt(modal.style.height) / window.innerHeight * 100
     const dragY = event.clientY || event.changedTouches[0].clientY
     const y = dragY - dragStartY
-    console.log(y)
+    // console.log(y)
     if (sheetHeight < 25) {
       modal.classList.remove('show')
       modal.style.removeProperty('height')

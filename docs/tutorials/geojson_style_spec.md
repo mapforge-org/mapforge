@@ -1,6 +1,6 @@
-# Advanced feature styling 
+# Advanced feature styling
 
-Mapforge stores your maps in GeoJSON format. Below you can see the list of supported properties to style your map elements (called *features* in GeoJSON). 
+Mapforge stores your maps in GeoJSON format. Below you can see the list of supported properties to style your map elements (called *features* in GeoJSON).
 Most of the properties are supported to be changed in the UI. For changing the properties directly, you can use the *Edit JSON* button in the feature details modal.
 
 ### Supported feature attributes:
@@ -11,6 +11,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 
 * `label`: Label to show on the map (no emoji support)
 * `label-size`: font size (default 16)
+* `label-font`: label font array (default depends on base map, like ['noto_sans_regular'])
 * `label-color`: font color in format "#000000" (default)
 * `label-shadow`: font shadow in format "#ffffff" (default)
 * `sort-key`: sort order of features: higher numbers overlay lower numbers (default: 1)
@@ -18,7 +19,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `title`: title
 * `desc`: detailed description (markdown supported)
 * `onclick`: on hover/click behavior: 'details' (default), 'false' (do not react on hover/click), 'link' (link to url), 'feature' (link to another feature on the map)
-* `onclick-target`: required for onclick=link/feature: url or feature id of target 
+* `onclick-target`: required for onclick=link/feature: url or feature id of target
 
 #### *Point* geometry:
 
