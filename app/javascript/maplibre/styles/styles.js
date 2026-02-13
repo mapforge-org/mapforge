@@ -703,12 +703,15 @@ export function styles () {
             }
           ],
         'text-font': labelFont,
+        'text-letter-spacing': ['get', 'label-letter-spacing'],
         // arrange text to avoid collision
         'text-anchor': 'top', // text under point
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
         //"text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
         "text-offset": labelOffset,
-        'text-justify': 'auto',
+        'text-justify': ['get', 'label-justify'],
+        'text-max-width': ['get', 'label-max-width'],
+        'text-line-height': 1.6, // no dynamic value possible
         'text-ignore-placement': true, // show on collision
         "text-rotation-alignment": "map",
         // sort-key is only effective within same layer
@@ -744,10 +747,13 @@ export function styles () {
         ],
         'text-size': labelSize,
         'text-font': labelFont,
+        'text-letter-spacing': ['get', 'label-letter-spacing'],
         'text-anchor': 'top', // text under point
         // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
         "text-offset": labelOffset,
-        'text-justify': 'auto',
+        'text-justify': ['get', 'label-justify'],
+        'text-max-width': ['get', 'label-max-width'],
+        'text-line-height': 1.6, // no dynamic value possible
         'text-ignore-placement': false, // hide on collision
         "text-rotation-alignment": "viewport",
         // TODO: sort keys on text are ascending, on symbols descending???
