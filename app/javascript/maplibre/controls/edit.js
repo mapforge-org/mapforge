@@ -1,14 +1,14 @@
-import { map } from 'maplibre/map'
-import * as functions from 'helpers/functions'
-import { draw } from 'maplibre/edit'
 import { animateElement } from 'helpers/dom'
-import { ControlGroup, MapLayersControl, MapShareControl, MapSettingsControl } from 'maplibre/controls/shared'
-import { resetDirections } from 'maplibre/routing/osrm'
-import { MapSelectControl } from 'maplibre/controls/buttons/select'
-import { MapUndoControl, MapRedoControl } from 'maplibre/controls/buttons/undo'
+import * as functions from 'helpers/functions'
 import { LineMenuControl, addLineMenu } from 'maplibre/controls/buttons/lines'
 import { PointControl } from 'maplibre/controls/buttons/point'
 import { PolygonControl } from 'maplibre/controls/buttons/polygon'
+import { MapSelectControl } from 'maplibre/controls/buttons/select'
+import { MapRedoControl, MapUndoControl } from 'maplibre/controls/buttons/undo'
+import { ControlGroup, MapLayersControl, MapSettingsControl, MapShareControl } from 'maplibre/controls/shared'
+import { draw } from 'maplibre/edit'
+import { map } from 'maplibre/map'
+import { resetDirections } from 'maplibre/routing/osrm'
 
 export function resetEditControls () {
   resetDirections()
@@ -28,7 +28,7 @@ export function initializeEditControls () {
   map.addControl(editGroup, 'top-left')
   addLineMenu()
   functions.e('.maplibregl-ctrl:has(.mapbox-gl-draw_point)', e => { e.classList.add('hidden') })
-  
+
   const undoGroup = new ControlGroup(
     [new MapUndoControl(), new MapRedoControl()])
   map.addControl(undoGroup, 'top-left')
@@ -39,32 +39,13 @@ export function initializeEditControls () {
     [new MapSettingsControl(), new MapLayersControl(), new MapShareControl()])
   map.addControl(controlGroup, 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)').classList.add('hidden') // hide for aos animation
- 
+
   functions.e('#settings-modal', e => {
     e.setAttribute('data-map--settings-current-pitch-value', map.getPitch().toFixed(0))
     e.setAttribute('data-map--settings-current-zoom-value', map.getZoom().toFixed(2))
     e.setAttribute('data-map--settings-current-bearing-value', map.getBearing().toFixed(0))
   })
-  map.on('pitchend', function (_e) {
-    functions.e('#settings-modal', e => {
-      e.setAttribute('data-map--settings-current-pitch-value', map.getPitch().toFixed(0))
-    })
-  })
-  map.on('zoomend', function (_e) {
-    functions.e('#settings-modal', e => {
-      e.setAttribute('data-map--settings-current-zoom-value', map.getZoom().toFixed(2))
-    })
-  })
-  map.on('rotate', function (_e) {
-    functions.e('#settings-modal', e => {
-      e.setAttribute('data-map--settings-current-bearing-value', map.getBearing().toFixed(0))
-    })
-  })
-  map.on('moveend', function (_e) {
-    functions.e('#settings-modal', e => {
-      e.setAttribute('data-map--settings-current-center-value', JSON.stringify([map.getCenter().lng, map.getCenter().lat]))
-    })
-  })
+
   map.once('load', function (_e) {
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-select)', 'fade-right', 500)
     animateElement('.maplibregl-ctrl:has(.mapbox-gl-draw_point)', 'fade-right', 500)

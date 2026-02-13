@@ -167,6 +167,7 @@ export function initSettingsModal () {
       e.removeAttribute('data-map--settings-default-center-value')
     }
   })
+
 }
 
 // create the list of layers + features
@@ -440,6 +441,27 @@ export function initializeDefaultControls () {
   })
   map.on('offline', (_e) => {
     functions.e('div:has(> button.maplibregl-ctrl-connection)', e => { e.classList.remove('hidden') })
+  })
+
+  map.on('pitchend', function (_e) {
+    functions.e('#settings-modal', e => {
+      e.setAttribute('data-map--settings-current-pitch-value', map.getPitch().toFixed(0))
+    })
+  })
+  map.on('zoomend', function (_e) {
+    functions.e('#settings-modal', e => {
+      e.setAttribute('data-map--settings-current-zoom-value', map.getZoom().toFixed(2))
+    })
+  })
+  map.on('rotate', function (_e) {
+    functions.e('#settings-modal', e => {
+      e.setAttribute('data-map--settings-current-bearing-value', map.getBearing().toFixed(0))
+    })
+  })
+  map.on('moveend', function (_e) {
+    functions.e('#settings-modal', e => {
+      e.setAttribute('data-map--settings-current-center-value', JSON.stringify([map.getCenter().lng, map.getCenter().lat]))
+    })
   })
 }
 
