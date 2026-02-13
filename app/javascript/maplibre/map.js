@@ -147,7 +147,7 @@ function limitZoom() {
 
   const style = map.getStyle()
   const rasterSource = Object.entries(style.sources)
-    .find(([_name, source]) => source.type === 'raster')
+    .find(([name, _source]) => (name === 'raster-tiles' || name === 'satellite'))
   const maxZoom = rasterSource ? rasterSource[1].maxzoom : null
   const minZoom = rasterSource ? rasterSource[1].minzoom : null
 
