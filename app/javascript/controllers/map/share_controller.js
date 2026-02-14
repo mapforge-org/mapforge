@@ -1,11 +1,11 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { mapProperties } from 'maplibre/map'
 import { status } from 'helpers/status'
+import { mapProperties } from 'maplibre/map'
 
 export default class extends Controller {
   connect () {
-    // initializeMaplibreProperties is not called yet when rendering _share.haml
+    // initializeMaplibreProperties is not yet called yet when rendering _share.haml
     let props = mapProperties || window.gon.map_properties
 
     if (window.gon.map_mode === "rw") {

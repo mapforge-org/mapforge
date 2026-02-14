@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Map' do
-  subject(:map) { create(:map, user: create(:user)) }
+  subject(:map) { create(:map, name: 'Test Map', user: create(:user)) }
 
   context 'share links' do
     before do

@@ -1,17 +1,17 @@
 import { layersFactory } from "@maplibre/maplibre-gl-directions"
-import CustomMapLibreGlDirections from "maplibre/routing/custom_directions"
-import { map, mapProperties, upsert } from 'maplibre/map'
-import { highlightColor } from 'maplibre/styles/edit_styles'
-import { updateElevation, setSelectedFeature } from 'maplibre/edit'
-import { styles, featureColor } from 'maplibre/styles/styles'
-import { decodePolyline } from 'helpers/polyline'
-import { basemaps, defaultFont } from 'maplibre/styles/basemaps'
 import { mapChannel } from 'channels/map_channel'
-import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
+import { decodePolyline } from 'helpers/polyline'
+import { status } from 'helpers/status'
+import { setSelectedFeature, updateElevation } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
-import { addUndoState } from 'maplibre/undo'
 import { getFeature } from 'maplibre/layers/layers'
+import { map, mapProperties, upsert } from 'maplibre/map'
+import CustomMapLibreGlDirections from "maplibre/routing/custom_directions"
+import { basemaps, defaultFont } from 'maplibre/styles/basemaps'
+import { highlightColor } from 'maplibre/styles/edit_styles'
+import { featureColor, styles } from 'maplibre/styles/styles'
+import { addUndoState } from 'maplibre/undo'
 
 // https://github.com/maplibre/maplibre-gl-directions
 // Examples: https://maplibre.org/maplibre-gl-directions/#/examples
@@ -82,7 +82,6 @@ export function initDirections (profile, feature) {
                                 "fill-extrusion-base": 3,
                                 "stroke-opacity": 0.65,
                                 // "stroke-image-url": "/icons/direction-arrow.png",
-                                "fill-extrusion-color": trackColor,
                                 "fill-extrusion-width": 1.5,
                                 "stroke-width": 5,
                                 "stroke": trackColor,
@@ -96,7 +95,7 @@ export function initDirections (profile, feature) {
     currentFeature.properties.route = { "provider": "osrm",
                                         "profile": profile,
                                         "waypoints": waypoints }
- 
+
     setSelectedFeature(currentFeature)
     // add elevation from openrouteservice
     updateElevation(currentFeature).then(() => {
@@ -113,7 +112,7 @@ export function initDirections (profile, feature) {
   directions.on('addwaypoint', (e) => {
     status('Waypoint added')
     console.log('Waypoint added', e)
-    
+
   })
 
   directions.on('removewaypoint', (e) => {
@@ -190,7 +189,7 @@ export function getDirectionsLayers () {
     source: "maplibre-gl-directions",
     layout: {
       "text-field": ["get", "label"],
-      "text-font": [basemaps()[mapProperties.base_map].font || defaultFont], 
+      "text-font": [basemaps()[mapProperties.base_map].font || defaultFont],
       "text-size": 15,
       "text-offset": [0, 0.05]
     },
