@@ -101,8 +101,6 @@ export async function initializeMap (divId = 'maplibre-map') {
     dom.initTooltips()
     functions.e('#preloader', e => { e.classList.add('hidden') })
     functions.e('.map', e => { e.setAttribute('data-map-loaded', true) })
-    if (!functions.isTestEnvironment()) { map.easeTo({ zoom: map.getZoom() + 1, duration: 1000 }) } // zoom in to configured zoom level
-    console.log("Map loaded ('load')")
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     let feature
@@ -110,8 +108,12 @@ export async function initializeMap (divId = 'maplibre-map') {
       resetControls()
       highlightFeature(feature, true)
       const center = centroid(feature)
-      map.setCenter(center.geometry.coordinates)
+      map.setCenter(center.geometry.coordinates) // set center before zooming in animation
     }
+
+    if (!functions.isTestEnvironment()) { map.easeTo({ zoom: map.getZoom() + 1, duration: 1000 })} // zoom in to configured zoom level
+    console.log("Map loaded ('load')")
+
     const urlFeatureAnimateId = new URLSearchParams(window.location.search).get('a')
     if (urlFeatureAnimateId && (feature = getFeature(urlFeatureAnimateId))) {
       console.log('Animating ' + feature.id)
