@@ -24,6 +24,7 @@ gem "yabeda-puma-plugin"
 gem "omniauth"
 gem "omniauth-github"
 gem "omniauth-google-oauth2"
+gem "omniauth-osm-oauth2"
 
 # Javascript
 gem "gon"

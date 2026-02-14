@@ -348,6 +348,9 @@ GEM
     omniauth-oauth2 (1.8.0)
       oauth2 (>= 1.4, < 3)
       omniauth (~> 2.0)
+    omniauth-osm-oauth2 (0.0.2)
+      omniauth (~> 2.0)
+      omniauth-oauth2 (~> 1.0)
     ostruct (0.6.3)
     parallel (1.27.0)
     parallel_tests (5.6.0)
@@ -650,6 +653,7 @@ DEPENDENCIES
   omniauth
   omniauth-github
   omniauth-google-oauth2
+  omniauth-osm-oauth2
   ostruct
   parallel_tests
   puma

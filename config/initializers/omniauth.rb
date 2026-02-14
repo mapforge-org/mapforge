@@ -10,6 +10,8 @@ Rails.application.config.middleware.use OmniAuth::Builder do
             ENV["GOOGLE_CLIENT_ID"],
             ENV["GOOGLE_CLIENT_SECRET"],
             prompt: "select_account"
+  # https://www.openstreetmap.org/oauth2/applications
+  provider :osm_oauth2, ENV["OSM_CLIENT_ID"], ENV["OSM_CLIENT_SECRET"]
 end
 
 OmniAuth.config.request_validation_phase = OmniAuth::AuthenticityTokenProtection.new(key: :_csrf_token)
