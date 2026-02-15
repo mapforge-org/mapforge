@@ -440,6 +440,7 @@ export function styles () {
         ["!=", ["get", "meta"], "vertex"],
         ['==', ['get', 'flat'], true],
         ["!", ["has", "point_count"]],
+        ["!", ["has", "marker-image-url"]],
         minZoomFilter],
       paint: {
         "circle-pitch-alignment": "map",
@@ -491,6 +492,7 @@ export function styles () {
         ["!=", ["get", "meta"], "vertex"],
         ['!=', ['get', 'flat'], true],
         ["!", ["has", "point_count"]],
+        ["!", ["has", "marker-image-url"]],
         minZoomFilter
       ],
       paint: {
