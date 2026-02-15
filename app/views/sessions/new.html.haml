@@ -22,7 +22,7 @@
           - if ENV["OSM_CLIENT_ID"].present? && ENV["OSM_CLIENT_SECRET"].present?
             = form_tag('/auth/osm_oauth2', method: 'post', data: {turbo: false}) do
               = button_tag class: 'btn w-100 btn-secondary btn-green btn-social btn-github mb-2' do
-                %i.bi.bi-github.me-1
+                %i.bi.bi-map.me-1
                 Login with OpenStreetMap
 
           - if ENV["GITHUB_CLIENT_ID"].present? && ENV["GITHUB_CLIENT_SECRET"].present?

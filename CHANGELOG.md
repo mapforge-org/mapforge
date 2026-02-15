@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 2026-02
 
 * Support Wikipedia layer
+* Allow to login with OpenStreetMap
 
 ## 2026-01
 
