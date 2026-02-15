@@ -44,27 +44,33 @@ export function initializeViewStyles (sourceName, heatmap=false) {
   // click is needed to select on mobile and for sticky highlight
   map.on('click', styleNames(sourceName), function (e) {
     if (draw && draw.getMode() !== 'simple_select') { return }
-    if (!e.features?.length || window.gon.map_mode === 'static') { return }
-    if (e.features[0].properties?.cluster) { return }
+    if (window.gon.map_mode === 'static') { return }
+
+    // console.log('Features clicked', e.features)
+    let feature = e.features.find(f => !f.properties?.cluster)
+    if (!feature) { return }
 
     if (window.gon.map_mode === 'ro') {
-      if (e.features[0].properties?.onclick === false) { return }
-      if (e.features[0].properties?.onclick === 'link' && e.features[0].properties?.['onclick-target']) {
-        window.location.href = e.features[0].properties?.['onclick-target']
+      feature = e.features.find(f => f.properties?.onclick !== false)
+      if (!feature) { return }
+
+      if (feature.properties?.onclick === 'link' && feature.properties?.['onclick-target']) {
+        window.location.href = feature.properties?.['onclick-target']
+        return
       }
-      if (e.features[0].properties?.onclick === 'feature' && e.features[0].properties?.['onclick-target']) {
-        const targetId = e.features[0].properties?.['onclick-target']
-        const feature = getFeature(targetId)
-        if (feature) {
-          flyToFeature(feature)
+      if (feature.properties?.onclick === 'feature' && feature.properties?.['onclick-target']) {
+        const targetId = feature.properties?.['onclick-target']
+        const targetFeature = getFeature(targetId)
+        if (targetFeature) {
+          flyToFeature(targetFeature)
         } else {
           console.error('Target feature with id ' + targetId + ' not found')
         }
         return
       }
     }
-    frontFeature(e.features[0])
-    highlightFeature(e.features[0], true, sourceName)
+    frontFeature(feature)
+    highlightFeature(feature, true, sourceName)
   })
 
   // highlight features on hover (only in ro mode)
@@ -72,14 +78,16 @@ export function initializeViewStyles (sourceName, heatmap=false) {
     map.on('mousemove', (e) => {
       if (stickyFeatureHighlight && highlightedFeatureId) { return }
       if (document.querySelector('.show > .map-modal')) { return }
+      if (!map.getSource(sourceName)) { return } // can happen when source is removed
 
       const features = map.queryRenderedFeatures(e.point, { layers: styleNames(sourceName) })
-      if (features[0]) {
-        if (features[0]?.properties?.cluster) { return }
-        if (features[0]?.properties?.onclick === false) { return }
-        if (features[0].id === highlightedFeatureId) { return }
-        frontFeature(features[0])
-        highlightFeature(features[0], false, sourceName)
+      // console.log('Features hovered', features)
+      let feature = features.find(f => !f.properties?.cluster && f.properties?.onclick !== false)
+
+      if (feature) {
+        if (feature.id === highlightedFeatureId) { return }
+        frontFeature(feature)
+        highlightFeature(feature, false, sourceName)
       } else if (highlightedFeatureSource === sourceName) {
         resetHighlightedFeature()
       }

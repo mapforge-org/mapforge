@@ -457,16 +457,15 @@ export function sortLayers () {
   const userLabels = functions.reduceArray(layers, (e) => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
   const mapSymbols = functions.reduceArray(layers, (e) => e.type === 'symbol')
   const points = functions.reduceArray(layers, (e) => (e.id.startsWith('points-layer') || e.id.startsWith('cluster_points')))
-  const lineLayers = functions.reduceArray(layers, (e) => e.id === 'line-layer_geojson-source')
-  const lineLayerHits = functions.reduceArray(layers, (e) => e.id === 'line-layer-hit_geojson-source')
-  const pointsLayerHits = functions.reduceArray(layers, (e) => e.id === 'points-hit-layer_geojson-source')
+  const lineLayers = functions.reduceArray(layers, (e) => e.id.startsWith('line-layer_geojson-source'))
+  const lineLayerHits = functions.reduceArray(layers, (e) => e.id.startsWith('line-layer-hit_geojson-source'))
+  const pointsLayerHits = functions.reduceArray(layers, (e) => e.id.startsWith('points-hit-layer_geojson-source'))
   const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
   const heatmap = functions.reduceArray(layers, (e) => (e.id.startsWith('heatmap-layer')))
 
   layers = layers.concat(flatLayers).concat(lineLayers).concat(mapExtrusions).concat(directions)
     .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
-    .concat(lineLayerHits).concat(pointsLayerHits)
-    .concat(kmMarkers).concat(userSymbols).concat(userLabels)
+    .concat(kmMarkers).concat(userSymbols).concat(userLabels).concat(lineLayerHits).concat(pointsLayerHits)
 
   const newStyle = { ...currentStyle, layers }
   map.setStyle(newStyle, { diff: true })
