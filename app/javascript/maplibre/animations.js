@@ -1,15 +1,15 @@
-import { map, mapProperties } from 'maplibre/map'
-import { resetControls } from 'maplibre/controls/shared'
-import { highlightFeature } from 'maplibre/feature'
-import * as functions from 'helpers/functions'
-import { status } from 'helpers/status'
-import { length } from "@turf/length"
-import { point } from "@turf/helpers"
-import distance from "@turf/distance"
 import { along } from "@turf/along"
 import { centroid } from "@turf/centroid"
-import { getFeatureSource } from 'maplibre/layers/layers'
+import distance from "@turf/distance"
+import { point } from "@turf/helpers"
+import { length } from "@turf/length"
+import * as functions from 'helpers/functions'
+import { status } from 'helpers/status'
+import { resetControls } from 'maplibre/controls/shared'
+import { highlightFeature } from 'maplibre/feature'
 import { renderGeoJSONLayers } from 'maplibre/layers/geojson'
+import { getFeatureSource } from 'maplibre/layers/layers'
+import { map, mapProperties } from 'maplibre/map'
 
 export class AnimationManager {
   constructor () {
@@ -76,7 +76,7 @@ export class AnimatePointAnimation extends AnimationManager {
 
 export class AnimateLineAnimation extends AnimationManager {
   run = (line, follow = true, steps=750) => {
-    
+
     const lineLength = length(line, { units: "kilometers" })
     const stepLength = lineLength / (steps - 1)
     console.log('Line length: ' + lineLength + ' km, step length: ' + stepLength + ' km')
@@ -162,7 +162,9 @@ export function flyToFeature(feature) {
   console.log('Fly to: ' + feature.id + ' ' + center.geometry.coordinates)
   resetControls()
   map.once('moveend', function () {
-    highlightFeature(feature, true, source)
+    if (feature.properties?.onclick !== false) {
+      highlightFeature(feature, true, source)
+    }
   })
   map.flyTo({
     center: center.geometry.coordinates,
