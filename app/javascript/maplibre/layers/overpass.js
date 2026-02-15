@@ -1,21 +1,21 @@
-import { map } from 'maplibre/map'
-import { applyOverpassQueryStyle } from 'maplibre/layers/queries'
-import { initializeViewStyles, initializeClusterStyles } from 'maplibre/styles/styles'
 import * as functions from 'helpers/functions'
-import { initLayersModal } from 'maplibre/controls/shared'
 import { status } from 'helpers/status'
+import { initLayersModal } from 'maplibre/controls/shared'
 import { layers } from 'maplibre/layers/layers'
+import { applyOverpassQueryStyle } from 'maplibre/layers/queries'
+import { map } from 'maplibre/map'
+import { initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
 
 export function initializeOverpassLayers(id = null) {
   let initLayers = layers.filter(l => l.type === 'overpass')
   if (id) { initLayers = initLayers.filter(l => l.id === id)  }
   return initLayers.map((layer) => {
-    const clustered = !layer.query.includes("heatmap=true") && 
-      !layer.query.includes("cluster=false") && 
+    const clustered = !layer.query.includes("heatmap=true") &&
+      !layer.query.includes("cluster=false") &&
       !layer.query.includes("geom") // clustering breaks lines & geometries
     initializeViewStyles('overpass-source-' + layer.id, layer.heatmap)
     if (clustered) {
-      const clusterIcon = getCommentValue(layer.query, 'cluster-symbol') || getCommentValue(layer.query, 'cluster-image-url') || 
+      const clusterIcon = getCommentValue(layer.query, 'cluster-symbol') || getCommentValue(layer.query, 'cluster-image-url') ||
         getCommentValue(layer.query, 'marker-symbol') || getCommentValue(layer.query, 'marker-image-url')
       initializeClusterStyles('overpass-source-' + layer.id, clusterIcon)
     }
@@ -27,7 +27,7 @@ export function initializeOverpassLayers(id = null) {
 export function renderOverpassLayer(id) {
   let layer = layers.find(l => l.id === id)
   console.log("Redraw: Setting source data for overpass layer", layer)
-  
+
   // TODO: only needed once, not each render
   // this + `promoteId: 'id'` is a workaround for the maplibre limitation:
   // https://github.com/mapbox/mapbox-gl-js/issues/2716
@@ -45,7 +45,7 @@ export function loadOverpassLayer(id) {
   const beforeSemicolon = query.split(';')[0]
   // query already comes with a settings block
   if (/\[bbox|\[timeout|\[out/.test(beforeSemicolon)) {
-    if (!query.includes("[bbox")) { query = "[bbox:{{bbox}}]" + query } 
+    if (!query.includes("[bbox")) { query = "[bbox:{{bbox}}]" + query }
     if (!query.includes("[timeout")) { query = "[timeout:25]" + query }
     if (!query.includes("[out")) { query = "[out:json]" + query }
   } else {
@@ -147,12 +147,14 @@ function overpassDescription(props) {
   | ------------- | ------------- |\n`
   const keys = Object.keys(props).filter(key => !['description', 'notes', 'website', 'url', 'id', 'label'].includes(key))
   keys.forEach(key => {
-    desc += `| **${key}** | ${props[key]} |\n`
+    desc += `| **${key}** | ${props[key]} `
+    desc += `[![Taginfo](/icons/osm-icon-smaller.png)](https://taginfo.openstreetmap.org/tags/${key}=${props[key]})`
+    desc += `|\n`
   })
   desc += '\n' + '</div>\n'
 
   desc += '\n' + '![osm link](/icons/osm-icon-small.png)'
-  desc += '\n' + '[See node in OpenStreetMap](https://www.openstreetmap.org/' + props['id'] + ')'
+  desc += '[See node in OpenStreetMap](https://www.openstreetmap.org/' + props['id'] + ')'
 
   return desc
 }
