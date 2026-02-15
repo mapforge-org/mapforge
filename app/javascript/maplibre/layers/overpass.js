@@ -147,8 +147,20 @@ function overpassDescription(props) {
   | ------------- | ------------- |\n`
   const keys = Object.keys(props).filter(key => !['description', 'notes', 'website', 'url', 'id', 'label'].includes(key))
   keys.forEach(key => {
-    desc += `| **${key}** | ${props[key]} `
-    desc += `[![Taginfo](/icons/osm-icon-smaller.png)](https://taginfo.openstreetmap.org/tags/${key}=${props[key]})`
+    // direct links
+    if (key == 'wikipedia') {
+      desc += `| **${key}** | [${props[key]}](${wikiLink(props[key])})`
+    } else if (key == 'wikidata') {
+      desc += `| **${key}** | [${props[key]}](https://www.wikidata.org/wiki/${props[key]})`
+    } else if (key == 'wikimedia_commons') {
+      desc += `| **${key}** | [${props[key]}](https://commons.wikimedia.org/wiki/${encodeURIComponent(props[key])})`
+    } else {
+      desc += `| **${key}** | ${props[key]} `
+    }
+    // link to osm taginfo where it makes sense
+    if (!['wikipedia', 'email', 'name', 'phone', 'wikidata', 'wikimedia_commons'].includes(key)) {
+      desc += `[![Taginfo](/icons/osm-icon-smaller.png)](https://taginfo.openstreetmap.org/tags/${key}=${encodeURIComponent(props[key])})`
+    }
     desc += `|\n`
   })
   desc += '\n' + '</div>\n'
@@ -165,4 +177,9 @@ function getCommentValue(query, key) {
   const match = query.match(regex)
 
   return match ? match[1].trim() : null
+}
+
+function wikiLink(str) {
+  const [lang, title] = str.split(':')
+  return `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(title)}`
 }
