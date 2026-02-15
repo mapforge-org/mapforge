@@ -74,7 +74,7 @@ export function initializeViewStyles (sourceName, heatmap=false) {
   })
 
   // highlight features on hover (only in ro mode)
-  if (window.gon.map_mode === 'ro' && !functions.isMobileDevice()) {
+  if (window.gon.map_mode === 'ro' && !functions.isTouchDevice()) {
     map.on('mousemove', (e) => {
       if (stickyFeatureHighlight && highlightedFeatureId) { return }
       if (document.querySelector('.show > .map-modal')) { return }
