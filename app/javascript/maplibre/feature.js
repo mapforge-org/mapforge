@@ -7,6 +7,7 @@ import { showElevationChart } from 'maplibre/feature/elevation'
 import { getFeature, getFeatureSource, layers } from "maplibre/layers/layers"
 import { wikipediaFeatureDescription } from 'maplibre/layers/wikipedia'
 import { map } from 'maplibre/map'
+import { featureColor } from 'maplibre/styles/styles'
 import { marked } from 'marked'
 
 window.marked = marked
@@ -156,6 +157,9 @@ async function featureDescription (feature) {
 // set title image according to feature type
 export function featureIcon (feature) {
   let image = ''
+  let iconColor = feature.properties['marker-color'] || feature.properties['fill'] || feature.properties['stroke'] || featureColor
+  if (iconColor === 'transparent') { iconColor = '#c0c0c0' }
+  let iconColorStyle = `style='color: ${iconColor};'`
   if (feature.properties['marker-image-url']) {
     image = "<img class='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'>"
   } else if (feature.properties['marker-symbol']) {
@@ -163,17 +167,17 @@ export function featureIcon (feature) {
   } else if (feature.properties['stroke-image-url']) {
     image = "<img class='feature-details-icon' src='" + feature.properties['stroke-image-url'] + "'>"
   } else if (feature.properties?.route?.profile === "cycling-mountain" || feature.properties?.route?.profile === "bike") {
-    image = "<i class='bi bi-bicycle fs-3'>"
+    image = `<i class='bi bi-bicycle fs-3' ${iconColorStyle}>`
   } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "car") {
-    image = "<i class='bi bi-car-front fs-3'>"
+    image = `<i class='bi bi-car-front fs-3' ${iconColorStyle}>`
   } else if (feature.properties?.route?.profile === "foot") {
-    image = "<i class='bi bi-person-walking fs-3'>"
+    image = `<i class='bi bi-person-walking fs-3' ${iconColorStyle}>`
   } else if (feature.geometry.type === "LineString" || feature.geometry.type === "MultiLineString") {
-    image = "<i class='bi bi-signpost me-2 fs-3'>"
+    image = `<i class='bi bi-signpost fs-3' ${iconColorStyle}>`
   } else if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-    image = "<span class='feature-details-icon'><i class='bi bi-bounding-box-circles fs-3'></span>"
+    image = `<i class='bi bi-bounding-box-circles fs-3' ${iconColorStyle}>`
   } else if (feature.geometry.type === "Point") {
-    image = "<i class='bi bi-record-circle fs-3'>"
+    image = `<i class='bi bi-record-circle fs-3' ${iconColorStyle}></i>`
   }
   return image
 }
