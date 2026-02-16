@@ -159,11 +159,11 @@ export function basemaps () {
     // openfreemap.org
     openfreemapPositron: { style: 'https://tiles.openfreemap.org/styles/positron', font: 'Noto Sans Regular' },
     openfreemapBright: { style: 'https://tiles.openfreemap.org/styles/bright', font: 'Noto Sans Regular' },
-    openfreemapLiberty: { style: 'https://tiles.openfreemap.org/styles/liberty', font: 'Noto Sans Regular' },
+    openfreemapLiberty: { style: 'https://tiles.openfreemap.org/styles/liberty', sourceName: 'openmaptiles', font: 'Noto Sans Regular' },
 
     // https://github.com/versatiles-org/versatiles-style
     // fonts: https://github.com/versatiles-org/versatiles-fonts
-    versatilesColorful: { style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', font: 'noto_sans_regular' },
+    versatilesColorful: { style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
     versatilesGraybeard: { style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', font: 'noto_sans_regular' },
     versatilesNeutrino: { style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', font: 'noto_sans_regular' },
     versatilesEclipse: { style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', font: 'noto_sans_regular' },

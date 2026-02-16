@@ -50,7 +50,9 @@ export function initializeLayerSources(id = null) {
 export async function initializeLayerStyles(id = null) {
   functions.e('#layer-reload', e => { e.classList.add('hidden') })
   functions.e('#layer-loading', e => { e.classList.remove('hidden') })
+
   initializeGeoJSONLayers(id)
+  // initializeBaseMapLayers()
   let overpassPromises = initializeOverpassLayers(id)
   let wikipediaPromises = initializeWikipediaLayers(id)
 

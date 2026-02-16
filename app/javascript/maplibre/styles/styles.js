@@ -90,8 +90,6 @@ export function initializeViewStyles (sourceName, heatmap=false) {
         highlightFeature(feature, false, sourceName)
       } else if (highlightedFeatureSource === sourceName) {
         resetHighlightedFeature()
-      } else {
-        console.log('Map Feature: ', feature)
       }
     })
   }

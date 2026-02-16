@@ -134,7 +134,7 @@ function applyOverpassStyle(geojson, query) {
   return geojson
 }
 
-function overpassDescription(props) {
+export function overpassDescription(props) {
   let desc = ''
   if (props["description"]) { desc += props["description"] + '\n\n' }
   if (props["notes"]) { desc += props["notes"] + '\n' }
