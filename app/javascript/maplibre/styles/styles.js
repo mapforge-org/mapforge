@@ -84,12 +84,14 @@ export function initializeViewStyles (sourceName, heatmap=false) {
       // console.log('Features hovered', features)
       let feature = features.find(f => !f.properties?.cluster && f.properties?.onclick !== false)
 
-      if (feature) {
+      if (feature?.id) {
         if (feature.id === highlightedFeatureId) { return }
         frontFeature(feature)
         highlightFeature(feature, false, sourceName)
       } else if (highlightedFeatureSource === sourceName) {
         resetHighlightedFeature()
+      } else {
+        console.log('Map Feature: ', feature)
       }
     })
   }
