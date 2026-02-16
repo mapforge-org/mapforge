@@ -230,7 +230,8 @@ GEM
       temple (>= 0.8.2)
       thor
       tilt
-    hashie (5.0.0)
+    hashie (5.1.0)
+      logger
     hotwire-spark (0.1.13)
       listen
       rails (>= 7.0.0)
