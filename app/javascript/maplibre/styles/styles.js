@@ -264,7 +264,7 @@ const scaledLabelSize = ['coalesce', ...userLabelSize.slice(1), ['*', 2, pointSi
 const staticLabelSize = ['coalesce', ...userLabelSize.slice(1), 16] // fallback to 16
 const labelOffset =
   ["interpolate", ["linear"],
-    ['to-number', ['coalesce', ["get", "marker-size"], 8]],
+    ['to-number', pointSizeMax],
     0, ["literal", [0, 0]],
     10, ["literal", [0, 1]],
     300, ["literal", [0, 20]]]

@@ -31,13 +31,21 @@ describe 'Feature details' do
   end
 
   context 'export' do
-    before { create(:feature, :polygon_middle, layer: map.layers.first, title: 'Poly Title') }
+    let(:feature) { create(:feature, :polygon_middle, title: 'Poly Title') }
+    let(:map) { create(:map, features: [ feature ]) }
 
     context 'with selected feature' do
       before do
-        sleep 1
         click_center_of_screen
         expect(page).to have_css('#feature-details-modal')
+      end
+
+      it 'has share geojson link' do
+        expect(page).to have_link('GeoJSON', href: '/m/' + map.public_id + '/feature/' + feature.id + '.geojson' + '/Poly_Title.geojson')
+      end
+
+      it 'has share gpx link' do
+        expect(page).to have_link('GPX', href: '/m/' + map.public_id + '/feature/' + feature.id + '.gpx' + '/Poly_Title')
       end
 
       it 'can download feature export' do

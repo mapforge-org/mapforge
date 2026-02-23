@@ -123,11 +123,11 @@ export async function showFeatureDetails (feature) {
     dom.showElements('.feature-export')
     // set feature id in export links
     let link = document.querySelector('#feature-export-geo a')
-    link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id + '.geojson')
-    if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/[\s\/]+/g, "_")) + '.geojson' }
+    link.setAttribute('href', link.getAttribute('href').replace(/feature\/.*/, 'feature/' + feature.id + '.geojson'))
+    if (feature.properties.title) { link.setAttribute('href', link.getAttribute('href')  + '/' + encodeURIComponent(feature.properties.title.replace(/[\s\/]+/g, "_")) + '.geojson') }
     link = document.querySelector('#feature-export-gpx a')
-    link.href = link.href.replace(/feature\/.*/, 'feature/' + feature.id + '.gpx')
-    if (feature.properties.title) { link.href += '/' + encodeURIComponent(feature.properties.title.replace(/[\s\/]+/g, "_")) }
+    link.setAttribute('href', link.getAttribute('href').replace(/feature\/.*/, 'feature/' + feature.id + '.gpx'))
+    if (feature.properties.title) { link.setAttribute('href', link.getAttribute('href') + '/' + encodeURIComponent(feature.properties.title.replace(/[\s\/]+/g, "_"))) }
   }
 
   document.querySelector('#feature-details-description').innerHTML = 'Loading description...'

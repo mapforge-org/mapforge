@@ -92,7 +92,7 @@ class MapsController < ApplicationController
     respond_to do |format|
       format.geojson { render json: feature.to_geojson }
       format.gpx {
-        name = feature.properties["title"].presence || feature.properties["label"].presence || feature.id
+        name = feature.properties["title"].presence || feature.id
         send_data feature.to_gpx, filename: "#{name}.gpx"
       }
     end

@@ -1,7 +1,7 @@
-#feature-details-modal.map-modal.modal-pull-transition.fade{ 
-  'data-controller': "map--modal feature--modal feature--edit", 
-  'data-action': "keydown.del@window->feature--edit#delete_feature \ 
-    keydown.esc@window->map--modal#close \ 
+#feature-details-modal.map-modal.modal-pull-transition.fade{
+  'data-controller': "map--modal feature--modal feature--edit",
+  'data-action': "keydown.del@window->feature--edit#delete_feature \
+    keydown.esc@window->map--modal#close \
     toggle-edit-feature@window->feature--modal#toggle_edit_feature \
     keydown.ctrl+c@window->feature--modal#copy" }
 
@@ -10,7 +10,7 @@
 
   %button.modal-close-button{ 'data-action': "click->map--modal#close" } &times;
   .map-modal-header.mb-2
-  
+
     %h4#feature-details-header.flex-container.flex-no-wrap.flex-vcenter
       .feature-symbol
       #feature-title.ms-1.selectable.no-wrap
@@ -25,11 +25,11 @@
       %button.btn.btn-green#button-edit-raw{ type: "button", title: "Edit", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'raw' }
         %i.bi.bi-filetype-raw
         %span.d-none.d-sm-inline
-          Edit 
+          Edit
         JSON
       %button.btn.btn-green#edit-button-trash{ type: "button", title: "Delete", data: { action: "click->feature--edit#delete_feature" } }
         %i.bi.bi-trash
-        Delete 
+        Delete
         %span.d-none.d-sm-inline
           feature
 
@@ -48,11 +48,10 @@
     %span.feature-export#feature-export-geo.ms-2.link<
       =link_to map_feature_geo_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
         %i.bi.bi-download
-        geojson
+        GeoJSON
     %span.feature-export#feature-export-gpx.ms-2.link<
       =link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), title: 'Download as GPX', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
         %i.bi.bi-download
-        gpx
+        GPX
     / %span#feature-animation.ms-2.link
     /   %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip", 'data-action': "click->feature--modal#animate"}
-
