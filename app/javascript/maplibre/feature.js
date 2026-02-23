@@ -4,7 +4,7 @@ import { length } from "@turf/length"
 import * as dom from 'helpers/dom'
 import * as f from 'helpers/functions'
 import { showElevationChart } from 'maplibre/feature/elevation'
-import { getFeature, getFeatureSource, layers } from "maplibre/layers/layers"
+import { getFeature, getFeatureSource, getLayer, layers } from "maplibre/layers/layers"
 import { wikipediaFeatureDescription } from 'maplibre/layers/wikipedia'
 import { map } from 'maplibre/map'
 import { featureColor } from 'maplibre/styles/styles'
@@ -117,7 +117,7 @@ export async function showFeatureDetails (feature) {
 
   document.querySelector('#feature-size').innerHTML = featureMeta(feature)
   document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
-  if (feature.geometry.type === 'Point') {
+  if (feature.geometry.type === 'Point' || getLayer(feature.id).type !== 'geojson') {
     dom.hideElements('.feature-export')
   } else {
     dom.showElements('.feature-export')

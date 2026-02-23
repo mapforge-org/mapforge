@@ -11,7 +11,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 
 * `label`: Label to show on the map (no emoji support)
 * `label-size`: font size (default 16)
-* `label-font`: label font array (default depends on base map, like ['noto_sans_regular'])
+* `label-font`: label font array (default depends on base map, like `['noto_sans_regular']`)
 * `label-color`: font color in format "#000000" (default)
 * `label-justify`: alignment: auto (default), left, center, right
 * `label-max-width`: line width (default 10)
