@@ -91,7 +91,10 @@ class MapsController < ApplicationController
     head :not_found and return unless feature
     respond_to do |format|
       format.geojson { render json: feature.to_geojson }
-      format.gpx { send_data feature.to_gpx, filename: "#{feature.id}.gpx" }
+      format.gpx {
+        name = feature.properties["title"].presence || feature.properties["label"].presence || feature.id
+        send_data feature.to_gpx, filename: "#{name}.gpx"
+      }
     end
   end
 
