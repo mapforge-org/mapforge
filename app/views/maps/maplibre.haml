@@ -4,7 +4,7 @@
 - if @map_mode == 'rw'
   - # https://github.com/Ionaru/easy-markdown-editor
   = stylesheet_link_tag "https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css"
-  
+
 - content_for :title, "Mapforge map: #{(@map.name.presence || 'Unnamed map')}"
 - content_for :head do
   - # Open Graph protocol https://ogp.me/
@@ -41,6 +41,7 @@
   = render 'maps/modals/feature'
   = render 'maps/modals/confirmation'
   = render 'maps/modals/description'
+  = render 'maps/modals/context_menu'
 
 #dropdown-space
 

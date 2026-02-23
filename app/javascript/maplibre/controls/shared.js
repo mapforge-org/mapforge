@@ -254,6 +254,8 @@ export function resetControls () {
 
   // reset active modals
   functions.e('.modal-center', e => { e.classList.remove('show') })
+  // reset context menu
+  functions.e('#map-context-menu', e => { e.classList.add('hidden') })
 }
 
 // https://maplibre.org/maplibre-gl-geocoder/types/MaplibreGeocoderOptions.html

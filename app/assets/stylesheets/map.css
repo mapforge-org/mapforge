@@ -262,3 +262,18 @@ html:has(.map), body:has(.map) {
   left: 0.8rem;
   top: -0.3rem;
 }
+
+#map-context-menu {
+  position: fixed;
+  z-index: 1;
+  color: gray;
+  background: #fffd;
+  opacity: 0.9;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1.5px #BBB;
+}
+
+#map-context-menu .context-menu-item {
+  padding: 0.4rem 1.2rem;
+  cursor: pointer;
+}

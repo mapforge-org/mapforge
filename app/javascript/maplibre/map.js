@@ -139,6 +139,20 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
   map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
 
+  map.on('contextmenu', (e) => {
+    e.preventDefault()
+    map.once('zoom', (_e) => { functions.e('#map-context-menu', el => { el.classList.add('hidden') }) })
+    map.once('rotate', (_e) => { functions.e('#map-context-menu', el => { el.classList.add('hidden') }) })
+    map.once('drag', (_e) => { functions.e('#map-context-menu', el => { el.classList.add('hidden') }) })
+    // const clickedLngLat = e.lngLat
+    functions.e('#map-context-menu', el => {
+      // el.classList.remove('hidden')
+      // Position the context menu
+      el.style.left = `${e.point.x}px`
+      el.style.top = `${e.point.y}px`
+    })
+  })
+
   // map.on('error', (err) => {
   //   console.log('map error >>> ', err)
   // })
