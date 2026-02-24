@@ -1,18 +1,18 @@
-import { map, destroyFeature, addFeature, mapProperties } from 'maplibre/map'
-import { editStyles } from 'maplibre/styles/edit_styles'
-import { highlightFeature } from 'maplibre/feature'
-import { getRouteUpdate, getRouteElevation } from 'maplibre/routing/openrouteservice'
-import { initDirections, resetDirections } from 'maplibre/routing/osrm'
-import { mapChannel } from 'channels/map_channel'
-import { resetControls, initializeDefaultControls } from 'maplibre/controls/shared'
-import { initializeEditControls, disableEditControls, enableEditControls } from 'maplibre/controls/edit'
-import { status } from 'helpers/status'
-import { hasFeatures, getFeature, layers } from 'maplibre/layers/layers'
-import { undo, redo, addUndoState } from 'maplibre/undo'
-import * as functions from 'helpers/functions'
-import equal from 'fast-deep-equal' // https://github.com/epoberezkin/fast-deep-equal
-import { simplify } from "@turf/simplify"
-import { renderGeoJSONLayers } from 'maplibre/layers/geojson'
+import { simplify } from "@turf/simplify";
+import { mapChannel } from 'channels/map_channel';
+import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep-equal
+import * as functions from 'helpers/functions';
+import { status } from 'helpers/status';
+import { disableEditControls, enableEditControls, initializeEditControls } from 'maplibre/controls/edit';
+import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
+import { highlightFeature } from 'maplibre/feature';
+import { renderGeoJSONLayers } from 'maplibre/layers/geojson';
+import { getFeature, hasFeatures, layers } from 'maplibre/layers/layers';
+import { addFeature, destroyFeature, map, mapProperties } from 'maplibre/map';
+import { getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
+import { initDirections, resetDirections } from 'maplibre/routing/osrm';
+import { editStyles, initializeEditStyles } from 'maplibre/styles/edit_styles';
+import { addUndoState, redo, undo } from 'maplibre/undo';
 
 export let draw
 export let selectedFeature
@@ -71,6 +71,7 @@ export async function initializeEditMode () {
     modes
   })
 
+  initializeEditStyles()
   initializeEditControls()
   initializeDefaultControls()
 
@@ -212,7 +213,7 @@ export function select (feature) {
   if (feature?.properties?.route?.provider === 'osrm') {
     let profile = feature?.properties?.route?.profile
     // don't re-initialize direction if already active on same feature
-    if (draw.getMode() !== 'directions_' + profile 
+    if (draw.getMode() !== 'directions_' + profile
       || selectedFeature?.id !== feature.id) {
       draw.changeMode('directions_' + profile)
       map.fire('draw.modechange') // fire event before initDirections
@@ -294,13 +295,13 @@ async function handleUpdate (e) {
   geojsonFeature.geometry = feature.geometry
   renderGeoJSONLayers(false)
 
-  if (feature.geometry.type === 'LineString') { 
+  if (feature.geometry.type === 'LineString') {
     // gets also triggered on failure
     updateElevation(feature).then(() => {
       mapChannel.send_message('update_feature', feature)
       // showFeatureDetails(feature)
     })
-  } else { 
+  } else {
     mapChannel.send_message('update_feature', feature)
     // highlightFeature(feature, true)
   }
@@ -322,7 +323,7 @@ export function updateElevation(feature) {
     return getRouteElevation(feature.geometry.coordinates).then(coords => {
       if (feature.geometry.coordinates.length === coords?.length) {
         feature.geometry.coordinates = coords
-      } else { 
+      } else {
         console.warn('Did not receive elevation for all coords (water?)')
       }
     })

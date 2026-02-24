@@ -93,6 +93,13 @@ export function initializeViewStyles (sourceName, heatmap=false) {
       }
     })
   }
+
+  map.on('contextmenu', (e) => {
+    e.preventDefault()
+    // console.log(styleNames(sourceName))
+    // const features = map.queryRenderedFeatures(e.point)
+    //console.log('ro context:', features)
+  })
 }
 
 export function initializeClusterStyles(sourceName, icon) {

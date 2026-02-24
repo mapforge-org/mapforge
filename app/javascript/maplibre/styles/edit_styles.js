@@ -1,4 +1,5 @@
-import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
+import * as functions from 'helpers/functions';
+import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles';
 
 // started from https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
 // Styling Draw: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#styling-draw
@@ -13,11 +14,38 @@ export const highlightColor = '#fbb03b'
 const midpointSize = 6
 const vertexSize = 6
 
+export function initializeEditStyles() {
+  map.on('contextmenu', (e) => {
+    e.preventDefault()
+    //if (draw.getMode() !== 'direct_select') { return }
+
+    const features = map.queryRenderedFeatures(e.point)
+    // console.log('edit layer features', features.map(f => f.layer.id))
+    features.forEach(f => {
+      // console.log(f)
+      if ((f.layer.id === 'gl-draw-point-stroke-active.hot' ||
+           f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.cold')) {
+        console.log(f)
+        functions.e('#map-context-menu', el => {
+          el.classList.remove('hidden')
+          let deleteButton = document.createElement('div')
+          deleteButton.classList.add('context-menu-item')
+          deleteButton.innerText = 'Delete midpoint'
+          deleteButton.dataset.action = 'click->map--context-menu#deleteMidpoint'
+          deleteButton.dataset.featureId = f.properties.parent
+          deleteButton.dataset.index = f.properties.coord_path
+          el.appendChild(deleteButton)
+        })
+      }
+    })
+  })
+}
+
 export function editStyles() {
   return [
     // removeSource(styles()['polygon-layer']), // gl-draw-polygon-fill-inactive
-    removeSource(styles()['polygon-layer-outline']),
-    removeSource(styles()['line-layer-outline']), // line outline below line, because it's a wider line
+    styles()['polygon-layer-outline'],
+    styles()['line-layer-outline'], // line outline below line, because it's a wider line
     // removeSource(styles()['line-layer']),
 
     // active polygon outline
@@ -77,7 +105,7 @@ export function editStyles() {
     },
     // default point behind symbols and transparent points
     {
-      id: 'gl-draw-point-point-stroke-inactive',
+      id: 'gl-draw-point-stroke-inactive',
       type: 'circle',
       filter: ['all',
         ['==', '$type', 'Point'],
@@ -93,7 +121,7 @@ export function editStyles() {
       }
     },
 
-    // active point, either single or on a line / polygon
+    // active point wheen dragging, either single or on a line / polygon
     {
       id: 'gl-draw-point-stroke-active',
       type: 'circle',
@@ -107,7 +135,7 @@ export function editStyles() {
         'circle-color': '#ffffff',
         'circle-opacity': 0.2,
         'circle-stroke-color': highlightColor,
-        'circle-stroke-width': 3
+        'circle-stroke-width': 4
       }
     },
 
@@ -186,10 +214,4 @@ export function editStyles() {
     // }
 
   ]
-}
-
-export function removeSource (style) {
-  // eslint-disable-next-line no-unused-vars
-  const { source, ...filteredStyle } = style
-  return filteredStyle
 }

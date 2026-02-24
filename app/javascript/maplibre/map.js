@@ -144,9 +144,9 @@ export async function initializeMap (divId = 'maplibre-map') {
     map.once('zoom', (_e) => { functions.e('#map-context-menu', el => { el.classList.add('hidden') }) })
     map.once('rotate', (_e) => { functions.e('#map-context-menu', el => { el.classList.add('hidden') }) })
     map.once('drag', (_e) => { functions.e('#map-context-menu', el => { el.classList.add('hidden') }) })
-    // const clickedLngLat = e.lngLat
+    // menu gets unhidden only when there are buttons
     functions.e('#map-context-menu', el => {
-      // el.classList.remove('hidden')
+      el.innerHTML = ''
       // Position the context menu
       el.style.left = `${e.point.x}px`
       el.style.top = `${e.point.y}px`
