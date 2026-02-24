@@ -48,7 +48,13 @@ describe 'Feature details' do
         expect(page).to have_link('GPX', href: '/m/' + map.public_id + '/feature/' + feature.id + '.gpx' + '/Poly_Title')
       end
 
-      it 'can download feature export' do
+      it 'can download feature gpx export' do
+        visit '/m/' + map.public_id + '/feature/' + feature.id + '.gpx' + '/Poly_Title'
+        file = wait_for_download('Poly Title.gpx', timeout: 10)
+        expect(File.read(file).scan(/<gpx/i).size).to eq(1)
+      end
+
+      it 'can download feature geojson export' do
         find('#feature-export-geo').click
       end
     end
