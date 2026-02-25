@@ -3,6 +3,7 @@ import { lineString, multiLineString, multiPolygon, polygon } from "@turf/helper
 import { length } from "@turf/length"
 import * as dom from 'helpers/dom'
 import * as f from 'helpers/functions'
+import { status } from 'helpers/status'
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { getFeature, getFeatureSource, getLayer, layers } from "maplibre/layers/layers"
 import { wikipediaFeatureDescription } from 'maplibre/layers/wikipedia'
@@ -244,8 +245,15 @@ export async function uploadImage(image) {
       'X-CSRF-Token': window.gon.csrf_token
     }
   })
-  .then(response => response.json())
-  .catch(error => console.error('Error:', error))
+  .then(async (response) => {
+    if (response.ok) {
+      return response.json()
+    } else {
+      // const bodyText = await response.text()
+      status('Error uploading image', 'error')
+      return Promise.reject(response.statusText)
+    }
+  })
 }
 
 
