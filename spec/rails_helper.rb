@@ -1,25 +1,25 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-require 'simplecov'
+require "simplecov"
 SimpleCov.minimum_coverage 100
-SimpleCov.start 'rails' do
-  add_filter 'app/jobs/application_job.rb'
-  add_filter 'lib/tasks'
+SimpleCov.start "rails" do
+  add_filter "app/jobs/application_job.rb"
+  add_filter "lib/tasks"
 end
 
-require 'spec_helper'
-ENV['RAILS_ENV'] ||= 'test'
-ENV["DEFAULT_MAP"] = 'test'
+require "spec_helper"
+ENV["RAILS_ENV"] ||= "test"
+ENV["DEFAULT_MAP"] = "test"
 
-require_relative '../config/environment'
+require_relative "../config/environment"
 # Prevent database truncation if the environment is production
-abort('The Rails environment is running in production mode!') if Rails.env.production?
-require 'rspec/rails'
+abort("The Rails environment is running in production mode!") if Rails.env.production?
+require "rspec/rails"
 # Add additional requires below this line. Rails is not loaded until this point!
 
-require 'database_cleaner/mongoid'
-require 'capybara-screenshot/rspec'
-require 'mongoid-rspec'
-require 'capybara_mock/rspec'
+require "database_cleaner/mongoid"
+require "capybara-screenshot/rspec"
+require "mongoid-rspec"
+require "capybara_mock/rspec"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -34,7 +34,10 @@ require 'capybara_mock/rspec'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-Rails.root.glob('spec/support/**/*.rb').sort.each { |f| require f }
+Rails.root.glob("spec/support/**/*.rb").sort.each { |f| require f }
+
+# raise on js console errors
+class JavaScriptError < StandardError; end
 
 RSpec.configure do |config|
   # Remove this line to enable support for ActiveRecord
@@ -61,8 +64,6 @@ RSpec.configure do |config|
     page.driver.browser.resize(width: 1024, height: 860)
   end
 
-  # raise on js console errors
-  class JavaScriptError< StandardError; end
   RSpec.configure do |config|
     config.after(:each, type: :feature) do |spec|
       unless spec.metadata[:skip_console_errors]

@@ -83,6 +83,7 @@ group :development do
   gem "rubocop-rails-omakase", require: false
   gem "rubocop-rubycw"
   gem "rubycritic", require: false
+  gem "standard"
   gem "brakeman"
   gem "bundler-audit"
   gem "hotwire-spark"

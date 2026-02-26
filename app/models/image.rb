@@ -20,7 +20,6 @@ class Image
   validate :public_id_must_be_unique_or_nil
   before_create :create_public_id
 
-
   def create_public_id
     self.public_id = SecureRandom.hex(4) unless public_id.present?
   end

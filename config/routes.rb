@@ -1,7 +1,8 @@
+ID_PATTERN = /[^\/]+/ # all characters but '/'
+NAME_PATTERN = /[^\/]+/ # all characters but '/'
+
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  ID_PATTERN = /[^\/]+/ # all characters but '/'
-  NAME_PATTERN = /[^\/]+/ # all characters but '/'
 
   # login routes
   get "auth/:provider/callback", to: "sessions#create"
@@ -16,31 +17,31 @@ Rails.application.routes.draw do
 
     # map exports
     # ids can have dots, so define formats explicitly
-    get "/:id.json" => "maps#show", as: :map_json, constraints: { id: ID_PATTERN }, defaults: { format: "json" }
-    get "/:id.geojson" => "maps#show", as: :map_geojson, constraints: { id: ID_PATTERN }, defaults: { format: "geojson" }
-    get "/:id.gpx" => "maps#show", as: :map_gpx, constraints: { id: ID_PATTERN }, defaults: { format: "gpx" }
-    get "/:id/properties" => "maps#properties", as: :map_properties, constraints: { id: ID_PATTERN }
-    get "/:id(/:name)" => "maps#show", as: :map, format: :html, constraints: { id: ID_PATTERN, name: NAME_PATTERN }
-    get "/:id/feature/:feature_id.geojson(/:name)" => "maps#feature", as: :map_feature_geo, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "geojson" }
-    get "/:id/feature/:feature_id.gpx(/:name)" => "maps#feature", as: :map_feature_gpx, constraints: { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, defaults: { format: "gpx" }
+    get "/:id.json" => "maps#show", :as => :map_json, :constraints => { id: ID_PATTERN }, :defaults => { format: "json" }
+    get "/:id.geojson" => "maps#show", :as => :map_geojson, :constraints => { id: ID_PATTERN }, :defaults => { format: "geojson" }
+    get "/:id.gpx" => "maps#show", :as => :map_gpx, :constraints => { id: ID_PATTERN }, :defaults => { format: "gpx" }
+    get "/:id/properties" => "maps#properties", :as => :map_properties, :constraints => { id: ID_PATTERN }
+    get "/:id(/:name)" => "maps#show", :as => :map, :format => :html, :constraints => { id: ID_PATTERN, name: NAME_PATTERN }
+    get "/:id/feature/:feature_id.geojson(/:name)" => "maps#feature", :as => :map_feature_geo, :constraints => { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, :defaults => { format: "geojson" }
+    get "/:id/feature/:feature_id.gpx(/:name)" => "maps#feature", :as => :map_feature_gpx, :constraints => { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, :defaults => { format: "gpx" }
 
-    post "" => "maps#create", as: :create_map
-    post "/:id/copy" => "maps#copy", as: :copy_map, constraints: { id: ID_PATTERN }
-    delete "/:id" => "maps#destroy", as: :destroy_map, constraints: { id: ID_PATTERN }
+    post "" => "maps#create", :as => :create_map
+    post "/:id/copy" => "maps#copy", :as => :copy_map, :constraints => { id: ID_PATTERN }
+    delete "/:id" => "maps#destroy", :as => :destroy_map, :constraints => { id: ID_PATTERN }
   end
 
   post "/demo", to: redirect("/tutorial") # legacy route
-  post "/tutorial" => "maps#tutorial", as: "tutorial"
-  get "/my" => "maps#my", as: "my"
+  post "/tutorial" => "maps#tutorial", :as => "tutorial"
+  get "/my" => "maps#my", :as => "my"
   get "/fosdem", to: redirect("/m/fosdem")
 
-  get "/d/:id" => "maps#show", defaults: { engine: "deck" }, as: :deck, constraints: { id: ID_PATTERN }
+  get "/d/:id" => "maps#show", :defaults => { engine: "deck" }, :as => :deck, :constraints => { id: ID_PATTERN }
 
   get "/admin" => "admin#index"
-  get "/docs" => "docs#tutorials", as: :docs
+  get "/docs" => "docs#tutorials", :as => :docs
   get "/tutorials", to: redirect("/docs") # legacy route
   get "/tutorial/:id" => "docs#tutorial" # legacy route
-  get "/doc/:id" => "docs#tutorial", as: :doc
+  get "/doc/:id" => "docs#tutorial", :as => :doc
 
   # map icons
   get "/icon/osmc/:osmc_symbol", to: "images#osmc_symbol", as: "osmc"
@@ -50,7 +51,7 @@ Rails.application.routes.draw do
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "health#show", as: :rails_health_check
+  get "up" => "health#show", :as => :rails_health_check
   get "sitemap", to: "application#sitemap", defaults: { format: "xml" }
 
   # Defines the root path route ("/")

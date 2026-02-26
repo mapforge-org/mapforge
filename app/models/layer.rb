@@ -33,11 +33,11 @@ class Layer
 
   def to_geojson
     { type: "FeatureCollection",
-      features: features.map(&:geojson) }
+     features: features.map(&:geojson) }
   end
 
   def clone_with_features
-    clone = self.dup
+    clone = dup
     clone.update(created_at: DateTime.now, map: nil)
     features.each { |f| clone.features << f.dup }
     clone
@@ -48,7 +48,7 @@ class Layer
       # broadcast to private + public channel
       [ map.private_id, map.public_id ].each do |map_id|
         ActionCable.server.broadcast("map_channel_#{map_id}",
-                                    { event: "update_layer", layer: to_summary_json.as_json })
+          { event: "update_layer", layer: to_summary_json.as_json })
       end
     end
   end

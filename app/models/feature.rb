@@ -23,20 +23,20 @@ class Feature
 
   after_save :broadcast_update, if: -> {
     previous_changes.present? && layer.present? && map.present? &&
-    (previous_changes["geometry"] || previous_changes["properties"])
+      (previous_changes["geometry"] || previous_changes["properties"])
   }
   validate :require_coords
 
   def geojson
     { id: _id.to_s,
-      type:,
-      geometry:,
-      properties: properties || {} }
+     type:,
+     geometry:,
+     properties: properties || {} }
   end
 
   def to_geojson
     { type: "FeatureCollection",
-      features: [ geojson ] }
+     features: [ geojson ] }
   end
 
   def to_gpx
@@ -57,7 +57,7 @@ class Feature
         transformed_geometry = RGeo::Feature.cast(feature.geometry, factory: db_format, project: true)
         feature = RGeo::GeoJSON::Feature.new(transformed_geometry, feature.feature_id, feature.properties)
       end
-      Feature.create!(RGeo::GeoJSON.encode(feature).reject { |k, _v| k == "id" })
+      Feature.create!(RGeo::GeoJSON.encode(feature).except("id"))
     end
   end
 
@@ -84,7 +84,7 @@ class Feature
     # broadcast to private + public channel
     [ map.private_id, map.public_id ].each do |id|
       ActionCable.server.broadcast("map_channel_#{id}",
-                                   { event: "update_feature", feature: geojson.as_json })
+        { event: "update_feature", feature: geojson.as_json })
     end
   end
 

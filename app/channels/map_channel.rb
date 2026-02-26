@@ -35,7 +35,7 @@ class MapChannel < ApplicationCable::Channel
     Yabeda.websocket.messages_received.increment({ action: "update_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     @feature = map.features.find(feature_atts(data)["id"])
-    raise "Feature #{data['id']} not found on map #{data['map_id']}" unless @feature
+    raise "Feature #{data["id"]} not found on map #{data["map_id"]}" unless @feature
     @feature.update!(feature_atts(data))
     associate_image(data["properties"]["marker-image-url"]) if data["properties"] && data["properties"]["marker-image-url"]
   end
@@ -71,11 +71,11 @@ class MapChannel < ApplicationCable::Channel
 
   def mouse(data)
     data[:event] = "mouse"
-    if user = User.find_by(id: data["user_id"])
+    if (user = User.find_by(id: data["user_id"]))
       data[:user_name] = user.name
       data[:user_image] = user.image
     end
-    ActionCable.server.broadcast("map_channel_#{data['map_id']}", data)
+    ActionCable.server.broadcast("map_channel_#{data["map_id"]}", data)
   end
 
   private
@@ -107,7 +107,7 @@ class MapChannel < ApplicationCable::Channel
 
   def associate_image(url)
     public_id = url.to_s.sub(%r{^/(icon|image)/}, "")
-    if img = Image.find_by(public_id:)
+    if (img = Image.find_by(public_id:))
       @feature.update!(image: img)
     else
       # :nocov:

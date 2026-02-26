@@ -51,8 +51,8 @@ class Map
   OPENFREE_MAPS = [ "openfreemapPositron", "openfreemapBright", "openfreemapLiberty" ]
   VERSATILES_MAPS = [ "versatilesColorful", "versatilesGraybeard" ]
   MAPTILER_MAPS = [ "maptilerBuildings", "maptilerHybrid", "maptilerDataviz",
-                    "maptilerStreets", "maptilerNoStreets", "maptilerWinter",
-                    "maptilerBike", "maptilerBasic" ]
+    "maptilerStreets", "maptilerNoStreets", "maptilerWinter",
+    "maptilerBike", "maptilerBasic" ]
   OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets", "osmRasterTiles" ]
 
   DEFAULT_CENTER = [ 11.077, 49.447 ].freeze
@@ -75,10 +75,11 @@ class Map
     #  locals: { rw: true, avatar: true, delete: true, last_change: true })
   end
   after_update(
-    if: Proc.new { |record|
+    if: proc { |record|
       record.saved_change_to_attribute?(:name) ||
       record.saved_change_to_attribute?(:view_permission)
-    }) do
+    }
+  ) do
     broadcast_refresh_to("admin_maps_list")
     broadcast_refresh_to("public_maps_list") if view_permission == "listed"
   end
@@ -100,30 +101,29 @@ class Map
 
   def properties
     { name: name,
-      description: description,
-      public_id: public_id,
-      base_map: get_base_map,
-      type: type,
-      center: center,
-      default_center: center ? nil : calculated_center, # only set when no center defined
-      zoom: zoom,
-      default_zoom: zoom ? nil : calculated_zoom, # only set when no zoom defined
-      pitch: pitch || DEFAULT_PITCH,
-      bearing: bearing || DEFAULT_BEARING,
-      terrain: terrain || DEFAULT_TERRAIN,
-      hillshade: hillshade || DEFAULT_HILLSHADE,
-      contours: contours || DEFAULT_CONTOURS,
-      globe: globe || DEFAULT_GLOBE,
-      share_cursor: share_cursor || false,
-      view_permission: view_permission,
-      edit_permission: edit_permission
-    }
+     description: description,
+     public_id: public_id,
+     base_map: get_base_map,
+     type: type,
+     center: center,
+     default_center: center ? nil : calculated_center, # only set when no center defined
+     zoom: zoom,
+     default_zoom: zoom ? nil : calculated_zoom, # only set when no zoom defined
+     pitch: pitch || DEFAULT_PITCH,
+     bearing: bearing || DEFAULT_BEARING,
+     terrain: terrain || DEFAULT_TERRAIN,
+     hillshade: hillshade || DEFAULT_HILLSHADE,
+     contours: contours || DEFAULT_CONTOURS,
+     globe: globe || DEFAULT_GLOBE,
+     share_cursor: share_cursor || false,
+     view_permission: view_permission,
+     edit_permission: edit_permission }
   end
 
   def self.provider_keys
     { mapbox: ENV["MAPBOX_KEY"],
-      maptiler: ENV["MAPTILER_KEY"],
-      openrouteservice: ENV["OPENROUTESERVICE_KEY"] }
+     maptiler: ENV["MAPTILER_KEY"],
+     openrouteservice: ENV["OPENROUTESERVICE_KEY"] }
   end
 
   def to_json
@@ -132,8 +132,8 @@ class Map
 
   # flattened geojson collection of all layers
   def to_geojson
-      { type: "FeatureCollection",
-        features: layers.geojson.map(&:features).flatten.map(&:geojson) }
+    { type: "FeatureCollection",
+     features: layers.geojson.map(&:features).flatten.map(&:geojson) }
   end
 
   def to_gpx
@@ -143,7 +143,7 @@ class Map
       description:,
       geojson_data: to_geojson.to_json,
       line_string_feature_to_track: ->(ls, trk) { trk.name = ls["properties"]["title"] || ls["properties"]["name"] || ls["id"] }
-      )
+    )
   end
 
   def features
@@ -174,7 +174,7 @@ class Map
   end
 
   def clone_with_layers
-    clone = self.dup
+    clone = dup
     clone.update(created_at: Time.zone.now, updated_at: Time.zone.now,
       private_id: fields["private_id"].default_val.call,
       public_id: fields["public_id"].default_val.call,
@@ -199,10 +199,28 @@ class Map
     Rails.application.routes.url_helpers.map_path(id: public_id, name: name)
   end
 
+  def self.tutorial_map(user)
+    tutorial_file = Rails.root.join("db/seeds/demo.json")
+
+    if user&.name
+      unless (map = Map.tutorial.where(user: user).first)
+        map = Map.create_from_file(tutorial_file)
+        name = user.name.split.first
+        map.update(user: user, type: "tutorial")
+        map.features.where("properties.label" => "Welcome to the Mapforge Tutorial map")
+          .update_all("properties.label" => "Welcome #{name} to the Mapforge Tutorial map")
+      end
+    else
+      map = Map.create_from_file(tutorial_file)
+      map.update(type: "tutorial")
+    end
+    map
+  end
+
   private
 
   def create_default_layer
-    self.layers << Layer.create!(map: self, type: "geojson") unless layers.present?
+    layers << Layer.create!(map: self, type: "geojson") unless layers.present?
   end
 
   def all_points
@@ -219,7 +237,7 @@ class Map
       Rails.logger.info("Calculated map (#{id}) center: #{[ average_latitude, average_longitude ]}")
       [ average_latitude, average_longitude ]
     else
-     DEFAULT_CENTER
+      DEFAULT_CENTER
     end
   end
 
@@ -243,7 +261,7 @@ class Map
       else 2
       end
     else
-     DEFAULT_ZOOM
+      DEFAULT_ZOOM
     end
   end
 
@@ -280,26 +298,8 @@ class Map
   def safe_public_id
     separator = "_"
     public_id.strip
-        .gsub(/[^\w\.\-]+/, separator)
-        .gsub(/#{separator}+/, separator)
-        .gsub(/\A#{separator}+|#{separator}+\z/, "")
-  end
-
-  def self.tutorial_map(user)
-    tutorial_file = Rails.root.join("db/seeds/demo.json")
-
-    if user&.name
-      unless map = Map.tutorial.where(user: user).first
-        map = Map.create_from_file(tutorial_file)
-        name = user.name.split.first
-        map.update(user: user, type: "tutorial")
-        map.features.where("properties.label" => "Welcome to the Mapforge Tutorial map")
-           .update_all("properties.label" => "Welcome #{name} to the Mapforge Tutorial map")
-      end
-    else
-      map = Map.create_from_file(tutorial_file)
-      map.update(type: "tutorial")
-    end
-    map
+      .gsub(/[^\w.-]+/, separator)
+      .gsub(/#{separator}+/, separator)
+      .gsub(/\A#{separator}+|#{separator}+\z/, "")
   end
 end

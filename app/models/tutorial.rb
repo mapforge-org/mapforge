@@ -11,7 +11,7 @@ class Tutorial
     safe_id = safe_id.sub(/\A\/*/, "")
     file_path = Rails.root.join("docs", "tutorials", "#{safe_id}.md")
     if File.exist?(file_path)
-      self.new(safe_id, File.read(file_path))
+      new(safe_id, File.read(file_path))
     else
       raise ActionController::RoutingError, "Tutorial not found"
     end
@@ -19,7 +19,7 @@ class Tutorial
 
   def title
     headline = markdown.lines.find { |line| line.strip.match?(/^#+\s/) }
-    headline.gsub("#", "")&.strip
+    headline.delete("#")&.strip
   end
 
   def to_html

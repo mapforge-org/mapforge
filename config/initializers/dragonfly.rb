@@ -21,11 +21,11 @@ Dragonfly.app.configure do
     content.shell_update(ext: "png") do |old_path, new_path|
       # Instagram style rounded corners, preserving inner transparency
       "/usr/bin/convert #{old_path} -alpha set \
-                          \( +clone -alpha extract \
+                          ( +clone -alpha extract \
                              -draw 'fill black polygon 0,0 0,50 50,0 fill white circle 50,50 50,0' \
-                             \( +clone -flip \) -compose Multiply -composite \
-                             \( +clone -flop \) -compose Multiply -composite \
-                          \) -alpha off -compose CopyOpacity -composite #{new_path}"
+                             ( +clone -flip ) -compose Multiply -composite \
+                             ( +clone -flop ) -compose Multiply -composite \
+                          ) -alpha off -compose CopyOpacity -composite #{new_path}"
     end
   end
 

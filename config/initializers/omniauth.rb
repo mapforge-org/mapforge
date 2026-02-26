@@ -3,13 +3,13 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   provider :developer if Rails.env.local? || ENV["DEVELOPER_LOGIN_ENABLED"] == "true"
   # https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps
   provider :github,
-            ENV["GITHUB_CLIENT_ID"],
-            ENV["GITHUB_CLIENT_SECRET"],
-            scope: "user:email"
+    ENV["GITHUB_CLIENT_ID"],
+    ENV["GITHUB_CLIENT_SECRET"],
+    scope: "user:email"
   provider :google_oauth2,
-            ENV["GOOGLE_CLIENT_ID"],
-            ENV["GOOGLE_CLIENT_SECRET"],
-            prompt: "select_account"
+    ENV["GOOGLE_CLIENT_ID"],
+    ENV["GOOGLE_CLIENT_SECRET"],
+    prompt: "select_account"
   # https://www.openstreetmap.org/oauth2/applications
   provider :osm_oauth2, ENV["OSM_CLIENT_ID"], ENV["OSM_CLIENT_SECRET"]
 end

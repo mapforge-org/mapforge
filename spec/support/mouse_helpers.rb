@@ -5,7 +5,7 @@ def center_of_screen
     { width: window.innerWidth, height: window.innerHeight }
   JS
 
-  { x: viewport['width'] / 2, y: viewport['height'] / 2 }
+  { x: viewport["width"] / 2, y: viewport["height"] / 2 }
 end
 
 def click_center_of_screen
@@ -18,7 +18,6 @@ def hover_center_of_screen
   center = center_of_screen
   browser.mouse.move(x: center[:x], y: center[:y])
 end
-
 
 def click_coord(_selector, x, y)
   browser = page.driver.browser

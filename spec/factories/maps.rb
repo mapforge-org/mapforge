@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :map do
-    base_map { 'test' }
+    base_map { "test" }
     center { Map::DEFAULT_CENTER }
     zoom { 12 }
     pitch { 0 }

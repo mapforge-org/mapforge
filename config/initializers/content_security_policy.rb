@@ -7,13 +7,13 @@
 Rails.application.configure do
   config.content_security_policy do |policy|
     # policy.default_src :self, :https
-    policy.font_src    :self, :https, :data
-    policy.img_src     :self, :https, :data
-    policy.object_src  :none
+    policy.font_src :self, :https, :data
+    policy.img_src :self, :https, :data
+    policy.object_src :none
     # TODO: It seems not possible yet to use Turbo and csp without :unsafe_inline, :unsafe_eval
-    policy.script_src  :self, :https, :blob, :unsafe_inline, :unsafe_eval
-    policy.worker_src  :self, :https, :blob
-    policy.style_src   :self, :https, :unsafe_inline, :unsafe_eval
+    policy.script_src :self, :https, :blob, :unsafe_inline, :unsafe_eval
+    policy.worker_src :self, :https, :blob
+    policy.style_src :self, :https, :unsafe_inline, :unsafe_eval
     # Specify URI for violation reports
     # policy.report_uri "/csp-violation-report-endpoint"
   end

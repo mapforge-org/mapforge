@@ -48,11 +48,11 @@ class ImagesController < ApplicationController
     tempfile = uploaded_file.tempfile
     # Avoid duplicate files by identifying uploaded files by <name>-<size>
     filename = uploaded_file.original_filename.gsub(/[^0-9A-Za-z.\-_]/, "_")
-    filename = filename.sub(/\.[^\.]*$/, "")
+    filename = filename.sub(/\.[^.]*$/, "")
     filename = "#{filename}-#{tempfile.size}.#{ext}"
 
     # use existing image if already uploaded
-    unless img = Image.find_by(public_id: filename)
+    unless (img = Image.find_by(public_id: filename))
       # resize image if it exceeds 1024px
       image = MiniMagick::Image.read(tempfile)
       if image.width > 1024 || image.height > 1024

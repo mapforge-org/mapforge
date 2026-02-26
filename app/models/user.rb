@@ -27,11 +27,11 @@ class User
   # @param max_history [Integer] the maximum number of maps to keep in history
   def track_map_view(id, max_history: 4)
     # Remove the map if it's already in the list
-    self.recent_map_ids.delete(id.to_s)
+    recent_map_ids.delete(id.to_s)
     # Add the map ID to the beginning of the list
-    self.recent_map_ids.unshift(id.to_s)
+    recent_map_ids.unshift(id.to_s)
     # Limit the list size
-    self.recent_map_ids = self.recent_map_ids.first(max_history)
+    self.recent_map_ids = recent_map_ids.first(max_history)
     save
   end
 end

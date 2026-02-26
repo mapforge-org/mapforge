@@ -1,4 +1,4 @@
-require 'securerandom'
+require "securerandom"
 
 class AddPublicId < Mongoid::Migration
   def self.up

@@ -73,5 +73,5 @@ end
 Rails.application.config.middleware.insert_before Rails::Rack::Logger, RequestSilencer
 
 module Kernel
-  alias_method :byebug, :debugger if defined?(debugger) && !defined?(byebug)
+  alias_method(:byebug, :debugger) if respond_to?(:debugger) && !respond_to?(:byebug)
 end

@@ -30,12 +30,14 @@ class MapsController < ApplicationController
     respond_to do |format|
       format.html do
         # Avoid 'updated_at' update
-        @map.collection.update_one(
-          { _id: @map.id },
-          { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
-        ) unless params["viewcount"] == "false"
+        unless params["viewcount"] == "false"
+          @map.collection.update_one(
+            { _id: @map.id },
+            { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
+          )
+        end
         @map_properties = map_properties
-        @user.track_map_view(params[:id]) if @user
+        @user&.track_map_view(params[:id])
 
         gon.map_id = params[:id]
         gon.user_id = @user.id if @user
@@ -134,7 +136,7 @@ class MapsController < ApplicationController
   # :nocov:
 
   def require_map_owner
-    unless @user&.admin? || (@map.user && @map.user == @user)
+    if !(@user&.admin? || (@map.user && @map.user == @user))
       Rails.logger.warn "Map view requires owner permissions, but current user isn't."
       redirect_to maps_path
     end
@@ -152,7 +154,7 @@ class MapsController < ApplicationController
   def set_map_mode
     @map_mode = (params[:id] == @map.private_id.to_s) ? "rw" : "ro"
     @map_mode = "static" if params["static"]
-    allow_iframe if @map_mode == "ro"|| params["static"]
+    allow_iframe if @map_mode == "ro" || params["static"]
   end
 
   def check_permissions

@@ -71,4 +71,3 @@ Rails/Output:
 Rails/Exit:
   Exclude:
     - 'config/initializers/*'
-

@@ -17,9 +17,8 @@ class ConditionalRackCache
       verbose: true,
       etag: true,
       max_age: ImagesController::IMAGE_CACHE_TIME,
-      metastore:   "file:tmp/cache/rack/meta",
-      entitystore: "file:tmp/cache/rack/body"
-    )
+      metastore: "file:tmp/cache/rack/meta",
+      entitystore: "file:tmp/cache/rack/body")
   end
 
   def call(env)

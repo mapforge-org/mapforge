@@ -1,11 +1,11 @@
-require 'rails_helper'
+require "rails_helper"
 
-describe 'Keyboard Shortcuts' do
-  let(:map) { create(:map, name: 'Feature edit test') }
+describe "Keyboard Shortcuts" do
+  let(:map) { create(:map, name: "Feature edit test") }
   let(:user) { create(:user) }
 
-  context 'Map Edit Mode' do
-    let(:point) { create(:feature, :point_middle, title: 'Point Title') }
+  context "Map Edit Mode" do
+    let(:point) { create(:feature, :point_middle, title: "Point Title") }
     let(:map) { create(:map, features: [ point ]) }
 
     before do
@@ -14,16 +14,16 @@ describe 'Keyboard Shortcuts' do
       expect_map_loaded
     end
 
-    context 'with selected point feature' do
+    context "with selected point feature" do
       before do
         click_center_of_screen
-        expect(page).to have_text('Point Title')
+        expect(page).to have_text("Point Title")
       end
 
-      it 'can copy & paste point' do
+      it "can copy & paste point" do
         page.driver.browser.keyboard.type([ :Control, "c" ])
 
-        expect(page).to have_text('Feature copied to clipboard')
+        expect(page).to have_text("Feature copied to clipboard")
 
         # Clipboard read is disallowed in headless mode
         # find('body').send_keys(:control, 'v')
