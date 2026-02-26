@@ -14,6 +14,7 @@ import { renderOverpassLayer } from 'maplibre/layers/overpass';
 import { renderWikipediaLayer } from 'maplibre/layers/wikipedia';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
+import { initContextMenu, hideContextMenu } from 'maplibre/controls/context_menu';
 
 export let map
 export let mapProperties
@@ -141,16 +142,11 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   map.on('contextmenu', (e) => {
     e.preventDefault()
-    map.once('zoom', (_e) => { functions.e('#map-context-menu', el => { el.classList.add('hidden') }) })
-    map.once('rotate', (_e) => { functions.e('#map-context-menu', el => { el.classList.add('hidden') }) })
-    map.once('drag', (_e) => { functions.e('#map-context-menu', el => { el.classList.add('hidden') }) })
     // menu gets unhidden only when there are buttons
-    functions.e('#map-context-menu', el => {
-      el.innerHTML = ''
-      // Position the context menu
-      el.style.left = `${e.point.x}px`
-      el.style.top = `${e.point.y}px`
-    })
+    initContextMenu(e)
+    map.once('zoom', (_e) => { hideContextMenu() })
+    map.once('rotate', (_e) => { hideContextMenu() })
+    map.once('drag', (_e) => { hideContextMenu() })
   })
 
   // map.on('error', (err) => {

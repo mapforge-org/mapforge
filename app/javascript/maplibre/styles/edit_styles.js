@@ -1,4 +1,5 @@
 import * as functions from 'helpers/functions';
+import { getFeature } from 'maplibre/layers/layers';
 import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles';
 
 // started from https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
@@ -23,14 +24,15 @@ export function initializeEditStyles() {
     // console.log('edit layer features', features.map(f => f.layer.id))
     features.forEach(f => {
       // console.log(f)
-      if ((f.layer.id === 'gl-draw-point-stroke-active.hot' ||
-           f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.cold')) {
-        console.log(f)
+      if (f.layer.id === 'gl-draw-point-stroke-active.hot' ||
+           f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.cold') {
+        const feature = getFeature(f.properties.parent, 'geojson')
+        if (feature.geometry.coordinates.length <= 2) { return }
         functions.e('#map-context-menu', el => {
           el.classList.remove('hidden')
           let deleteButton = document.createElement('div')
           deleteButton.classList.add('context-menu-item')
-          deleteButton.innerText = 'Delete midpoint'
+          deleteButton.innerText = 'Delete line point'
           deleteButton.dataset.action = 'click->map--context-menu#deleteMidpoint'
           deleteButton.dataset.featureId = f.properties.parent
           deleteButton.dataset.index = f.properties.coord_path

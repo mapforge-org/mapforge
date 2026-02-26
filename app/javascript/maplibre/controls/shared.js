@@ -10,6 +10,7 @@ import { initializeGeoLocateControl } from 'maplibre/controls/geolocate'
 import { draw, unselect } from 'maplibre/edit'
 import { featureIcon, resetHighlightedFeature } from 'maplibre/feature'
 import { layers } from 'maplibre/layers/layers'
+import { hideContextMenu } from 'maplibre/controls/context_menu'
 
 export class ControlGroup {
   constructor (controls) {
@@ -255,10 +256,7 @@ export function resetControls () {
   // reset active modals
   functions.e('.modal-center', e => { e.classList.remove('show') })
   // reset context menu
-  functions.e('#map-context-menu', e => {
-    e.innerHTML = ''
-    e.classList.add('hidden')
-  })
+  hideContextMenu()
 }
 
 // https://maplibre.org/maplibre-gl-geocoder/types/MaplibreGeocoderOptions.html
