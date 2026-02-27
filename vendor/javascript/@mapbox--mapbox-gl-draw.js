@@ -951,11 +951,11 @@ function Se(e) {
     let i = null;
     let s = null;
     const isLeftClick = (e) => {
-        const t = e && e.originalEvent;
-        if (!t) return true;
-        if (t.button !== void 0) return t.button === 0;
-        if (t.which !== void 0) return t.which === 1;
-        if (t.buttons !== void 0) return t.buttons === 1;
+        const originalEvent = e?.originalEvent;
+        if (!originalEvent) { return true; }
+        if ('button' in originalEvent) { return originalEvent.button === 0; }
+        if ('which' in originalEvent) { return originalEvent.which === 1; }
+        if ('buttons' in originalEvent) { return originalEvent.buttons === 1; }
         return true;
     };
     r.drag = function (t, o) {
