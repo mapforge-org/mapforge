@@ -20,6 +20,7 @@ export function initializeEditStyles() {
     e.preventDefault()
 
     const features = map.queryRenderedFeatures(e.point)
+    // console.log(features)
     for (const f of features) {
       if (f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.cold') {
         addLineVertexMenuItems(f)

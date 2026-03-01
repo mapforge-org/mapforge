@@ -16,10 +16,11 @@ export default class extends Controller {
 
     const vertexIndex = target.dataset.index
     addUndoState('Feature update', feature)
-    feature.geometry.coordinates.splice(vertexIndex, 1)
+    if (feature.geometry.type === 'LineString') { feature.geometry.coordinates.splice(vertexIndex, 1) }
+    if (feature.geometry.type === 'Polygon') { feature.geometry.coordinates[0].splice(vertexIndex, 1) }
     renderGeoJSONLayers(true)
     mapChannel.send_message('update_feature', { ...feature })
-    status('Midpoint deleted')
+    status('Point deleted')
     hideContextMenu()
   }
 

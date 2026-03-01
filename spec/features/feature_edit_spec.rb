@@ -93,6 +93,17 @@ describe "Feature edit" do
         find("#edit-button-edit").click
         expect(page).to have_text("27.64 km²")
       end
+
+      it "can delete a line vertex via context menu (delete midpoint)" do
+        xy = viewport_xy_for_lat_lng(polygon.geometry['coordinates'][0][3][1], polygon.geometry['coordinates'][0][3][0])
+        click_button("Edit feature")
+        # click on line vertex with right mouse
+        click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
+
+        expect(page).to have_text("Delete point")
+        find(".context-menu-item", text: "Delete point").click
+        wait_for { polygon.reload.geometry["coordinates"][0].length }.to eq(4)
+      end
     end
   end
 
@@ -112,8 +123,8 @@ describe "Feature edit" do
       # click on line vertex with right mouse
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
-      expect(page).to have_text("Delete line point")
-      find(".context-menu-item", text: "Delete line point").click
+      expect(page).to have_text("Delete point")
+      find(".context-menu-item", text: "Delete point").click
       wait_for { line.reload.geometry["coordinates"].length }.to eq(2)
     end
 
@@ -125,7 +136,7 @@ describe "Feature edit" do
       # click on line vertex with right mouse
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
-      find(".context-menu-item", text: "Cut line here").click
+      find(".context-menu-item", text: "Divide line here").click
       wait_for { map.features.count }.to eq(2)
       expect(map.features.first.geometry["coordinates"]).to eq([ [ 11.041, 49.481 ], [ 11.056, 49.463 ] ])
       expect(map.features.last.geometry["coordinates"]).to eq([ [ 11.056, 49.463 ], [ 11.061, 49.450 ] ])
