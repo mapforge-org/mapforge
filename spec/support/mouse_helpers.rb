@@ -19,9 +19,24 @@ def hover_center_of_screen
   browser.mouse.move(x: center[:x], y: center[:y])
 end
 
-def click_coord(_selector, x, y)
+# Converts a map lat/lng to browser viewport { x:, y: }
+def viewport_xy_for_lat_lng(lat, lng, selector: "#maplibre-map")
+  result = page.driver.browser.evaluate <<~JS
+    (function() {
+      var map = window.map
+      var point = map.project([#{lng}, #{lat}])
+      var el = document.querySelector(#{selector.to_json})
+      var rect = el.getBoundingClientRect()
+      return { x: rect.left + point.x, y: rect.top + point.y }
+    })();
+  JS
+  raise "Map not ready or selector not found" if result.nil?
+  { x: result["x"].round, y: result["y"].round }
+end
+
+def click_coord(_selector, x, y, button: :left)
   browser = page.driver.browser
-  browser.mouse.click(x: x, y: y)
+  browser.mouse.click(x: x, y: y, button: button)
 end
 
 def hover_coord(x, y)

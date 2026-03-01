@@ -96,6 +96,42 @@ describe "Feature edit" do
     end
   end
 
+  context "with line on map" do
+    let!(:line) do
+      create(:feature, :line_string,
+        coordinates: [ [ 11.041, 49.481 ], [ 11.056, 49.463 ], [ 11.061, 49.450 ] ],
+        title: "Line Title")
+    end
+    let(:map) { create(:map, features: [ line ], center: [ 11.056, 49.463 ], zoom: 15) }
+
+    it "can delete a line vertex via context menu (delete midpoint)" do
+      xy = viewport_xy_for_lat_lng(line.geometry['coordinates'][1][1], line.geometry['coordinates'][1][0])
+      # click on line
+      click_coord("#maplibre-map", xy[:x], xy[:y])
+      click_button("Edit feature")
+      # click on line vertex with right mouse
+      click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
+
+      expect(page).to have_text("Delete line point")
+      find(".context-menu-item", text: "Delete line point").click
+      wait_for { line.reload.geometry["coordinates"].length }.to eq(2)
+    end
+
+    it "can cut line into two segments via context menu (cut line)" do
+      xy = viewport_xy_for_lat_lng(line.geometry['coordinates'][1][1], line.geometry['coordinates'][1][0])
+      # click on line
+      click_coord("#maplibre-map", xy[:x], xy[:y])
+      click_button("Edit feature")
+      # click on line vertex with right mouse
+      click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
+
+      find(".context-menu-item", text: "Cut line here").click
+      wait_for { map.features.count }.to eq(2)
+      expect(map.features.first.geometry["coordinates"]).to eq([ [ 11.041, 49.481 ], [ 11.056, 49.463 ] ])
+      expect(map.features.last.geometry["coordinates"]).to eq([ [ 11.056, 49.463 ], [ 11.061, 49.450 ] ])
+    end
+  end
+
   context "with point on map" do
     let(:point) { create(:feature, :point_middle, title: "Point Title") }
     let(:map) { create(:map, features: [ point ]) }
