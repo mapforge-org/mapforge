@@ -82,16 +82,16 @@
   --bs-btn-hover-bg: var(--color-orange);
   --bs-btn-hover-border-color: var(--color-orange);
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: var(--color-golden-brown);
-  --bs-btn-active-border-color: var(--color-golden-brown);
+  --bs-btn-active-bg: var(--color-mid-rust);
+  --bs-btn-active-border-color: var(--color-mid-rust);
 }
 
 /* only add hover effects to supported browsers */
 @media (hover: hover) {
   .btn-orange:hover {
     --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: var(--color-golden-brown);
-    --bs-btn-hover-border-color: var(--color-golden-brown);
+    --bs-btn-hover-bg: var(--color-mid-rust);
+    --bs-btn-hover-border-color: var(--color-mid-rust);
   }
 }
 

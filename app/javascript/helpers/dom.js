@@ -45,9 +45,9 @@ export function animateElement (selector, effect = 'fade-in', delay = 0) {
 }
 
 // initialize bs5 tooltips
-export function initTooltips () {
+export function initTooltips (root = document) {
   if (!functions.isTouchDevice()) {
-    document.querySelectorAll('[data-toggle="tooltip"]').forEach(element => {
+    root.querySelectorAll('[data-toggle="tooltip"]').forEach(element => {
       if (typeof bootstrap !== 'undefined') {
         let tooltip = bootstrap.Tooltip.getInstance(element)
         if (tooltip) tooltip.dispose()
@@ -55,6 +55,13 @@ export function initTooltips () {
       }
     })
   }
+}
+
+export function closeTooltips () {
+  functions.e('[data-toggle="tooltip"]', e => { 
+    const tooltip = bootstrap.Tooltip.getInstance(e); 
+    if (tooltip) tooltip.dispose()  
+    })
 }
 
 export function scrollToId(elementId) {

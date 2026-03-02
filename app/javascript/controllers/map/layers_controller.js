@@ -10,6 +10,7 @@ import { queries } from 'maplibre/layers/queries'
 import { flyToFeature } from 'maplibre/animations'
 import { layers, initializeLayerStyles, initializeLayerSources, loadLayerData, loadAllLayerData } from 'maplibre/layers/layers'
 import { renderGeoJSONLayer } from 'maplibre/layers/geojson'
+import * as dom from 'helpers/dom'
 
 export default class extends Controller {
   upload () {
@@ -239,15 +240,17 @@ export default class extends Controller {
     return layerId
   }
 
-  deleteOverpassLayer (event) {
+  deleteLayer (event) {
     event.preventDefault()
     if (!confirm('Really delete this layer?')) { return }
+    dom.closeTooltips()
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
+    const layerType = layerElement.getAttribute('data-layer-type')
     const layer = layers.find(f => f.id === layerId)
     const { geojson: _geojson, ...sendLayer } = layer
     layers.splice(layers.indexOf(layer), 1)
-    removeGeoJSONSource('overpass-source-' + layerId)
+    removeGeoJSONSource(layerType + '-source-' + layerId)
     mapChannel.send_message('delete_layer', sendLayer)
     initLayersModal()
   }

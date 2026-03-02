@@ -1,6 +1,5 @@
 import * as functions from 'helpers/functions'
 import { map, mapProperties } from 'maplibre/map'
-// import * as dom from 'helpers/dom'
 import * as dom from 'helpers/dom'
 import { animateElement, initTooltips } from 'helpers/dom'
 import * as f from 'helpers/functions'
@@ -185,7 +184,17 @@ export function initLayersModal () {
       layerElement.setAttribute('data-layer-id', layer.id)
       layerElement.setAttribute('data-layer-type', layer.type)
       const head = layerElement.querySelector('.layer-name')
-      head.textContent = layer.name || 'Layer elements'
+
+      const layerName = layer.name || 'Layer elements'
+      // Regex to match a leading emoji (covers most common emoji including compound ones)
+      const emojiRegex = /^(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*)/u
+      const match = layerName.match(emojiRegex)
+      if (match) {
+        head.innerHTML = layerName.replace(emojiRegex, `<span class='fst-normal'>$1</span>`)
+      } else {
+        head.textContent = layerName
+      }
+
       const featureCount = document.createElement('span')
       featureCount.classList.add('small')
       featureCount.textContent = '(' + features.length + ')'
@@ -193,6 +202,7 @@ export function initLayersModal () {
       e.appendChild(layerElement)
       if (layer.type !== 'geojson') {
         layerElement.querySelector('button.layer-refresh').classList.remove('hidden')
+        layerElement.querySelector('button.layer-delete').classList.remove('hidden')
       }
       if (layer.type === 'overpass') {
         layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
@@ -231,7 +241,7 @@ export function initLayersModal () {
         layerElement.querySelector('h4 i').classList.remove('bi-caret-right-fill')
         layerElement.querySelector('h4 i').classList.add('bi-caret-down-fill')
       }
-      //dom.initTooltips()
+      dom.initTooltips(layerElement)
 
       if (features.length === 0) {
         const newNode = document.createElement('i')
@@ -257,7 +267,10 @@ export function resetControls () {
   functions.e('.modal-center', e => { e.classList.remove('show') })
   // reset context menu
   hideContextMenu()
+  // reset open tooltips
+  dom.closeTooltips()
 }
+
 
 // https://maplibre.org/maplibre-gl-geocoder/types/MaplibreGeocoderOptions.html
 export const geocoderConfig = {

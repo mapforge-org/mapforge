@@ -72,6 +72,8 @@
               %i.bi.bi-arrow-clockwise.reload-icon
             %button.hidden.btn.btn-light-green.btn-layer-actions.layer-edit{ data: { action: "click->map--layers#toggleEdit", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Edit query" }
               %i.bi.bi-pencil-square
+            %button.hidden.btn.btn-orange.btn-layer-actions.layer-delete{ data: { action: "click->map--layers#deleteLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Delete Layer" }
+              %i.bi.bi-trash             
 
           .layer-content.hidden
 
@@ -96,10 +98,6 @@
 
                 %button.btn.btn-green{ 'data-action': 'click->map--layers#updateOverpassLayer'}
                   Update
-                  %span.d-none.d-sm-inline
-                    Layer
-                %button.btn.btn-orange{ 'data-action': 'click->map--layers#deleteOverpassLayer'}
-                  Delete
                   %span.d-none.d-sm-inline
                     Layer
 

@@ -122,9 +122,8 @@ describe "Map" do
 
     it "can delete overpass layer" do
       expect(page).to have_text("opass")
-      find(".layer-edit").click
       accept_alert do
-        click_button "Delete Layer"
+        find('.btn-layer-actions.layer-delete').click
       end
       wait_for { Layer.find(layer.id) }.to be_nil
     end

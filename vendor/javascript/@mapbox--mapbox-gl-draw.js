@@ -954,7 +954,6 @@ function Se(e) {
         const originalEvent = e?.originalEvent;
         if (!originalEvent) { return true; }
         if ('button' in originalEvent) { return originalEvent.button === 0; }
-        if ('which' in originalEvent) { return originalEvent.which === 1; }
         if ('buttons' in originalEvent) { return originalEvent.buttons === 1; }
         return true;
     };
