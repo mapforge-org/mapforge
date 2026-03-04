@@ -17,14 +17,14 @@
   overflow-y: hidden;
   margin: 0 1rem;
   border-radius: 0.7rem;
-  background-color: rgb(255 255 255 / 90%);
+  background-color: rgb(255 255 255 / 95%);
 
   /* Todo: Looks cool, but slows down browsers */
 
   /* backdrop-filter: blur(3px); */
   z-index: 1000;
   padding: 1.5em 1rem 0.8rem 1.5rem;
-  box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
+  box-shadow: 0 24px 40px rgb(15 23 42 / 15%);
   scrollbar-color: #888 #f1f1f1;
   scrollbar-width: auto;
 
@@ -108,6 +108,8 @@
 
 @media (width <= 574px) {
   .modal-pull-button {
+    top: 0.7rem;
+    position: relative;
     display: block;
     width: 45px;
     height: 8px;

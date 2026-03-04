@@ -27,10 +27,6 @@
   font-weight: 700 !important;
 }
 
-.maplibregl-ctrl-group:not(:empty) {
-  box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
-}
-
 .mapbox-gl-draw_ctrl-draw-btn { /* stylelint-disable-line */
   color: #303030 !important;
   opacity: 0.75;
@@ -118,7 +114,6 @@
   min-width: unset !important;
   width: 2rem !important;
   height: 2rem !important;
-  box-shadow: 0 0 0 2px rgb(0 0 0 / 10%) !important;
   transition: width 0.5s ease !important;
 }
 

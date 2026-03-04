@@ -73,7 +73,7 @@ describe "Feature edit" do
       it "can raw update feature" do
         find("#edit-button-edit").click
         sleep(0.3) # edit triggers modal pull-up
-        find("#button-edit-raw").click
+        find("#edit-button-advanced").click
         expect(page).to have_selector('textarea[name="properties"]')
         fill_in "properties", with: '{"title": "TEST"}'
         find(".feature-update").click
@@ -82,6 +82,7 @@ describe "Feature edit" do
 
       it "can delete feature" do
         accept_alert do
+          find("#edit-button-advanced").click
           find("#edit-button-trash").click
         end
         expect(page).to have_text("Feature deleted")
@@ -96,7 +97,7 @@ describe "Feature edit" do
 
       it "can delete a line vertex via context menu (delete midpoint)" do
         xy = viewport_xy_for_lat_lng(polygon.geometry['coordinates'][0][3][1], polygon.geometry['coordinates'][0][3][0])
-        click_button("Edit feature")
+        find("#edit-button-edit").click
         # click on line vertex with right mouse
         click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
@@ -119,7 +120,7 @@ describe "Feature edit" do
       xy = viewport_xy_for_lat_lng(line.geometry['coordinates'][1][1], line.geometry['coordinates'][1][0])
       # click on line
       click_coord("#maplibre-map", xy[:x], xy[:y])
-      click_button("Edit feature")
+      find("#edit-button-edit").click
       # click on line vertex with right mouse
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
@@ -132,7 +133,7 @@ describe "Feature edit" do
       xy = viewport_xy_for_lat_lng(line.geometry['coordinates'][1][1], line.geometry['coordinates'][1][0])
       # click on line
       click_coord("#maplibre-map", xy[:x], xy[:y])
-      click_button("Edit feature")
+      find("#edit-button-edit").click
       # click on line vertex with right mouse
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
@@ -154,6 +155,7 @@ describe "Feature edit" do
       end
 
       it "can update point size" do
+        find("#edit-button-style").click
         find("#point-size").set(15)
         expect(page).to have_selector("#point-size-val", text: "15")
         expect(point.reload.properties["marker-size"]).to eq("15")
@@ -164,12 +166,13 @@ describe "Feature edit" do
         wait_for { point.reload.properties["title"] }.to eq("New Title")
       end
 
-      it "can update label" do
-        expect(page).not_to have_selector("#feature-label")
-        click_button "Add label"
-        expect(page).to have_selector("#feature-label")
-        fill_in "feature-label", with: "New Label"
-        wait_for { point.reload.properties["label"] }.to eq("New Label")
+      it "can toggle title visibility on map" do
+        fill_in "feature-title", with: "New Title"
+        check "Show title on map"
+        wait_for { point.reload.properties["label"] }.to eq("New Title")
+
+        uncheck "Show title on map"
+        wait_for { point.reload.properties["label"] }.to be_nil
       end
 
       it "can update desc" do
@@ -182,6 +185,7 @@ describe "Feature edit" do
       end
 
       it "can update fill color" do
+        find("#edit-button-style").click
         color = "#aa00cc"
         set_color_input("#fill-color", color)
 
@@ -189,6 +193,7 @@ describe "Feature edit" do
       end
 
       it "can set fill color transparent" do
+        find("#edit-button-style").click
         expect(find("#fill-color-transparent")).not_to be_checked
 
         # TODO: did not find a better solution to check the box and trigger stimulus
@@ -201,6 +206,7 @@ describe "Feature edit" do
       end
 
       it "can update outline color" do
+        find("#edit-button-style").click
         color = "#aa00cc"
         set_color_input("#stroke-color", color)
 
@@ -208,6 +214,7 @@ describe "Feature edit" do
       end
 
       it "can upload image" do
+        find("#edit-button-style").click
         image_path = Rails.root.join("spec", "fixtures", "files", "mapforge-logo-icon.png")
         expect(page).to have_selector("#marker-image")
         attach_file("marker-image", image_path)
@@ -217,6 +224,7 @@ describe "Feature edit" do
       end
 
       it "can upload image bigger 1024px" do
+        find("#edit-button-style").click
         image_path = Rails.root.join("spec", "fixtures", "files", "image_large.jpg")
         expect(page).to have_selector("#marker-image")
         attach_file("marker-image", image_path)
@@ -225,6 +233,7 @@ describe "Feature edit" do
       end
 
       it "can use emoji selector" do
+        find("#edit-button-style").click
         find("#marker-symbol-select").click
         expect(page).to have_selector("em-emoji-picker")
 
