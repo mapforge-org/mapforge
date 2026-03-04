@@ -10,7 +10,7 @@
         .row.align-items-center
           .col-6
             - if @user
-              %label.no-wrap.form-control.btn.btn-green#file-input-label{ for: "fileInput", title: 'Valid formats are gpx, kml, geojson and image files. WGS84 format, max. 1.5MB' }
+              %label.no-wrap.form-control.btn.btn-blue#file-input-label{ for: "fileInput", title: 'Valid formats are gpx, kml, geojson and image files. WGS84 format, max. 1.5MB' }
                 %i.bi.bi-upload.me-1
                 Import
                 .d-none.d-sm-inline
@@ -21,7 +21,7 @@
                 Please log in to upload tracks
 
           .col-6
-            %button#newLayerDropdown.no-wrap.form-control.btn.btn-green.dropdown-toggle{
+            %button#newLayerDropdown.no-wrap.form-control.btn.btn-blue.dropdown-toggle{
               type: "button",
               "data-bs-toggle": "dropdown",
               "aria-expanded": "false"
@@ -68,9 +68,9 @@
             %span.link{ data: { action: "click->map--layers#toggleLayerList" }}
               %i.bi.bi-caret-right-fill
               %span.mapforge-font.layer-name.me-2 Layer name
-            %button.hidden.ms-3.btn.btn-light-green.btn-layer-actions.layer-refresh{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Refresh layer for current view" }
+            %button.hidden.ms-3.btn.btn-blue.btn-layer-actions.layer-refresh{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Refresh layer for current view" }
               %i.bi.bi-arrow-clockwise.reload-icon
-            %button.hidden.btn.btn-light-green.btn-layer-actions.layer-edit{ data: { action: "click->map--layers#toggleEdit", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Edit query" }
+            %button.hidden.btn.btn-blue.btn-layer-actions.layer-edit{ data: { action: "click->map--layers#toggleEdit", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Edit query" }
               %i.bi.bi-pencil-square
             %button.hidden.btn.btn-orange.btn-layer-actions.layer-delete{ data: { action: "click->map--layers#deleteLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Delete Layer" }
               %i.bi.bi-trash             
@@ -96,7 +96,7 @@
                   %i.bi.bi-info-circle-fill
                   = link_to 'Overpass tutorial', doc_path(id: 'overpass_layers'), { target: '_blank', rel: 'noopener noreferrer' }
 
-                %button.btn.btn-green{ 'data-action': 'click->map--layers#updateOverpassLayer'}
+                %button.btn.btn-blue{ 'data-action': 'click->map--layers#updateOverpassLayer'}
                   Update
                   %span.d-none.d-sm-inline
                     Layer

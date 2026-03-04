@@ -95,8 +95,8 @@
 
 .view-values {
   font-family: monospace;
-  background: var(--color-light-alabaster);
-  border: 1px solid var(--color-dark-moss-green);
+  background: var(--color-light-steel-blue);
+  border: 1px solid var(--color-mid-steel-blue);
   border-radius: 3px;
   font-size: 0.9rem;
   padding: 0.15rem;

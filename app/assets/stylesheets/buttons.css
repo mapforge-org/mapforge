@@ -95,6 +95,32 @@
   }
 }
 
+.btn-blue {
+  background-color: var(--color-mid-steel-blue);
+  border-color: var(--color-mid-steel-blue);
+  color: #fff !important;
+
+  --text-color: #fff;
+  --bs-btn-color: #fff;
+  
+  /* reset hover effect for browsers without hover support */
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--color-mid-steel-blue);
+  --bs-btn-hover-border-color: var(--color-mid-steel-blue);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--color-ctrl-active);
+  --bs-btn-active-border-color: var(--color-ctrl-active);
+}
+
+/* only add hover effects to supported browsers */
+@media (hover: hover) {
+  .btn-blue:hover {
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--color-ctrl-active);
+    --bs-btn-hover-border-color: var(--color-ctrl-active);
+  }
+}
+
 .btn-layer-actions {
   border-radius: 0.3rem;
 

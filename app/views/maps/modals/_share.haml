@@ -18,7 +18,7 @@
 
         .row
           .col-md-3
-            %button#share-edit-link.form-button.btn.btn-green{ type: "button" }
+            %button#share-edit-link.form-button.btn.btn-blue{ type: "button" }
               =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShareEditLink" }) do
                 %i.bi.bi-link-45deg.me-1
                 Edit link
@@ -32,7 +32,7 @@
 
         .row.mb-2
           .col-md-3
-            %button#share-view-link.form-button.btn.btn-green{ type: "button" }
+            %button#share-view-link.form-button.btn.btn-blue{ type: "button" }
               =link_to(map_path(id: @map.public_id), data: { turbo: false, action: "click->map--share#nativeShareViewLink" }) do
                 %i.bi.bi-link-45deg.me-1
                 View link

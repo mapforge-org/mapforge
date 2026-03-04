@@ -286,7 +286,7 @@ em-emoji-picker {
 }
 
 input {
-  accent-color: var(--color-light-teagreen);
+  accent-color: var(--color-light-steel-blue);
 }
 
 .EasyMDEContainer button { /* stylelint-disable-line */

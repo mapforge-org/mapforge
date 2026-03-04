@@ -72,15 +72,15 @@
         %span.no-wrap
           %i.bi.bi-crosshair.me-2.mb-2
           %span.view-values.selectable#map-center>
-          ,
+
         %span.no-wrap  
           %i.bi.bi-zoom-in.me-2.mb-2
           %span.view-values.selectable#map-zoom>
-          ,
+
         %span.no-wrap
           %i.bi.bi-triangle.me-2.mb-2
           %span.view-values.selectable#map-pitch>
-          ,
+
         %span.no-wrap
           %i.bi.bi-arrow-counterclockwise.me-2
           %span.view-values.selectable#map-bearing>
@@ -89,26 +89,26 @@
       %span.no-wrap
         %i.bi.bi-crosshair.me-2.mb-2
         %span.view-values.selectable#map-center-current>
-        ,
+
       %span.no-wrap
         %i.bi.bi-zoom-in.me-2.mb-2
         %span.view-values.selectable#map-zoom-current>
-        ,
+
       %span.no-wrap 
         %i.bi.bi-triangle.me-2.mb-2
         %span.view-values.selectable#map-pitch-current>
-        ,
+
       %span.no-wrap  
         %i.bi.bi-arrow-counterclockwise.me-2.mb-2
         %span.view-values.selectable#map-bearing-current>
 
       - if @map_mode == 'rw'
         .mt-2
-          %button.btn.btn-green.mt-1.w-100.mw-245.no-wrap#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
+          %button.btn.btn-blue.mt-1.w-100.mw-245.no-wrap#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
             %i.bi.bi-crosshair.me-1
             Set current view as default
 
-          %button.btn.btn-green.mt-1.w-100.mw-245.no-wrap#save-map-defaults{ data: { action: "click->map--settings#resetDefaultView" } }
+          %button.btn.btn-blue.mt-1.w-100.mw-245.no-wrap#save-map-defaults{ data: { action: "click->map--settings#resetDefaultView" } }
             %i.bi.bi-crosshair
             Reset default view
 
