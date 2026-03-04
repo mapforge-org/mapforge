@@ -3,7 +3,6 @@
   padding: 0;
   overflow-y: auto;
   margin: 0.4rem 1rem 1.5rem;
-  background-color: #f5f6f8;
   border: 1px solid #d9dde5;
   border-radius: 1rem;
   box-shadow: 0 24px 40px rgb(15 23 42 / 15%);
@@ -45,7 +44,6 @@
   gap: 0.25rem;
   border-bottom: 1px solid #dde2ea;
   padding: 0 0.7rem;
-  background-color: #f5f6f8;
   overflow-x: hidden;
 }
 
@@ -94,7 +92,6 @@
     left: calc(50% - 1rem);
     transform: translate(-50%);
     max-height: calc(100% - 15px); /* px here for easier calculation of scroll behavior */
-    background-color: #f5f6f8;
     overflow-y: auto;
     width: calc(100% - 0.6rem);
     max-width: 41rem;
@@ -202,7 +199,7 @@
 }
 
 .editor-toolbar {
-  padding: 0.3rem 0;
+  padding: 0.3rem 0 !important;
 }
 
 /* fix bootstrap overwriting style of easymde 'table' button */
