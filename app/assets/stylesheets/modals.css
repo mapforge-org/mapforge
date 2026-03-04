@@ -108,6 +108,8 @@
 
 @media (width <= 574px) {
   .modal-pull-button {
+    top: 0.7rem;
+    position: relative;
     display: block;
     width: 45px;
     height: 8px;

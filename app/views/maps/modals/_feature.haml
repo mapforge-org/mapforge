@@ -9,32 +9,22 @@
     .modal-pull-button
 
   %button.modal-close-button{ 'data-action': "click->map--modal#close" } &times;
-  .map-modal-header.mb-2
-
+  .feature-modal-header
     %h4#feature-details-header.flex-container.flex-no-wrap.flex-vcenter
-      .feature-symbol
+      .feature-symbol.me-2
       #feature-title.ms-1.selectable.no-wrap
 
-  .map-modal-header#edit-buttons.flex-center.mb-2.hidden
-    .btn-group-sm.mt-2.mb-2{ role: "group" }
-      %button.btn.btn-green#edit-button-edit{ type: "button", title: "Edit", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui' }
-        %i.bi.bi-pencil-square
-        Edit
-        %span.d-none.d-sm-inline
-          feature
-      %button.btn.btn-green#button-edit-raw{ type: "button", title: "Edit", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'raw' }
-        %i.bi.bi-filetype-raw
-        %span.d-none.d-sm-inline
-          Edit
-        JSON
-      %button.btn.btn-green#edit-button-trash{ type: "button", title: "Delete", data: { action: "click->feature--edit#delete_feature" } }
-        %i.bi.bi-trash
-        Delete
-        %span.d-none.d-sm-inline
-          feature
+  #edit-buttons.feature-edit-tabs.hidden.flex-center
+    %button#edit-button-details.feature-tab-btn{ type: "button", title: "Details", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'details' }
+      Details
+    %button#edit-button-edit.feature-tab-btn{ type: "button", title: "Properties", 'aria-label': "Edit feature", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'properties' }
+      Properties
+    %button#edit-button-style.feature-tab-btn{ type: "button", title: "Style", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'style' }
+      Style
+    %button#edit-button-advanced.feature-tab-btn{ type: "button", title: "Advanced", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'advanced' }
+      Advanced
 
   = render 'maps/modals/feature/edit_ui'
-  = render 'maps/modals/feature/edit_raw'
 
   #feature-details-body.selectable.ms-1
     #feature-details-description
@@ -42,14 +32,14 @@
     #feature-details-elevation
       %canvas#route-elevation-chart
 
-  #feature-details-meta.mt-2
-    %span#feature-size.selectable
-    %span#feature-vertexes.selectable
-    %span.feature-export#feature-export-geo.ms-2.link<
+  #feature-details-meta.mt-2.flex-center
+    %span#feature-size.selectable.text-nowrap
+    %span#feature-vertexes.selectable.text-nowrap
+    %span.feature-export#feature-export-geo.ms-4.link.text-nowrap<
       =link_to map_feature_geo_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
         %i.bi.bi-download
         GeoJSON
-    %span.feature-export#feature-export-gpx.ms-2.link<
+    %span.feature-export#feature-export-gpx.ms-2.link.text-nowrap<
       =link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), title: 'Download as GPX', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
         %i.bi.bi-download
         GPX

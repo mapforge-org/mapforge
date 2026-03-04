@@ -18,45 +18,54 @@ export default class extends Controller {
   }
 
   toggle_edit_feature (event) {
+    const activeUiTab = document.querySelector('#edit-buttons .feature-tab-btn.active[data-edit-type="ui"]')?.dataset?.editTab
+    document.querySelector('#edit-button-details')?.classList.remove('active')
     document.querySelector('#edit-button-edit').classList.remove('active')
-    document.querySelector('#button-edit-raw').classList.remove('active')
+    document.querySelector('#edit-button-style')?.classList.remove('active')
+    document.querySelector('#edit-button-advanced')?.classList.remove('active')
     let type = event?.currentTarget?.dataset?.editType || 'ui'
-    document.querySelector('#feature-details-body').classList.add('hidden')
-    if (document.querySelector('#feature-edit-raw').classList.contains('hidden') && type === 'raw') {
-      // console.log('show_feature_edit_raw')
-      document.querySelector('#button-edit-raw').classList.add('active')
-      this.show_feature_edit_raw()
-    } else if (document.querySelector('#feature-edit-ui').classList.contains('hidden') && type === 'ui') {
+    const tab = event?.currentTarget?.dataset?.editTab || 'properties'
+    if (type === 'details') {
+      showFeatureDetails(this.getSelectedFeature())
+      unselect()
+      event?.currentTarget?.classList?.add('active')
+    } else if (type === 'ui' && (document.querySelector('#feature-edit-ui').classList.contains('hidden') || activeUiTab !== tab)) {
       // console.log('show_feature_edit_ui')
-      document.querySelector('#edit-button-edit').classList.add('active')
-      this.show_feature_edit_ui()
+      document.querySelector('#feature-details-body').classList.add('hidden')
+      event?.currentTarget?.classList?.add('active')
+      this.show_feature_edit_ui(tab)
 
       // add feature to draw
       const feature = this.getSelectedFeature()
-      draw.add(feature)
-      select(feature)
+      if (draw && feature) {
+        draw.add(feature)
+        select(feature)
+      }
     } else {
       // repeated click on the current edit mode returns to feature description
       showFeatureDetails(this.getSelectedFeature())
       unselect()
     }
     document.querySelector('#feature-edit-raw .error').innerHTML = ''
-    event.stopPropagation()
+    event?.stopPropagation()
   }
 
-  show_feature_edit_ui () {
+  show_feature_edit_ui (tab = 'properties') {
     if (this.element.classList.contains('modal-pull-down')) {
       this.pullUpModal(this.element)
     }
     const feature = this.getSelectedFeature()
-    dom.showElements(['#feature-edit-ui', '#button-add-label', '#button-add-desc'])
-    dom.hideElements(['#feature-edit-raw', '#feature-label', '#feature-desc'])
+    dom.showElements(['#feature-edit-ui', '#button-add-desc'])
+    dom.hideElements(['#feature-desc-section', '#feature-desc'])
+    this.show_ui_tab(tab)
+    if (tab === 'properties') { document.querySelector('#edit-button-edit')?.classList.add('active') }
+    if (tab === 'style') { document.querySelector('#edit-button-style')?.classList.add('active') }
+    if (tab === 'advanced') { document.querySelector('#edit-button-advanced')?.classList.add('active') }
     functions.e('em-emoji-picker', e => { e.remove() })
 
     // init ui input elements
     document.querySelector('#feature-title-input input').value = feature.properties.title || null
-    if (feature.properties.label) { this.show_add_label() }
-    if (feature.properties.desc) { this.show_add_desc() }
+    document.querySelector('#feature-show-title-on-map').checked = !!feature.properties.label
 
     dom.hideElements(['.edit-point', '.edit-line', '.edit-polygon'])
 
@@ -127,26 +136,19 @@ export default class extends Controller {
     }
   }
 
-  show_feature_edit_raw () {
-    if (this.element.classList.contains('modal-pull-down')) {
-      this.pullUpModal(this.element)
+  show_ui_tab (tab) {
+    dom.hideElements('[data-edit-section]')
+    dom.showElements(`[data-edit-section="${tab}"]`)
+    if (tab === 'advanced') {
+      const feature = this.getSelectedFeature()
+      document.querySelector('#feature-edit-raw textarea')
+        .value = JSON.stringify(feature.properties, undefined, 2)
     }
-    const feature = this.getSelectedFeature()
-    dom.hideElements(['#feature-edit-ui'])
-    dom.showElements(['#feature-edit-raw'])
-    document.querySelector('#feature-edit-raw textarea')
-      .value = JSON.stringify(feature.properties, undefined, 2)
-  }
-
-  show_add_label () {
-    document.querySelector('#feature-label input').value = this.getSelectedFeature().properties.label || null
-    dom.hideElements(['#button-add-label'])
-    dom.showElements(['#feature-label'])
   }
 
   async show_add_desc () {
     dom.hideElements(['#button-add-desc'])
-    dom.showElements(['#feature-desc'])
+    dom.showElements(['#feature-desc-section', '#feature-desc'])
     // https://github.com/Ionaru/easy-markdown-editor
     await import('easymde') // import EasyMDE UMD bundle
     if (easyMDE) { easyMDE.toTextArea() }

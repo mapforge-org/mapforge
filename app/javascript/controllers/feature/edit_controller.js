@@ -54,16 +54,24 @@ export default class extends Controller {
     const feature = this.getEditFeature()
     const title = document.querySelector('#feature-title-input input').value
     feature.properties.title = title
+    if (document.querySelector('#feature-show-title-on-map')?.checked) {
+      feature.properties.label = title
+      renderGeoJSONLayer(this.layerIdValue, false)
+    }
     document.querySelector('#feature-title').textContent = title
     functions.debounce(() => { this.saveFeature() }, 'title')
   }
 
-  updateLabel () {
+  updateShowTitleOnMap () {
     const feature = this.getEditFeature()
-    const label = document.querySelector('#feature-label input').value
-    feature.properties.label = label
+    const isEnabled = document.querySelector('#feature-show-title-on-map').checked
+    if (isEnabled) {
+      feature.properties.label = feature.properties.title || ''
+    } else {
+      delete feature.properties.label
+    }
     renderGeoJSONLayer(this.layerIdValue, false)
-    functions.debounce(() => { this.saveFeature() }, 'label', 1000)
+    functions.debounce(() => { this.saveFeature() }, 'show-title-on-map', 1000)
   }
 
   // called as preview on slider change
