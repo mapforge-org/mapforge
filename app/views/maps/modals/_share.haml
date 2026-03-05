@@ -6,72 +6,75 @@
 
     .map-modal-content.inline-scroll
 
-      - if @map_mode == 'rw'
-        - if @map.user
-          %p
-            You can access this map under '#{link_to "Your maps", my_path}'.
+      .feature-section-card.pt-3
+        - if @map_mode == 'rw'
+          - if @map.user
+            %p
+              You can access this map under '#{link_to "Your maps", my_path}'.
+          - else
+            %p
+              This map was created anonymously and can only get changed with the
+              = link_to 'edit link', @map.private_map_path
+              = "."
+
+          .row
+            .col-md-3
+              %button#share-edit-link.form-button.btn.btn-blue{ type: "button" }
+                =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShareEditLink" }) do
+                  %i.bi.bi-link-45deg.me-1
+                  Edit link
+            .col-md-9
+              .form-floating.edit-ui
+                %label{ for: "map-edit-permissions"} Edit permissions:
+                %select.form-select#map-edit-permissions{ "name": "map-visibility", "aria-label": "Edit permissions", data: { action: "change->map--share#updateEditPermissions" }}
+                  - if @map.user
+                    %option{ value: 'private' } Only you
+                  %option{ value: 'link' } Everybody with the edit link
+
+          .row.mb-2
+            .col-md-3
+              %button#share-view-link.form-button.btn.btn-blue{ type: "button" }
+                =link_to(map_path(id: @map.public_id), data: { turbo: false, action: "click->map--share#nativeShareViewLink" }) do
+                  %i.bi.bi-link-45deg.me-1
+                  View link
+            .col-md-9
+              .form-floating.edit-ui
+                %label{ for: "map-view-permissions"} View permissions:
+                %select.form-select#map-view-permissions{ "name": "map-visibility", "aria-label": "View permissions", data: { action: "change->map--share#updateViewPermissions" }}
+                  - if @map.user
+                    %option{ value: 'private' } Only you
+                  %option{ value: 'link' } Everybody with the view link
+                  %option{ value: 'listed' } Everybody, map is shown on mapforge
+
         - else
-          %p
-            This map was created anonymously and can only get changed with the
-            = link_to 'edit link', @map.private_map_path
-            = "."
 
-        .row
-          .col-md-3
-            %button#share-edit-link.form-button.btn.btn-blue{ type: "button" }
-              =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShareEditLink" }) do
-                %i.bi.bi-link-45deg.me-1
-                Edit link
-          .col-md-9
-            .form-floating.edit-ui
-              %label{ for: "map-edit-permissions"} Edit permissions:
-              %select.form-select#map-edit-permissions{ "name": "map-visibility", "aria-label": "Edit permissions", data: { action: "change->map--share#updateEditPermissions" }}
-                - if @map.user
-                  %option{ value: 'private' } Only you
-                %option{ value: 'link' } Everybody with the edit link
+          You can access this map via the
+          %button#share-view-link.form-button.btn.btn-success.ms-2.mb-2{ type: "button" }
+            =link_to(map_path(id: @map.public_id), data: {turbo: false}) do
+              %i.bi.bi-link-45deg
+              View link
 
-        .row.mb-2
-          .col-md-3
-            %button#share-view-link.form-button.btn.btn-blue{ type: "button" }
-              =link_to(map_path(id: @map.public_id), data: { turbo: false, action: "click->map--share#nativeShareViewLink" }) do
-                %i.bi.bi-link-45deg.me-1
-                View link
-          .col-md-9
-            .form-floating.edit-ui
-              %label{ for: "map-view-permissions"} View permissions:
-              %select.form-select#map-view-permissions{ "name": "map-visibility", "aria-label": "View permissions", data: { action: "change->map--share#updateViewPermissions" }}
-                - if @map.user
-                  %option{ value: 'private' } Only you
-                %option{ value: 'link' } Everybody with the view link
-                %option{ value: 'listed' } Everybody, map is shown on mapforge
+      .feature-section-card
+        .btn-group-sm.mt-3{ role: "group" }
+          %span.me-2 Download map as:
+          %button.btn.btn-secondary.btn-download{ type: "button" }
+            =link_to map_geojson_path(@map.public_id), target: '_blank' do
+              %i.bi.bi-download
+              GeoJSON
+          %button.btn.btn-secondary.btn-download{ type: "button" }
+            =link_to map_gpx_path(@map.public_id) do
+              %i.bi.bi-download
+              GPX
+          %button.btn.btn-secondary.btn-download{ type: "button" }
+            =link_to map_json_path(@map.public_id),target: '_blank' do
+              %i.bi.bi-download
+              Map export
 
-      - else
-
-        You can access this map via the
-        %button#share-view-link.form-button.btn.btn-success.ms-2.mb-2{ type: "button" }
-          =link_to(map_path(id: @map.public_id), data: {turbo: false}) do
-            %i.bi.bi-link-45deg
-            View link
-
-      .btn-group-sm.mt-3{ role: "group" }
-        %span.me-2 Download map as:
-        %button.btn.btn-secondary.btn-download{ type: "button" }
-          =link_to map_geojson_path(@map.public_id), target: '_blank' do
-            %i.bi.bi-download
-            GeoJSON
-        %button.btn.btn-secondary.btn-download{ type: "button" }
-          =link_to map_gpx_path(@map.public_id) do
-            %i.bi.bi-download
-            GPX
-        %button.btn.btn-secondary.btn-download{ type: "button" }
-          =link_to map_json_path(@map.public_id),target: '_blank' do
-            %i.bi.bi-download
-            Map export
-
-      .me-2.mt-2 Embed map:
-      .me-2
-        %textarea#embed-code.form-control{ rows: "3", readonly: "readonly" }
-          = raw("<iframe width='600' height='450' style='border:0' loading='lazy' src='#{map_url(@map.public_id, { nomenu: true })}'></iframe>")
-        %small.link.text-muted{ data: { action: "click->map--share#copy" } }
-          %i.bi.bi-copy
-          Click to copy html to embed in your website
+      .feature-section-card.pt-2
+        %b.me-2.mt-2 Embed map:
+        .me-2
+          %textarea#embed-code.form-control{ rows: "3", readonly: "readonly" }
+            = raw("<iframe width='600' height='450' style='border:0' loading='lazy' src='#{map_url(@map.public_id, { nomenu: true })}'></iframe>")
+          %small.link.text-muted.flex-center.mt-1.text-nowrap{ data: { action: "click->map--share#copy" } }
+            %i.bi.bi-copy.me-1
+            Click to copy html to embed in your website

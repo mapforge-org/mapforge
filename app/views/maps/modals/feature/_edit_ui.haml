@@ -1,7 +1,7 @@
 #feature-edit-ui.hidden
 
   .feature-edit-section{ 'data-edit-section': "properties" }
-    .feature-section-card
+    .feature-section-card.pt-2
       #feature-title-input.edit-ui.form-floating
         %input.form-control{ "name": "feature-title", data: { action: "input->feature--edit#addUndo input->feature--edit#updateTitle" } }
         %label{ for: "feature-title"} Title
@@ -20,7 +20,7 @@
         %textarea#feature-desc-input
 
   .feature-edit-section.hidden{ 'data-edit-section': "style" }
-    .feature-section-card
+    .feature-section-card.pt-2
       #point-size-ui.edit-ui.edit-point
         %label{ for: "point-size"} Size:
         %input.slider#point-size{ type: "range", min: "1", max: "75", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updatePointSize  change->feature--edit#saveFeature" }
@@ -63,16 +63,18 @@
 
       #marker-symbol-ui.edit-ui.edit-point
         %label{ for: "marker-symbol"} Symbol:
+        %span#emoji
         %input.form-control#marker-symbol{ type: "hidden", inputmode: 'emoji' }
-        #marker-symbol-select{ 'data-action': "click->feature--edit#openEmojiPicker" }
-          %span#emoji
+        #marker-symbol-select.btn.btn-blue.ps-1.pe-2{ 'data-action': "click->feature--edit#openEmojiPicker" }
           %i.bi.bi-pencil-square.ms-1#no-emoji
 
       #marker-image-ui.edit-ui.edit-point
         %label{ for: "marker-image"} Image:
         .feature-image
         - if @user
-          %input.form-control#marker-image{ type: "file", name: 'marker-image', 'data-action': "input->feature--edit#addUndo change->feature--edit#updateMarkerImage" }
+          %label.btn.btn-blue.p-1.ps-2.pe-2{for: 'marker-image'}
+            %i.bi.bi-upload
+          %input.form-control#marker-image.hidden{ type: "file", name: 'marker-image', 'data-action': "input->feature--edit#addUndo change->feature--edit#updateMarkerImage" }
         - else
           %i.bi.bi-info-circle
             Please log in to upload images
@@ -87,7 +89,7 @@
         %input#show-km-markers{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateShowKmMarkers change->feature--edit#saveFeature"} }
 
   .feature-edit-section.hidden{ 'data-edit-section': "advanced" }
-    .feature-section-card
+    .feature-section-card.pt-2
       .feature-section-title JSON
       = render 'maps/modals/feature/edit_raw'
 

@@ -234,7 +234,7 @@
   background: #f1f3f6;
   border: 1px solid #dfe4eb;
   border-radius: 0.9rem;
-  padding: 1rem 0.9rem 0.9rem;
+  padding: 0.1rem 0.7rem 0.9rem;
   margin-bottom: 0.8rem;
 }
 
@@ -268,7 +268,7 @@
   height: unset;
   padding: unset;
   top: 1.2rem;
-  left: 0.5rem;
+  left: 0.75rem;
 }
 
 #feature-show-title-ui {

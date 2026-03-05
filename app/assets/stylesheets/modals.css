@@ -219,7 +219,7 @@
   width: 100%;
 }
 
-.layer-item-header span {
+.layer-item-header span.link {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -227,7 +227,6 @@
 
 .layer-item-header button {
   max-width: 3rem;
-  margin: 0 0.2rem;
 }
 
 .overpass-docs {
