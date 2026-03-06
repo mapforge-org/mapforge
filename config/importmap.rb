@@ -60,7 +60,7 @@ pin "easymde", preload: false # @2.20.0
 # Animations for frontpage: https://github.com/michalsnik/aos
 pin "aos" # @2.3.4
 # https://swiperjs.com/, from https://esm.sh/swiper
-pin "swiper", to: "swiper-bundle.min.js", preload: false # @12.0.3
+pin "swiper", to: "swiper-bundle.min.js", preload: false # @12.1.2
 # From https://esm.sh/swiper/modules
 pin "swiper/modules", to: "swiper-modules.js", preload: false # @11.2.10
 # Emoji picker: https://github.com/missive/emoji-mart (alternative: https://www.npmjs.com/package/emoji-picker-element)
