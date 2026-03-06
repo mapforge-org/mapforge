@@ -141,7 +141,9 @@
   padding: 0.95rem;
 
   #fill-color, #stroke-color, #marker-symbol {
-    width: 3rem;
+    min-width: 2rem;
+    max-width: 2rem;
+    padding: 0.3rem;
   }
 }
 
