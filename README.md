@@ -104,7 +104,7 @@ podman run ... -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb 
 
 - `SECRET_KEY_BASE` — Rails secret key (must be set in production)
 - `DEVELOPER_LOGIN_ENABLED` — optional local developer login (only enable this in test instances)
-- `HTTP_PORT` — HTTP port inside the container (default: 3000)
+- `HTTP_PORT` — HTTP port inside the container (default: 3001 for thruster, 3000 for puma)
 - `SSL` — set to `true` if your container is running behind a TLS terminating reverse proxy (default: true)
 - `MONGO_URL` — MongoDB connection string (default: `localhost:27017`)
 - `MONGO_DB` — MongoDB database name (default: 'mapforge_production')
@@ -144,7 +144,7 @@ db/GeoLite2-City.mmdb
 ### Running the Development Server
 
 ```bash
-bin/thrust rails server
+HTTP_PORT=3001 bin/thrust rails server
 ```
 
 In development, environment variables (see above) can be set in `.env.development`. 

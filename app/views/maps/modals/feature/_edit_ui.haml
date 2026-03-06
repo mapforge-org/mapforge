@@ -74,7 +74,7 @@
         - if @user
           %label.btn.btn-blue.p-1.ps-2.pe-2{for: 'marker-image'}
             %i.bi.bi-upload
-          %input.form-control#marker-image.hidden{ type: "file", name: 'marker-image', 'data-action': "input->feature--edit#addUndo change->feature--edit#updateMarkerImage" }
+          %input.form-control#marker-image.hidden{ type: "file", 'data-action': "input->feature--edit#addUndo change->feature--edit#updateMarkerImage" }
         - else
           %i.bi.bi-info-circle
             Please log in to upload images

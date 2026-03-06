@@ -11,7 +11,9 @@ WORKDIR /rails
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="development" \
+    HTTP_PORT=3001 \
+    SSL=false
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -45,4 +47,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
+EXPOSE 3001
+
 CMD ["./bin/thrust", "rails", "server"]

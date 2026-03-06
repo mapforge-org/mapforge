@@ -216,6 +216,7 @@ describe "Feature edit" do
       it "can upload image" do
         find("#edit-button-style").click
         image_path = Rails.root.join("spec", "fixtures", "files", "mapforge-logo-icon.png")
+        page.driver.execute_script("document.querySelector('#marker-image').classList.remove('hidden')")
         expect(page).to have_selector("#marker-image")
         attach_file("marker-image", image_path)
 
@@ -226,6 +227,7 @@ describe "Feature edit" do
       it "can upload image bigger 1024px" do
         find("#edit-button-style").click
         image_path = Rails.root.join("spec", "fixtures", "files", "image_large.jpg")
+        page.driver.execute_script("document.querySelector('#marker-image').classList.remove('hidden')")
         expect(page).to have_selector("#marker-image")
         attach_file("marker-image", image_path)
 

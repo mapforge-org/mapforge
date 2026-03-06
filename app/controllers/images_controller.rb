@@ -53,15 +53,13 @@ class ImagesController < ApplicationController
 
     # use existing image if already uploaded
     unless (img = Image.find_by(public_id: filename))
+      # https://github.com/mtgrosser/rszr
+      image = Rszr::Image.load(tempfile.path)
       # resize image if it exceeds 1024px
-      image = MiniMagick::Image.read(tempfile)
       if image.width > 1024 || image.height > 1024
-        image.resize "1024x1024" # Maintains aspect ratio, resizes width to 1024px max
-        image.quality "75"
-        tempfile = Tempfile.new([ "resized-", File.extname(uploaded_file.original_filename) ])
-        image.write(tempfile.path)
+        image.resize!(1024, 1024, crop: false)
+        image.save(tempfile.path)
       end
-
       uid = Dragonfly.app.store(tempfile, "name" => filename) # name needs to be a string here
       img = Image.create!(img_uid: uid, public_id: filename, user: @user)
     end

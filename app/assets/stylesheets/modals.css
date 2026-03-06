@@ -78,7 +78,7 @@
   border-width: 2px;
   border-style: solid;
   border-color: #fff;
-  margin: 5px;
+  margin: 0.2rem;
   opacity: 0.8;
   transition:
     opacity 0.3s linear,
@@ -91,6 +91,11 @@
   border-color: var(--color-dark-moss-green);
   border-width: 0.2rem;
   opacity: 1;
+}
+
+.map-settings {
+  margin-top: 0.5rem;
+  margin-left: 0.3rem;
 }
 
 .view-values {
