@@ -120,7 +120,7 @@ jobs:
         with:
           name: coverage
           path: ./coverage         
-      - name: Coveralls
-        uses: coverallsapp/github-action@v2
-        with:
-          fail-on-error: false
+      # - name: Coveralls
+      #   uses: coverallsapp/github-action@v2
+      #   with:
+      #     fail-on-error: false

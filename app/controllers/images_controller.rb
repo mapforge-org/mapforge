@@ -58,7 +58,7 @@ class ImagesController < ApplicationController
       # resize image if it exceeds 1024px
       if image.width > 1024 || image.height > 1024
         image.resize!(1024, 1024, crop: false)
-        image.save(tempfile.path)
+        image.save(tempfile.path, quality: 75)
       end
       uid = Dragonfly.app.store(tempfile, "name" => filename) # name needs to be a string here
       img = Image.create!(img_uid: uid, public_id: filename, user: @user)

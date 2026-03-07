@@ -86,7 +86,6 @@ group :development do
   gem "standard"
   gem "brakeman"
   gem "bundler-audit"
-  gem "hotwire-spark"
 
   gem "web-console"
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]

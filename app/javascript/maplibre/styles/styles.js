@@ -118,16 +118,26 @@ export function initializeClusterStyles(sourceName, icon) {
 }
 
 // loading images from 'marker-image-url' attributes
+// avoid loading the same image by each web worker
+const imageState = {} // 'loading' | 'loaded' | 'error'
 export async function loadImage (e) {
+  // Skip if already loading, loaded, or failed
+  if (imageState[e.id]) {
+    // console.log(`Skipped loading image '${e.id}'`, imageState[e.id])
+    return
+  }
+
   const imageUrl = e.id
 
   if (imageUrl.startsWith('http') || imageUrl.startsWith('/')) {
     try {
+      imageState[e.id] = 'loading'
       let response = await map.loadImage(imageUrl)
       if (response) {
         if (!map.hasImage(imageUrl)) {
           // console.log('Adding ' + imageUrl + ' to map')
           map.addImage(imageUrl, response.data)
+          imageState[e.id] = 'loaded'
         }
       } else {
         console.warn(imageUrl + ' not found')
@@ -135,6 +145,7 @@ export async function loadImage (e) {
     } catch (error) {
       // Handle errors here
       console.error(`Failed to load image ${imageUrl}: ` + error)
+      imageState[e.id] = 'error'
     }
   }
 }

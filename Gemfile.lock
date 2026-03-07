@@ -232,10 +232,6 @@ GEM
       tilt
     hashie (5.1.0)
       logger
-    hotwire-spark (0.1.13)
-      listen
-      rails (>= 7.0.0)
-      zeitwerk
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -652,7 +648,6 @@ DEPENDENCIES
   gon
   gpx!
   haml
-  hotwire-spark
   importmap-rails
   jbuilder
   listen

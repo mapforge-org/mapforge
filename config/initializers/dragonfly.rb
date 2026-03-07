@@ -16,6 +16,19 @@ Dragonfly.app.configure do
   response_header "cache-control", "public, max-age=#{1.week.to_i}"
 
   # custom processors: http://markevans.github.io/dragonfly/processors
+  # https://rdoc.info/github/markevans/dragonfly/Dragonfly/Content
+  processor :thumbnail do |content, width, height, quality|
+    Yabeda.dragonfly_transformations.increment({ processor: "thumbnail" })
+
+    source_file = content.to_tempfile
+    image = Rszr::Image.load(source_file.path)
+    image.resize!(width, height, crop: false)
+
+    image.save(source_file.path, quality: quality)
+    content.update(source_file)
+  end
+
+
   processor :rounded do |content|
     Yabeda.dragonfly_transformations.increment({ processor: "rounded" })
     content.shell_update(ext: "png") do |old_path, new_path|
