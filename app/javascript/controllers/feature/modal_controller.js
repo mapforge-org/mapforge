@@ -56,7 +56,7 @@ export default class extends Controller {
     }
     const feature = this.getSelectedFeature()
     dom.showElements(['#feature-edit-ui', '#button-add-desc'])
-    feature.properties?.desc !== '' ? this.show_add_desc() : dom.hideElements(['#feature-desc-section', '#feature-desc'])
+    feature.properties.desc ? this.show_add_desc() : dom.hideElements(['#feature-desc-section', '#feature-desc'])
     this.show_ui_tab(tab)
     if (tab === 'properties') { document.querySelector('#edit-button-edit')?.classList.add('active') }
     if (tab === 'style') { document.querySelector('#edit-button-style')?.classList.add('active') }
