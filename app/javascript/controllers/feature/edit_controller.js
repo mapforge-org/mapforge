@@ -219,9 +219,6 @@ export default class extends Controller {
     uploadImageToFeature(image, feature)
       .then(data => {
         draw.setFeatureProperty(this.featureIdValue, 'marker-image-url', data.icon)
-
-        document.querySelector('#point-size').value = 15
-        document.querySelector('#point-size-val').innerHTML = 15
         document.querySelector('#stroke-color').setAttribute('disabled', 'true')
         document.querySelector('#stroke-color-transparent').checked = true
         document.querySelector('#fill-color').setAttribute('disabled', 'true')
@@ -229,7 +226,6 @@ export default class extends Controller {
 
         functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
         functions.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
-
         if (imageLocation) {
           feature.geometry.coordinates = imageLocation
           flyToFeature(feature)

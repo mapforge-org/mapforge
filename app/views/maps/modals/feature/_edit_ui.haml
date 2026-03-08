@@ -63,14 +63,13 @@
 
       #marker-symbol-ui.edit-ui.edit-point
         %label.left-label{ for: "marker-symbol"} Symbol:
-        %span#emoji
         %input.form-control#marker-symbol{ type: "hidden", inputmode: 'emoji' }
         #marker-symbol-select.btn.btn-secondary.ps-1.pe-2{ 'data-action': "click->feature--edit#openEmojiPicker" }
           %i.bi.bi-pencil-square.ms-1#no-emoji
+        %span#emoji
 
       #marker-image-ui.edit-ui.edit-point
         %label.left-label{ for: "marker-image"} Image:
-        .feature-image
         - if @user
           %label.btn.btn-secondary.p-1.ps-2.pe-2{for: 'marker-image'}
             %i.bi.bi-upload
@@ -78,6 +77,7 @@
         - else
           %i.bi.bi-info-circle
             Please log in to upload images
+        .feature-image
 
       #fill-extrusion-height-ui.edit-ui.edit-line.edit-polygon
         %label.left-label{ for: "fill-extrusion-height"} Height:

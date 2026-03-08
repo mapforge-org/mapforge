@@ -221,18 +221,13 @@ const outlineWidth = [
 const shouldScale = ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false]
 const pointColor = ['coalesce', ['get', 'user_marker-color'], ['get', 'marker-color'], featureColor]
 const markerSize = ['coalesce', ['get', 'user_marker-size'], ['get', 'marker-size']]
-const hasSymbol = ['any', ['has', 'user_marker-symbol'], ['has', 'marker-symbol']]
 const minZoomFilter = [">=", ["zoom"], ["coalesce", ["to-number", ["get", "min-zoom"]], 0]]
 
 const pointSizeMin = ['to-number', ['coalesce',
-  ...markerSize.slice(1),
-  ['case', hasSymbol, 10, 3]
-]]
+  ...markerSize.slice(1), 3]]
 
 export const pointSizeMax = ['to-number', ['coalesce',
-  ...markerSize.slice(1),
-  ['case', hasSymbol, 24, 8]
-]]
+  ...markerSize.slice(1), 8]]
 
 export const pointSize = [
   'interpolate',
@@ -261,7 +256,8 @@ const pointOpacityActive = ['to-number', ['coalesce', ['min', ['+', ['get', 'mar
 // factor of the original icon size (200x200)
 // in case of external icon url, we don't know the size
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
-export const iconSizeDefault = ['*', 1 / 60, pointSizeMax]
+export const iconSizeDefault = ['*', 1 / 60, ['to-number', ['coalesce',
+  ['get', 'user_marker-size'], ['get', 'marker-size'], 20]]]
 export const iconSizeMin = ['case', shouldScale,
   0, iconSizeDefault]
 export const iconSizeMax = ['case', shouldScale,

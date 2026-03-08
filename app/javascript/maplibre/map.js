@@ -166,9 +166,11 @@ function limitZoom() {
   // block zooming in closer than defined max zoom level
   if (maxZoom && (map.getZoom() > maxZoom - 0.2)) {
     map.setZoom(maxZoom - 0.2)
+    status('Maximum zoom level ' + maxZoom + ' reached', 'info', 'medium', 1000)
   }
   if (minZoom && (map.getZoom() < minZoom + 0.2)) {
     map.setZoom(minZoom + 0.2)
+    status('Minimum zoom level ' + minZoom + ' reached', 'info', 'medium', 1000)
   }
 }
 
