@@ -50,7 +50,7 @@ export function initializeViewStyles (sourceName, heatmap=false) {
     let feature = e.features.find(f => !f.properties?.cluster)
     if (!feature) { return }
 
-    if (window.gon.map_mode === 'ro') {
+    if (window.gon.map_mode === 'ro' || e.originalEvent.shiftKey) {
       feature = e.features.find(f => f.properties?.onclick !== false)
       if (!feature) { return }
 
