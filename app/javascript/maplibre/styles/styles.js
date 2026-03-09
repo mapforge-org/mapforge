@@ -299,12 +299,13 @@ export const labelFontSizeMax = [
   254 // max map font size
 ]
 
+// Cannot move 'shouldScale' condition above 'interpolate' due to maplibre style restriction
 const labelSize = [
   'interpolate',
   ["exponential", 2],
   ['zoom'],
   0, labelFontSizeMin, // At zoom 0
-  20, labelFontSizeMax
+  19, labelFontSizeMax
 ]
 
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']
