@@ -21,10 +21,10 @@
 
 - unless params['static'] == 'true'
   -# map header and title
-  %nav#map-head.dark-shadow{ title: "Toggle Navigation", data: { 'controller': "header", 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom", 'bs-custom-class': 'maplibregl-ctrl-tooltip' } }
+  %nav#map-head.dark-shadow
     - unless params['nomenu'] == 'true'
-      #map-nav-toggle.navbar-toggler-icon.ms-2.me-2
-    %h1#map-title= @map.name
+      #map-nav-toggle.navbar-toggler-icon.ms-2.me-2{ title: "Toggle Navigation", data: { 'controller': "header", 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom", 'bs-custom-class': 'maplibregl-ctrl-tooltip' } }
+    %h1#map-title{ onclick: "document.querySelector('.maplibregl-ctrl-map').click()", title: "Map settings", data: { 'toggle': "tooltip", 'bs-placement': "bottom", 'bs-custom-class': 'maplibregl-ctrl-tooltip' } }= @map.name
 
 - if params['nomenu'] == 'true'
   = link_to root_url, { '_target': 'blank' } do
