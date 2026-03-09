@@ -13,20 +13,22 @@ Your browser connects to the server via WebSockets, so that changes are immediat
 
 The main instance is running at [mapforge.org](https://mapforge.org), see [self-hosting](#selfhosting) how to run your own. Check the [changelog](CHANGELOG.md) for recent changes.
 
+<a href="https://mapforge.org">
 <img width="2550" height="1700" alt="Mapforge Screenshots" src="https://github.com/user-attachments/assets/4c8f2f2a-c12c-4319-9d72-cd9a6d5d7a71" />
+</a>
 
 ### Features
 
 - Create maps with your own data on top of various available base maps. 
-- Draw shapes and style them: Add pictures, customize colors, symbols, labels, (3D) polygons and more
+- Draw shapes and [style them](https://mapforge.org/doc/geojson_style_spec): Add pictures, customize colors, symbols, labels, (3D) polygons and more
 - Import your data from GeoJSON, GPX and KML
 - Collaborative, real-time editing, synchronized via WebSockets
 - Share maps and embed on your own web page
 - Desktop and mobile UI
 - User login with Google or Github account
-- Integration with [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) for custom OpenStreetMap queries
+- [Integration](https://mapforge.org/doc/overpass_layers) with [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) for custom OpenStreetMap queries
 - PWA support and available as [Android app](https://play.google.com/store/apps/details?id=org.mapforge.twa)
-- Record your track with the µlogger API
+- Record your track with the [µlogger API](https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md)
 
 ### Styling & Data Sources
 
