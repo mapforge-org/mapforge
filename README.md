@@ -28,7 +28,7 @@ The main instance is running at [mapforge.org](https://mapforge.org), see [self-
 - User login with Google or Github account
 - [Integration](https://mapforge.org/doc/overpass_layers) with [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) for custom OpenStreetMap queries
 - PWA support and available as [Android app](https://play.google.com/store/apps/details?id=org.mapforge.twa)
-- Record your track with the [µlogger API](https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md)
+- Record your track with the [µlogger API](engines/ulogger/README.md)
 
 ### Styling & Data Sources
 
