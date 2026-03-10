@@ -40,8 +40,6 @@
 @media (hover: hover) {
   .maplibregl-ctrl button:hover, .mapbox-gl-draw_ctrl-draw-btn:hover { /* stylelint-disable-line */
     background-color: rgb(0 0 0/15%) !important;
-    transition:
-      background-color 0.2s ease-in-out;
     color: var(--color-ctrl-active) !important;
   }
 
@@ -57,12 +55,22 @@
   .mapbox-gl-draw_line:hover { /* stylelint-disable-line */
     background-image: url('data:image/svg+xml;utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="20" height="20">%3Cpath style="fill: %232091b0;" d="m13.5 3.5c-1.4 0-2.5 1.1-2.5 2.5 0 .3 0 .6.2.9l-3.8 3.8c-.3-.1-.6-.2-.9-.2-1.4 0-2.5 1.1-2.5 2.5s1.1 2.5 2.5 2.5 2.5-1.1 2.5-2.5c0-.3 0-.6-.2-.9l3.8-3.8c.3.1.6.2.9.2 1.4 0 2.5-1.1 2.5-2.5s-1.1-2.5-2.5-2.5z"/>%3C/svg>');
   }
+
+  .maplibregl-ctrl-zoom-in:hover .maplibregl-ctrl-icon {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%20standalone%3D%22no%22%3F%3E%0A%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%0A%3Csvg%20width%3D%22100%25%22%20height%3D%22100%25%22%20viewBox%3D%220%200%2033%2033%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20xml%3Aspace%3D%22preserve%22%20xmlns%3Aserif%3D%22http%3A%2F%2Fwww.serif.com%2F%22%20style%3D%22fill-rule%3Aevenodd%3Bclip-rule%3Aevenodd%3Bstroke-linejoin%3Around%3Bstroke-miterlimit%3A2%3B%22%3E%0A%20%20%20%20%3Cg%20transform%3D%22matrix(1%2C0%2C0%2C1%2C9.5%2C9.25)%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M7%2C13.75C6.737%2C13.75%206.509%2C13.653%206.315%2C13.46C6.122%2C13.266%206.025%2C13.038%206.025%2C12.775L6.025%2C8.225L1.475%2C8.225C1.212%2C8.225%200.984%2C8.128%200.79%2C7.935C0.597%2C7.741%200.5%2C7.513%200.5%2C7.25C0.5%2C6.987%200.597%2C6.759%200.79%2C6.565C0.984%2C6.372%201.212%2C6.275%201.475%2C6.275L6.025%2C6.275L6.025%2C1.725C6.025%2C1.462%206.122%2C1.234%206.315%2C1.04C6.509%2C0.847%206.737%2C0.75%207%2C0.75C7.263%2C0.75%207.491%2C0.847%207.685%2C1.04C7.878%2C1.234%207.975%2C1.462%207.975%2C1.725L7.975%2C6.275L12.525%2C6.275C12.788%2C6.275%2013.016%2C6.372%2013.21%2C6.565C13.403%2C6.759%2013.5%2C6.987%2013.5%2C7.25C13.5%2C7.513%2013.403%2C7.741%2013.21%2C7.935C13.016%2C8.128%2012.788%2C8.225%2012.525%2C8.225L7.975%2C8.225L7.975%2C12.775C7.975%2C13.038%207.878%2C13.266%207.685%2C13.46C7.491%2C13.653%207.263%2C13.75%207%2C13.75Z%22%20style%3D%22fill%3A%232091b0%3Bfill-rule%3Anonzero%3B%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E") !important;
+  }
+
+  .maplibregl-ctrl-zoom-out:hover .maplibregl-ctrl-icon {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%20standalone%3D%22no%22%3F%3E%0A%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%0A%3Csvg%20width%3D%22100%25%22%20height%3D%22100%25%22%20viewBox%3D%220%200%2033%2033%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20xml%3Aspace%3D%22preserve%22%20xmlns%3Aserif%3D%22http%3A%2F%2Fwww.serif.com%2F%22%20style%3D%22fill-rule%3Aevenodd%3Bclip-rule%3Aevenodd%3Bstroke-linejoin%3Around%3Bstroke-miterlimit%3A2%3B%22%3E%0A%20%20%20%20%3Cg%20transform%3D%22matrix(1%2C0%2C0%2C1%2C9.5%2C15.25)%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M1.475%2C2.225C1.212%2C2.225%200.984%2C2.128%200.79%2C1.935C0.597%2C1.741%200.5%2C1.513%200.5%2C1.25C0.5%2C0.987%200.597%2C0.759%200.79%2C0.566C0.984%2C0.372%201.212%2C0.275%201.475%2C0.275L12.525%2C0.275C12.788%2C0.275%2013.016%2C0.372%2013.21%2C0.566C13.403%2C0.759%2013.5%2C0.987%2013.5%2C1.25C13.5%2C1.513%2013.403%2C1.741%2013.21%2C1.935C13.016%2C2.128%2012.788%2C2.225%2012.525%2C2.225L1.475%2C2.225Z%22%20style%3D%22fill%3A%232091b0%3Bfill-rule%3Anonzero%3B%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A") !important;
+  }
+
+  .maplibregl-ctrl-compass:hover .maplibregl-ctrl-icon {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%20standalone%3D%22no%22%3F%3E%0A%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%0A%3Csvg%20width%3D%22100%25%22%20height%3D%22100%25%22%20viewBox%3D%220%200%2033%2033%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20xml%3Aspace%3D%22preserve%22%20xmlns%3Aserif%3D%22http%3A%2F%2Fwww.serif.com%2F%22%20style%3D%22fill-rule%3Aevenodd%3Bclip-rule%3Aevenodd%3Bstroke-linejoin%3Around%3Bstroke-miterlimit%3A2%3B%22%3E%0A%20%20%20%20%3Cg%20transform%3D%22matrix(1%2C0%2C0%2C1%2C-3.24298%2C2.63257)%22%3E%0A%20%20%20%20%20%20%20%20%3Cg%20transform%3D%22matrix(1.20712%2C0%2C0%2C1.20712%2C14.9145%2C2.51292)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M2.5%2C9.406L0%2C9.406L4%2C17.875L8%2C9.406L5.5%2C9.406C5.483%2C10.22%204.818%2C10.875%204%2C10.875C3.182%2C10.875%202.517%2C10.22%202.5%2C9.406Z%22%20style%3D%22fill%3A%232091b0%3Bfill-opacity%3A0.35%3B%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%20%20%3Cg%20transform%3D%22matrix(1.20712%2C0%2C0%2C1.20712%2C14.9145%2C2.51292)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M4%2C0.938L0%2C9.406L2.5%2C9.406L2.5%2C9.375C2.5%2C8.547%203.172%2C7.875%204%2C7.875C4.828%2C7.875%205.5%2C8.547%205.5%2C9.375L5.5%2C9.406L8%2C9.406L4%2C0.938Z%22%20style%3D%22fill%3A%232091b0%3B%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A") !important;
+  }
 }
 
 .maplibregl-ctrl button.active, .maplibregl-ctrl button:active {
   background-color: rgb(0 0 0/15%) !important;
-  transition:
-    background-color 0.2s ease-in-out;
   color: var(--color-ctrl-active) !important;
 }
 

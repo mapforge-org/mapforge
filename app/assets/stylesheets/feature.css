@@ -258,7 +258,7 @@
 .edit-ui .slider {
   flex-grow: 1;
   flex-shrink: 1;
-  min-width: 8rem;
+  min-width: 7rem;
 }
 
 .edit-ui label, .edit-ui span {
