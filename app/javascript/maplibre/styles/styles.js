@@ -227,7 +227,14 @@ const pointSizeMin = ['to-number', ['coalesce',
   ...markerSize.slice(1), 3]]
 
 export const pointSizeMax = ['to-number', ['coalesce',
-  ...markerSize.slice(1), 8]]
+  ...markerSize.slice(1),
+  // set default size of point depending on if there is an emoji
+  [
+    'case',
+    ['has', 'marker-symbol'],
+    18,
+    8
+  ]]]
 
 export const pointSize = [
   'interpolate',
