@@ -11,6 +11,8 @@ export default class extends Controller {
   }
 
   async connect () {
+    // Clear map instance and its event listeners
+    if (window.map) window.map.remove()
   }
 
   changeSort(event) {
@@ -23,7 +25,7 @@ export default class extends Controller {
 
   changeDirection(event) {
     this.directionValue = event.params.direction || this.directionValue
-    
+
     this.loadMaps()
     let sortIcon = document.getElementById('sortIcon')
     sortIcon.classList.remove('bi-sort-down', 'bi-sort-up')

@@ -82,7 +82,7 @@
         %ul.dropdown-menu.desktop{ "aria-labelledby": "navbarDropdown" }
           - if @user.admin?
             %li
-              %a.dropdown-item{ href: "/admin" }
+              %a.dropdown-item{ href: admin_path }
                 %i.bi.bi-person-workspace
                 Admin
           %li

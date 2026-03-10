@@ -5,6 +5,7 @@ import * as dom from 'helpers/dom';
 import * as functions from 'helpers/functions';
 import { status } from 'helpers/status';
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
+import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls } from 'maplibre/controls/view';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
@@ -14,7 +15,6 @@ import { renderOverpassLayer } from 'maplibre/layers/overpass';
 import { renderWikipediaLayer } from 'maplibre/layers/wikipedia';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
-import { initContextMenu, hideContextMenu } from 'maplibre/controls/context_menu';
 
 export let map
 export let mapProperties
