@@ -9,9 +9,6 @@
 }
 
 #feature-details-modal .modal-close-button {
-  top: 0.35rem;
-  right: 0.8rem;
-  font-size: 2rem;
   color: #8a94a6;
 }
 
@@ -270,7 +267,7 @@
   height: unset;
   padding: unset;
   top: 1.2rem;
-  left: 0.75rem;
+  left: 0.65rem;
 }
 
 .edit-ui .left-label {
