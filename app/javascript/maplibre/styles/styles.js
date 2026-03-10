@@ -311,6 +311,137 @@ const labelSize = [
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']
 export let labelFont // array
 
+// Shared configuration for symbols layers
+function symbolsLayerStyles(mode) {
+  const flatMode = mode === 'flat'
+  const layerId = flatMode ? 'symbols-layer-flat' : 'symbols-layer'
+
+  // Shared layout properties
+  const sharedLayout = {
+    'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
+    'icon-image': ['coalesce',
+      ['get', 'marker-image-url'],
+      // replacing marker-symbol value with path to emoji png
+      ['case',
+        ['!=', ['get', 'marker-symbol'], ''],
+        ['concat', '/emojis/noto/', ['get', 'marker-symbol'], '.png'],
+        '']
+    ],
+    'icon-size': iconSize,
+    'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
+    'icon-rotate': ['get', 'marker-rotate'],
+    'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
+  }
+
+  // Mode-specific layout properties
+  const modeSpecificLayout = flatMode ? {
+    'icon-pitch-alignment': 'map', // same pitch angle as map
+    // If icons/text are projected on map surface ('map') or not ('viewport', default)
+    // Cannot get changed with data expressions
+    'icon-rotation-alignment': 'map',
+    'icon-ignore-placement': true,
+    'icon-allow-overlap': true,
+  } : {
+    'icon-pitch-alignment': 'viewport'
+  }
+
+  // Shared paint properties
+  const sharedPaint = {
+    'icon-opacity': ['case',
+      ['boolean', ['feature-state', 'active'], false],
+      pointOpacityActive,
+      pointOpacity
+    ]
+  }
+
+  return {
+    [layerId]: {
+      id: layerId,
+      type: 'symbol',
+      filter: ['all',
+        ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
+        flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
+        minZoomFilter
+      ],
+      layout: {
+        ...sharedLayout,
+        ...modeSpecificLayout
+      },
+      paint: sharedPaint
+    }
+  }
+}
+
+// Shared configuration for text layers
+function textLayerStyles(mode) {
+  const flatMode = mode === 'flat'
+  const layerId = flatMode ? 'text-layer-flat' : 'text-layer'
+
+  // Shared layout properties
+  const sharedLayout = {
+    'text-field': [
+      'format',
+      ['coalesce', ['get', 'label'], ['get', 'room']],
+      {
+        'text-font': [
+          'case',
+          ['has', 'label-font'],
+          ['get', 'label-font'],
+          ['literal', labelFont]
+        ]
+      }
+    ],
+    'text-size': labelSize,
+    'text-font': labelFont,
+    'text-letter-spacing': ['get', 'label-letter-spacing'],
+    'text-anchor': 'top', // text under point
+    // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
+    'text-offset': labelOffset,
+    'text-justify': ['get', 'label-justify'],
+    'text-max-width': ['get', 'label-max-width'],
+    'text-line-height': 1.6, // no dynamic value possible
+    // TODO: sort keys on text are ascending, on symbols descending???
+    'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
+  }
+
+  // Mode-specific layout properties
+  const modeSpecificLayout = flatMode ? {
+    // make sure 'flat' text is always shown
+    'text-ignore-placement': true, // show on collision
+    'text-allow-overlap': true,
+    'text-rotation-alignment': 'map'
+  } : {
+    'text-ignore-placement': false, // hide on collision
+    'text-rotation-alignment': 'viewport',
+    'symbol-placement': 'point' // TODO: cannot set proper value for polygons and lines here?
+  }
+
+  // Shared paint properties
+  const sharedPaint = {
+    'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
+    'text-halo-color': ['coalesce', ['get', 'user_label-shadow'], ['get', 'label-shadow'], '#fff'],
+    'text-halo-width': 2
+  }
+
+  return {
+    [layerId]: {
+      id: layerId,
+      type: 'symbol',
+      filter: ['all',
+        ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
+        ['has', 'label'],
+        flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
+        minZoomFilter
+      ],
+      layout: {
+        ...sharedLayout,
+        ...modeSpecificLayout
+      },
+      paint: sharedPaint
+    }
+  }
+}
+
 export function styles () {
   return {
     'polygon-layer-extruded-shadow': {
@@ -582,81 +713,9 @@ export function styles () {
         'heatmap-radius': 17
       }
     },
-    // support symbols on all feature types (projected on map surface)
-    'symbols-layer-flat': {
-      id: 'symbols-layer-flat',
-      type: 'symbol',
-      filter: ['all',
-        ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
-        ['==', ['get', 'flat'], true], minZoomFilter],
-      layout: {
-        // sort-key is only effective within same layer
-        'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
-        'icon-image': ['coalesce',
-          ['get', 'marker-image-url'],
-          // replacing marker-symbol value with path to emoji png
-          [
-          "case",
-          ["all",
-            ["has", "marker-symbol"],
-            ["!=", ["get", "marker-symbol"], ""]
-          ],
-          ["concat", "/emojis/noto/", ["get", "marker-symbol"], ".png"],
-          ""
-          ]
-        ],
-
-        'icon-size': iconSize,
-        'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
-        "icon-pitch-alignment": "map", // same pitch angle as map
-        // If icons/text are projected on map surface ('map') or not ('viewport', default)
-        // Cannot get changed with data expressions
-        "icon-rotation-alignment": "map",
-        "icon-rotate": ["get", "marker-rotate"],
-        'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
-      },
-      paint: {
-        "icon-opacity": ['case',
-          ['boolean', ['feature-state', 'active'], false],
-          pointOpacityActive,
-          pointOpacity
-        ],
-      }
-    },
-    // support symbols on all feature types (default, not projected on map surface)
-    'symbols-layer': {
-      id: 'symbols-layer',
-      type: 'symbol',
-      filter: ['all',
-        ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
-        ['!=', ['get', 'flat'], true], minZoomFilter],
-      layout: {
-        // sort-key is only effective within same layer
-        'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
-        'icon-image': ['coalesce',
-          ['get', 'marker-image-url'],
-          // replacing marker-symbol value with path to emoji png
-          ['case',
-            ['!=', ['get', 'marker-symbol'], ''],
-            ['concat', '/emojis/noto/', ['get', 'marker-symbol'], '.png'],
-            '']
-        ],
-        'icon-size': iconSize,
-        'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
-        "icon-pitch-alignment": "viewport",
-        "icon-rotate": ["get", "marker-rotate"],
-        'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
-      },
-      paint: {
-        // circle-pitch-scale: 'map' // seems default and cannot get changed
-        // cannot set circle-pitch-scale, circle-stroke-* in the symbol layer :-(
-        "icon-opacity": ['case',
-          ['boolean', ['feature-state', 'active'], false],
-          pointOpacityActive,
-          pointOpacity
-        ],
-      }
-    },
+    // support symbols on all feature types (projected on map surface or viewport)
+    ...symbolsLayerStyles('flat'),
+    ...symbolsLayerStyles('viewport'),
     // Line labels sometimes get rendered wrong when line is extruded
     'line-labels': {
       id: 'line-labels',
@@ -707,96 +766,8 @@ export function styles () {
         "icon-opacity": 1
       }
     },
-    'text-layer-flat': {
-      id: 'text-layer-flat',
-      type: 'symbol',
-      filter: ['all',
-        ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
-        ['has', 'label'],
-        ['==', ['get', 'flat'], true],
-        minZoomFilter
-      ],
-      layout: {
-        'icon-ignore-placement': true,
-        'text-field': ['coalesce', ['get', 'label'], ['get', 'room']],
-        'text-size': labelSize,
-        'text-field':
-          [
-            'format',
-            ['coalesce', ['get', 'label'], ['get', 'room']],
-            {
-              'text-font': [
-                'case',
-                ['has', 'label-font'],
-                ['get', 'label-font'],
-                ['literal', labelFont]
-              ]
-            }
-          ],
-        'text-font': labelFont,
-        'text-letter-spacing': ['get', 'label-letter-spacing'],
-        // arrange text to avoid collision
-        'text-anchor': 'top', // text under point
-        // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
-        //"text-radial-offset": ['+', ['/', pointSizeMax, 14], 0.4],
-        "text-offset": labelOffset,
-        'text-justify': ['get', 'label-justify'],
-        'text-max-width': ['get', 'label-max-width'],
-        'text-line-height': 1.6, // no dynamic value possible
-        'text-ignore-placement': true, // show on collision
-        "text-rotation-alignment": "map",
-        // sort-key is only effective within same layer
-        // TODO: sort keys on text are ascending, on symbols descending???
-        'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
-      },
-      paint: {
-        'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
-        'text-halo-color': ['coalesce', ['get', 'user_label-shadow'], ['get', 'label-shadow'], '#fff'],
-        'text-halo-width': 2
-      }
-    },
-    'text-layer': {
-      id: 'text-layer',
-      type: 'symbol',
-      filter: ['all',
-        ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
-        ['has', 'label'],
-        ['!=', ['get', 'flat'], true],
-        minZoomFilter],
-      layout: {
-        'text-field':
-        [
-          'format',
-          ['coalesce', ['get', 'label'], ['get', 'room']],
-            {
-              'text-font': [
-                'case',
-                ['has', 'label-font'],
-                ['get', 'label-font'],
-                ['literal', labelFont]
-              ] }
-        ],
-        'text-size': labelSize,
-        'text-font': labelFont,
-        'text-letter-spacing': ['get', 'label-letter-spacing'],
-        'text-anchor': 'top', // text under point
-        // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
-        "text-offset": labelOffset,
-        'text-justify': ['get', 'label-justify'],
-        'text-max-width': ['get', 'label-max-width'],
-        'text-line-height': 1.6, // no dynamic value possible
-        'text-ignore-placement': false, // hide on collision
-        "text-rotation-alignment": "viewport",
-        // TODO: sort keys on text are ascending, on symbols descending???
-        'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]],
-        'symbol-placement': 'point' // TODO: cannot set proper value for polygons and lines here?
-      },
-      paint: {
-        'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
-        'text-halo-color': ['coalesce', ['get', 'user_label-shadow'], ['get', 'label-shadow'], '#fff'],
-        'text-halo-width': 2
-      }
-    }
+    ...textLayerStyles('flat'),
+    ...textLayerStyles('viewport')
   }
 }
 

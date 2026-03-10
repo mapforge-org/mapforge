@@ -2,38 +2,38 @@
   "properties": {
     "name": "Mapforge Tutorial Map",
     "description": "A playground map to test out Mapforge features.",
-    "public_id": "11f209ec",
+    "public_id": "1162d866",
     "base_map": "versatilesColorful",
     "type": "tutorial",
     "center": [
-      11.113436408754524,
-      49.42901689743192
+      11.111827505306337,
+      49.42850529481777
     ],
-    "default_center": [
-      11.126235912401587,
-      49.43201746397195
-    ],
-    "zoom": "16.00",
-    "default_zoom": 14,
+    "default_center": null,
+    "zoom": "15.32",
+    "default_zoom": null,
     "pitch": "0",
     "bearing": "0",
     "terrain": false,
     "hillshade": false,
     "contours": false,
     "globe": false,
+    "share_cursor": false,
     "view_permission": "link",
     "edit_permission": "link"
   },
   "layers": [
     {
-      "id": "68d1c1aae87dbcdd224375cf",
+      "id": "69aff2cbced48c6fc73ce761",
       "type": "geojson",
       "name": null,
+      "heatmap": false,
+      "cluster": false,
       "geojson": {
         "type": "FeatureCollection",
         "features": [
           {
-            "id": "68d1c1aae87dbcdd22437599",
+            "id": "69aff2cbced48c6fc73ce72b",
             "type": "Feature",
             "geometry": {
               "type": "Polygon",
@@ -67,7 +67,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd2243759a",
+            "id": "69aff2cbced48c6fc73ce72c",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -84,7 +84,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd2243759b",
+            "id": "69aff2cbced48c6fc73ce72d",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -95,24 +95,24 @@
             },
             "properties": {
               "marker-symbol": "⚽",
-              "label-html": "\u003cdiv\u003eTEST\u003c/div\u003e",
+              "label-html": "<div>TEST</div>",
               "marker-scaling": true,
               "marker-color": "transparent",
               "stroke": "transparent"
             }
           },
           {
-            "id": "68d1c1aae87dbcdd2243759c",
+            "id": "69aff2cbced48c6fc73ce72e",
             "type": "Feature",
             "geometry": {
               "type": "Point",
               "coordinates": [
-                11.111823622323072,
-                49.42888077634535
+                11.11184126096154,
+                49.428723301115014
               ]
             },
             "properties": {
-              "label": "Welcome to the Mapforge Tutorial map",
+              "label": "Welcome Thomas to the Mapforge Tutorial map",
               "label-size": 20,
               "marker-scaling": true,
               "flat": true,
@@ -123,7 +123,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd2243759d",
+            "id": "69aff2cbced48c6fc73ce72f",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -143,7 +143,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd2243759e",
+            "id": "69aff2cbced48c6fc73ce730",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -163,7 +163,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd2243759f",
+            "id": "69aff2cbced48c6fc73ce731",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -174,7 +174,7 @@
             },
             "properties": {
               "label": "Follow the arrows to learn how to create a map",
-              "label-size": 14,
+              "label-size": 6,
               "marker-scaling": true,
               "flat": true,
               "marker-color": "transparent",
@@ -182,7 +182,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375a0",
+            "id": "69aff2cbced48c6fc73ce732",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -201,7 +201,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375a1",
+            "id": "69aff2cbced48c6fc73ce733",
             "type": "Feature",
             "geometry": {
               "type": "Polygon",
@@ -237,7 +237,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375a2",
+            "id": "69aff2cbced48c6fc73ce734",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -254,7 +254,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375a3",
+            "id": "69aff2cbced48c6fc73ce735",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -271,7 +271,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375a4",
+            "id": "69aff2cbced48c6fc73ce736",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -289,7 +289,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375a5",
+            "id": "69aff2cbced48c6fc73ce737",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -307,7 +307,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375a6",
+            "id": "69aff2cbced48c6fc73ce738",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -325,7 +325,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375a7",
+            "id": "69aff2cbced48c6fc73ce739",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -343,7 +343,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375a8",
+            "id": "69aff2cbced48c6fc73ce73a",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -361,7 +361,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375a9",
+            "id": "69aff2cbced48c6fc73ce73b",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -379,7 +379,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375aa",
+            "id": "69aff2cbced48c6fc73ce73c",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -399,7 +399,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375ab",
+            "id": "69aff2cbced48c6fc73ce73d",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -416,7 +416,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375ac",
+            "id": "69aff2cbced48c6fc73ce73e",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -433,7 +433,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375ad",
+            "id": "69aff2cbced48c6fc73ce73f",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -450,7 +450,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375ae",
+            "id": "69aff2cbced48c6fc73ce740",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -470,7 +470,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375af",
+            "id": "69aff2cbced48c6fc73ce741",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -490,7 +490,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375b0",
+            "id": "69aff2cbced48c6fc73ce742",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -504,7 +504,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375b1",
+            "id": "69aff2cbced48c6fc73ce743",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -518,7 +518,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375b2",
+            "id": "69aff2cbced48c6fc73ce744",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -530,13 +530,14 @@
             "properties": {
               "label": "Your turn: Change the markers on the lake to have boat emojis",
               "marker-color": "transparent",
+              "label-size": 6,
               "marker-scaling": true,
               "flat": true,
               "stroke": "transparent"
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375b3",
+            "id": "69aff2cbced48c6fc73ce745",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -555,7 +556,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375b4",
+            "id": "69aff2cbced48c6fc73ce746",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -566,6 +567,7 @@
             },
             "properties": {
               "label": "Your turn: Add some more markers to the lake",
+              "label-size": 6,
               "marker-color": "transparent",
               "stroke": "transparent",
               "marker-scaling": true,
@@ -573,7 +575,24 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375b5",
+            "id": "69aff2cbced48c6fc73ce747",
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                11.12562258221601,
+                49.4303986016165
+              ]
+            },
+            "properties": {
+              "marker-symbol": "🚣",
+              "marker-color": "transparent",
+              "stroke": "transparent",
+              "marker-scaling": true
+            }
+          },
+          {
+            "id": "69aff2cbced48c6fc73ce748",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -593,42 +612,26 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375b6",
+            "id": "69aff2cbced48c6fc73ce749",
             "type": "Feature",
             "geometry": {
               "type": "Point",
               "coordinates": [
-                11.12562258221601,
-                49.4303986016165
-              ]
-            },
-            "properties": {
-              "marker-symbol": "🚣",
-              "marker-color": "transparent",
-              "stroke": "transparent",
-              "marker-scaling": true
-            }
-          },
-          {
-            "id": "68d1c1aae87dbcdd224375b7",
-            "type": "Feature",
-            "geometry": {
-              "type": "Point",
-              "coordinates": [
-                11.1405589582385,
-                49.45067541038114
+                11.141039769590776,
+                49.45064067964893
               ]
             },
             "properties": {
               "label": "Further tutorial steps are work in progress ;-)",
               "marker-color": "transparent",
               "stroke": "transparent",
+              "label-size": 6,
               "flat": true,
               "marker-scaling": true
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375b8",
+            "id": "69aff2cbced48c6fc73ce74a",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -645,7 +648,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375b9",
+            "id": "69aff2cbced48c6fc73ce74b",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -663,7 +666,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375ba",
+            "id": "69aff2cbced48c6fc73ce74c",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -682,7 +685,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375bb",
+            "id": "69aff2cbced48c6fc73ce74d",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -693,6 +696,7 @@
             },
             "properties": {
               "label": "Add new points, icons and images to the map by selecting the marker icon in the left menu",
+              "label-size": 6,
               "marker-scaling": true,
               "flat": true,
               "marker-color": "transparent",
@@ -700,7 +704,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375bc",
+            "id": "69aff2cbced48c6fc73ce74e",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -712,7 +716,7 @@
             "properties": {}
           },
           {
-            "id": "68d1c1aae87dbcdd224375bd",
+            "id": "69aff2cbced48c6fc73ce74f",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -730,7 +734,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375be",
+            "id": "69aff2cbced48c6fc73ce750",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -750,7 +754,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375bf",
+            "id": "69aff2cbced48c6fc73ce751",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -768,7 +772,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375c0",
+            "id": "69aff2cbced48c6fc73ce752",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -780,6 +784,7 @@
             "properties": {
               "label": "After selecting an item, you change its properties by clicking the edit button",
               "marker-color": "transparent",
+              "label-size": 6,
               "marker-scaling": true,
               "flat": true,
               "stroke": "transparent",
@@ -787,7 +792,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375c1",
+            "id": "69aff2cbced48c6fc73ce753",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -806,7 +811,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375c2",
+            "id": "69aff2cbced48c6fc73ce754",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -825,7 +830,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375c3",
+            "id": "69aff2cbced48c6fc73ce755",
             "type": "Feature",
             "geometry": {
               "type": "Polygon",
@@ -905,7 +910,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375c4",
+            "id": "69aff2cbced48c6fc73ce756",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -918,12 +923,13 @@
               "label": "Your turn: Draw a circle line around the FCN building",
               "marker-color": "transparent",
               "marker-scaling": true,
+              "label-size": 6,
               "flat": true,
               "stroke": "transparent"
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375c5",
+            "id": "69aff2cbced48c6fc73ce757",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -943,7 +949,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375c6",
+            "id": "69aff2cbced48c6fc73ce758",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -962,7 +968,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375c7",
+            "id": "69aff2cbced48c6fc73ce759",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -981,7 +987,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375c8",
+            "id": "69aff2cbced48c6fc73ce75a",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -1000,7 +1006,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375c9",
+            "id": "69aff2cbced48c6fc73ce75b",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -1020,7 +1026,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375ca",
+            "id": "69aff2cbced48c6fc73ce75c",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -1033,12 +1039,13 @@
               "label": "Your turn: We're in the forrest now. Create a bike route from here to the zoo in the north. ",
               "marker-color": "transparent",
               "marker-scaling": true,
+              "label-size": 6,
               "flat": true,
               "stroke": "transparent"
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375cb",
+            "id": "69aff2cbced48c6fc73ce75d",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -1057,7 +1064,7 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375cc",
+            "id": "69aff2cbced48c6fc73ce75e",
             "type": "Feature",
             "geometry": {
               "type": "Point",
@@ -1076,13 +1083,13 @@
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375cd",
+            "id": "69aff2cbced48c6fc73ce75f",
             "type": "Feature",
             "geometry": {
               "type": "Point",
               "coordinates": [
-                11.138364228223452,
-                49.44974269247206
+                11.1384277107027,
+                49.44949506635754
               ]
             },
             "properties": {
@@ -1090,11 +1097,12 @@
               "marker-color": "transparent",
               "marker-scaling": true,
               "flat": true,
+              "label-size": 6,
               "stroke": "transparent"
             }
           },
           {
-            "id": "68d1c1aae87dbcdd224375ce",
+            "id": "69aff2cbced48c6fc73ce760",
             "type": "Feature",
             "geometry": {
               "type": "Point",
