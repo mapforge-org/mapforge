@@ -12,7 +12,9 @@ export default class extends Controller {
 
   async connect () {
     // Clear map instance and its event listeners
-    if (window.map) window.map.remove()
+    if (window.map) {
+      try { window.map.remove() } catch { console.warn('No map instance to remove')}
+    }
   }
 
   changeSort(event) {

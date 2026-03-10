@@ -8,6 +8,7 @@ import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, a
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls } from 'maplibre/controls/view';
+import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
 import { renderGeoJSONLayer, renderGeoJSONLayers } from 'maplibre/layers/geojson';
 import { getFeature, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers';
@@ -60,6 +61,7 @@ export async function initializeMap (divId = 'maplibre-map') {
   const maplibregl = maplibreglModule.default
 
   initializeMaplibreProperties()
+  resetEditMode()
   map = new maplibregl.Map({
     container: divId,
     center: (mapProperties.center || mapProperties.default_center),

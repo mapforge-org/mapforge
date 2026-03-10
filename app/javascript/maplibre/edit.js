@@ -194,6 +194,13 @@ export async function initializeEditMode () {
   })
 }
 
+export async function resetEditMode() {
+  if (draw) {
+    if (map) { map.removeControl(draw) }
+    draw = null
+  }
+}
+
 export function toggleDrawMode(mode) {
   // e.preventDefault()
   if (draw.getMode() === mode) {

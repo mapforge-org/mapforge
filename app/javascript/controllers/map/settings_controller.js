@@ -1,9 +1,9 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import * as functions from 'helpers/functions'
 import * as dom from 'helpers/dom'
-import { marked } from 'marked'
+import * as functions from 'helpers/functions'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
+import { marked } from 'marked'
 
 let descEasyMDE
 
@@ -193,7 +193,6 @@ export default class extends Controller {
   }
 
   renderDescription() {
-    console.log(mapProperties)
     marked.use({ gfm: true, breaks: true })
     let desc = marked(this.mapDescriptionValue || '')
     desc = functions.sanitizeMarkdown(desc)
@@ -231,7 +230,7 @@ export default class extends Controller {
     mapProperties.default_zoom = this.currentZoomValue
     mapProperties.default_pitch = this.currentPitchValue
     mapProperties.default_bearing = this.currentBearingValue
-    mapChannel.send_message('update_map', { center: this.currentCenterValue, 
+    mapChannel.send_message('update_map', { center: this.currentCenterValue,
       zoom: this.currentZoomValue, pitch: this.currentPitchValue, bearing: this.currentBearingValue })
   }
 
@@ -239,7 +238,7 @@ export default class extends Controller {
     event.preventDefault()
     window.history.replaceState(null, '', window.location.pathname + window.location.search)
     // need to receive default values from server
-    mapChannel.send_message('update_map', { center: null, 
+    mapChannel.send_message('update_map', { center: null,
       zoom: null, pitch: null, bearing: null })
   }
 }

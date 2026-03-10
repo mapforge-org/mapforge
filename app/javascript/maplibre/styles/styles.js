@@ -133,7 +133,7 @@ export async function loadImage (e) {
     try {
       imageState[e.id] = 'loading'
       let response = await map.loadImage(imageUrl)
-      if (response) {
+      if (response && map) {
         if (!map.hasImage(imageUrl)) {
           // console.log('Adding ' + imageUrl + ' to map')
           map.addImage(imageUrl, response.data)
