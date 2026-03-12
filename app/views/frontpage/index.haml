@@ -2,6 +2,18 @@
   / Hero Section
   #hero.hero.section.dark-background
     .hero-bg-image{ 'data-aos': "zoom-out", 'data-aos-once': "true" }
+
+    / News Banner – update the text below to advertise new features or site news.
+    / Remove or comment out this block when there is nothing to announce.
+    .banner-explorer{ role: "note", 'aria-label': "Site news" }
+      .banner-explorer-inner
+        .banner-explorer-content
+          %h4 Vote!
+          .divider
+          %p
+            =link_to 'Choose', 'https://github.com/mapforge-org/mapforge/discussions/674', { target: '_blank', rel: 'noopener' }
+            the new Mapforge font!
+
     .container
       .row
         .col-lg-6.welcome-text
