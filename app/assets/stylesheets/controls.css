@@ -141,7 +141,7 @@
   height: 1.3rem !important;
 }
 
-.maplibregl-ctrl-geocoder--icon-close, .maplibregl-ctrl-geocoder--icon-loading {
+.maplibregl-ctrl-geocoder--icon-close, .maplibregl-ctrl-geocoder--icon-loading { /* stylelint-disable-line */
   width: 1rem;
   height: 1rem;
   margin-top: 0;

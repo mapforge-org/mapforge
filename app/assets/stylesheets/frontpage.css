@@ -219,12 +219,13 @@ section,
   width: 10rem;
   height: 10rem;
   background: var(--color-mid-fawn);
+
   /* Darker tan/gold outer border */
   clip-path: var(--star-shape);
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 8px 15px rgb(0 0 0 / 40%));
   transform: rotate(10deg);
   animation: banner-pulse 7.8s ease-in-out infinite;
   cursor: default;
