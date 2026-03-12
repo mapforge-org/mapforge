@@ -464,6 +464,7 @@ export function sortLayers () {
   })
 
   // console.log('Sorting layers', layers)
+  const userExtrusions = functions.reduceArray(layers, (e) => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion'))
   const flatLayers = functions.reduceArray(layers, (e) => (e.id.includes('-flat'))) // keep flat layers behin houses
   const kmMarkers = functions.reduceArray(layers, (e) => (e.id.startsWith('km-marker')))
   const editLayer = functions.reduceArray(layers, (e) => (e.id.startsWith('gl-draw-')))
@@ -477,7 +478,7 @@ export function sortLayers () {
   const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
   const heatmap = functions.reduceArray(layers, (e) => (e.id.startsWith('heatmap-layer')))
 
-  layers = layers.concat(flatLayers).concat(lineLayers).concat(mapExtrusions).concat(directions)
+  layers = layers.concat(flatLayers).concat(lineLayers).concat(userExtrusions).concat(mapExtrusions).concat(directions)
     .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
     .concat(kmMarkers).concat(userSymbols).concat(userLabels).concat(lineLayerHits).concat(pointsLayerHits)
 

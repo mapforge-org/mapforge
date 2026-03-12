@@ -451,6 +451,7 @@ function textLayerStyles(mode) {
 
 export function styles () {
   return {
+    // make ground of extruded polygon darker when selected
     'polygon-layer-extruded-shadow': {
       id: 'polygon-layer-extruded-shadow',
         type: 'fill',
@@ -462,7 +463,7 @@ export function styles () {
               'fill-color': 'gray',
               'fill-opacity': [
                 "case",
-                ['boolean', ['feature-state', 'active'], false], 0.4, 0.1]
+                ['boolean', ['feature-state', 'active'], false], 0.4, 0.7]
       }
     },
     'polygon-layer': {
@@ -507,8 +508,6 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ["==", ["geometry-type"], "Polygon"],
-        ['any', ['==', ['get', 'fill-extrusion-height'], 0],
-          ['!', ['has', 'fill-extrusion-height']]],
         minZoomFilter],
       layout: {
         'line-join': 'round',
@@ -556,7 +555,8 @@ export function styles () {
         minZoomFilter],
       layout: {
         'line-join': 'round',
-        'line-cap': 'round'
+        'line-cap': 'round',
+        'line-sort-key': ['to-number', ['get', 'sort-key']]
       },
       paint: {
         'line-color': lineColor,
