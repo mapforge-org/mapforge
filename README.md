@@ -14,7 +14,7 @@ Your browser connects to the server via WebSockets, so that changes are immediat
 The main instance is running at [mapforge.org](https://mapforge.org), see [self-hosting](#selfhosting) how to run your own. Check the [changelog](CHANGELOG.md) for recent changes.
 
 <a href="https://mapforge.org">
-<img width="2550" height="1700" alt="Mapforge Screenshots" src="https://github.com/user-attachments/assets/4c8f2f2a-c12c-4319-9d72-cd9a6d5d7a71" />
+<img width="2550" height="1700" alt="Mapforge Screenshots" src="https://raw.githubusercontent.com/mapforge-org/mapforge/refs/heads/main/public/images/frontpage/github.png" />
 </a>
 
 ### Features
