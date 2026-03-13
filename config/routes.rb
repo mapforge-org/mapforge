@@ -4,6 +4,10 @@ NAME_PATTERN = /[^\/]+/ # all characters but '/'
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
+  # Garmin Connect OAuth integration
+  get "garmin/authorize", to: "garmin#authorize", as: :garmin_authorize
+  get "garmin/callback",  to: "garmin#callback",  as: :garmin_callback
+
   # login routes
   get "auth/:provider/callback", to: "sessions#create"
   get "auth/developer/login", to: "sessions#new"

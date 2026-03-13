@@ -69,6 +69,13 @@
             =link_to map_json_path(@map.public_id),target: '_blank' do
               %i.bi.bi-download
               Map export
+        - if ENV['GARMIN_CLIENT_ID'].present?
+          .btn-group-sm.mt-2{ role: "group" }
+            %span.me-2 Send to:
+            %button.btn.btn-secondary.btn-download{ type: "button" }
+              = link_to garmin_authorize_path(map_id: @map.public_id) do
+                %i.bi.bi-smartwatch.me-1
+                Garmin Connect
 
       .feature-section-card.pt-2
         %b.me-2.mt-2 Embed map:

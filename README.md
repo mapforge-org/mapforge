@@ -112,8 +112,10 @@ podman run ... -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb 
 - `MONGO_DB` — MongoDB database name (default: 'mapforge_production')
 - `REDIS_URL` — Redis URL for Action Cable (default: `redis://localhost:6379/1`)
 - `OPENROUTESERVICE_KEY` — API key for routing features with [openrouteservice.org](https://openrouteservice.org/)
+- `OSM_CLIENT_ID`, `OSM_CLIENT_SECRET` — OSM OAuth credentials
 - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — GitHub OAuth credentials
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth credentials
+- `GARMIN_CLIENT_ID`, `GARMIN_CLIENT_SECRET` — Garmin OAuth credentials (https://developer.garmin.com/)
 - `DEFAULT_MAP` — default base map identifier (default: [versatilesColorful](https://versatiles.org/))
 
 ---
