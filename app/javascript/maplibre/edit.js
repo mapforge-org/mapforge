@@ -194,11 +194,8 @@ export async function initializeEditMode () {
   })
 }
 
-export async function resetEditMode() {
-  if (draw) {
-    if (map) { map.removeControl(draw) }
-    draw = null
-  }
+export function resetEditMode() {
+  if (draw) {  draw = null }
 }
 
 export function toggleDrawMode(mode) {
