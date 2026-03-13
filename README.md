@@ -19,7 +19,7 @@ The main instance is running at [mapforge.org](https://mapforge.org), see [self-
 
 ### Features
 
-- Create maps with your own data on top of various available base maps. 
+- Create maps with your own data on top of various available base maps.
 - Draw shapes and [style them](https://mapforge.org/doc/geojson_style_spec): Add pictures, customize colors, symbols, labels, (3D) polygons and more
 - Import your data from GeoJSON, GPX and KML
 - Collaborative, real-time editing, synchronized via WebSockets
@@ -34,10 +34,10 @@ The main instance is running at [mapforge.org](https://mapforge.org), see [self-
 
 GeoJSON layers can be styled using an extended version of the
 [GeoJSON](https://macwright.com/2015/03/23/geojson-second-bite.html) /
-[Mapbox simplestyle](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0) spec.  
+[Mapbox simplestyle](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0) spec.
 See [docs/tutorials/geojson_style_spec.md](docs/tutorials/geojson_style_spec.md) for supported attributes.
 
-[Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) layers can be added to a map, allowing custom queries and display of OpenStreetMap data.  
+[Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) layers can be added to a map, allowing custom queries and display of OpenStreetMap data.
 See [docs/tutorials/overpass_layers.md](https://mapforge.org/doc/overpass_layers) for details.
 
 ### Android App / PWA
@@ -45,7 +45,7 @@ See [docs/tutorials/overpass_layers.md](https://mapforge.org/doc/overpass_layers
 Mapforge is built as a Progressive Web App (PWA), see
 [docs/tutorials/app.md](docs/tutorials/app.md).
 
-An Android app that wraps the PWA is available in the Play Store:  
+An Android app that wraps the PWA is available in the Play Store:
 [Mapforge Android App](https://play.google.com/store/apps/details?id=org.mapforge.twa)
 
 ---
@@ -54,7 +54,7 @@ An Android app that wraps the PWA is available in the Play Store:
 
 ### Container Image
 
-The [latest image](https://github.com/mapforge-org/mapforge/pkgs/container/mapforge) is available from `ghcr.io/mapforge-org/mapforge:main`. 
+The [latest image](https://github.com/mapforge-org/mapforge/pkgs/container/mapforge) is available from `ghcr.io/mapforge-org/mapforge:main`.
 
 You can also build your own image locally from the repository with: `podman build -t mapforge .`
 
@@ -120,7 +120,7 @@ podman run ... -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb 
 
 ## Development
 
-Mapforge is build with a Ruby on Rails backend and uses Maplibre and Stimulus on the frontend. 
+Mapforge is build with a Ruby on Rails backend and uses Maplibre and Stimulus on the frontend.
 
 ### Install Dependencies
 
@@ -149,7 +149,7 @@ db/GeoLite2-City.mmdb
 HTTP_PORT=3001 bin/thrust rails server
 ```
 
-In development, environment variables (see above) can be set in `.env.development`. 
+In development, environment variables (see above) can be set in `.env.development`.
 The first user that logs in is automatically made admin.
 
 
@@ -209,7 +209,7 @@ npm run fix:js
 Run the test suite:
 
 ```bash
-bundle exec rspec
+bin/rspec
 ```
 
 GitHub Actions workflows run these checks automatically. You can run them locally
@@ -219,7 +219,7 @@ with [act](https://github.com/nektos/act), for example:
 act -j test
 ```
 
-### Build the Android app 
+### Build the Android app
 
 To build the Android app yourself using
 [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap):
@@ -240,7 +240,7 @@ To establish trust between the app and the website, host a file
   keytool -list -v -keystore android.keystore
   ```
 
-- Get the fingerprint of the production key in the Play Console:  
+- Get the fingerprint of the production key in the Play Console:
   **Setup → App Integrity → App Signing → Settings**
 
 Then add the fingerprint(s) to `assetlinks.json` using the

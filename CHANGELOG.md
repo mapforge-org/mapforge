@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 2026-03
 
 * Context menu to edit line vertexes
+* Re-style map modals and feature edit form
 
 ## 2026-02
 
