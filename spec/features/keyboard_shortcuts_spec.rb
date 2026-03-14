@@ -30,6 +30,37 @@ describe "Keyboard Shortcuts" do
         # expect(page).to have_text('Added feature')
         # wait_for { Feature.point.count }.to eq(2)
       end
+
+      it "can undo a feature delete with Ctrl+Z" do
+        accept_alert do
+          find("#edit-button-advanced").click
+          find("#edit-button-trash").click
+        end
+        wait_for { Feature.count }.to eq(0)
+
+        page.execute_script("document.activeElement.blur()")
+        page.execute_script("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, bubbles: true }))")
+
+        wait_for { Feature.count }.to eq(1)
+      end
+
+      it "can redo a feature delete with Ctrl+Y" do
+        accept_alert do
+          find("#edit-button-advanced").click
+          find("#edit-button-trash").click
+        end
+        wait_for { Feature.count }.to eq(0)
+
+        page.execute_script("document.activeElement.blur()")
+        page.execute_script("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, bubbles: true }))")
+        wait_for { Feature.count }.to eq(1)
+
+        page.execute_script("document.activeElement.blur()")
+        page.execute_script("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'y', ctrlKey: true, bubbles: true }))")
+        expect(page).to have_text("Redo")
+
+        wait_for { Feature.count }.to eq(0)
+      end
     end
   end
 end

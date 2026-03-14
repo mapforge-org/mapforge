@@ -1,10 +1,10 @@
-import { addFeature, destroyFeature } from 'maplibre/map'
+import { status } from 'helpers/status'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
-import { resetDirections } from 'maplibre/routing/osrm'
-import { status } from 'helpers/status'
 import { renderGeoJSONLayers } from 'maplibre/layers/geojson'
 import { getFeature } from 'maplibre/layers/layers'
+import { addFeature, destroyFeature } from 'maplibre/map'
+import { resetDirections } from 'maplibre/routing/osrm'
 
 let undoStack = []
 let redoStack = []
@@ -27,27 +27,32 @@ function addRedoState(type, state) {
   showRedoButton()
 }
 
+const undoHandlers = {
+  'Feature update': undoFeatureUpdate,
+  'Feature property update': undoFeatureUpdate,
+  'Feature added': undoFeatureAdded,
+  'Feature deleted': undoFeatureDelete,
+  'Track added': undoTrackAdded,
+  'Track update': undoFeatureUpdate
+}
+
+const redoHandlers = {
+  'Feature update': redoFeatureUpdate,
+  'Feature property update': redoFeatureUpdate,
+  'Feature added': redoFeatureAdded,
+  'Feature deleted': redoFeatureDelete,
+  'Track added': redoFeatureAdded,
+  'Track update': redoFeatureUpdate
+}
+
 export function undo() {
   // console.log('Undo from stack', undoStack)
   if (undoStack.length === 0) { console.warn('Undo stack empty'); return }
   const prevState = undoStack.pop()
   // console.log('Undo state: ' + JSON.stringify(prevState))
-  if (prevState.type === 'Feature update') {
-    undoFeatureUpdate(prevState)
-  } else if (prevState.type === 'Feature property update') {
-    undoFeatureUpdate(prevState)    
-  } else if (prevState.type === 'Feature added') {
-    undoFeatureAdded(prevState)
-  } else if (prevState.type === 'Feature deleted') {
-    undoFeatureDelete(prevState)  
-  } else if (prevState.type === 'Track added') {
-    undoTrackAdded(prevState)    
-  } else if (prevState.type === 'Track update') {
-    undoFeatureUpdate(prevState)
-  } else {
-    console.warn('Cannot undo ', prevState)
-    return 
-  }
+  const handler = undoHandlers[prevState.type]
+  if (!handler) { console.warn('Cannot undo ', prevState); return }
+  handler(prevState)
   status('Undo: ' + prevState.type)
   renderGeoJSONLayers(true)
   keepSelection()
@@ -59,22 +64,9 @@ export function redo() {
   if (redoStack.length === 0) { console.warn('Redo stack empty'); return }
   const nextState = redoStack.pop()
   // console.log('Next state: ' + JSON.stringify(nextState))
-  if (nextState.type === 'Feature update') {
-    redoFeatureUpdate(nextState) 
-  } else if (nextState.type === 'Feature property update') {
-    redoFeatureUpdate(nextState)     
-  } else if (nextState.type === 'Feature added') {
-    redoFeatureAdded(nextState)    
-  } else if (nextState.type === 'Feature deleted') {
-    redoFeatureDelete(nextState)
-  } else if (nextState.type === 'Track added') {
-    redoFeatureAdded(nextState) 
-  } else if (nextState.type === 'Track update') {
-    redoFeatureUpdate(nextState)    
-  } else {
-    console.warn('Cannot redo ', nextState)
-    return
-  }
+  const handler = redoHandlers[nextState.type]
+  if (!handler) { console.warn('Cannot redo ', nextState); return }
+  handler(nextState)
   status('Redo: ' + nextState.type)
   renderGeoJSONLayers(true)
   keepSelection()
@@ -123,7 +115,7 @@ function redoFeatureDelete(nextState) {
     destroyFeature(nextState.state.id)
     mapChannel.send_message('delete_feature', { id: nextState.state.id })
   } else {
-    console.warn('Feature with id ' + prevState.state.id + ' not found in layer geojson')
+    console.warn('Feature with id ' + nextState.state.id + ' not found in layer geojson')
   }
 }
 
