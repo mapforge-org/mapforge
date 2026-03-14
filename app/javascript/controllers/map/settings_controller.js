@@ -45,61 +45,25 @@ export default class extends Controller {
     }
   }
 
-  mapTerrainValueChanged (value, _previousValue) {
-    // console.log('mapTerrainValueChanged(): ' + value)
-    document.querySelector('#map-terrain').checked = value
-  }
+  setChecked (selector, value) { document.querySelector(selector).checked = value }
+  setHTML (selector, value) { document.querySelector(selector).innerHTML = value }
 
-  mapHillshadeValueChanged (value, _previousValue) {
-    // console.log('mapHillshadeValueChanged(): ' + value)
-    document.querySelector('#map-hillshade').checked = value
-  }
+  mapTerrainValueChanged (value) { this.setChecked('#map-terrain', value) }
+  mapHillshadeValueChanged (value) { this.setChecked('#map-hillshade', value) }
+  mapContoursValueChanged (value) { this.setChecked('#map-contours', value) }
+  mapGlobeValueChanged (value) { this.setChecked('#map-globe', value) }
 
-  mapContoursValueChanged (value, _previousValue) {
-    // console.log('mapContoursValueChanged(): ' + value)
-    document.querySelector('#map-contours').checked = value
-  }
-
-  mapGlobeValueChanged (value, _previousValue) {
-    // console.log('mapTerrainValueChanged(): ' + value)
-    document.querySelector('#map-globe').checked = value
-  }
-
-  baseMapValueChanged (value, _previousValue) {
-    // console.log('baseMapValueChanged(): ' + value)
+  baseMapValueChanged (value) {
     functions.e('.layer-preview', e => { e.classList.remove('active') })
     functions.e('img[data-base-map="' + value + '"]', e => { e.classList.add('active') })
   }
 
-  defaultPitchValueChanged (value, _previousValue) {
-    // console.log('defaultPitchValueChanged(): ' + value)
-    document.querySelector('#map-pitch').innerHTML = value + '°'
-  }
-
-  currentPitchValueChanged (value, _previousValue) {
-    // console.log('currentPitchValueChanged(): ' + value)
-    document.querySelector('#map-pitch-current').innerHTML = value + '°'
-  }
-
-  defaultZoomValueChanged (value, _previousValue) {
-    // console.log('defaultZoomValueChanged(): ' + value)
-    document.querySelector('#map-zoom').innerHTML = value
-  }
-
-  currentZoomValueChanged (value, _previousValue) {
-    // console.log('currentZoomValueChanged(): ' + value)
-    document.querySelector('#map-zoom-current').innerHTML = value
-  }
-
-  defaultBearingValueChanged (value, _previousValue) {
-    // console.log('defaultBearingValueChanged(): ' + value)
-    document.querySelector('#map-bearing').innerHTML = value + '°'
-  }
-
-  currentBearingValueChanged (value, _previousValue) {
-    // console.log('currentBearingValueChanged(): ' + value)
-    document.querySelector('#map-bearing-current').innerHTML = value + '°'
-  }
+  defaultPitchValueChanged (value) { this.setHTML('#map-pitch', value + '°') }
+  currentPitchValueChanged (value) { this.setHTML('#map-pitch-current', value + '°') }
+  defaultZoomValueChanged (value) { this.setHTML('#map-zoom', value) }
+  currentZoomValueChanged (value) { this.setHTML('#map-zoom-current', value) }
+  defaultBearingValueChanged (value) { this.setHTML('#map-bearing', value + '°') }
+  currentBearingValueChanged (value) { this.setHTML('#map-bearing-current', value + '°') }
 
   defaultCenterValueChanged (value, _previousValue) {
     // console.log('defaultCenterValueChanged(): "' + value + '"')
