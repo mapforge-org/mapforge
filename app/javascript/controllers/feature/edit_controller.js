@@ -74,77 +74,52 @@ export default class extends Controller {
     functions.debounce(() => { this.saveFeature() }, 'show-title-on-map', 1000)
   }
 
+  // Generic helper: read input, set feature property + draw property, re-render
+  updateDrawProperty (inputSelector, propertyName, { displaySelector, displayFormat, valueTransform, useChecked } = {}) {
+    const feature = this.getEditFeature()
+    let value = useChecked
+      ? document.querySelector(inputSelector).checked
+      : document.querySelector(inputSelector).value
+    if (valueTransform) value = valueTransform(value)
+    if (displaySelector) {
+      document.querySelector(displaySelector).textContent = displayFormat ? displayFormat(value) : value
+    }
+    feature.properties[propertyName] = value
+    draw.setFeatureProperty(this.featureIdValue, propertyName, value)
+    renderGeoJSONLayer(this.layerIdValue, true)
+  }
+
   // called as preview on slider change
   updatePointSize () {
-    const feature = this.getEditFeature()
-    const size = document.querySelector('#point-size').value
-    document.querySelector('#point-size-val').textContent = size
-    feature.properties['marker-size'] = size
-    // draw layer feature properties aren't getting updated by draw.set()
-    draw.setFeatureProperty(this.featureIdValue, 'marker-size', size)
-    renderGeoJSONLayer(this.layerIdValue, true)
+    this.updateDrawProperty('#point-size', 'marker-size', { displaySelector: '#point-size-val' })
   }
 
-  updatePointScaling() {
-    const feature = this.getEditFeature()
-    const val = document.querySelector('#point-scaling').checked
-    feature.properties['marker-scaling'] = val
-    // draw layer feature properties aren't getting updated by draw.set()
-    draw.setFeatureProperty(this.featureIdValue, 'marker-scaling', val)
-    renderGeoJSONLayer(this.layerIdValue, true)
+  updatePointScaling () {
+    this.updateDrawProperty('#point-scaling', 'marker-scaling', { useChecked: true })
   }
 
-  // called as preview on slider change
   updateLineWidth () {
-    const feature = this.getEditFeature()
-    const size = document.querySelector('#line-width').value
-    document.querySelector('#line-width-val').textContent = size
-    feature.properties['stroke-width'] = size
-    // draw layer feature properties aren't getting updated by draw.set()
-    draw.setFeatureProperty(this.featureIdValue, 'stroke-width', size)
-    renderGeoJSONLayer(this.layerIdValue, true)
+    this.updateDrawProperty('#line-width', 'stroke-width', { displaySelector: '#line-width-val' })
   }
 
-  // called as preview on slider change
   updateOutLineWidth () {
-    const feature = this.getEditFeature()
-    const size = document.querySelector('#outline-width').value
-    document.querySelector('#outline-width-val').textContent = size
-    feature.properties['stroke-width'] = size
-    // draw layer feature properties aren't getting updated by draw.set()
-    draw.setFeatureProperty(this.featureIdValue, 'stroke-width', size)
-    renderGeoJSONLayer(this.layerIdValue, true)
+    this.updateDrawProperty('#outline-width', 'stroke-width', { displaySelector: '#outline-width-val' })
   }
 
-  // called as preview on slider change
   updateFillExtrusionHeight () {
-    const feature = this.getEditFeature()
-    const size = document.querySelector('#fill-extrusion-height').value
-    document.querySelector('#fill-extrusion-height-val').textContent = size + 'm'
-    feature.properties['fill-extrusion-height'] = Number(size)
-    // draw layer feature properties aren't getting updated by draw.set()
-    draw.setFeatureProperty(this.featureIdValue, 'fill-extrusion-height', Number(size))
-    // needs redraw to add extrusion
-    renderGeoJSONLayer(this.layerIdValue, true)
+    this.updateDrawProperty('#fill-extrusion-height', 'fill-extrusion-height', {
+      displaySelector: '#fill-extrusion-height-val', displayFormat: v => v + 'm', valueTransform: Number
+    })
   }
 
   updateOpacity () {
-    const feature = this.getEditFeature()
-    const opacity = document.querySelector('#opacity').value / 10
-    document.querySelector('#opacity-val').textContent = opacity * 100 + '%'
-    feature.properties['fill-opacity'] = opacity
-    // draw layer feature properties aren't getting updated by draw.set()
-    draw.setFeatureProperty(this.featureIdValue, 'fill-opacity', opacity)
-    renderGeoJSONLayer(this.layerIdValue, true)
+    this.updateDrawProperty('#opacity', 'fill-opacity', {
+      valueTransform: v => v / 10, displaySelector: '#opacity-val', displayFormat: v => v * 100 + '%'
+    })
   }
 
   updateStrokeColor () {
-    const feature = this.getEditFeature()
-    const color = document.querySelector('#stroke-color').value
-    feature.properties.stroke = color
-    // draw layer feature properties aren't getting updated by draw.set()
-    draw.setFeatureProperty(this.featureIdValue, 'stroke', color)
-    renderGeoJSONLayer(this.layerIdValue, true)
+    this.updateDrawProperty('#stroke-color', 'stroke')
   }
 
   updateStrokeColorTransparent () {
