@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 * Context menu to edit line vertexes
 * Re-style map modals and feature edit form
+* In OpenStreetMap wiki: https://wiki.openstreetmap.org/wiki/Mapforge
 
 ## 2026-02
 

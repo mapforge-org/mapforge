@@ -237,6 +237,12 @@
   margin-bottom: 0.8rem;
 }
 
+@media (width < 380px) {
+  .feature-section-card {
+      padding: 0.1rem 0.3rem 0.9rem;
+    }
+}
+
 .feature-section-title {
   color: #97a0ae;
   font-weight: 700;
