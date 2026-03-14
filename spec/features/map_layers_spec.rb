@@ -81,9 +81,9 @@ describe "Map" do
       wait_for { map.reload.features.count }.to eq 1
       # flyTo is finished when the feature details are shown
       expect(page).to have_text("Properties")
-      # TODO: For some reason the map doesn't flyTo() in test env
+      # flyToFeature() after async image upload doesn't complete in headless test env
       # expect(page.evaluate_script("[map.getCenter().lng.toFixed(4), map.getCenter().lat.toFixed(4)].toString()"))
-      #  .to eq("11.0769,49.4475")
+      #   .to eq("9.9749,53.5445")
       expect(map.features.first.image.public_id).to match(/image_with_exif-\d+.jpeg/)
       expect(map.features.first.geometry["coordinates"]).to eq([ 9.9749, 53.5445 ])
     end

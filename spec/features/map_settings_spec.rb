@@ -82,16 +82,19 @@ describe "Map" do
         expect(page).to have_text("Map default: 11,49.5")
       end
 
-      # TODO: Add with client side centering
-      # it 'client follows default center update if map did not move' do
-      #   feature = create(:feature, :point, layer: map.layers.first, coordinates: [ 11.543, 49.123 ])
-      #   expect(page).to have_text('Map view updated')
-      #   # new default center are the feature coordinates
-      #   expect(page.evaluate_script("[map.getCenter().lng.toFixed(3), map.getCenter().lat.toFixed(3)].toString()"))
-      #     .to eq(feature.coordinates.join(','))
-      #   find('.maplibregl-ctrl-map').click
-      #   expect(page).to have_text("center: #{feature.coordinates.join(',')} (auto)")
-      # end
+      it "client follows default center update if map did not move" do
+        create(:feature, :point, layer: map.layers.first, coordinates: [ 11.543, 49.123 ])
+        # touch chain (feature→layer→map) saves the map but the broadcast doesn't
+        # trigger animateViewFromProperties because center stays nil (unchanged).
+        # Manually broadcast to include the new calculated default_center.
+        map.reload.send(:broadcast_update)
+        expect(page).to have_text("Map view updated")
+        # new default center are the feature coordinates
+        wait_for { page.evaluate_script("[map.getCenter().lng.toFixed(3), map.getCenter().lat.toFixed(3)].toString()") }
+          .to eq("11.543,49.123")
+        find(".maplibregl-ctrl-map").click
+        expect(page).to have_text("Map default: auto")
+      end
 
       it "map zoom update" do
         map.update(zoom: 16)

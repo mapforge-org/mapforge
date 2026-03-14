@@ -196,11 +196,7 @@ describe "Feature edit" do
         find("#edit-button-style").click
         expect(find("#fill-color-transparent")).not_to be_checked
 
-        # TODO: did not find a better solution to check the box and trigger stimulus
-        js = "document.getElementById('fill-color-transparent')"
-        page.driver.execute_script("#{js}.checked = true")
-        page.driver.execute_script("#{js}.dispatchEvent(new Event('input'))")
-        page.driver.execute_script("#{js}.dispatchEvent(new Event('change'))")
+        find("#fill-color-transparent").check
 
         wait_for { point.reload.properties["marker-color"] }.to eq("transparent")
       end

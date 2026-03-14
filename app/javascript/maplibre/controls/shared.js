@@ -1,15 +1,15 @@
-import * as functions from 'helpers/functions'
-import { map, mapProperties } from 'maplibre/map'
 import * as dom from 'helpers/dom'
 import { animateElement, initTooltips } from 'helpers/dom'
 import * as f from 'helpers/functions'
+import * as functions from 'helpers/functions'
 import MaplibreGeocoder from 'maplibre-gl-geocoder'
+import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { initializeGeoLocateControl } from 'maplibre/controls/geolocate'
 import { draw, unselect } from 'maplibre/edit'
 import { featureIcon, resetHighlightedFeature } from 'maplibre/feature'
 import { layers } from 'maplibre/layers/layers'
-import { hideContextMenu } from 'maplibre/controls/context_menu'
+import { map, mapProperties } from 'maplibre/map'
 
 export class ControlGroup {
   constructor (controls) {
