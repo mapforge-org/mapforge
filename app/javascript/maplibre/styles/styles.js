@@ -160,22 +160,27 @@ export async function loadImage (e) {
 export const featureColor = '#0A870A' // green
 export const featureOutlineColor = '#cfcfcf'
 
-const fillColor = ['coalesce',
-  ['get', 'fill'], ['get', 'user_fill'], featureColor]
-const fillOpacity = ['to-number', ['coalesce',
-  ['get', 'fill-opacity'], ['get', 'user_fill-opacity'], 0.7]]
+// Shorthand for MapLibre coalesce expressions: styleProp(['a', 'b'], x) → ['coalesce', ['get', 'a'], ['get', 'b'], x]
+const styleProp = (keys, defaultVal) => {
+  const gets = keys.map(k => ['get', k])
+  return defaultVal !== undefined ? ['coalesce', ...gets, defaultVal] : ['coalesce', ...gets]
+}
+const sortKey = ['to-number', styleProp(['user_sort-key', 'sort-key'], 1)]
+const labelColor = styleProp(['user_label-color', 'label-color'], '#000')
+const labelShadow = styleProp(['user_label-shadow', 'label-shadow'], '#fff')
 
-const lineColor = ['coalesce', ['get', 'stroke'], ['get', 'user_stroke'], featureColor]
-const polygonOutlineColor = ['coalesce', ['get', 'stroke'], ['get', 'user_stroke'], featureOutlineColor]
+const fillColor = styleProp(['fill', 'user_fill'], featureColor)
+const fillOpacity = ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], 0.7)]
+
+const lineColor = styleProp(['stroke', 'user_stroke'], featureColor)
+const polygonOutlineColor = styleProp(['stroke', 'user_stroke'], featureOutlineColor)
 const lineOutlineColor = featureOutlineColor
 
 export const defaultLineWidth = 3
-const lineWidthMin = ['ceil', ['/', ['to-number', ['coalesce',
-  ['get', 'user_stroke-width'], ['get', 'stroke-width'], defaultLineWidth]], 2]]
-const lineWidthMax = ['*', ['to-number', ['coalesce',
-  ['get', 'user_stroke-width'], ['get', 'stroke-width'], defaultLineWidth]], 2]
-const outlineWidthPolygon = ['to-number', ['coalesce',
-  ['get', 'user_stroke-width'], ['get', 'stroke-width'], 2]]
+const strokeWidth = styleProp(['user_stroke-width', 'stroke-width'], defaultLineWidth)
+const lineWidthMin = ['ceil', ['/', ['to-number', strokeWidth], 2]]
+const lineWidthMax = ['*', ['to-number', strokeWidth], 2]
+const outlineWidthPolygon = ['to-number', styleProp(['user_stroke-width', 'stroke-width'], 2)]
 const lineWidth = [
   'interpolate',
   ['linear'],
@@ -194,8 +199,7 @@ const lineWidth = [
   ] // At zoom level 13, the line width is max
 ]
 
-const lineOpacity = ['to-number', ['coalesce',
-  ['get', 'stroke-opacity'], ['get', 'user_stroke-opacity'], 0.8]]
+const lineOpacity = ['to-number', styleProp(['stroke-opacity', 'user_stroke-opacity'], 0.8)]
 const lineOpacityActive = 1
 
 const outlineWidthMin = ['+', 2, lineWidthMin]
@@ -218,9 +222,9 @@ const outlineWidth = [
   ] // At zoom level 13, the outline width is max
 ]
 
-const shouldScale = ['boolean', ['coalesce', ['get', 'user_marker-scaling'], ['get', 'marker-scaling']], false]
-const pointColor = ['coalesce', ['get', 'user_marker-color'], ['get', 'marker-color'], featureColor]
-const markerSize = ['coalesce', ['get', 'user_marker-size'], ['get', 'marker-size']]
+const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
+const pointColor = styleProp(['user_marker-color', 'marker-color'], featureColor)
+const markerSize = styleProp(['user_marker-size', 'marker-size'])
 const minZoomFilter = [">=", ["zoom"], ["coalesce", ["to-number", ["get", "min-zoom"]], 0]]
 
 const pointSizeMin = ['to-number', ['coalesce',
@@ -254,17 +258,16 @@ export const pointSize = [
   ]
 ]
 
-export const pointOutlineSize = ['to-number', ['coalesce', ['get', 'user_stroke-width'], ['get', 'stroke-width'], 2]]
+export const pointOutlineSize = ['to-number', styleProp(['user_stroke-width', 'stroke-width'], 2)]
 export const pointOutlineSizeActive = ['+', 1, pointOutlineSize]
-const pointOutlineColor = ['coalesce', ['get', 'user_stroke'], ['get', 'stroke'], featureOutlineColor]
-const pointOpacity = ['to-number', ['coalesce', ['get', 'marker-opacity'], 0.9]]
+const pointOutlineColor = styleProp(['user_stroke', 'stroke'], featureOutlineColor)
+const pointOpacity = ['to-number', styleProp(['marker-opacity'], 0.9)]
 const pointOpacityActive = ['to-number', ['coalesce', ['min', ['+', ['get', 'marker-opacity'], 0.2], 1], 0.9]]
 
 // factor of the original icon size (200x200)
 // in case of external icon url, we don't know the size
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
-export const iconSizeDefault = ['*', 1 / 60, ['to-number', ['coalesce',
-  ['get', 'user_marker-size'], ['get', 'marker-size'], 20]]]
+export const iconSizeDefault = ['*', 1 / 60, ['to-number', styleProp(['user_marker-size', 'marker-size'], 20)]]
 export const iconSizeMin = ['case', shouldScale,
   0, iconSizeDefault]
 export const iconSizeMax = ['case', shouldScale,
@@ -280,7 +283,7 @@ const iconSize = [
 
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
-const userLabelSize = ['coalesce', ['get', 'user_label-size'], ['get', 'label-size']]
+const userLabelSize = styleProp(['user_label-size', 'label-size'])
 const scaledLabelSize = ['coalesce', ...userLabelSize.slice(1), ['*', 2, pointSizeMax]] // fallback to 2*pointSizeMax
 const staticLabelSize = ['coalesce', ...userLabelSize.slice(1), 16] // fallback to 16
 const labelOffset =
@@ -325,7 +328,7 @@ function symbolsLayerStyles(mode) {
 
   // Shared layout properties
   const sharedLayout = {
-    'symbol-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]],
+    'symbol-sort-key': sortKey,
     'icon-image': ['coalesce',
       ['get', 'marker-image-url'],
       // replacing marker-symbol value with path to emoji png
@@ -408,7 +411,7 @@ function textLayerStyles(mode) {
     'text-max-width': ['get', 'label-max-width'],
     'text-line-height': 1.6, // no dynamic value possible
     // TODO: sort keys on text are ascending, on symbols descending???
-    'symbol-sort-key': ['-', 1000, ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]]
+    'symbol-sort-key': ['-', 1000, sortKey]
   }
 
   // Mode-specific layout properties
@@ -425,8 +428,8 @@ function textLayerStyles(mode) {
 
   // Shared paint properties
   const sharedPaint = {
-    'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
-    'text-halo-color': ['coalesce', ['get', 'user_label-shadow'], ['get', 'label-shadow'], '#fff'],
+    'text-color': labelColor,
+    'text-halo-color': labelShadow,
     'text-halo-width': 2
   }
 
@@ -487,17 +490,9 @@ export function styles () {
         ['>', ['get', 'fill-extrusion-height'], 0],
         minZoomFilter],
       paint: {
-        'fill-extrusion-color': ['coalesce',
-            ['get', 'fill-extrusion-color'],
-            ['get', 'user_fill-extrusion-color'],
-            ['get', 'fill'],
-            ['get', 'user_fill'], featureColor],
-        'fill-extrusion-height': ['to-number', ['coalesce',
-          ['get', 'fill-extrusion-height'],
-          ['get', 'user_fill-extrusion-height']]],
-        'fill-extrusion-base': ['to-number', ['coalesce',
-          ['get', 'fill-extrusion-base'],
-          ['get', 'user_fill-extrusion-base']]],
+        'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], featureColor),
+        'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'])],
+        'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'])],
         // opacity does not support data expressions, it's a constant per layer
         'fill-extrusion-opacity': 0.9
       }
@@ -632,7 +627,7 @@ export function styles () {
         'circle-stroke-opacity': ['to-number', ["min", 1, ['+', pointOpacity, 0.2]]]
       },
       layout: {
-        'circle-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]
+        'circle-sort-key': sortKey
       }
     },
     'points-layer': {
@@ -685,7 +680,7 @@ export function styles () {
       },
       layout: {
         // sort-key is only effective within same layer
-        'circle-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]
+        'circle-sort-key': sortKey
       }
     },
     'points-hit-layer': {
@@ -703,7 +698,7 @@ export function styles () {
       },
       layout: {
         // sort-key is only effective within same layer
-        'circle-sort-key': ['to-number', ['coalesce', ['get', 'user_sort-key'], ['get', 'sort-key'], 1]]
+        'circle-sort-key': sortKey
       }
     },
     'heatmap-layer': {
@@ -732,15 +727,15 @@ export function styles () {
         ['has', 'label'], minZoomFilter],
       layout: {
         'symbol-placement': 'line',
-        'text-field': ['coalesce', ['get', 'user_label'], ['get', 'label']],
+        'text-field': styleProp(['user_label', 'label']),
         'text-font': labelFont,
         'text-size': 14,
         'text-max-angle': 30,
         'symbol-spacing': 200
       },
       paint: {
-        'text-color': ['coalesce', ['get', 'user_label-color'], ['get', 'label-color'], '#000'],
-        'text-halo-color': ['coalesce', ['get', 'user_label-shadow'], ['get', 'label-shadow'], '#fff'],
+        'text-color': labelColor,
+        'text-halo-color': labelShadow,
         'text-halo-width': 2
       }
     },
