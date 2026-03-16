@@ -1,7 +1,7 @@
 import consumer from 'channels/consumer'
 import {
   upsert, destroyFeature, setBackgroundMapLayer, mapProperties,
-  initializeMaplibreProperties, map, 
+  initializeMaplibreProperties, map, setLayerVisibility,
   reloadMapProperties } from 'maplibre/map'
 import { layers, initializeLayerStyles, loadLayerDefinitions } from 'maplibre/layers/layers'
 
@@ -99,9 +99,13 @@ export function initializeSocket () {
             // Remove geojson key before comparison
             const { ['geojson']: _, ...layerDef } = layers[index]
             if (JSON.stringify(layerDef) !== JSON.stringify(data.layer)) {
+              // preserve geojson data when updating layer definition
+              const geojson = layers[index].geojson
               layers[index] = data.layer
+              if (geojson) { layers[index].geojson = geojson }
               console.log('Layer updated on server, reloading layer styles', data.layer)
-              initializeLayerStyles(data.layer.id)
+              if (data.layer.show !== false) { initializeLayerStyles(data.layer.id) }
+              setLayerVisibility(data.layer.type + '-source-' + data.layer.id, data.layer.show !== false)
             }
           } else {
             layers.push(data.layer)

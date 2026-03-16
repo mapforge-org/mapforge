@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { map, upsert, mapProperties, removeGeoJSONSource } from 'maplibre/map'
+import { map, upsert, mapProperties, removeGeoJSONSource, setLayerVisibility } from 'maplibre/map'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
 import { status } from 'helpers/status'
@@ -200,6 +200,39 @@ export default class extends Controller {
     list.classList.toggle('hidden')
   }
 
+  toggleLayerVisibility (event) {
+    event.preventDefault()
+    dom.closeTooltips()
+    const layerElement = event.target.closest('.layer-item')
+    const layerId = layerElement.getAttribute('data-layer-id')
+    const layer = layers.find(l => l.id === layerId)
+    const wasVisible = layer.show !== false
+    layer.show = !wasVisible
+
+    setLayerVisibility(layer.type + '-source-' + layerId, layer.show)
+
+    // update UI
+    const icon = layerElement.querySelector('button.layer-visibility i')
+    if (layer.show) {
+      icon.classList.replace('bi-eye-slash', 'bi-eye')
+      layerElement.classList.remove('opacity-50')
+    } else {
+      icon.classList.replace('bi-eye', 'bi-eye-slash')
+      layerElement.classList.add('opacity-50')
+    }
+
+    // when showing: initialize styles (and load data for overpass/wikipedia if needed)
+    if (layer.show) {
+      initializeLayerStyles(layerId)
+    }
+
+    // sync to server only in rw mode
+    if (window.gon.map_mode === "rw") {
+      const { geojson: _geojson, ...sendLayer } = layer
+      mapChannel.send_message('update_layer', sendLayer)
+    }
+  }
+
   createWikipediaLayer() {
     this.createLayer('wikipedia', 'Wikipedia', '')
   }
@@ -221,7 +254,7 @@ export default class extends Controller {
   createLayer(type, name, query) {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
-    let layer = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": true}
+    let layer = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": true, "show": true}
     if (type == 'overpass') { 
       layer["query"] = query 
       // TODO: move cluster + heatmap to layer checkboxes 

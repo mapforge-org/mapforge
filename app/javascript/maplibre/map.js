@@ -216,6 +216,21 @@ export function removeStyleLayers(sourceName) {
   }
 }
 
+export function setLayerVisibility(sourceName, visible) {
+  if (map.getStyle && map.getStyle().layers) {
+    const sources = [sourceName]
+    // geojson layers have a companion km-marker source
+    if (sourceName.startsWith('geojson-source-')) {
+      sources.push(sourceName.replace('geojson-source-', 'km-marker-source-'))
+    }
+    map.getStyle().layers
+      .filter(l => sources.includes(l.source))
+      .forEach(l => {
+        if (map.getLayer(l.id)) map.setLayoutProperty(l.id, 'visibility', visible ? 'visible' : 'none')
+      })
+  }
+}
+
 export function removeGeoJSONSource(sourceName) {
   removeStyleLayers(sourceName)
   if (map.getSource(sourceName)) {

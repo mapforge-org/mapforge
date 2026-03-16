@@ -66,6 +66,7 @@ export async function initializeLayerStyles(id = null) {
 // triggered by layer reload in the layers modal
 export function loadLayerData(id) {
   let layer = layers.find(l => l.id === id)
+  if (layer.show === false) { return Promise.resolve() }
   // geojson layers are loaded in loadLayerDefinitions
   if (layer.type === 'wikipedia') {
     return loadWikipediaLayer(layer.id)
@@ -76,7 +77,7 @@ export function loadLayerData(id) {
 
 // triggered by layer reload in the UI
 export async function loadAllLayerData() {
-  await Promise.all(layers.map((layer) => { return loadLayerData(layer.id) }))
+  await Promise.all(layers.filter(l => l.show !== false).map((layer) => { return loadLayerData(layer.id) }))
 }
 
 export function getFeature(id, type = null) {

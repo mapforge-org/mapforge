@@ -7,7 +7,7 @@ import { map } from 'maplibre/map'
 import { initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
 
 export function initializeOverpassLayers(id = null) {
-  let initLayers = layers.filter(l => l.type === 'overpass')
+  let initLayers = layers.filter(l => l.type === 'overpass' && l.show !== false)
   if (id) { initLayers = initLayers.filter(l => l.id === id)  }
   return initLayers.map((layer) => {
     const clustered = !layer.query.includes("heatmap=true") &&

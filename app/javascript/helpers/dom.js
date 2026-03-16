@@ -57,11 +57,11 @@ export function initTooltips (root = document) {
   }
 }
 
-export function closeTooltips () {
-  functions.e('[data-toggle="tooltip"]', e => { 
-    const tooltip = bootstrap.Tooltip.getInstance(e); 
-    if (tooltip) tooltip.dispose()  
-    })
+export function closeTooltips (root = document) {
+  root.querySelectorAll('[data-toggle="tooltip"]').forEach(e => {
+    const tooltip = bootstrap.Tooltip.getInstance(e)
+    if (tooltip) tooltip.dispose()
+  })
 }
 
 export function scrollToId(elementId) {

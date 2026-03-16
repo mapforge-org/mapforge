@@ -95,7 +95,7 @@ class MapChannel < ApplicationCable::Channel
   end
 
   def layer_atts(data)
-    data.slice("id", "type", "name", "query", "heatmap", "cluster")
+    data.slice("id", "type", "name", "query", "heatmap", "cluster", "show")
   end
 
   # load map with write access

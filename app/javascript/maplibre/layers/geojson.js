@@ -9,7 +9,7 @@ import { defaultLineWidth, featureColor, initializeClusterStyles, initializeView
 
 export function initializeGeoJSONLayers(id = null) {
   // console.log('Initializing geojson layers')
-  let initLayers = layers.filter(l => l.type === 'geojson')
+  let initLayers = layers.filter(l => l.type === 'geojson' && l.show !== false)
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   initLayers.forEach((layer) => {
