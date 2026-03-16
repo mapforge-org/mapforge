@@ -1,9 +1,14 @@
 import consumer from 'channels/consumer'
+import { initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers'
 import {
-  upsert, destroyFeature, setBackgroundMapLayer, mapProperties,
-  initializeMaplibreProperties, map, setLayerVisibility,
-  reloadMapProperties } from 'maplibre/map'
-import { layers, initializeLayerStyles, loadLayerDefinitions } from 'maplibre/layers/layers'
+  destroyFeature,
+  initializeMaplibreProperties, map,
+  mapProperties,
+  reloadMapProperties,
+  setBackgroundMapLayer,
+  setLayerVisibility,
+  upsert
+} from 'maplibre/map'
 
 
 export let mapChannel
@@ -104,7 +109,7 @@ export function initializeSocket () {
               layers[index] = data.layer
               if (geojson) { layers[index].geojson = geojson }
               console.log('Layer updated on server, reloading layer styles', data.layer)
-              if (data.layer.show !== false) { initializeLayerStyles(data.layer.id) }
+              initializeLayerStyles(data.layer.id)
               setLayerVisibility(data.layer.type + '-source-' + data.layer.id, data.layer.show !== false)
             }
           } else {

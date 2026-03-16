@@ -37,7 +37,7 @@ export function initializeLayerSources(id = null) {
   initLayers.forEach((layer) => {
     // drop cluster when heatmap is set
     const cluster = !!layer.cluster && !layer.heatmap
-    console.log('Adding source for layer', layer.type, layer.id, cluster)
+    console.log('Adding source for layer', layer)
     addGeoJSONSource(layer.type + '-source-' + layer.id, cluster)
     // add one source for km markers per geojson layer
     if (layer.type === 'geojson') {
@@ -66,7 +66,10 @@ export async function initializeLayerStyles(id = null) {
 // triggered by layer reload in the layers modal
 export function loadLayerData(id) {
   let layer = layers.find(l => l.id === id)
-  if (layer.show === false) { return Promise.resolve() }
+  if (layer.show === false) {
+    console.log("Skipped loading data for not shown layer", layer)
+    return Promise.resolve()
+  }
   // geojson layers are loaded in loadLayerDefinitions
   if (layer.type === 'wikipedia') {
     return loadWikipediaLayer(layer.id)
@@ -77,7 +80,7 @@ export function loadLayerData(id) {
 
 // triggered by layer reload in the UI
 export async function loadAllLayerData() {
-  await Promise.all(layers.filter(l => l.show !== false).map((layer) => { return loadLayerData(layer.id) }))
+  await Promise.all(layers.map((layer) => { return loadLayerData(layer.id) }))
 }
 
 export function getFeature(id, type = null) {
