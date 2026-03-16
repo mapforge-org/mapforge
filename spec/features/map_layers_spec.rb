@@ -129,6 +129,49 @@ describe "Map" do
     end
   end
 
+  context "layer visibility" do
+    before do
+      find(".maplibregl-ctrl-layers").click
+    end
+
+    it "toggles layer visibility" do
+      find("button.layer-visibility").click
+      expect(page).to have_css(".layer-item.opacity-50")
+      expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
+      wait_for { map.layers.first.reload.show }.to be false
+    end
+
+    it "shows hidden layer" do
+      map.layers.first.update!(show: false)
+      visit map.private_map_path
+      expect_map_loaded
+      find(".maplibregl-ctrl-layers").click
+      expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
+      find("button.layer-visibility").click
+      expect(page).to have_css("button.layer-visibility i.bi-eye")
+      expect(page).not_to have_css(".layer-item.opacity-50")
+      wait_for { map.layers.first.reload.show }.to be true
+    end
+  end
+
+  context "layer visibility in readonly mode" do
+    it "does not sync visibility change to server" do
+      find(".maplibregl-ctrl-layers").click
+      find("button.layer-visibility").click
+      wait_for { map.layers.first.reload.show }.to be false
+
+      visit map.public_map_path
+      expect_map_loaded
+      find(".maplibregl-ctrl-layers").click
+      expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
+      # toggle in ro mode
+      find("button.layer-visibility").click
+      expect(page).to have_css("button.layer-visibility i.bi-eye")
+      # server state unchanged
+      expect(map.layers.first.reload.show).to be false
+    end
+  end
+
   context "add new layer" do
     before do
       find(".maplibregl-ctrl-layers").click

@@ -69,12 +69,14 @@
               %i.bi.bi-caret-right-fill
               %span.mapforge-font.layer-name.me-2 Layer name
             %span.text-nowrap
-              %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-refresh{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Refresh layer for current view" }
+              %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-visibility{ data: { action: "click->map--layers#toggleLayerVisibility", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Toggle visibility" }
+                %i.bi.bi-eye
+              %button.hidden.btn.btn-secondary.btn-layer-actions.layer-refresh{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Refresh layer for current view" }
                 %i.bi.bi-arrow-clockwise.reload-icon
               %button.hidden.btn.btn-secondary.btn-layer-actions.layer-edit{ data: { action: "click->map--layers#toggleEdit", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Edit query" }
                 %i.bi.bi-pencil-square
               %button.hidden.btn.btn-orange.btn-layer-actions.layer-delete{ data: { action: "click->map--layers#deleteLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Delete Layer" }
-                %i.bi.bi-trash             
+                %i.bi.bi-trash
 
           .layer-content.hidden
 

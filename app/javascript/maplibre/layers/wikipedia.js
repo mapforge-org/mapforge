@@ -7,7 +7,7 @@ import { initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/s
 
 export function initializeWikipediaLayers(id = null) {
   // console.log('Initializing Wikipedia layers')
-  let initLayers = layers.filter(l => l.type === 'wikipedia')
+  let initLayers = layers.filter(l => l.type === 'wikipedia' && l.show !== false)
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   return initLayers.map((layer) => {

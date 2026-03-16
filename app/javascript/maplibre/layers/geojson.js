@@ -4,12 +4,12 @@ import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { draw, select } from 'maplibre/edit'
 import { getFeature, getFeatures, layers } from 'maplibre/layers/layers'
-import { map, mapProperties } from 'maplibre/map'
+import { map, mapProperties, removeStyleLayers } from 'maplibre/map'
 import { defaultLineWidth, featureColor, initializeClusterStyles, initializeViewStyles, labelFont, setSource, styles } from 'maplibre/styles/styles'
 
 export function initializeGeoJSONLayers(id = null) {
   // console.log('Initializing geojson layers')
-  let initLayers = layers.filter(l => l.type === 'geojson')
+  let initLayers = layers.filter(l => l.type === 'geojson' && l.show !== false)
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   initLayers.forEach((layer) => {
@@ -188,6 +188,7 @@ export function kmMarkerStyles (_id) {
 }
 
 export function initializeKmMarkerStyles(id) {
+  removeStyleLayers('km-marker-source-' + id)
   kmMarkerStyles(id).forEach(style => {
     style = setSource (style, 'km-marker-source-' + id)
     map.addLayer(style)

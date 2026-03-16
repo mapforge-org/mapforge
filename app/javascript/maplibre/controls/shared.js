@@ -175,6 +175,7 @@ export function initSettingsModal () {
 // create the list of layers + features
 export function initLayersModal () {
   functions.e('#layers', e => {
+    dom.closeTooltips(e)
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')
     layers.forEach(layer => {
@@ -200,6 +201,13 @@ export function initLayersModal () {
       featureCount.textContent = '(' + features.length + ')'
       head.parentNode.insertBefore(featureCount, head.nextSibling)
       e.appendChild(layerElement)
+      // visibility toggle for all layers
+      const visBtn = layerElement.querySelector('button.layer-visibility')
+      visBtn.classList.remove('hidden')
+      if (layer.show === false) {
+        visBtn.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
+        layerElement.classList.add('opacity-50')
+      }
       if (layer.type !== 'geojson') {
         layerElement.querySelector('button.layer-refresh').classList.remove('hidden')
         layerElement.querySelector('button.layer-delete').classList.remove('hidden')
