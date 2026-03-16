@@ -215,6 +215,17 @@
   --bs-dropdown-padding-y: 0.3rem;
 }
 
+.layer-actions-dropdown .dropdown-menu {
+  background-color: var(--color-light-alabaster);
+  box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 20%);
+  z-index: 1050;
+}
+
+/* hide dropdown items whose button is hidden (not relevant for this layer type) */
+.layer-actions-dropdown li:has(> .hidden) {
+  display: none;
+}
+
 #query-dropdown li {
   margin: 0.1em 0.5em;
   cursor: pointer;
@@ -222,6 +233,12 @@
 
 #query-dropdown .dropdown-item {
   border-radius: .375rem;
+}
+
+/* dim layer name and content when hidden, but not the action buttons/dropdown */
+.layer-dimmed > h4 .link,
+.layer-dimmed > .layer-content {
+  opacity: 0.5;
 }
 
 .layer-item-header {

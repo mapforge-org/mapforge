@@ -203,23 +203,31 @@ export function initLayersModal () {
       e.appendChild(layerElement)
       // visibility toggle for all layers
       const visBtn = layerElement.querySelector('button.layer-visibility')
+      const visBtnMobile = layerElement.querySelector('button.layer-visibility-mobile')
       visBtn.classList.remove('hidden')
+      visBtnMobile.classList.remove('hidden')
       if (layer.show === false) {
         visBtn.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
-        layerElement.classList.add('opacity-50')
+        visBtnMobile.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
+        layerElement.classList.add('layer-dimmed')
       }
       if (layer.type !== 'geojson') {
-        layerElement.querySelector('button.layer-refresh').classList.remove('hidden')
         layerElement.querySelector('button.layer-delete').classList.remove('hidden')
+        layerElement.querySelector('button.layer-delete-mobile').classList.remove('hidden')
+        if (layer.show !== false) {
+          layerElement.querySelector('button.layer-refresh').classList.remove('hidden')
+          layerElement.querySelector('button.layer-refresh-mobile').classList.remove('hidden')
+        }
       }
       if (layer.type === 'overpass') {
         layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
-        if (window.gon.map_mode === "rw") {
+        if (window.gon.map_mode === "rw" && layer.show !== false) {
           layerElement.querySelector('button.layer-edit').classList.remove('hidden')
+          layerElement.querySelector('button.layer-edit-mobile').classList.remove('hidden')
         }
       }
 
-      const ul = layerElement.querySelector('ul')
+      const ul = layerElement.querySelector('.layer-content ul')
       features.slice(0, 300).forEach(feature => {
         const listItem = document.createElement('li')
         listItem.classList.add('layer-feature-item')

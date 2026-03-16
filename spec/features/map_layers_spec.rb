@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe "Map" do
-  subject(:map) { create(:map) }
+  subject(:map) { create(:map, name: 'Layers test') }
 
   let(:user) { create(:user) }
 
@@ -130,43 +130,84 @@ describe "Map" do
   end
 
   context "layer visibility" do
-    before do
-      find(".maplibregl-ctrl-layers").click
+    it "toggles layer visibility via websocket" do
+      map.layers.first.update!(show: false)
+      layer_id = map.layers.first.id
+      expect_layer_visibility(layer_id, false)
+      map.layers.first.update!(show: true)
+      expect_layer_visibility(layer_id, true)
     end
 
-    it "toggles layer visibility" do
+    it "toggles layer visibility from show to hidden" do
+      layer_id = map.layers.first.id
+      expect_layer_visibility(layer_id, true)
+      find(".maplibregl-ctrl-layers").click
       find("button.layer-visibility").click
-      expect(page).to have_css(".layer-item.opacity-50")
+
+      expect(page).to have_css(".layer-item.layer-dimmed")
       expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
       wait_for { map.layers.first.reload.show }.to be false
+      expect_layer_visibility(layer_id, false)
     end
 
-    it "shows hidden layer" do
+    it "toggles layer visibility from hidden to show" do
+      layer_id = map.layers.first.id
       map.layers.first.update!(show: false)
-      visit map.private_map_path
-      expect_map_loaded
+      expect_layer_visibility(layer_id, false)
+
       find(".maplibregl-ctrl-layers").click
       expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
       find("button.layer-visibility").click
+
       expect(page).to have_css("button.layer-visibility i.bi-eye")
-      expect(page).not_to have_css(".layer-item.opacity-50")
+      expect(page).not_to have_css(".layer-item.layer-dimmed")
       wait_for { map.layers.first.reload.show }.to be true
+      expect_layer_visibility(layer_id, true)
+    end
+  end
+
+  context "layer visibility mobile dropdown", :mobile do
+    it "toggles layer visibility from show to hidden" do
+      layer_id = map.layers.first.id
+
+      # Open mobile dropdown
+      find(".maplibregl-ctrl-layers").click
+      find(".layer-actions-dropdown button").click
+      expect(page).to have_css("button.layer-visibility-mobile i.bi-eye")
+      find("button.layer-visibility-mobile").click
+
+      expect(page).to have_css(".layer-item.layer-dimmed")
+      wait_for { map.layers.first.reload.show }.to be false
+      expect_layer_visibility(layer_id, false)
+    end
+
+    it "toggles layer visibility from hidden to show" do
+      layer_id = map.layers.first.id
+      map.layers.first.update!(show: false)
+      expect_layer_visibility(layer_id, false)
+
+      find(".maplibregl-ctrl-layers").click
+      find(".layer-actions-dropdown button").click
+      expect(page).to have_css("button.layer-visibility-mobile i.bi-eye-slash")
+      find("button.layer-visibility-mobile").click
+
+      expect(page).not_to have_css(".layer-item.layer-dimmed")
+      wait_for { map.layers.first.reload.show }.to be true
+      expect_layer_visibility(layer_id, true)
     end
   end
 
   context "layer visibility in readonly mode" do
     it "does not sync visibility change to server" do
-      find(".maplibregl-ctrl-layers").click
-      find("button.layer-visibility").click
-      wait_for { map.layers.first.reload.show }.to be false
-
+      map.layers.first.update!(show: false)
       visit map.public_map_path
       expect_map_loaded
+
       find(".maplibregl-ctrl-layers").click
       expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
-      # toggle in ro mode
       find("button.layer-visibility").click
       expect(page).to have_css("button.layer-visibility i.bi-eye")
+      expect_layer_visibility(map.layers.first.id, true)
       # server state unchanged
       expect(map.layers.first.reload.show).to be false
     end

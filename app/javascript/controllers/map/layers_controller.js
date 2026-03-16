@@ -1,16 +1,16 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { map, upsert, mapProperties, removeGeoJSONSource, setLayerVisibility } from 'maplibre/map'
-import { initLayersModal } from 'maplibre/controls/shared'
-import { uploadImageToFeature, confirmImageLocation } from 'maplibre/feature'
-import { status } from 'helpers/status'
+import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
+import { status } from 'helpers/status'
+import { flyToFeature } from 'maplibre/animations'
+import { initLayersModal } from 'maplibre/controls/shared'
+import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature'
+import { renderGeoJSONLayer } from 'maplibre/layers/geojson'
+import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData } from 'maplibre/layers/layers'
 import { initializeOverpassLayers } from 'maplibre/layers/overpass'
 import { queries } from 'maplibre/layers/queries'
-import { flyToFeature } from 'maplibre/animations'
-import { layers, initializeLayerStyles, initializeLayerSources, loadLayerData, loadAllLayerData } from 'maplibre/layers/layers'
-import { renderGeoJSONLayer } from 'maplibre/layers/geojson'
-import * as dom from 'helpers/dom'
+import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, upsert } from 'maplibre/map'
 
 export default class extends Controller {
   upload () {
@@ -107,7 +107,7 @@ export default class extends Controller {
         "type": "Point"
       }
     }
-    
+
     uploadImageToFeature(file, feature).then( () => {
       upsert(feature)
       // redraw first geojson layer
@@ -142,7 +142,7 @@ export default class extends Controller {
   resizeQueryField (event) {
     const queryTextarea = event.target
     queryTextarea.style.height = 'auto' // Reset height
-    queryTextarea.style.height = queryTextarea.scrollHeight + 'px' // Set to content height    
+    queryTextarea.style.height = queryTextarea.scrollHeight + 'px' // Set to content height
   }
 
   updateOverpassLayer (event) {
@@ -152,7 +152,7 @@ export default class extends Controller {
     const layer = layers.find(f => f.id === layerId)
     layer.query = layerElement.querySelector('.overpass-query').value
     layer.name = layerElement.querySelector('.overpass-name').value
-    // TODO: move cluster + heatmap to layer checkboxes 
+    // TODO: move cluster + heatmap to layer checkboxes
     const clustered = !layer.query.includes("heatmap=true") &&
       !layer.query.includes("cluster=false") &&
       !layer.query.includes("geom") // clustering breaks lines & geometries
@@ -171,7 +171,7 @@ export default class extends Controller {
     functions.e('#layer-reload', e => { e.classList.add('hidden') })
     functions.e('#layer-loading', e => { e.classList.remove('hidden') })
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
-    loadLayerData(layerId).then( () => { 
+    loadLayerData(layerId).then( () => {
       initLayersModal()
       functions.e('#layer-loading', e => { e.classList.add('hidden') })
       functions.e(`#layer-list-${layerId} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
@@ -184,11 +184,11 @@ export default class extends Controller {
     functions.e('#layer-loading', e => { e.classList.remove('hidden') })
     await loadAllLayerData()
     functions.e('#layer-loading', e => { e.classList.add('hidden') })
-  }  
+  }
 
   toggleLayerList (event) {
     event.preventDefault()
-    const list = event.target.closest('div').querySelector('.layer-content')
+    const list = event.target.closest('.layer-item').querySelector('.layer-content')
     const icon = event.target.closest('h4').querySelector('span i')
     if (list.classList.contains('hidden')) {
       icon.classList.remove('bi-caret-right-fill')
@@ -211,14 +211,26 @@ export default class extends Controller {
 
     setLayerVisibility(layer.type + '-source-' + layerId, layer.show)
 
-    // update UI
-    const icon = layerElement.querySelector('button.layer-visibility i')
+    // update UI (both desktop and mobile visibility buttons)
+    layerElement.querySelectorAll('button.layer-visibility i, button.layer-visibility-mobile i').forEach(icon => {
+      if (layer.show) {
+        icon.classList.replace('bi-eye-slash', 'bi-eye')
+      } else {
+        icon.classList.replace('bi-eye', 'bi-eye-slash')
+      }
+    })
+    // show/hide refresh and edit buttons based on visibility
+    const hideAction = layer.show ? 'remove' : 'add'
+    if (layer.type !== 'geojson') {
+      layerElement.querySelectorAll('button.layer-refresh, button.layer-refresh-mobile').forEach(btn => btn.classList[hideAction]('hidden'))
+    }
+    if (layer.type === 'overpass' && window.gon.map_mode === 'rw') {
+      layerElement.querySelectorAll('button.layer-edit, button.layer-edit-mobile').forEach(btn => btn.classList[hideAction]('hidden'))
+    }
     if (layer.show) {
-      icon.classList.replace('bi-eye-slash', 'bi-eye')
-      layerElement.classList.remove('opacity-50')
+      layerElement.classList.remove('layer-dimmed')
     } else {
-      icon.classList.replace('bi-eye', 'bi-eye-slash')
-      layerElement.classList.add('opacity-50')
+      layerElement.classList.add('layer-dimmed')
     }
 
     // when showing: initialize styles (and load data for overpass/wikipedia if needed)
@@ -255,9 +267,9 @@ export default class extends Controller {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
     let layer = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": true, "show": true}
-    if (type == 'overpass') { 
-      layer["query"] = query 
-      // TODO: move cluster + heatmap to layer checkboxes 
+    if (type == 'overpass') {
+      layer["query"] = query
+      // TODO: move cluster + heatmap to layer checkboxes
       const clustered = !layer.query.includes("heatmap=true") &&
         !layer.query.includes("cluster=false") &&
         !layer.query.includes("geom") // clustering breaks lines & geometries

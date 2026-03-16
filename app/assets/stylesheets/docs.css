@@ -19,10 +19,10 @@ nav.fixed-top~#docs {
     margin-bottom: 0.75rem;
     font-weight: 300;
   }
-  
+
   h2, h3, h4 {
-    margin-top: 2rem; 
-  }  
+    margin-top: 2rem;
+  }
 
   td, th {
     border: 0.1rem solid var(--color-light-sand);

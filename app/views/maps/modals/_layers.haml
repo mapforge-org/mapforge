@@ -68,7 +68,8 @@
             %span.w-100.link{ data: { action: "click->map--layers#toggleLayerList" }}
               %i.bi.bi-caret-right-fill
               %span.mapforge-font.layer-name.me-2 Layer name
-            %span.text-nowrap
+            -# Desktop: inline buttons
+            %span.text-nowrap.d-none.d-sm-inline
               %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-visibility{ data: { action: "click->map--layers#toggleLayerVisibility", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Toggle visibility" }
                 %i.bi.bi-eye
               %button.hidden.btn.btn-secondary.btn-layer-actions.layer-refresh{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Refresh layer for current view" }
@@ -77,6 +78,27 @@
                 %i.bi.bi-pencil-square
               %button.hidden.btn.btn-orange.btn-layer-actions.layer-delete{ data: { action: "click->map--layers#deleteLayer", "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Delete Layer" }
                 %i.bi.bi-trash
+            -# Mobile: dropdown menu
+            .dropdown.d-sm-none.d-inline.layer-actions-dropdown
+              %button.btn.btn-secondary.btn-layer-actions.ms-2{ type: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false" }
+                %i.bi.bi-three-dots-vertical
+              %ul.dropdown-menu.dropdown-menu-end
+                %li
+                  %button.hidden.dropdown-item.layer-visibility-mobile{ type: "button", data: { action: "click->map--layers#toggleLayerVisibility" } }
+                    %i.bi.bi-eye.me-2
+                    Toggle visibility
+                %li
+                  %button.hidden.dropdown-item.layer-refresh-mobile{ type: "button", data: { action: "click->map--layers#refreshLayer" } }
+                    %i.bi.bi-arrow-clockwise.me-2
+                    Refresh
+                %li
+                  %button.hidden.dropdown-item.layer-edit-mobile{ type: "button", data: { action: "click->map--layers#toggleEdit" } }
+                    %i.bi.bi-pencil-square.me-2
+                    Edit query
+                %li
+                  %button.hidden.dropdown-item.text-danger.layer-delete-mobile{ type: "button", data: { action: "click->map--layers#deleteLayer" } }
+                    %i.bi.bi-trash.me-2
+                    Delete
 
           .layer-content.hidden
 

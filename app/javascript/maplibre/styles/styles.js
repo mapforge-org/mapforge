@@ -46,7 +46,7 @@ export function initializeViewStyles (sourceName, heatmap=false) {
     if (draw && draw.getMode() !== 'simple_select') { return }
     if (window.gon.map_mode === 'static') { return }
 
-    // console.log('Features clicked', e.features)
+    console.log('Features clicked', e.features)
     let feature = e.features.find(f => !f.properties?.cluster)
     if (!feature) { return }
 
