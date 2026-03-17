@@ -41,6 +41,22 @@ nav.fixed-top~#docs {
     max-width: 640px;
     max-height: 480px;
   }
+
+  strong {
+    font-weight: 600;
+  }
+
+  blockquote {
+    border-left: 0.2rem solid var(--color-light-sand);
+    margin: 1.5rem 0;
+    padding: 0.5rem 1.2rem;
+    color: var(--color-light-sand);
+    font-style: italic;
+
+    p {
+      margin: 0.5rem 0;
+    }
+  }
 }
 
 .tutorial-preview {

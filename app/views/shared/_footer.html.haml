@@ -1,4 +1,4 @@
-%footer#footer.footer.light-background{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
+%footer#footer.footer.light-background.pb-2{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
   .container
     .row.gy-4
       - # empty block on the left on lg screen
@@ -17,7 +17,7 @@
               %i.bi.bi-file-text.me-1>
               Changelog
           %li
-            %a{ href: "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md" }
+            %a{ href: doc_path(id: 'ulogger') }
               %i.bi.bi-file-text.me-1>
               µlogger API
       .col-lg-2.col-sm-4.col-6.footer-links
@@ -49,10 +49,10 @@
                   %i.bi.bi-envelope.me-1
                 %span mapforge@mapforge.org
             %li
-              %a{ href: "https://github.com/digitaltom/mapforge/blob/main/docs/terms.md" }
+              %a{ href: doc_path(id: 'terms') }
                 %i.bi.bi-file-text.me-1>
                 Terms of Use
             %li
-              %a{ href: "https://github.com/digitaltom/mapforge/blob/main/docs/privacy.md" }
+              %a{ href: doc_path(id: 'privacy') }
                 %i.bi.bi-file-text.me-1>
                 Privacy Policy
