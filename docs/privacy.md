@@ -1,6 +1,8 @@
 ## Mapforge Privacy Policy
 
-*TL;DR*: For not logged in visitors, we do **not** use cookies and we do **not** collect any personal data. If you decide to log in, we store the bare minimum and do **not** share it with third party companies or services.
+*Last updated: March 17, 2026*
+
+> *TL;DR*: For not logged in visitors, we do **not** use cookies and we do **not** collect any personal data. If you decide to log in, we store the bare minimum and do **not** share it with third party companies or services.
 
 In this policy, we lay out what data we collect and why, how your data is handled and your rights to your data.
 
@@ -8,26 +10,26 @@ All of the data that we collect is kept fully secured and hosted in Germany. The
 
 ### As a visitor to the mapforge.org website
 
-> No personal information is collected
-> No information such as cookies is stored in the browser
-> No information is shared with, sent to or sold to third-parties
-> No information is shared with advertising companies
-> No information is mined and harvested for personal and behavioral trends
-> No information is monetized
+* No personal information is collected
+* No information such as cookies is stored in the browser
+* No information is shared with, sent to or sold to third-parties
+* No information is shared with advertising companies
+* No information is mined and harvested for personal and behavioral trends
+* No information is monetized
 
-When you are browsing maps, the background maps get loaded from external providers, such as opentopomap.org, stadiamaps.com, arcgisonline.com, openstreetmap.org, openfreemap.org, versatiles.org and maptiler.com. Those providers have their own policies which can get accessed via the info link in the lower right corner of the map.
+When you are browsing maps, the background maps get loaded from external providers, such as [opentopomap.org](https://opentopomap.org), [stadiamaps.com](https://stadiamaps.com), [arcgisonline.com](https://arcgisonline.com), [openstreetmap.org](https://openstreetmap.org), [openfreemap.org](https://openfreemap.org), [versatiles.org](https://versatiles.org) and [maptiler.com](https://maptiler.com). Those providers have their own policies which can get accessed via the info link in the lower right corner of the map.
 
 ### As a logged in user
 
-We only collect what we need and that we will solely process this information to provide you with the Mapforge service.
+We only collect what we need and will solely process this information to provide you with the Mapforge service.
 
-Here’s what that means in practice. When you log in via one of the supported login providers (Github, Google), we store:
+Here’s what that means in practice. When you log in via one of the supported login providers (Github, Google, OpenStreetMap), we store:
 
-> Your name
-> Your email address
-> A link to your profile picture
-> Your login provider
-> A list of your [recently viewed](https://mapforge.org/my) maps
+* Your name
+* Your email address
+* A link to your profile picture
+* Your login provider
+* A list of your [recently viewed](https://mapforge.org/my) maps
 
 A persistent first-party cookie is stored to remember you’re logged in.
 
@@ -44,7 +46,7 @@ You can export all your map data in GeoJSON format.
 
 We will retain your information as long as your account is active.
 
-You can choose to delete your Mapforge account at any time by sending a mail to mapforge@mapforge.org. All your data will be permanently deleted immediately when you delete your account.
+You can choose to delete your Mapforge account at any time by sending a mail to mapforge@mapforge.org. All your data will be permanently deleted within 7 days when you decide to delete your account.
 
 
 ### External policies
@@ -52,4 +54,4 @@ You can choose to delete your Mapforge account at any time by sending a mail to 
 Please see the privacy policies and terms of service of used services here:
 
 * OSM: [https://osmfoundation.org/wiki/Privacy_Policy](https://osmfoundation.org/wiki/Privacy_Policy)
-* OpenRouteService: [https://heigit.org/privacy-policy](https://heigit.org/privacy-policy/)
+* OpenRouteService: [https://heigit.org/privacy-policy](https://heigit.org/privacy-policy)

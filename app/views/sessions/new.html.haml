@@ -14,9 +14,9 @@
             Log in here to manage your maps.
           %p.small.mb-3
             Mapforge is storing only minimal data from you. By logging in, you accept the Mapforge
-            %a{ href: "https://github.com/digitaltom/mapforge/blob/main/docs/privacy.md" }Privacy Policy
+            %a{ href: doc_path(id: 'privacy') }Privacy Policy
             and&nbsp;
-            %a{ href: "https://github.com/digitaltom/mapforge/blob/main/docs/terms.md" }>Terms of service
+            %a{ href: doc_path(id: 'terms') }>Terms of service
             = '.'
 
           - if ENV["OSM_CLIENT_ID"].present? && ENV["OSM_CLIENT_SECRET"].present?
