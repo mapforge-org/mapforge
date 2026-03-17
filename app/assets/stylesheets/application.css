@@ -67,6 +67,12 @@ body {
   animation-duration: 0.5s;
 }
 
+.mapforge-font {
+  font-family: "Lobster Two", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
 a, .link {
   color: var(--text-color);
   cursor: pointer;
