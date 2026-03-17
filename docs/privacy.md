@@ -31,7 +31,7 @@ Here’s what that means in practice. When you log in via one of the supported l
 
 A persistent first-party cookie is stored to remember you’re logged in.
 
-### As a map creator of Mapforge
+### As a map creator on Mapforge
 
 The geojson and image data you upload or create on Mapforge is **not** available to other users by default. You can decide to share your map by link, or to publish it on mapforge.org to make it available to others.
 
