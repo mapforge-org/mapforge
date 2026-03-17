@@ -11,6 +11,12 @@
       "purpose": "any"
     },
     {
+      "src": "/icons/mapforge-logo-pwa-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
       "src": "/icons/mapforge-logo-pwa.png",
       "type": "image/png",
       "sizes": "512x512",
