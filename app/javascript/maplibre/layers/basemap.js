@@ -1,59 +1,56 @@
-import * as functions from 'helpers/functions';
+import * as functions from 'helpers/functions'
 import {
   highlightedFeatureId,
   stickyFeatureHighlight
-} from 'maplibre/feature';
-import { layers } from 'maplibre/layers/layers';
-import { overpassDescription } from 'maplibre/layers/overpass';
-import { addGeoJSONSource, map, mapProperties } from 'maplibre/map';
-import { basemaps } from 'maplibre/styles/basemaps';
-import { initializeViewStyles } from 'maplibre/styles/styles';
+} from 'maplibre/feature'
+import { Layer } from 'maplibre/layers/layer'
+import { overpassDescription } from 'maplibre/layers/overpass'
+import { addGeoJSONSource, map, mapProperties } from 'maplibre/map'
+import { basemaps } from 'maplibre/styles/basemaps'
+import { initializeViewStyles } from 'maplibre/styles/styles'
 
-export function initializeBaseMapLayers() {
-  if (!basemaps()[mapProperties.base_map].sourceName) { return }
+export class BasemapLayer extends Layer {
+  get sourceId() {
+    const basemapSource = basemaps()[mapProperties.base_map].sourceName
+    return "basemap_" + basemapSource + "_highlight"
+  }
 
-  let layerId = functions.featureId()
-  // must match server attribute order, for proper comparison in map_channel
-  let layer = { "id": layerId, "type": 'basemap', "name": 'basemap', geojson: { type: 'FeatureCollection', features: [] } }
-  layers.push(layer)
+  createSource() {
+    addGeoJSONSource(this.sourceId)
+  }
 
-  const basemapSource = basemaps()[mapProperties.base_map].sourceName
-  const highlightSource = "basemap_" + basemapSource + "_highlight"
-  const mapLayers = map.getStyle().layers
+  initialize() {
+    if (!basemaps()[mapProperties.base_map].sourceName) { return Promise.resolve() }
 
-  addGeoJSONSource(highlightSource)
-  initializeViewStyles(highlightSource)
+    this.createSource()
+    initializeViewStyles(this.sourceId)
 
-  map.on('mousemove', (e) => {
-    if (stickyFeatureHighlight && highlightedFeatureId) { return }
-    if (document.querySelector('.show > .map-modal')) { return }
+    const mapLayers = map.getStyle().layers
 
-    const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
-    const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds})
+    map.on('mousemove', (e) => {
+      if (stickyFeatureHighlight && highlightedFeatureId) { return }
+      if (document.querySelector('.show > .map-modal')) { return }
 
-    if (features.length) {
-      //console.log('Features hovered', features)
+      const basemapSource = basemaps()[mapProperties.base_map].sourceName
+      const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
+      const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds})
 
-      const feature = features[0]
+      if (features.length) {
+        const feature = features[0]
 
-      // ✅ Geometry ist bereits in WGS84 (lng/lat)
-      const geojsonFeature = {
-        type: 'Feature',
-        geometry: feature.geometry,
-        properties: feature.properties
+        const geojsonFeature = {
+          type: 'Feature',
+          geometry: feature.geometry,
+          properties: feature.properties
+        }
+        geojsonFeature.id = geojsonFeature.properties.id = functions.featureId()
+        geojsonFeature.properties.desc = overpassDescription(geojsonFeature.properties)
+
+        this.layer.geojson.features = [geojsonFeature]
+        map.getSource(this.sourceId).setData(this.layer.geojson, false)
       }
-      geojsonFeature.id = geojsonFeature.properties.id = functions.featureId()
-      geojsonFeature.properties.desc = overpassDescription(geojsonFeature.properties)
+    })
 
-      console.log('GeoJSON:', geojsonFeature)
-
-      layer.geojson.features = [geojsonFeature]
-      map.getSource(highlightSource).setData(layer.geojson, false)
-    }
-
-
-
-
-  })
-
+    return Promise.resolve()
+  }
 }

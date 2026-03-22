@@ -1,13 +1,44 @@
 import * as functions from 'helpers/functions'
-import { initializeGeoJSONLayers } from 'maplibre/layers/geojson'
-import { initializeOverpassLayers, loadOverpassLayer } from 'maplibre/layers/overpass'
-import { initializeWikipediaLayers, loadWikipediaLayer } from 'maplibre/layers/wikipedia'
-import { addGeoJSONSource, map, sortLayers } from 'maplibre/map'
+import { createLayerInstance } from 'maplibre/layers/factory'
+import { map, sortLayers } from 'maplibre/map'
 
-export let layers // [{ id:, type: "overpass"||"geojson", name:, query:, geojson: { type: 'FeatureCollection', features: [] } }]
+export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLayer, BasemapLayer
 window._layers = layers
 
-// Loads initial layer definitions from server
+// Cached promise to ensure initializeLayers only runs once
+let initializePromise = null
+
+/**
+ * Loads layer definitions from server and initializes them.
+ * Combines loadLayerDefinitions(), initializeLayerSources(), and initializeLayerStyles()
+ * into a single async operation. Returns Promise that resolves when all visible layers are ready.
+ * Idempotent - safe to call multiple times, will only load once.
+ */
+export async function initializeLayers() {
+  // Return cached promise if already initializing/initialized
+  if (initializePromise) {
+    return initializePromise
+  }
+
+  // Cache the promise so multiple calls don't re-initialize
+  initializePromise = (async () => {
+    await loadLayerDefinitions()
+    initializeLayerSources()
+    await initializeLayerStyles()
+
+    // Set test helper attribute for backward compatibility
+    functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
+
+    return layers
+  })()
+
+  return initializePromise
+}
+
+/**
+ * Loads layer definitions from server.
+ * Prefer using initializeLayers() for full initialization.
+ */
 export function loadLayerDefinitions() {
   layers = null
   const host = new URL(window.location.href).origin
@@ -21,42 +52,44 @@ export function loadLayerDefinitions() {
       console.log('Loaded map layer definitions from server: ', data.layers)
       // make sure we're still showing the map the request came from
       if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
-      layers = data.layers
-      map.fire('layers.load', { detail: { message: 'Map layer data loaded from server' } })
+      layers = data.layers.map(l => createLayerInstance(l))
+      window._layers = layers
+      map.fire('layers.load', { detail: { message: `Map data (${layers.length} layers) loaded from server` } })
     })
     .catch(error => {
       console.error('Failed to fetch map layers:', error)
     })
 }
 
-// initialize layers: create source
+/**
+ * Creates MapLibre sources for layers.
+ * Sources are created for ALL layers (including hidden ones)
+ */
 export function initializeLayerSources(id = null) {
   let initLayers = layers
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   initLayers.forEach((layer) => {
-    // drop cluster when heatmap is set
-    const cluster = !!layer.cluster && !layer.heatmap
     console.log('Adding source for layer', layer)
-    addGeoJSONSource(layer.type + '-source-' + layer.id, cluster)
-    // add one source for km markers per geojson layer
-    if (layer.type === 'geojson') {
-      addGeoJSONSource('km-marker-source-' + layer.id, false)
-    }
+    layer.createSource()
   })
 }
 
-// initialize layers: apply styles and load data
+/**
+ * Applies styles and loads data for visible layers only.
+ * This is expensive (async API calls) so hidden layers are skipped.
+ */
 export async function initializeLayerStyles(id = null) {
   functions.e('#layer-reload', e => { e.classList.add('hidden') })
   functions.e('#layer-loading', e => { e.classList.remove('hidden') })
 
-  initializeGeoJSONLayers(id)
-  // initializeBaseMapLayers()
-  let overpassPromises = initializeOverpassLayers(id)
-  let wikipediaPromises = initializeWikipediaLayers(id)
+  let initLayers = layers.filter(l => l.show !== false)
+  if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
-  await Promise.all(overpassPromises.concat(wikipediaPromises)).then(_results => {
+  const promises = initLayers.map(layer => layer.initialize())
+
+  await Promise.all(promises).then(_results => {
+    map.fire('geojson.load', { detail: { message: 'geojson source + styles loaded' } })
     // re-sort layers after style changes
     sortLayers()
     functions.e('#layer-loading', e => { e.classList.add('hidden') })
@@ -70,12 +103,7 @@ export function loadLayerData(id) {
     console.log("Skipped loading data for not shown layer", layer)
     return Promise.resolve()
   }
-  // geojson layers are loaded in loadLayerDefinitions
-  if (layer.type === 'wikipedia') {
-    return loadWikipediaLayer(layer.id)
-  } else if (layer.type === 'overpass') {
-    return loadOverpassLayer(layer.id)
-  }
+  return layer.loadData()
 }
 
 // triggered by layer reload in the UI
@@ -105,7 +133,7 @@ export function hasFeatures(type = 'geojson') {
 export function getFeatureSource(featureId) {
   const layer = getLayer(featureId)
   if (layer) {
-    return layer.type + '-source-' + layer.id
+    return layer.sourceId
   }
   return null
 }
@@ -118,4 +146,14 @@ export function getLayer(featureId) {
     }
   }
   return null
+}
+
+// Convenience functions for consumers
+
+export function renderLayer(id, ...args) {
+  layers.find(l => l.id === id).render(...args)
+}
+
+export function renderLayers(type, ...args) {
+  layers.filter(l => l.type === type).forEach(l => l.render(...args))
 }

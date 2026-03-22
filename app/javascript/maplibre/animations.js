@@ -7,8 +7,7 @@ import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
-import { renderGeoJSONLayers } from 'maplibre/layers/geojson'
-import { getFeatureSource } from 'maplibre/layers/layers'
+import { getFeatureSource, renderLayers } from 'maplibre/layers/layers'
 import { map, mapProperties } from 'maplibre/map'
 
 export class AnimationManager {
@@ -51,7 +50,7 @@ export class AnimatePointAnimation extends AnimationManager {
         start[1] + (end[1] - start[1]) * progress
       ]
       feature.geometry.coordinates = newCoordinates
-      renderGeoJSONLayers(false)
+      renderLayers('geojson', false)
       if (progress < 1) { this.animationId = requestAnimationFrame(animate) }
     }
     this.animationId = requestAnimationFrame(animate)
@@ -94,7 +93,7 @@ export class AnimateLineAnimation extends AnimationManager {
       // console.log("Frame #" + _frame + ", distance: " + distance + ", coord: " + coordinate)
 
       line.geometry.coordinates.push(coordinate)
-      renderGeoJSONLayers(false)
+      renderLayers('geojson', false)
 
       // Update camera position
       if (follow) { map.jumpTo({ center: coordinate }) }
@@ -125,7 +124,7 @@ export class AnimatePolygonAnimation extends AnimationManager {
       const progress = counter / steps
       polygon.properties['fill-extrusion-height'] = progress * height
       // console.log('New height: ' + polygon.properties['fill-extrusion-height'])
-      renderGeoJSONLayers(false)
+      renderLayers('geojson', false)
 
       counter++
 
@@ -137,7 +136,7 @@ export class AnimatePolygonAnimation extends AnimationManager {
     }
 
     polygon.properties['fill-extrusion-height'] = 0
-    renderGeoJSONLayers(true)
+    renderLayers('geojson', true)
     this.animationId = requestAnimationFrame(animate)
   }
 }

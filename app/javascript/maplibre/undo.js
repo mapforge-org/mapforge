@@ -1,8 +1,7 @@
 import { status } from 'helpers/status'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
-import { renderGeoJSONLayers } from 'maplibre/layers/geojson'
-import { getFeature } from 'maplibre/layers/layers'
+import { getFeature, renderLayers } from 'maplibre/layers/layers'
 import { addFeature, destroyFeature } from 'maplibre/map'
 import { resetDirections } from 'maplibre/routing/osrm'
 
@@ -54,7 +53,7 @@ export function undo() {
   if (!handler) { console.warn('Cannot undo ', prevState); return }
   handler(prevState)
   status('Undo: ' + prevState.type)
-  renderGeoJSONLayers(true)
+  renderLayers('geojson', true)
   keepSelection()
   if (undoStack.length === 0) { hideUndoButton() }
 }
@@ -68,7 +67,7 @@ export function redo() {
   if (!handler) { console.warn('Cannot redo ', nextState); return }
   handler(nextState)
   status('Redo: ' + nextState.type)
-  renderGeoJSONLayers(true)
+  renderLayers('geojson', true)
   keepSelection()
   if (redoStack.length === 0) { hideRedoButton() }
 }

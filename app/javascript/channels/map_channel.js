@@ -1,5 +1,6 @@
 import consumer from 'channels/consumer'
-import { initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers'
+import { createLayerInstance } from 'maplibre/layers/factory'
+import { initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers'
 import {
   destroyFeature,
   initializeMaplibreProperties, map,
@@ -101,19 +102,17 @@ export function initializeSocket () {
         case 'update_layer':
           const index = layers.findIndex(l => l.id === data.layer.id)
           if (index > -1) {
-            // Remove geojson key before comparison
-            const { ['geojson']: _, ...layerDef } = layers[index]
+            const layerDef = layers[index].toJSON()
             if (JSON.stringify(layerDef) !== JSON.stringify(data.layer)) {
-              // preserve geojson data when updating layer definition
-              const geojson = layers[index].geojson
-              layers[index] = data.layer
-              if (geojson) { layers[index].geojson = geojson }
               console.log('Layer updated on server, reloading layer styles', data.layer)
+              layers[index].update(data.layer)
               initializeLayerStyles(data.layer.id)
-              setLayerVisibility(data.layer.type + '-source-' + data.layer.id, data.layer.show !== false)
+              setLayerVisibility(layers[index].sourceId, data.layer.show !== false)
             }
           } else {
-            layers.push(data.layer)
+            const newLayer = createLayerInstance(data.layer)
+            layers.push(newLayer)
+            initializeLayerSources(data.layer.id)
             initializeLayerStyles(data.layer.id)
           }
           break

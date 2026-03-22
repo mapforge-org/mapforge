@@ -10,10 +10,7 @@ import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetCo
 import { initializeViewControls } from 'maplibre/controls/view';
 import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
-import { renderGeoJSONLayer, renderGeoJSONLayers } from 'maplibre/layers/geojson';
-import { getFeature, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers';
-import { renderOverpassLayer } from 'maplibre/layers/overpass';
-import { renderWikipediaLayer } from 'maplibre/layers/wikipedia';
+import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
 
@@ -28,13 +25,15 @@ let backgroundHillshade
 let backgroundGlobe
 let backgroundContours
 
-// workflow of event based map loading:
-// page calls: initializeMap(), [initializeSocket()],
-// initializeViewMode() or initializeEditMode() or initializeStaticMode()
-// setBackgroundMapLayer() -> 'style.load' event
-// 'style.load' (once) -> initializeDefaultControls()
-// 'style.load' -> initializeStyles()
-// loadLayerDefinitions() -> 'layers.load'
+// Workflow of map loading:
+// 1. Page calls: initializeMap(), [initializeSocket()], then initializeViewMode()/initializeEditMode()/initializeStaticMode()
+// 2. initializeMap() -> setBackgroundMapLayer() -> fires 'style.load' event
+// 3. 'style.load' (once) -> initializeDefaultControls()
+// 4. 'style.load' -> initializeStyles()
+//    - First load (!layers): await initializeLayers()
+//      → loadLayerDefinitions() → initializeLayerSources() → await initializeLayerStyles() → sets data-geojson-loaded
+//    - Basemap change (layers exists): initializeLayerSources() + await initializeLayerStyles()
+// 5. 'load' event -> await initializeLayers() if needed, then handle URL feature selection
 
 export function initializeMaplibreProperties () {
   const lastProperties = JSON.parse(JSON.stringify(mapProperties || {}))
@@ -76,7 +75,6 @@ export async function initializeMap (divId = 'maplibre-map') {
     // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
   })
 
-  loadLayerDefinitions()
   if (!functions.isTestEnvironment()) { map.setZoom(map.getZoom() - 1) } // will zoom in on map:load
 
   // for console debugging
@@ -87,11 +85,7 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   map.on('styleimagemissing', loadImage)
 
-  map.on('geojson.load', (_e) => {
-    functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
-  })
-
-  // NOTE: map 'load' can happen before 'layers.load'/'geojson.load' when loading features is slow
+  // NOTE: map 'load' can happen before layers are loaded when loading features is slow
   map.once('load', async function (_e) {
     // trigger map fade-in
     dom.animateElement('.map', 'fade-in', 250)
@@ -104,6 +98,9 @@ export async function initializeMap (divId = 'maplibre-map') {
     dom.initTooltips()
     functions.e('#preloader', e => { e.classList.add('hidden') })
     functions.e('.map', e => { e.setAttribute('data-map-loaded', true) })
+
+    // Wait for layers to be loaded before accessing features
+    if (!layers) { await initializeLayers() }
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     let feature
@@ -386,7 +383,7 @@ export function addFeature (feature) {
   feature.properties.id = feature.id
   // Adding new features to the first geojson layer
   layers.find(l => l.type === 'geojson').geojson.features.push(feature)
-  renderGeoJSONLayers(false)
+  renderLayers('geojson', false)
   status('Added feature')
 }
 
@@ -402,14 +399,14 @@ function updateFeature (feature, updatedFeature) {
   feature.geometry = updatedFeature.geometry
   feature.properties = updatedFeature.properties
   status('Updated feature ' + updatedFeature.id)
-  renderGeoJSONLayers()
+  renderLayers('geojson')
 }
 
 export function destroyFeature (featureId) {
   if (getFeature(featureId)) {
     status('Deleting feature ' + featureId)
     layers.forEach(l => l.geojson.features = l.geojson.features.filter(f => f.id !== featureId))
-    renderGeoJSONLayers()
+    renderLayers('geojson')
     resetHighlightedFeature()
   }
 }
@@ -418,14 +415,14 @@ export function destroyFeature (featureId) {
 async function initializeStyles() {
   console.log('Initializing sources and layer styles after basemap load/change')
 
-  // in case layer data is not yet loaded, wait for it
+  // First load: initialize layers (loads definitions, creates sources, loads styles/data)
+  // Subsequent calls: re-initialize sources and styles (basemap change removes all sources/layers)
   if (!layers) {
-    console.log('Waiting for layers to load before initializing styles...')
-    await functions.waitForEvent(map, 'layers.load')
+    await initializeLayers()
+  } else {
+    initializeLayerSources()
+    await initializeLayerStyles()
   }
-
-  initializeLayerSources()
-  initializeLayerStyles()
 
   demSource.setupMaplibre(maplibregl)
   if (mapProperties.terrain) { addTerrain() }
@@ -519,10 +516,7 @@ export function frontFeature(frontFeature) {
     if (idx !== -1) {
       const [feature] = features.splice(idx, 1) // Remove it
       features.push(feature) // Add to end
-      // TODO: refactor to call this dynamically in the right way
-      if (layer.type === 'geojson') { renderGeoJSONLayer(layer.id) }
-      if (layer.type === 'overpass') { renderOverpassLayer(layer.id) }
-      if (layer.type === 'wikipedia') { renderWikipediaLayer(layer.id) }
+      layer.render()
 
       break // done, exit loop
     }

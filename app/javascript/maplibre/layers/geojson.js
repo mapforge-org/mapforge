@@ -3,24 +3,19 @@ import { buffer } from "@turf/buffer"
 import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { draw, select } from 'maplibre/edit'
-import { getFeature, layers } from 'maplibre/layers/layers'
+import { getFeature } from 'maplibre/layers/layers'
 import { Layer } from 'maplibre/layers/layer'
-import { map, mapProperties, removeStyleLayers } from 'maplibre/map'
+import { addGeoJSONSource, map, mapProperties, removeStyleLayers } from 'maplibre/map'
 import { defaultLineWidth, featureColor, initializeClusterStyles, initializeViewStyles, labelFont, setSource, styles } from 'maplibre/styles/styles'
-
-// Instance cache for GeoJSONLayer objects
-const instances = new Map()
-
-function getInstance(id) {
-  if (!instances.has(id)) {
-    instances.set(id, new GeoJSONLayer(layers.find(l => l.id === id)))
-  }
-  return instances.get(id)
-}
 
 export class GeoJSONLayer extends Layer {
   get kmMarkerSourceId() {
     return `km-marker-source-${this.id}`
+  }
+
+  createSource() {
+    super.createSource()
+    addGeoJSONSource(this.kmMarkerSourceId, false)
   }
 
   initialize() {
@@ -28,6 +23,7 @@ export class GeoJSONLayer extends Layer {
     if (this.layer.cluster) { initializeClusterStyles(this.sourceId, null) }
     this.initializeKmMarkerStyles()
     this.render()
+    return Promise.resolve()
   }
 
   render(resetDraw = true) {
@@ -163,30 +159,6 @@ export class GeoJSONLayer extends Layer {
       return extrusionLine
     })
   }
-}
-
-// Backward-compatible wrapper exports
-
-export function initializeGeoJSONLayers(id = null) {
-  instances.clear()
-  let initLayers = layers.filter(l => l.type === 'geojson' && l.show !== false)
-  if (id) { initLayers = initLayers.filter(l => l.id === id) }
-
-  initLayers.forEach((layer) => {
-    getInstance(layer.id).initialize()
-  })
-
-  map.fire('geojson.load', { detail: { message: 'geojson source + styles loaded' } })
-}
-
-export function renderGeoJSONLayers(resetDraw = true) {
-  layers.filter(l => l.type === 'geojson').forEach((layer) => {
-    renderGeoJSONLayer(layer.id, resetDraw)
-  })
-}
-
-export function renderGeoJSONLayer(id, resetDraw = true) {
-  getInstance(id).render(resetDraw)
 }
 
 function makePointsLayer(divisor, minzoom, maxzoom = 24) {
