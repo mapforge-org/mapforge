@@ -12,15 +12,15 @@ def expect_overpass_loaded
   expect(page).to have_css("#maplibre-map[data-overpass-loaded='true']", wait: 30)
 end
 
-def layer_visibility(layer_id)
+def layer_visibility(layer_id, type = 'geojson')
   visible = page.evaluate_script(<<~JS)
     map.getStyle().layers
-      .filter(l => l.source === 'geojson-source-#{layer_id}')
+      .filter(l => l.source === '#{type}-source-#{layer_id}')
       .every(l => map.getLayoutProperty(l.id, 'visibility') !== 'none')
   JS
   visible
 end
 
-def expect_layer_visibility(layer_id, visible)
-  wait_for { layer_visibility(layer_id) }.to be visible
+def expect_layer_visibility(layer_id, visible, type = 'geojson')
+  wait_for { layer_visibility(layer_id, type) }.to be visible
 end

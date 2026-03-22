@@ -30,8 +30,6 @@ export class BasemapLayer extends Layer {
     this.createSource()
     initializeViewStyles(this.sourceId)
 
-    const mapLayers = map.getStyle().layers
-
     // Remove existing handler if re-initializing (e.g., basemap change)
     if (this.mouseMoveHandler) {
       map.off('mousemove', this.mouseMoveHandler)
@@ -42,6 +40,7 @@ export class BasemapLayer extends Layer {
       if (document.querySelector('.show > .map-modal')) { return }
 
       const basemapSource = basemaps()[mapProperties.base_map].sourceName
+      const mapLayers = map.getStyle().layers
       const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
       const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds})
 

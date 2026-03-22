@@ -13,5 +13,9 @@ FactoryBot.define do
       type { "overpass" }
       query { "nwr[highway=bus_stop];out skel;" }
     end
+
+    trait :wikipedia do
+      type { "wikipedia" }
+    end
   end
 end

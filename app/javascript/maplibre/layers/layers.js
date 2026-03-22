@@ -3,7 +3,6 @@ import { createLayerInstance } from 'maplibre/layers/factory'
 import { map, sortLayers } from 'maplibre/map'
 
 export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLayer, BasemapLayer
-window._layers = layers
 
 // Cached promise to ensure initializeLayers only runs once
 let initializePromise = null
@@ -160,7 +159,8 @@ export function getLayer(featureId) {
 // Convenience functions for consumers
 
 export function renderLayer(id, ...args) {
-  layers.find(l => l.id === id).render(...args)
+  const layer = layers.find(l => l.id === id)
+  if (layer) { layer.render(...args) }
 }
 
 export function renderLayers(type, ...args) {
