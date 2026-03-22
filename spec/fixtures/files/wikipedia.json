@@ -1,0 +1,16 @@
+{
+  "batchcomplete": "",
+  "query": {
+    "geosearch": [
+      {
+        "pageid": 12345,
+        "ns": 0,
+        "title": "Nürnberger Burg",
+        "lat": 49.458,
+        "lon": 11.076,
+        "dist": 100,
+        "primary": ""
+      }
+    ]
+  }
+}

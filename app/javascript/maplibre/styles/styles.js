@@ -33,7 +33,7 @@ export const viewStyleNames = [
 export function setStyleDefaultFont (font) { labelFont = [font] }
 
 export function initializeViewStyles (sourceName, heatmap=false) {
-  console.log('Initializing view styles for source ' + sourceName)
+  // console.log('Initializing view styles for source ' + sourceName)
   removeStyleLayers(sourceName)
   viewStyleNames.forEach(styleName => {
     map.addLayer(setSource(styles()[styleName], sourceName))
@@ -403,12 +403,12 @@ function textLayerStyles(mode) {
     ],
     'text-size': labelSize,
     'text-font': labelFont,
-    'text-letter-spacing': ['get', 'label-letter-spacing'],
+    'text-letter-spacing': ['coalesce', ['get', 'label-letter-spacing'], 0],
     'text-anchor': 'top', // text under point
     // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
     'text-offset': labelOffset,
     'text-justify': ['get', 'label-justify'],
-    'text-max-width': ['get', 'label-max-width'],
+    'text-max-width': ['coalesce', ['get', 'label-max-width'], 10],
     'text-line-height': 1.6, // no dynamic value possible
     // TODO: sort keys on text are ascending, on symbols descending???
     'symbol-sort-key': ['-', 1000, sortKey]
@@ -491,8 +491,8 @@ export function styles () {
         minZoomFilter],
       paint: {
         'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], featureColor),
-        'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'])],
-        'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'])],
+        'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
+        'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)],
         // opacity does not support data expressions, it's a constant per layer
         'fill-extrusion-opacity': 0.9
       }
@@ -551,7 +551,7 @@ export function styles () {
       layout: {
         'line-join': 'round',
         'line-cap': 'round',
-        'line-sort-key': ['to-number', ['get', 'sort-key']]
+        'line-sort-key': sortKey
       },
       paint: {
         'line-color': lineColor,

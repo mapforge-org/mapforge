@@ -74,7 +74,7 @@ export function initializeLayerSources(id = null) {
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   initLayers.forEach((layer) => {
-    console.log('Adding source for layer', layer)
+    // console.log(`Adding source for ${layer.type} layer`, layer)
     layer.createSource()
   })
 }
