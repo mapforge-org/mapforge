@@ -8,6 +8,15 @@ export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLaye
 let initializePromise = null
 
 /**
+ * Resets the initialization state when navigating to a new map.
+ * This allows layers to be re-initialized from scratch.
+ */
+export function resetInitializationState() {
+  initializePromise = null
+  layers = null
+}
+
+/**
  * Loads layer definitions from server and initializes them.
  * Combines loadLayerDefinitions(), initializeLayerSources(), and initializeLayerStyles()
  * into a single async operation. Returns Promise that resolves when all visible layers are ready.

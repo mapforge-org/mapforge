@@ -8,6 +8,23 @@ import { resetDirections } from 'maplibre/routing/osrm'
 let undoStack = []
 let redoStack = []
 
+/**
+ * Clears undo/redo history when navigating to a new map
+ */
+export function clearUndoHistory() {
+  undoStack = []
+  redoStack = []
+  // Try to hide buttons if they exist
+  try {
+    const undoBtn = document.querySelector('button.maplibregl-ctrl-undo')
+    const redoBtn = document.querySelector('button.maplibregl-ctrl-redo')
+    if (undoBtn) undoBtn.classList.add('hidden')
+    if (redoBtn) redoBtn.classList.add('hidden')
+  } catch (_e) {
+    // Buttons may not exist yet
+  }
+}
+
 export function addUndoState(type, state, clearRedo = true) {
   // Deep clone to avoid mutation
   undoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })

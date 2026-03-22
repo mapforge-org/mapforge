@@ -10,6 +10,7 @@ import {
 } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
 import { frontFeature, map, removeStyleLayers } from 'maplibre/map'
+import { defaultFont } from 'maplibre/styles/basemaps'
 
 export const viewStyleNames = [
   'polygon-layer',
@@ -120,6 +121,12 @@ export function initializeClusterStyles(sourceName, icon) {
 // loading images from 'marker-image-url' attributes
 // avoid loading the same image by each web worker
 const imageState = {} // 'loading' | 'loaded' | 'error'
+
+// Clear image state when navigating to a new map
+export function clearImageState() {
+  Object.keys(imageState).forEach(key => delete imageState[key])
+}
+
 export async function loadImage (e) {
   // Skip if already loading, loaded, or failed
   if (imageState[e.id]) {
@@ -319,7 +326,7 @@ const labelSize = [
 ]
 
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']
-export let labelFont // array
+export let labelFont = [defaultFont] // array - initialize with default to prevent null errors
 
 // Shared configuration for symbols layers
 function symbolsLayerStyles(mode) {
