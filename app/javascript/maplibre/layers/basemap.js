@@ -45,6 +45,7 @@ export class BasemapLayer extends Layer {
       const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds})
 
       if (features.length) {
+        console.log('Selected features: ', features)
         const feature = features[0]
 
         const geojsonFeature = {

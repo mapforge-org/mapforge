@@ -6,7 +6,7 @@ import { initializeEditMode } from 'maplibre/edit'
 import { initializeSocket, mapChannel } from 'channels/map_channel'
 import { addUndoState, clearUndoHistory } from 'maplibre/undo'
 import { resetInitializationState } from 'maplibre/layers/layers'
-import { clearImageState } from 'maplibre/styles/styles'
+import { clearImageState, resetLabelFont } from 'maplibre/styles/styles'
 
 export default class extends Controller {
   async connect () {
@@ -14,6 +14,7 @@ export default class extends Controller {
     resetInitializationState()
     clearImageState()
     clearUndoHistory()
+    resetLabelFont()
 
     functions.e('#map-header nav', e => { e.style.display = 'none' })
     await initializeMap('maplibre-map')
@@ -45,6 +46,7 @@ export default class extends Controller {
     resetInitializationState()
     clearImageState()
     clearUndoHistory()
+    resetLabelFont()
   }
 
   // paste feature from clipboard

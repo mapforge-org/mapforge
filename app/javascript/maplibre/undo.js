@@ -20,7 +20,7 @@ export function clearUndoHistory() {
     const redoBtn = document.querySelector('button.maplibregl-ctrl-redo')
     if (undoBtn) undoBtn.classList.add('hidden')
     if (redoBtn) redoBtn.classList.add('hidden')
-  } catch (_e) {
+  } catch {
     // Buttons may not exist yet
   }
 }

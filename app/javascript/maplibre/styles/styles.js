@@ -31,7 +31,7 @@ export const viewStyleNames = [
   'polygon-layer-extrusion'
 ]
 
-export function setStyleDefaultFont (font) { labelFont = [font] }
+export function setStyleDefaultFont(font) { labelFont = [font] }
 
 export function initializeViewStyles (sourceName, heatmap=false) {
   // console.log('Initializing view styles for source ' + sourceName)
@@ -126,6 +126,9 @@ const imageState = {} // 'loading' | 'loaded' | 'error'
 export function clearImageState() {
   Object.keys(imageState).forEach(key => delete imageState[key])
 }
+
+// Reset labelFont to default when clearing state
+export function resetLabelFont() { labelFont = [defaultFont] }
 
 export async function loadImage (e) {
   // Skip if already loading, loaded, or failed
@@ -400,9 +403,7 @@ function textLayerStyles(mode) {
       'format',
       ['coalesce', ['get', 'label'], ['get', 'room']],
       {
-        'text-font': [
-          'case',
-          ['has', 'label-font'],
+        'text-font': ['coalesce',
           ['get', 'label-font'],
           ['literal', labelFont]
         ]
