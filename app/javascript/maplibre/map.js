@@ -105,7 +105,8 @@ export async function initializeMap (divId = 'maplibre-map') {
     functions.e('.map', e => { e.setAttribute('data-map-loaded', true) })
 
     // Wait for layers to be loaded before accessing features
-    if (!layers) { await initializeLayers() }
+    // Safe to call even if already triggered by style.load — returns the cached promise, no double loading
+    await initializeLayers()
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     let feature

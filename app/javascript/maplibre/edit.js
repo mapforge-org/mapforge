@@ -76,7 +76,8 @@ export async function initializeEditMode () {
 
   // Show map settings modal on untouched map and handle URL feature selection
   map.once('load', async function (_e) {
-    if (!layers) { await initializeLayers() }
+    // Safe to call even if already triggered by style.load — returns the cached promise, no double loading
+    await initializeLayers()
     if (!mapProperties.name && !hasFeatures('geojson') && !layers?.filter(l => l.type !== 'geojson').length)  {
       functions.e('.maplibregl-ctrl-map', e => { e.click() })
     }
