@@ -19,6 +19,11 @@ export class BasemapLayer extends Layer {
     addGeoJSONSource(this.sourceId)
   }
 
+  /**
+   * Initialize basemap layer for feature highlighting on hover.
+   * Note: Basemap layer is special - it manually calls createSource() because it's not
+   * in the standard layers array during normal initialization flow.
+   */
   initialize() {
     if (!basemaps()[mapProperties.base_map].sourceName) { return Promise.resolve() }
 
@@ -27,7 +32,12 @@ export class BasemapLayer extends Layer {
 
     const mapLayers = map.getStyle().layers
 
-    map.on('mousemove', (e) => {
+    // Remove existing handler if re-initializing (e.g., basemap change)
+    if (this.mouseMoveHandler) {
+      map.off('mousemove', this.mouseMoveHandler)
+    }
+
+    this.mouseMoveHandler = (e) => {
       if (stickyFeatureHighlight && highlightedFeatureId) { return }
       if (document.querySelector('.show > .map-modal')) { return }
 
@@ -49,7 +59,9 @@ export class BasemapLayer extends Layer {
         this.layer.geojson.features = [geojsonFeature]
         map.getSource(this.sourceId).setData(this.layer.geojson, false)
       }
-    })
+    }
+
+    map.on('mousemove', this.mouseMoveHandler)
 
     return Promise.resolve()
   }

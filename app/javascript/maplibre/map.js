@@ -26,14 +26,19 @@ let backgroundGlobe
 let backgroundContours
 
 // Workflow of map loading:
-// 1. Page calls: initializeMap(), [initializeSocket()], then initializeViewMode()/initializeEditMode()/initializeStaticMode()
-// 2. initializeMap() -> setBackgroundMapLayer() -> fires 'style.load' event
-// 3. 'style.load' (once) -> initializeDefaultControls()
-// 4. 'style.load' -> initializeStyles()
-//    - First load (!layers): await initializeLayers()
-//      → loadLayerDefinitions() → initializeLayerSources() → await initializeLayerStyles() → sets data-geojson-loaded
-//    - Basemap change (layers exists): initializeLayerSources() + await initializeLayerStyles()
-// 5. 'load' event -> await initializeLayers() if needed, then handle URL feature selection
+//
+// initializeMap()
+//   └─> setBackgroundMapLayer()
+//       └─> 'style.load' event
+//           ├─> initializeDefaultControls() (once)
+//           └─> initializeStyles()
+//               ├─> First load: await initializeLayers() (idempotent, returns cached promise if called again)
+//               │   └─> loadLayerDefinitions() → initializeLayerSources() → await initializeLayerStyles() → sets data-geojson-loaded
+//               └─> Basemap change: initializeLayerSources() + await initializeLayerStyles()
+//
+// map 'load' event
+//   └─> await initializeLayers() (if needed for URL feature - returns cached promise if already loaded)
+//       └─> Handle URL feature selection (highlight/animate/center)
 
 export function initializeMaplibreProperties () {
   const lastProperties = JSON.parse(JSON.stringify(mapProperties || {}))

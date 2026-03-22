@@ -63,7 +63,12 @@ export function loadLayerDefinitions() {
 
 /**
  * Creates MapLibre sources for layers.
- * Sources are created for ALL layers (including hidden ones)
+ * Sources are created for ALL layers (including hidden ones) because:
+ * 1. Source creation is cheap (synchronous, no data loading)
+ * 2. Enables efficient layer visibility toggling (reuse existing sources)
+ * 3. Avoids recreating sources when showing/hiding layers
+ *
+ * @param {string|null} id - Optional layer ID to initialize only that layer's source
  */
 export function initializeLayerSources(id = null) {
   let initLayers = layers
@@ -77,7 +82,11 @@ export function initializeLayerSources(id = null) {
 
 /**
  * Applies styles and loads data for visible layers only.
- * This is expensive (async API calls) so hidden layers are skipped.
+ * This is expensive (async API calls for Overpass/Wikipedia) so hidden layers are skipped.
+ * When toggling visibility, this is called without initializeLayerSources() to reuse sources.
+ *
+ * @param {string|null} id - Optional layer ID to initialize only that layer's styles
+ * @returns {Promise<void>} Promise that resolves when all layer styles are loaded
  */
 export async function initializeLayerStyles(id = null) {
   functions.e('#layer-reload', e => { e.classList.add('hidden') })

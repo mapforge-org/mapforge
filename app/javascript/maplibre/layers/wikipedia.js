@@ -30,6 +30,9 @@ export class WikipediaLayer extends Layer {
       .catch(error => {
         console.error('Failed to fetch wikipedia for ' + this.id, error)
         status('Failed to load layer ' + this.layer.name, 'error')
+        // Set empty geojson so layer can still render
+        this.layer.geojson = { type: 'FeatureCollection', features: [] }
+        this.render()
       })
   }
 }

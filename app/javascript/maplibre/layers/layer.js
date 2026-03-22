@@ -1,5 +1,43 @@
 import { addGeoJSONSource, map } from 'maplibre/map'
 
+/**
+ * Base class for map layers. Subclass to create new layer types.
+ *
+ * Required overrides:
+ * - initialize(): Promise - Apply styles and load data. Return loadData() promise or Promise.resolve()
+ * - loadData(): Promise - Fetch data, set this.layer.geojson, call this.render()
+ *
+ * Optional overrides:
+ * - createSource(): void - Override if you need custom source setup beyond standard GeoJSON source
+ * - render(resetDraw): void - Override for custom rendering logic (e.g., km markers, extrusion lines)
+ * - get sourceId(): string - Override for custom source naming convention
+ *
+ * Example:
+ *   class MyLayer extends Layer {
+ *     initialize() {
+ *       initializeViewStyles(this.sourceId)
+ *       initializeClusterStyles(this.sourceId, '/icons/my-icon.png')
+ *       return this.loadData()
+ *     }
+ *
+ *     loadData() {
+ *       return fetch('/api/my-data')
+ *         .then(response => response.json())
+ *         .then(data => {
+ *           this.layer.geojson = processData(data)
+ *           this.render()
+ *         })
+ *         .catch(error => {
+ *           console.error('Failed to load layer:', error)
+ *           this.layer.geojson = { type: 'FeatureCollection', features: [] }
+ *           this.render()
+ *         })
+ *     }
+ *   }
+ *
+ * Then register in factory.js:
+ *   const layerTypes = { ..., mylayer: MyLayer }
+ */
 export class Layer {
   constructor(layer) {
     this.layer = layer
@@ -54,6 +92,10 @@ export class Layer {
   }
 
   get geojson() {
+    // Initialize geojson defensively to prevent undefined.features errors
+    if (!this.layer.geojson) {
+      this.layer.geojson = { type: 'FeatureCollection', features: [] }
+    }
     return this.layer.geojson
   }
 
@@ -77,16 +119,24 @@ export class Layer {
   /**
    * Applies styles and loads data for this layer.
    * May be called multiple times (e.g., when toggling visibility).
-   * Returns Promise for loading data.
+   * @returns {Promise} Promise that resolves when layer is ready
    */
   initialize() {
     return Promise.resolve()
   }
 
+  /**
+   * Fetches data for this layer and renders it.
+   * @returns {Promise} Promise that resolves when data is loaded
+   */
   loadData() {
     return Promise.resolve(this.layer?.geojson)
   }
 
+  /**
+   * Renders layer data to the map.
+   * @param {boolean} [resetDraw=true] - Whether to reset draw features (for GeoJSON layers)
+   */
   render() {
     this.ensureFeaturePropertyIds()
     map.getSource(this.sourceId).setData(this.layer.geojson, false)

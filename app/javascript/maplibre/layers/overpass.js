@@ -61,6 +61,9 @@ export class OverpassLayer extends Layer {
     .catch(error => {
       console.error('Failed to fetch overpass for ' + this.id, this.layer.query, error.message)
       status('Failed to load layer ' + this.layer.name, 'error')
+      // Set empty geojson so layer can still render
+      this.layer.geojson = { type: 'FeatureCollection', features: [] }
+      this.render()
     })
   }
 }
@@ -104,15 +107,15 @@ export function overpassDescription(props) {
   return desc
 }
 
-export function getCommentValue(query, key) {
+// Private helpers
+
+function getCommentValue(query, key) {
   // Match lines like: // key=value (with possible spaces)
   const regex = new RegExp(`^\\s*\\/\\/\\s*${key}\\s*=\\s*(.+)$`, "m")
   const match = query.match(regex)
 
   return match ? match[1].trim() : null
 }
-
-// Private helpers
 
 function replaceBboxWithMapRectangle(query) {
   const bounds = map.getBounds()
