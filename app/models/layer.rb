@@ -6,6 +6,7 @@ class Layer
   belongs_to :map, optional: true, touch: true
   has_many :features, dependent: :destroy
 
+  default_scope { reorder(created_at: :asc) }
   scope :geojson, -> { where(type: "geojson") }
   scope :overpass, -> { where(type: "overpass") }
 

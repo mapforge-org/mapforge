@@ -6,9 +6,8 @@ import { status } from 'helpers/status'
 import { flyToFeature } from 'maplibre/animations'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature'
-import { renderGeoJSONLayer } from 'maplibre/layers/geojson'
-import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData } from 'maplibre/layers/layers'
-import { initializeOverpassLayers } from 'maplibre/layers/overpass'
+import { createLayerInstance } from 'maplibre/layers/factory'
+import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, upsert } from 'maplibre/map'
 
@@ -111,7 +110,7 @@ export default class extends Controller {
     uploadImageToFeature(file, feature).then( () => {
       upsert(feature)
       // redraw first geojson layer
-      renderGeoJSONLayer(layers.find(l => l.type === 'geojson').id)
+      renderLayer(layers.find(l => l.type === 'geojson').id)
       mapChannel.send_message('new_feature', { ...feature })
       status('Added image')
       flyToFeature(feature)
@@ -159,10 +158,9 @@ export default class extends Controller {
     layer["cluster"] = clustered
     layer["heatmap"] = layer.query.includes("heatmap=true")
     event.target.closest('.layer-item').querySelector('.layer-name').innerHTML = layer.name
-    const { geojson: _geojson, ...sendLayer } = layer
-    mapChannel.send_message('update_layer', sendLayer)
+    mapChannel.send_message('update_layer', layer.toJSON())
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
-    initializeOverpassLayers(layerId)
+    layer.initialize().then(() => { initLayersModal() })
   }
 
   refreshLayer (event) {
@@ -170,11 +168,9 @@ export default class extends Controller {
     const layerId = event.target.closest('.layer-item').getAttribute('data-layer-id')
     functions.e('#layer-reload', e => { e.classList.add('hidden') })
     functions.e('#layer-loading', e => { e.classList.remove('hidden') })
-    event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
     loadLayerData(layerId).then( () => {
       initLayersModal()
       functions.e('#layer-loading', e => { e.classList.add('hidden') })
-      functions.e(`#layer-list-${layerId} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
     })
   }
 
@@ -209,7 +205,7 @@ export default class extends Controller {
     const wasVisible = layer.show !== false
     layer.show = !wasVisible
 
-    setLayerVisibility(layer.type + '-source-' + layerId, layer.show)
+    setLayerVisibility(layer.sourceId, layer.show)
 
     // update UI (both desktop and mobile visibility buttons)
     layerElement.querySelectorAll('button.layer-visibility i, button.layer-visibility-mobile i').forEach(icon => {
@@ -240,13 +236,12 @@ export default class extends Controller {
 
     // sync to server only in rw mode
     if (window.gon.map_mode === "rw") {
-      const { geojson: _geojson, ...sendLayer } = layer
-      mapChannel.send_message('update_layer', sendLayer)
+      mapChannel.send_message('update_layer', layer.toJSON())
     }
   }
 
   createWikipediaLayer() {
-    this.createLayer('wikipedia', 'Wikipedia', '')
+    this.createLayer('wikipedia', 'Wikipedia')
   }
 
   createSelectedOverpassLayer(event) {
@@ -263,25 +258,29 @@ export default class extends Controller {
     }
   }
 
-  createLayer(type, name, query) {
+  createBaseMapLayer(_event) {
+    this.createLayer('basemap', 'Basemap layer')
+  }
+
+  createLayer(type, name, query=null) {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
-    let layer = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": true, "show": true}
+    let layerData = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": true, "show": true}
     if (type == 'overpass') {
-      layer["query"] = query
+      layerData["query"] = query
       // TODO: move cluster + heatmap to layer checkboxes
-      const clustered = !layer.query.includes("heatmap=true") &&
-        !layer.query.includes("cluster=false") &&
-        !layer.query.includes("geom") // clustering breaks lines & geometries
-      layer["cluster"] = clustered
-      layer["heatmap"] = layer.query.includes("heatmap=true")
+      const clustered = !layerData.query.includes("heatmap=true") &&
+        !layerData.query.includes("cluster=false") &&
+        !layerData.query.includes("geom") // clustering breaks lines & geometries
+      layerData["cluster"] = clustered
+      layerData["heatmap"] = layerData.query.includes("heatmap=true")
     }
+    let layer = createLayerInstance(layerData)
     layers.push(layer)
+    initLayersModal()
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)
-    mapChannel.send_message('new_layer', layer)
-    initLayersModal()
-    document.querySelector('#layer-list-' + layerId + ' .reload-icon').classList.add('layer-refresh-animate')
+    mapChannel.send_message('new_layer', layerData)
     return layerId
   }
 
@@ -291,12 +290,11 @@ export default class extends Controller {
     dom.closeTooltips()
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
-    const layerType = layerElement.getAttribute('data-layer-type')
     const layer = layers.find(f => f.id === layerId)
-    const { geojson: _geojson, ...sendLayer } = layer
+    layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
-    removeGeoJSONSource(layerType + '-source-' + layerId)
-    mapChannel.send_message('delete_layer', sendLayer)
+    removeGeoJSONSource(layer.sourceId)
+    mapChannel.send_message('delete_layer', layer.toJSON())
     initLayersModal()
   }
 }

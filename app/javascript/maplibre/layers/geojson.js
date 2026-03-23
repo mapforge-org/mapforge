@@ -3,52 +3,125 @@ import { buffer } from "@turf/buffer"
 import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { draw, select } from 'maplibre/edit'
-import { getFeature, getFeatures, layers } from 'maplibre/layers/layers'
-import { map, mapProperties, removeStyleLayers } from 'maplibre/map'
+import { getFeature } from 'maplibre/layers/layers'
+import { Layer } from 'maplibre/layers/layer'
+import { addGeoJSONSource, map, mapProperties, removeStyleLayers } from 'maplibre/map'
 import { defaultLineWidth, featureColor, initializeClusterStyles, initializeViewStyles, labelFont, setSource, styles } from 'maplibre/styles/styles'
 
-export function initializeGeoJSONLayers(id = null) {
-  // console.log('Initializing geojson layers')
-  let initLayers = layers.filter(l => l.type === 'geojson' && l.show !== false)
-  if (id) { initLayers = initLayers.filter(l => l.id === id) }
+export class GeoJSONLayer extends Layer {
+  get kmMarkerSourceId() {
+    return `km-marker-source-${this.id}`
+  }
 
-  initLayers.forEach((layer) => {
-    initializeViewStyles('geojson-source-' + layer.id, !!layer.heatmap)
-    if (!!layer.cluster) { initializeClusterStyles('geojson-source-' + layer.id, null) }
+  createSource() {
+    super.createSource()
+    addGeoJSONSource(this.kmMarkerSourceId, false)
+  }
 
-    initializeKmMarkerStyles(layer.id)
-    renderGeoJSONLayer(layer.id)
-  })
+  initialize() {
+    initializeViewStyles(this.sourceId, !!this.layer.heatmap)
+    if (this.layer.cluster) { initializeClusterStyles(this.sourceId, null) }
+    this.initializeKmMarkerStyles()
+    this.setupEventHandlers()
+    this.render()
+    return Promise.resolve()
+  }
 
-  map.fire('geojson.load', { detail: { message: 'geojson source + styles loaded' } })
-}
+  render(resetDraw = true) {
+    console.log("Redraw: Setting source data for geojson layer", this.layer)
+    this.ensureFeaturePropertyIds()
+    this.renderKmMarkers()
+    const extrusionLines = this.renderExtrusionLines()
+    const geojson = { type: 'FeatureCollection', features: this.layer.geojson.features.concat(extrusionLines) }
+    map.getSource(this.sourceId).setData(geojson, false)
+    this.resetDrawFeatures(resetDraw)
+  }
 
-export function renderGeoJSONLayers(resetDraw = true) {
-  layers.filter(l => l.type === 'geojson').forEach((layer) => {
-    renderGeoJSONLayer(layer.id, resetDraw)
-  })
-}
+  renderKmMarkers() {
+    let kmMarkerFeatures = []
+    this.layer.geojson.features.filter(feature => (feature.geometry.type === 'LineString' &&
+      feature.properties['show-km-markers'] &&
+      feature.geometry.coordinates.length >= 2)).forEach((f, index) => {
 
-export function renderGeoJSONLayer(id, resetDraw = true) {
-  let layer = layers.find(l => l.id === id)
-  console.log("Redraw: Setting source data for geojson layer", layer)
+      const line = lineString(f.geometry.coordinates)
+      const distance = length(line, { units: 'kilometers' })
+      let interval = 1
+      for (let i = 0; i < Math.ceil(distance) + interval; i += interval) {
+        const point = along(line, i, { units: 'kilometers' })
+        point.properties['marker-color'] = f.properties['stroke'] || featureColor
+        point.properties['marker-size'] = 11
+        point.properties['marker-opacity'] = 1
+        point.properties['km'] = i
 
-  // this + `promoteId: 'id'` is a workaround for the maplibre limitation:
-  // https://github.com/mapbox/mapbox-gl-js/issues/2716
-  // because to highlight a feature we need the id,
-  // and in the style layers it only accepts mumeric ids in the id field initially
-  // TODO: only needed once, not each render
-  layer.geojson.features.forEach((feature) => { feature.properties.id = feature.id })
-  renderKmMarkersLayer(id)
-  // - For LineStrings with a 'fill-extrusion-height', add a polygon to render extrusion
-  let extrusionLines = renderExtrusionLines()
-  let geojson = { type: 'FeatureCollection', features: layer.geojson.features.concat(extrusionLines) }
+        if (i >= Math.ceil(distance)) {
+          point.properties['marker-size'] = 14
+          point.properties['km'] = Math.round(distance)
+          if (Math.ceil(distance) < 100) {
+            point.properties['km'] = Math.round(distance * 10) / 10
+          }
+          point.properties['km-marker-numbers-end'] = 1
+          point.properties['sort-key'] = 2 + index
+        }
+        kmMarkerFeatures.push(point)
+      }
+    })
 
-  map.getSource(layer.type + '-source-' + layer.id).setData(geojson, false)
+    const markerFeatures = { type: 'FeatureCollection', features: kmMarkerFeatures }
+    map.getSource(this.kmMarkerSourceId).setData(markerFeatures)
+  }
 
-  // draw has its own style layers based on editStyles
-  if (draw) {
-    if (resetDraw) {
+  initializeKmMarkerStyles() {
+    removeStyleLayers(this.kmMarkerSourceId)
+    this.kmMarkerStyles().forEach(style => {
+      style = setSource(style, this.kmMarkerSourceId)
+      map.addLayer(style)
+    })
+  }
+
+  kmMarkerStyles() {
+    let styleLayers = []
+
+    styleLayers.push(makePointsLayer(2, 11))
+    styleLayers.push(makeNumbersLayer(2, 11))
+    styleLayers.push(makePointsLayer(5, 10, 11))
+    styleLayers.push(makeNumbersLayer(5, 10, 11))
+    styleLayers.push(makePointsLayer(10, 9, 10))
+    styleLayers.push(makeNumbersLayer(10, 9, 10))
+    styleLayers.push(makePointsLayer(25, 8, 9))
+    styleLayers.push(makeNumbersLayer(25, 8, 9))
+    styleLayers.push(makePointsLayer(50, 7, 8))
+    styleLayers.push(makeNumbersLayer(50, 7, 8))
+    styleLayers.push(makePointsLayer(100, 5, 7))
+    styleLayers.push(makeNumbersLayer(100, 5, 7))
+
+    const base = { ...styles()['points-layer'] }
+    styleLayers.push({
+      ...base,
+      id: `km-marker-points-end`,
+      filter: ["==", ["get", "km-marker-numbers-end"], 1]
+    })
+    styleLayers.push({
+      id: `km-marker-numbers-end`,
+      type: 'symbol',
+      filter: ["==", ["get", "km-marker-numbers-end"], 1],
+      layout: {
+        'text-allow-overlap': true,
+        'text-field': ['get', 'km'],
+        'text-size': 12,
+        'text-font': labelFont,
+        'text-justify': 'center',
+        'text-anchor': 'center'
+      },
+      paint: {
+        'text-color': '#ffffff'
+      }
+    })
+
+    return styleLayers
+  }
+
+  resetDrawFeatures(resetDraw) {
+    if (draw && resetDraw) {
       // This has a performance drawback over draw.set(), but some feature
       // properties don't get updated otherwise
       // API: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md
@@ -59,52 +132,34 @@ export function renderGeoJSONLayer(id, resetDraw = true) {
         let feature = getFeature(featureId, "geojson")
         if (feature) {
           draw.add(feature)
-          // if we're in edit mode, re-select feature
           select(feature)
         }
       })
     }
   }
-}
 
-export function renderKmMarkersLayer(id) {
-   let layer = layers.find(l => l.id === id)
+  renderExtrusionLines() {
+    if (mapProperties.terrain) { return [] }
 
-  let kmMarkerFeatures = []
-  layer.geojson.features.filter(feature => (feature.geometry.type === 'LineString' &&
-    feature.properties['show-km-markers'] &&
-    feature.geometry.coordinates.length >= 2)).forEach((f, index) => {
+    let extrusionLines = this.layer.geojson.features.filter(feature => (
+      feature.geometry.type === 'LineString' &&
+      feature.properties['fill-extrusion-height'] &&
+      feature.geometry.coordinates.length !== 1
+    ))
 
-    const line = lineString(f.geometry.coordinates)
-    const distance = length(line, { units: 'kilometers' })
-    // Create markers at useful intervals
-    let interval = 1
-      for (let i = 0; i < Math.ceil(distance) + interval; i += interval) {
-      // Get point at current kilometer
-      const point = along(line, i, { units: 'kilometers' })
-      point.properties['marker-color'] = f.properties['stroke'] || featureColor
-      point.properties['marker-size'] = 11
-      point.properties['marker-opacity'] = 1
-      point.properties['km'] = i
-
-      if (i >= Math.ceil(distance)) {
-        point.properties['marker-size'] = 14
-        point.properties['km'] = Math.round(distance)
-        if (Math.ceil(distance) < 100) {
-          point.properties['km'] = Math.round(distance * 10) / 10
-        }
-        point.properties['km-marker-numbers-end'] = 1
-        point.properties['sort-key'] = 2 + index
+    return extrusionLines.map(feature => {
+      const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
+      const extrusionLine = buffer(feature, width, { units: 'meters' })
+      extrusionLine.properties = { ...feature.properties }
+      if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
+        extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
       }
-      kmMarkerFeatures.push(point)
-    }
-  })
-
-  let markerFeatures = {
-        type: 'FeatureCollection',
-        features: kmMarkerFeatures
-      }
-  map.getSource('km-marker-source-' + id).setData(markerFeatures)
+      extrusionLine.properties['stroke-width'] = 0
+      extrusionLine.properties['stroke-opacity'] = 0
+      extrusionLine.properties['fill-opacity'] = 0
+      return extrusionLine
+    })
+  }
 }
 
 function makePointsLayer(divisor, minzoom, maxzoom = 24) {
@@ -139,84 +194,3 @@ function makeNumbersLayer(divisor, minzoom, maxzoom=24) {
   }
 }
 
-export function kmMarkerStyles (_id) {
-  let layers = []
-  const base = { ...styles()['points-layer'] }
-
-  layers.push(makePointsLayer(2, 11))
-  layers.push(makeNumbersLayer(2, 11))
-
-  layers.push(makePointsLayer(5, 10, 11))
-  layers.push(makeNumbersLayer(5, 10, 11))
-
-  layers.push(makePointsLayer(10, 9, 10))
-  layers.push(makeNumbersLayer(10, 9, 10))
-
-  layers.push(makePointsLayer(25, 8, 9))
-  layers.push(makeNumbersLayer(25, 8, 9))
-
-  layers.push(makePointsLayer(50, 7, 8))
-  layers.push(makeNumbersLayer(50, 7, 8))
-
-  layers.push(makePointsLayer(100, 5, 7))
-  layers.push(makeNumbersLayer(100, 5, 7))
-
-  // end point has different style
-  layers.push({
-    ...base,
-    id: `km-marker-points-end`,
-    filter: ["==", ["get", "km-marker-numbers-end"], 1]
-  })
-  layers.push({
-    id: `km-marker-numbers-end`,
-    type: 'symbol',
-    filter: ["==", ["get", "km-marker-numbers-end"], 1],
-    layout: {
-      'text-allow-overlap': true,
-      'text-field': ['get', 'km'],
-      'text-size': 12,
-      'text-font': labelFont,
-      'text-justify': 'center',
-      'text-anchor': 'center'
-    },
-    paint: {
-      'text-color': '#ffffff'
-    }
-  })
-
-  return layers
-}
-
-export function initializeKmMarkerStyles(id) {
-  removeStyleLayers('km-marker-source-' + id)
-  kmMarkerStyles(id).forEach(style => {
-    style = setSource (style, 'km-marker-source-' + id)
-    map.addLayer(style)
-  })
-}
-
-function renderExtrusionLines() {
-  // Disable extrusionlines on 3D terrain, it does not work
-  if (mapProperties.terrain) { return [] }
-
-  let extrusionLines = getFeatures('geojson').filter(feature => (
-    feature.geometry.type === 'LineString' &&
-    feature.properties['fill-extrusion-height'] &&
-    feature.geometry.coordinates.length !== 1 // don't break line animation
-  ))
-
-  extrusionLines = extrusionLines.map(feature => {
-    const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
-    const extrusionLine = buffer(feature, width, { units: 'meters' })
-    // clone properties hash, else we're writing into the original feature's properties
-    extrusionLine.properties = { ...feature.properties }
-    if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
-      extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
-    }
-    extrusionLine.properties['stroke-width'] = 0
-    extrusionLine.properties['stroke-opacity'] = 0
-    extrusionLine.properties['fill-opacity'] = 0
-    return extrusionLine
-  })
-  return extrusionLines
-}

@@ -6,8 +6,7 @@ import { status } from 'helpers/status';
 import { disableEditControls, enableEditControls, initializeEditControls } from 'maplibre/controls/edit';
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
 import { highlightFeature } from 'maplibre/feature';
-import { renderGeoJSONLayers } from 'maplibre/layers/geojson';
-import { getFeature, hasFeatures, layers } from 'maplibre/layers/layers';
+import { getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
 import { addFeature, destroyFeature, map, mapProperties } from 'maplibre/map';
 import { getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
 import { initDirections, resetDirections } from 'maplibre/routing/osrm';
@@ -75,15 +74,14 @@ export async function initializeEditMode () {
   initializeEditControls()
   initializeDefaultControls()
 
-  // Show map settings modal on untouched map
+  // Show map settings modal on untouched map and handle URL feature selection
   map.once('load', async function (_e) {
-    if (!layers) { await functions.waitForEvent(map, 'layers.load') }
+    // Safe to call even if already triggered by style.load — returns the cached promise, no double loading
+    await initializeLayers()
     if (!mapProperties.name && !hasFeatures('geojson') && !layers?.filter(l => l.type !== 'geojson').length)  {
       functions.e('.maplibregl-ctrl-map', e => { e.click() })
     }
-  })
 
-  map.on('geojson.load', function (_e) {
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     const feature = getFeature(urlFeatureId, 'geojson')
     if (feature) { map.fire('draw.selectionchange', {features: [feature]}) }
@@ -256,7 +254,7 @@ function handleCreate (e) {
   addUndoState('Feature added', feature)
   // redraw if the painted feature was changed in this method
   if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') {
-    renderGeoJSONLayers(false)
+    renderLayers('geojson', false)
   }
   mapChannel.send_message('new_feature', feature)
   if (feature.geometry.type === 'LineString') { updateElevation(feature) }
@@ -297,7 +295,7 @@ async function handleUpdate (e) {
 
   status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry
-  renderGeoJSONLayers(false)
+  renderLayers('geojson', false)
 
   if (feature.geometry.type === 'LineString') {
     // gets also triggered on failure

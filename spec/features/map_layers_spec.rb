@@ -234,4 +234,74 @@ describe "Map" do
       wait_for { map.layers.find { |m| m.name == "Custom query" } }.to be_present
     end
   end
+
+  context "overpass layer visibility" do
+    before do
+      map.layers << layer
+      visit map.private_map_path
+      expect_map_loaded
+      expect_overpass_loaded
+    end
+
+    let(:layer) { create(:layer, :overpass, name: "opass") }
+
+    it "toggles overpass layer visibility via websocket" do
+      layer.update!(show: false)
+      expect_layer_visibility(layer.id, false, 'overpass')
+      layer.update!(show: true)
+      expect_layer_visibility(layer.id, true, 'overpass')
+    end
+  end
+
+  context "layer update via websocket" do
+    it "updates layer name via server-side change" do
+      layer = map.layers.first
+      layer.update!(name: "Renamed Layer")
+      # Re-open modal to see updated layer name
+      find(".maplibregl-ctrl-layers").click
+      expect(page).to have_text("Renamed Layer")
+    end
+  end
+
+  context "wikipedia layer" do
+    before do
+      wikipedia_file = File.read(Rails.root.join("spec", "fixtures", "files", "wikipedia.json"))
+      CapybaraMock.stub_request(
+        :get, /de\.wikipedia\.org\/w\/api\.php/
+      ).to_return(
+        headers: { "Access-Control-Allow-Origin" => "*" },
+        status: 200,
+        body: wikipedia_file
+      )
+      visit map.private_map_path
+      expect_map_loaded
+    end
+
+    it "can add wikipedia layer" do
+      find(".maplibregl-ctrl-layers").click
+      click_button "Add layer"
+      find("li", text: "Wikipedia articles").click
+      wait_for { map.layers.find { |m| m.name == "Wikipedia" } }.to be_present
+    end
+  end
+
+  context "basemap change preserves layers" do
+    before do
+      stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
+      feature
+      visit map.private_map_path
+      expect_map_loaded
+    end
+
+    let(:feature) { create(:feature, :point, title: "Basemap Test Feature", layer: map.layers.first) }
+
+    it "features remain visible after basemap change" do
+      layer_id = map.layers.first.id
+      expect_layer_visibility(layer_id, true)
+
+      map.update(base_map: "test2")
+      expect(page).to have_text(/Loaded base map test2|Map properties updated|Map view updated/)
+      expect_layer_visibility(layer_id, true)
+    end
+  end
 end

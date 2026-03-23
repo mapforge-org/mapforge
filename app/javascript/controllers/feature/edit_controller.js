@@ -6,8 +6,7 @@ import { status } from 'helpers/status'
 import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
 import { confirmImageLocation, featureIcon, featureImage, uploadImageToFeature } from 'maplibre/feature'
-import { renderGeoJSONLayer } from 'maplibre/layers/geojson'
-import { getFeature, getLayer } from 'maplibre/layers/layers'
+import { getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
 import { featureColor, featureOutlineColor } from 'maplibre/styles/styles'
 import { addUndoState } from 'maplibre/undo'
 
@@ -41,7 +40,7 @@ export default class extends Controller {
     document.querySelector('#feature-edit-raw .error').innerHTML = ''
     try {
       feature.properties = JSON.parse(document.querySelector('#feature-edit-raw textarea').value)
-      renderGeoJSONLayer(this.layerIdValue, true)
+      renderLayer(this.layerIdValue, true)
       mapChannel.send_message('update_feature', feature)
     } catch (error) {
       console.error('Error updating feature:', error.message)
@@ -56,7 +55,7 @@ export default class extends Controller {
     feature.properties.title = title
     if (document.querySelector('#feature-show-title-on-map')?.checked) {
       feature.properties.label = title
-      renderGeoJSONLayer(this.layerIdValue, false)
+      renderLayer(this.layerIdValue, false)
     }
     document.querySelector('#feature-title').textContent = title
     functions.debounce(() => { this.saveFeature() }, 'title')
@@ -70,7 +69,7 @@ export default class extends Controller {
     } else {
       delete feature.properties.label
     }
-    renderGeoJSONLayer(this.layerIdValue, false)
+    renderLayer(this.layerIdValue, false)
     functions.debounce(() => { this.saveFeature() }, 'show-title-on-map', 1000)
   }
 
@@ -86,7 +85,7 @@ export default class extends Controller {
     }
     feature.properties[propertyName] = value
     draw.setFeatureProperty(this.featureIdValue, propertyName, value)
-    renderGeoJSONLayer(this.layerIdValue, true)
+    renderLayer(this.layerIdValue, true)
   }
 
   // called as preview on slider change
@@ -134,7 +133,7 @@ export default class extends Controller {
       document.querySelector('#stroke-color').removeAttribute('disabled')
     }
     feature.properties.stroke = color
-    renderGeoJSONLayer(this.layerIdValue, true)
+    renderLayer(this.layerIdValue, true)
   }
 
   updateFillColor () {
@@ -142,7 +141,7 @@ export default class extends Controller {
     const color = document.querySelector('#fill-color').value
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
     if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
-    renderGeoJSONLayer(this.layerIdValue, true)
+    renderLayer(this.layerIdValue, true)
   }
 
   updateFillColorTransparent () {
@@ -158,7 +157,7 @@ export default class extends Controller {
     }
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
     if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
-    renderGeoJSONLayer(this.layerIdValue, true)
+    renderLayer(this.layerIdValue, true)
   }
 
   updateShowKmMarkers () {
@@ -170,7 +169,7 @@ export default class extends Controller {
       delete feature.properties['show-km-markers']
       delete feature.properties['stroke-image-url']
     }
-    renderGeoJSONLayer(this.layerIdValue, true)
+    renderLayer(this.layerIdValue, true)
   }
 
   updateMarkerSymbol () {
@@ -183,7 +182,7 @@ export default class extends Controller {
     // draw layer feature properties aren't getting updated by draw.set()
     draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
     functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
-    renderGeoJSONLayer(this.layerIdValue, true)
+    renderLayer(this.layerIdValue, true)
   }
 
   async updateMarkerImage () {
@@ -205,7 +204,7 @@ export default class extends Controller {
           feature.geometry.coordinates = imageLocation
           flyToFeature(feature)
         }
-        renderGeoJSONLayer(this.layerIdValue, true)
+        renderLayer(this.layerIdValue, true)
         this.saveFeature()
       })
   }

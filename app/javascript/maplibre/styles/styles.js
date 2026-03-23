@@ -1,15 +1,5 @@
-import * as functions from 'helpers/functions'
-import { flyToFeature } from 'maplibre/animations'
-import { draw } from 'maplibre/edit'
-import {
-  highlightFeature,
-  highlightedFeatureId,
-  highlightedFeatureSource,
-  resetHighlightedFeature,
-  stickyFeatureHighlight
-} from 'maplibre/feature'
-import { getFeature } from 'maplibre/layers/layers'
-import { frontFeature, map, removeStyleLayers } from 'maplibre/map'
+import { map, removeStyleLayers } from 'maplibre/map'
+import { defaultFont } from 'maplibre/styles/basemaps'
 
 export const viewStyleNames = [
   'polygon-layer',
@@ -30,76 +20,16 @@ export const viewStyleNames = [
   'polygon-layer-extrusion'
 ]
 
-export function setStyleDefaultFont (font) { labelFont = [font] }
+export function setStyleDefaultFont(font) { labelFont = [font] }
 
 export function initializeViewStyles (sourceName, heatmap=false) {
-  console.log('Initializing view styles for source ' + sourceName)
+  // console.log('Initializing view styles for source ' + sourceName)
   removeStyleLayers(sourceName)
   viewStyleNames.forEach(styleName => {
     map.addLayer(setSource(styles()[styleName], sourceName))
   })
   if (heatmap) { map.addLayer(setSource(styles()['heatmap-layer'], sourceName)) }
   // console.log('View styles added for source ' + sourceName)
-
-  // click is needed to select on mobile and for sticky highlight
-  map.on('click', styleNames(sourceName), function (e) {
-    if (draw && draw.getMode() !== 'simple_select') { return }
-    if (window.gon.map_mode === 'static') { return }
-
-    console.log('Features clicked', e.features)
-    let feature = e.features.find(f => !f.properties?.cluster)
-    if (!feature) { return }
-
-    if (window.gon.map_mode === 'ro' || e.originalEvent.shiftKey) {
-      feature = e.features.find(f => f.properties?.onclick !== false)
-      if (!feature) { return }
-
-      if (feature.properties?.onclick === 'link' && feature.properties?.['onclick-target']) {
-        window.location.href = feature.properties?.['onclick-target']
-        return
-      }
-      if (feature.properties?.onclick === 'feature' && feature.properties?.['onclick-target']) {
-        const targetId = feature.properties?.['onclick-target']
-        const targetFeature = getFeature(targetId)
-        if (targetFeature) {
-          flyToFeature(targetFeature)
-        } else {
-          console.error('Target feature with id ' + targetId + ' not found')
-        }
-        return
-      }
-    }
-    frontFeature(feature)
-    highlightFeature(feature, true, sourceName)
-  })
-
-  // highlight features on hover (only in ro mode)
-  if (window.gon.map_mode === 'ro' && !functions.isTouchDevice()) {
-    map.on('mousemove', (e) => {
-      if (stickyFeatureHighlight && highlightedFeatureId) { return }
-      if (document.querySelector('.show > .map-modal')) { return }
-      if (!map.getSource(sourceName)) { return } // can happen when source is removed
-
-      const features = map.queryRenderedFeatures(e.point, { layers: styleNames(sourceName) })
-      // console.log('Features hovered', features)
-      let feature = features.find(f => !f.properties?.cluster && f.properties?.onclick !== false)
-
-      if (feature?.id) {
-        if (feature.id === highlightedFeatureId) { return }
-        frontFeature(feature)
-        highlightFeature(feature, false, sourceName)
-      } else if (highlightedFeatureSource === sourceName) {
-        resetHighlightedFeature()
-      }
-    })
-  }
-
-  map.on('contextmenu', (e) => {
-    e.preventDefault()
-    // console.log(styleNames(sourceName))
-    // const features = map.queryRenderedFeatures(e.point)
-    //console.log('ro context:', features)
-  })
 }
 
 export function initializeClusterStyles(sourceName, icon) {
@@ -120,6 +50,15 @@ export function initializeClusterStyles(sourceName, icon) {
 // loading images from 'marker-image-url' attributes
 // avoid loading the same image by each web worker
 const imageState = {} // 'loading' | 'loaded' | 'error'
+
+// Clear image state when navigating to a new map
+export function clearImageState() {
+  Object.keys(imageState).forEach(key => delete imageState[key])
+}
+
+// Reset labelFont to default when clearing state
+export function resetLabelFont() { labelFont = [defaultFont] }
+
 export async function loadImage (e) {
   // Skip if already loading, loaded, or failed
   if (imageState[e.id]) {
@@ -319,7 +258,7 @@ const labelSize = [
 ]
 
 // default font is set in basemap def basemaps[backgroundMapLayer]['font']
-export let labelFont // array
+export let labelFont = [defaultFont] // array - initialize with default to prevent null errors
 
 // Shared configuration for symbols layers
 function symbolsLayerStyles(mode) {
@@ -393,9 +332,7 @@ function textLayerStyles(mode) {
       'format',
       ['coalesce', ['get', 'label'], ['get', 'room']],
       {
-        'text-font': [
-          'case',
-          ['has', 'label-font'],
+        'text-font': ['coalesce',
           ['get', 'label-font'],
           ['literal', labelFont]
         ]
@@ -403,12 +340,12 @@ function textLayerStyles(mode) {
     ],
     'text-size': labelSize,
     'text-font': labelFont,
-    'text-letter-spacing': ['get', 'label-letter-spacing'],
+    'text-letter-spacing': ['coalesce', ['get', 'label-letter-spacing'], 0],
     'text-anchor': 'top', // text under point
     // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
     'text-offset': labelOffset,
     'text-justify': ['get', 'label-justify'],
-    'text-max-width': ['get', 'label-max-width'],
+    'text-max-width': ['coalesce', ['get', 'label-max-width'], 10],
     'text-line-height': 1.6, // no dynamic value possible
     // TODO: sort keys on text are ascending, on symbols descending???
     'symbol-sort-key': ['-', 1000, sortKey]
@@ -491,8 +428,8 @@ export function styles () {
         minZoomFilter],
       paint: {
         'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], featureColor),
-        'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'])],
-        'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'])],
+        'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
+        'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)],
         // opacity does not support data expressions, it's a constant per layer
         'fill-extrusion-opacity': 0.9
       }
@@ -551,7 +488,7 @@ export function styles () {
       layout: {
         'line-join': 'round',
         'line-cap': 'round',
-        'line-sort-key': ['to-number', ['get', 'sort-key']]
+        'line-sort-key': sortKey
       },
       paint: {
         'line-color': lineColor,
@@ -825,9 +762,4 @@ export function clusterStyles(icon) {
 
 export function setSource (style, sourceName) {
   return { ...style, source: sourceName, id: style.id + '_' + sourceName }
-}
-
-// Adding sourceName suffix to style names because style layer ids must be unique on map
-function styleNames (sourceName) {
-  return viewStyleNames.map(styleName => styleName + '_' + sourceName)
 }

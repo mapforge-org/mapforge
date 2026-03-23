@@ -21,7 +21,7 @@ nav.fixed-top~#docs {
     padding-bottom: 0.4rem;
     width: fit-content;
     border-bottom: 0.15rem solid transparent;
-    border-image: linear-gradient(to right, var(--color-dark-moss-green), var(--color-light-sand)) 1;
+    border-image: linear-gradient(to right, var(--color-light-sand), var(--color-dark-moss-green)) 1;
   }
 
   h2, h3, h4 {

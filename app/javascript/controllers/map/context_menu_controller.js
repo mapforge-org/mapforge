@@ -1,12 +1,11 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
+import { status } from 'helpers/status'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
-import { getFeature } from 'maplibre/layers/layers'
+import { getFeature, renderLayers } from 'maplibre/layers/layers'
 import { addFeature } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
-import { renderGeoJSONLayers } from 'maplibre/layers/geojson'
 
 export default class extends Controller {
 
@@ -18,7 +17,7 @@ export default class extends Controller {
     addUndoState('Feature update', feature)
     if (feature.geometry.type === 'LineString') { feature.geometry.coordinates.splice(vertexIndex, 1) }
     if (feature.geometry.type === 'Polygon') { feature.geometry.coordinates[0].splice(vertexIndex, 1) }
-    renderGeoJSONLayers(true)
+    renderLayers('geojson', true)
     mapChannel.send_message('update_feature', { ...feature })
     status('Point deleted')
     hideContextMenu()
@@ -27,7 +26,7 @@ export default class extends Controller {
   cutLine(event) {
     const target = event.currentTarget
     const feature = getFeature(target.dataset.featureId, 'geojson')
-    
+
     const vertexIndex = parseInt(target.dataset.index, 10)
     const coords = feature.geometry.coordinates
     const firstCoords = coords.slice(0, vertexIndex + 1)
@@ -36,7 +35,7 @@ export default class extends Controller {
     // Keep original feature, shorten it to the first segment
     addUndoState('Feature update', feature)
     feature.geometry.coordinates = firstCoords
-    renderGeoJSONLayers(true)
+    renderLayers('geojson', true)
     mapChannel.send_message('update_feature', { ...feature })
 
     const secondFeature = {
@@ -51,5 +50,13 @@ export default class extends Controller {
 
     status('Line cut into 2 segments')
     hideContextMenu()
+  }
+
+  addToGeojsonLayer(event) {
+    const target = event.currentTarget
+    const feature = getFeature(target.dataset.featureId, 'basemap')
+    addFeature(feature)
+    addUndoState('Feature added', feature)
+    mapChannel.send_message('new_feature', feature)
   }
 }

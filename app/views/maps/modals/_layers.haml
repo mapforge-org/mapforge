@@ -60,6 +60,14 @@
                     data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: query_name }
                   }
                     = query_name
+              %li
+                %hr.dropdown-divider
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createBaseMapLayer" }
+                }
+                  Basemap Info (experimental)
 
       - # used by controls/shared.js
       .hidden
