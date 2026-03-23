@@ -1,4 +1,5 @@
 import * as functions from 'helpers/functions'
+import { hideContextMenu } from 'maplibre/controls/context_menu'
 import {
   highlightedFeatureId,
   stickyFeatureHighlight
@@ -10,6 +11,11 @@ import { basemaps } from 'maplibre/styles/basemaps'
 import { initializeViewStyles } from 'maplibre/styles/styles'
 
 export class BasemapLayer extends Layer {
+  constructor(layer) {
+    super(layer)
+    this.contextMenuHandler = null
+  }
+
   createSource() {
     addGeoJSONSource(this.sourceId)
   }
@@ -36,6 +42,41 @@ export class BasemapLayer extends Layer {
     this.removeEventHandlers()
     this.setupClickHandler()
     this.setupMouseMoveHandler()
+
+    this.contextMenuHandler = (e) => {
+      e.preventDefault()
+
+      const basemapSource = this.sourceId
+      const mapLayers = map.getStyle().layers
+      const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
+      const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds })
+
+      if (features.length) {
+        functions.e('#map-context-menu', el => {
+          el.classList.remove('hidden')
+
+          const copyButton = document.createElement('div')
+          copyButton.classList.add('context-menu-item')
+          copyButton.innerText = 'Copy to my layer'
+          copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
+          copyButton.dataset.featureId = features[0].id
+          el.appendChild(copyButton)
+        })
+      }
+    }
+
+    map.on('contextmenu', this.contextMenuHandler)
+  }
+
+  /**
+   * Removes event handlers including custom contextmenu handler.
+   */
+  removeEventHandlers() {
+    super.removeEventHandlers()
+    if (this.contextMenuHandler) {
+      map.off('contextmenu', this.contextMenuHandler)
+      this.contextMenuHandler = null
+    }
   }
 
   /**
@@ -52,8 +93,14 @@ export class BasemapLayer extends Layer {
       const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds})
 
       if (features.length) {
-        console.log('Selected features: ', features)
         const feature = features[0]
+
+        // exit early when moving over same feature
+        if (JSON.stringify(feature.geometry) === JSON.stringify(this?.selectedFeature?.geometry)) { return }
+        this.selectedFeature = feature
+        hideContextMenu()
+
+        console.log('Selected features: ', features)
 
         const geojsonFeature = {
           type: 'Feature',

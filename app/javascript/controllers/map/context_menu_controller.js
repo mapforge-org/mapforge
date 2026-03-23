@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import { status } from 'helpers/status'
 import * as functions from 'helpers/functions'
+import { status } from 'helpers/status'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { getFeature, renderLayers } from 'maplibre/layers/layers'
 import { addFeature } from 'maplibre/map'
@@ -26,7 +26,7 @@ export default class extends Controller {
   cutLine(event) {
     const target = event.currentTarget
     const feature = getFeature(target.dataset.featureId, 'geojson')
-    
+
     const vertexIndex = parseInt(target.dataset.index, 10)
     const coords = feature.geometry.coordinates
     const firstCoords = coords.slice(0, vertexIndex + 1)
@@ -50,5 +50,13 @@ export default class extends Controller {
 
     status('Line cut into 2 segments')
     hideContextMenu()
+  }
+
+  addToGeojsonLayer(event) {
+    const target = event.currentTarget
+    const feature = getFeature(target.dataset.featureId, 'basemap')
+    addFeature(feature)
+    addUndoState('Feature added', feature)
+    mapChannel.send_message('new_feature', feature)
   }
 }
