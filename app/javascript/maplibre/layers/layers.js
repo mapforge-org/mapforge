@@ -120,7 +120,14 @@ export function loadLayerData(id) {
     console.log("Skipped loading data for not shown layer", layer)
     return Promise.resolve()
   }
-  return layer.loadData()
+
+  functions.e(`#layer-list-${id} .reload-icon`, e => { e.classList.add('layer-refresh-animate') })
+  functions.e('#layer-loading', e => { e.classList.remove('hidden') })
+
+  return layer.loadData().then((result) => {
+    functions.e(`#layer-list-${id} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
+    return result
+  })
 }
 
 // triggered by layer reload in the UI

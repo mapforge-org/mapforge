@@ -154,7 +154,8 @@ export function basemaps () {
     satelliteStreets: { style: host + '/layers/satellite_with_streets.json' },
 
     // basemap.de
-    basemapWorld: { style: 'https://sgx.geodatenzentrum.de/gdz_basemapworld_vektor/styles/bm_web_wld_col.json', font: 'Noto Sans Regular' },
+    basemapWorld: {
+      style: 'https://sgx.geodatenzentrum.de/gdz_basemapworld_vektor/styles/bm_web_wld_col.json', font: 'Noto Sans Regular', sourceName: 'smarttiles_de' },
 
     // openfreemap.org
     openfreemapPositron: { style: 'https://tiles.openfreemap.org/styles/positron', font: 'Noto Sans Regular' },
@@ -164,7 +165,7 @@ export function basemaps () {
     // https://github.com/versatiles-org/versatiles-style
     // fonts: https://github.com/versatiles-org/versatiles-fonts
     versatilesColorful: { style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
-    versatilesGraybeard: { style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', font: 'noto_sans_regular' },
+    versatilesGraybeard: { style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
     versatilesNeutrino: { style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', font: 'noto_sans_regular' },
     versatilesEclipse: { style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', font: 'noto_sans_regular' },
 

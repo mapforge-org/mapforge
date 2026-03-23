@@ -168,11 +168,9 @@ export default class extends Controller {
     const layerId = event.target.closest('.layer-item').getAttribute('data-layer-id')
     functions.e('#layer-reload', e => { e.classList.add('hidden') })
     functions.e('#layer-loading', e => { e.classList.remove('hidden') })
-    event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
     loadLayerData(layerId).then( () => {
       initLayersModal()
       functions.e('#layer-loading', e => { e.classList.add('hidden') })
-      functions.e(`#layer-list-${layerId} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
     })
   }
 
@@ -243,7 +241,7 @@ export default class extends Controller {
   }
 
   createWikipediaLayer() {
-    this.createLayer('wikipedia', 'Wikipedia', '')
+    this.createLayer('wikipedia', 'Wikipedia')
   }
 
   createSelectedOverpassLayer(event) {
@@ -260,7 +258,11 @@ export default class extends Controller {
     }
   }
 
-  createLayer(type, name, query) {
+  createBaseMapLayer(_event) {
+    this.createLayer('basemap', 'Basemap layer')
+  }
+
+  createLayer(type, name, query=null) {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
     let layerData = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": true, "show": true}
@@ -275,11 +277,10 @@ export default class extends Controller {
     }
     let layer = createLayerInstance(layerData)
     layers.push(layer)
+    initLayersModal()
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)
     mapChannel.send_message('new_layer', layerData)
-    initLayersModal()
-    document.querySelector('#layer-list-' + layerId + ' .reload-icon').classList.add('layer-refresh-animate')
     return layerId
   }
 
@@ -290,6 +291,7 @@ export default class extends Controller {
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
+    layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)
     mapChannel.send_message('delete_layer', layer.toJSON())

@@ -10,11 +10,6 @@ import { basemaps } from 'maplibre/styles/basemaps'
 import { initializeViewStyles } from 'maplibre/styles/styles'
 
 export class BasemapLayer extends Layer {
-  get sourceId() {
-    const basemapSource = basemaps()[mapProperties.base_map].sourceName
-    return "basemap_" + basemapSource + "_highlight"
-  }
-
   createSource() {
     addGeoJSONSource(this.sourceId)
   }
@@ -39,7 +34,7 @@ export class BasemapLayer extends Layer {
    */
   setupEventHandlers() {
     this.removeEventHandlers()
-    // No click handler needed for basemap layer
+    this.setupClickHandler()
     this.setupMouseMoveHandler()
   }
 

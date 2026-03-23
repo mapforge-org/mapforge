@@ -1,6 +1,6 @@
 import * as functions from 'helpers/functions'
-import { draw } from 'maplibre/edit'
 import { flyToFeature } from 'maplibre/animations'
+import { draw } from 'maplibre/edit'
 import {
   highlightFeature,
   highlightedFeatureId,
@@ -24,32 +24,6 @@ import { addGeoJSONSource, frontFeature, map } from 'maplibre/map'
  * - get sourceId(): string - Override for custom source naming convention
  * - setupEventHandlers(): void - Override to customize click/mousemove behavior or disable handlers
  * - cleanup(): void - Override to add custom cleanup, but call super.cleanup()
- *
- * Example:
- *   class MyLayer extends Layer {
- *     initialize() {
- *       initializeViewStyles(this.sourceId)
- *       initializeClusterStyles(this.sourceId, '/icons/my-icon.png')
- *       return this.loadData()
- *     }
- *
- *     loadData() {
- *       return fetch('/api/my-data')
- *         .then(response => response.json())
- *         .then(data => {
- *           this.layer.geojson = processData(data)
- *           this.render()
- *         })
- *         .catch(error => {
- *           console.error('Failed to load layer:', error)
- *           this.layer.geojson = { type: 'FeatureCollection', features: [] }
- *           this.render()
- *         })
- *     }
- *   }
- *
- * Then register in factory.js:
- *   const layerTypes = { ..., mylayer: MyLayer }
  */
 export class Layer {
   constructor(layer) {
