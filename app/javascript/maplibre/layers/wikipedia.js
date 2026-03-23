@@ -8,6 +8,7 @@ export class WikipediaLayer extends Layer {
   initialize() {
     initializeViewStyles(this.sourceId)
     initializeClusterStyles(this.sourceId, "/icons/wikipedia.png")
+    this.setupEventHandlers()
     return this.loadData()
   }
 

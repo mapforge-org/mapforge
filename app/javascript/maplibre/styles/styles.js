@@ -1,15 +1,4 @@
-import * as functions from 'helpers/functions'
-import { flyToFeature } from 'maplibre/animations'
-import { draw } from 'maplibre/edit'
-import {
-  highlightFeature,
-  highlightedFeatureId,
-  highlightedFeatureSource,
-  resetHighlightedFeature,
-  stickyFeatureHighlight
-} from 'maplibre/feature'
-import { getFeature } from 'maplibre/layers/layers'
-import { frontFeature, map, removeStyleLayers } from 'maplibre/map'
+import { map, removeStyleLayers } from 'maplibre/map'
 import { defaultFont } from 'maplibre/styles/basemaps'
 
 export const viewStyleNames = [
@@ -41,66 +30,6 @@ export function initializeViewStyles (sourceName, heatmap=false) {
   })
   if (heatmap) { map.addLayer(setSource(styles()['heatmap-layer'], sourceName)) }
   // console.log('View styles added for source ' + sourceName)
-
-  // click is needed to select on mobile and for sticky highlight
-  map.on('click', styleNames(sourceName), function (e) {
-    if (draw && draw.getMode() !== 'simple_select') { return }
-    if (window.gon.map_mode === 'static') { return }
-
-    console.log('Features clicked', e.features)
-    let feature = e.features.find(f => !f.properties?.cluster)
-    if (!feature) { return }
-
-    if (window.gon.map_mode === 'ro' || e.originalEvent.shiftKey) {
-      feature = e.features.find(f => f.properties?.onclick !== false)
-      if (!feature) { return }
-
-      if (feature.properties?.onclick === 'link' && feature.properties?.['onclick-target']) {
-        window.location.href = feature.properties?.['onclick-target']
-        return
-      }
-      if (feature.properties?.onclick === 'feature' && feature.properties?.['onclick-target']) {
-        const targetId = feature.properties?.['onclick-target']
-        const targetFeature = getFeature(targetId)
-        if (targetFeature) {
-          flyToFeature(targetFeature)
-        } else {
-          console.error('Target feature with id ' + targetId + ' not found')
-        }
-        return
-      }
-    }
-    frontFeature(feature)
-    highlightFeature(feature, true, sourceName)
-  })
-
-  // highlight features on hover (only in ro mode)
-  if (window.gon.map_mode === 'ro' && !functions.isTouchDevice()) {
-    map.on('mousemove', (e) => {
-      if (stickyFeatureHighlight && highlightedFeatureId) { return }
-      if (document.querySelector('.show > .map-modal')) { return }
-      if (!map.getSource(sourceName)) { return } // can happen when source is removed
-
-      const features = map.queryRenderedFeatures(e.point, { layers: styleNames(sourceName) })
-      // console.log('Features hovered', features)
-      let feature = features.find(f => !f.properties?.cluster && f.properties?.onclick !== false)
-
-      if (feature?.id) {
-        if (feature.id === highlightedFeatureId) { return }
-        frontFeature(feature)
-        highlightFeature(feature, false, sourceName)
-      } else if (highlightedFeatureSource === sourceName) {
-        resetHighlightedFeature()
-      }
-    })
-  }
-
-  map.on('contextmenu', (e) => {
-    e.preventDefault()
-    // console.log(styleNames(sourceName))
-    // const features = map.queryRenderedFeatures(e.point)
-    //console.log('ro context:', features)
-  })
 }
 
 export function initializeClusterStyles(sourceName, icon) {
@@ -833,9 +762,4 @@ export function clusterStyles(icon) {
 
 export function setSource (style, sourceName) {
   return { ...style, source: sourceName, id: style.id + '_' + sourceName }
-}
-
-// Adding sourceName suffix to style names because style layer ids must be unique on map
-function styleNames (sourceName) {
-  return viewStyleNames.map(styleName => styleName + '_' + sourceName)
 }

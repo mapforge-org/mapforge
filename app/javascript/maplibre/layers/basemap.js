@@ -29,12 +29,24 @@ export class BasemapLayer extends Layer {
 
     this.createSource()
     initializeViewStyles(this.sourceId)
+    this.setupEventHandlers()
 
-    // Remove existing handler if re-initializing (e.g., basemap change)
-    if (this.mouseMoveHandler) {
-      map.off('mousemove', this.mouseMoveHandler)
-    }
+    return Promise.resolve()
+  }
 
+  /**
+   * Override to disable click handler and provide custom mousemove for basemap layers.
+   */
+  setupEventHandlers() {
+    this.removeEventHandlers()
+    // No click handler needed for basemap layer
+    this.setupMouseMoveHandler()
+  }
+
+  /**
+   * Custom mousemove handler for basemap layer - queries basemap source layers.
+   */
+  setupMouseMoveHandler() {
     this.mouseMoveHandler = (e) => {
       if (stickyFeatureHighlight && highlightedFeatureId) { return }
       if (document.querySelector('.show > .map-modal')) { return }
@@ -62,7 +74,5 @@ export class BasemapLayer extends Layer {
     }
 
     map.on('mousemove', this.mouseMoveHandler)
-
-    return Promise.resolve()
   }
 }

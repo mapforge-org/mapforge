@@ -18,6 +18,7 @@ export class OverpassLayer extends Layer {
         getCommentValue(this.layer.query, 'marker-symbol') || getCommentValue(this.layer.query, 'marker-image-url')
       initializeClusterStyles(this.sourceId, clusterIcon)
     }
+    this.setupEventHandlers()
     return this.loadData()
   }
 

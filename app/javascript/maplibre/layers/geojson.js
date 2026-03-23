@@ -22,6 +22,7 @@ export class GeoJSONLayer extends Layer {
     initializeViewStyles(this.sourceId, !!this.layer.heatmap)
     if (this.layer.cluster) { initializeClusterStyles(this.sourceId, null) }
     this.initializeKmMarkerStyles()
+    this.setupEventHandlers()
     this.render()
     return Promise.resolve()
   }
