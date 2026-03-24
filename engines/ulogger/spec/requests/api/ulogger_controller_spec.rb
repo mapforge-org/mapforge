@@ -16,25 +16,44 @@ RSpec.describe Api::UloggerController do
   describe "#addtrack" do
     subject { response }
 
-    before { post "/ulogger/client/index.php", params: payload }
-
-    let(:payload) { { action: "addtrack", track: "ulogger track" } }
     let(:response_body) { JSON.parse(response.body) }
 
-    it { is_expected.to have_http_status(200) }
-    it { expect(response_body["error"]).to be(false) }
+    context "creating a new track" do
+      before { post "/ulogger/client/index.php", params: payload }
 
-    it "returns a numeric id" do
-      expect(response_body["trackid"]).to be > 0
-      expect(response_body["trackid"]).to be < Api::UloggerController::JAVA_MAXINT
+      let(:payload) { { action: "addtrack", track: "ulogger track" } }
+
+      it { is_expected.to have_http_status(200) }
+      it { expect(response_body["error"]).to be(false) }
+
+      it "returns a numeric id" do
+        expect(response_body["trackid"]).to be > 0
+        expect(response_body["trackid"]).to be < Api::UloggerController::JAVA_MAXINT
+      end
+
+      it "creates map in db with trackid" do
+        expect(Map.find_by(private_id: response_body["trackid"])).not_to be_nil
+      end
+
+      it "sets map name" do
+        expect(Map.find_by(private_id: response_body["trackid"]).name).to eq "ulogger track"
+      end
     end
 
-    it "creates map in db with 24 digits" do
-      expect(Map.find_by(private_id: "%024d" % [ response_body["trackid"] ])).not_to be_nil
-    end
+    context "using existing map" do
+      before do
+         post "/ulogger/client/index.php", params: payload
+      end
 
-    it "sets map name" do
-      expect(Map.find_by(private_id: "%024d" % [ response_body["trackid"] ]).name).to eq "ulogger track"
+      let(:map) { create(:map, private_id: 12345) }
+      let(:payload) { { action: "addtrack", track: "#{map.private_id}#ulogger track2" } }
+
+      it { is_expected.to have_http_status(200) }
+      it { expect(response_body["error"]).to be(false) }
+
+      it "uses existing map" do
+        expect(response_body["trackid"]).to eq map.private_id.to_i
+      end
     end
   end
 
@@ -46,7 +65,7 @@ RSpec.describe Api::UloggerController do
       post "/ulogger/client/index.php", params: payload
     end
 
-    let(:map) { create(:map, private_id: "%024d" % [ trackid ]) }
+    let(:map) { create(:map, private_id: trackid, name: 'ulogger') }
     let(:trackid) { 924977797 }
     let(:payload) {
       { action: "addpos", altitude: 374.29, speed: 4.3,
@@ -57,6 +76,17 @@ RSpec.describe Api::UloggerController do
 
     it { is_expected.to have_http_status(200) }
     it { expect(response_body["error"]).to be(false) }
+
+    it "creates new layer for track" do
+      expect(map.reload.layers.count).to eq 2
+      # no session["track_name"] is set, track layer will inherit map name
+      expect(map.layers.geojson.select { |l| l.name == "ulogger" }.count).to eq 1
+    end
+
+    it "adds points into the new layer" do
+      layer = map.reload.layers.geojson.find { |l| l.name == "ulogger" }
+      expect(layer.features.point.count).to eq 1
+    end
 
     it "adds point feature at coordinates" do
       expect(map.reload.features.point.count).to eq 1

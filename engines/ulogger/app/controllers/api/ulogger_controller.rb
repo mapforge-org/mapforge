@@ -25,30 +25,53 @@ module Ulogger
       :stroke => "#62a0ea"
     }
 
+    # params: {"pass" => "pwd", "user" => "user@mail.com"}
     def auth
       session["email"] = params[:user]
       render json: { error: false }
     end
 
+    # Called by the app on first waypoint upload
+    # params: { "track" => "tom_2026-03-24_11.08" }
+    # When track name matches "<private_map_id>#<track name>", you can log into an existing map/track
     def addtrack
       @user = User.find_by(email: session["email"])
-      map_id, padded_id = create_numeric_map_id
-      @map = Map.create!(private_id: padded_id, name: params[:track],
-        public_id: params[:track],
-        view_permission: "link",
-        edit_permission: "link",
-        user: @user)
-      @map.save!
-      render json: { error: false, trackid: map_id }
+      if params[:track] =~ /^(\d+)#(\S+)/
+        session["track_name"] = $2
+        @map = Map.find_by(private_id: $1)
+      else
+        session["track_name"] = params[:track]
+        @map = Map.create!(private_id: random_map_id, name: params[:track],
+          view_permission: "link",
+          edit_permission: "link",
+          user: @user)
+      end
+      if @map
+        render json: { error: false, trackid:  @map.private_id.to_i }
+      else
+        Rails.logger.error("Cannot create map for track '#{params[:track]}'")
+        render json: { error: true, message: "Invalid trackid" }
+      end
     end
 
+    # params: {"altitude" => "384.600006103516", "provider" => "network",
+    #          "trackid" => "123", "accuracy" => "12.3999996185303",
+    #          "lon" => "11.0871855", "time" => "1774346910", "lat" => "49.428361"}
+    #
+    # Uses/Creates track with track name from 'addtrack' call before
     def addpos
       coords = [ params[:lon].to_f, params[:lat].to_f, params[:altitude].to_f.round(2) ]
-      features = @map.layers.geojson.first.features
 
-      # if the map has no track yet, create one, else append
-      track = features.line_string.first
-      track ||= Feature.new(layer: @map.layers.first, geometry: { "coordinates" => [] }, properties: TRACK_PROPERTIES)
+      # Find track layer, fallback to map name which also has the initial track name by default
+      track_name = session["track_name"] || @map.name
+      layer = @map.layers.geojson.find { |l| l.name == track_name } || @map.layers.create(name: track_name)
+      features = layer.features
+
+      # Find track with current name on map, or create new
+      track = features.line_string.find { |l| l.properties['title'] == track_name }
+      track ||= Feature.new(layer: layer, geometry: { "coordinates" => [] }, properties: TRACK_PROPERTIES)
+      track.update(properties: track.properties.merge({ 'title' => track_name }))
+
       track_coords = track.geometry["coordinates"] << coords
       track.update(geometry: { "type" => "LineString",
                               "coordinates" => track_coords })
@@ -96,7 +119,7 @@ module Ulogger
     private
 
     def set_map
-      @map = Map.find_by(private_id: "%024d" % [ params[:trackid] ])
+      @map = Map.find_by(private_id: params[:trackid])
       render json: { error: true, message: "Invalid trackid" } unless @map
     end
 
@@ -123,8 +146,8 @@ module Ulogger
 
     def location_properties
       { "marker-size": "8",
-       "marker-color": "#ff7800",
-       stroke: "#000000" }
+        "marker-color": "#ff7800",
+        "stroke": "#000000" }
     end
 
     def description
@@ -138,13 +161,9 @@ module Ulogger
       end.join("\n")
     end
 
-    # mongoid needs a BSON::ObjectId (24 char hex) as primary key,
-    # which we use as map id currently
-    def create_numeric_map_id
-      id = SecureRandom.rand(1..JAVA_MAXINT)
-      padded = "%024d" % [ id ]
-      return create_numeric_map_id if Map.exists?(private_id: padded)
-      [ id, padded ]
+    # ulogger needs a numeric map id
+    def random_map_id
+      SecureRandom.rand(1..JAVA_MAXINT)
     end
   end
 end

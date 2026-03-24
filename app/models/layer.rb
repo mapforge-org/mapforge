@@ -10,7 +10,7 @@ class Layer
   scope :geojson, -> { where(type: "geojson") }
   scope :overpass, -> { where(type: "overpass") }
 
-  field :type
+  field :type, default: "geojson"
   field :name
   field :query
   field :heatmap, type: Boolean
