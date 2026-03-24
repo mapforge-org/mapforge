@@ -55,6 +55,20 @@ RSpec.describe Api::UloggerController do
         expect(response_body["trackid"]).to eq map.private_id.to_i
       end
     end
+
+    context "using non-existing map id" do
+      before do
+         post "/ulogger/client/index.php", params: payload
+      end
+
+      let(:map) { create(:map, private_id: 12345) }
+      let(:payload) { { action: "addtrack", track: "111#ulogger track2" } }
+
+
+      it "errors on non-existing track id" do
+        expect(response_body["message"]).to eq "Invalid trackid"
+      end
+    end
   end
 
   describe "#addpos" do
