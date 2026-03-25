@@ -109,6 +109,7 @@ export class BasemapLayer extends Layer {
         }
         geojsonFeature.id = geojsonFeature.properties.id = functions.featureId()
         geojsonFeature.properties.desc = overpassDescription(geojsonFeature.properties)
+        geojsonFeature.properties['fill-extrusion-height'] = geojsonFeature.properties['hoehe'] || geojsonFeature.properties['render_height']
 
         this.layer.geojson.features = [geojsonFeature]
         map.getSource(this.sourceId).setData(this.layer.geojson, false)

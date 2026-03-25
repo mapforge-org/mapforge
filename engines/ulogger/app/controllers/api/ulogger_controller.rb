@@ -13,18 +13,6 @@ module Ulogger
       [ :comment, "%s" ]
     ]
 
-    TRACK_PROPERTIES = {
-      "title" => "µlogger track",
-      :"show-km-markers" => true,
-      :"fill-extrusion-color" => "#62a0ea",
-      :"fill-extrusion-height" => 8,
-      :"fill-extrusion-base" => 3,
-      :"fill-extrusion-width" => 1.5,
-      :"stroke-opacity" => 0.75,
-      :"stroke-width" => 5,
-      :stroke => "#62a0ea"
-    }
-
     # params: {"pass" => "pwd", "user" => "user@mail.com"}
     def auth
       session["email"] = params[:user]
@@ -69,8 +57,8 @@ module Ulogger
 
       # Find track with current name on map, or create new
       track = features.line_string.find { |l| l.properties['title'] == track_name }
-      track ||= Feature.new(layer: layer, geometry: { "coordinates" => [] }, properties: TRACK_PROPERTIES)
-      track.update(properties: track.properties.merge({ 'title' => track_name }))
+      track ||= Feature.new(layer: layer, geometry: { "coordinates" => [] },
+                            properties: track_properties(track_name, string_to_color(track_name)))
 
       track_coords = track.geometry["coordinates"] << coords
       track.update(geometry: { "type" => "LineString",
@@ -161,9 +149,28 @@ module Ulogger
       end.join("\n")
     end
 
+    def track_properties(title, color)
+      {
+        "title" => title || "µlogger track",
+        :"show-km-markers" => true,
+        :"fill-extrusion-color" => color,
+        :"fill-extrusion-height" => 8,
+        :"fill-extrusion-base" => 3,
+        :"fill-extrusion-width" => 1.5,
+        :"stroke-opacity" => 0.75,
+        :"stroke-width" => 5,
+        :stroke => color
+      }
+    end
+
     # ulogger needs a numeric map id
     def random_map_id
       SecureRandom.rand(1..JAVA_MAXINT)
+    end
+
+    def string_to_color(str)
+      hex = Digest::MD5.hexdigest(str)
+      "##{hex[0, 6]}"
     end
   end
 end
