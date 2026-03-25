@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 * Re-style map modals and feature edit form
 * Page in [OpenStreetMap wiki](https://wiki.openstreetmap.org/wiki/Mapforge)
 * Layer visibility toggle
+* Experimental basemap layer with option to copy OSM elements to your map
+* Log multiple tracks with µlogger to the same map
 
 ## 2026-02
 

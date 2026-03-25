@@ -40,6 +40,7 @@ class Map
   field :view_count, type: Integer, default: 0
   field :type, type: String
   field :share_cursor, type: Boolean
+  field :template, type: Boolean
   field :edit_permission, type: String, default: "link" # 'private', 'link'
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
 
