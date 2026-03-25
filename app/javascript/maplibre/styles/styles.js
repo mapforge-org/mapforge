@@ -397,7 +397,7 @@ export function styles () {
         type: 'fill',
           filter: ['all',
             ["==", ["geometry-type"], "Polygon"],
-            ['>', ['get', 'fill-extrusion-height'], 0],
+            ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
             minZoomFilter],
             paint: {
               'fill-color': 'gray',
@@ -411,8 +411,7 @@ export function styles () {
       type: 'fill',
       filter: ['all',
         ["==", ["geometry-type"], "Polygon"],
-        ['any', ['==', ['get', 'fill-extrusion-height'], 0],
-        ['!', ['has', 'fill-extrusion-height']]],
+        ['==', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
         minZoomFilter],
       paint: {
         'fill-color': fillColor,
@@ -424,7 +423,7 @@ export function styles () {
       type: 'fill-extrusion',
       filter: ['all',
         ['==', ['geometry-type'], 'Polygon'],
-        ['>', ['get', 'fill-extrusion-height'], 0],
+        ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
         minZoomFilter],
       paint: {
         'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], featureColor),
