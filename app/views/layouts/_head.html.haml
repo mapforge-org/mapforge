@@ -56,11 +56,7 @@
 
   = stylesheet_link_tag "application", "data-turbo-track": "reload"
 
-  - # JS imports, SRI integrity hashes from https://www.srihash.org/
-  - # ES Module Shims: Import maps polyfill for older browsers without import maps support (eg Safari 16.3)
-  = javascript_include_tag( "https://ga.jspm.io/npm:es-module-shims@1.8.2/dist/es-module-shims.js",
-      async: true, 'data-turbo-track': 'reload',
-      integrity: "sha384-+dzlBT6NPToF0UZu7ZUA6ehxHY8h/TxJOZxzNXKhFD+5He5Hbex+0AIOiSsEaokw", crossorigin: "anonymous")
+  - # JS imports
   = javascript_importmap_tags
 
   / Bootstrap
