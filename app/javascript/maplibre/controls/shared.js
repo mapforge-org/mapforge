@@ -211,13 +211,19 @@ export function initLayersModal () {
         visBtnMobile.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
         layerElement.classList.add('layer-dimmed')
       }
-      if (layer.type !== 'geojson') {
+      const isFirstGeojsonLayer = layer.type === 'geojson' &&
+        layers.filter(l => l.type === 'geojson').indexOf(layer) === 0
+
+      // Show delete button for all layers except the first geojson layer
+      if (layer.type !== 'geojson' || !isFirstGeojsonLayer) {
         layerElement.querySelector('button.layer-delete').classList.remove('hidden')
         layerElement.querySelector('button.layer-delete-mobile').classList.remove('hidden')
-        if (layer.show !== false) {
-          layerElement.querySelector('button.layer-refresh').classList.remove('hidden')
-          layerElement.querySelector('button.layer-refresh-mobile').classList.remove('hidden')
-        }
+      }
+
+      // Show refresh button only for non-geojson layers that are visible
+      if (layer.type !== 'geojson' && layer.show !== false) {
+        layerElement.querySelector('button.layer-refresh').classList.remove('hidden')
+        layerElement.querySelector('button.layer-refresh-mobile').classList.remove('hidden')
       }
       if (layer.type === 'overpass') {
         layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
