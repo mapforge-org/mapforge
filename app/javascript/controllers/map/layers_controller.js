@@ -11,6 +11,7 @@ import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData
 import { queries } from 'maplibre/layers/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, upsert } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
+import toGeoJSON from 'togeojson'
 
 export default class extends Controller {
   upload () {
@@ -34,10 +35,10 @@ export default class extends Controller {
         // console.log('Reading from file type ' + file.type)
         if (file.type === 'application/gpx+xml') {
           const xmlDoc = parser.parseFromString(content, 'application/xml')
-          geoJSON = window.toGeoJSON.gpx(xmlDoc)
+          geoJSON = toGeoJSON.gpx(xmlDoc)
         } else if (file.type === 'application/vnd.google-earth.kml+xml') {
           const xmlDoc = parser.parseFromString(content, 'application/xml')
-          geoJSON = window.toGeoJSON.kml(xmlDoc)
+          geoJSON = toGeoJSON.kml(xmlDoc)
         } else if (file.type === 'application/geo+json') {
           geoJSON = JSON.parse(content)
         } else if (file.type === 'application/json') {

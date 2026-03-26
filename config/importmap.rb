@@ -57,6 +57,9 @@ pin "wgs84", preload: false # @0.0.0
 # https://github.com/Ionaru/easy-markdown-editor
 pin "easymde", preload: false # @2.20.0
 
+# https://github.com/mapbox/togeojson
+pin "togeojson", to: "togeojson.js", preload: false # @0.16.2
+
 # Animations for frontpage: https://github.com/michalsnik/aos
 pin "aos" # @2.3.4
 # https://swiperjs.com/, from https://esm.sh/swiper
