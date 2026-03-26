@@ -10,6 +10,7 @@ import { createLayerInstance } from 'maplibre/layers/factory'
 import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, upsert } from 'maplibre/map'
+import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
   upload () {
@@ -151,6 +152,8 @@ export default class extends Controller {
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
+    addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
+
     layer.query = layerElement.querySelector('.overpass-query').value
     layer.name = layerElement.querySelector('.overpass-name').value
     // TODO: move cluster + heatmap to layer checkboxes
@@ -205,8 +208,9 @@ export default class extends Controller {
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(l => l.id === layerId)
     const wasVisible = layer.show !== false
-    layer.show = !wasVisible
+    if (window.gon.map_mode === "rw") { addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson }) }
 
+    layer.show = !wasVisible
     setLayerVisibility(layer.sourceId, layer.show)
 
     // update UI (both desktop and mobile visibility buttons)
@@ -232,14 +236,9 @@ export default class extends Controller {
     }
 
     // when showing: initialize styles (and load data for overpass/wikipedia if needed)
-    if (layer.show) {
-      initializeLayerStyles(layerId)
-    }
-
+    if (layer.show) { initializeLayerStyles(layerId) }
     // sync to server only in rw mode
-    if (window.gon.map_mode === "rw") {
-      mapChannel.send_message('update_layer', layer.toJSON())
-    }
+    if (window.gon.map_mode === "rw") { mapChannel.send_message('update_layer', layer.toJSON()) }
   }
 
   createWikipediaLayer() {
@@ -280,6 +279,8 @@ export default class extends Controller {
     }
     let layer = createLayerInstance(layerData)
     layers.push(layer)
+
+    addUndoState('Layer added', layerData)
     initLayersModal()
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)
@@ -294,6 +295,8 @@ export default class extends Controller {
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
+
+    addUndoState('Layer deleted', { ...layer.toJSON(), geojson: layer.geojson })
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)

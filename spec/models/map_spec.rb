@@ -11,7 +11,7 @@ describe Map do
 
   describe "#features_count" do
     it "sums up feature count of all layers" do
-      expect(map.features_count).to eq(3)
+      expect(map.features_count).to eq(6)
     end
   end
 
@@ -115,9 +115,9 @@ describe Map do
       clone = subject.clone_with_layers
 
       expect(clone.id).not_to eq subject.id
-      expect(clone.layers.count).to eq 2
+      expect(clone.layers.count).to eq 3
       expect(clone.layers.first.id).not_to eq(subject.layers.first.id)
-      expect(clone.features.count).to eq 3
+      expect(clone.features.count).to eq 6
       expect(clone.features.map(&:id)).not_to match_array(subject.features.map(&:id))
     end
   end

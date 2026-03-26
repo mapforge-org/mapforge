@@ -1,9 +1,13 @@
+import { mapChannel } from 'channels/map_channel'
 import { status } from 'helpers/status'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
-import { getFeature, renderLayers } from 'maplibre/layers/layers'
-import { addFeature, destroyFeature } from 'maplibre/map'
+import { getFeature, renderLayers, layers } from 'maplibre/layers/layers'
+import { addFeature, destroyFeature, removeGeoJSONSource } from 'maplibre/map'
 import { resetDirections } from 'maplibre/routing/osrm'
+import { initLayersModal } from 'maplibre/controls/shared'
+import { createLayerInstance } from 'maplibre/layers/factory'
+import { initializeLayerSources, initializeLayerStyles } from 'maplibre/layers/layers'
 
 let undoStack = []
 let redoStack = []
@@ -49,7 +53,10 @@ const undoHandlers = {
   'Feature added': undoFeatureAdded,
   'Feature deleted': undoFeatureDelete,
   'Track added': undoTrackAdded,
-  'Track update': undoFeatureUpdate
+  'Track update': undoFeatureUpdate,
+  'Layer added': undoLayerAdded,
+  'Layer deleted': undoLayerDeleted,
+  'Layer updated': undoLayerUpdated
 }
 
 const redoHandlers = {
@@ -58,7 +65,10 @@ const redoHandlers = {
   'Feature added': redoFeatureAdded,
   'Feature deleted': redoFeatureDelete,
   'Track added': redoFeatureAdded,
-  'Track update': redoFeatureUpdate
+  'Track update': redoFeatureUpdate,
+  'Layer added': redoLayerAdded,
+  'Layer deleted': redoLayerDeleted,
+  'Layer updated': redoLayerUpdated
 }
 
 export function undo() {
@@ -166,6 +176,99 @@ function undoTrackAdded(prevState) {
     mapChannel.send_message('delete_feature', { id: prevState.state.id })
   } else {
     console.warn('Feature with id ' + prevState.state.id + ' not found in layer geojson')
+  }
+}
+
+// Helper to get full layer data including geojson
+function getFullLayerData(layer) {
+  return {
+    ...layer.toJSON(),
+    geojson: layer.geojson
+  }
+}
+
+// Layer operations
+function undoLayerAdded(prevState) {
+  const layer = layers.find(l => l.id === prevState.state.id)
+  if (layer) {
+    addRedoState(prevState.type, getFullLayerData(layer))
+    layer.cleanup()
+    layers.splice(layers.indexOf(layer), 1)
+    removeGeoJSONSource(layer.sourceId)
+    mapChannel.send_message('delete_layer', layer.toJSON())
+    initLayersModal()
+  } else {
+    console.warn('Layer with id ' + prevState.state.id + ' not found')
+  }
+}
+
+function redoLayerAdded(nextState) {
+  const layer = layers.find(l => l.id === nextState.state.id)
+  if (!layer) {
+    addUndoState(nextState.type, nextState.state, false)
+    const newLayer = createLayerInstance(nextState.state)
+    layers.push(newLayer)
+    initLayersModal()
+    initializeLayerSources(newLayer.id)
+    initializeLayerStyles(newLayer.id)
+    mapChannel.send_message('new_layer', nextState.state)
+  } else {
+    console.warn('Layer with id ' + nextState.state.id + ' already exists')
+  }
+}
+
+function undoLayerDeleted(prevState) {
+  const layer = layers.find(l => l.id === prevState.state.id)
+  if (!layer) {
+    addRedoState(prevState.type, prevState.state)
+    const newLayer = createLayerInstance(prevState.state)
+    layers.push(newLayer)
+    initLayersModal()
+    initializeLayerSources(newLayer.id)
+    initializeLayerStyles(newLayer.id)
+    mapChannel.send_message('new_layer', prevState.state)
+  } else {
+    console.warn('Layer with id ' + prevState.state.id + ' still exists')
+  }
+}
+
+function redoLayerDeleted(nextState) {
+  const layer = layers.find(l => l.id === nextState.state.id)
+  if (layer) {
+    addUndoState(nextState.type, getFullLayerData(layer), false)
+    layer.cleanup()
+    layers.splice(layers.indexOf(layer), 1)
+    removeGeoJSONSource(layer.sourceId)
+    mapChannel.send_message('delete_layer', layer.toJSON())
+    initLayersModal()
+  } else {
+    console.warn('Layer with id ' + nextState.state.id + ' not found')
+  }
+}
+
+function undoLayerUpdated(prevState) {
+  const layer = layers.find(l => l.id === prevState.state.id)
+  if (layer) {
+    addRedoState(prevState.type, getFullLayerData(layer))
+    // Update layer properties using the layer's update method
+    layer.update(prevState.state)
+    layer.initialize().then(() => { initLayersModal() })
+    mapChannel.send_message('update_layer', prevState.state)
+  } else {
+    console.warn('Layer with id ' + prevState.state.id + ' not found')
+  }
+}
+
+function redoLayerUpdated(nextState) {
+  const layer = layers.find(l => l.id === nextState.state.id)
+  if (layer) {
+    addUndoState(nextState.type, getFullLayerData(layer), false)
+    // Update layer properties using the layer's update method
+    layer.update(nextState.state)
+    layer.initialize().then(() => { initLayersModal() })
+    mapChannel.send_message('update_layer', nextState.state)
+  } else {
+    console.warn('Layer with id ' + nextState.state.id + ' not found')
   }
 }
 
