@@ -40,13 +40,15 @@ export default class extends Controller {
         } else if (file.type === 'application/geo+json') {
           geoJSON = JSON.parse(content)
         } else if (file.type === 'application/json') {
-          // mapforge export file
           const mapforgeJSON = JSON.parse(content)
           if (mapforgeJSON.layers) {
-            // mapforge export file, TODO: importing only the first geojson layer for now
-            geoJSON = mapforgeJSON.layers.find(f => f.type === 'geojson').geojson
-            mapforgeJSON.layers.filter(f => f.type !== 'geojson').forEach(layer => {
-              this.createLayer(layer.type, layer.name, layer.query)
+            // mapforge export file
+            mapforgeJSON.layers.forEach(layer => {
+              // reset feature ids
+              if (layer.geojson?.features) {
+                layer.geojson.features.forEach(f => { f.id = functions.featureId() })
+              }
+              this.createLayer(layer.type, layer.name, layer.query, layer.geojson)
             })
           } else {
             // standard geojson file
@@ -55,7 +57,7 @@ export default class extends Controller {
         }
 
         let i = 1
-        geoJSON.features.forEach(feature => {
+        geoJSON?.features?.forEach(feature => {
           feature.id = functions.featureId()
           feature.properties ||= {}
           upsert(feature)
@@ -262,10 +264,11 @@ export default class extends Controller {
     this.createLayer('basemap', 'Basemap layer')
   }
 
-  createLayer(type, name, query=null) {
+  createLayer(type, name, query=null, geojson=null) {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
-    let layerData = { "id": layerId, "type": type, "name": name, "heatmap": false, "cluster": true, "show": true}
+    let layerData = { "id": layerId, "type": type, "name": name,
+      "heatmap": false, "cluster": false, "show": true, "geojson": geojson}
     if (type == 'overpass') {
       layerData["query"] = query
       // TODO: move cluster + heatmap to layer checkboxes

@@ -16,7 +16,54 @@
       {"id":"279a0f8b5d604c06041af08445bd1e29","type":"Feature","geometry":{"coordinates":[11.0528335673568,49.468579449140435],"type":"Point"},"properties":{}},
       {"id":"e82015441a251162247612aa13056c6e","type":"Feature","geometry":{"coordinates":[11.065589925310917,49.47111081921241],"type":"Point"},"properties":{}}
     ]
-    }}, 
+    }},
+    {
+      "name": "TestLayer 2",
+      "type": "geojson",
+      "geojson": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "id": "45bb0ef1d0f",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                12.064763346883609,
+                48.46551067663387
+              ],
+              "type": "Point"
+            },
+            "properties": {
+              "title": "f2"
+            }
+          },
+          {
+            "id": "279a0f8b5d604c06041a",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                12.0528335673568,
+                48.468579449140435
+              ],
+              "type": "Point"
+            },
+            "properties": {}
+          },
+          {
+            "id": "e82015441a25116224",
+            "type": "Feature",
+            "geometry": {
+              "coordinates": [
+                12.065589925310917,
+                48.47111081921241
+              ],
+              "type": "Point"
+            },
+            "properties": {}
+          }
+        ]
+      }
+    },
     {
       "id": "5hvf625cl7t",
       "type": "overpass",

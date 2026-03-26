@@ -153,7 +153,6 @@ module Ulogger
       {
         "title" => title || "µlogger track",
         :"show-km-markers" => true,
-        :"fill-extrusion-color" => color,
         :"fill-extrusion-height" => 8,
         :"fill-extrusion-base" => 3,
         :"fill-extrusion-width" => 1.5,

@@ -195,7 +195,7 @@ export function featureImage(feature) {
 }
 
 export function resetHighlightedFeature () {
-  if (highlightedFeatureId) {
+  if (highlightedFeatureId && map.getSource(highlightedFeatureSource)) {
     map.setFeatureState({ source: highlightedFeatureSource, id: highlightedFeatureId }, { active: false })
     highlightedFeatureSource = null
     highlightedFeatureId = null

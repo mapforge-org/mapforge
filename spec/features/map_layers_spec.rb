@@ -66,7 +66,8 @@ describe "Map" do
       page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
       attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "mapforge.json"))
       expect(page).to have_text("(3)")
-      expect(map.reload.features.count).to eq 3
+      expect(map.reload.layers.count).to eq 4 # 1 default + 3 imported
+      expect(map.reload.features.count).to eq 6
       expect(map.layers.overpass.count).to eq 1
       # expect(map.reload.center).to eq [ 11.07338990801668, 49.44765470337188 ]
       expect(map.zoom).to eq "14.6"

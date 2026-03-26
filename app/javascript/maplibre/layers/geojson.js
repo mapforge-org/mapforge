@@ -3,8 +3,8 @@ import { buffer } from "@turf/buffer"
 import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { draw, select } from 'maplibre/edit'
-import { getFeature } from 'maplibre/layers/layers'
 import { Layer } from 'maplibre/layers/layer'
+import { getFeature } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties, removeStyleLayers } from 'maplibre/map'
 import { defaultLineWidth, featureColor, initializeClusterStyles, initializeViewStyles, labelFont, setSource, styles } from 'maplibre/styles/styles'
 
@@ -29,6 +29,7 @@ export class GeoJSONLayer extends Layer {
 
   render(resetDraw = true) {
     console.log("Redraw: Setting source data for geojson layer", this.layer)
+    if (!this.layer?.geojson?.features) { return }
     this.ensureFeaturePropertyIds()
     this.renderKmMarkers()
     const extrusionLines = this.renderExtrusionLines()
@@ -193,4 +194,3 @@ function makeNumbersLayer(divisor, minzoom, maxzoom=24) {
     }
   }
 }
-

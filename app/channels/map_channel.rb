@@ -27,45 +27,52 @@ class MapChannel < ApplicationCable::Channel
   def update_layer(data)
     Yabeda.websocket.messages_received.increment({ action: "update_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
-    layer = map.layers.find(layer_atts(data)["id"])
+    layer = map.layers.find(data["id"])
     layer.update!(layer_atts(data))
   end
 
   def update_feature(data)
     Yabeda.websocket.messages_received.increment({ action: "update_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
-    @feature = map.features.find(feature_atts(data)["id"])
+    @feature = map.features.find(data["id"])
     raise "Feature #{data["id"]} not found on map #{data["map_id"]}" unless @feature
     @feature.update!(feature_atts(data))
     associate_image(data["properties"]["marker-image-url"]) if data["properties"] && data["properties"]["marker-image-url"]
   end
 
+  # new_feature uses the feature id set by the client
   def new_feature(data)
     Yabeda.websocket.messages_received.increment({ action: "new_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     # reset initial map center on first feature
     map.update(center: nil) if map.features_count.zero?
-    @feature = map.layers.geojson.first.features.create!(feature_atts(data))
+    @feature = map.layers.geojson.first.features.create!(feature_atts(data).merge({ id: data["id"] }))
     associate_image(data["properties"]["marker-image-url"]) if data["properties"] && data["properties"]["marker-image-url"]
   end
 
+  # new_layer uses the layer + feature ids set by the client
   def new_layer(data)
     Yabeda.websocket.messages_received.increment({ action: "new_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
-    map.layers.create!(layer_atts(data))
+    layer = map.layers.create!(layer_atts(data).merge({ id: data["id"] }))
+    if data["geojson"] && data["geojson"]["features"]
+      data["geojson"]["features"].each do |feature|
+        layer.features.create!(feature_atts(feature).merge({ id: feature["id"] }))
+      end
+    end
   end
 
   def delete_feature(data)
     Yabeda.websocket.messages_received.increment({ action: "delete_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
-    feature = map.features.find(feature_atts(data)["id"])
+    feature = map.features.find(data["id"])
     feature.destroy
   end
 
   def delete_layer(data)
     Yabeda.websocket.messages_received.increment({ action: "delete_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
-    layer = map.layers.find(layer_atts(data)["id"])
+    layer = map.layers.find(data["id"])
     layer.destroy
   end
 
@@ -83,7 +90,7 @@ class MapChannel < ApplicationCable::Channel
   def feature_atts(data)
     # TODO: validate nested atts
     # ActionController::Parameters.new(data).permit(:type, :id, geometry: [:type, coordinates: []], properties: {})
-    atts = data.slice("type", "id", "geometry", "properties")
+    atts = data.slice("type", "geometry", "properties")
     # drop the id in properties which is a workaround for https://github.com/mapbox/mapbox-gl-js/issues/2716
     atts["properties"]&.delete("id")
     atts
@@ -95,7 +102,7 @@ class MapChannel < ApplicationCable::Channel
   end
 
   def layer_atts(data)
-    data.slice("id", "type", "name", "query", "heatmap", "cluster", "show")
+    data.slice("type", "name", "query", "heatmap", "cluster", "show")
   end
 
   # load map with write access
