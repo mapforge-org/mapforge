@@ -105,6 +105,7 @@ export async function showFeatureDetails (feature) {
   modal.scrollTo(0, 0)
   modal.setAttribute('data-feature--modal-feature-id-value', feature.id)
   modal.setAttribute('data-feature--edit-feature-id-value', feature.id)
+  dom.initTooltips(modal)
 
   if (elevationChart) { elevationChart.destroy() }
   elevationChart = await showElevationChart(feature)

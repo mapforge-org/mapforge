@@ -291,6 +291,8 @@ export function resetControls () {
   hideContextMenu()
   // reset open tooltips
   dom.closeTooltips()
+  // re-initialize tooltips for map controls
+  dom.initTooltips()
 }
 
 
