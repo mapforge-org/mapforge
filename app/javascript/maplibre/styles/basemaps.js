@@ -115,6 +115,7 @@ export function basemaps () {
         glyphs: versatilesGlyphs
       }
     },
+    // osm vector: https://community.openstreetmap.org/t/vector-tiles-on-osmf-hardware/121501
     osmRasterTiles: {
       style: {
         version: 8,
@@ -151,6 +152,41 @@ export function basemaps () {
         glyphs: versatilesGlyphs
       }
     },
+    // https://manage.thunderforest.com/dashboard
+    openCycleMap: {
+      style: {
+        version: 8,
+        sources: {
+          'raster-tiles': {
+            type: 'raster',
+            tiles: [
+              'https://api.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=' + window.gon.map_keys.thunderforest
+            ],
+            tileSize: 256,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap Contributors</a>'
+          }
+        },
+        layers: defaultRasterLayer,
+        glyphs: versatilesGlyphs
+      }
+    },
+    thunderforestContrast: {
+      style: {
+        version: 8,
+        sources: {
+          'raster-tiles': {
+            type: 'raster',
+            tiles: [
+              'https://api.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png?apikey=' + window.gon.map_keys.thunderforest
+            ],
+            tileSize: 256,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap Contributors</a>'
+          }
+        },
+        layers: defaultRasterLayer,
+        glyphs: versatilesGlyphs
+      }
+    },
     satelliteStreets: { style: host + '/layers/satellite_with_streets.json' },
 
     // basemap.de
@@ -166,6 +202,7 @@ export function basemaps () {
     // fonts: https://github.com/versatiles-org/versatiles-fonts
     versatilesColorful: { style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
     versatilesGraybeard: { style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
+    versatilesGraybeardSnow: { style: host + '/layers/graybeard_snow.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
     versatilesNeutrino: { style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', font: 'noto_sans_regular' },
     versatilesEclipse: { style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', font: 'noto_sans_regular' },
 
@@ -173,13 +210,13 @@ export function basemaps () {
     // 3D Houses
     maptilerBasic: { style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=' + window.gon.map_keys.maptiler },
     maptilerOpenStreetmap: { style: 'https://api.maptiler.com/maps/openstreetmap/style.json?key=' + window.gon.map_keys.maptiler },
-    maptilerBuildings: { style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=' + window.gon.map_keys.maptiler },
+    maptilerBuildings: { style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet' },
     maptilerDataviz: { style: 'https://api.maptiler.com/maps/dataviz/style.json?key=' + window.gon.map_keys.maptiler },
     maptilerStreets: { style: host + '/layers/streets.json?key=' + window.gon.map_keys.maptiler },
     maptilerNoStreets: { style: host + '/layers/nostreets.json?key=' + window.gon.map_keys.maptiler },
     maptilerSatellite: { style: 'https://api.maptiler.com/maps/satellite/style.json?key=' + window.gon.map_keys.maptiler },
-    maptilerWinter: { style: 'https://api.maptiler.com/maps/winter-v2/style.json?key=' + window.gon.map_keys.maptiler },
-    maptilerBike: { style: 'https://api.maptiler.com/maps/64d03850-97e0-4aaa-bd1d-8287a9792de1/style.json?key=' + window.gon.map_keys.maptiler },
+    maptilerWinter: { style: 'https://api.maptiler.com/maps/winter-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet' },
+    maptilerBike: { style: 'https://api.maptiler.com/maps/64d03850-97e0-4aaa-bd1d-8287a9792de1/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet' },
     maptilerHybrid: { style: 'https://api.maptiler.com/maps/hybrid/style.json?key=' + window.gon.map_keys.maptiler },
 
   // static test tile

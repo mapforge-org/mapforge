@@ -443,7 +443,11 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
       backgroundHillshade === mapProperties.hillshade &&
       backgroundContours === mapProperties.contours &&
       backgroundGlobe === mapProperties.globe && !force) { return }
-  const basemap = basemaps()[mapName]
+  let basemap = basemaps()[mapName]
+  if (!basemap) {
+    console.error('Base map ' + mapName + ' not available!')
+    basemap = basemaps()['osmRasterTiles']
+  }
   if (basemap) {
     map.once('style.load', () => {
       status('Loaded base map ' + mapName)
@@ -458,8 +462,6 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     backgroundGlobe = mapProperties.globe
     setStyleDefaultFont(basemap.font || defaultFont)
     map.setStyle(basemap.style, { diff: true, strictMode: true })
-  } else {
-    console.error('Base map ' + mapName + ' not available!')
   }
 }
 

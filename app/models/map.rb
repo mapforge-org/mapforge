@@ -48,13 +48,15 @@ class Map
   BASE_MAPS = [ "versatilesColorful", "satelliteStreets", "openTopoTiles",
     "openfreemapLiberty", "versatilesGraybeard", "versatilesEclipse",
     "stamenWatercolorTiles", "cyclosmTiles", "basemapWorld" ]
+  EXPERMENTAL_MAPS = [ "stamenTonerTiles", "openCycleMap", "versatilesGraybeardSnow", "thunderforestContrast" ]
   STADIA_MAPS = [ "stamenTonerTiles", "stamenWatercolorTiles" ]
   OPENFREE_MAPS = [ "openfreemapPositron", "openfreemapBright", "openfreemapLiberty" ]
-  VERSATILES_MAPS = [ "versatilesColorful", "versatilesGraybeard" ]
+  VERSATILES_MAPS = [ "versatilesColorful", "versatilesGraybeard", "versatilesGraybeardSnow" ]
   MAPTILER_MAPS = [ "maptilerBuildings", "maptilerHybrid", "maptilerDataviz",
     "maptilerStreets", "maptilerNoStreets", "maptilerWinter",
     "maptilerBike", "maptilerBasic" ]
-  OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets", "osmRasterTiles" ]
+  OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets", "osmRasterTiles",
+    "openCycleMap", "thunderforestContrast" ]
 
   DEFAULT_CENTER = [ 11.077, 49.447 ].freeze
   DEFAULT_ZOOM = 10
@@ -124,7 +126,8 @@ class Map
   def self.provider_keys
     { mapbox: ENV["MAPBOX_KEY"],
      maptiler: ENV["MAPTILER_KEY"],
-     openrouteservice: ENV["OPENROUTESERVICE_KEY"] }
+     openrouteservice: ENV["OPENROUTESERVICE_KEY"],
+     thunderforest: ENV["THUNDERFOREST_KEY"] }
   end
 
   def to_json
@@ -271,7 +274,7 @@ class Map
       return base_map if ENV["MAPTILER_KEY"].present?
       logger.warn("Cannot use maptiler map #{base_map} without MAPTILER_KEY. Falling back to: #{default_base_map}")
       return default_base_map
-    elsif (BASE_MAPS + OPENFREE_MAPS + VERSATILES_MAPS + OTHER_MAPS).include?(base_map) || base_map == "test"
+    elsif (BASE_MAPS + OPENFREE_MAPS + VERSATILES_MAPS + STADIA_MAPS + OTHER_MAPS).include?(base_map) || base_map == "test"
       return base_map
     end
     logger.warn("Map '#{base_map}' not found, falling back to #{default_base_map}")
