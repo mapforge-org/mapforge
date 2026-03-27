@@ -12,7 +12,7 @@ import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
-import { loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
+import { clearImageState, loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
 
 export let map
 export let mapProperties
@@ -461,6 +461,8 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     backgroundContours = mapProperties.contours
     backgroundGlobe = mapProperties.globe
     setStyleDefaultFont(basemap.font || defaultFont)
+    // Clear image cache so icons can be re-loaded after basemap change
+    clearImageState()
     map.setStyle(basemap.style, { diff: true, strictMode: true })
   }
 }
