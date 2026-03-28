@@ -44,14 +44,17 @@ export function animateElement (selector, effect = 'fade-in', delay = 0) {
   })
 }
 
-// (re-)initialize bs5 tooltips
+// initialize bs5 tooltips
 export function initTooltips (root = document) {
   if (!functions.isTouchDevice()) {
     root.querySelectorAll('[data-toggle="tooltip"]').forEach(element => {
       if (typeof bootstrap !== 'undefined') {
         let tooltip = bootstrap.Tooltip.getInstance(element)
-        if (tooltip) tooltip.dispose()
-        return new window.bootstrap.Tooltip(element)
+        if (!tooltip) {
+          new window.bootstrap.Tooltip(element)
+        } else {
+          tooltip.hide()
+        }
       }
     })
   }
