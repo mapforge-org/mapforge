@@ -10,10 +10,10 @@
     .map-auth{title: 'This map is private and not linked from the public listing.'}
       %i.bi.bi-lock-fill
 
-  - if map.user && avatar
-    - if map.user.image
-      = link_to = link_to url_for(params: { search: "user:#{map.user.id}"}), 'aria-label': "Browse maps by user #{map.user.email}" do
-        = image_tag avatar_url(map.user.image, 40), class: 'map-avatar', loading: 'lazy', alt: "", crossorigin: "anonymous"
+  - if map.owners.first && avatar
+    - if map.owners.first.image
+      = link_to = link_to url_for(params: { search: "user:#{map.owners.first.id}"}), 'aria-label': "Browse maps by user #{map.owners.first.email}" do
+        = image_tag avatar_url(map.owners.first.image, 40), class: 'map-avatar', loading: 'lazy', alt: "", crossorigin: "anonymous"
 
   - if clone
     = link_to copy_map_path(id: map.public_id), data: { turbo_method: :post, turbo_confirm: "Do you want to copy this map?" }, title: 'Copy map', class: 'map-copy' do

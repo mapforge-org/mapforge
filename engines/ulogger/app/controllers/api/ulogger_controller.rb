@@ -29,10 +29,11 @@ module Ulogger
         @map = Map.find_by(private_id: $1)
       else
         session["track_name"] = params[:track]
-        @map = Map.create!(private_id: random_map_id, name: params[:track],
+        @map = Map.new(private_id: random_map_id, name: params[:track],
           view_permission: "link",
-          edit_permission: "link",
-          user: @user)
+          edit_permission: "link")
+        @map.add_owner(@user) if @user
+        @map.save!
       end
       if @map
         render json: { error: false, trackid:  @map.private_id.to_i }
@@ -118,7 +119,7 @@ module Ulogger
       filename = "ulogger-#{SecureRandom.hex(4)}.#{ext}"
 
       uid = Dragonfly.app.store(uploaded.tempfile, "name" => filename) # name needs to be a string here
-      Image.create(img_uid: uid, public_id: filename, user: @map.user)
+      Image.create(img_uid: uid, public_id: filename, user: @map.owners.first)
     end
 
     def image_properties(img)

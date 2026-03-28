@@ -41,7 +41,7 @@
             %li.nav-item
               = button_to my_path, { method: :get, class: 'mb-2 btn btn-green w-100 no-wrap' } do
                 %i.bi.bi-map.me-1
-                = "Your maps (#{@user.maps_count})"
+                = "Your maps (#{@user.owned_maps.count})"
 
           - if @user&.admin?
             %li.nav-item
@@ -88,7 +88,7 @@
           %li
             = link_to my_path, { class: 'dropdown-item' } do
               %i.bi.bi-map
-              = "Your maps (#{@user.maps_count})"
+              = "Your maps (#{@user.owned_maps.count})"
           %li
             = link_to logout_path, { class: 'dropdown-item', data: { turbo: false } } do
               %i.bi.bi-box-arrow-in-left

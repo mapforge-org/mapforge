@@ -121,4 +121,52 @@ describe Map do
       expect(clone.features.map(&:id)).not_to match_array(subject.features.map(&:id))
     end
   end
+
+  describe 'multi-owner support' do
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+    let(:map) { create(:map, owner: user1) }
+
+    describe '#owned_by?' do
+      it 'returns true for owners' do
+        expect(map.owned_by?(user1)).to be true
+      end
+
+      it 'returns false for non-owners' do
+        expect(map.owned_by?(user2)).to be false
+      end
+    end
+
+    describe '#add_owner' do
+      it 'adds a new owner' do
+        expect { map.add_owner(user2) }.to change { map.owners.count }.by(1)
+      end
+
+      it 'is idempotent' do
+        map.add_owner(user2)
+        expect { map.add_owner(user2) }.not_to change { map.owners.count }
+      end
+    end
+
+    describe '#remove_owner' do
+      it 'removes an owner' do
+        map.add_owner(user2)
+        expect { map.remove_owner(user2) }.to change { map.owners.count }.by(-1)
+      end
+
+      it 'allows removing last owner (for anonymous maps)' do
+        expect { map.remove_owner(user1) }.to change { map.owners.count }.by(-1)
+        expect(map.owners).to be_empty
+      end
+    end
+
+    describe 'anonymous maps' do
+      it 'allows maps without owners' do
+        map = create(:map)
+        map.owners.clear
+        expect(map.owners).to be_empty
+        expect(map).to be_valid
+      end
+    end
+  end
 end

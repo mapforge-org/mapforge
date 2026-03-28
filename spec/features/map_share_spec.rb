@@ -33,7 +33,7 @@ describe "Map" do
   end
 
   context "export" do
-    subject(:map) { create(:map, user: create(:user), features: features) }
+    subject(:map) { create(:map, owner: create(:user), features: features) }
 
     let(:features) { create_list(:feature, 2, :line_string) }
 
@@ -49,7 +49,7 @@ describe "Map" do
   end
 
   context "export gpx" do
-    subject(:map) { create(:map, user: create(:user), features: features) }
+    subject(:map) { create(:map, owner: create(:user), features: features) }
 
     let(:features) {
       [ create(:feature, :line_string, coordinates: [ [ 11.041, 49.481 ], [ 11.056, 49.463 ] ]),

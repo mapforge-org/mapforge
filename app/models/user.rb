@@ -3,12 +3,10 @@ class User
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  has_many :maps
-
   scope :admin, -> { where(admin: true) }
   scope :github, -> { where(provider: "github") }
   scope :google, -> { where(provider: "google_oauth2") }
-  scope :with_maps, -> { where(:maps_count.gt => 0) }
+  scope :with_maps, -> { where(:_id.in => Map.distinct(:owner_ids)) }
   scope :with_images, -> { where(:images_count.gt => 0) }
 
   field :uid
@@ -17,9 +15,13 @@ class User
   field :email
   field :image
   field :admin
-  field :maps_count, type: Integer, default: 0
   field :images_count, type: Integer, default: 0
   field :recent_map_ids, type: Array, default: []
+
+  # Get all maps where this user is an owner
+  def owned_maps
+    Map.where(owner_ids: id)
+  end
 
   # Track a map view and maintain a limited history of recently viewed maps
   # The list can store private as well as public map ids
