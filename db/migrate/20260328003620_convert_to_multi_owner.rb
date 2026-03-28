@@ -2,13 +2,13 @@ class ConvertToMultiOwner < Mongoid::Migration
   def self.up
     # Maps with users: convert user_id to owner_ids array
     Map.collection.update_many(
-      { user_id: { '$ne' => nil } },
+      { user_id: { '$ne' => nil }, owner_ids: { '$exists' => false } },
       [ { '$set' => { owner_ids: [ '$user_id' ] } } ]
     )
 
     # Anonymous maps: set empty owner_ids array
     Map.collection.update_many(
-      { user_id: nil },
+      { user_id: nil, owner_ids: { '$exists' => false } },
       { '$set' => { owner_ids: [] } }
     )
 
@@ -19,7 +19,7 @@ class ConvertToMultiOwner < Mongoid::Migration
   def self.down
     # Restore user_id from first owner
     Map.collection.update_many(
-      { owner_ids: { '$ne' => [] } },
+      { owner_ids: { '$ne' => [] }, user_id: { '$exists' => false } },
       [ { '$set' => { user_id: { '$first' => '$owner_ids' } } } ]
     )
 
