@@ -5,28 +5,28 @@ describe "Map List" do
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
-    create(:map, user: user)
+    create(:map, owners: [ user ])
     visit my_path
   end
 
   it "shows private links to maps" do
-    expect(page).to have_selector(:xpath, "//a[@href='/m/#{user.maps.first.private_id}']")
+    expect(page).to have_selector(:xpath, "//a[@href='/m/#{user.owned_maps.first.private_id}']")
   end
 
   it "can delete own map" do
-    expect(user.maps_count).to eq 1
+    expect(user.owned_maps.count).to eq 1
     expect(page).to have_css(".map-preview")
     accept_alert do
       find(".map-delete", match: :first).click
     end
     expect(page).not_to have_css(".map-preview")
-    expect(user.reload.maps_count).to eq 0
+    expect(user.reload.owned_maps.count).to eq 0
   end
 
   context "filter list" do
     before {
-      [ create(:map, user: user, name: "Map1"),
-        create(:map, user: user, name: "Map2") ]
+      [ create(:map, owners: [ user ], name: "Map1"),
+        create(:map, owners: [ user ], name: "Map2") ]
     }
 
     it "searches in map names" do

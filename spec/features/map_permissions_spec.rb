@@ -9,7 +9,7 @@ describe "Map" do
     end
 
     context "private" do
-      subject(:map) { create(:map, edit_permission: "private", user: user) }
+      subject(:map) { create(:map, edit_permission: "private", owners: [ user ]) }
 
       it "is not accessible via link" do
         expect(page).to have_current_path(maps_path)
@@ -37,7 +37,7 @@ describe "Map" do
     end
 
     context "private" do
-      subject(:map) { create(:map, view_permission: "private", user: user) }
+      subject(:map) { create(:map, view_permission: "private", owners: [ user ]) }
 
       it "is not accessible via link" do
         expect(page).to have_current_path(maps_path)

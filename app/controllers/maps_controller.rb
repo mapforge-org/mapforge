@@ -13,12 +13,12 @@ class MapsController < ApplicationController
   layout "map", only: [ :show, :tutorial ]
 
   def index
-    @maps = filter_and_sort_maps(Map.unscoped.listed.includes(:layers, :user))
+    @maps = filter_and_sort_maps(Map.unscoped.listed.includes(:layers, :owners))
   end
 
   def my
     @recent_map_ids = @user.recent_map_ids
-    @my_maps = filter_and_sort_maps(Map.where(user: @user).includes(:layers, :user))
+    @my_maps = filter_and_sort_maps(@user.owned_maps.includes(:layers, :owners))
 
     respond_to do |format|
       format.html # full page
@@ -41,7 +41,7 @@ class MapsController < ApplicationController
 
         gon.map_id = params[:id]
         gon.user_id = @user.id if @user
-        gon.edit_id = @map.private_id.to_s if @user&.admin? || (@user && @map.user == @user)
+        gon.edit_id = @map.private_id.to_s if @user&.admin? || @map.owned_by?(@user)
         gon.map_mode = @map_mode
         gon.rails_env = Rails.env
         gon.csrf_token = form_authenticity_token
@@ -70,7 +70,9 @@ class MapsController < ApplicationController
 
   def create
     coords = ip_coordinates
-    @map = Map.create!(user: @user, center: coords)
+    @map = Map.new(center: coords)
+    @map.add_owner(@user)
+    @map.save!
 
     redirect_to @map.private_map_path, notice: "Map was successfully created."
   end
@@ -78,7 +80,8 @@ class MapsController < ApplicationController
   def copy
     require_map_owner if @map.view_permission == "private"
     cloned_map = @map.clone_with_layers
-    cloned_map.update(user: @user, name: "Copy of " + @map.name.to_s)
+    cloned_map.update(name: "Copy of " + @map.name.to_s)
+    cloned_map.add_owner(@user)
     redirect_to cloned_map.private_map_path, notice: "Map was successfully copied."
   end
 
@@ -136,7 +139,7 @@ class MapsController < ApplicationController
   # :nocov:
 
   def require_map_owner
-    if !(@user&.admin? || (@map.user && @map.user == @user))
+    if !(@user&.admin? || @map.owned_by?(@user))
       Rails.logger.warn "Map view requires owner permissions, but current user isn't."
       redirect_to maps_path
     end

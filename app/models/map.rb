@@ -5,7 +5,11 @@ class Map
   include Turbo::Broadcastable
 
   has_many :layers, dependent: :destroy
-  belongs_to :user, optional: true, counter_cache: true
+
+  # Many-to-many relationship with users (stores owner_ids array)
+  has_and_belongs_to_many :owners,
+    class_name: "User",
+    inverse_of: nil
 
   # implicit_order_column is not supported by mongoid
   default_scope { sorted(:created_at, :asc) }
@@ -34,8 +38,8 @@ class Map
   field :bearing, type: String
   field :name, type: String
   field :description, type: String
-  field :private_id, type: String, default: -> { SecureRandom.hex(6).tap { |i| i[0..1] = "11" } }
-  field :public_id, type: String, default: -> { SecureRandom.hex(4).tap { |i| i[0..1] = "11" } }
+  field :private_id, type: String, default: -> { SecureRandom.hex(6) }
+  field :public_id, type: String, default: -> { SecureRandom.hex(4) }
   field :viewed_at, type: DateTime
   field :view_count, type: Integer, default: 0
   field :type, type: String
@@ -101,6 +105,23 @@ class Map
   validates :private_id, uniqueness: { message: "private_id already taken" },
     format: { without: /\//, message: "private_id cannot contain a '/'" },
     if: :will_save_change_to_private_id?
+
+  # Check if a user is an owner
+  def owned_by?(user)
+    return false unless user
+    owner_ids.include?(user.id)
+  end
+
+  # Add an owner (idempotent)
+  def add_owner(user)
+    return if owned_by?(user)
+    owners << user
+  end
+
+  # Remove an owner (allows maps with no owners for anonymous/demo maps)
+  def remove_owner(user)
+    owners.delete(user)
+  end
 
   def properties
     { name: name,
@@ -207,10 +228,11 @@ class Map
     tutorial_file = Rails.root.join("db/seeds/demo.json")
 
     if user&.name
-      unless (map = Map.tutorial.where(user: user).first)
+      unless (map = user.owned_maps.tutorial.first)
         map = Map.create_from_file(tutorial_file)
         name = user.name.split.first
-        map.update(user: user, type: "tutorial")
+        map.update(type: "tutorial")
+        map.add_owner(user)
         map.features.where("properties.label" => "Welcome to the Mapforge Tutorial map")
           .update_all("properties.label" => "Welcome #{name} to the Mapforge Tutorial map")
       end
@@ -299,6 +321,7 @@ class Map
     File.delete(screenshot_file) if File.exist?(screenshot_file)
   end
 
+  # make public id safe for file names
   def safe_public_id
     separator = "_"
     public_id.strip

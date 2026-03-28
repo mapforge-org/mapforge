@@ -11,7 +11,10 @@ module MapListFilters
       @searchuser = User.find(userid) if userid.present?
     end
 
-    maps = maps.where(user: @searchuser) if @searchuser
+    if @searchuser
+      # Find maps where user is in owner_ids array
+      maps = maps.where(owner_ids: @searchuser.id)
+    end
     maps = maps.search(@filter) unless @filter.empty?
     maps = maps.sorted(@sort, @direction)
     maps.limit(params[:limit] || 300)

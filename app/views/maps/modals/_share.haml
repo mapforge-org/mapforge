@@ -8,7 +8,7 @@
 
       .feature-section-card.pt-3
         - if @map_mode == 'rw'
-          - if @map.user
+          - if @map.owners.any?
             %p
               You can access this map under '#{link_to "Your maps", my_path}'.
           - else
@@ -27,7 +27,7 @@
               .form-floating.edit-ui
                 %label{ for: "map-edit-permissions"} Edit permissions:
                 %select.form-select#map-edit-permissions{ "name": "map-visibility", "aria-label": "Edit permissions", data: { action: "change->map--share#updateEditPermissions" }}
-                  - if @map.user
+                  - if @map.owners.any?
                     %option{ value: 'private' } Only you
                   %option{ value: 'link' } Everybody with the edit link
 
@@ -41,7 +41,7 @@
               .form-floating.edit-ui
                 %label{ for: "map-view-permissions"} View permissions:
                 %select.form-select#map-view-permissions{ "name": "map-visibility", "aria-label": "View permissions", data: { action: "change->map--share#updateViewPermissions" }}
-                  - if @map.user
+                  - if @map.owners.any?
                     %option{ value: 'private' } Only you
                   %option{ value: 'link' } Everybody with the view link
                   %option{ value: 'listed' } Everybody, map is shown on mapforge

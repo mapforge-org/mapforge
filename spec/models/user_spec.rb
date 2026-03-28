@@ -4,7 +4,7 @@ describe User do
   subject(:user) { create :user }
 
   it "with defaults" do
-    expect(user.maps_count).to be_zero
+    expect(user.owned_maps.count).to be_zero
     expect(user.images_count).to be_zero
     expect(user.recent_map_ids).to eq([])
   end
