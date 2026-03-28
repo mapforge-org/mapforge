@@ -49,4 +49,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 EXPOSE 3000
 EXPOSE 3001
 
+# CMD will get appended to ENTRYPOINT
 CMD ["./bin/thrust", "rails", "server"]
