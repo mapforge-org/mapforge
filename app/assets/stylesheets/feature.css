@@ -157,6 +157,17 @@
   a {
     text-decoration: none;
   }
+
+  .nav-icon {
+    color: #6b7280;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+  }
+
+  .nav-icon:hover {
+    color: var(--color-mid-steel-blue);
+  }
 }
 
 @media (width <= 574px) {

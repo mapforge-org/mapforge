@@ -15,13 +15,13 @@
       #feature-title.ms-1.selectable.no-wrap
 
   #edit-buttons.feature-edit-tabs.hidden.flex-center
-    %button#edit-button-details.feature-tab-btn{ type: "button", title: "Details", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'details' }
+    %button#edit-button-details.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'details' }
       Details
-    %button#edit-button-edit.feature-tab-btn{ type: "button", title: "Properties", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'properties' }
+    %button#edit-button-edit.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'properties' }
       Properties
-    %button#edit-button-style.feature-tab-btn{ type: "button", title: "Style", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'style' }
+    %button#edit-button-style.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'style' }
       Style
-    %button#edit-button-advanced.feature-tab-btn{ type: "button", title: "Advanced", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'advanced' }
+    %button#edit-button-advanced.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'advanced' }
       Advanced
 
   = render 'maps/modals/feature/edit_ui'

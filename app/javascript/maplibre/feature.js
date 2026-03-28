@@ -65,8 +65,18 @@ function featureMeta (feature) {
       meta = (turfArea / 1000000).toFixed(2) + ' km²'
     }
   } else if (feature.geometry.type === 'Point') {
-    meta = '(' + feature.geometry.coordinates[1].toFixed(6) +
-      ', ' + feature.geometry.coordinates[0].toFixed(6) + ')'
+    const lat = feature.geometry.coordinates[1].toFixed(6)
+    const lng = feature.geometry.coordinates[0].toFixed(6)
+    const coords = `(${lat}, ${lng})`
+
+    // Navigation links
+    const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`
+    const osmUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}&zoom=15`
+
+    const googleIcon = `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="link nav-icon ms-2" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-custom-class="maplibregl-ctrl-tooltip" title="Show in Google Maps"><i class="bi bi-geo-alt-fill"></i></a>`
+    const osmIcon = `<a href="${osmUrl}" target="_blank" rel="noopener noreferrer" class="link nav-icon ms-1" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-custom-class="maplibregl-ctrl-tooltip" title="Show in OpenStreetMap"><i class="bi bi-pin-map-fill"></i></a>`
+
+    meta = coords + googleIcon + osmIcon
   }
   return meta
 }
@@ -120,6 +130,8 @@ export async function showFeatureDetails (feature) {
 
   document.querySelector('#feature-size').innerHTML = featureMeta(feature)
   document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
+  // Re-initialize tooltips after adding navigation icons
+  dom.initTooltips(modal)
   if (feature.geometry.type === 'Point' || getLayer(feature.id).type !== 'geojson') {
     dom.hideElements('.feature-export')
   } else {
