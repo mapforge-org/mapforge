@@ -125,7 +125,7 @@ describe Map do
   describe 'multi-owner support' do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
-    let(:map) { create(:map, owner: user1) }
+    let(:map) { create(:map, owners: [ user1 ]) }
 
     describe '#owned_by?' do
       it 'returns true for owners' do

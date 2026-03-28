@@ -5,7 +5,7 @@ describe "Map List" do
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
-    create(:map, owner: user)
+    create(:map, owners: [ user ])
     visit my_path
   end
 
@@ -25,8 +25,8 @@ describe "Map List" do
 
   context "filter list" do
     before {
-      [ create(:map, owner: user, name: "Map1"),
-        create(:map, owner: user, name: "Map2") ]
+      [ create(:map, owners: [ user ], name: "Map1"),
+        create(:map, owners: [ user ], name: "Map2") ]
     }
 
     it "searches in map names" do

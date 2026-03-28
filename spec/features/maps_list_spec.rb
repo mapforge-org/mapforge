@@ -25,7 +25,7 @@ describe "Map List" do
   context "filter list" do
     let(:maps) {
       [ create(:map, name: "Map1", view_permission: "listed"),
-        create(:map, name: "Map2", user: user, view_permission: "listed") ]
+        create(:map, name: "Map2", owners: [ user ], view_permission: "listed") ]
     }
 
     it "searches in map names" do

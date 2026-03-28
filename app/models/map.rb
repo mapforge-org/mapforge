@@ -38,8 +38,8 @@ class Map
   field :bearing, type: String
   field :name, type: String
   field :description, type: String
-  field :private_id, type: String, default: -> { SecureRandom.hex(6).tap { |i| i[0..1] = "11" } }
-  field :public_id, type: String, default: -> { SecureRandom.hex(4).tap { |i| i[0..1] = "11" } }
+  field :private_id, type: String, default: -> { SecureRandom.hex(6) }
+  field :public_id, type: String, default: -> { SecureRandom.hex(4) }
   field :viewed_at, type: DateTime
   field :view_count, type: Integer, default: 0
   field :type, type: String
@@ -321,6 +321,7 @@ class Map
     File.delete(screenshot_file) if File.exist?(screenshot_file)
   end
 
+  # make public id safe for file names
   def safe_public_id
     separator = "_"
     public_id.strip

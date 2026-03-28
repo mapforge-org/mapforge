@@ -173,7 +173,7 @@ describe "Map public view" do
   end
 
   context "as map owner / admin" do
-    let(:map) { create(:map, owner: user) }
+    let(:map) { create(:map, owners: [ user ]) }
     let(:user) { create(:user) }
 
     before do
