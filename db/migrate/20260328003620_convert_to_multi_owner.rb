@@ -13,7 +13,7 @@ class ConvertToMultiOwner < Mongoid::Migration
     )
 
     # Remove user_id field
-    Map.collection.update_many({}, { '$unset' => { user_id: '' } })
+    # Map.collection.update_many({}, { '$unset' => { user_id: '' } })
   end
 
   def self.down
@@ -24,6 +24,6 @@ class ConvertToMultiOwner < Mongoid::Migration
     )
 
     # Remove owner_ids field
-    Map.collection.update_many({}, { '$unset' => { owner_ids: '' } })
+    # Map.collection.update_many({}, { '$unset' => { owner_ids: '' } })
   end
 end
