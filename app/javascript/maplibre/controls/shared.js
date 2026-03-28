@@ -175,7 +175,7 @@ export function initSettingsModal () {
 // create the list of layers + features
 export function initLayersModal () {
   functions.e('#layers', e => {
-    dom.closeTooltips(e)
+    dom.initTooltips(e)
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')
     layers.forEach(layer => {
@@ -289,8 +289,6 @@ export function resetControls () {
   functions.e('.modal-center', e => { e.classList.remove('show') })
   // reset context menu
   hideContextMenu()
-  // reset open tooltips
-  dom.closeTooltips()
   // re-initialize tooltips for map controls
   dom.initTooltips()
 }

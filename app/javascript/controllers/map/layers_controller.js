@@ -204,7 +204,7 @@ export default class extends Controller {
 
   toggleLayerVisibility (event) {
     event.preventDefault()
-    dom.closeTooltips()
+    dom.initTooltips()
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(l => l.id === layerId)
@@ -292,7 +292,6 @@ export default class extends Controller {
   deleteLayer (event) {
     event.preventDefault()
     if (!confirm('Really delete this layer?')) { return }
-    dom.closeTooltips()
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
