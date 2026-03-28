@@ -11,7 +11,7 @@ nav.fixed-top~#maps {
   #maps {
     padding: 0.75rem;
   }
-  
+
   #maps h1 {
     text-align: center;
   }
@@ -121,15 +121,18 @@ nav.fixed-top~#maps {
   height: 1.5rem;
 }
 
-.map-avatar {
+.map-avatars {
   position: absolute;
+  top: 0.2rem;
+  right: 0.2rem;
+  z-index: 2;
+}
+
+.map-avatar {
   width: 1.5rem;
   height: 1.5rem;
   opacity: 0.8;
   border-radius: 50%;
-  top: 0.2rem;
-  right: 0.2rem;
-  z-index: 2;
   box-shadow: 2px 2px 6px rgb(0 0 0 / 40%);
 }
 

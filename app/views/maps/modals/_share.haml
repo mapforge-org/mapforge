@@ -10,7 +10,12 @@
         - if @map_mode == 'rw'
           - if @map.owners.any?
             %p
-              You can access this map under '#{link_to "Your maps", my_path}'.
+              %span.me-2
+                - @map.owners.each do |owner|
+                  - if owner.image
+                    = image_tag avatar_url(owner.image, 40), class: 'map-avatar', title: owner.email, crossorigin: "anonymous", data: { "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }
+
+              Access this map under '#{link_to "Your maps", my_path}'.
           - else
             %p
               This map was created anonymously and can only get changed with the
