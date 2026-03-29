@@ -193,6 +193,14 @@
   margin-bottom: 0.5rem;
 }
 
+#embed-code {
+  font-family: monospace;
+  font-size: 0.875rem;
+  background-color: var(--color-light-sand);
+  border: 1px solid var(--ctrl-button-color);
+  padding: 0.75rem;
+}
+
 /* Layers modal */
 
 /* add layers dropdown should overflow modal window */
