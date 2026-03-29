@@ -3,6 +3,7 @@ class MapsController < ApplicationController
 
   before_action :set_map, only: %i[show properties feature destroy copy]
   before_action :set_map_mode, only: %i[show]
+  before_action :join, only: %i[show]
   before_action :set_global_js_values, only: %i[show tutorial]
   before_action :check_permissions, only: %i[show properties]
   before_action :require_login, only: %i[my create copy]
@@ -29,8 +30,8 @@ class MapsController < ApplicationController
   def show
     respond_to do |format|
       format.html do
-        # Avoid 'updated_at' update
         unless params["viewcount"] == "false"
+          # Avoid 'updated_at' update
           @map.collection.update_one(
             { _id: @map.id },
             { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
@@ -158,6 +159,12 @@ class MapsController < ApplicationController
     @map_mode = (params[:id] == @map.private_id.to_s) ? "rw" : "ro"
     @map_mode = "static" if params["static"]
     allow_iframe if @map_mode == "ro" || params["static"]
+  end
+
+  def join
+    if @map_mode == "rw" && params["join"] == "true" && @user
+      @map.add_owner(@user)
+    end
   end
 
   def check_permissions

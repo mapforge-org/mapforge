@@ -1,7 +1,10 @@
 require "rails_helper"
 
 describe "Map" do
-  subject(:map) { create(:map, name: "Test Map", owners: [ create(:user) ]) }
+  subject(:map) { create(:map, name: "Test Map", owners: [ user ]) }
+
+  let(:user) { create(:user, name: "Test User", email: "test@mapforge.org") }
+
 
   context "share links" do
     before do
@@ -66,7 +69,7 @@ describe "Map" do
     end
   end
 
-  context "permissions" do
+  context "permissions in rw mode" do
     before do
       visit map.private_map_path
       expect_map_loaded
@@ -74,17 +77,35 @@ describe "Map" do
       expect(page).to have_text("Share Map")
     end
 
-    it "can update view permission to listed" do
+    it "has no share ownership link" do
+      expect(page).not_to have_link("Share ownership link", href: "/m/" + map.private_id + "?join=true")
+    end
+
+    it "can share map in gallery" do
       find("#map-gallery-toggle").click
       wait_for { map.reload.view_permission }.to eq("listed")
     end
 
-    it "can update view permission to link" do
+    it "can remove map from gallery" do
       find("#map-gallery-toggle").click
       wait_for { map.reload.view_permission }.to eq("listed")
 
       find("#map-gallery-toggle").click
       wait_for { map.reload.view_permission }.to eq("link")
+    end
+  end
+
+  context "permissions in owner mode" do
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      visit map.private_map_path
+      expect_map_loaded
+      find(".maplibregl-ctrl-share").click
+      expect(page).to have_text("Share Map")
+    end
+
+    it "has share ownership link" do
+      expect(page).to have_link("Share ownership link", href: "/m/" + map.private_id + "?join=true")
     end
   end
 end

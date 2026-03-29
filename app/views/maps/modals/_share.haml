@@ -13,7 +13,7 @@
               .col-12
                 .d-flex.gap-2.align-items-center
                   %button#share-ownership-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
-                    =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShareOwnershipLink" }) do
+                    =link_to(map_path(@map.private_id, join: true), data: { turbo: false, action: "click->map--share#nativeShareOwnershipLink" }) do
                       - if @map.owners.any?
                         %span.me-2
                           - @map.owners.each do |owner|

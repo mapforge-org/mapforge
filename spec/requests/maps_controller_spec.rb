@@ -27,4 +27,18 @@ describe MapsController do
       expect(Map.tutorial.count).to eq 1
     end
   end
+
+  describe "#map" do
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+    end
+
+    let(:user) { create(:user) }
+
+    it "creates persistent tutorial map for each logged in user" do
+      get map_path(id: map.private_id, join: true)
+
+      expect(map.reload.owners).to eq [ user ]
+    end
+  end
 end
