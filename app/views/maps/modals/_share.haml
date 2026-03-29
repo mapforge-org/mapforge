@@ -8,42 +8,45 @@
 
       .feature-section-card.pt-3
         - if @map_mode == 'rw'
-          - if @map.owners.any?
-            %p
-              %span.me-2
-                - @map.owners.each do |owner|
-                  - if owner.image
-                    = image_tag avatar_url(owner.image, 40), class: 'map-avatar', title: owner.email, crossorigin: "anonymous", data: { "toggle": 'tooltip', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }
-
-              Access this map under '#{link_to "Your maps", my_path}'.
-          - else
-            %p
-              This map was created anonymously and can only get changed with the
-              = link_to 'edit link', @map.private_map_path
-              = "."
+          - if @map.owners.include?(@user)
+            .row.mb-3
+              .col-12
+                .d-flex.gap-2.align-items-center
+                  %button#share-ownership-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
+                    =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShareOwnershipLink" }) do
+                      - if @map.owners.any?
+                        %span.me-2
+                          - @map.owners.each do |owner|
+                            - if owner.image
+                              = image_tag avatar_url(owner.image, 24), class: 'map-avatar', style: 'width: 24px; height: 24px; margin-right: 4px;', crossorigin: "anonymous", title: owner.name || owner.email, data: { "toggle": 'tooltip', 'bs-placement': 'top', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }
+                      Share ownership link
+                  %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyOwnershipLink", "toggle": 'tooltip', 'bs-placement': 'top', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Copy link to clipboard" }
+                    %i.bi.bi-copy.me-1
+                %small.text-muted.mt-2.flex-center.center
+                  Map owners have this map listed in their account and full permissions.
 
           .row.mb-3
             .col-12
-              .d-flex.gap-2
+              .d-flex.gap-2.align-items-center
                 %button#share-edit-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
                   =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShareEditLink" }) do
                     %i.bi.bi-link-45deg.me-1
                     Share edit link
-                %button.btn.btn-outline-secondary{ type: "button", data: { action: "click->map--share#copyEditLink" }, title: "Copy link" }
-                  %i.bi.bi-copy
-              %small.text-muted.mt-2.flex-center
+                %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyEditLink", "toggle": 'tooltip', 'bs-placement': 'top', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Copy link to clipboard" }
+                  %i.bi.bi-copy.me-1
+              %small.text-muted.mt-2.flex-center.center
                 Anyone with this link can modify the map, add layers, and make changes.
 
           .row.mb-3
             .col-12
-              .d-flex.gap-2
+              .d-flex.gap-2.align-items-center
                 %button#share-view-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
                   =link_to(map_path(id: @map.public_id), data: { turbo: false, action: "click->map--share#nativeShareViewLink" }) do
                     %i.bi.bi-link-45deg.me-1
                     Share view link
-                %button.btn.btn-outline-secondary{ type: "button", data: { action: "click->map--share#copyViewLink" }, title: "Copy link" }
-                  %i.bi.bi-copy
-              %small.text-muted.mt-2.flex-center
+                %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyViewLink", "toggle": 'tooltip', 'bs-placement': 'top', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Copy link to clipboard" }
+                  %i.bi.bi-copy.me-1
+              %small.text-muted.mt-2.flex-center.center
                 Users can explore the map but cannot modify it.
 
           .row.mb-2
@@ -51,18 +54,21 @@
               .form-check.form-switch.flex-center
                 %input.form-check-input.me-2#map-gallery-toggle{ type: "checkbox", data: { action: "change->map--share#updateGalleryVisibility" }}
                 %label.form-check-label{ for: "map-gallery-toggle" }
-                  Show map in Mapforge gallery
+                  Show
+                  %span.d-none.d-sm-inline map
+                  in Mapforge gallery
 
         - else
           %label.form-label.mb-2
             %b View link
-          .d-flex.gap-2
+          .d-flex.gap-2.align-items-center
             %button#share-view-link.form-button.btn.btn-success.flex-grow-1{ type: "button" }
               =link_to(map_path(id: @map.public_id), data: {turbo: false, action: "click->map--share#nativeShareViewLink" }) do
                 %i.bi.bi-link-45deg.me-1
                 Share
-            %button.btn.btn-outline-secondary{ type: "button", data: { action: "click->map--share#copyViewLink" }, title: "Copy link" }
-              %i.bi.bi-copy
+            %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyViewLink", "toggle": 'tooltip', 'bs-placement': 'top', 'bs-custom-class': 'maplibregl-ctrl-tooltip' }, title: "Copy link to clipboard" }
+              %i.bi.bi-copy.me-1
+              Copy
           %small.text-muted.mt-2.mb-3.d-block
             Recipients can explore the map but cannot modify it.
 

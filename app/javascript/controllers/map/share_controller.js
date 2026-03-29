@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
+import { initTooltips } from 'helpers/dom'
 import { status } from 'helpers/status'
 import { mapProperties } from 'maplibre/map'
 
@@ -26,12 +27,21 @@ export default class extends Controller {
         viewLinkIcon.classList.add('bi-share')
       }
     }
+
+    // Initialize tooltips for avatars and copy buttons
+    initTooltips(this.element)
   }
 
   updateGalleryVisibility () {
     const isListed = document.querySelector('#map-gallery-toggle').checked
     mapProperties['view_permission'] = isListed ? 'listed' : 'link'
     mapChannel.send_message('update_map', { view_permission: mapProperties['view_permission'] })
+  }
+
+  copyOwnershipLink (e) {
+    e.preventDefault()
+    const ownershipLink = window.location.origin + document.querySelector('#share-ownership-link a').getAttribute('href')
+    this.copyToClipboard(ownershipLink, "Ownership link copied")
   }
 
   copyEditLink (e) {
@@ -81,6 +91,17 @@ export default class extends Controller {
     document.body.removeChild(textArea)
   }
 
+  nativeShareOwnershipLink (e) {
+    if (navigator.share) {
+      e.preventDefault()
+      navigator.share({
+        title: document.querySelector('title').textContent,
+        url: window.location.origin + e.target.getAttribute('href'),
+      })
+    .catch((error) => console.log('Error sharing', error))
+    }
+  }
+
   nativeShareEditLink (e) {
     if (navigator.share) {
       e.preventDefault()
@@ -88,7 +109,6 @@ export default class extends Controller {
         title: document.querySelector('title').textContent,
         url: window.location.origin + e.target.getAttribute('href'),
       })
-    .then(() => console.log('Successful share'))
     .catch((error) => console.log('Error sharing', error))
     }
   }
@@ -100,7 +120,6 @@ export default class extends Controller {
         title: document.querySelector('title').textContent,
         url: window.location.origin + e.target.getAttribute('href'),
       })
-    .then(() => console.log('Successful share'))
     .catch((error) => console.log('Error sharing', error))
     }
   }

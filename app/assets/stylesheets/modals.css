@@ -222,6 +222,23 @@
   opacity: 0.65;
 }
 
+.copy-link {
+  cursor: pointer;
+  text-decoration: none;
+  transition: none;
+}
+
+.copy-link:hover {
+  text-decoration: none;
+  color: var(--bs-secondary-color) !important;
+}
+
+#share-ownership-link .map-avatar {
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* Layers modal */
 
 /* add layers dropdown should overflow modal window */
