@@ -12,11 +12,11 @@ describe "Map" do
     end
 
     it "has share public link" do
-      expect(page).to have_link("View link", href: "/m/" + subject.public_id)
+      expect(page).to have_link("Share view link", href: "/m/" + subject.public_id)
     end
 
     it "has share private link" do
-      expect(page).to have_link("Edit link", href: "/m/" + subject.private_id)
+      expect(page).to have_link("Share edit link", href: "/m/" + subject.private_id)
     end
 
     it "has share geojson link" do
@@ -74,14 +74,17 @@ describe "Map" do
       expect(page).to have_text("Share Map")
     end
 
-    it "can update view permission" do
-      select("Only you", from: "map-view-permissions")
-      wait_for { map.reload.view_permission }.to eq("private")
+    it "can update view permission to listed" do
+      find("#map-gallery-toggle").click
+      wait_for { map.reload.view_permission }.to eq("listed")
     end
 
-    it "can update edit permission" do
-      select("Only you", from: "map-edit-permissions")
-      wait_for { map.reload.edit_permission }.to eq("private")
+    it "can update view permission to link" do
+      find("#map-gallery-toggle").click
+      wait_for { map.reload.view_permission }.to eq("listed")
+
+      find("#map-gallery-toggle").click
+      wait_for { map.reload.view_permission }.to eq("link")
     end
   end
 end

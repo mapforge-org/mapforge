@@ -22,46 +22,53 @@
               = link_to 'edit link', @map.private_map_path
               = "."
 
-          .row
-            .col-md-3
-              %button#share-edit-link.form-button.btn.btn-blue{ type: "button" }
-                =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShareEditLink" }) do
-                  %i.bi.bi-link-45deg.me-1
-                  Edit link
-            .col-md-9
-              .form-floating.edit-ui
-                %label{ for: "map-edit-permissions"} Edit permissions:
-                %select.form-select#map-edit-permissions{ "name": "map-visibility", "aria-label": "Edit permissions", data: { action: "change->map--share#updateEditPermissions" }}
-                  - if @map.owners.any?
-                    %option{ value: 'private' } Only you
-                  %option{ value: 'link' } Everybody with the edit link
+          .row.mb-3
+            .col-12
+              .d-flex.gap-2
+                %button#share-edit-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
+                  =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShareEditLink" }) do
+                    %i.bi.bi-link-45deg.me-1
+                    Share edit link
+                %button.btn.btn-outline-secondary{ type: "button", data: { action: "click->map--share#copyEditLink" }, title: "Copy link" }
+                  %i.bi.bi-copy
+              %small.text-muted.mt-2.flex-center
+                Anyone with this link can modify the map, add layers, and make changes.
+
+          .row.mb-3
+            .col-12
+              .d-flex.gap-2
+                %button#share-view-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
+                  =link_to(map_path(id: @map.public_id), data: { turbo: false, action: "click->map--share#nativeShareViewLink" }) do
+                    %i.bi.bi-link-45deg.me-1
+                    Share view link
+                %button.btn.btn-outline-secondary{ type: "button", data: { action: "click->map--share#copyViewLink" }, title: "Copy link" }
+                  %i.bi.bi-copy
+              %small.text-muted.mt-2.flex-center
+                Users can explore the map but cannot modify it.
 
           .row.mb-2
-            .col-md-3
-              %button#share-view-link.form-button.btn.btn-blue{ type: "button" }
-                =link_to(map_path(id: @map.public_id), data: { turbo: false, action: "click->map--share#nativeShareViewLink" }) do
-                  %i.bi.bi-link-45deg.me-1
-                  View link
-            .col-md-9
-              .form-floating.edit-ui
-                %label{ for: "map-view-permissions"} View permissions:
-                %select.form-select#map-view-permissions{ "name": "map-visibility", "aria-label": "View permissions", data: { action: "change->map--share#updateViewPermissions" }}
-                  - if @map.owners.any?
-                    %option{ value: 'private' } Only you
-                  %option{ value: 'link' } Everybody with the view link
-                  %option{ value: 'listed' } Everybody, map is shown on mapforge
+            .col-md-12
+              .form-check.form-switch.flex-center
+                %input.form-check-input.me-2#map-gallery-toggle{ type: "checkbox", data: { action: "change->map--share#updateGalleryVisibility" }}
+                %label.form-check-label{ for: "map-gallery-toggle" }
+                  Show map in Mapforge gallery
 
         - else
-
-          You can access this map via the
-          %button#share-view-link.form-button.btn.btn-success.ms-2.mb-2{ type: "button" }
-            =link_to(map_path(id: @map.public_id), data: {turbo: false}) do
-              %i.bi.bi-link-45deg
-              View link
+          %label.form-label.mb-2
+            %b View link
+          .d-flex.gap-2
+            %button#share-view-link.form-button.btn.btn-success.flex-grow-1{ type: "button" }
+              =link_to(map_path(id: @map.public_id), data: {turbo: false, action: "click->map--share#nativeShareViewLink" }) do
+                %i.bi.bi-link-45deg.me-1
+                Share
+            %button.btn.btn-outline-secondary{ type: "button", data: { action: "click->map--share#copyViewLink" }, title: "Copy link" }
+              %i.bi.bi-copy
+          %small.text-muted.mt-2.mb-3.d-block
+            Recipients can explore the map but cannot modify it.
 
       .feature-section-card
         .btn-group-sm.mt-3{ role: "group" }
-          %span.me-2 Download map as:
+          %b.me-2 Download map as:
           %button.btn.btn-secondary.btn-download{ type: "button" }
             =link_to map_geojson_path(@map.public_id), target: '_blank' do
               %i.bi.bi-download
@@ -80,6 +87,6 @@
         .me-2
           %textarea#embed-code.form-control{ rows: "3", readonly: "readonly" }
             = raw("<iframe width='600' height='450' style='border:0' loading='lazy' src='#{map_url(@map.public_id, { nomenu: true })}'></iframe>")
-          %small.link.text-muted.flex-center.mt-1.text-nowrap{ data: { action: "click->map--share#copy" } }
+          %small.link.text-muted.flex-center.mt-1.text-nowrap{ data: { action: "click->map--share#copyEmbedCode" } }
             %i.bi.bi-copy.me-1
             Click to copy html to embed in your website

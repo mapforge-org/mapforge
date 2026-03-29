@@ -177,8 +177,15 @@
 /* Share modal */
 
 #share-edit-link, #share-view-link {
-  margin-top: 0.5rem;
-  width: 7.3rem;
+  min-height: 2.5rem;
+}
+
+#share-edit-link a, #share-view-link a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 #share-modal .form-floating > .form-select {
@@ -196,9 +203,23 @@
 #embed-code {
   font-family: monospace;
   font-size: 0.875rem;
-  background-color: var(--color-light-sand);
   border: 1px solid var(--ctrl-button-color);
   padding: 0.75rem;
+}
+
+#map-gallery-toggle:checked {
+  background-color: var(--color-mid-steel-blue);
+  border-color: var(--color-mid-steel-blue);
+}
+
+#map-gallery-toggle:focus {
+  border-color: var(--color-mid-steel-blue);
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--color-mid-steel-blue), transparent 75%);
+}
+
+#map-gallery-toggle:not(:checked) + label {
+  color: var(--bs-secondary-color);
+  opacity: 0.65;
 }
 
 /* Layers modal */

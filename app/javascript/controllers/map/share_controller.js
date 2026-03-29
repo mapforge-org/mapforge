@@ -9,28 +9,76 @@ export default class extends Controller {
     let props = mapProperties || window.gon.map_properties
 
     if (window.gon.map_mode === "rw") {
-      document.querySelector('#map-view-permissions').value = props['view_permission']
-      document.querySelector('#map-edit-permissions').value = props['edit_permission']
+      document.querySelector('#map-gallery-toggle').checked = props['view_permission'] === 'listed'
     }
 
     // Update share icons for native sharing support
     if (navigator.share) {
-      document.querySelector('#share-edit-link i').classList.remove('bi-link-45deg')
-      document.querySelector('#share-edit-link i').classList.add('bi-share')
+      const editLinkIcon = document.querySelector('#share-edit-link i')
+      if (editLinkIcon) {
+        editLinkIcon.classList.remove('bi-link-45deg')
+        editLinkIcon.classList.add('bi-share')
+      }
 
-      document.querySelector('#share-view-link i').classList.remove('bi-link-45deg')
-      document.querySelector('#share-view-link i').classList.add('bi-share')
+      const viewLinkIcon = document.querySelector('#share-view-link i')
+      if (viewLinkIcon) {
+        viewLinkIcon.classList.remove('bi-link-45deg')
+        viewLinkIcon.classList.add('bi-share')
+      }
     }
   }
 
-  updateEditPermissions () {
-    mapProperties['edit_permission'] = document.querySelector('#map-edit-permissions').value
-    mapChannel.send_message('update_map', { edit_permission: mapProperties['edit_permission'] })
+  updateGalleryVisibility () {
+    const isListed = document.querySelector('#map-gallery-toggle').checked
+    mapProperties['view_permission'] = isListed ? 'listed' : 'link'
+    mapChannel.send_message('update_map', { view_permission: mapProperties['view_permission'] })
   }
 
-  updateViewPermissions () {
-    mapProperties['view_permission'] = document.querySelector('#map-view-permissions').value
-    mapChannel.send_message('update_map', { view_permission: mapProperties['view_permission'] })
+  copyEditLink (e) {
+    e.preventDefault()
+    const editLink = window.location.origin + document.querySelector('#share-edit-link a').getAttribute('href')
+    this.copyToClipboard(editLink, "Edit link copied")
+  }
+
+  copyViewLink (e) {
+    e.preventDefault()
+    const viewLink = window.location.origin + document.querySelector('#share-view-link a').getAttribute('href')
+    this.copyToClipboard(viewLink, "View link copied")
+  }
+
+  copyToClipboard (text, successMessage) {
+    // Try modern clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        status(successMessage)
+      }).catch(() => {
+        this.fallbackCopyToClipboard(text, successMessage)
+      })
+    } else {
+      // Fallback for non-secure contexts
+      this.fallbackCopyToClipboard(text, successMessage)
+    }
+  }
+
+  fallbackCopyToClipboard (text, successMessage) {
+    const textArea = document.createElement('textarea')
+    textArea.value = text
+    textArea.style.position = 'fixed'
+    textArea.style.left = '-999999px'
+    textArea.style.top = '-999999px'
+    document.body.appendChild(textArea)
+    textArea.focus()
+    textArea.select()
+
+    try {
+      document.execCommand('copy')
+      status(successMessage)
+    } catch (err) {
+      status("Failed to copy link")
+      console.error('Fallback copy failed:', err)
+    }
+
+    document.body.removeChild(textArea)
   }
 
   nativeShareEditLink (e) {
@@ -57,10 +105,9 @@ export default class extends Controller {
     }
   }
 
-  copy (_e) {
+  copyEmbedCode (e) {
+    e.preventDefault()
     const embedCode = document.querySelector('#embed-code').value
-    navigator.clipboard.writeText(embedCode).then(function () {
-      status("Embed code copied")
-    })
+    this.copyToClipboard(embedCode, "Embed code copied")
   }
 }
