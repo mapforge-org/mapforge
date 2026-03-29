@@ -51,6 +51,10 @@ export function initTooltips (root = document) {
       if (typeof bootstrap !== 'undefined') {
         let tooltip = bootstrap.Tooltip.getInstance(element)
         if (!tooltip) {
+          // Set default custom class if not already specified
+          if (!element.hasAttribute('data-bs-custom-class')) {
+            element.setAttribute('data-bs-custom-class', 'maplibregl-ctrl-tooltip')
+          }
           new window.bootstrap.Tooltip(element)
         } else {
           tooltip.hide()

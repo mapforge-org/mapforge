@@ -36,12 +36,12 @@
     %span#feature-size.selectable.text-nowrap
     %span#feature-vertexes.selectable.text-nowrap
     %span.feature-export#feature-export-geo.ms-4.link.text-nowrap<
-      =link_to map_feature_geo_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
+      =link_to map_feature_geo_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" do
         %i.bi.bi-download
         GeoJSON
     %span.feature-export#feature-export-gpx.ms-2.link.text-nowrap<
-      =link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), title: 'Download as GPX', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip" do
+      =link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), title: 'Download as GPX', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" do
         %i.bi.bi-download
         GPX
     / %span#feature-animation.ms-2.link
-    /   %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-bs-custom-class': "maplibregl-ctrl-tooltip", 'data-action': "click->feature--modal#animate"}
+    /   %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-action': "click->feature--modal#animate"}

@@ -333,7 +333,6 @@ export const geocoderConfig = {
 export function initCtrlTooltips () {
   functions.e('.maplibregl-ctrl, .maplibregl-ctrl button', e => {
     e.setAttribute('data-toggle', 'tooltip')
-    e.setAttribute('data-bs-custom-class', 'maplibregl-ctrl-tooltip')
     e.setAttribute('data-bs-trigger', 'hover')
   })
   initTooltips()

@@ -97,7 +97,6 @@ export async function initializeMap (divId = 'maplibre-map') {
     initCtrlTooltips()
     functions.e('.maplibregl-ctrl button', e => {
       e.setAttribute('data-toggle', 'tooltip')
-      e.setAttribute('data-bs-custom-class', 'maplibregl-ctrl-tooltip')
       e.setAttribute('data-bs-trigger', 'hover')
     })
     dom.initTooltips()

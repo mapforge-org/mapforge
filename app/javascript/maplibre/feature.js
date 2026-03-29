@@ -73,8 +73,8 @@ function featureMeta (feature) {
     const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`
     const osmUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}&zoom=15`
 
-    const googleIcon = `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="link nav-icon ms-2" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-custom-class="maplibregl-ctrl-tooltip" title="Show in Google Maps"><i class="bi bi-geo-alt-fill"></i></a>`
-    const osmIcon = `<a href="${osmUrl}" target="_blank" rel="noopener noreferrer" class="link nav-icon ms-1" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" data-bs-custom-class="maplibregl-ctrl-tooltip" title="Show in OpenStreetMap"><i class="bi bi-pin-map-fill"></i></a>`
+    const googleIcon = `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="link nav-icon ms-2" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" title="Show in Google Maps"><i class="bi bi-geo-alt-fill"></i></a>`
+    const osmIcon = `<a href="${osmUrl}" target="_blank" rel="noopener noreferrer" class="link nav-icon ms-1" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" title="Show in OpenStreetMap"><i class="bi bi-pin-map-fill"></i></a>`
 
     meta = coords + googleIcon + osmIcon
   }
