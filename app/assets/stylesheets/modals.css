@@ -198,6 +198,7 @@
 
 #share-ownership-link, #share-edit-link, #share-view-link {
   min-height: 2.5rem;
+  font-size: 0.875rem;
 }
 
 #share-ownership-link a, #share-edit-link a, #share-view-link a {
@@ -240,6 +241,7 @@
   --bs-btn-active-bg: var(--color-mid-blue-slate);
 
   margin-bottom: 0.5rem;
+  font-size: 0.875rem;
 }
 
 #embed-code {
@@ -247,6 +249,11 @@
   font-size: 0.875rem;
   border: 1px solid var(--ctrl-button-color);
   padding: 0.75rem;
+}
+
+#map-gallery-toggle {
+  margin-top: 0;
+  vertical-align: middle;
 }
 
 #map-gallery-toggle:checked {
@@ -262,6 +269,11 @@
 #map-gallery-toggle:not(:checked) + label {
   color: var(--bs-secondary-color);
   opacity: 0.65;
+}
+
+.form-check.form-switch {
+  display: flex;
+  align-items: center;
 }
 
 .copy-link {

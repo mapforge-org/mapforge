@@ -8,7 +8,7 @@
 
       .feature-section-card.pt-3
         - if @map_mode == 'rw'
-          - if @map.owners.include?(@user) || @user.admin?
+          - if @user && (@map.owners.include?(@user) || @user.admin?)
             .row.mb-3
               .col-12
                 .d-flex.gap-2.align-items-center
