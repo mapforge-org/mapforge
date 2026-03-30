@@ -69,7 +69,7 @@
         .btn-group-sm.mt-3{ role: "group" }
           %p.me-2.mb-2.center
             %b Download map
-          .no-wrap.center
+          .center
             %button.btn.btn-secondary.btn-download{ type: "button" }
               =link_to map_geojson_path(@map.public_id), target: '_blank' do
                 %i.bi.bi-download
@@ -83,6 +83,8 @@
                 %i.bi.bi-download
                 Map
                 %span.d-none.d-sm-inline export
+          %small.text-muted.mt-2.flex-center.center
+            Single tracks or points of the map can get exported from their details view.
 
       .feature-section-card.pt-2.d-none.d-sm-block
         %p.mt-2.center

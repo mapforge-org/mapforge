@@ -3,6 +3,7 @@ import { mapChannel } from 'channels/map_channel'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
+import { copyToClipboard } from 'helpers/clipboard'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { draw, select, unselect } from 'maplibre/edit'
 import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
@@ -231,6 +232,12 @@ export default class extends Controller {
       console.log("Copied feature to clipboard ", feature)
       status('Feature copied to clipboard')
     }
+  }
+
+  copyCoordinates(event) {
+    event.preventDefault()
+    const coords = event.currentTarget.dataset.coords
+    copyToClipboard(coords, "Coordinates copied to clipboard", event.currentTarget)
   }
 
   animate () {

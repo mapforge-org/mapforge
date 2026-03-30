@@ -67,16 +67,19 @@ function featureMeta (feature) {
   } else if (feature.geometry.type === 'Point') {
     const lat = feature.geometry.coordinates[1].toFixed(6)
     const lng = feature.geometry.coordinates[0].toFixed(6)
-    const coords = `(${lat}, ${lng})`
+    const coords = `${lat}, ${lng}`
+
+    // Copy to clipboard icon for coordinates
+    const copyIcon = `<a class="link text-muted copy-link ms-1" data-action="click->feature--modal#copyCoordinates" data-coords="${coords}" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" title="Copy coordinates to clipboard"><i class="bi bi-copy"></i></a>`
 
     // Navigation links
     const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`
     const osmUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}&zoom=15`
 
-    const googleIcon = `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="link nav-icon ms-2" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" title="Show in Google Maps"><i class="bi bi-geo-alt-fill"></i></a>`
-    const osmIcon = `<a href="${osmUrl}" target="_blank" rel="noopener noreferrer" class="link nav-icon ms-1" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" title="Show in OpenStreetMap"><i class="bi bi-pin-map-fill"></i></a>`
+    const googleLink = `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="link text-nowrap d-inline-flex align-items-center me-3" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" title="See in Google Maps"><img src="/icons/google-maps.png" class="me-1" alt="Google Maps"> See in Google Maps</a>`
+    const osmLink = `<a href="${osmUrl}" target="_blank" rel="noopener noreferrer" class="link text-nowrap d-inline-flex align-items-center" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" title="See in OpenStreetMap"><img src="/icons/osm-icon-smaller.png" class="me-1" alt="OpenStreetMap"> See in OpenStreetMap</a>`
 
-    meta = coords + googleIcon + osmIcon
+    meta = coords + copyIcon + '<div class="mt-1">' + googleLink + osmLink + '</div>'
   }
   return meta
 }

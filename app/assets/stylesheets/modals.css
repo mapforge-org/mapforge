@@ -155,8 +155,8 @@
 
   /* Larger touch targets on mobile */
   .copy-link {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 2rem;
+    min-height: 2rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -164,7 +164,7 @@
   }
 
   .copy-link i {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
   /* Touch feedback */

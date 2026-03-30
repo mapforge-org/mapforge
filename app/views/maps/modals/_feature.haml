@@ -33,7 +33,7 @@
       %canvas#route-elevation-chart
 
   #feature-details-meta.mt-2.flex-center
-    %span#feature-size.selectable.text-nowrap
+    %span#feature-size.center.selectable.text-nowrap
     %span#feature-vertexes.selectable.text-nowrap
     %span.feature-export#feature-export-geo.ms-4.link.text-nowrap<
       =link_to map_feature_geo_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" do
