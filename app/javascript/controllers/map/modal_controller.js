@@ -5,11 +5,11 @@ import { draw } from 'maplibre/edit'
 export default class extends Controller {
   close() {
     resetControls()
-    if (draw) { 
+    if (draw) {
       draw.changeMode('simple_select', { featureIds: [] })
       map.fire('draw.modechange')
     }
-    // TODO: drop anchor if present 
+    // TODO: drop anchor if present
     window.history.pushState({}, '', `${window.location.pathname}`)
   }
 }

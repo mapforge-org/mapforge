@@ -152,6 +152,26 @@
   .modal-pull-fade {
     opacity: 0.4 !important;
   }
+
+  /* Larger touch targets on mobile */
+  .copy-link {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+  }
+
+  .copy-link i {
+    font-size: 1.2rem;
+  }
+
+  /* Touch feedback */
+  .copy-link:active {
+    background-color: rgb(0 0 0 / 8%);
+    border-radius: 0.4rem;
+  }
 }
 
 .modal-close-button {
@@ -176,16 +196,38 @@
 
 /* Share modal */
 
-#share-edit-link, #share-view-link {
+#share-ownership-link, #share-edit-link, #share-view-link {
   min-height: 2.5rem;
 }
 
-#share-edit-link a, #share-view-link a {
+#share-ownership-link a, #share-edit-link a, #share-view-link a {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
+}
+
+/* Permission badges */
+.permission-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.badge-owner, .badge-edit, .badge-view {
+  background-color: rgb(255 255 255 / 30%);
+  color: #fff;
+}
+
+@media (width <= 574px) {
+  .permission-badge {
+    display: none;
+  }
 }
 
 #share-modal .form-floating > .form-select {
@@ -231,6 +273,22 @@
 .copy-link:hover {
   text-decoration: none;
   color: var(--bs-secondary-color) !important;
+}
+
+.copy-success {
+  color: var(--color-dark-moss-green) !important;
+  transition: all 0.2s ease-in-out;
+  animation: copy-pulse 0.4s ease-in-out;
+}
+
+@keyframes copy-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
 }
 
 #share-ownership-link .map-avatar {

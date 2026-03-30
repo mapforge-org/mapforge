@@ -15,15 +15,21 @@ export default class extends Controller {
 
     // Update share icons for native sharing support
     if (navigator.share) {
+      const ownershipLinkIcon = document.querySelector('#share-ownership-link i')
+      if (ownershipLinkIcon) {
+        ownershipLinkIcon.classList.remove('bi-shield-fill-check')
+        ownershipLinkIcon.classList.add('bi-share')
+      }
+
       const editLinkIcon = document.querySelector('#share-edit-link i')
       if (editLinkIcon) {
-        editLinkIcon.classList.remove('bi-link-45deg')
+        editLinkIcon.classList.remove('bi-pencil-square')
         editLinkIcon.classList.add('bi-share')
       }
 
       const viewLinkIcon = document.querySelector('#share-view-link i')
       if (viewLinkIcon) {
-        viewLinkIcon.classList.remove('bi-link-45deg')
+        viewLinkIcon.classList.remove('bi-eye-fill')
         viewLinkIcon.classList.add('bi-share')
       }
     }
@@ -41,36 +47,39 @@ export default class extends Controller {
   copyOwnershipLink (e) {
     e.preventDefault()
     const ownershipLink = window.location.origin + document.querySelector('#share-ownership-link a').getAttribute('href')
-    this.copyToClipboard(ownershipLink, "Ownership link copied")
+    this.copyToClipboard(ownershipLink, "Ownership link copied", e.currentTarget)
   }
 
   copyEditLink (e) {
     e.preventDefault()
     const editLink = window.location.origin + document.querySelector('#share-edit-link a').getAttribute('href')
-    this.copyToClipboard(editLink, "Edit link copied")
+    this.copyToClipboard(editLink, "Edit link copied", e.currentTarget)
   }
 
   copyViewLink (e) {
     e.preventDefault()
     const viewLink = window.location.origin + document.querySelector('#share-view-link a').getAttribute('href')
-    this.copyToClipboard(viewLink, "View link copied")
+    this.copyToClipboard(viewLink, "View link copied", e.currentTarget)
   }
 
-  copyToClipboard (text, successMessage) {
+  copyToClipboard (text, successMessage, iconElement = null) {
     // Try modern clipboard API first
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(() => {
         status(successMessage)
+        if (iconElement) {
+          this.showCopySuccess(iconElement)
+        }
       }).catch(() => {
-        this.fallbackCopyToClipboard(text, successMessage)
+        this.fallbackCopyToClipboard(text, successMessage, iconElement)
       })
     } else {
       // Fallback for non-secure contexts
-      this.fallbackCopyToClipboard(text, successMessage)
+      this.fallbackCopyToClipboard(text, successMessage, iconElement)
     }
   }
 
-  fallbackCopyToClipboard (text, successMessage) {
+  fallbackCopyToClipboard (text, successMessage, iconElement = null) {
     const textArea = document.createElement('textarea')
     textArea.value = text
     textArea.style.position = 'fixed'
@@ -83,12 +92,36 @@ export default class extends Controller {
     try {
       document.execCommand('copy')
       status(successMessage)
+      if (iconElement) {
+        this.showCopySuccess(iconElement)
+      }
     } catch (err) {
       status("Failed to copy link")
       console.error('Fallback copy failed:', err)
     }
 
     document.body.removeChild(textArea)
+  }
+
+  showCopySuccess (iconElement) {
+    // Find the actual icon element
+    const icon = iconElement.querySelector('i') || iconElement
+
+    // Store original classes
+    const wasCheck = icon.classList.contains('bi-check2')
+
+    // Don't animate if already showing success
+    if (wasCheck) return
+
+    // Change to checkmark with success styling
+    icon.classList.remove('bi-copy')
+    icon.classList.add('bi-check2', 'copy-success')
+
+    // Revert after 2 seconds
+    setTimeout(() => {
+      icon.classList.remove('bi-check2', 'copy-success')
+      icon.classList.add('bi-copy')
+    }, 2000)
   }
 
   nativeShareOwnershipLink (e) {
@@ -127,6 +160,6 @@ export default class extends Controller {
   copyEmbedCode (e) {
     e.preventDefault()
     const embedCode = document.querySelector('#embed-code').value
-    this.copyToClipboard(embedCode, "Embed code copied")
+    this.copyToClipboard(embedCode, "Embed code copied", e.currentTarget)
   }
 }
