@@ -18,7 +18,7 @@
                         %span.me-2
                           - @map.owners.each do |owner|
                             - if owner.image
-                              = image_tag avatar_url(owner.image, 24), class: 'map-avatar', style: 'width: 24px; height: 24px; margin-right: 4px;', crossorigin: "anonymous", title: owner.name || owner.email, data: { "toggle": 'tooltip', 'bs-placement': 'top' }
+                              = image_tag avatar_url(owner.image, 24), class: 'map-avatar', crossorigin: "anonymous", title: owner.name || owner.email, data: { "toggle": 'tooltip', 'bs-placement': 'top' }
                       %i.bi.bi-shield-fill-check.me-2
                       Share ownership link
                       %span.permission-badge.badge-owner.ms-2 Full Control
@@ -61,7 +61,9 @@
                 %label.form-check-label{ for: "map-gallery-toggle" }
                   Show
                   %span.d-none.d-sm-inline map
-                  in Mapforge gallery
+                  in public
+                  %span.d-none.d-sm-inline Mapforge
+                  gallery
 
       .feature-section-card
         .btn-group-sm.mt-3{ role: "group" }

@@ -133,7 +133,7 @@ nav.fixed-top~#maps {
   height: 1.5rem;
   opacity: 0.8;
   border-radius: 50%;
-  border: 1px solid white;
+  border: 2px solid white;
   box-shadow: 2px 2px 6px rgb(0 0 0 / 40%);
 }
 
