@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 * Layer visibility toggle
 * Experimental basemap layer with option to copy OSM elements to your map
 * Log multiple tracks with µlogger to the same map
+* Introduce shared map ownership + improved share modal
 
 ## 2026-02
 

@@ -21,7 +21,7 @@
                               = image_tag avatar_url(owner.image, 24), class: 'map-avatar', crossorigin: "anonymous", title: owner.name || owner.email, data: { "toggle": 'tooltip', 'bs-placement': 'top' }
                       %i.bi.bi-shield-fill-check.me-2
                       Share ownership link
-                      %span.permission-badge.badge-owner.ms-2 Full Control
+                      %span.permission-badge.badge-owner.ms-2 Owner
                   %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyOwnershipLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: "Copy link to clipboard" }
                     %i.bi.bi-copy.me-1
                 %small.text-muted.mt-2.flex-center.center
