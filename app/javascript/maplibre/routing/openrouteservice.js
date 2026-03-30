@@ -1,6 +1,6 @@
-import { status } from 'helpers/status'
-import { decodePolyline } from 'helpers/polyline'
 import * as functions from 'helpers/functions'
+import { decodePolyline } from 'helpers/polyline'
+import { status } from 'helpers/status'
 import Openrouteservice from 'openrouteservice-js'
 
 // profiles are: driving-car, driving-hgv(heavy goods vehicle), cycling-regular,
@@ -55,22 +55,36 @@ export async function getRouteFeature (feature, waypoints, profile) {
 }
 
 // return route points including elevation
+// The API restricts to 2000 vertexes per request: https://openrouteservice.org/restrictions/
 export async function getRouteElevation (waypoints) {
-  try {
-    const Elevation = new Openrouteservice.Elevation({api_key: window.gon.map_keys.openrouteservice})
-    let response = await Elevation.lineElevation({
-      format_in: 'geojson',
-      format_out: 'geojson',
-      geometry: {
-        coordinates: functions.removeElevation(waypoints),
-        type: 'LineString'
-      }
-    })
+  const Elevation = new Openrouteservice.Elevation({api_key: window.gon.map_keys.openrouteservice})
+  return Elevation.lineElevation({
+    format_in: 'geojson',
+    format_out: 'geojson',
+    geometry: {
+      coordinates: functions.removeElevation(waypoints),
+      type: 'LineString'
+    }
+  }).then(response => {
     console.log('Openrouteservice elevation response:', response)
     return response.geometry.coordinates
-  } catch (err) {
-    console.log("An error occurred:", err)
-  }
+  }).catch(async err => {
+    // Extract error details from API response
+    let errorMessage = 'OpenRouteService elevation error'
+    try {
+      if (err.response) {
+        const errorData = await err.response.json()
+        errorMessage = errorData.message || JSON.stringify(errorData)
+        status(errorMessage, 'error')
+      } else {
+        errorMessage = err.message || errorMessage
+      }
+      console.error("Elevation error:", errorMessage)
+    } catch {
+      console.error("OpenRouteService error:", err)
+      errorMessage = err.message || errorMessage
+    }
+  })
 }
 
 export async function getRouteUpdate (originalFeature, updatedFeature) {
@@ -90,5 +104,3 @@ export async function getRouteUpdate (originalFeature, updatedFeature) {
   updatedFeature = await getRouteFeature(updatedFeature, waypoints, updatedFeature.properties.route.profile)
   return updatedFeature
 }
-
-
