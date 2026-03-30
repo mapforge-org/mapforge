@@ -1,21 +1,21 @@
 - sort_options = {created_at: "Newest",
                 updated_at: "Recently updated",
                 view_count: "Most viewed" }
-.row{ 'data-controller': "maps", 'data-maps-sort-value': @sort, 
-                                  'data-maps-sort_label-value': sort_options[@sort.to_sym], 
+.row{ 'data-controller': "maps", 'data-maps-sort-value': @sort,
+                                  'data-maps-sort_label-value': sort_options[@sort.to_sym],
                                   'data-maps-direction-value': @direction,
-                                  'data-maps-search-value': @filter, 
+                                  'data-maps-search-value': @filter,
                                   'data-maps-search-user': @user }
   - # screen < sm, sort moves below filters
   .col-12.col-md-4.mb-3
-  
+
     %div
-      %input#search.form-control.form-control{ type: "text", name: "search", placeholder: "Search maps", 
-                                               "aria-describedby" => "searchHelp", 
-                                               'data-action': "keydown.enter->maps#search", 
+      %input#search.form-control.form-control{ type: "text", name: "search", placeholder: "Search maps",
+                                               "aria-describedby" => "searchHelp",
+                                               'data-action': "keydown.enter->maps#search",
                                                value: @search }
 
-  .col-12.col-md-4.mb-3
+  .col-12.col-md-4
     = render "maps/search_filters"
 
   .col-12.col-md-4.text-md-end.mb-3

@@ -7,13 +7,21 @@ nav.fixed-top~#maps {
   margin-top: 3rem;
 }
 
-@media (width <=640px) {
+@media (width <= 640px) {
   #maps {
     padding: 0.75rem;
+    text-align: center;
   }
 
-  #maps h1 {
-    text-align: center;
+  .maps-list .grid-container {
+    justify-items: center;
+  }
+
+  .recently-viewed-maps .grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
   }
 }
 
@@ -33,9 +41,17 @@ nav.fixed-top~#maps {
   gap: 1rem;
 }
 
+.recently-viewed-maps .grid-container {
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+}
+
 .maps-list .grid-item {
   min-width: 15rem;
   max-width: 25rem;
+}
+
+.recently-viewed-maps .grid-item {
+  min-width: 5rem;
 }
 
 .map-preview {
@@ -67,10 +83,14 @@ nav.fixed-top~#maps {
 
 .preview-image {
   display: block;
-  width: 100%;
   min-height: 11rem;
+  width: 100%;
   filter: brightness(0.9);
   transition: transform 1200ms ease, filter 450ms ease;
+}
+
+.recently-viewed-maps .preview-image {
+  min-height: 4rem;
 }
 
 .preview-image:hover {
@@ -178,7 +198,6 @@ nav.fixed-top~#maps {
     height: 0.4rem;
   }
 }
-
 
 #map-list-count {
   position: relative;
