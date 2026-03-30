@@ -8,7 +8,7 @@
 
       .feature-section-card.pt-3
         - if @map_mode == 'rw'
-          - if @map.owners.include?(@user)
+          - if @map.owners.include?(@user) || @user.admin?
             .row.mb-3
               .col-12
                 .d-flex.gap-2.align-items-center
@@ -23,32 +23,33 @@
                   %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyOwnershipLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: "Copy link to clipboard" }
                     %i.bi.bi-copy.me-1
                 %small.text-muted.mt-2.flex-center.center
-                  Map owners have this map listed in their account and full permissions.
+                  Map owners have this map listed in their account with full permissions.
 
           .row.mb-3
             .col-12
               .d-flex.gap-2.align-items-center
                 %button#share-edit-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
                   =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShareEditLink" }) do
-                    %i.bi.bi-link-45deg.me-1
+                    %i.bi.bi-link-45deg.me-2
                     Share edit link
                 %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyEditLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: "Copy link to clipboard" }
                   %i.bi.bi-copy.me-1
               %small.text-muted.mt-2.flex-center.center
-                Anyone with this link can modify the map, add layers, and make changes.
+                With this link, users can modify the map, add layers, and make changes.
 
-          .row.mb-3
-            .col-12
-              .d-flex.gap-2.align-items-center
-                %button#share-view-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
-                  =link_to(map_path(id: @map.public_id), data: { turbo: false, action: "click->map--share#nativeShareViewLink" }) do
-                    %i.bi.bi-link-45deg.me-1
-                    Share view link
-                %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyViewLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: "Copy link to clipboard" }
-                  %i.bi.bi-copy.me-1
-              %small.text-muted.mt-2.flex-center.center
-                Users can explore the map but cannot modify it.
+        .row.mb-3
+          .col-12
+            .d-flex.gap-2.align-items-center
+              %button#share-view-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
+                =link_to(map_path(id: @map.public_id), data: { turbo: false, action: "click->map--share#nativeShareViewLink" }) do
+                  %i.bi.bi-link-45deg.me-1
+                  Share view link
+              %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyViewLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: "Copy link to clipboard" }
+                %i.bi.bi-copy.me-1
+            %small.text-muted.mt-2.flex-center.center
+              Users can explore the map but cannot modify it.
 
+        - if @map_mode == 'rw'
           .row.mb-2
             .col-md-12
               .form-check.form-switch.flex-center
@@ -58,39 +59,29 @@
                   %span.d-none.d-sm-inline map
                   in Mapforge gallery
 
-        - else
-          %label.form-label.mb-2
-            %b View link
-          .d-flex.gap-2.align-items-center
-            %button#share-view-link.form-button.btn.btn-success.flex-grow-1{ type: "button" }
-              =link_to(map_path(id: @map.public_id), data: {turbo: false, action: "click->map--share#nativeShareViewLink" }) do
-                %i.bi.bi-link-45deg.me-1
-                Share
-            %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyViewLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: "Copy link to clipboard" }
-              %i.bi.bi-copy.me-1
-              Copy
-          %small.text-muted.mt-2.mb-3.d-block
-            Recipients can explore the map but cannot modify it.
-
       .feature-section-card
         .btn-group-sm.mt-3{ role: "group" }
-          %b.me-2 Download map as:
-          %button.btn.btn-secondary.btn-download{ type: "button" }
-            =link_to map_geojson_path(@map.public_id), target: '_blank' do
-              %i.bi.bi-download
-              GeoJSON
-          %button.btn.btn-secondary.btn-download{ type: "button" }
-            =link_to map_gpx_path(@map.public_id) do
-              %i.bi.bi-download
-              GPX
-          %button.btn.btn-secondary.btn-download{ type: "button" }
-            =link_to map_json_path(@map.public_id),target: '_blank' do
-              %i.bi.bi-download
-              Map export
+          %p.me-2.mb-2.center
+            %b Download map
+          .no-wrap.center
+            %button.btn.btn-secondary.btn-download{ type: "button" }
+              =link_to map_geojson_path(@map.public_id), target: '_blank' do
+                %i.bi.bi-download
+                GeoJSON
+            %button.btn.btn-secondary.btn-download{ type: "button" }
+              =link_to map_gpx_path(@map.public_id) do
+                %i.bi.bi-download
+                GPX
+            %button.btn.btn-secondary.btn-download{ type: "button" }
+              =link_to map_json_path(@map.public_id),target: '_blank' do
+                %i.bi.bi-download
+                Map
+                %span.d-none.d-sm-inline export
 
       .feature-section-card.pt-2.d-none.d-sm-block
-        %b.me-2.mt-2 Embed map:
-        .me-2
+        %p.mt-2.center
+          %b Embed map
+        .center
           %textarea#embed-code.form-control{ rows: "3", readonly: "readonly" }
             = raw("<iframe width='600' height='450' style='border:0' loading='lazy' src='#{map_url(@map.public_id, { nomenu: true })}'></iframe>")
           %small.link.text-muted.flex-center.mt-1.text-nowrap{ data: { action: "click->map--share#copyEmbedCode" } }

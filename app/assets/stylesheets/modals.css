@@ -193,9 +193,9 @@
 }
 
 .btn-download {
-  --bs-btn-bg: var(--color-dark-charcoal);
-  --bs-btn-hover-bg: var(--color-mid-steel-blue);
-  --bs-btn-active-bg: var(--color-mid-steel-blue);
+  --bs-btn-bg: var(--color-mid-steel-blue);
+  --bs-btn-hover-bg: var(--color-mid-blue-slate);
+  --bs-btn-active-bg: var(--color-mid-blue-slate);
 
   margin-bottom: 0.5rem;
 }
@@ -236,7 +236,7 @@
 #share-ownership-link .map-avatar {
   border-radius: 50%;
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: text-bottom;
 }
 
 /* Layers modal */
