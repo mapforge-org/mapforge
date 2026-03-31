@@ -53,7 +53,7 @@ RUN bundle install && \
 
 # Install JavaScript dependencies
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci --ignore-scripts
 
 # Copy application code
 COPY . .
