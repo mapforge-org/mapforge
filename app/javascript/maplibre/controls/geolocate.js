@@ -3,6 +3,12 @@ import { status } from 'helpers/status'
 import maplibregl from 'maplibre-gl'
 import { map } from 'maplibre/map'
 
+let isInFollowMode = false
+
+export function isGeolocateFollowModeActive() {
+  return isInFollowMode
+}
+
 export function initializeGeoLocateControl() {
   // https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl
   // css: .maplibregl-user-location-dot
@@ -30,6 +36,7 @@ export function initializeGeoLocateControl() {
 
   // follow mode
   geolocate.on('trackuserlocationstart', () => {
+    isInFollowMode = true
     requestWakeLock()
 
     if (!('ondeviceorientationabsolute' in window)) {
@@ -58,6 +65,7 @@ export function initializeGeoLocateControl() {
   })
 
   geolocate.on('trackuserlocationend', () => {
+    isInFollowMode = false
     wakeLock.release()
     wakeLock = null
     // probably mapbox draw bug: map can lose drag capabilities

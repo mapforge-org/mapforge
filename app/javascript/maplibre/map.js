@@ -6,6 +6,7 @@ import * as functions from 'helpers/functions';
 import { status } from 'helpers/status';
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
+import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls } from 'maplibre/controls/view';
 import { resetEditMode } from 'maplibre/edit';
@@ -50,8 +51,8 @@ export function initializeMaplibreProperties () {
     status('Map properties updated')
     // initial load
     if (Object.keys(lastProperties).length === 0 || !mapProperties) { return }
-    // animate to new view if map had no interaction yet
-    if (!mapInteracted) { animateViewFromProperties() }
+    // animate to new view if map had no interaction yet and not in geolocate follow mode
+    if (!mapInteracted && !isGeolocateFollowModeActive()) { animateViewFromProperties() }
     return true
   }
   return false
