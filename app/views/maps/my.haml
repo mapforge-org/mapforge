@@ -4,15 +4,14 @@
 
   - if @recent_map_ids.present?
     %h1.mapforge-font Recently viewed Maps
-    .maps-list.recently-viewed-maps
-      .grid-container.flex-center.mb-4
-        - @recent_map_ids.each do |map_id|
-          - recent_map = Map.unscoped.find_by(id: map_id)
-          - if recent_map.present?
-            = render recent_map, rw: true
-          - recent_map = Map.unscoped.find_by(public_id: map_id)
-          - if recent_map.present?
-            = render recent_map, rw: false
+    .maps-list.recently-viewed-maps.mb-4
+      - @recent_map_ids.each do |map_id|
+        - recent_map = Map.unscoped.find_by(id: map_id)
+        - if recent_map.present?
+          = render recent_map, rw: true
+        - recent_map = Map.unscoped.find_by(public_id: map_id)
+        - if recent_map.present?
+          = render recent_map, rw: false
 
 
   %h1.mapforge-font

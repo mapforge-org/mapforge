@@ -90,7 +90,7 @@
         %p.mt-2.center
           %b Embed map
         .center
-          %textarea#embed-code.form-control{ rows: "3", readonly: "readonly" }
+          %textarea.embed-code.form-control{ rows: "3", readonly: "readonly" }
             = raw("<iframe width='600' height='450' style='border:0' loading='lazy' src='#{map_url(@map.public_id, { nomenu: true })}'></iframe>")
           %small.link.text-muted.flex-center.mt-1.text-nowrap{ data: { action: "click->map--share#copyEmbedCode" } }
             %i.bi.bi-copy.me-1

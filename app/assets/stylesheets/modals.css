@@ -244,7 +244,7 @@
   font-size: 0.875rem;
 }
 
-#embed-code {
+.embed-code {
   font-family: monospace;
   font-size: 0.875rem;
   border: 1px solid var(--ctrl-button-color);

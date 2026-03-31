@@ -17,11 +17,9 @@ nav.fixed-top~#maps {
     justify-items: center;
   }
 
-  .recently-viewed-maps .grid-container {
+  .recently-viewed-maps {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 1rem;
   }
 }
 
@@ -41,17 +39,9 @@ nav.fixed-top~#maps {
   gap: 1rem;
 }
 
-.recently-viewed-maps .grid-container {
-  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
-}
-
 .maps-list .grid-item {
   min-width: 15rem;
   max-width: 25rem;
-}
-
-.recently-viewed-maps .grid-item {
-  min-width: 5rem;
 }
 
 .map-preview {
@@ -65,6 +55,18 @@ nav.fixed-top~#maps {
   a {
     text-decoration: none;
   }
+}
+
+.recently-viewed-maps {
+  display: flex;
+}
+
+.recently-viewed-maps .map-preview {
+  width: 30vw;
+  height: calc(30vw * 0.75);
+  margin: 0.5rem 0.5rem 0.5rem 0;
+  min-width: 8rem;
+  max-width: 15rem;
 }
 
 .map-preview a:hover img {
@@ -113,6 +115,11 @@ nav.fixed-top~#maps {
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: none;
+}
+
+.recently-viewed-maps .map-preview-title {
+  top: 4rem;
+  font-size: 1.2rem;
 }
 
 .text-glow {

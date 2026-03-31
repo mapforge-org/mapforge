@@ -7,7 +7,7 @@
                                   'data-maps-search-value': @filter,
                                   'data-maps-search-user': @user }
   - # screen < sm, sort moves below filters
-  .col-12.col-md-4.mb-3
+  .col-12.col-md-4.mb-2
 
     %div
       %input#search.form-control.form-control{ type: "text", name: "search", placeholder: "Search maps",
@@ -15,7 +15,7 @@
                                                'data-action': "keydown.enter->maps#search",
                                                value: @search }
 
-  .col-12.col-md-4
+  .col-12.col-md-4.mb-2
     = render "maps/search_filters"
 
   .col-12.col-md-4.text-md-end.mb-3

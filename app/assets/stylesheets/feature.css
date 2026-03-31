@@ -23,7 +23,9 @@
 
 #feature-details-header {
   width: calc(100% - 1.5rem);
-  font-size: clamp(1rem, 2vw + 0.6rem, 1.7rem);
+
+  /* 1rem minimum, 1.5rem max */
+  font-size: clamp(1rem, 2vw + 0.7rem, 1.5rem);
 }
 
 #feature-title {
