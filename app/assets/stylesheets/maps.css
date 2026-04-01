@@ -63,7 +63,6 @@ nav.fixed-top~#maps {
 
 .recently-viewed-maps .map-preview {
   width: 30vw;
-  height: calc(30vw * 0.75);
   margin: 0.5rem 0.5rem 0.5rem 0;
   min-width: 8rem;
   max-width: 15rem;
@@ -120,6 +119,13 @@ nav.fixed-top~#maps {
 .recently-viewed-maps .map-preview-title {
   top: 4rem;
   font-size: 1.2rem;
+}
+
+@media (width <=640px) {
+  .recently-viewed-maps .map-preview-title {
+    top: 3rem;
+    font-size: 1rem;
+  }
 }
 
 .text-glow {
