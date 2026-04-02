@@ -59,5 +59,6 @@ export default class extends Controller {
     addFeature(feature)
     addUndoState('Feature added', feature)
     mapChannel.send_message('new_feature', feature)
+    hideContextMenu()
   }
 }

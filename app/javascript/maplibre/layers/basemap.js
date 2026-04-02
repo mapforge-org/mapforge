@@ -57,7 +57,7 @@ export class BasemapLayer extends Layer {
 
           const copyButton = document.createElement('div')
           copyButton.classList.add('context-menu-item')
-          copyButton.innerText = 'Copy to my layer'
+          copyButton.innerHTML = '<i class="bi bi-copy me-1"></i>Copy to my layer'
           copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
           copyButton.dataset.featureId = features[0].id
           copyButton.dataset.layerType = 'basemap'

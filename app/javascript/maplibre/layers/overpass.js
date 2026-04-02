@@ -35,14 +35,15 @@ export class OverpassLayer extends Layer {
       const queryLayerIds = this.getStyleLayerIds()
       const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds })
 
-      if (features.length) {
+      const feature = features.find(f => !f.properties?.cluster)
+      if (feature) {
         functions.e('#map-context-menu', el => {
           el.classList.remove('hidden')
           const copyButton = document.createElement('div')
           copyButton.classList.add('context-menu-item')
-          copyButton.innerText = 'Copy to my layer'
+          copyButton.innerHTML = '<i class="bi bi-copy me-1"></i>Copy to my layer'
           copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
-          copyButton.dataset.featureId = features[0].id
+          copyButton.dataset.featureId = feature.id
           copyButton.dataset.layerType = 'overpass'
           el.appendChild(copyButton)
         })
