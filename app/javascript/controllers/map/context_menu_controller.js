@@ -54,7 +54,8 @@ export default class extends Controller {
 
   addToGeojsonLayer(event) {
     const target = event.currentTarget
-    const feature = getFeature(target.dataset.featureId, 'basemap')
+    const layerType = target.dataset.layerType || 'basemap'
+    const feature = getFeature(target.dataset.featureId, layerType)
     addFeature(feature)
     addUndoState('Feature added', feature)
     mapChannel.send_message('new_feature', feature)

@@ -6,6 +6,11 @@ import { map } from 'maplibre/map'
 import { initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
 
 export class OverpassLayer extends Layer {
+  constructor(layer) {
+    super(layer)
+    this.contextMenuHandler = null
+  }
+
   initialize() {
     if (!this.layer.query) { return Promise.resolve() }
 
@@ -20,6 +25,38 @@ export class OverpassLayer extends Layer {
     }
     this.setupEventHandlers()
     return this.loadData()
+  }
+
+  setupEventHandlers() {
+    super.setupEventHandlers()
+
+    this.contextMenuHandler = (e) => {
+      e.preventDefault()
+      const queryLayerIds = this.getStyleLayerIds()
+      const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds })
+
+      if (features.length) {
+        functions.e('#map-context-menu', el => {
+          el.classList.remove('hidden')
+          const copyButton = document.createElement('div')
+          copyButton.classList.add('context-menu-item')
+          copyButton.innerText = 'Copy to my layer'
+          copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
+          copyButton.dataset.featureId = features[0].id
+          copyButton.dataset.layerType = 'overpass'
+          el.appendChild(copyButton)
+        })
+      }
+    }
+    map.on('contextmenu', this.contextMenuHandler)
+  }
+
+  removeEventHandlers() {
+    super.removeEventHandlers()
+    if (this.contextMenuHandler) {
+      map.off('contextmenu', this.contextMenuHandler)
+      this.contextMenuHandler = null
+    }
   }
 
   loadData() {

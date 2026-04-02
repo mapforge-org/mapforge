@@ -60,6 +60,7 @@ export class BasemapLayer extends Layer {
           copyButton.innerText = 'Copy to my layer'
           copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
           copyButton.dataset.featureId = features[0].id
+          copyButton.dataset.layerType = 'basemap'
           el.appendChild(copyButton)
         })
       }
