@@ -161,6 +161,13 @@ export async function initializeEditMode () {
       (draw.getMode() === 'simple_select' || draw.getMode().startsWith('directions_'))) {
       map.fire('click', e) // attach original event for coordinates
     }
+    // Fix for mapbox-gl-draw issue #650: after a touch-drag, the draw library's
+    // state machine can fail to re-enable dragPan, freezing the map.
+    // Run after draw's own touchend handler via setTimeout to restore it.
+    const mode = draw.getMode()
+    if (mode === 'simple_select' || mode === 'direct_select') {
+      setTimeout(() => map.dragPan.enable(), 0)
+    }
   })
 
   map.on('online', (_e) => { enableEditControls() })
