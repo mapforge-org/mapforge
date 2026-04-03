@@ -10,6 +10,7 @@ export async function showElevationChart (feature) {
   // skip without elevation data
   if (feature.geometry.type !== 'LineString' || feature.geometry.coordinates[0].length !== 3) {
     chartElement?.classList?.add('hidden')
+    document.getElementById('elevation-stats')?.classList?.add('hidden')
     return null
   }
 
@@ -33,6 +34,20 @@ export async function showElevationChart (feature) {
   }, 0)
 
   const values = feature.geometry.coordinates.map(coords => coords[2])
+
+  // Calculate elevation gain and loss
+  let gain = 0, loss = 0
+  for (let i = 1; i < values.length; i++) {
+    const diff = values[i] - values[i - 1]
+    if (diff > 0) gain += diff
+    else loss += Math.abs(diff)
+  }
+  const statsEl = document.getElementById('elevation-stats')
+  if (statsEl) {
+    document.getElementById('elevation-gain').textContent = '↑ ' + Math.round(gain) + ' m'
+    document.getElementById('elevation-loss').textContent = '↓ ' + Math.round(loss) + ' m'
+    statsEl.classList.remove('hidden')
+  }
   const chartLineColor = (feature.properties['fill-extrusion-color'] ||
     feature.properties['stroke'] || featureColor).substring(0, 7)
 
