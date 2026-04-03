@@ -68,6 +68,19 @@ export async function showElevationChart (feature) {
           borderColor: chartLineColor,
           borderWidth: 2,
           backgroundColor: chartLineColor + '50',
+          segment: {
+            backgroundColor: (ctx) => {
+              const i0 = ctx.p0DataIndex
+              const i1 = ctx.p1DataIndex
+              const distDiff = labels[i1] - labels[i0]
+              if (distDiff === 0) return chartLineColor + '50'
+              const grade = Math.abs((values[i1] - values[i0]) / distDiff * 100)
+              if (grade >= 15) return 'rgba(139, 0, 0, 0.5)'
+              if (grade >= 10) return 'rgba(255, 0, 0, 0.5)'
+              if (grade >= 5) return 'rgba(255, 165, 0, 0.5)'
+              return chartLineColor + '50'
+            }
+          },
           pointRadius: 4,
           pointHoverRadius: 6,
           pointBackgroundColor: 'white',
@@ -108,6 +121,15 @@ export async function showElevationChart (feature) {
               },
               label: (tooltipItem) => {
                 return "Elevation: " + tooltipItem.raw.toFixed(0) + 'm'
+              },
+              afterLabel: (tooltipItem) => {
+                const i = tooltipItem.dataIndex
+                if (i === 0) return 'Steepness: 0%'
+                const elevDiff = values[i] - values[i - 1]
+                const distDiff = labels[i] - labels[i - 1]
+                if (distDiff === 0) return 'Steepness: 0%'
+                const grade = (elevDiff / distDiff) * 100
+                return 'Steepness: ' + grade.toFixed(1) + '%'
               },
               afterBody: function(context) {
                 let coord = feature.geometry.coordinates[context[0]['dataIndex']]
