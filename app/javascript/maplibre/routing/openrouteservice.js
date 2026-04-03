@@ -57,18 +57,34 @@ export async function getRouteFeature (feature, waypoints, profile) {
 // return route points including elevation
 // The API restricts to 2000 vertexes per request: https://openrouteservice.org/restrictions/
 export async function getRouteElevation (waypoints) {
+  const BATCH_SIZE = 2000
   const Elevation = new Openrouteservice.Elevation({api_key: window.gon.map_keys.openrouteservice})
-  return Elevation.lineElevation({
-    format_in: 'geojson',
-    format_out: 'geojson',
-    geometry: {
-      coordinates: functions.removeElevation(waypoints),
-      type: 'LineString'
+  const coords = functions.removeElevation(waypoints)
+
+  // Split into batches of BATCH_SIZE with 1-point overlap
+  const batches = []
+  for (let i = 0; i < coords.length; i += BATCH_SIZE - 1) {
+    batches.push(coords.slice(i, i + BATCH_SIZE))
+  }
+
+  try {
+    const allCoordinates = []
+    for (const [index, batch] of batches.entries()) {
+      const response = await Elevation.lineElevation({
+        format_in: 'geojson',
+        format_out: 'geojson',
+        geometry: {
+          coordinates: batch,
+          type: 'LineString'
+        }
+      })
+      console.log(`Openrouteservice elevation response (batch ${batch.length}/${coords.length}):`, response)
+      const batchCoords = response.geometry.coordinates
+      // Drop first point of subsequent batches to avoid duplicates from overlap
+      allCoordinates.push(...(index === 0 ? batchCoords : batchCoords.slice(1)))
     }
-  }).then(response => {
-    console.log('Openrouteservice elevation response:', response)
-    return response.geometry.coordinates
-  }).catch(async err => {
+    return allCoordinates
+  } catch (err) {
     // Extract error details from API response
     let errorMessage = 'OpenRouteService elevation error'
     try {
@@ -84,7 +100,7 @@ export async function getRouteElevation (waypoints) {
       console.error("OpenRouteService error:", err)
       errorMessage = err.message || errorMessage
     }
-  })
+  }
 }
 
 export async function getRouteUpdate (originalFeature, updatedFeature) {
