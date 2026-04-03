@@ -53,6 +53,7 @@ export class BasemapLayer extends Layer {
 
       if (features.length) {
         functions.e('#map-context-menu', el => {
+          if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
           el.classList.remove('hidden')
 
           const copyButton = document.createElement('div')

@@ -38,6 +38,7 @@ export class OverpassLayer extends Layer {
       const feature = features.find(f => !f.properties?.cluster)
       if (feature) {
         functions.e('#map-context-menu', el => {
+          if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
           el.classList.remove('hidden')
           const copyButton = document.createElement('div')
           copyButton.classList.add('context-menu-item')
