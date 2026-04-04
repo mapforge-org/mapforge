@@ -68,7 +68,7 @@ export async function showElevationChart (feature) {
           borderColor: chartLineColor,
           borderWidth: 2,
           backgroundColor: chartLineColor + '50',
-          segment: {
+          segment: values.length < 2500 ? {
             backgroundColor: (ctx) => {
               const i0 = ctx.p0DataIndex
               const i1 = ctx.p1DataIndex
@@ -80,7 +80,7 @@ export async function showElevationChart (feature) {
               if (grade >= 5) return 'rgba(255, 165, 0, 0.5)'
               return chartLineColor + '50'
             }
-          },
+          } : undefined,
           pointRadius: 4,
           pointHoverRadius: 6,
           pointBackgroundColor: 'white',
