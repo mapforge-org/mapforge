@@ -96,6 +96,10 @@ nav.fixed-top~#docs {
     text-align: center;
   }
 
+    .markdown-content ul {
+      margin-left: -0.75rem;
+    }
+
   .markdown-content img, .markdown-content video {
       max-width: 100%;
   }

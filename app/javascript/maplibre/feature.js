@@ -179,7 +179,9 @@ export function featureIcon (feature) {
   if (iconColor === 'transparent') { iconColor = '#c0c0c0' }
   let iconColorStyle = `style='color: ${iconColor};'`
   if (feature.properties['marker-image-url']) {
-    image = "<img class='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'>"
+    const markerImageUrl = feature.properties['marker-image-url']
+    const imageHref = markerImageUrl.startsWith('/icon') ? markerImageUrl.replace('/icon', '/image') : markerImageUrl
+    image = `<a target='_blank' href='${imageHref}'><img class='feature-details-icon' src='${markerImageUrl}'></a>`
   } else if (feature.properties['marker-symbol']) {
     image = "<img class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
   } else if (feature.properties['stroke-image-url']) {

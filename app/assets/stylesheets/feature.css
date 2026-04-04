@@ -238,6 +238,11 @@
   padding-top: 0.7rem;
 }
 
+#feature-size {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 .feature-edit-section {
   margin-bottom: 0.9rem;
 }
