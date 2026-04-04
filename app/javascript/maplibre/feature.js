@@ -88,7 +88,7 @@ function featureVertexes(feature) {
   let vertexes = ''
   if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString' ||
     feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
-    let coords = feature.geometry.coordinates.flat().length
+    let coords = feature.geometry.coordinates.length
     if (feature.geometry.type === 'Polygon') {
       coords -= 1 // don't count duplicate last point
     }

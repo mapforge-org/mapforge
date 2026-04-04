@@ -330,10 +330,9 @@ export function handleDelete (e) {
 export function updateElevation(feature) {
   if (window.gon.map_keys.openrouteservice) {
     return getRouteElevation(feature.geometry.coordinates).then(coords => {
-      if (feature.geometry.coordinates.length === coords?.length) {
-        feature.geometry.coordinates = coords
-      } else {
-        console.warn('Did not receive elevation for all coords (water?)')
+      feature.geometry.coordinates = coords
+      if (feature.geometry.coordinates.length !== coords?.length) {
+        console.warn(`Did not receive elevation for all coords (${feature.geometry.coordinates.length} != ${coords?.length})`)
       }
     })
   } else {

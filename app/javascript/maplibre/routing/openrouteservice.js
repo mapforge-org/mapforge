@@ -78,7 +78,7 @@ export async function getRouteElevation (waypoints) {
           type: 'LineString'
         }
       })
-      console.log(`Openrouteservice elevation response (batch ${batch.length}/${coords.length}):`, response)
+      console.log(`Openrouteservice elevation response (batch #${index} ${batch.length}/${coords.length}):`, response)
       const batchCoords = response.geometry.coordinates
       // Drop first point of subsequent batches to avoid duplicates from overlap
       allCoordinates.push(...(index === 0 ? batchCoords : batchCoords.slice(1)))
