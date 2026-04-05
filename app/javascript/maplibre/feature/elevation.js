@@ -179,6 +179,13 @@ export async function showElevationChart (feature) {
     if (marker) { marker.remove() }
   })
 
+  chart.canvas.addEventListener('click', function(event) {
+    const points = chart.getElementsAtEventForMode(event, 'index', { intersect: false }, true)
+    if (points.length === 0) return
+    const coord = feature.geometry.coordinates[points[0].index]
+    map.flyTo({ center: [coord[0], coord[1]], duration: 1000, curve: 0.3 })
+  })
+
   return chart
 }
 
