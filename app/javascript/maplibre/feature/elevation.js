@@ -4,38 +4,198 @@ import { point } from "@turf/helpers"
 import { distance } from "@turf/distance"
 
 let marker
+let mapMoveListener
 
 export async function showElevationChart (feature) {
   const chartElement = document.getElementById('route-elevation-chart')
-  // skip without elevation data
   if (feature.geometry.type !== 'LineString' || feature.geometry.coordinates[0].length !== 3) {
     chartElement?.classList?.add('hidden')
     document.getElementById('elevation-stats')?.classList?.add('hidden')
     return null
   }
 
-  // async load chart.js 
+  if (mapMoveListener) {
+    map.off('moveend', mapMoveListener)
+    mapMoveListener = null
+  }
+
   const chartJs = await import('chart.js')
-  // Destructure the required modules from chartJs
-  const { CategoryScale, Chart, LinearScale, LineController, 
+  const { CategoryScale, Chart, LinearScale, LineController,
     LineElement, PointElement, Filler, Tooltip } = chartJs
 
   chartElement.classList.remove('hidden')
   Chart.register([CategoryScale, LineController, LineElement, LinearScale, PointElement,
     Filler, Tooltip])
-  const labels = []
-  feature.geometry.coordinates.reduce((pointDistance, coord, index) => {
-    if (index == 0) { labels.push(0); return 0 }
-    let from = point(feature.geometry.coordinates[index - 1])
-    let to = point(coord)
-    pointDistance += distance(from, to, { units: 'meters' })
-    labels.push(Math.round(pointDistance))
-    return pointDistance
+
+  // Compute cumulative distance along the track for each coordinate
+  const allCoords = feature.geometry.coordinates
+  const allLabels = computeDistances(allCoords)
+  const allValues = allCoords.map(c => c[2])
+
+  showElevationStats(allValues)
+
+  const chartLineColor = (feature.properties['fill-extrusion-color'] ||
+    feature.properties['stroke'] || featureColor).substring(0, 7)
+
+  const canvas = document.getElementById('route-elevation-chart')
+  const existing = Chart.getChart(canvas)
+  if (existing) existing.destroy()
+
+  // Mutable view into the data — all callbacks reference this object,
+  // so updating its properties is enough to sync the chart with the map viewport
+  const active = { labels: allLabels, values: allValues, coords: allCoords }
+
+  let chart = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: active.labels,
+      datasets: [{
+        fill: true,
+        label: 'Track elevation',
+        data: active.values,
+        borderColor: chartLineColor,
+        borderWidth: 2,
+        backgroundColor: chartLineColor + '50',
+        // Color segments by steepness grade (skipped for very large tracks for performance)
+        segment: allValues.length < 2500 ? {
+          backgroundColor: (ctx) => segmentColor(ctx, active, chartLineColor)
+        } : undefined,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        pointBackgroundColor: 'white',
+        pointBorderColor: chartLineColor,
+        pointBorderWidth: 3,
+        tension: 0.1,
+        spanGaps: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#354A51',
+          padding: 12,
+          titleFont: { size: 14, weight: 'bold' },
+          bodyFont: { size: 13 },
+          displayColors: false,
+          animation: { duration: 0 },
+          callbacks: {
+            title: (items) => "Distance: " + toDisplayUnit(items[0].label),
+            label: (item) => "Elevation: " + item.raw.toFixed(0) + 'm',
+            afterLabel: (item) => {
+              const i = item.dataIndex
+              if (i === 0) return 'Steepness: 0%'
+              const grade = computeGrade(active.values, active.labels, i)
+              return 'Steepness: ' + grade.toFixed(1) + '%'
+            },
+            // Place a marker on the map at the hovered point
+            afterBody: (context) => {
+              const coord = active.coords[context[0]['dataIndex']]
+              marker = getMarker(feature)
+              marker.setLngLat([coord[0], coord[1]])
+              marker.addTo(map)
+            }
+          }
+        },
+        title: { display: true, text: 'Track elevation chart' }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          display: true,
+          grid: { display: false, drawBorder: false },
+          ticks: {
+            font: { size: 12 },
+            padding: 10,
+            callback: (_value, index) => toDisplayUnit(active.labels[index])
+          }
+        },
+        y: { title: { display: true, text: 'Elevation (m)' } }
+      }
+    }
+  })
+
+  chart.canvas.addEventListener('mouseout', () => { if (marker) marker.remove() })
+
+  // Fly to the clicked point on the map
+  chart.canvas.addEventListener('click', (event) => {
+    const points = chart.getElementsAtEventForMode(event, 'index', { intersect: false }, true)
+    if (points.length === 0) return
+    const coord = active.coords[points[0].index]
+    map.flyTo({ center: [coord[0], coord[1]], duration: 1000, curve: 0.3 })
+  })
+
+  // Sync chart with map viewport — show only the track section currently visible
+  mapMoveListener = () => {
+    const bounds = map.getBounds()
+    let firstIdx = -1, lastIdx = -1
+    allCoords.forEach((coord, i) => {
+      if (bounds.contains([coord[0], coord[1]])) {
+        if (firstIdx === -1) firstIdx = i
+        lastIdx = i
+      }
+    })
+
+    if (firstIdx === -1 || firstIdx === lastIdx) {
+      // No points (or just one) in view — show the full track
+      active.labels = allLabels
+      active.values = allValues
+      active.coords = allCoords
+    } else {
+      active.labels = allLabels.slice(firstIdx, lastIdx + 1)
+      active.values = allValues.slice(firstIdx, lastIdx + 1)
+      active.coords = allCoords.slice(firstIdx, lastIdx + 1)
+    }
+
+    chart.data.labels = active.labels
+    chart.data.datasets[0].data = active.values
+    chart.update('none')
+  }
+
+  map.on('moveend', mapMoveListener)
+  mapMoveListener()
+
+  return chart
+}
+
+// Compute cumulative distances (meters) along a coordinate array
+function computeDistances (coords) {
+  const distances = []
+  coords.reduce((total, coord, i) => {
+    if (i === 0) { distances.push(0); return 0 }
+    total += distance(point(coords[i - 1]), point(coord), { units: 'meters' })
+    distances.push(Math.round(total))
+    return total
   }, 0)
+  return distances
+}
 
-  const values = feature.geometry.coordinates.map(coords => coords[2])
+// Grade (%) between two consecutive points — positive = uphill, negative = downhill
+function computeGrade (values, labels, i) {
+  const distDiff = labels[i] - labels[i - 1]
+  if (distDiff === 0) return 0
+  return ((values[i] - values[i - 1]) / distDiff) * 100
+}
 
-  // Calculate elevation gain and loss
+// Steepness-based segment fill color:
+//   uphill:   orange (>5%), red (>10%), dark red (>15%)
+//   downhill: dark green (>5%)
+function segmentColor (ctx, active, baseColor) {
+  const distDiff = active.labels[ctx.p1DataIndex] - active.labels[ctx.p0DataIndex]
+  if (distDiff === 0) return baseColor + '50'
+  const elevDiff = active.values[ctx.p1DataIndex] - active.values[ctx.p0DataIndex]
+  const grade = (elevDiff / distDiff) * 100
+
+  if (grade >= 15) return 'rgba(139, 0, 0, 0.5)'
+  if (grade >= 10) return 'rgba(255, 0, 0, 0.5)'
+  if (grade >= 5)  return 'rgba(255, 165, 0, 0.5)'
+  if (grade <= -5) return 'rgba(0, 100, 0, 0.5)'
+  return baseColor + '50'
+}
+
+function showElevationStats (values) {
   let gain = 0, loss = 0
   for (let i = 1; i < values.length; i++) {
     const diff = values[i] - values[i - 1]
@@ -48,155 +208,16 @@ export async function showElevationChart (feature) {
     document.getElementById('elevation-loss').textContent = '↓ ' + Math.round(loss) + ' m'
     statsEl.classList.remove('hidden')
   }
-  const chartLineColor = (feature.properties['fill-extrusion-color'] ||
-    feature.properties['stroke'] || featureColor).substring(0, 7)
-
-  const canvas = document.getElementById('route-elevation-chart')
-  // If a chart already exists on this canvas, destroy it
-  const existing = Chart.getChart(canvas)
-  if (existing) existing.destroy()
-
-  let chart = new Chart(
-    canvas, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          fill: true,
-          label: 'Track elevation',
-          data: values,
-          borderColor: chartLineColor,
-          borderWidth: 2,
-          backgroundColor: chartLineColor + '50',
-          segment: values.length < 2500 ? {
-            backgroundColor: (ctx) => {
-              const i0 = ctx.p0DataIndex
-              const i1 = ctx.p1DataIndex
-              const distDiff = labels[i1] - labels[i0]
-              if (distDiff === 0) return chartLineColor + '50'
-              const grade = Math.abs((values[i1] - values[i0]) / distDiff * 100)
-              if (grade >= 15) return 'rgba(139, 0, 0, 0.5)'
-              if (grade >= 10) return 'rgba(255, 0, 0, 0.5)'
-              if (grade >= 5) return 'rgba(255, 165, 0, 0.5)'
-              return chartLineColor + '50'
-            }
-          } : undefined,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          pointBackgroundColor: 'white',
-          pointBorderColor: chartLineColor,
-          pointBorderWidth: 3,
-          tension: 0.1,
-          pointRadius: 0,
-          spanGaps: true,
-        }]
-      },
-      options: {
-        responsive: true,
-        interaction: {
-            mode: 'index',
-            intersect: false,
-        },
-        tooltip: { position: 'nearest' },
-        plugins: {
-          legend: {
-              display: false,
-              position: 'top',
-          },
-          tooltip: {
-            backgroundColor: '#354A51',
-            padding: 12,
-            titleFont: {
-                size: 14,
-                weight: 'bold'
-            },
-            bodyFont: {
-                size: 13
-            },
-            displayColors: false,
-            animation: { duration: 0 },
-            callbacks: {
-              title: (tooltipItems) => {
-                return "Distance: " + toDisplayUnit(tooltipItems[0].label)
-              },
-              label: (tooltipItem) => {
-                return "Elevation: " + tooltipItem.raw.toFixed(0) + 'm'
-              },
-              afterLabel: (tooltipItem) => {
-                const i = tooltipItem.dataIndex
-                if (i === 0) return 'Steepness: 0%'
-                const elevDiff = values[i] - values[i - 1]
-                const distDiff = labels[i] - labels[i - 1]
-                if (distDiff === 0) return 'Steepness: 0%'
-                const grade = (elevDiff / distDiff) * 100
-                return 'Steepness: ' + grade.toFixed(1) + '%'
-              },
-              afterBody: function(context) {
-                let coord = feature.geometry.coordinates[context[0]['dataIndex']]
-                marker = getMarker(feature)
-                marker.setLngLat([coord[0], coord[1]])
-                marker.addTo(map)
-              }
-            }
-          },
-          // TODO: Not shown
-          title: {
-            display: true,
-            text: 'Track elevation chart'
-          }
-        },
-        scales: {
-          x: {
-            beginAtZero: true,
-            //type: 'linear', // linear only paints y values on full x values
-            display: true,
-            grid: {
-                display: false,
-                drawBorder: false
-            },
-            ticks: {
-              font: {
-                  size: 12
-              },
-              padding: 10,
-              callback: function(_value, index, _values) {
-                const label = labels[index]
-                return toDisplayUnit(label)
-              }
-            }
-          },
-          y: {
-            title: {
-              display: true,
-              text: 'Elevation (m)'
-            }
-          }
-        }
-      }
-    })
-
-  chart.canvas.addEventListener('mouseout', function(_event) {
-    if (marker) { marker.remove() }
-  })
-
-  chart.canvas.addEventListener('click', function(event) {
-    const points = chart.getElementsAtEventForMode(event, 'index', { intersect: false }, true)
-    if (points.length === 0) return
-    const coord = feature.geometry.coordinates[points[0].index]
-    map.flyTo({ center: [coord[0], coord[1]], duration: 1000, curve: 0.3 })
-  })
-
-  return chart
 }
 
-function getMarker(feature) {
-  if (marker) { return marker }
-  const markerDiv = document.createElement('div')
-  markerDiv.style.backgroundColor = feature.properties['fill-extrusion-color'] ||
+function getMarker (feature) {
+  if (marker) return marker
+  const el = document.createElement('div')
+  el.style.backgroundColor = feature.properties['fill-extrusion-color'] ||
     feature.properties['stroke'] || featureColor
-  markerDiv.className = 'elevation-marker'
+  el.className = 'elevation-marker'
   return new window.maplibregl.Marker({
-    element: markerDiv,
+    element: el,
     opacity: '0.8',
     opacityWhenCovered: '0',
     rotationAlignment: 'viewport',
@@ -205,9 +226,7 @@ function getMarker(feature) {
 }
 
 function toDisplayUnit (distance) {
-  const unit = distance >= 1000 ? 'km' : 'm'
-  const factor = distance >= 1000 ? 0.001 : 1
-  const decimals = unit == 'm' ? 0 : 1
-  if (distance == 0) { return '' }
-  return (distance * factor).toFixed(decimals) + ' ' + unit
+  if (distance == 0) return ''
+  if (distance >= 1000) return (distance * 0.001).toFixed(1) + ' km'
+  return distance.toFixed(0) + ' m'
 }
