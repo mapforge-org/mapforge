@@ -38,8 +38,6 @@ export async function showElevationChart (feature) {
   const allLabels = computeDistances(allCoords)
   const allValues = allCoords.map(c => c[2])
 
-  showElevationStats(allValues)
-
   const chartLineColor = (feature.properties['fill-extrusion-color'] ||
     feature.properties['stroke'] || featureColor).substring(0, 7)
 
@@ -53,6 +51,7 @@ export async function showElevationChart (feature) {
   // so updating its properties is enough to sync the chart with the map viewport
   const active = { labels: allLabels, values: allValues, coords: allCoords }
   filterToViewport(active, allLabels, allValues, allCoords)
+  showElevationStats(active.values)
 
   let chart = new Chart(canvas, {
     type: 'line',
@@ -94,12 +93,14 @@ export async function showElevationChart (feature) {
           ticks: {
             font: { size: 12 },
             padding: 10,
+            maxTicksLimit: 10,
             callback: (_value, index) => toDisplayUnit(active.labels[index])
           }
         },
         y: {
           title: { display: false },
           ticks: {
+            maxTicksLimit: 5,
             callback: (value) => value + 'm'
           }
         }
@@ -162,6 +163,7 @@ export async function showElevationChart (feature) {
     filterToViewport(active, allLabels, allValues, allCoords)
     chart.data.labels = active.labels
     chart.data.datasets[0].data = active.values
+    showElevationStats(active.values)
     chart.update('none')
   }
 
