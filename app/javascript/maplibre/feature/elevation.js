@@ -229,11 +229,18 @@ function segmentColor (ctx, active, baseColor) {
 }
 
 function showElevationStats (values) {
-  let gain = 0, loss = 0
+  // changes below threshold are not added, to filter GPS jitter
+  const threshold = 2
+  let gain = 0, loss = 0, ref = values[0]
   for (let i = 1; i < values.length; i++) {
-    const diff = values[i] - values[i - 1]
-    if (diff > 0) gain += diff
-    else loss += Math.abs(diff)
+    const diff = values[i] - ref
+    if (diff > threshold) {
+      gain += diff
+      ref = values[i]
+    } else if (diff < -threshold) {
+      loss -= diff
+      ref = values[i]
+    }
   }
   const statsEl = document.getElementById('elevation-stats')
   if (statsEl) {
