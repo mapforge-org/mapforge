@@ -151,6 +151,13 @@
   max-height: 2rem; /* same size as .fs-2 */
 }
 
+#elevation-info-line {
+  font-size: 0.75rem;
+  color: var(--color-dark-charcoal);
+  height: 1rem;
+  visibility: hidden;
+}
+
 #feature-details-meta {
   font-size: 80%;
   font-weight: 400;

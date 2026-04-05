@@ -1,7 +1,7 @@
-import { featureColor } from 'maplibre/styles/styles'
-import { map } from 'maplibre/map'
-import { point } from "@turf/helpers"
 import { distance } from "@turf/distance"
+import { point } from "@turf/helpers"
+import { map } from 'maplibre/map'
+import { featureColor } from 'maplibre/styles/styles'
 
 let marker
 let syncChartToViewport
@@ -9,11 +9,16 @@ let canvasAbort
 
 export async function showElevationChart (feature) {
   const chartElement = document.getElementById('route-elevation-chart')
+  const elevationContainer = document.getElementById('feature-details-elevation')
+
   if (feature.geometry.type !== 'LineString' || feature.geometry.coordinates[0].length !== 3) {
     chartElement?.classList?.add('hidden')
+    elevationContainer?.classList?.add('hidden')
     document.getElementById('elevation-stats')?.classList?.add('hidden')
     return null
   }
+
+  elevationContainer?.classList?.remove('hidden')
 
   if (syncChartToViewport) {
     map.off('moveend', syncChartToViewport)
@@ -41,6 +46,8 @@ export async function showElevationChart (feature) {
   const canvas = document.getElementById('route-elevation-chart')
   const existing = Chart.getChart(canvas)
   if (existing) existing.destroy()
+
+  const infoLine = document.getElementById('elevation-info-line')
 
   // Mutable view into the data — all callbacks reference this object,
   // so updating its properties is enough to sync the chart with the map viewport
@@ -76,31 +83,7 @@ export async function showElevationChart (feature) {
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
-        tooltip: {
-          backgroundColor: '#354A51',
-          padding: 12,
-          titleFont: { size: 14, weight: 'bold' },
-          bodyFont: { size: 13 },
-          displayColors: false,
-          animation: { duration: 0 },
-          callbacks: {
-            title: (items) => "Distance: " + toDisplayUnit(items[0].label),
-            label: (item) => "Elevation: " + item.raw.toFixed(0) + 'm',
-            afterLabel: (item) => {
-              const i = item.dataIndex
-              if (i === 0) return 'Steepness: 0%'
-              const grade = computeGrade(active.values, active.labels, i)
-              return 'Steepness: ' + grade.toFixed(1) + '%'
-            },
-            // Place a marker on the map at the hovered point
-            afterBody: (context) => {
-              const coord = active.coords[context[0]['dataIndex']]
-              marker = getMarker(feature)
-              marker.setLngLat([coord[0], coord[1]])
-              marker.addTo(map)
-            }
-          }
-        },
+        tooltip: { enabled: false },
         title: { display: true, text: 'Track elevation chart' }
       },
       scales: {
@@ -114,7 +97,12 @@ export async function showElevationChart (feature) {
             callback: (_value, index) => toDisplayUnit(active.labels[index])
           }
         },
-        y: { title: { display: true, text: 'Elevation (m)' } }
+        y: {
+          title: { display: false },
+          ticks: {
+            callback: (value) => value + 'm'
+          }
+        }
       }
     }
   })
@@ -124,7 +112,34 @@ export async function showElevationChart (feature) {
   canvasAbort = new AbortController()
   const signal = canvasAbort.signal
 
-  chart.canvas.addEventListener('mouseout', () => { if (marker) marker.remove() }, { signal })
+  // Update info line on hover
+  chart.canvas.addEventListener('mousemove', (event) => {
+    const points = chart.getElementsAtEventForMode(event, 'index', { intersect: false }, true)
+    if (points.length === 0) {
+      infoLine.style.visibility = 'hidden'
+      if (marker) marker.remove()
+      return
+    }
+
+    const i = points[0].index
+    const distance = toDisplayUnit(active.labels[i])
+    const elevation = active.values[i].toFixed(0)
+    const grade = i === 0 ? 0 : computeGrade(active.values, active.labels, i)
+
+    infoLine.textContent = `Point: ${distance} • Elevation: ${elevation}m • Steepness: ${grade.toFixed(1)}%`
+    infoLine.style.visibility = 'visible'
+
+    // Place a marker on the map at the hovered point
+    const coord = active.coords[i]
+    marker = getMarker(feature)
+    marker.setLngLat([coord[0], coord[1]])
+    marker.addTo(map)
+  }, { signal })
+
+  chart.canvas.addEventListener('mouseout', () => {
+    infoLine.style.visibility = 'hidden'
+    if (marker) marker.remove()
+  }, { signal })
 
   // Fly to the clicked point on the map (stopPropagation prevents the click
   // from bubbling to the map, which would re-trigger highlightFeature and
