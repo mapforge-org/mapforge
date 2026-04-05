@@ -103,6 +103,27 @@ export async function getRouteElevation (waypoints) {
   }
 }
 
+// Fetch elevation for specific points only (used when a few points of a large track are moved)
+export async function getPointsElevation (coordinates, changedIndices) {
+  const Elevation = new Openrouteservice.Elevation({api_key: window.gon.map_keys.openrouteservice})
+  const updatedCoords = [...coordinates]
+
+  const results = await Promise.all(changedIndices.map(async (idx) => {
+    const response = await Elevation.pointElevation({
+      format_in: 'point',
+      format_out: 'point',
+      geometry: coordinates[idx].slice(0, 2)
+    })
+    console.log(`Openrouteservice elevation response (point #${idx}):`, response)
+    return { idx, coord: response.geometry }
+  }))
+
+  for (const { idx, coord } of results) {
+    updatedCoords[idx] = coord
+  }
+  return updatedCoords
+}
+
 export async function getRouteUpdate (originalFeature, updatedFeature) {
   // new waypoints are start, end, changed point and current waypoints that are still in the feature
   let waypoints = [updatedFeature.geometry.coordinates[0]]

@@ -4,7 +4,8 @@ import { point } from "@turf/helpers"
 import { distance } from "@turf/distance"
 
 let marker
-let mapMoveListener
+let syncChartToViewport
+let canvasAbort
 
 export async function showElevationChart (feature) {
   const chartElement = document.getElementById('route-elevation-chart')
@@ -14,9 +15,9 @@ export async function showElevationChart (feature) {
     return null
   }
 
-  if (mapMoveListener) {
-    map.off('moveend', mapMoveListener)
-    mapMoveListener = null
+  if (syncChartToViewport) {
+    map.off('moveend', syncChartToViewport)
+    syncChartToViewport = null
   }
 
   const chartJs = await import('chart.js')
@@ -44,6 +45,7 @@ export async function showElevationChart (feature) {
   // Mutable view into the data — all callbacks reference this object,
   // so updating its properties is enough to sync the chart with the map viewport
   const active = { labels: allLabels, values: allValues, coords: allCoords }
+  filterToViewport(active, allLabels, allValues, allCoords)
 
   let chart = new Chart(canvas, {
     type: 'line',
@@ -117,45 +119,38 @@ export async function showElevationChart (feature) {
     }
   })
 
-  chart.canvas.addEventListener('mouseout', () => { if (marker) marker.remove() })
+  // Abort old canvas listeners from a previous chart before adding new ones
+  if (canvasAbort) canvasAbort.abort()
+  canvasAbort = new AbortController()
+  const signal = canvasAbort.signal
 
-  // Fly to the clicked point on the map
+  chart.canvas.addEventListener('mouseout', () => { if (marker) marker.remove() }, { signal })
+
+  // Fly to the clicked point on the map (stopPropagation prevents the click
+  // from bubbling to the map, which would re-trigger highlightFeature and
+  // destroy this chart mid-handler)
   chart.canvas.addEventListener('click', (event) => {
+    event.stopPropagation()
     const points = chart.getElementsAtEventForMode(event, 'index', { intersect: false }, true)
     if (points.length === 0) return
     const coord = active.coords[points[0].index]
     map.flyTo({ center: [coord[0], coord[1]], duration: 1000, curve: 0.3 })
-  })
+  }, { signal })
 
   // Sync chart with map viewport — show only the track section currently visible
-  mapMoveListener = () => {
-    const bounds = map.getBounds()
-    let firstIdx = -1, lastIdx = -1
-    allCoords.forEach((coord, i) => {
-      if (bounds.contains([coord[0], coord[1]])) {
-        if (firstIdx === -1) firstIdx = i
-        lastIdx = i
-      }
-    })
-
-    if (firstIdx === -1 || firstIdx === lastIdx) {
-      // No points (or just one) in view — show the full track
-      active.labels = allLabels
-      active.values = allValues
-      active.coords = allCoords
-    } else {
-      active.labels = allLabels.slice(firstIdx, lastIdx + 1)
-      active.values = allValues.slice(firstIdx, lastIdx + 1)
-      active.coords = allCoords.slice(firstIdx, lastIdx + 1)
+  syncChartToViewport = () => {
+    if (!chart.canvas || !chart.canvas.isConnected) {
+      map.off('moveend', syncChartToViewport)
+      syncChartToViewport = null
+      return
     }
-
+    filterToViewport(active, allLabels, allValues, allCoords)
     chart.data.labels = active.labels
     chart.data.datasets[0].data = active.values
     chart.update('none')
   }
 
-  map.on('moveend', mapMoveListener)
-  mapMoveListener()
+  map.on('moveend', syncChartToViewport)
 
   return chart
 }
@@ -170,6 +165,27 @@ function computeDistances (coords) {
     return total
   }, 0)
   return distances
+}
+
+// Filter active data to only include points visible in the current map viewport
+function filterToViewport (active, allLabels, allValues, allCoords) {
+  const bounds = map.getBounds()
+  let firstIdx = -1, lastIdx = -1
+  allCoords.forEach((coord, i) => {
+    if (bounds.contains([coord[0], coord[1]])) {
+      if (firstIdx === -1) firstIdx = i
+      lastIdx = i
+    }
+  })
+  if (firstIdx === -1 || firstIdx === lastIdx) {
+    active.labels = allLabels
+    active.values = allValues
+    active.coords = allCoords
+  } else {
+    active.labels = allLabels.slice(firstIdx, lastIdx + 1)
+    active.values = allValues.slice(firstIdx, lastIdx + 1)
+    active.coords = allCoords.slice(firstIdx, lastIdx + 1)
+  }
 }
 
 // Grade (%) between two consecutive points — positive = uphill, negative = downhill
@@ -226,6 +242,7 @@ function getMarker (feature) {
 }
 
 function toDisplayUnit (distance) {
+  distance = Number(distance)
   if (distance == 0) return ''
   if (distance >= 1000) return (distance * 0.001).toFixed(1) + ' km'
   return distance.toFixed(0) + ' m'

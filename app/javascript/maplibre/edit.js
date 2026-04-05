@@ -8,7 +8,7 @@ import { initializeDefaultControls, resetControls } from 'maplibre/controls/shar
 import { highlightFeature } from 'maplibre/feature';
 import { getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
 import { addFeature, destroyFeature, map, mapProperties } from 'maplibre/map';
-import { getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
+import { getPointsElevation, getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
 import { initDirections, resetDirections } from 'maplibre/routing/osrm';
 import { editStyles, initializeEditStyles } from 'maplibre/styles/edit_styles';
 import { addUndoState, redo, undo } from 'maplibre/undo';
@@ -295,6 +295,7 @@ async function handleUpdate (e) {
     return
   }
   addUndoState('Feature update', geojsonFeature)
+
   // change route with openrouteservice
   if (selectedFeature?.properties?.route?.provider === 'ors') {
     feature = await getRouteUpdate(geojsonFeature, feature)
@@ -326,19 +327,35 @@ export function handleDelete (e) {
   mapChannel.send_message('delete_feature', { id: deletedFeature.id })
 }
 
-// add elevation from openrouteservice async
+// Fetch elevation from openrouteservice. Coords without elevation (length 2)
+// are detected automatically — moved/added points lose their 3rd element via
+// mapbox-gl-draw's updateCoordinate(). When only a few points lack elevation,
+// fetches just those individually instead of re-fetching the entire track.
 export function updateElevation(feature) {
-  if (window.gon.map_keys.openrouteservice) {
-    return getRouteElevation(feature.geometry.coordinates).then(coords => {
-      feature.geometry.coordinates = coords
-      if (feature.geometry.coordinates.length !== coords?.length) {
-        console.warn(`Did not receive elevation for all coords (${feature.geometry.coordinates.length} != ${coords?.length})`)
-      }
-    })
-  } else {
+  if (!window.gon.map_keys.openrouteservice) {
     console.warn('Skipping elevation, no openrouteservice key set')
-    return new Promise((resolve) => resolve())
+    return Promise.resolve()
   }
+
+  const coords = feature.geometry.coordinates
+  const missing = []
+  for (let i = 0; i < coords.length; i++) {
+    if (coords[i].length < 3) missing.push(i)
+  }
+
+  if (missing.length > 0 && missing.length <= 10) {
+    return getPointsElevation(coords, missing)
+      .then(updated => { feature.geometry.coordinates = updated })
+      .catch(() => fullElevation(feature))
+  }
+
+  return fullElevation(feature)
+}
+
+function fullElevation(feature) {
+  return getRouteElevation(feature.geometry.coordinates).then(coords => {
+    feature.geometry.coordinates = coords
+  })
 }
 
 export function setSelectedFeature(feature) {
