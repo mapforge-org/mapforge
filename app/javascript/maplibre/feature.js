@@ -76,8 +76,8 @@ function featureMeta (feature) {
     const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`
     const osmUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}&zoom=15`
 
-    const googleLink = `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="link text-nowrap d-inline-flex align-items-center me-3"><img src="/icons/google-maps.png" class="me-1" alt="Google Maps"> See in Google Maps</a>`
-    const osmLink = `<a href="${osmUrl}" target="_blank" rel="noopener noreferrer" class="link text-nowrap d-inline-flex align-items-center"><img src="/icons/osm-icon-smaller.png" class="me-1" alt="OpenStreetMap"> See in OpenStreetMap</a>`
+    const googleLink = `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="link text-nowrap d-inline-flex align-items-center me-3"><img src="/icons/google-maps.png" class="me-1" alt="Google Maps"> <span class="d-none d-sm-block">See in</span> Google Maps</a>`
+    const osmLink = `<a href="${osmUrl}" target="_blank" rel="noopener noreferrer" class="link text-nowrap d-inline-flex align-items-center"><img src="/icons/osm-icon-smaller.png" class="me-1" alt="OpenStreetMap"> <span class="d-none d-sm-block">See in</span> OpenStreetMap</a>`
 
     meta = coords + copyIcon + '<div class="mt-1">' + googleLink + osmLink + '</div>'
   }

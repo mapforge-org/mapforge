@@ -123,6 +123,12 @@
   padding: 0.9rem 1rem 0.3rem;
 }
 
+@media (width <= 574px) {
+  #feature-details-body {
+    padding: 0.9rem 0.4rem 0.3rem;
+  }
+}
+
 #feature-details-body table {
   border-radius: 1rem;
   border-collapse: separate;
