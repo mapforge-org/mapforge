@@ -32,9 +32,13 @@ export function initializeGeoLocateControl() {
 
   geolocate.on('geolocate', (position) => {
     pitchCompassView()
-    window.dispatchEvent(new CustomEvent('gps-position', {
-      detail: { lng: position.coords.longitude, lat: position.coords.latitude }
-    }))
+    const coords = position.coords
+    console.log('geolocate event', coords)
+    if (coords) {
+      window.dispatchEvent(new CustomEvent('gps-position', {
+        detail: { lng: coords.longitude, lat: coords.latitude }
+      }))
+    }
   })
 
   // follow mode
