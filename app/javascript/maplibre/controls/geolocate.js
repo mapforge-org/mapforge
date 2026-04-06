@@ -30,8 +30,11 @@ export function initializeGeoLocateControl() {
     status('Error detecting location', 'warning')
   })
 
-  geolocate.on('geolocate', () => {
+  geolocate.on('geolocate', (position) => {
     pitchCompassView()
+    window.dispatchEvent(new CustomEvent('gps-position', {
+      detail: { lng: position.coords.longitude, lat: position.coords.latitude }
+    }))
   })
 
   // follow mode
@@ -70,6 +73,7 @@ export function initializeGeoLocateControl() {
     wakeLock = null
     // probably mapbox draw bug: map can lose drag capabilities
     map.dragPan.enable()
+    window.dispatchEvent(new CustomEvent('gps-position', { detail: null }))
   })
 
   map.addControl(geolocate, 'top-right')

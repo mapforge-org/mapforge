@@ -6,6 +6,7 @@ import { featureColor } from 'maplibre/styles/styles'
 let marker
 let syncChartToViewport
 let canvasAbort
+let lastGpsPosition = null
 
 export async function showElevationChart (feature) {
   const chartElement = document.getElementById('route-elevation-chart')
@@ -53,8 +54,38 @@ export async function showElevationChart (feature) {
   filterToViewport(active, allLabels, allValues, allCoords)
   showElevationStats(active.values)
 
+  // GPS position indicator plugin
+  const gpsPlugin = {
+    id: 'gpsPosition',
+    afterDraw (chart) {
+      if (chart._gpsChartIndex == null) return
+      const meta = chart.getDatasetMeta(0)
+      const element = meta.data[chart._gpsChartIndex]
+      if (!element) return
+
+      const ctx = chart.ctx
+      const yAxis = chart.scales.y
+      ctx.save()
+      ctx.beginPath()
+      ctx.moveTo(element.x, yAxis.top)
+      ctx.lineTo(element.x, yAxis.bottom)
+      ctx.lineWidth = 2
+      ctx.strokeStyle = '#3b82f6'
+      ctx.setLineDash([4, 4])
+      ctx.stroke()
+
+      // Draw a dot at the elevation value
+      ctx.beginPath()
+      ctx.arc(element.x, element.y, 5, 0, Math.PI * 2)
+      ctx.fillStyle = '#3b82f6'
+      ctx.fill()
+      ctx.restore()
+    }
+  }
+
   let chart = new Chart(canvas, {
     type: 'line',
+    plugins: [gpsPlugin],
     data: {
       labels: active.labels,
       datasets: [{
@@ -153,6 +184,25 @@ export async function showElevationChart (feature) {
     map.flyTo({ center: [coord[0], coord[1]], duration: 1000, curve: 0.3 })
   }, { signal })
 
+  // Update GPS position indicator on the chart
+  window.addEventListener('gps-position', (event) => {
+    if (!event.detail) {
+      lastGpsPosition = null
+      chart._gpsChartIndex = null
+      chart.update('none')
+      return
+    }
+
+    lastGpsPosition = event.detail
+    const idx = findNearestTrackIndex(event.detail, allCoords)
+    if (idx === -1 || idx < active.firstIdx || idx > active.lastIdx) {
+      chart._gpsChartIndex = null
+    } else {
+      chart._gpsChartIndex = idx - active.firstIdx
+    }
+    chart.update('none')
+  }, { signal })
+
   // Sync chart with map viewport — show only the track section currently visible
   syncChartToViewport = () => {
     if (!chart.canvas || !chart.canvas.isConnected) {
@@ -164,6 +214,16 @@ export async function showElevationChart (feature) {
     chart.data.labels = active.labels
     chart.data.datasets[0].data = active.values
     showElevationStats(active.values)
+
+    // Update GPS position indicator for new viewport
+    if (lastGpsPosition) {
+      const idx = findNearestTrackIndex(lastGpsPosition, allCoords)
+      chart._gpsChartIndex = (idx !== -1 && idx >= active.firstIdx && idx <= active.lastIdx)
+        ? idx - active.firstIdx : null
+    } else {
+      chart._gpsChartIndex = null
+    }
+
     chart.update('none')
   }
 
@@ -184,6 +244,21 @@ function computeDistances (coords) {
   return distances
 }
 
+// Find the nearest track point to the given GPS position
+// Returns index if within 25m threshold, else -1
+function findNearestTrackIndex (lngLat, coords) {
+  let minDist = Infinity
+  let minIdx = -1
+  for (let i = 0; i < coords.length; i++) {
+    const d = distance(point([lngLat.lng, lngLat.lat]), point(coords[i]), { units: 'meters' })
+    if (d < minDist) {
+      minDist = d
+      minIdx = i
+    }
+  }
+  return minDist <= 25 ? minIdx : -1
+}
+
 // Filter active data to only include points visible in the current map viewport
 function filterToViewport (active, allLabels, allValues, allCoords) {
   const bounds = map.getBounds()
@@ -198,10 +273,14 @@ function filterToViewport (active, allLabels, allValues, allCoords) {
     active.labels = allLabels
     active.values = allValues
     active.coords = allCoords
+    active.firstIdx = 0
+    active.lastIdx = allCoords.length - 1
   } else {
     active.labels = allLabels.slice(firstIdx, lastIdx + 1)
     active.values = allValues.slice(firstIdx, lastIdx + 1)
     active.coords = allCoords.slice(firstIdx, lastIdx + 1)
+    active.firstIdx = firstIdx
+    active.lastIdx = lastIdx
   }
 }
 
