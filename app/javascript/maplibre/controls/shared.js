@@ -494,7 +494,6 @@ function initializeFeatureTouchScroll() {
   })
 }
 
-
 // pitch compass view like map
 function pitchCompassView() {
   const dot = document.querySelector('.maplibregl-user-location-dot')

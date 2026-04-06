@@ -31,7 +31,6 @@ export function initializeGeoLocateControl() {
   })
 
   geolocate.on('geolocate', (position) => {
-    pitchCompassView()
     const coords = position.coords
     console.log('geolocate event', coords)
     if (coords) {
