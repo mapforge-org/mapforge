@@ -131,7 +131,7 @@ function setLocationOrientation(event) {
       heading = event.alpha - screen_angle
       heading += map.getBearing() // adjust to map rotation
       heading = (heading + 360) % 360
-      console.log('Heading', heading)
+      // console.log('Heading', heading)
       dot.style.setProperty('--user-dot-rotation', `rotate(-${heading}deg)`)
     }
   }
