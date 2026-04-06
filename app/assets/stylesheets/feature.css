@@ -162,6 +162,13 @@
   color: var(--color-dark-charcoal);
   height: 1rem;
   visibility: hidden;
+  margin-left: 3rem
+}
+
+@media (width <=574px) {
+  #elevation-info-line {
+    margin-left: 0.5rem
+  }
 }
 
 #feature-details-meta {

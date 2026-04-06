@@ -144,8 +144,8 @@ export async function showElevationChart (feature) {
   canvasAbort = new AbortController()
   const signal = canvasAbort.signal
 
-  // Update info line on hover
-  chart.canvas.addEventListener('mousemove', (event) => {
+  // Shared handler for hover/touch interaction
+  const handleChartInteraction = (event) => {
     const points = chart.getElementsAtEventForMode(event, 'index', { intersect: false }, true)
     if (points.length === 0) {
       infoLine.style.visibility = 'hidden'
@@ -158,7 +158,7 @@ export async function showElevationChart (feature) {
     const elevation = active.values[i].toFixed(0)
     const grade = i === 0 ? 0 : computeGrade(active.values, active.labels, i)
 
-    infoLine.textContent = `Point: ${distance} • Elevation: ${elevation}m • Steepness: ${grade.toFixed(1)}%`
+    infoLine.innerHTML = `Waypoint: ${distance} • <i class="bi bi-triangle"></i> ${elevation}m • <i class="bi bi-arrow-up-right"></i> ${grade.toFixed(1)}%`
     infoLine.style.visibility = 'visible'
 
     // Place a marker on the map at the hovered point
@@ -166,12 +166,24 @@ export async function showElevationChart (feature) {
     marker = getMarker(feature)
     marker.setLngLat([coord[0], coord[1]])
     marker.addTo(map)
-  }, { signal })
+  }
 
-  chart.canvas.addEventListener('mouseout', () => {
+  const hideChartInteraction = () => {
     infoLine.style.visibility = 'hidden'
     if (marker) marker.remove()
-  }, { signal })
+  }
+
+  // Update info line on hover (desktop)
+  chart.canvas.addEventListener('mousemove', handleChartInteraction, { signal })
+  chart.canvas.addEventListener('mouseout', hideChartInteraction, { signal })
+
+  // Update info line on touch drag (mobile)
+  chart.canvas.addEventListener('touchmove', (event) => {
+    event.preventDefault() // Prevent scrolling while dragging
+    handleChartInteraction(event)
+  }, { signal, passive: false })
+
+  chart.canvas.addEventListener('touchend', hideChartInteraction, { signal })
 
   // Fly to the clicked point on the map (stopPropagation prevents the click
   // from bubbling to the map, which would re-trigger highlightFeature and
@@ -245,7 +257,7 @@ function computeDistances (coords) {
 }
 
 // Find the nearest track point to the given GPS position
-// Returns index if within 25m threshold, else -1
+// Returns index if within 100m threshold, else -1
 function findNearestTrackIndex (lngLat, coords) {
   let minDist = Infinity
   let minIdx = -1
@@ -256,7 +268,7 @@ function findNearestTrackIndex (lngLat, coords) {
       minIdx = i
     }
   }
-  return minDist <= 25 ? minIdx : -1
+  return minDist <= 100 ? minIdx : -1
 }
 
 // Filter active data to only include points visible in the current map viewport
