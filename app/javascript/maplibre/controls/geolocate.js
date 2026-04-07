@@ -134,7 +134,8 @@ function activateCompassMode() {
 
   // Apply current heading immediately if available
   if (lastHeading !== null) {
-    map.rotateTo(-lastHeading, { duration: 300 })
+    map.transform.bearing = -lastHeading
+    map.triggerRepaint()
   }
 }
 
@@ -205,8 +206,10 @@ function setLocationOrientation(event) {
   lastHeading = (event.alpha - screen_angle + 360) % 360
 
   if (isInCompassMode) {
-    // Rotate the map so "up" = direction user is facing
-    map.rotateTo(-lastHeading, { duration: 100 })
+    // Set bearing directly on transform to avoid firing movestart,
+    // which would cause GeolocateControl to exit ACTIVE_LOCK
+    map.transform.bearing = -lastHeading
+    map.triggerRepaint()
   } else {
     // Rotate the cone indicator on the dot
     let heading = lastHeading
