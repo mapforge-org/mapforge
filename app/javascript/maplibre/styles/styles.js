@@ -667,6 +667,8 @@ export function styles () {
         'text-font': labelFont,
         'text-size': 14,
         'text-max-angle': 30,
+        'text-keep-upright': true,
+        'text-rotation-alignment': 'map',
         'symbol-spacing': 200
       },
       paint: {
