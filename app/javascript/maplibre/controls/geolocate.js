@@ -76,7 +76,11 @@ export function initializeGeoLocateControl() {
     wakeLock = null
     // probably mapbox draw bug: map can lose drag capabilities
     map.dragPan.enable()
-    window.dispatchEvent(new CustomEvent('gps-position', { detail: null }))
+    // trackuserlocationend is send as soon as auto-follow is off
+    // only send event when tracking is fully turned off
+    if (geolocate._watchState === 'OFF') {
+      window.dispatchEvent(new CustomEvent('gps-position', { detail: null }))
+    }
   })
 
   map.addControl(geolocate, 'top-right')

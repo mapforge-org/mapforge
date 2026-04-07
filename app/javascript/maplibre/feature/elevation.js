@@ -198,13 +198,12 @@ export async function showElevationChart (feature) {
 
   // Update GPS position indicator on the chart
   window.addEventListener('gps-position', (event) => {
-    // Skip resetting user location in chart when follow mode gets disabled
-    // if (!event.detail) {
-    //   lastGpsPosition = null
-    //   chart._gpsChartIndex = null
-    //   chart.update('none')
-    //   return
-    // }
+    if (!event.detail) {
+      lastGpsPosition = null
+      chart._gpsChartIndex = null
+      chart.update('none')
+      return
+    }
 
     lastGpsPosition = event.detail
     const idx = findNearestTrackIndex(event.detail, allCoords)
