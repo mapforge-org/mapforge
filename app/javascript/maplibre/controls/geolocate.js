@@ -84,14 +84,16 @@ export function initializeGeoLocateControl() {
     if (isInCompassMode) {
       deactivateCompassMode()
     }
-    status('Tracking off', 'info')
-    wakeLock.release()
-    wakeLock = null
     // probably mapbox draw bug: map can lose drag capabilities
     map.dragPan.enable()
-    // trackuserlocationend is send as soon as auto-follow is off
-    // only send event when tracking is fully turned off
+    // trackuserlocationend is sent as soon as auto-follow is off
+    // only fully clean up when tracking is completely turned off
     if (geolocate._watchState === 'OFF') {
+      status('Tracking off', 'info')
+      if (wakeLock) {
+        wakeLock.release()
+        wakeLock = null
+      }
       window.dispatchEvent(new CustomEvent('gps-position', { detail: null }))
     }
   })
