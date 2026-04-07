@@ -115,6 +115,10 @@
   .maplibregl-ctrl-top-left, .maplibregl-ctrl-top-right {
     top: 0;
   }
+
+  .maplibregl-ctrl {
+    margin-top: 5px !important;
+  }
 }
 
 /* overwriting geocoder defaults that get loaded afterwards */

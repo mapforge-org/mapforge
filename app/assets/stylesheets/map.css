@@ -48,6 +48,12 @@ html:has(.map), body:has(.map) {
     padding: 0;
 }
 
+#map-nav-toggle {
+  font-size: 1.2rem;
+  cursor: pointer;
+  min-width: 1.3rem;
+}
+
 .layer-popover {
   position: fixed;
   top: 3.7rem;
@@ -96,17 +102,33 @@ html:has(.map), body:has(.map) {
     white-space: nowrap;
     line-height: 1.5rem;
   }
+
+  #map-head {
+    padding: 0.4rem;
+  }
+
+  #map-nav-toggle {
+    font-size: 1rem;
+    min-width: 1rem;
+  }
+}
+
+@media (height < 300px) {
+  #map-title {
+    font-size: 1rem;
+    max-height: 2rem;
+    line-height: 1rem;
+  }
+
+  #map-nav-toggle {
+    font-size: 0.9rem;
+    min-width: 0.9rem;
+  }
 }
 
 /* this is an ugly hack for the profile dropdown not to be cut off */
 #dropdown-space {
   height: 500px;
-}
-
-#map-nav-toggle {
-  font-size: 1.2rem;
-  cursor: pointer;
-  min-width: 1.3rem;
 }
 
 .mapforge-embed-logo {
