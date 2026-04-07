@@ -26,6 +26,7 @@
 
   /* 1rem minimum, 1.5rem max */
   font-size: clamp(1rem, 2vw + 0.7rem, 1.5rem);
+  margin-bottom: 0rem;
 }
 
 #feature-title {

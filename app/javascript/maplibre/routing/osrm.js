@@ -75,9 +75,9 @@ export function initDirections (profile, feature) {
     let waypoints = e.data.directions.waypoints.map(wp => wp.location)
     directions.setWaypointsFeatures(waypoints.map((coords, index) => directions.createWaypointfeature(coords, index)))
 
-    let trackColor = "#2d587d"
-    if (profile === "bike") { trackColor = "#3bb2d0" }
-    if (profile === "foot") { trackColor = "#f28cb1" }
+    let trackColor = "#1a5fb4"
+    if (profile === "bike") { trackColor = "#0a870a" }
+    if (profile === "foot") { trackColor = "#a51d2d" }
     const defaultProperties = { "fill-extrusion-height": 8,
                                 "fill-extrusion-base": 3,
                                 "stroke-opacity": 0.65,
