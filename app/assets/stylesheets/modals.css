@@ -111,7 +111,7 @@
   display: none;
 }
 
-@media (width <= 574px) {
+@media (width <= 574px), (height < 390px) {
   .layer-preview {
       width: 28%;
       height: auto;

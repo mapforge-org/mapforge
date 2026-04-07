@@ -436,8 +436,8 @@ function initializeFeatureTouchScroll() {
     if (dom.isInputElement(event.target)) return
     if (event.target.tagName.toLowerCase() === 'em-emoji-picker') return
 
-    // only enable bottom sheet behavior on small screens
-    if (window.innerWidth > 574) return
+    // only enable bottom sheet behavior on small or short screens
+    if (window.innerWidth > 574 && window.innerHeight >= 390) return
 
     isDragging = true
     dragStartY = event.clientY || event.touches[0].clientY

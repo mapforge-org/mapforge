@@ -86,7 +86,7 @@
   background-color: #fee2e2;
 }
 
-@media (width <= 574px) {
+@media (width <= 574px), (height < 390px) {
   #feature-details-modal {
     bottom: 0;
     left: calc(50% - 1rem);
@@ -94,12 +94,33 @@
     max-height: calc(100% - 15px); /* px here for easier calculation of scroll behavior */
     overflow-y: auto;
     width: calc(100% - 0.6rem);
-    max-width: 41rem;
+    max-width: 25rem;
     margin: 0.5rem 1rem;
+  }
+
+  #feature-details-body {
+    padding: 0.9rem 0.4rem 0.3rem;
+  }
+
+  #elevation-info-line {
+    margin-left: 0.5rem;
+  }
+
+  #edit-buttons button {
+    font-size: clamp(70%, 2vw + 0.5rem, 100%);
+    padding: 0.8rem 0.2rem 0.3rem;
+  }
+
+  #feature-details-meta {
+    font-size: clamp(60%, 2vw + 0.3rem, 80%);
+  }
+
+  #feature-edit-ui {
+    padding: 0.45rem;
   }
 }
 
-@media (width > 574px) {
+@media (width > 574px) and (height >= 390px) {
   #feature-details-modal {
     left: 2.2rem;
     top: 4.2rem;
@@ -108,7 +129,7 @@
     margin: 0.4rem 1rem 1.5rem;
   }
 
-  @media (height < 390px), (width >= 1024px) {
+  @media (width >= 1024px) {
     #feature-details-modal {
       top: 0.2rem;
       max-height: calc(100% - 1.5rem);
@@ -122,12 +143,6 @@
 
 #feature-details-body {
   padding: 0.9rem 1rem 0.3rem;
-}
-
-@media (width <= 574px) {
-  #feature-details-body {
-    padding: 0.9rem 0.4rem 0.3rem;
-  }
 }
 
 #feature-details-body table {
@@ -166,12 +181,6 @@
   margin-left: 3rem
 }
 
-@media (width <=574px) {
-  #elevation-info-line {
-    margin-left: 0.5rem
-  }
-}
-
 #feature-details-meta {
   font-size: 80%;
   font-weight: 400;
@@ -190,21 +199,6 @@
 
   .nav-icon:hover {
     color: var(--color-mid-steel-blue);
-  }
-}
-
-@media (width <= 574px) {
-  #edit-buttons button {
-    font-size: clamp(70%, 2vw + 0.5rem, 100%);
-    padding: 0.8rem 0.2rem 0.3rem;
-  }
-
-  #feature-details-meta {
-    font-size: clamp(60%, 2vw + 0.3rem, 80%);
-  }
-
-  #feature-edit-ui {
-    padding: 0.45rem;
   }
 }
 
