@@ -51,6 +51,7 @@ export function initializeGeoLocateControl() {
   // follow mode
   geolocate.on('trackuserlocationstart', () => {
     isInFollowMode = true
+    status('Following position', 'info')
     requestWakeLock()
 
     if (!('ondeviceorientationabsolute' in window)) {
@@ -83,6 +84,7 @@ export function initializeGeoLocateControl() {
     if (isInCompassMode) {
       deactivateCompassMode()
     }
+    status('Tracking off', 'info')
     wakeLock.release()
     wakeLock = null
     // probably mapbox draw bug: map can lose drag capabilities
@@ -122,6 +124,7 @@ export function initializeGeoLocateControl() {
 
 function activateCompassMode() {
   isInCompassMode = true
+  status('Compass mode', 'info')
 
   const btn = document.querySelector('button.maplibregl-ctrl-geolocate')
   btn.classList.add('maplibregl-ctrl-geolocate-compass')
