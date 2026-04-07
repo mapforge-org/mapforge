@@ -191,6 +191,15 @@ html:has(.map), body:has(.map) {
   box-shadow: 0 0 3px rgb(0 0 0 / 35%);
 }
 
+/* Geolocate button: compass rotation mode */
+.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-compass {
+  box-shadow: inset 0 0 0 2px rgb(29 161 242 / 60%);
+}
+
+.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-compass .maplibregl-ctrl-icon {
+  filter: brightness(0) saturate(100%) invert(52%) sepia(89%) saturate(1000%) hue-rotate(176deg) brightness(100%);
+}
+
 .maplibregl-user-location-dot::after{
   display: var(--display-view);
   border: unset;
