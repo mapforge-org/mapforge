@@ -198,6 +198,7 @@ export async function showElevationChart (feature) {
 
   // Update GPS position indicator on the chart
   window.addEventListener('gps-position', (event) => {
+    if (elevationContainer.offsetParent === null) return
     if (!event.detail) {
       lastGpsPosition = null
       chart._gpsChartIndex = null
@@ -217,6 +218,7 @@ export async function showElevationChart (feature) {
 
   // Sync chart with map viewport — show only the track section currently visible
   syncChartToViewport = () => {
+    if (elevationContainer.offsetParent === null) return
     if (!chart.canvas || !chart.canvas.isConnected) {
       map.off('moveend', syncChartToViewport)
       syncChartToViewport = null
