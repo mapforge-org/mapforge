@@ -90,11 +90,16 @@ export function initializeGeoLocateControl() {
     // only fully clean up when tracking is completely turned off
     if (geolocate._watchState === 'OFF') {
       status('Tracking off', 'info')
+      // reset geolocate button icon to default state
+      const btn = document.querySelector('button.maplibregl-ctrl-geolocate')
+      btn.classList.remove('maplibregl-ctrl-geolocate-compass')
       if (wakeLock) {
         wakeLock.release()
         wakeLock = null
       }
       window.dispatchEvent(new CustomEvent('gps-position', { detail: null }))
+    } else {
+      status('Tracking position', 'info')
     }
   })
 
@@ -216,6 +221,8 @@ function setLocationOrientation(event) {
   if (isInCompassMode) {
     // geolocateSource flag prevents GeolocateControl from exiting ACTIVE_LOCK on movestart
     map.setBearing(-lastHeading, { geolocateSource: true })
+    // Cone points upward in compass mode since the map itself is rotated
+    dot.style.setProperty('--user-dot-rotation', 'rotate(0deg)')
   } else {
     // Rotate the cone indicator on the dot
     let heading = lastHeading
