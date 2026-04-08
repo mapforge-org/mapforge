@@ -7,6 +7,7 @@ import { disableEditControls, enableEditControls, initializeEditControls } from 
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
 import { highlightFeature } from 'maplibre/feature';
 import { getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
+import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { addFeature, destroyFeature, map, mapProperties } from 'maplibre/map';
 import { getPointsElevation, getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
 import { initDirections, resetDirections } from 'maplibre/routing/osrm';
@@ -89,7 +90,7 @@ export async function initializeEditMode () {
 
   map.on('draw.modechange', () => {
     // probably mapbox draw bug: map can lose drag capabilities on double click
-    map.dragPan.enable()
+    if (!isGeolocateCompassModeActive()) map.dragPan.enable()
     if (currentMode === draw.getMode()) { return }
     console.log("Switch draw mode from '" + currentMode + "' to '" + draw.getMode() + "'")
     currentMode = draw.getMode()
@@ -166,7 +167,7 @@ export async function initializeEditMode () {
     // Run after draw's own touchend handler via setTimeout to restore it.
     const mode = draw.getMode()
     if (mode === 'simple_select' || mode === 'direct_select') {
-      setTimeout(() => map.dragPan.enable(), 0)
+      setTimeout(() => { if (!isGeolocateCompassModeActive()) map.dragPan.enable() }, 0)
     }
   })
 

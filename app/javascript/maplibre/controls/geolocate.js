@@ -162,8 +162,10 @@ function activateCompassMode() {
   isInCompassMode = true
   status('Compass mode', 'info')
 
-  // Disable map dragging in compass mode — map orientation follows device heading
+  // Disable map dragging and rotation in compass mode — map orientation follows device heading
   map.dragPan.disable()
+  map.dragRotate.disable()
+  map.touchZoomRotate.disableRotation()
 
   const btn = document.querySelector('button.maplibregl-ctrl-geolocate')
   btn.classList.add('maplibregl-ctrl-geolocate-compass')
@@ -188,8 +190,10 @@ function deactivateCompassMode() {
   isInCompassMode = false
   lastAppliedHeading = null
 
-  // Re-enable map dragging
+  // Re-enable map dragging and rotation
   map.dragPan.enable()
+  map.dragRotate.enable()
+  map.touchZoomRotate.enableRotation()
 
   const btn = document.querySelector('button.maplibregl-ctrl-geolocate')
   btn.classList.remove('maplibregl-ctrl-geolocate-compass')
