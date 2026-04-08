@@ -86,7 +86,28 @@
   background-color: #fee2e2;
 }
 
-@media (width <= 574px), (height < 410px) {
+#feature-details-body strong {
+  font-weight: 600;
+}
+
+#feature-details-body {
+  padding: 0.9rem 1rem 0.3rem;
+}
+
+#feature-details-body table {
+  border-radius: 1rem;
+  border-collapse: separate;
+}
+
+#feature-details-body tbody {
+  background-color: var(--color-light-beige);
+}
+
+#feature-details-body td {
+  padding: 0.2rem 0.8rem;
+}
+
+@media (width <=574px), (height < 410px) {
   #feature-details-modal {
     bottom: 0;
     left: calc(50% - 1rem);
@@ -99,7 +120,7 @@
   }
 
   #feature-details-body {
-    padding: 0.9rem 0.4rem 0.3rem;
+    padding: 0.6rem 0.4rem 0.3rem;
   }
 
   #elevation-info-line {
@@ -120,7 +141,7 @@
   }
 }
 
-@media (width > 574px) and (height >= 390px) {
+@media (width > 574px) and (height >=390px) {
   #feature-details-modal {
     left: 2.2rem;
     top: 4.2rem;
@@ -129,33 +150,12 @@
     margin: 0.4rem 1rem 1.5rem;
   }
 
-  @media (width >= 1024px) {
+  @media (width >=1024px) {
     #feature-details-modal {
       top: 0.2rem;
       max-height: calc(100% - 1.5rem);
     }
   }
-}
-
-#feature-details-body strong {
-  font-weight: 600;
-}
-
-#feature-details-body {
-  padding: 0.9rem 1rem 0.3rem;
-}
-
-#feature-details-body table {
-  border-radius: 1rem;
-  border-collapse: separate;
-}
-
-#feature-details-body tbody {
-  background-color: var(--color-light-beige);
-}
-
-#feature-details-body td {
-  padding: 0.2rem 0.8rem;
 }
 
 #feature-edit-ui {

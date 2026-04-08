@@ -172,10 +172,14 @@ function activateCompassMode() {
   //   dot.style.setProperty('--display-view', 'none')
   // }
 
-  // Apply current heading immediately if available
+  // Apply current heading with smooth transition if available
   if (lastHeading !== null) {
     // geolocateSource flag prevents GeolocateControl from exiting ACTIVE_LOCK on movestart
-    map.setBearing(-lastHeading, { geolocateSource: true })
+    map.easeTo({
+      bearing: -lastHeading,
+      duration: 500,
+      geolocateSource: true
+    })
   }
 }
 
