@@ -59,6 +59,7 @@ nav.fixed-top~#maps {
 
 .recently-viewed-maps {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .recently-viewed-maps .map-preview {
@@ -69,7 +70,7 @@ nav.fixed-top~#maps {
 }
 
 .map-preview a:hover img {
-  filter: brightness(1);
+  opacity: 1;
 }
 
 .map-preview .last-change {
@@ -86,8 +87,9 @@ nav.fixed-top~#maps {
   display: block;
   min-height: 11rem;
   width: 100%;
-  filter: brightness(0.9);
-  transition: transform 1200ms ease, filter 450ms ease;
+  opacity: 0.85;
+  transition: transform 400ms ease, opacity 300ms ease;
+  contain: layout paint;
 }
 
 .recently-viewed-maps .preview-image {
@@ -129,17 +131,9 @@ nav.fixed-top~#maps {
 }
 
 .text-glow {
-  text-shadow:
-    /* cardinal directions */
-      0 -3px 3px white,
-      3px 0 3px white,
-      0 3px 3px white,
-      -3px 0 3px white,
-      /* diagonals */
-      3px -3px 3px white,
-      3px 3px 3px white,
-      -3px 3px 3px white,
-      -3px -3px 3px white;
+  -webkit-text-stroke: 3px white;
+  paint-order: stroke fill;
+  text-shadow: 0 0 6px white;
 }
 
 .map-auth {

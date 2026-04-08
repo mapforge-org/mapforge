@@ -225,7 +225,7 @@ section,
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 8px 15px rgb(0 0 0 / 40%));
+  box-shadow: 0 8px 15px rgb(0 0 0 / 40%);
   transform: rotate(10deg);
   animation: banner-pulse 7.8s ease-in-out infinite;
   cursor: default;

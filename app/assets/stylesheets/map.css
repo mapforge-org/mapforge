@@ -33,7 +33,9 @@ html:has(.map), body:has(.map) {
   padding: 0 0.7rem 0 0.2rem;
   font-size: 1.8rem;
   color: var(--color-dark-moss-green);
-  text-shadow: 0 -4px 4px white, 4px 0 4px white, 0 4px 4px white, -4px 0 4px white;
+  -webkit-text-stroke: 3px white;
+  paint-order: stroke fill;
+  text-shadow: 0 0 6px white;
   font-weight: 300;
   font-style: italic;
   text-align: center;
