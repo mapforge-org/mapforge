@@ -9,7 +9,6 @@ export default class extends Controller {
       draw.changeMode('simple_select', { featureIds: [] })
       map.fire('draw.modechange')
     }
-    // TODO: drop anchor if present
     window.history.pushState({}, '', `${window.location.pathname}`)
   }
 }

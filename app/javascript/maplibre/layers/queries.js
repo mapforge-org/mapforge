@@ -68,14 +68,7 @@ export const queries = [
   },
   {
     name: '🚶🏾 Hiking routes',
-    query: "relation[type=route][route=hiking];out geom 50;",
-    style: (f) => {
-      // TODO: Find a way to not select the points in the query
-      if (f.geometry.type === 'Point') {
-        f.properties["marker-color"] = "transparent"
-        f.properties["stroke"] = "transparent"
-      }
-    }
+    query: "relation[type=route][route=hiking];way(r);out geom 50;"
   },
   {
     name: '🚴 Bicycle routes',

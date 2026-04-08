@@ -502,7 +502,7 @@ function initializeFeatureTouchScroll() {
     }
   })
 
-  f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend', 'mouseleave'], (event) => {
+  f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend', 'mouseleave'], (_event) => {
     if (!isDragging) return
     isDragging = false
     modal.style.cursor = 'default'
