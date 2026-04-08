@@ -101,17 +101,21 @@ export function initializeGeoLocateControl() {
   map.addControl(geolocate, 'top-right')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)').classList.add('hidden')
 
-  // Intercept clicks to inject compass mode between ACTIVE_LOCK and OFF
+  // Geolocate button click cycle: OFF → Follow → Compass → OFF
+  // 1. OFF: click triggers default MapLibre behavior → enters follow mode (ACTIVE_LOCK)
+  // 2. Follow (ACTIVE_LOCK): intercept click → enter compass mode (map rotates with device heading)
+  // 3. Compass: intercept click → deactivate compass, trigger() twice to fully turn off tracking
   const geolocateButton = document.querySelector('button.maplibregl-ctrl-geolocate')
   geolocateButton.addEventListener('click', (e) => {
     if (!isInCompassMode && geolocateControl._watchState === 'ACTIVE_LOCK') {
-      // Enter compass mode instead of turning off
       e.stopImmediatePropagation()
       activateCompassMode()
     } else if (isInCompassMode) {
-      // Exit compass mode and turn off tracking
       e.stopImmediatePropagation()
       deactivateCompassMode()
+      // Compass mode map rotation may have moved _watchState to BACKGROUND.
+      // Reset to ACTIVE_LOCK so trigger() follows the ACTIVE_LOCK → OFF path.
+      geolocateControl._watchState = 'ACTIVE_LOCK'
       geolocateControl.trigger()
     }
   }, true) // capture phase
