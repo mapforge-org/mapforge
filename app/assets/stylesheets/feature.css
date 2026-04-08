@@ -123,10 +123,6 @@
     padding: 0.6rem 0.4rem 0.3rem;
   }
 
-  #elevation-info-line {
-    margin-left: 0.5rem;
-  }
-
   #edit-buttons button {
     font-size: clamp(70%, 2vw + 0.5rem, 100%);
     padding: 0.8rem 0.2rem 0.3rem;
@@ -178,7 +174,6 @@
   color: var(--color-dark-charcoal);
   height: 1rem;
   visibility: hidden;
-  margin-left: 3rem
 }
 
 #feature-details-meta {
