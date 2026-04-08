@@ -5,6 +5,7 @@ import { map, mapProperties } from 'maplibre/map'
 
 let isInFollowMode = false
 let isInCompassMode = false
+let userHasZoomed = false
 let lastHeading = null
 let lastAppliedHeading = null
 let geolocateControl = null
@@ -91,6 +92,7 @@ export function initializeGeoLocateControl() {
 
   geolocate.on('trackuserlocationend', () => {
     isInFollowMode = false
+    userHasZoomed = false
     cachedDot = null
     if (isInCompassMode) {
       deactivateCompassMode()
@@ -140,12 +142,14 @@ export function initializeGeoLocateControl() {
   document.querySelector('button.maplibregl-ctrl-zoom-in')?.addEventListener('click', (e) => {
     if (isInFollowMode) {
       e.stopImmediatePropagation()
+      lockUserZoom()
       map.easeTo({ zoom: map.getZoom() + 1, duration: 200 }, { geolocateSource: true })
     }
   }, true)
   document.querySelector('button.maplibregl-ctrl-zoom-out')?.addEventListener('click', (e) => {
     if (isInFollowMode) {
       e.stopImmediatePropagation()
+      lockUserZoom()
       map.easeTo({ zoom: map.getZoom() - 1, duration: 200 }, { geolocateSource: true })
     }
   }, true)
@@ -156,6 +160,17 @@ export function initializeGeoLocateControl() {
       deactivateCompassMode()
     }
   })
+}
+
+// After the first manual zoom in follow/compass mode, override GeolocateControl's
+// _updateCamera to only update center — preventing fitBounds from resetting zoom.
+function lockUserZoom() {
+  if (userHasZoomed) return
+  userHasZoomed = true
+  geolocateControl._updateCamera = (position) => {
+    const center = [position.coords.longitude, position.coords.latitude]
+    map.easeTo({ center, bearing: map.getBearing(), duration: 200 }, { geolocateSource: true })
+  }
 }
 
 function activateCompassMode() {
