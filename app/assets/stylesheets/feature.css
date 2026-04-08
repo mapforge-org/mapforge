@@ -137,7 +137,7 @@
   }
 }
 
-@media (width > 574px) and (height >=390px) {
+@media (width > 574px) and (height >=410px) {
   #feature-details-modal {
     left: 2.2rem;
     top: 4.2rem;

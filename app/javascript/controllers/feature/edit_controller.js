@@ -239,7 +239,7 @@ export default class extends Controller {
       onClickOutside: onClickOutside,
       dynamicWidth: true,
       noCountryFlags: true, // TODO country flags don't work right now
-      // set: 'google', // default is native icons (they don't match the map icons)
+      set: 'native', // default is native icons (they don't match the map icons)
       theme: 'light',
     }
     if (this.picker) {
