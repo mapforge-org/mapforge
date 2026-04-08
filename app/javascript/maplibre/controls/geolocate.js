@@ -140,13 +140,13 @@ export function initializeGeoLocateControl() {
   document.querySelector('button.maplibregl-ctrl-zoom-in')?.addEventListener('click', (e) => {
     if (isInFollowMode) {
       e.stopImmediatePropagation()
-      map.easeTo({ zoom: map.getZoom() + 1, duration: 200, geolocateSource: true })
+      map.easeTo({ zoom: map.getZoom() + 1, duration: 200 }, { geolocateSource: true })
     }
   }, true)
   document.querySelector('button.maplibregl-ctrl-zoom-out')?.addEventListener('click', (e) => {
     if (isInFollowMode) {
       e.stopImmediatePropagation()
-      map.easeTo({ zoom: map.getZoom() - 1, duration: 200, geolocateSource: true })
+      map.easeTo({ zoom: map.getZoom() - 1, duration: 200 }, { geolocateSource: true })
     }
   }, true)
 
@@ -180,8 +180,7 @@ function activateCompassMode() {
     map.easeTo({
       bearing: -lastHeading,
       duration: 500,
-      geolocateSource: true
-    })
+    }, { geolocateSource: true })
   }
 }
 
