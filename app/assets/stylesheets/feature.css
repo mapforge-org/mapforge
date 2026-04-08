@@ -86,7 +86,7 @@
   background-color: #fee2e2;
 }
 
-@media (width <= 574px), (height < 390px) {
+@media (width <= 574px), (height < 410px) {
   #feature-details-modal {
     bottom: 0;
     left: calc(50% - 1rem);

@@ -107,7 +107,7 @@
   }
 }
 
-@media (height < 390px) {
+@media (height < 410px) {
   .maplibregl-ctrl-scale, .maplibregl-ctrl>.maplibregl-ctrl-logo {
       display: none;
     }
@@ -116,7 +116,7 @@
     top: 0;
   }
 
-  .maplibregl-ctrl {
+ .maplibregl-ctrl-top-left .maplibregl-ctrl {
     margin-top: 5px !important;
   }
 }
