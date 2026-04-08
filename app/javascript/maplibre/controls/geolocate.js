@@ -104,7 +104,7 @@ export function initializeGeoLocateControl() {
   // Geolocate button click cycle: OFF → Follow → Compass → OFF
   // 1. OFF: click triggers default MapLibre behavior → enters follow mode (ACTIVE_LOCK)
   // 2. Follow (ACTIVE_LOCK): intercept click → enter compass mode (map rotates with device heading)
-  // 3. Compass: intercept click → deactivate compass, trigger() twice to fully turn off tracking
+  // 3. Compass: intercept click → deactivate compass, trigger() to turn off tracking
   const geolocateButton = document.querySelector('button.maplibregl-ctrl-geolocate')
   geolocateButton.addEventListener('click', (e) => {
     if (!isInCompassMode && geolocateControl._watchState === 'ACTIVE_LOCK') {
@@ -113,8 +113,7 @@ export function initializeGeoLocateControl() {
     } else if (isInCompassMode) {
       e.stopImmediatePropagation()
       deactivateCompassMode()
-      // Compass mode map rotation may have moved _watchState to BACKGROUND.
-      // Reset to ACTIVE_LOCK so trigger() follows the ACTIVE_LOCK → OFF path.
+      // Ensure ACTIVE_LOCK so trigger() follows the ACTIVE_LOCK → OFF path
       geolocateControl._watchState = 'ACTIVE_LOCK'
       geolocateControl.trigger()
     }
@@ -143,8 +142,8 @@ function activateCompassMode() {
 
   // Apply current heading immediately if available
   if (lastHeading !== null) {
-    map.transform.bearing = -lastHeading
-    map.triggerRepaint()
+    // geolocateSource flag prevents GeolocateControl from exiting ACTIVE_LOCK on movestart
+    map.setBearing(-lastHeading, { geolocateSource: true })
   }
 }
 
@@ -215,10 +214,8 @@ function setLocationOrientation(event) {
   lastHeading = (event.alpha - screen_angle + 360) % 360
 
   if (isInCompassMode) {
-    // Set bearing directly on transform to avoid firing movestart,
-    // which would cause GeolocateControl to exit ACTIVE_LOCK
-    map.transform.bearing = -lastHeading
-    map.triggerRepaint()
+    // geolocateSource flag prevents GeolocateControl from exiting ACTIVE_LOCK on movestart
+    map.setBearing(-lastHeading, { geolocateSource: true })
   } else {
     // Rotate the cone indicator on the dot
     let heading = lastHeading
