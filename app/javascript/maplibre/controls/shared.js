@@ -427,6 +427,11 @@ export function initializeDefaultControls () {
 
 let isDragging = false
 let dragStartY, dragStartModalHeight
+// Velocity tracking
+let dragHistory = [] // stores { y, time } entries for velocity calculation
+const SNAP_POINTS = [0, 25, 45, 100] // close, down, middle, full (percent of viewport)
+const VELOCITY_THRESHOLD = 0.4 // px/ms — above this, momentum takes over
+const RUBBER_BAND_FACTOR = 0.3 // resistance when dragging past bounds
 
 function initializeFeatureTouchScroll() {
   const modal = document.querySelector('#feature-details-modal')
@@ -442,19 +447,38 @@ function initializeFeatureTouchScroll() {
     isDragging = true
     dragStartY = event.clientY || event.touches[0].clientY
     dragStartModalHeight = modal.offsetHeight
+    dragHistory = [{ y: dragStartY, time: Date.now() }]
     modal.style.cursor = 'move'
   })
 
   // Allow to drag up/down modal on touch devices
-  // Simulating an android bottom sheet behavior
+  // Simulating a native bottom sheet behavior with momentum
   f.addEventListeners(modal, ['mousemove', 'touchmove', 'drag'], (event) => {
     if (!isDragging) { return }
     if (dom.isInputElement(event.target)) { event.preventDefault(); return }
 
     const dragY = event.clientY || event.touches[0].clientY
+    const now = Date.now()
+    // Keep last 5 touch points for velocity calculation
+    dragHistory.push({ y: dragY, time: now })
+    if (dragHistory.length > 5) dragHistory.shift()
+
     // y < 0 -> dragging up
     const y = dragY - dragStartY
-    const sheetHeight = parseInt(modal.style.height) / window.innerHeight * 100
+    let newHeight = dragStartModalHeight - y
+    const maxHeight = window.innerHeight - 16 // 1rem
+    const minHeight = 0
+
+    // Rubber-band effect at edges
+    if (newHeight > maxHeight) {
+      const overflow = newHeight - maxHeight
+      newHeight = maxHeight + overflow * RUBBER_BAND_FACTOR
+    } else if (newHeight < minHeight) {
+      const overflow = minHeight - newHeight
+      newHeight = minHeight - overflow * RUBBER_BAND_FACTOR
+    }
+
+    const sheetHeight = newHeight / window.innerHeight * 100
     // fade out to show modal auto close
     if (sheetHeight < 25) {
       modal.classList.add('modal-pull-fade')
@@ -465,14 +489,15 @@ function initializeFeatureTouchScroll() {
     // When dragging down, at first scroll up, then lower modal
     if (y < 0 || modal.scrollTop === 0) {
       modal.classList.remove('modal-pull-transition')
-      modal.style.height = (dragStartModalHeight - y) + 'px'
+      modal.style.height = newHeight + 'px'
     } else {
       dragStartY = dragY
+      dragStartModalHeight = modal.offsetHeight
+      dragHistory = [{ y: dragY, time: now }]
     }
 
-    // disable scrolling until modal is fully dragged up (#feature-details-modal class)
-    const max_height = parseInt(window.getComputedStyle(document.querySelector('.map')).height, 10) - 20
-    if (y < 0 && parseInt(modal.style.height, 10) < max_height) {
+    // disable scrolling until modal is fully dragged up
+    if (y < 0 && newHeight < maxHeight) {
       event.preventDefault()
     }
   })
@@ -481,16 +506,66 @@ function initializeFeatureTouchScroll() {
     if (!isDragging) return
     isDragging = false
     modal.style.cursor = 'default'
-    const sheetHeight = parseInt(modal.style.height) / window.innerHeight * 100
-    const dragY = event.clientY || event.changedTouches[0].clientY
-    const y = dragY - dragStartY
-    // console.log(y)
-    if (sheetHeight < 25) {
-      modal.classList.remove('show')
-      modal.style.removeProperty('height')
-    } else if (sheetHeight > 75 && y < 0) { // only 'snap' on dragging upwards
-      modal.style.height = 'calc(100vh - 1rem)'
+
+    const currentHeight = modal.offsetHeight
+    const currentPercent = currentHeight / window.innerHeight * 100
+
+    // Calculate velocity from recent touch history (px/ms, positive = dragging up / growing)
+    let velocity = 0
+    if (dragHistory.length >= 2) {
+      const recent = dragHistory[dragHistory.length - 1]
+      const earlier = dragHistory[0]
+      const dt = recent.time - earlier.time
+      if (dt > 0) {
+        // negative dragY change = dragging up = positive velocity (sheet growing)
+        velocity = (earlier.y - recent.y) / dt
+      }
     }
+
+    // Determine target snap point
+    let targetPercent
+    const isFastFlick = Math.abs(velocity) > VELOCITY_THRESHOLD
+
+    if (isFastFlick) {
+      // Momentum: snap to next snap point in flick direction
+      if (velocity > 0) {
+        // Flicking up — find next snap point above current position
+        targetPercent = SNAP_POINTS.find(s => s > currentPercent) || SNAP_POINTS[SNAP_POINTS.length - 1]
+      } else {
+        // Flicking down — find next snap point below current position
+        targetPercent = [...SNAP_POINTS].reverse().find(s => s < currentPercent) || SNAP_POINTS[0]
+      }
+    } else {
+      // No momentum: snap to nearest snap point
+      targetPercent = SNAP_POINTS.reduce((prev, curr) =>
+        Math.abs(curr - currentPercent) < Math.abs(prev - currentPercent) ? curr : prev
+      )
+    }
+
+    // Transition duration scales with distance (feels more natural)
+    const distance = Math.abs(targetPercent - currentPercent)
+    const duration = Math.min(0.45, Math.max(0.2, distance / 200))
+
+    // Apply snap
+    modal.classList.remove('modal-pull-fade')
+    modal.style.transition = `height ${duration}s cubic-bezier(0.32, 0.72, 0, 1)`
+
+    if (targetPercent === 0) {
+      modal.style.height = '0px'
+      setTimeout(() => {
+        resetControls()
+        modal.style.removeProperty('height')
+        modal.style.removeProperty('transition')
+      }, duration * 1000)
+    } else if (targetPercent === 100) {
+      modal.style.height = 'calc(100vh - 1rem)'
+      setTimeout(() => { modal.style.removeProperty('transition') }, duration * 1000)
+    } else {
+      modal.style.height = targetPercent + 'vh'
+      setTimeout(() => { modal.style.removeProperty('transition') }, duration * 1000)
+    }
+
+    dragHistory = []
   })
 }
 

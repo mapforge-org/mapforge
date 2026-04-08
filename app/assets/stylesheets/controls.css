@@ -166,6 +166,7 @@
   .maplibregl-ctrl button:not(:disabled):hover {
     background-color: inherit;
   }
+
   .maplibregl-ctrl button:not(:disabled):active {
     background-color: inherit;
     color: inherit;

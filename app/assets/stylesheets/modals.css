@@ -134,7 +134,7 @@
 
   .modal-pull-transition {
     transition:
-      height 0.3s linear !important;
+      height 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
   }
 
   .modal-pull-up {
