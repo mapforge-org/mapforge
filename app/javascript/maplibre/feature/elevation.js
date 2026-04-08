@@ -1,10 +1,12 @@
 import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
+import * as functions from 'helpers/functions'
 import { map } from 'maplibre/map'
 import { featureColor } from 'maplibre/styles/styles'
 
 let marker
 let syncChartToViewport
+let debouncedSync
 let canvasAbort
 let lastGpsPosition = null
 
@@ -21,8 +23,9 @@ export async function showElevationChart (feature) {
 
   elevationContainer?.classList?.remove('hidden')
 
-  if (syncChartToViewport) {
-    map.off('moveend', syncChartToViewport)
+  if (debouncedSync) {
+    map.off('moveend', debouncedSync)
+    debouncedSync = null
     syncChartToViewport = null
   }
 
@@ -206,21 +209,25 @@ export async function showElevationChart (feature) {
       return
     }
 
-    lastGpsPosition = event.detail
-    const idx = findNearestTrackIndex(event.detail, allCoords)
-    if (idx === -1 || idx < active.firstIdx || idx > active.lastIdx) {
-      chart._gpsChartIndex = null
-    } else {
-      chart._gpsChartIndex = idx - active.firstIdx
-    }
-    chart.update('none')
+    // Throttle to 1 Hz — chart position indicator doesn't need sub-second updates
+    functions.throttle(() => {
+      lastGpsPosition = event.detail
+      const idx = findNearestTrackIndex(event.detail, allCoords)
+      if (idx === -1 || idx < active.firstIdx || idx > active.lastIdx) {
+        chart._gpsChartIndex = null
+      } else {
+        chart._gpsChartIndex = idx - active.firstIdx
+      }
+      chart.update('none')
+    }, 'gps-elevation', 1000)
   }, { signal })
 
   // Sync chart with map viewport — show only the track section currently visible
   syncChartToViewport = () => {
     if (elevationContainer.offsetParent === null) return
     if (!chart.canvas || !chart.canvas.isConnected) {
-      map.off('moveend', syncChartToViewport)
+      map.off('moveend', debouncedSync)
+      debouncedSync = null
       syncChartToViewport = null
       return
     }
@@ -241,7 +248,9 @@ export async function showElevationChart (feature) {
     chart.update('none')
   }
 
-  map.on('moveend', syncChartToViewport)
+  // Debounce 300ms — groups rapid successive map moves (pinch-zoom, flyTo) into one chart update
+  debouncedSync = () => functions.debounce(syncChartToViewport, 'elevation-viewport', 300)
+  map.on('moveend', debouncedSync)
 
   return chart
 }
@@ -258,19 +267,30 @@ function computeDistances (coords) {
   return distances
 }
 
+// Euclidean approx instead of Haversine — avoids thousands of trig calls per GPS update,
+// accurate enough for nearest-neighbor comparison
+function approxDistSq (lngLat, coord) {
+  const dlng = (lngLat.lng - coord[0]) * Math.cos(lngLat.lat * Math.PI / 180)
+  const dlat = lngLat.lat - coord[1]
+  return dlng * dlng + dlat * dlat
+}
+
 // Find the nearest track point to the given GPS position
 // Returns index if within 100m threshold, else -1
 function findNearestTrackIndex (lngLat, coords) {
   let minDist = Infinity
   let minIdx = -1
   for (let i = 0; i < coords.length; i++) {
-    const d = distance(point([lngLat.lng, lngLat.lat]), point(coords[i]), { units: 'meters' })
+    const d = approxDistSq(lngLat, coords[i])
     if (d < minDist) {
       minDist = d
       minIdx = i
     }
   }
-  return minDist <= 100 ? minIdx : -1
+  if (minIdx === -1) return -1
+  // Only use precise Haversine for the final 100m threshold check
+  const realDist = distance(point([lngLat.lng, lngLat.lat]), point(coords[minIdx]), { units: 'meters' })
+  return realDist <= 100 ? minIdx : -1
 }
 
 // Filter active data to only include points visible in the current map viewport

@@ -6,7 +6,10 @@ import { map, mapProperties } from 'maplibre/map'
 let isInFollowMode = false
 let isInCompassMode = false
 let lastHeading = null
+let lastAppliedHeading = null
 let geolocateControl = null
+// Cache DOM element — querySelector in a 20 Hz loop is wasteful
+let cachedDot = null
 
 export function isGeolocateFollowModeActive() {
   return isInFollowMode
@@ -54,12 +57,19 @@ export function initializeGeoLocateControl() {
     status('Following position', 'info')
     requestWakeLock()
 
+    cachedDot = document.querySelector('.maplibregl-user-location-dot')
+
     if (!('ondeviceorientationabsolute' in window)) {
       status('Device Orientation not supported', 'info')
       // hiding the direction view
-      const dot = document.querySelector('.maplibregl-user-location-dot')
-      dot.style.setProperty('--display-view', 'none')
+      if (cachedDot) cachedDot.style.setProperty('--display-view', 'none')
       return
+    }
+
+    // Throttle to 20 Hz — deviceorientationabsolute fires at 60-100 Hz,
+    // each setBearing triggers a full map re-render
+    const throttledOrientation = (event) => {
+      functions.throttle(() => setLocationOrientation(event), 'compass', 50)
     }
 
     // Some mobile browsers (iOS Safari) require permission to access device orientation
@@ -69,18 +79,19 @@ export function initializeGeoLocateControl() {
       DeviceOrientationEvent.requestPermission()
         .then(permissionState => {
           if (permissionState === 'granted') {
-            window.addEventListener('deviceorientationabsolute', setLocationOrientation)
+            window.addEventListener('deviceorientationabsolute', throttledOrientation)
           }
         })
         .catch(console.error)
     } else {
       // https://developer.mozilla.org/en-US/docs/Web/API/Window/deviceorientationabsolute_event
-      window.addEventListener('deviceorientationabsolute', setLocationOrientation)
+      window.addEventListener('deviceorientationabsolute', throttledOrientation)
     }
   })
 
   geolocate.on('trackuserlocationend', () => {
     isInFollowMode = false
+    cachedDot = null
     if (isInCompassMode) {
       deactivateCompassMode()
     }
@@ -124,6 +135,22 @@ export function initializeGeoLocateControl() {
     }
   }, true) // capture phase
 
+  // In compass mode, setBearing() is called continuously via device orientation,
+  // which cancels any in-progress easeTo animation (including zoom +/- button animations).
+  // Intercept zoom buttons to use instant zoom instead so they work in compass mode.
+  document.querySelector('button.maplibregl-ctrl-zoom-in')?.addEventListener('click', (e) => {
+    if (isInCompassMode) {
+      e.stopImmediatePropagation()
+      map.setZoom(map.getZoom() + 1)
+    }
+  }, true)
+  document.querySelector('button.maplibregl-ctrl-zoom-out')?.addEventListener('click', (e) => {
+    if (isInCompassMode) {
+      e.stopImmediatePropagation()
+      map.setZoom(map.getZoom() - 1)
+    }
+  }, true)
+
   // Exit compass mode when user manually rotates the map
   map.on('rotatestart', (e) => {
     if (isInCompassMode && e.originalEvent) {
@@ -154,6 +181,7 @@ function activateCompassMode() {
 
 function deactivateCompassMode() {
   isInCompassMode = false
+  lastAppliedHeading = null
 
   const btn = document.querySelector('button.maplibregl-ctrl-geolocate')
   btn.classList.remove('maplibregl-ctrl-geolocate-compass')
@@ -201,12 +229,12 @@ function setLocationOrientation(event) {
   // some browsers respond to deviceorientationabsolute with non-absolute values
   if (!event.absolute) {
     // hiding the direction view
-    const dot = document.querySelector('.maplibregl-user-location-dot')
-    dot.style.setProperty('--display-view', 'none')
+    const dot = cachedDot || document.querySelector('.maplibregl-user-location-dot')
+    if (dot) dot.style.setProperty('--display-view', 'none')
     return
   }
 
-  const dot = document.querySelector('.maplibregl-user-location-dot')
+  const dot = cachedDot || document.querySelector('.maplibregl-user-location-dot')
   if (!dot) return
 
   const screen_angle = (screen?.orientation?.angle || 0)
@@ -219,6 +247,9 @@ function setLocationOrientation(event) {
   lastHeading = (event.alpha - screen_angle + 360) % 360
 
   if (isInCompassMode) {
+    // Skip imperceptible heading changes (< 2°) to avoid redundant map re-renders
+    if (lastAppliedHeading !== null && Math.abs(lastHeading - lastAppliedHeading) < 2) return
+    lastAppliedHeading = lastHeading
     // geolocateSource flag prevents GeolocateControl from exiting ACTIVE_LOCK on movestart
     map.setBearing(-lastHeading, { geolocateSource: true })
     // Cone points upward in compass mode since the map itself is rotated
