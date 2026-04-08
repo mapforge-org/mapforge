@@ -135,19 +135,18 @@ export function initializeGeoLocateControl() {
     }
   }, true) // capture phase
 
-  // In compass mode, setBearing() is called continuously via device orientation,
-  // which cancels any in-progress easeTo animation (including zoom +/- button animations).
-  // Intercept zoom buttons to use instant zoom instead so they work in compass mode.
+  // Intercept zoom buttons to ensure they work in all geolocation modes (follow and compass).
+  // geolocateSource flag prevents GeolocateControl from exiting tracking mode on user zoom.
   document.querySelector('button.maplibregl-ctrl-zoom-in')?.addEventListener('click', (e) => {
-    if (isInCompassMode) {
+    if (isInFollowMode) {
       e.stopImmediatePropagation()
-      map.setZoom(map.getZoom() + 1)
+      map.easeTo({ zoom: map.getZoom() + 1, duration: 200, geolocateSource: true })
     }
   }, true)
   document.querySelector('button.maplibregl-ctrl-zoom-out')?.addEventListener('click', (e) => {
-    if (isInCompassMode) {
+    if (isInFollowMode) {
       e.stopImmediatePropagation()
-      map.setZoom(map.getZoom() - 1)
+      map.easeTo({ zoom: map.getZoom() - 1, duration: 200, geolocateSource: true })
     }
   }, true)
 
