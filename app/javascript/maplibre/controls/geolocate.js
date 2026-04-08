@@ -247,8 +247,8 @@ function setLocationOrientation(event) {
   lastHeading = (event.alpha - screen_angle + 360) % 360
 
   if (isInCompassMode) {
-    // Skip imperceptible heading changes (< 2°) to avoid redundant map re-renders
-    if (lastAppliedHeading !== null && Math.abs(lastHeading - lastAppliedHeading) < 2) return
+    // Skip imperceptible heading changes (< 1°) to avoid redundant map re-renders
+    if (lastAppliedHeading !== null && Math.abs(lastHeading - lastAppliedHeading) < 1) return
     lastAppliedHeading = lastHeading
     // geolocateSource flag prevents GeolocateControl from exiting ACTIVE_LOCK on movestart
     map.setBearing(-lastHeading, { geolocateSource: true })
