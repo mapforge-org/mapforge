@@ -213,12 +213,15 @@ export async function showElevationChart (feature) {
     functions.throttle(() => {
       lastGpsPosition = event.detail
       const idx = findNearestTrackIndex(event.detail, allCoords)
-      if (idx === -1 || idx < active.firstIdx || idx > active.lastIdx) {
-        chart._gpsChartIndex = null
-      } else {
-        chart._gpsChartIndex = idx - active.firstIdx
+      const newIndex = (idx === -1 || idx < active.firstIdx || idx > active.lastIdx)
+        ? null
+        : idx - active.firstIdx
+
+      // Skip re-render if GPS position index didn't change
+      if (chart._gpsChartIndex !== newIndex) {
+        chart._gpsChartIndex = newIndex
+        chart.update('none')
       }
-      chart.update('none')
     }, 'gps-elevation', 1000)
   }, { signal })
 
@@ -231,7 +234,15 @@ export async function showElevationChart (feature) {
       syncChartToViewport = null
       return
     }
+    const prevFirstIdx = active.firstIdx
+    const prevLastIdx = active.lastIdx
     filterToViewport(active, allLabels, allValues, allCoords)
+
+    // Skip re-render if viewport boundaries didn't change
+    if (prevFirstIdx === active.firstIdx && prevLastIdx === active.lastIdx) {
+      return
+    }
+
     chart.data.labels = active.labels
     chart.data.datasets[0].data = active.values
     showElevationStats(active.values)
