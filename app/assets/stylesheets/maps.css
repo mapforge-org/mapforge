@@ -65,7 +65,7 @@ nav.fixed-top~#maps {
 .recently-viewed-maps .map-preview {
   width: 30vw;
   margin: 0.5rem 0.5rem 0.5rem 0;
-  min-width: 8rem;
+  min-width: 7.5rem;
   max-width: 15rem;
 }
 

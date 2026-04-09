@@ -8,6 +8,7 @@ import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromPropertie
 import { draw, select, unselect } from 'maplibre/edit'
 import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
+import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles/styles'
 
 let easyMDE
@@ -136,6 +137,9 @@ export default class extends Controller {
       document.querySelector('#fill-extrusion-height').value = height
       document.querySelector('#fill-extrusion-height-val').innerHTML = height + 'm'
     }
+
+    syncStepperValues()
+    initSteppers()
   }
 
   show_ui_tab (tab) {

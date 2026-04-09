@@ -438,11 +438,14 @@ function initializeFeatureTouchScroll() {
 
   f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
     if (!f.isTouchDevice()) return
-    if (dom.isInputElement(event.target)) return
     if (event.target.tagName.toLowerCase() === 'em-emoji-picker') return
 
     // only enable bottom sheet behavior on small or short screens
     if (window.innerWidth > 574 && window.innerHeight >= 390) return
+
+    const isFullyExpanded = modal.offsetHeight >= window.innerHeight - 20
+    // Allow form elements to work normally when modal is fully expanded
+    if (dom.isInputElement(event.target) && isFullyExpanded) return
 
     isDragging = true
     dragStartY = event.clientY || event.touches[0].clientY
@@ -455,7 +458,6 @@ function initializeFeatureTouchScroll() {
   // Simulating a native bottom sheet behavior with momentum
   f.addEventListeners(modal, ['mousemove', 'touchmove', 'drag'], (event) => {
     if (!isDragging) { return }
-    if (dom.isInputElement(event.target)) { event.preventDefault(); return }
 
     const dragY = event.clientY || event.touches[0].clientY
     const now = Date.now()
@@ -536,33 +538,39 @@ function initializeFeatureTouchScroll() {
         targetPercent = [...SNAP_POINTS].reverse().find(s => s < currentPercent) || SNAP_POINTS[0]
       }
     } else {
-      // No momentum: snap to nearest snap point
-      targetPercent = SNAP_POINTS.reduce((prev, curr) =>
-        Math.abs(curr - currentPercent) < Math.abs(prev - currentPercent) ? curr : prev
-      )
+      // No momentum: stay at current position (free positioning)
+      if (currentPercent < 12) {
+        targetPercent = 0 // close if dragged very low
+      } else {
+        targetPercent = null // no snap, keep current height
+      }
     }
 
-    // Transition duration scales with distance (feels more natural)
-    const distance = Math.abs(targetPercent - currentPercent)
-    const duration = Math.min(0.45, Math.max(0.2, distance / 200))
-
-    // Apply snap
     modal.classList.remove('modal-pull-fade')
-    modal.style.transition = `height ${duration}s cubic-bezier(0.32, 0.72, 0, 1)`
 
-    if (targetPercent === 0) {
-      modal.style.height = '0px'
-      setTimeout(() => {
-        resetControls()
-        modal.style.removeProperty('height')
-        modal.style.removeProperty('transition')
-      }, duration * 1000)
-    } else if (targetPercent === 100) {
-      modal.style.height = 'calc(100vh - 1rem)'
-      setTimeout(() => { modal.style.removeProperty('transition') }, duration * 1000)
+    if (targetPercent === null) {
+      // Free position — just clean up, no animation needed
+      modal.style.removeProperty('transition')
     } else {
-      modal.style.height = targetPercent + 'vh'
-      setTimeout(() => { modal.style.removeProperty('transition') }, duration * 1000)
+      // Snap animation
+      const distance = Math.abs(targetPercent - currentPercent)
+      const duration = Math.min(0.45, Math.max(0.2, distance / 200))
+      modal.style.transition = `height ${duration}s cubic-bezier(0.32, 0.72, 0, 1)`
+
+      if (targetPercent === 0) {
+        modal.style.height = '0px'
+        setTimeout(() => {
+          resetControls()
+          modal.style.removeProperty('height')
+          modal.style.removeProperty('transition')
+        }, duration * 1000)
+      } else if (targetPercent === 100) {
+        modal.style.height = 'calc(100vh - 1rem)'
+        setTimeout(() => { modal.style.removeProperty('transition') }, duration * 1000)
+      } else {
+        modal.style.height = targetPercent + 'vh'
+        setTimeout(() => { modal.style.removeProperty('transition') }, duration * 1000)
+      }
     }
 
     dragHistory = []

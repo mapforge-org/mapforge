@@ -8,6 +8,7 @@ import { draw, handleDelete } from 'maplibre/edit'
 import { confirmImageLocation, featureIcon, featureImage, uploadImageToFeature } from 'maplibre/feature'
 import { getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
 import { featureColor, featureOutlineColor } from 'maplibre/styles/styles'
+import { syncStepperValues } from 'helpers/stepper'
 import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
@@ -86,6 +87,7 @@ export default class extends Controller {
     feature.properties[propertyName] = value
     draw.setFeatureProperty(this.featureIdValue, propertyName, value)
     renderLayer(this.layerIdValue, true)
+    syncStepperValues()
   }
 
   // called as preview on slider change

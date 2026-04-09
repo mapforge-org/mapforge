@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-04
+
+* Mobile usability improvements
+* Geolocate compass mode (rotates map with device)
+* Fix elevation graph of long tracks with > 2000 points
+
 ## 2026-03
 
 * Context menu to edit line vertexes

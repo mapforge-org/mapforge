@@ -135,6 +135,7 @@
   #feature-edit-ui {
     padding: 0.45rem;
   }
+
 }
 
 @media (width > 574px) and (height >=410px) {
@@ -295,6 +296,37 @@
   min-width: 7rem;
 }
 
+.stepper {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stepper-btn {
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid #d6dbe4;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  color: #475569;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.stepper-btn:active {
+  background-color: #e2e8f0;
+}
+
+.stepper-val {
+  min-width: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
 .edit-ui label, .edit-ui span {
   flex-grow: 0;
   flex-shrink: 0;
@@ -302,6 +334,15 @@
   padding: unset;
   top: 1.2rem;
   left: 0.65rem;
+}
+
+.touch-device .slider,
+.touch-device .slider + span {
+  display: none;
+}
+
+.touch-device .stepper {
+  display: flex;
 }
 
 .edit-ui .left-label {

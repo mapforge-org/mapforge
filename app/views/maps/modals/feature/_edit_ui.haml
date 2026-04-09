@@ -25,6 +25,10 @@
         %label.left-label{ for: "point-size"} Size:
         %input.slider#point-size{ type: "range", min: "1", max: "75", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updatePointSize  change->feature--edit#saveFeature" }
         %span#point-size-val.text-muted.small
+        .stepper{ 'data-stepper-for': "point-size", 'data-stepper-step': "1" }
+          %button.stepper-btn.stepper-btn-dec{ type: "button" } −
+          %span.stepper-val
+          %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #point-scaling-ui.edit-ui.edit-point
         %label.left-label.edit-polygon.edit-line{ for: "point-scaling"} Point scaling:
@@ -35,11 +39,19 @@
         %label.left-label{ for: "line-width"} Width:
         %input.slider#line-width{ type: "range", min: "1", max: "15", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateLineWidth change->feature--edit#saveFeature" }
         %span#line-width-val.text-muted.small
+        .stepper{ 'data-stepper-for': "line-width", 'data-stepper-step': "1" }
+          %button.stepper-btn.stepper-btn-dec{ type: "button" } −
+          %span.stepper-val
+          %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #outline-width-ui.edit-ui.edit-polygon
         %label.left-label{ for: "outline-width"} Line width:
         %input.slider#outline-width{ type: "range", min: "0", max: "15", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateOutLineWidth change->feature--edit#saveFeature" }
         %span#outline-width-val.text-muted.small
+        .stepper{ 'data-stepper-for': "outline-width", 'data-stepper-step': "1" }
+          %button.stepper-btn.stepper-btn-dec{ type: "button" } −
+          %span.stepper-val
+          %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #stroke-color-ui.edit-ui.edit-line.edit-polygon.edit-point
         %label.left-label.edit-polygon.edit-line{ for: "stroke-color"} Line color:
@@ -60,6 +72,10 @@
         %label.left-label{ for: "opacity"} Opacity:
         %input.slider#opacity{ type: "range", min: "1", max: "10", value: "7", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateOpacity change->feature--edit#saveFeature" }
         %span#opacity-val.text-muted.small
+        .stepper{ 'data-stepper-for': "opacity", 'data-stepper-step': "1" }
+          %button.stepper-btn.stepper-btn-dec{ type: "button" } −
+          %span.stepper-val
+          %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #marker-symbol-ui.edit-ui.edit-point
         %label.left-label{ for: "marker-symbol"} Symbol:
@@ -83,6 +99,10 @@
         %label.left-label{ for: "fill-extrusion-height"} Height:
         %input.slider#fill-extrusion-height{ type: "range", min: "0", max: "500", value: "0", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateFillExtrusionHeight change->feature--edit#saveFeature" }
         %span#fill-extrusion-height-val.text-muted.small
+        .stepper{ 'data-stepper-for': "fill-extrusion-height", 'data-stepper-step': "10" }
+          %button.stepper-btn.stepper-btn-dec{ type: "button" } −
+          %span.stepper-val
+          %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #show-km-markers-ui.edit-ui.edit-line
         %label.left-label.edit-line{ for: "show-km-markers"} 
