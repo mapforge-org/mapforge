@@ -11,6 +11,9 @@ let lastAppliedHeading = null
 let geolocateControl = null
 // Cache DOM element — querySelector in a 20 Hz loop is wasteful
 let cachedDot = null
+// Track orientation listener for cleanup
+let orientationListener = null
+let orientationEventName = null
 
 export function isGeolocateFollowModeActive() {
   return isInFollowMode
@@ -60,33 +63,37 @@ export function initializeGeoLocateControl() {
 
     cachedDot = document.querySelector('.maplibregl-user-location-dot')
 
-    if (!('ondeviceorientationabsolute' in window)) {
+    const isIOS = typeof DeviceOrientationEvent !== 'undefined'
+      && typeof DeviceOrientationEvent.requestPermission === 'function'
+
+    if (!isIOS && !('ondeviceorientationabsolute' in window)) {
       status('Device Orientation not supported', 'info')
       // hiding the direction view
       if (cachedDot) cachedDot.style.setProperty('--display-view', 'none')
       return
     }
 
-    // Throttle to 20 Hz — deviceorientationabsolute fires at 60-100 Hz,
+    // Throttle to 20 Hz — device orientation fires at 60-100 Hz,
     // each setBearing triggers a full map re-render
-    const throttledOrientation = (event) => {
+    orientationListener = (event) => {
       functions.throttle(() => setLocationOrientation(event), 'compass', 50)
     }
 
-    // Some mobile browsers (iOS Safari) require permission to access device orientation
-    if (
-      typeof DeviceOrientationEvent.requestPermission === 'function'
-    ) {
+    // iOS Safari: uses deviceorientation with webkitCompassHeading for absolute heading
+    // (deviceorientationabsolute is not supported on iOS)
+    if (isIOS) {
+      orientationEventName = 'deviceorientation'
       DeviceOrientationEvent.requestPermission()
         .then(permissionState => {
           if (permissionState === 'granted') {
-            window.addEventListener('deviceorientationabsolute', throttledOrientation)
+            window.addEventListener(orientationEventName, orientationListener)
           }
         })
         .catch(console.error)
     } else {
       // https://developer.mozilla.org/en-US/docs/Web/API/Window/deviceorientationabsolute_event
-      window.addEventListener('deviceorientationabsolute', throttledOrientation)
+      orientationEventName = 'deviceorientationabsolute'
+      window.addEventListener(orientationEventName, orientationListener)
     }
   })
 
@@ -94,6 +101,11 @@ export function initializeGeoLocateControl() {
     isInFollowMode = false
     userHasZoomed = false
     cachedDot = null
+    if (orientationListener && orientationEventName) {
+      window.removeEventListener(orientationEventName, orientationListener)
+      orientationListener = null
+      orientationEventName = null
+    }
     if (isInCompassMode) {
       deactivateCompassMode()
     }
@@ -185,12 +197,6 @@ function activateCompassMode() {
   const btn = document.querySelector('button.maplibregl-ctrl-geolocate')
   btn.classList.add('maplibregl-ctrl-geolocate-compass')
 
-  // Hide compass cone on dot (the map itself rotates now)
-  // const dot = document.querySelector('.maplibregl-user-location-dot')
-  // if (dot) {
-  //   dot.style.setProperty('--display-view', 'none')
-  // }
-
   // Apply current heading with smooth transition if available
   if (lastHeading !== null) {
     // geolocateSource flag prevents GeolocateControl from exiting ACTIVE_LOCK on movestart
@@ -212,12 +218,6 @@ function deactivateCompassMode() {
 
   const btn = document.querySelector('button.maplibregl-ctrl-geolocate')
   btn.classList.remove('maplibregl-ctrl-geolocate-compass')
-
-  // Re-show compass cone on dot
-  // const dot = document.querySelector('.maplibregl-user-location-dot')
-  // if (dot) {
-  //   dot.style.setProperty('--display-view', 'block')
-  // }
 
   // Reset bearing and pitch to defaults
   map.easeTo({
@@ -249,29 +249,28 @@ const requestWakeLock = async () => {
 }
 
 function setLocationOrientation(event) {
-  // event.alpha: 0-360 (compass direction)
-  // event.beta: -180 to 180 (front to back tilt)
-  // event.gamma: -90 to 90 (left to right tilt)
-
-  // some browsers respond to deviceorientationabsolute with non-absolute values
-  if (!event.absolute) {
-    // hiding the direction view
-    const dot = cachedDot || document.querySelector('.maplibregl-user-location-dot')
-    if (dot) dot.style.setProperty('--display-view', 'none')
-    return
-  }
-
   const dot = cachedDot || document.querySelector('.maplibregl-user-location-dot')
   if (!dot) return
 
   const screen_angle = (screen?.orientation?.angle || 0)
-  if (86 < Math.abs(event.beta) && Math.abs(event.beta) < 94) {
-    // when the phone is around vertical, alpha is unreliable
-    return
-  }
 
-  // Raw heading: degrees clockwise from north
-  lastHeading = (event.alpha - screen_angle + 360) % 360
+  // iOS Safari: webkitCompassHeading provides absolute heading via deviceorientation
+  if (event.webkitCompassHeading != null && event.webkitCompassHeading >= 0) {
+    // webkitCompassHeading is CW from north; convert to alpha convention (CCW)
+    // so the existing -lastHeading usage produces the correct CW bearing
+    lastHeading = (360 - event.webkitCompassHeading - screen_angle + 720) % 360
+  } else {
+    // non-iOS: deviceorientationabsolute with event.alpha
+    if (!event.absolute) {
+      dot.style.setProperty('--display-view', 'none')
+      return
+    }
+    if (86 < Math.abs(event.beta) && Math.abs(event.beta) < 94) {
+      // when the phone is around vertical, alpha is unreliable
+      return
+    }
+    lastHeading = (event.alpha - screen_angle + 360) % 360
+  }
 
   if (isInCompassMode) {
     // Skip imperceptible heading changes (< 1°) to avoid redundant map re-renders
