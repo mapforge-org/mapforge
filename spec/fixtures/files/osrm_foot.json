@@ -1,0 +1,39 @@
+{
+  "code": "Ok",
+  "routes": [
+    {
+      "legs": [
+        {
+          "steps": [],
+          "weight": 157.96,
+          "summary": "",
+          "duration": 1080.3,
+          "distance": 1350.3
+        }
+      ],
+      "weight_name": "routability",
+      "geometry": "u{y|Gkz~pAb@q@d@o@f@c@l@_@x@c@r@_@Iq@IkAC_@IgAGuAEiAGiAYyDOkBMuAKaAI}@Ee@Ci@@c@H{@XuBXeBJo@Dk@DqAB_AJgCBw@@m@Ay@?i@A_CAiAAc@Ge@Gg@AEG[GQGSM[ISEIG[G[MDCM?I?W@O@ILc@L[HSo@yAKa@MUi@c@Jw@@[CQ??",
+      "weight": 157.96,
+      "duration": 1080.3,
+      "distance": 1350.3
+    }
+  ],
+  "waypoints": [
+    {
+      "distance": 49.65181135,
+      "name": "Olschitzenweg",
+      "location": [
+        13.434141,
+        46.832106
+      ]
+    },
+    {
+      "distance": 88.79196098,
+      "name": "",
+      "location": [
+        13.449716,
+        46.831824
+      ]
+    }
+  ]
+}
