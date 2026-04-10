@@ -167,10 +167,16 @@ export function initializeGeoLocateControl() {
     }
   }, true)
 
-  // Exit compass mode when user manually rotates the map
-  map.on('rotatestart', (e) => {
-    if (isInCompassMode && e.originalEvent) {
-      deactivateCompassMode()
+  // In compass mode, ignore small rotations (e.g. from two-finger pitch gestures)
+  // but exit on deliberate rotation. Device heading updates at 20 Hz will
+  // continuously correct incidental drift.
+  map.on('rotate', (e) => {
+    if (isInCompassMode && e.originalEvent && lastHeading !== null) {
+      const expectedBearing = -lastHeading
+      const drift = Math.abs(map.getBearing() - expectedBearing)
+      if (drift > 10) {
+        deactivateCompassMode()
+      }
     }
   })
 }
