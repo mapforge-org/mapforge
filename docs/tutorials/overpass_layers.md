@@ -14,8 +14,9 @@ Mapforge has a couple of ready-to-use layers prepared that can easily get added 
 Open the 'Layers' window, click on 'Add layer' and chose the query to add.
 There are prepared queries to cover common mapping needs for example for public toilets, camp sites and hiking tracks.
 
-<video controls>
-  <source src="/images/tutorials/overpass_predefined.mp4" poster="/images/tutorials/overpass_predefined_poster.png" preload="metadata" type="video/mp4">
+<video controls preload="metadata" poster="/images/tutorials/overpass_predefined_poster.png">
+  <source src="/images/tutorials/overpass_predefined.webm" type="video/webm">
+  <source src="/images/tutorials/overpass_predefined.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -41,8 +42,9 @@ You can enhance your layers with visual customization, for example setting symbo
 * `// cluster-symbol=🍻` - Emoji/icon path used for clusters
 * `// cluster-image-url=/icons/hydrant.png` - URL pointing to icon image for clusters
 
-<video controls>
-  <source src="/images/tutorials/overpass_custom.mp4" poster="/images/tutorials/overpass_custom_poster.png" preload="metadata" type="video/mp4">
+<video controls preload="metadata" poster="/images/tutorials/overpass_custom_poster.png">
+  <source src="/images/tutorials/overpass_custom.webm" type="video/webm">
+  <source src="/images/tutorials/overpass_custom.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
