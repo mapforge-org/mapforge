@@ -45,7 +45,7 @@ Once your planned track is on the map, you can tailor everything to your ride:
   Your browser does not support the video tag.
 </video>
 
-- **Segment your track**: right-click on the track to split it into sections at any point. This is useful for highlighting different parts of your route for example in multi day rides.
+- **Segment your track**: right-click on the track to split it into sections at any point. This is useful for highlighting different parts of your route for example in multi-day rides.
 - **Style your track**: change the track color, line width, and enable **distance markers** to see kilometer markers along the route.
 - **Choose a background map**: switch to a base map that suits cycling, such as the topographic or bike map, in the map settings.
 - **Add points of interest**: mark stops, water refills, or scenic viewpoints as point features on your map. You can also copy important waymarks from overpass layers.
@@ -53,7 +53,7 @@ Once your planned track is on the map, you can tailor everything to your ride:
 
 ### On the road
 
-Open the map on your phone — either in the browser or the  [installed app](https://mapforge.org/doc/app). Your track is already there, synced in real-time.
+Open the map on your phone — either in the browser or the [installed app](https://mapforge.org/doc/app). Your track is already there, synced in real-time.
 
 #### Compass mode
 
@@ -79,8 +79,43 @@ As you ride, your current GPS position is shown on the chart so you can see wher
 
 #### Track your ride
 
-If you want to record your ride and see it on a map, you can do so with the [Mapforge µlogger integration](/doc/ulogger#docs). The µlogger [app](https://f-droid.org/packages/net.fabiszewski.ulogger) is available for Android can be configured to push your location live to Mapforge. You can share the link to your track, so friends can follow your progress.
+If you want to record your ride and see it on a map, you can do so with the [Mapforge µlogger integration](/doc/ulogger#docs). The µlogger [app](https://f-droid.org/packages/net.fabiszewski.ulogger) is available for Android and can be configured to push your location live to Mapforge. You can share the link to your track, so friends can follow your progress.
 
 ### After your ride
 
 You can export your track as GPX or GeoJSON from the feature details panel - handy for sharing your route or importing it into other apps.
+
+In the "Share" panel, you can decide to share your track publicly in the Mapforge gallery, or just share the map link with others directly.
+
+
+### Other Apps and Tools
+
+There are quite some apps that can be used in combination with Mapforge for optimal results in planning your bike trip:
+
+* [mapshaper.org](https://mapshaper.org/) (simplify gpx track before import)
+* [cyclosm.org](https://www.cyclosm.org) (base map, also available on mapforge)
+* [opencyclemap.org](https://www.opencyclemap.org/) (another bicycle base map, from thunderforest.com)
+* [citybik.es](https://citybik.es/) (locations and activities on rental city bikes)
+* [graphhopper.com](https://graphhopper.com/maps/?profile=bike&layer=TF+Cycle) (bike routing)
+* [mapillary.com](https://www.mapillary.com/) (street view like photos)
+* [opencampingmap.org](https://opencampingmap.org) (camp sites)
+* [campwild.org](https://map.campwild.org/) (shelters)
+* [bikeparking.lorenz.lu](https://bikeparking.lorenz.lu/parkingmap) (bike stands)
+* [rackfinder.app](https://rackfinder.app) (bike stands)
+* [tilda-geo.de](https://tilda-geo.de/regionen/radinfra) (help to improve bicycle related data in OSM)
+
+
+Creating bike routes:
+
+* [onthegomap.com](https://onthegomap.com/) (simple routing and track export)
+* [cycle.travel](https://cycle.travel/map) (routing + mobile app)
+* [bikerouter.de](https://bikerouter.de) (routing with a lot of options)
+* [brouter.de](https://brouter.de/brouter-web/) (original project for bikerouter.de)
+* [sherpa-map.com](https://sherpa-map.com)
+* [veloplanner.com](https://veloplanner.com)
+
+
+Commercial alternatives for bike routing:
+
+* [ridewithgps.com](https://ridewithgps.com/)
+* [alltrails.com](https://www.alltrails.com) (former gpsies.com)

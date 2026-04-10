@@ -171,6 +171,18 @@
     background-color: inherit;
     color: inherit;
   }
+
+  .maplibregl-ctrl .maplibregl-ctrl-icon:hover {
+    filter: none;
+  }
+}
+
+/* Geolocate: always show active color when tracking position.
+   Filter recolors the hardcoded gray SVG fill to --color-ctrl-active (#2091b0);
+   can't use the variable directly because background-image SVGs don't inherit CSS color. */
+.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active .maplibregl-ctrl-icon,
+.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-background .maplibregl-ctrl-icon {
+  filter: invert(39%) sepia(77%) saturate(909%) hue-rotate(182deg) brightness(89%) contrast(85%);
 }
 
 .maplibregl-ctrl-tooltip {
