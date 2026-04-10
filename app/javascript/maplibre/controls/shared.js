@@ -581,9 +581,8 @@ function initializeFeatureTouchScroll() {
 function pitchCompassView() {
   const dot = document.querySelector('.maplibregl-user-location-dot')
   if (dot) {
-    // pitch = 0 -> scaleY(1); pitch = 90 -> scaleY(0)
-    const scale = 1 - (map.getPitch() / 90) / 2
-    dot.style.setProperty('--view-scale-y', `scaleY(${scale})`)
+    const pitch = map.getPitch()
+    dot.style.setProperty('--view-pitch', `${pitch * 0.6}deg`)
   }
 }
 

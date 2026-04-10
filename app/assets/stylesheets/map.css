@@ -197,7 +197,7 @@ html:has(.map), body:has(.map) {
   --display-view: block;
   --view-height: 3rem;
   --view-width: 3rem;
-  --view-scale-y: scaleY(1);
+  --view-pitch: 0deg;
 
   border: 2px solid #fff;
   box-shadow: 0 0 3px rgb(0 0 0 / 35%);
@@ -231,7 +231,7 @@ html:has(.map), body:has(.map) {
   height: var(--view-height);
   width: var(--view-width);
   left: -1.145rem;
-  transform: var(--user-dot-rotation) var(--view-scale-y);
+  transform: perspective(150px) rotateX(var(--view-pitch)) var(--user-dot-rotation);
 }
 
 .km-marker {
