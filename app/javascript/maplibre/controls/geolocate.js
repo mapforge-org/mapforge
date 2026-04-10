@@ -27,6 +27,7 @@ export function initializeGeoLocateControl() {
   // https://maplibre.org/maplibre-gl-js/docs/API/classes/GeolocateControl
   // css: .maplibregl-user-location-dot
   // Note: This works only via https in modern browsers
+  // Test: https://jbmoelker.github.io/Full-Tilt/examples/
   const geolocate = new maplibregl.GeolocateControl({
     // https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition#options
     positionOptions: {
