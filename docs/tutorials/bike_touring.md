@@ -47,17 +47,17 @@ Once your planned track is on the map, you can tailor everything to your ride:
 
 - **Segment your track**: right-click on the track to split it into sections at any point. This is useful for highlighting different parts of your route for example in multi-day rides.
 - **Style your track**: change the track color, line width, and enable **distance markers** to see kilometer markers along the route.
-- **Choose a background map**: switch to a base map that suits cycling, such as the topographic or bike map, in the map settings.
+- **Choose a background map**: switch to a base map that suits cycling, such as the topographic or bike map, in the map settings. You can also enable 3D, contour lines or a hillshade effect.
 - **Add points of interest**: mark stops, water refills, or scenic viewpoints as point features on your map. You can also copy important waymarks from overpass layers.
-- **Share your map**: decide whether to keep your map private or share it publicly so others can follow your route.
+- **Share your map**: decide whether to keep your map private or share it publicly so others can ride your track.
 
 ### On the road
 
-Open the map on your phone — either in the browser or the [installed app](https://mapforge.org/doc/app). Your track is already there, synced in real-time.
+Open the map on your phone — either in the browser or the [installed app](/doc/app#docs). Your track is already there, synced in real-time.
 
 #### Compass mode
 
-Tap the **geolocate button** (bottom-right) once to follow your position on the map. Tap it again to activate **compass mode** — the map will rotate to match the direction your phone is facing, so the road ahead is always at the top of the screen.
+Tap the **geolocate button** (right screen side) once to follow your position on the map. Tap it again to activate **compass mode** — the map will rotate to match the direction your phone is facing, so the road ahead is always at the top of the screen.
 
 ![Compass mode on the bike](/images/tutorials/bike_touring_compass.jpg)
 
@@ -79,7 +79,7 @@ As you ride, your current GPS position is shown on the chart so you can see wher
 
 #### Track your ride
 
-If you want to record your ride and see it on a map, you can do so with the [Mapforge µlogger integration](/doc/ulogger#docs). The µlogger [app](https://f-droid.org/packages/net.fabiszewski.ulogger) is available for Android and can be configured to push your location live to Mapforge. You can share the link to your track, so friends can follow your progress.
+If you want to record your ride and see it on a map in your profile, you can do so with the [Mapforge µlogger integration](/doc/ulogger#docs). The µlogger [app](https://f-droid.org/packages/net.fabiszewski.ulogger) is available for Android and can be configured to push your progress location live to Mapforge. You can share the link to your track, so friends can follow your ride.
 
 ### After your ride
 
