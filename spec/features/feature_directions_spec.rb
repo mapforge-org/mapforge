@@ -4,13 +4,13 @@ describe "Feature directions" do
   let(:map) { create(:map, name: "Feature directions test") }
 
   before do
-    osrm_file = File.read(Rails.root.join("spec", "fixtures", "files", "osrm_foot.json"))
+    ors_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_foot.json"))
     CapybaraMock.stub_request(
-      :get, /routing\.openstreetmap\.de\/routed-foot/
+      :post, /api\.openrouteservice\.org\/v2\/directions\/foot-walking/
     ).to_return(
       headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
       status: 200,
-      body: osrm_file
+      body: ors_file
     )
 
     visit map.private_map_path

@@ -1,13 +1,13 @@
-import { layersFactory } from "@maplibre/maplibre-gl-directions"
+import MapLibreGlDirections, { MapLibreGlDirectionsNonCancelableEvent, layersFactory } from "@maplibre/maplibre-gl-directions"
 import { mapChannel } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
-import { decodePolyline } from 'helpers/polyline'
+import { decodePolyline, encodePolyline } from 'helpers/polyline'
 import { status } from 'helpers/status'
 import { setSelectedFeature, updateElevation } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
 import { map, mapProperties, upsert } from 'maplibre/map'
-import CustomMapLibreGlDirections from "maplibre/routing/custom_directions"
+import { orsBuildRequest, orsFetch } from 'maplibre/routing/openrouteservice'
 import { basemaps, defaultFont } from 'maplibre/styles/basemaps'
 import { highlightColor } from 'maplibre/styles/edit_styles'
 import { featureColor, styles } from 'maplibre/styles/styles'
@@ -16,9 +16,116 @@ import { addUndoState } from 'maplibre/undo'
 // https://github.com/maplibre/maplibre-gl-directions
 // Examples: https://maplibre.org/maplibre-gl-directions/#/examples
 // API: https://maplibre.org/maplibre-gl-directions/api/
-// OSRM routing server: https://project-osrm.org/, backend: https://github.com/Project-OSRM/osrm-backend/tree/master
-// OSRM router.project-osrm.org rules: https://github.com/Project-OSRM/osrm-backend/wiki/Demo-server
-// FOSSGIS rules: https://fossgis.de/arbeitsgruppen/osm-server/nutzungsbedingungen/
+//
+// Routing backends:
+// - OpenRouteService (ORS): https://giscience.github.io/openrouteservice/api-reference/
+// - OSRM (fallback): https://project-osrm.org/
+//   OSRM server: https://github.com/Project-OSRM/osrm-backend/tree/master
+//   FOSSGIS rules: https://fossgis.de/arbeitsgruppen/osm-server/nutzungsbedingungen/
+//
+// Set routingBackend to 'ors' or 'osrm' to switch between backends
+const routingBackend = 'ors'
+
+// https://giscience.github.io/openrouteservice/api-reference/endpoints/directions/routing-options
+// allowed steepness_difficulty (cycling only): 0 Novice, 1 Moderate, 2 Amateur, 3 Pro
+// green (foot only): 0 normal, 1 prefer green areas
+// quiet (foot only): 0 normal, 1 prefer quiet ways
+const orsProfiles = {
+  car:  { profile: 'driving-car',     weightings: {} },
+  bike: { profile: 'cycling-regular', weightings: { steepness_difficulty: 3 } },
+  foot: { profile: 'foot-hiking',     weightings: { green: 0.8, quiet: 0.5 } }
+}
+
+// CustomMapLibreGlDirections extends the base library to support ORS as a routing backend
+// and to customize waypoint/snappoint/routeline feature handling.
+// Based on https://github.com/maplibre/maplibre-gl-directions/blob/main/demo/src/assets/map/custom-directions.ts
+class CustomMapLibreGlDirections extends MapLibreGlDirections {
+  constructor(map, configuration) {
+    super(map, configuration)
+
+    // Override buildRequest/fetch for ORS backend; OSRM uses base class defaults
+    if (configuration.adapter === 'ors') {
+      this.buildRequest = orsBuildRequest
+      this.fetch = orsFetch.bind(this)
+    }
+  }
+
+  getWaypointsFeatures() {
+    return this._waypoints
+  }
+
+  createWaypointfeature (coords, index) {
+    return {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": coords
+      },
+      "properties": {
+        "type": "WAYPOINT",
+        "id": functions.featureId(),
+        "index": index,
+        "label": String.fromCharCode(64 + index+1),
+        "highlight": false
+      }
+    }
+  }
+
+  setWaypointsFeatures(waypointsFeatures) {
+    this._waypoints = waypointsFeatures
+
+    // assignWaypointsCategories() assigns "undefined" to midpoints.
+    // this breaks maplibre-gl 5.13 (https://github.com/maplibre/maplibre-gl-js/issues/6730)
+    // this.assignWaypointsCategories()
+
+    const waypointEvent = new MapLibreGlDirectionsNonCancelableEvent("setwaypoints", undefined)
+    this.fire(waypointEvent)
+
+    this.draw()
+  }
+
+  getSnappointsFeatures() {
+    return this.snappoints
+  }
+
+  createSnappointsFeatures() {
+    return this.getWaypointsFeatures().map((waypoint, _i) =>
+      this.buildPoint(waypoint.geometry.coordinates, "SNAPPOINT",
+        waypoint.properties)
+    )
+  }
+
+  setSnappointsFeatures(snappointsFeatures) {
+    this.snappoints = snappointsFeatures
+    this.draw()
+  }
+
+  getRoutelinesFeatures() {
+    return this.routelines
+  }
+
+  // Recreate Routelines, to enable midpoint changes
+  // see https://github.com/maplibre/maplibre-gl-directions/blob/main/src/directions/main.ts#L230
+  createRoutelinesFeatures(feature) {
+    const routeLines = this.buildRoutelines(
+      this.configuration.requestOptions,
+      [{
+        geometry: encodePolyline(feature.geometry.coordinates),
+        "legs": [],
+      }],
+      0,
+      this.getSnappointsFeatures()
+    )
+    return routeLines
+  }
+
+  setRoutelinesFeatures(routeLinesFeatures) {
+    console.log('routeLinesFeatures', routeLinesFeatures)
+    console.log('directions', this)
+    this.routelines = routeLinesFeatures
+    this.draw()
+  }
+}
 
 let directions
 let currentFeature
@@ -41,25 +148,43 @@ export function initDirections (profile, feature) {
   currentFeature = feature
 
   // https://maplibre.org/maplibre-gl-directions/api/interfaces/MapLibreGlDirectionsConfiguration.html
+  const config = routingBackend === 'ors'
+    ? {
+        // OpenRouteService backend
+        adapter: 'ors',
+        api: "https://api.openrouteservice.org/v2/directions",
+        apiKey: window.gon.map_keys.openrouteservice,
+        profile: orsProfiles[profile]?.profile || profile,
+        refreshOnMove: false,
+        requestOptions: {
+          extra_info: ['steepness', 'surface', 'waycategory', 'waytype', 'suitability', 'traildifficulty', 'green', 'noise'],
+          options: Object.keys(orsProfiles[profile]?.weightings || {}).length > 0
+            ? { profile_params: { weightings: orsProfiles[profile].weightings } }
+            : undefined
+        }
+      }
+    : {
+        // OSRM backend (fallback)
+        // api: "https://router.project-osrm.org/route/v1",
+        api: "https://routing.openstreetmap.de/routed-" + profile + "/route/v1",
+        profile: profile,
+        refreshOnMove: false,
+        // https://project-osrm.org/docs/v5.24.0/api/#route-service
+        requestOptions: {
+          alternatives: "false",
+          overview: 'full',
+          snapping: 'any',
+          generate_hints: false
+        }
+      }
+
   directions = new CustomMapLibreGlDirections(map, {
-    // api: "https://router.project-osrm.org/route/v1",
-    // car | bike | foot
-    api: "https://routing.openstreetmap.de/routed-" + profile + "/route/v1",
-    profile: profile,
-    refreshOnMove: false, // no live updates on route drag
-    // https://project-osrm.org/docs/v5.24.0/api/#route-service
-    requestOptions: {
-      alternatives: "false",
-      overview: 'full',
-      snapping: 'any',
-      generate_hints: false
-    },
+    ...config,
     layers: getDirectionsLayers()
   })
 
   if (currentFeature) {
     let waypoints = currentFeature.properties.route.waypoints
-    // console.log("Waypoints: ", waypoints)
     directions.setWaypointsFeatures(waypoints.map( (coords, index) => directions.createWaypointfeature(coords, index) ))
     // Generate routeline for setting new midpoints
     directions.setSnappointsFeatures(directions.createSnappointsFeatures())
@@ -68,8 +193,11 @@ export function initDirections (profile, feature) {
   directions.interactive = true
 
   directions.on("fetchroutesend", async (e) => {
-    // console.log(directions)
     console.log("fetchroutesend", e)
+    if (!e.data?.directions) {
+      console.error("fetchroutesend: no directions data (API error?)")
+      return
+    }
 
     // use 'snapped' waypoints
     let waypoints = e.data.directions.waypoints.map(wp => wp.location)
@@ -81,7 +209,6 @@ export function initDirections (profile, feature) {
     const defaultProperties = { "fill-extrusion-height": 8,
                                 "fill-extrusion-base": 3,
                                 "stroke-opacity": 0.65,
-                                // "stroke-image-url": "/icons/direction-arrow.png",
                                 "fill-extrusion-width": 1.5,
                                 "stroke-width": 5,
                                 "stroke": trackColor,
@@ -93,9 +220,13 @@ export function initDirections (profile, feature) {
       // deep clone properties to avoid modifying the original feature
       "properties": JSON.parse(JSON.stringify(currentFeature?.properties || defaultProperties))
     }
-    currentFeature.properties.route = { "provider": "osrm",
+    currentFeature.properties.route = { "provider": routingBackend,
                                         "profile": profile,
                                         "waypoints": waypoints }
+    if (routingBackend === 'ors') {
+      currentFeature.properties.route.extras = e.data.directions.routes[0].extras
+      console.log('ORS route extras:', currentFeature.properties.route.extras)
+    }
 
     setSelectedFeature(currentFeature)
     // add elevation from openrouteservice
@@ -113,7 +244,6 @@ export function initDirections (profile, feature) {
   directions.on('addwaypoint', (e) => {
     status('Waypoint added')
     console.log('Waypoint added', e)
-
   })
 
   directions.on('removewaypoint', (e) => {
@@ -128,18 +258,15 @@ function updateTrack(feature) {
     addUndoState('Track update', geojsonFeature)
     upsert(feature)
     mapChannel.send_message('update_feature', feature)
-    // status('Updated track')
   } else {
     addUndoState('Track added', feature)
     upsert(feature)
     mapChannel.send_message('new_feature', feature)
-    // status('Added track')
   }
 }
 
 export function getDirectionsLayers () {
   let layers = layersFactory()
-  // console.log('Directions layers:', layers)
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline")
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline-casing")
 

@@ -8,7 +8,7 @@ import { MapRedoControl, MapUndoControl } from 'maplibre/controls/buttons/undo'
 import { ControlGroup, MapLayersControl, MapSettingsControl, MapShareControl } from 'maplibre/controls/shared'
 import { draw } from 'maplibre/edit'
 import { map } from 'maplibre/map'
-import { resetDirections } from 'maplibre/routing/osrm'
+import { resetDirections } from 'maplibre/routing/directions'
 
 export function resetEditControls () {
   resetDirections()

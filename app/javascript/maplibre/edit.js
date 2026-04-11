@@ -9,8 +9,8 @@ import { highlightFeature } from 'maplibre/feature';
 import { getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
 import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { addFeature, destroyFeature, map, mapProperties } from 'maplibre/map';
+import { initDirections, resetDirections } from 'maplibre/routing/directions';
 import { getPointsElevation, getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
-import { initDirections, resetDirections } from 'maplibre/routing/osrm';
 import { editStyles, initializeEditStyles } from 'maplibre/styles/edit_styles';
 import { addUndoState, redo, undo } from 'maplibre/undo';
 
@@ -220,7 +220,7 @@ export function toggleDrawMode(mode) {
 // direct_select mode does not allow to select other features
 export function select (feature) {
   console.log('select', feature)
-  if (feature?.properties?.route?.provider === 'osrm') {
+  if (feature?.properties?.route?.provider === 'osrm' || feature?.properties?.route?.provider === 'ors') {
     let profile = feature?.properties?.route?.profile
     // don't re-initialize direction if already active on same feature
     if (draw.getMode() !== 'directions_' + profile
