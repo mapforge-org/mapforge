@@ -55,7 +55,7 @@ export class GeoJSONLayer extends Layer {
         point.properties['km'] = i
 
         if (i >= Math.ceil(distance)) {
-          point.properties['marker-size'] = 14
+          point.properties['marker-size'] = 15
           point.properties['km'] = Math.round(distance)
           if (Math.ceil(distance) < 100) {
             point.properties['km'] = Math.round(distance * 10) / 10
@@ -82,8 +82,10 @@ export class GeoJSONLayer extends Layer {
   kmMarkerStyles() {
     let styleLayers = []
 
-    styleLayers.push(makePointsLayer(2, 11))
-    styleLayers.push(makeNumbersLayer(2, 11))
+    styleLayers.push(makePointsLayer(1, 14))
+    styleLayers.push(makeNumbersLayer(1, 14))
+    styleLayers.push(makePointsLayer(2, 11, 14))
+    styleLayers.push(makeNumbersLayer(2, 11, 14))
     styleLayers.push(makePointsLayer(5, 10, 11))
     styleLayers.push(makeNumbersLayer(5, 10, 11))
     styleLayers.push(makePointsLayer(10, 9, 10))
@@ -107,11 +109,16 @@ export class GeoJSONLayer extends Layer {
       filter: ["==", ["get", "km-marker-numbers-end"], 1],
       layout: {
         'text-allow-overlap': true,
-        'text-field': ['get', 'km'],
+        'text-field': ['format',
+          ['get', 'km'], { 'font-scale': 1.0 },
+          '\nkm', { 'font-scale': 0.7 }
+        ],
         'text-size': 12,
-        'text-font': labelFont,
+        'text-font': ['noto_sans_bold'],
         'text-justify': 'center',
-        'text-anchor': 'center'
+        'text-anchor': 'center',
+        'text-line-height': 1.0,
+        'text-offset': [0, 0.3]
       },
       paint: {
         'text-color': '#ffffff'

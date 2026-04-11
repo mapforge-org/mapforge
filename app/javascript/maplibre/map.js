@@ -421,6 +421,14 @@ export function destroyFeature (featureId) {
 async function initializeStyles() {
   console.log('Initializing sources and layer styles after basemap load/change')
 
+  // Add terrain/hillshade/contours FIRST so they're in the base layer group
+  // when sortLayers() runs, keeping them below user GeoJSON features
+  demSource.setupMaplibre(maplibregl)
+  if (mapProperties.terrain) { addTerrain() }
+  if (mapProperties.hillshade) { addHillshade() }
+  if (mapProperties.globe) { addGlobe() }
+  if (mapProperties.contours) { addContours() }
+
   // First load: initialize layers (loads definitions, creates sources, loads styles/data)
   // Subsequent calls: re-initialize sources and styles (basemap change removes all sources/layers)
   if (!layers) {
@@ -429,12 +437,6 @@ async function initializeStyles() {
     initializeLayerSources()
     await initializeLayerStyles()
   }
-
-  demSource.setupMaplibre(maplibregl)
-  if (mapProperties.terrain) { addTerrain() }
-  if (mapProperties.hillshade) { addHillshade() }
-  if (mapProperties.globe) { addGlobe() }
-  if (mapProperties.contours) { addContours() }
 }
 
 export function setBackgroundMapLayer (mapName = mapProperties.base_map, force = false) {

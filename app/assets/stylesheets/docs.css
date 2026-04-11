@@ -92,12 +92,12 @@ nav.fixed-top~#docs {
 }
 
 @media (width <= 575px) {
-  nav.fixed-top~#docs {
-    margin-top: 3rem;
-  }
-
   #docs {
     padding: 1rem;
+  }
+
+  nav.fixed-top~#docs {
+    margin-top: 3rem;
   }
 
   .tutorial-preview {
