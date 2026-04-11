@@ -21,10 +21,9 @@
           %div{ 'data-aos': "fade-up" }
             %blockquote{ 'data-aos': "fade-up" }
               %p
-                Create individual maps for your places, tracks and events.
-                Layer your data onto various base maps.
-                Share your maps in real-time.
-
+                A free, open-source map editor built on OpenStreetMap.
+                Create individual maps for your trips, events and topics -
+                customize, collaborate and share in real-time.
                 - if @user
                   %p
                     Browse
@@ -41,17 +40,11 @@
                     learn how to use it on the
                     = link_to 'tutorial map', tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
                     = ' or '
-                    - unless @user
-                      = link_to 'log in', login_path, class: 'btn btn-orange call-to-action'
-                      to create your own maps.
-                    - else
-                      = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
-                      a new map.
+                    = link_to 'log in', login_path, class: 'btn btn-orange call-to-action'
+                    to create your own maps.
                 %p
-                  Mapforge.org is open-source and free to use.
-
                   %span.d-none.d-sm-inline
-                    It is ad-free and respects your privacy.
+                    Mapforge is ad-free and respects your privacy.
                     Also available for self-hosting, giving you full control over your data.
                   %span.d-sm-none
                     Also available as
