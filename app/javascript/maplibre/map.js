@@ -512,9 +512,10 @@ export function sortLayers () {
 }
 
 export function updateMapName (name) {
+  if (mapProperties.name === name) return
   mapProperties.name = name
   if (mapProperties.name) {
-    document.title = 'Mapforge.org: Map "' + mapProperties.name + '" | Create and share your own maps online'
+    document.title = 'Mapforge map: ' + mapProperties.name
   }
   functions.e('#map-title', e => { e.textContent = mapProperties.name })
 }
