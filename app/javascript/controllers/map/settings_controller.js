@@ -160,7 +160,10 @@ export default class extends Controller {
     marked.use({ gfm: true, breaks: true })
     let desc = marked(this.mapDescriptionValue || '')
     desc = functions.sanitizeMarkdown(desc)
-    document.querySelector('#map-description').innerHTML = desc
+    const el = document.querySelector('#map-description')
+    el.innerHTML = desc
+    const card = el.closest('.feature-section-card')
+    if (card) { card.style.display = desc.trim() ? '' : 'none' }
   }
 
   async showDescriptionEditor (event) {

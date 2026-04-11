@@ -67,6 +67,21 @@
   border-bottom-color: var(--color-ctrl-active);
 }
 
+.feature-tab-btn i {
+  font-size: 0.85em;
+  opacity: 0.7;
+}
+
+.feature-tab-btn.active i {
+  opacity: 1;
+}
+
+@media (width < 380px) {
+  .feature-tab-btn i {
+    display: none;
+  }
+}
+
 .feature-delete-btn {
   margin-left: 0;
   width: 100%;

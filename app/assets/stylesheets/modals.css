@@ -176,14 +176,21 @@
 
 .modal-close-button {
   position: absolute;
-  top: 0.4rem;
-  right: 0.8rem;
-  width: 2.5rem;
-  background: none;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 6%);
   border: none;
-  font-size: 2rem;
+  border-radius: 0.4rem;
+  font-size: 1.25rem;
+  line-height: 1;
   cursor: pointer;
-  color: #333;
+  color: #555;
+  transition: background 0.15s, color 0.15s;
 }
 
 .background-dark .close-button {
@@ -191,14 +198,14 @@
 }
 
 .modal-close-button:hover {
-  color: #666;
+  background: rgb(0 0 0 / 12%);
+  color: #333;
 }
 
 /* Share modal */
 
 #share-ownership-link, #share-edit-link, #share-view-link {
   min-height: 2.5rem;
-  font-size: 0.875rem;
 }
 
 #share-ownership-link a, #share-edit-link a, #share-view-link a {
