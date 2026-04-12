@@ -32,7 +32,7 @@ export function orsBuildRequest (config, coordinates, _bearings) {
 // Calls ORS directions API and transforms response to OSRM-compatible format.
 // Must be bound to the CustomMapLibreGlDirections instance (for this.abortController, this.configuration)
 export async function orsFetch ({ method: _method, url, payload }) {
-  console.log('ORS request:', url, JSON.stringify(payload, null, 2))
+  // console.log('ORS request:', url, JSON.stringify(payload, null, 2))
   const response = await window.fetch(url, {
     method: 'POST',
     headers: {

@@ -6,7 +6,7 @@ describe "Feature directions" do
   before do
     ors_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_foot.json"))
     CapybaraMock.stub_request(
-      :post, /api\.openrouteservice\.org\/v2\/directions\/foot-walking/
+      :post, /api\.openrouteservice\.org\/v2\/directions\/foot-hiking/
     ).to_return(
       headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
       status: 200,
