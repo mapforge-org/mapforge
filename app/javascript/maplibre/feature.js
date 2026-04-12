@@ -5,6 +5,7 @@ import * as dom from 'helpers/dom'
 import * as f from 'helpers/functions'
 import { status } from 'helpers/status'
 import { showElevationChart } from 'maplibre/feature/elevation'
+import { showExtrasTotals } from 'maplibre/feature/extras_totals'
 import { getFeature, getFeatureSource, getLayer, layers } from "maplibre/layers/layers"
 import { wikipediaFeatureDescription } from 'maplibre/layers/wikipedia'
 import { map } from 'maplibre/map'
@@ -122,6 +123,7 @@ export async function showFeatureDetails (feature) {
 
   if (elevationChart) { elevationChart.destroy() }
   elevationChart = await showElevationChart(feature)
+  showExtrasTotals(feature)
 
   f.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
   f.e('.feature-image', e => { e.innerHTML = featureImage(feature) })

@@ -263,6 +263,66 @@ html:has(.map), body:has(.map) {
   border-width: 0.15rem;
 }
 
+/* Route extras legend overlay */
+.route-extras-legend {
+  position: absolute;
+  bottom: 2.5rem;
+  right: 0.5rem;
+  background: #ffffffe6;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+  font-size: 0.75rem;
+  max-width: 10rem;
+  z-index: 1;
+}
+
+@media (width <= 574px) {
+  .route-extras-legend {
+    display: none;
+  }
+}
+
+.route-extras-legend-title {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #1e293b;
+  text-align: center;
+}
+
+.route-extras-legend-gradient {
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  margin-bottom: 0.2rem;
+}
+
+.route-extras-legend-labels {
+  display: flex;
+  justify-content: space-between;
+  color: #64748b;
+  font-size: 0.65rem;
+}
+
+.route-extras-legend-discrete {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.route-extras-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #475569;
+}
+
+.route-extras-legend-swatch {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
 .remote-cursor {
   position: fixed;
   width: 1rem;

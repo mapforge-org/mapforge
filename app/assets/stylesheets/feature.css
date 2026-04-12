@@ -9,11 +9,11 @@
 }
 
 #feature-details-modal .modal-close-button {
-  color: #8a94a6;
+  color: var(--color-dark-charcoal);
 }
 
 #feature-details-modal .modal-close-button:hover {
-  color: #4a5568;
+  color: var(--color-mid-steel-blue);
 }
 
 .feature-modal-header {
@@ -53,7 +53,6 @@
   background: transparent;
   color: var(--color-dark-charcoal);
   padding: 0.8rem 0.5rem 0.3rem;
-  font-size: 1.05rem;
   font-weight: 500;
   white-space: nowrap;
 }
@@ -190,6 +189,23 @@
   color: var(--color-dark-charcoal);
   height: 1rem;
   visibility: hidden;
+}
+
+#elevation-view-mode {
+  font-size: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.2rem 0;
+}
+
+#elevation-scope-toggle {
+  color: var(--color-dark-charcoal);
+  opacity: 0.75;
+  user-select: none;
+}
+
+#elevation-scope-toggle:hover {
+  opacity: 1;
+  color: var(--color-mid-steel-blue);
 }
 
 #feature-details-meta {
@@ -384,4 +400,83 @@ input {
 
 .EasyMDEContainer button { /* stylelint-disable-line */
   color: #000;
+}
+
+/* Route extras totals in feature modal */
+.extras-totals-section {
+  padding: 0.1rem 0.7rem 0.7rem;
+}
+
+.extras-totals-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 0.3rem 0.2rem 0;
+  user-select: none;
+}
+
+.extras-totals-header h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-dark-charcoal);
+}
+
+@media (width <=574px), (height < 410px) {
+  .extras-totals-header {
+    justify-content: center;
+    gap: 0.5rem;
+  }
+}
+
+.extras-totals-chevron {
+  font-size: 0.65rem;
+  color: var(--color-dark-charcoal);
+  opacity: 0.75;
+  margin-top: -0.35rem;
+}
+
+.extras-totals-bar {
+  display: flex;
+  height: 0.6rem;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  margin: 0.4rem 0;
+  cursor: pointer;
+}
+
+.extras-totals-bar-segment {
+  height: 100%;
+  min-width: 2px;
+}
+
+.extras-totals-list {
+  padding: 0.2rem 0 0;
+}
+
+.extras-totals-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0;
+  font-size: 0.8rem;
+}
+
+.extras-totals-swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.extras-totals-label {
+  flex-grow: 1;
+  color: var(--color-dark-charcoal);
+}
+
+.extras-totals-stats {
+  color: var(--color-dark-charcoal);
+  opacity: 0.65;
+  font-size: 0.75rem;
+  white-space: nowrap;
 }

@@ -32,13 +32,22 @@
   #feature-details-body.selectable.ms-1
     #feature-details-description
 
-    #feature-details-elevation.feature-section-card.ps-1.text-center.hidden
-      %h6.ms-2.mt-2 Elevation profile
-      %canvas#route-elevation-chart
-      #elevation-info-line
-      #elevation-stats.hidden.flex-center.mt-1
-        %span#elevation-gain.text-nowrap
-        %span#elevation-loss.text-nowrap.ms-3
+    #feature-details-elevation.feature-section-card.ps-1.hidden
+      .extras-totals-header#elevation-toggle
+        %h5 Elevation profile
+        %i.bi.bi-chevron-up.extras-totals-chevron
+      #elevation-content.text-center
+        %canvas#route-elevation-chart
+        #elevation-info-line
+        #elevation-view-mode.flex-center.mt-1
+          %span#elevation-stats.hidden
+            %span#elevation-gain.text-nowrap
+            %span#elevation-loss.text-nowrap.ms-3
+          %span#elevation-scope-toggle.link.text-nowrap.ms-3
+            %i.bi.bi-map.me-1
+            %span#elevation-scope-label Visible section
+
+    #feature-details-extras.hidden
 
   #feature-details-meta.mt-2.flex-center
     %span#feature-size.center.selectable.text-nowrap

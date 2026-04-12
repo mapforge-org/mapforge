@@ -1,6 +1,7 @@
 import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import * as functions from 'helpers/functions'
+import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { map } from 'maplibre/map'
 import { featureColor } from 'maplibre/styles/styles'
 
@@ -9,6 +10,7 @@ let syncChartToViewport
 let debouncedSync
 let canvasAbort
 let lastGpsPosition = null
+let viewportSyncEnabled = true
 
 export async function showElevationChart (feature) {
   const chartElement = document.getElementById('route-elevation-chart')
@@ -22,6 +24,7 @@ export async function showElevationChart (feature) {
   }
 
   elevationContainer?.classList?.remove('hidden')
+  viewportSyncEnabled = true
 
   if (debouncedSync) {
     map.off('moveend', debouncedSync)
@@ -51,10 +54,21 @@ export async function showElevationChart (feature) {
 
   const infoLine = document.getElementById('elevation-info-line')
 
+  // Build steepness lookup from ORS extras if available (one-time O(n))
+  const steepnessExtras = feature.properties.route?.extras?.steepness?.values
+  let allSteepness = null
+  if (steepnessExtras) {
+    allSteepness = new Int8Array(allCoords.length)
+    for (const [startIdx, endIdx, value] of steepnessExtras) {
+      const end = Math.min(endIdx, allCoords.length - 1)
+      for (let i = startIdx; i < end; i++) allSteepness[i] = value
+    }
+  }
+
   // Mutable view into the data — all callbacks reference this object,
   // so updating its properties is enough to sync the chart with the map viewport
-  const active = { labels: allLabels, values: allValues, coords: allCoords }
-  filterToViewport(active, allLabels, allValues, allCoords)
+  const active = { labels: allLabels, values: allValues, coords: allCoords, steepness: allSteepness }
+  filterToViewport(active, allLabels, allValues, allCoords, allSteepness)
   showElevationStats(active.values)
 
   // GPS position indicator plugin
@@ -98,8 +112,9 @@ export async function showElevationChart (feature) {
         borderColor: chartLineColor,
         borderWidth: 2,
         backgroundColor: chartLineColor + '50',
-        // Color segments by steepness grade (skipped for very large tracks for performance)
-        segment: allValues.length < 2500 ? {
+        // Color segments by steepness — uses ORS extras when available, falls back to
+        // manual grade calculation (skipped for very large tracks for performance)
+        segment: (allSteepness || allValues.length < 2500) ? {
           backgroundColor: (ctx) => segmentColor(ctx, active, chartLineColor)
         } : undefined,
         pointRadius: 0,
@@ -141,6 +156,55 @@ export async function showElevationChart (feature) {
       }
     }
   })
+
+  // Set up collapsible elevation toggle (expanded by default)
+  const elevToggle = document.getElementById('elevation-toggle')
+  const elevContent = document.getElementById('elevation-content')
+  if (elevToggle && elevContent) {
+    const freshToggle = elevToggle.cloneNode(true)
+    elevToggle.parentNode.replaceChild(freshToggle, elevToggle)
+    const elevChevron = freshToggle.querySelector('.extras-totals-chevron')
+    elevContent.classList.remove('hidden')
+    elevChevron?.classList?.replace('bi-chevron-down', 'bi-chevron-up')
+    freshToggle.addEventListener('click', () => {
+      elevContent.classList.toggle('hidden')
+      elevChevron?.classList?.toggle('bi-chevron-down')
+      elevChevron?.classList?.toggle('bi-chevron-up')
+      if (!elevContent.classList.contains('hidden')) chart.resize()
+    })
+  }
+
+  // Set up visible section / full track toggle
+  const scopeToggle = document.getElementById('elevation-scope-toggle')
+  if (scopeToggle) {
+    const freshScope = scopeToggle.cloneNode(true)
+    scopeToggle.parentNode.replaceChild(freshScope, scopeToggle)
+    const freshLabel = freshScope.querySelector('#elevation-scope-label')
+    const freshIcon = freshScope.querySelector('i')
+    freshScope.addEventListener('click', (e) => {
+      e.stopPropagation()
+      viewportSyncEnabled = !viewportSyncEnabled
+      if (viewportSyncEnabled) {
+        freshLabel.textContent = 'Visible section'
+        freshIcon.className = 'bi bi-map me-1'
+        filterToViewport(active, allLabels, allValues, allCoords, allSteepness)
+      } else {
+        freshLabel.textContent = 'Full track'
+        freshIcon.className = 'bi bi-signpost-split me-1'
+        active.labels = allLabels
+        active.values = allValues
+        active.coords = allCoords
+        active.steepness = allSteepness
+        active.firstIdx = 0
+        active.lastIdx = allCoords.length - 1
+      }
+      chart.data.labels = active.labels
+      chart.data.datasets[0].data = active.values
+      showElevationStats(active.values)
+      updateGpsIndex(chart, active, allCoords)
+      chart.update('none')
+    })
+  }
 
   // Abort old canvas listeners from a previous chart before adding new ones
   if (canvasAbort) canvasAbort.abort()
@@ -212,21 +276,14 @@ export async function showElevationChart (feature) {
     // Throttle to 1 Hz — chart position indicator doesn't need sub-second updates
     functions.throttle(() => {
       lastGpsPosition = event.detail
-      const idx = findNearestTrackIndex(event.detail, allCoords)
-      const newIndex = (idx === -1 || idx < active.firstIdx || idx > active.lastIdx)
-        ? null
-        : idx - active.firstIdx
-
-      // Skip re-render if GPS position index didn't change
-      if (chart._gpsChartIndex !== newIndex) {
-        chart._gpsChartIndex = newIndex
-        chart.update('none')
-      }
+      updateGpsIndex(chart, active, allCoords)
+      chart.update('none')
     }, 'gps-elevation', 1000)
   }, { signal })
 
   // Sync chart with map viewport — show only the track section currently visible
   syncChartToViewport = () => {
+    if (!viewportSyncEnabled) return
     if (elevationContainer.offsetParent === null) return
     if (!chart.canvas || !chart.canvas.isConnected) {
       map.off('moveend', debouncedSync)
@@ -236,7 +293,7 @@ export async function showElevationChart (feature) {
     }
     const prevFirstIdx = active.firstIdx
     const prevLastIdx = active.lastIdx
-    filterToViewport(active, allLabels, allValues, allCoords)
+    filterToViewport(active, allLabels, allValues, allCoords, allSteepness)
 
     // Skip re-render if viewport boundaries didn't change
     if (prevFirstIdx === active.firstIdx && prevLastIdx === active.lastIdx) {
@@ -246,16 +303,7 @@ export async function showElevationChart (feature) {
     chart.data.labels = active.labels
     chart.data.datasets[0].data = active.values
     showElevationStats(active.values)
-
-    // Update GPS position indicator for new viewport
-    if (lastGpsPosition) {
-      const idx = findNearestTrackIndex(lastGpsPosition, allCoords)
-      chart._gpsChartIndex = (idx !== -1 && idx >= active.firstIdx && idx <= active.lastIdx)
-        ? idx - active.firstIdx : null
-    } else {
-      chart._gpsChartIndex = null
-    }
-
+    updateGpsIndex(chart, active, allCoords)
     chart.update('none')
   }
 
@@ -264,6 +312,16 @@ export async function showElevationChart (feature) {
   map.on('moveend', debouncedSync)
 
   return chart
+}
+
+function updateGpsIndex (chart, active, allCoords) {
+  if (lastGpsPosition) {
+    const idx = findNearestTrackIndex(lastGpsPosition, allCoords)
+    chart._gpsChartIndex = (idx !== -1 && idx >= active.firstIdx && idx <= active.lastIdx)
+      ? idx - active.firstIdx : null
+  } else {
+    chart._gpsChartIndex = null
+  }
 }
 
 // Compute cumulative distances (meters) along a coordinate array
@@ -305,7 +363,7 @@ function findNearestTrackIndex (lngLat, coords) {
 }
 
 // Filter active data to only include points visible in the current map viewport
-function filterToViewport (active, allLabels, allValues, allCoords) {
+function filterToViewport (active, allLabels, allValues, allCoords, allSteepness) {
   const bounds = map.getBounds()
   let firstIdx = -1, lastIdx = -1
   allCoords.forEach((coord, i) => {
@@ -318,12 +376,14 @@ function filterToViewport (active, allLabels, allValues, allCoords) {
     active.labels = allLabels
     active.values = allValues
     active.coords = allCoords
+    active.steepness = allSteepness
     active.firstIdx = 0
     active.lastIdx = allCoords.length - 1
   } else {
     active.labels = allLabels.slice(firstIdx, lastIdx + 1)
     active.values = allValues.slice(firstIdx, lastIdx + 1)
     active.coords = allCoords.slice(firstIdx, lastIdx + 1)
+    active.steepness = allSteepness ? allSteepness.slice(firstIdx, lastIdx + 1) : null
     active.firstIdx = firstIdx
     active.lastIdx = lastIdx
   }
@@ -336,20 +396,45 @@ function computeGrade (values, labels, i) {
   return ((values[i] - values[i - 1]) / distDiff) * 100
 }
 
-// Steepness-based segment fill color:
-//   uphill:   orange (>5%), red (>10%), dark red (>15%)
-//   downhill: dark green (>5%)
+// Steepness-based segment fill color.
+// Uses ORS steepness extras when available (O(1) lookup), otherwise falls back
+// to manual grade calculation from elevation points.
+const steepnessColors = buildSteepnessColorMap()
+
 function segmentColor (ctx, active, baseColor) {
+  // Use pre-computed ORS steepness values when available
+  if (active.steepness) {
+    const value = active.steepness[ctx.p0DataIndex]
+    return steepnessColors[value + 5] || baseColor + '50'
+  }
+
+  // Fallback: compute grade from elevation difference, using same palette as ORS extras
   const distDiff = active.labels[ctx.p1DataIndex] - active.labels[ctx.p0DataIndex]
-  if (distDiff === 0) return baseColor + '50'
+  if (distDiff === 0) return 'rgba(200, 200, 200, 0.5)'
   const elevDiff = active.values[ctx.p1DataIndex] - active.values[ctx.p0DataIndex]
   const grade = (elevDiff / distDiff) * 100
 
-  if (grade >= 15) return 'rgba(139, 0, 0, 0.5)'
-  if (grade >= 10) return 'rgba(255, 0, 0, 0.5)'
-  if (grade >= 5)  return 'rgba(255, 165, 0, 0.5)'
-  if (grade <= -5) return 'rgba(0, 100, 0, 0.5)'
-  return baseColor + '50'
+  if (grade >= 16) return 'rgba(139, 26, 26, 0.5)'   // --steepness 5: dark red
+  if (grade >= 12) return 'rgba(202, 60, 37, 0.5)'   // --steepness 4: mid-chili
+  if (grade >= 7)  return 'rgba(184, 94, 30, 0.5)'   // --steepness 3: mid-rust
+  if (grade >= 4)  return 'rgba(217, 122, 46, 0.5)'  // --steepness 2: orange
+  if (grade >= 1)  return 'rgba(230, 170, 104, 0.5)' // --steepness 1: mid-fawn
+  if (grade <= -7) return 'rgba(26, 106, 26, 0.5)'   // --steepness -5/-4: dark green
+  if (grade <= -4) return 'rgba(78, 170, 78, 0.5)'   // --steepness -3: medium green
+  if (grade <= -1) return 'rgba(168, 213, 160, 0.5)' // --steepness -1: light green
+  return 'rgba(200, 200, 200, 0.5)'                  // flat: neutral gray
+}
+
+// Pre-build a flat array mapping steepness value (-5..+5) to semi-transparent color
+function buildSteepnessColorMap () {
+  const colors = []
+  for (const [value, hex] of EXTRAS_COLOR_CONFIGS.steepness.colors) {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+    colors[value + 5] = `rgba(${r}, ${g}, ${b}, 0.5)`
+  }
+  return colors
 }
 
 function showElevationStats (values) {

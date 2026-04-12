@@ -63,5 +63,32 @@ FactoryBot.define do
         [ [ 11.0416378, 49.4812338 ], [ 11.056744, 49.4631524 ] ] }
       end
     end
+
+    trait :line_string_with_elevation do
+      geometry do
+        { "type" => "LineString",
+         "coordinates" =>
+        [ [ 11.06, 49.46, 300 ], [ 11.07, 49.455, 320 ], [ 11.08, 49.45, 350 ],
+          [ 11.085, 49.445, 340 ], [ 11.09, 49.44, 310 ], [ 11.095, 49.435, 290 ] ] }
+      end
+      properties do
+        { "stroke-width" => 150 }
+      end
+    end
+
+    trait :line_string_with_route_extras do
+      line_string_with_elevation
+      properties do
+        { "stroke-width" => 150,
+          "route" => {
+            "extras" => {
+              "steepness" => { "values" => [ [ 0, 2, 1 ], [ 2, 4, 3 ], [ 4, 5, -2 ] ] },
+              "surface" => { "values" => [ [ 0, 3, 3 ], [ 3, 5, 10 ] ] },
+              "green" => { "values" => [ [ 0, 3, 2 ], [ 3, 5, 7 ] ] },
+              "noise" => { "values" => [ [ 0, 5, 4 ] ] }
+            }
+          } }
+      end
+    end
   end
 end
