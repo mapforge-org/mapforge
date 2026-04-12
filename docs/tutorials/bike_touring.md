@@ -12,7 +12,7 @@ There are two ways to get a track onto your map: create one with the built-in bi
 
 #### Create a track manually with bike routing
 
-Create a new map after logging in. Select the **bike routing** tool from the 'draw line' menu (or press `b` on the keyboard). Now click on the map to place waypoints — Mapforge will calculate a bike-friendly route between them using OpenStreetMap data.
+Create a new map after logging in. Select the **bike routing** tool from the 'draw line' menu (or press `b` on the keyboard). Now click on the map to place waypoints. Mapforge will calculate a bike-friendly route between them using OpenStreetMap data.
 You can also create the track without automatic routing, by creating all waypoints manually.
 
 <video controls preload="metadata" poster="/images/tutorials/bike_touring_routing_poster.jpg">
@@ -53,11 +53,11 @@ Once your planned track is on the map, you can tailor everything to your ride:
 
 ### On the road
 
-Open the map on your phone — either in the browser or the [installed app](/doc/app#docs). Your track is already there, synced in real-time.
+Open the map on your phone: Either in the browser or the [installed app](/doc/app#docs). Your track is already there, synced in real-time.
 
 #### Compass mode
 
-Tap the **geolocate button** (right screen side) once to follow your position on the map. Tap it again to activate **compass mode** — the map will rotate to match the direction your phone is facing, so the road ahead is always at the top of the screen.
+Tap the **geolocate button** (right screen side) once to follow your position on the map. Tap it again to activate **compass mode**. The map will rotate to match the direction your phone is facing, so the road ahead is always at the top of the screen.
 
 ![Compass mode on the bike](/images/tutorials/bike_touring_compass.jpg)
 
@@ -66,7 +66,7 @@ Your position is shown as a dot with a directional cone indicating where you're 
 
 #### Elevation profile
 
-Tap on your track to open its details and see the **elevation profile**. The chart shows distance vs. elevation, colored by steepness — orange and red for uphill sections, green for downhill. The elevation profile always renders for the part of your track that is currently visible on screen.
+Tap on your track to open its details and see the **elevation profile**. The chart shows distance vs. elevation, colored by steepness. Orange and red for uphill sections, green for downhill. The elevation profile always renders for the part of your track that is currently visible on screen.
 
 <video controls preload="metadata" poster="/images/tutorials/bike_touring_elevation_poster.jpg">
   <source src="/images/tutorials/bike_touring_elevation.webm" type="video/webm">

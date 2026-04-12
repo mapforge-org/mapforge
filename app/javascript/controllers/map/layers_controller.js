@@ -9,7 +9,7 @@ import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/queries'
-import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, upsert } from 'maplibre/map'
+import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName, upsert } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
 import toGeoJSON from 'togeojson'
 
@@ -76,7 +76,7 @@ export default class extends Controller {
             mapProperties.zoom = props.zoom
             mapProperties.pitch = props.pitch
             mapProperties.bearing = props.bearing
-            mapProperties.name = props.name
+            updateMapName(props.name)
             mapChannel.send_message('update_map', mapProperties)
           }
         }
