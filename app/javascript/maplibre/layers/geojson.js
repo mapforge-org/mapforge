@@ -27,6 +27,11 @@ export class GeoJSONLayer extends Layer {
     if (this.layer.cluster) { initializeClusterStyles(this.sourceId, null) }
     initializeKmMarkerStyles(this.kmMarkerSourceId)
     initializeViewStyles(this.routeExtrasSourceId)
+
+    // Override line-cap to 'butt' for route extras line layer to prevent color overlap at segment junctions
+    // Keep outline as 'round' to ensure continuous white border
+    map.setLayoutProperty(`line-layer_${this.routeExtrasSourceId}`, 'line-cap', 'butt')
+
     this.setupEventHandlers()
     this.render()
     return Promise.resolve()

@@ -410,7 +410,7 @@ function segmentColor (ctx, active, baseColor) {
 
   // Fallback: compute grade from elevation difference, using same palette as ORS extras
   const distDiff = active.labels[ctx.p1DataIndex] - active.labels[ctx.p0DataIndex]
-  if (distDiff === 0) return 'rgba(200, 200, 200, 0.5)'
+  if (distDiff === 0) return 'rgba(192, 232, 192, 0.5)'
   const elevDiff = active.values[ctx.p1DataIndex] - active.values[ctx.p0DataIndex]
   const grade = (elevDiff / distDiff) * 100
 
@@ -422,7 +422,7 @@ function segmentColor (ctx, active, baseColor) {
   if (grade <= -7) return 'rgba(26, 106, 26, 0.5)'   // --steepness -5/-4: dark green
   if (grade <= -4) return 'rgba(78, 170, 78, 0.5)'   // --steepness -3: medium green
   if (grade <= -1) return 'rgba(168, 213, 160, 0.5)' // --steepness -1: light green
-  return 'rgba(200, 200, 200, 0.5)'                  // flat: neutral gray
+  return 'rgba(192, 232, 192, 0.5)'                  // flat: light green
 }
 
 // Pre-build a flat array mapping steepness value (-5..+5) to semi-transparent color

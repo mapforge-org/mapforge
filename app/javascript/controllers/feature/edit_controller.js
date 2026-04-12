@@ -123,6 +123,19 @@ export default class extends Controller {
     this.updateDrawProperty('#stroke-color', 'stroke')
   }
 
+  updateStrokeColorMode () {
+    const feature = this.getEditFeature()
+    const mode = document.querySelector('#stroke-color-mode').value
+    if (mode) {
+      feature.properties['show-route-extras'] = mode
+      document.querySelector('#stroke-color').setAttribute('disabled', 'true')
+    } else {
+      delete feature.properties['show-route-extras']
+      document.querySelector('#stroke-color').removeAttribute('disabled')
+    }
+    renderLayer(this.layerIdValue, true)
+  }
+
   updateStrokeColorTransparent () {
     const feature = this.getEditFeature()
     let color

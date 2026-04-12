@@ -119,6 +119,20 @@ export default class extends Controller {
       document.querySelector('#line-width').value = size
       document.querySelector('#line-width-val').innerHTML = size
       document.querySelector('#show-km-markers').checked = feature.properties['show-km-markers']
+
+      // Route extras color mode selector
+      const colorModeSelect = document.querySelector('#stroke-color-mode')
+      if (feature.properties.route?.extras) {
+        colorModeSelect.value = feature.properties['show-route-extras'] || ''
+        colorModeSelect.classList.remove('hidden')
+        if (feature.properties['show-route-extras']) {
+          document.querySelector('#stroke-color').setAttribute('disabled', 'true')
+        }
+      } else {
+        colorModeSelect.classList.add('hidden')
+        colorModeSelect.value = ''
+      }
+
       dom.showElements(['#feature-edit-ui .edit-line'])
     } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
       dom.showElements(['#feature-edit-ui .edit-polygon'])

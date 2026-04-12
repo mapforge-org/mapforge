@@ -105,7 +105,7 @@
 }
 
 #feature-details-body {
-  padding: 0.9rem 1rem 0.3rem;
+  padding: 0.9rem 0.7rem 0.3rem;
 }
 
 #feature-details-body table {
@@ -356,6 +356,12 @@
   text-align: center;
   font-size: 0.9rem;
   color: #64748b;
+}
+
+#stroke-color-mode {
+  max-width: 7rem;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.85rem;
 }
 
 .edit-ui label, .edit-ui span {

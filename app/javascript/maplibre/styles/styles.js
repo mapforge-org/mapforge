@@ -462,7 +462,6 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
-        ['!', ['has', 'stroke-dasharray']], // Only solid lines
         minZoomFilter],
       layout: {
         'line-join': 'round',
