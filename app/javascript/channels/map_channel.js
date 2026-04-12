@@ -8,6 +8,7 @@ import {
   reloadMapProperties,
   setBackgroundMapLayer,
   setLayerVisibility,
+  updateMapName,
   upsert
 } from 'maplibre/map'
 
@@ -94,6 +95,10 @@ export function initializeSocket () {
           break
         case 'update_map':
           window.gon.map_properties = data.map
+          // update map name if changed
+          if (data.map.name) {
+            updateMapName(data.map.name)
+          }
           // update background if properties changed
           if (initializeMaplibreProperties()) {
             setBackgroundMapLayer()
