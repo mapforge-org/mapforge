@@ -207,11 +207,10 @@ export function resetEditMode() {
 export function toggleDrawMode(mode) {
   // e.preventDefault()
   if (draw.getMode() === mode) {
-    draw.changeMode('simple_select')
-  } else {
-    resetControls()
-    draw.changeMode(mode)
+    return  // noop - mode stays active
   }
+  resetControls()
+  draw.changeMode(mode)
   map.fire('draw.modechange')
 }
 
