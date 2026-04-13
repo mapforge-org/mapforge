@@ -9,7 +9,16 @@ import Openrouteservice from 'openrouteservice-js'
 //
 // Profiles: driving-car, driving-hgv, cycling-regular, cycling-road,
 //           cycling-mountain, cycling-electric, foot-walking, foot-hiking, wheelchair
-// Short names (car, bike, foot) are mapped in directions.js
+// Short names (car, bike, foot) are mapped below
+
+// allowed steepness_difficulty (cycling only): 0 Novice, 1 Moderate, 2 Amateur, 3 Pro
+// green (foot only): 0 normal, 1 prefer green areas
+// quiet (foot only): 0 normal, 1 prefer quiet ways
+export const orsProfiles = {
+  car:  { profile: 'driving-car',     weightings: {} },
+  bike: { profile: 'cycling-regular', weightings: { steepness_difficulty: 3 } },
+  foot: { profile: 'foot-hiking',     weightings: { green: 0.6, quiet: 0.3 } }
+}
 
 // --- Directions adapter (used by CustomMapLibreGlDirections) ---
 
@@ -155,14 +164,9 @@ export async function getPointsElevation (coordinates, changedIndices) {
 
 // Recalculate route when waypoints are dragged in direct_select mode
 export async function getRouteUpdate (originalFeature, updatedFeature) {
-  const orsProfileMap = {
-    car:  { profile: 'driving-car',     weightings: {} },
-    bike: { profile: 'cycling-regular', weightings: { steepness_difficulty: 3 } },
-    foot: { profile: 'foot-walking',    weightings: { green: 1, quiet: 1 } }
-  }
   const profileKey = updatedFeature.properties.route.profile
-  const profile = orsProfileMap[profileKey]?.profile || profileKey
-  const weightings = orsProfileMap[profileKey]?.weightings || {}
+  const profile = orsProfiles[profileKey]?.profile || profileKey
+  const weightings = orsProfiles[profileKey]?.weightings || {}
 
   const Snap = new Openrouteservice.Snap({ api_key: window.gon.map_keys.openrouteservice })
   const orsDirections = new Openrouteservice.Directions({ api_key: window.gon.map_keys.openrouteservice })

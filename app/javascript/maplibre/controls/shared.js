@@ -206,10 +206,18 @@ export function initLayersModal () {
       const visBtnMobile = layerElement.querySelector('button.layer-visibility-mobile')
       visBtn.classList.remove('hidden')
       visBtnMobile.classList.remove('hidden')
+      // Icon represents the ACTION (what will happen when clicked)
       if (layer.show === false) {
+        visBtn.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
+        visBtnMobile.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
+        visBtn.setAttribute('title', 'Show layer')
+        visBtnMobile.querySelector('.layer-visibility-text').textContent = 'Show layer'
+        layerElement.classList.add('layer-dimmed')
+      } else {
         visBtn.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
         visBtnMobile.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
-        layerElement.classList.add('layer-dimmed')
+        visBtn.setAttribute('title', 'Hide layer')
+        visBtnMobile.querySelector('.layer-visibility-text').textContent = 'Hide layer'
       }
       const isFirstGeojsonLayer = layer.type === 'geojson' &&
         layers.filter(l => l.type === 'geojson').indexOf(layer) === 0

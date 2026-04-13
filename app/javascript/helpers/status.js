@@ -3,7 +3,7 @@ import * as functions from 'helpers/functions'
 let fadeInterval = null
 
 export function status (text, status = 'info', size = 'medium', duration = 6000) {
-  console.log('Status: ' + text)
+  console.log(`Status (${status}): ` + text)
   functions.e('#status-message', e => {
     e.innerHTML = text
     e.className = size
@@ -17,4 +17,13 @@ export function status (text, status = 'info', size = 'medium', duration = 6000)
     functions.e('#status-container', e => { e.style.opacity = 0 })
     functions.e('#status-message', e => { e.innerHTML = '' })
   }, duration)
+}
+
+export function hideInfoStatus () {
+  const container = document.querySelector('#status-container')
+  if (container && container.classList.contains('status-info')) {
+    container.style.opacity = 0
+    functions.e('#status-message', e => { e.innerHTML = '' })
+    if (fadeInterval) { clearInterval(fadeInterval) }
+  }
 }

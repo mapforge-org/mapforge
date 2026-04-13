@@ -71,13 +71,56 @@ export class BasemapLayer extends Layer {
   }
 
   /**
-   * Removes event handlers including custom contextmenu handler.
+   * Removes event handlers including custom contextmenu and touch handlers.
    */
   removeEventHandlers() {
     super.removeEventHandlers()
     if (this.contextMenuHandler) {
       map.off('contextmenu', this.contextMenuHandler)
       this.contextMenuHandler = null
+    }
+    if (this.touchStartHandler) {
+      map.off('touchstart', this.touchStartHandler)
+      this.touchStartHandler = null
+    }
+  }
+
+  /**
+   * Handles feature highlighting at a given point (used by both mouse and touch).
+   */
+  highlightFeatureAtPoint(point) {
+    if (stickyFeatureHighlight && highlightedFeatureId) { return }
+    if (document.querySelector('.show > .map-modal')) { return }
+
+    const basemapSource = basemaps()[mapProperties.base_map].sourceName
+    const mapLayers = map.getStyle().layers
+    const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
+    const features = map.queryRenderedFeatures(point, { layers: queryLayerIds})
+
+    if (features.length) {
+      const feature = features[0]
+
+      // exit early when moving over same feature
+      if (JSON.stringify(feature.geometry) === JSON.stringify(this?.selectedFeature?.geometry)) { return }
+      this.selectedFeature = feature
+      hideContextMenu()
+
+      console.log('Selected features: ', features)
+
+      const geojsonFeature = {
+        type: 'Feature',
+        geometry: feature.geometry,
+        properties: feature.properties
+      }
+      geojsonFeature.id = geojsonFeature.properties.id = functions.featureId()
+      geojsonFeature.properties.desc = overpassDescription(geojsonFeature.properties)
+      const height = geojsonFeature.properties['hoehe'] || geojsonFeature.properties['render_height']
+      if (height) {
+        geojsonFeature.properties['fill-extrusion-height'] = height
+      }
+
+      this.layer.geojson.features = [geojsonFeature]
+      map.getSource(this.sourceId).setData(this.layer.geojson, false)
     }
   }
 
@@ -86,41 +129,16 @@ export class BasemapLayer extends Layer {
    */
   setupMouseMoveHandler() {
     this.mouseMoveHandler = (e) => {
-      if (stickyFeatureHighlight && highlightedFeatureId) { return }
-      if (document.querySelector('.show > .map-modal')) { return }
+      this.highlightFeatureAtPoint(e.point)
+    }
 
-      const basemapSource = basemaps()[mapProperties.base_map].sourceName
-      const mapLayers = map.getStyle().layers
-      const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
-      const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds})
-
-      if (features.length) {
-        const feature = features[0]
-
-        // exit early when moving over same feature
-        if (JSON.stringify(feature.geometry) === JSON.stringify(this?.selectedFeature?.geometry)) { return }
-        this.selectedFeature = feature
-        hideContextMenu()
-
-        console.log('Selected features: ', features)
-
-        const geojsonFeature = {
-          type: 'Feature',
-          geometry: feature.geometry,
-          properties: feature.properties
-        }
-        geojsonFeature.id = geojsonFeature.properties.id = functions.featureId()
-        geojsonFeature.properties.desc = overpassDescription(geojsonFeature.properties)
-        const height = geojsonFeature.properties['hoehe'] || geojsonFeature.properties['render_height']
-        if (height) {
-          geojsonFeature.properties['fill-extrusion-height'] = height
-        }
-
-        this.layer.geojson.features = [geojsonFeature]
-        map.getSource(this.sourceId).setData(this.layer.geojson, false)
-      }
+    this.touchStartHandler = (e) => {
+      // Only handle single touch
+      if (e.originalEvent.touches && e.originalEvent.touches.length !== 1) { return }
+      this.highlightFeatureAtPoint(e.point)
     }
 
     map.on('mousemove', this.mouseMoveHandler)
+    map.on('touchstart', this.touchStartHandler)
   }
 }

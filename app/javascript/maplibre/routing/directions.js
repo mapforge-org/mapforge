@@ -7,7 +7,7 @@ import { setSelectedFeature, updateElevation } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
 import { map, mapProperties, upsert } from 'maplibre/map'
-import { orsBuildRequest, orsFetch } from 'maplibre/routing/openrouteservice'
+import { orsBuildRequest, orsFetch, orsProfiles } from 'maplibre/routing/openrouteservice'
 import { basemaps, defaultFont } from 'maplibre/styles/basemaps'
 import { highlightColor } from 'maplibre/styles/edit_styles'
 import { featureColor, styles } from 'maplibre/styles/styles'
@@ -27,14 +27,6 @@ import { addUndoState } from 'maplibre/undo'
 const routingBackend = 'ors'
 
 // https://giscience.github.io/openrouteservice/api-reference/endpoints/directions/routing-options
-// allowed steepness_difficulty (cycling only): 0 Novice, 1 Moderate, 2 Amateur, 3 Pro
-// green (foot only): 0 normal, 1 prefer green areas
-// quiet (foot only): 0 normal, 1 prefer quiet ways
-const orsProfiles = {
-  car:  { profile: 'driving-car',     weightings: {} },
-  bike: { profile: 'cycling-regular', weightings: { steepness_difficulty: 3 } },
-  foot: { profile: 'foot-hiking',     weightings: { green: 0.8, quiet: 0.5 } }
-}
 
 // CustomMapLibreGlDirections extends the base library to support ORS as a routing backend
 // and to customize waypoint/snappoint/routeline feature handling.
@@ -157,7 +149,7 @@ export function initDirections (profile, feature) {
         profile: orsProfiles[profile]?.profile || profile,
         refreshOnMove: false,
         requestOptions: {
-          extra_info: ['steepness', 'surface', 'waycategory', 'waytype', 'suitability', 'traildifficulty', 'green', 'noise'],
+          extra_info: ['steepness', 'surface', 'waycategory', 'waytype', 'suitability', 'traildifficulty', 'green'],
           options: Object.keys(orsProfiles[profile]?.weightings || {}).length > 0
             ? { profile_params: { weightings: orsProfiles[profile].weightings } }
             : undefined

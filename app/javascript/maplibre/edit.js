@@ -2,7 +2,7 @@ import { simplify } from "@turf/simplify";
 import { mapChannel } from 'channels/map_channel';
 import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep-equal
 import * as functions from 'helpers/functions';
-import { status } from 'helpers/status';
+import { hideInfoStatus, status } from 'helpers/status';
 import { disableEditControls, enableEditControls, initializeEditControls } from 'maplibre/controls/edit';
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
 import { highlightFeature } from 'maplibre/feature';
@@ -103,6 +103,7 @@ export async function initializeEditMode () {
       functions.e('.maplibregl-ctrl-select', e => { e.classList.remove('active') })
     } else {
       // select mode
+      hideInfoStatus()
       functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
       functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
     }
@@ -207,11 +208,10 @@ export function resetEditMode() {
 export function toggleDrawMode(mode) {
   // e.preventDefault()
   if (draw.getMode() === mode) {
-    draw.changeMode('simple_select')
-  } else {
-    resetControls()
-    draw.changeMode(mode)
+    return  // noop - mode stays active
   }
+  resetControls()
+  draw.changeMode(mode)
   map.fire('draw.modechange')
 }
 

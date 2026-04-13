@@ -10,6 +10,7 @@ import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
 import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles/styles'
+import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 
 let easyMDE
 
@@ -123,6 +124,8 @@ export default class extends Controller {
       // Route extras color mode selector
       const colorModeSelect = document.querySelector('#stroke-color-mode')
       if (feature.properties.route?.extras) {
+        // Dynamically populate dropdown with available extras
+        this.populateExtrasOptions(colorModeSelect, feature.properties.route.extras)
         colorModeSelect.value = feature.properties['show-route-extras'] || ''
         colorModeSelect.classList.remove('hidden')
         if (feature.properties['show-route-extras']) {
@@ -236,6 +239,23 @@ export default class extends Controller {
   getSelectedFeature () {
     const id = this.featureIdValue
     return getFeature(id)
+  }
+
+  populateExtrasOptions (selectElement, routeExtras) {
+    // Clear existing options except the first "Color" option
+    while (selectElement.options.length > 1) {
+      selectElement.remove(1)
+    }
+
+    // Add options for each available extra type
+    Object.keys(EXTRAS_COLOR_CONFIGS).forEach(extrasType => {
+      if (routeExtras[extrasType]) {
+        const option = document.createElement('option')
+        option.value = extrasType
+        option.textContent = EXTRAS_COLOR_CONFIGS[extrasType].title
+        selectElement.appendChild(option)
+      }
+    })
   }
 
   async copy(event) {
