@@ -78,8 +78,8 @@
               %span.mapforge-font.layer-name.me-2 Layer name
             -# Desktop: inline buttons
             %span.text-nowrap.d-none.d-sm-inline
-              %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-visibility{ data: { action: "click->map--layers#toggleLayerVisibility", "toggle": 'tooltip' }, title: "Toggle visibility" }
-                %i.bi.bi-eye
+              %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-visibility{ data: { action: "click->map--layers#toggleLayerVisibility", "toggle": 'tooltip' }, title: "Hide layer" }
+                %i.bi.bi-eye-slash
               %button.hidden.btn.btn-secondary.btn-layer-actions.layer-refresh{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip' }, title: "Refresh layer for current view" }
                 %i.bi.bi-arrow-clockwise.reload-icon
               %button.hidden.btn.btn-secondary.btn-layer-actions.layer-edit{ data: { action: "click->map--layers#toggleEdit", "toggle": 'tooltip' }, title: "Edit query" }
@@ -93,8 +93,8 @@
               %ul.dropdown-menu.dropdown-menu-end
                 %li
                   %button.hidden.dropdown-item.layer-visibility-mobile{ type: "button", data: { action: "click->map--layers#toggleLayerVisibility" } }
-                    %i.bi.bi-eye.me-2
-                    Toggle visibility
+                    %i.bi.bi-eye-slash.me-2
+                    %span.layer-visibility-text Hide layer
                 %li
                   %button.hidden.dropdown-item.layer-refresh-mobile{ type: "button", data: { action: "click->map--layers#refreshLayer" } }
                     %i.bi.bi-arrow-clockwise.me-2

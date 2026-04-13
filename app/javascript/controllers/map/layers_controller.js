@@ -217,11 +217,16 @@ export default class extends Controller {
     // update UI (both desktop and mobile visibility buttons)
     layerElement.querySelectorAll('button.layer-visibility i, button.layer-visibility-mobile i').forEach(icon => {
       if (layer.show) {
-        icon.classList.replace('bi-eye-slash', 'bi-eye')
-      } else {
         icon.classList.replace('bi-eye', 'bi-eye-slash')
+      } else {
+        icon.classList.replace('bi-eye-slash', 'bi-eye')
       }
     })
+    const visBtn = layerElement.querySelector('button.layer-visibility')
+    const visBtnMobile = layerElement.querySelector('button.layer-visibility-mobile')
+    const newText = layer.show ? 'Hide layer' : 'Show layer'
+    visBtn.setAttribute('title', newText)
+    visBtnMobile.querySelector('.layer-visibility-text').textContent = newText
     // show/hide refresh and edit buttons based on visibility
     const hideAction = layer.show ? 'remove' : 'add'
     if (layer.type !== 'geojson') {
