@@ -58,8 +58,6 @@
         %label.left-label.edit-point{ for: "stroke-color"} Border color:
         %select#stroke-color-mode.form-select.form-select-sm.edit-line.hidden{ data: { action: "change->feature--edit#addUndo change->feature--edit#updateStrokeColorMode change->feature--edit#saveFeature" } }
           %option{ value: "" } Color
-          %option{ value: "steepness" } Steepness
-          %option{ value: "surface" } Surface
         %input.form-control#stroke-color{ type: "color", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateStrokeColor change->feature--edit#saveFeature" }
         %div.edit-polygon.edit-point
           %input#stroke-color-transparent{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateStrokeColorTransparent change->feature--edit#saveFeature"} }
