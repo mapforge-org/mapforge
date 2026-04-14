@@ -95,6 +95,10 @@ html:has(.map), body:has(.map) {
   #map-title {
     font-size: 1.35rem;
   }
+
+  .layer-popover {
+    top: 3rem;
+  }
 }
 
 @media (width < 380px), (height < 410px) {
