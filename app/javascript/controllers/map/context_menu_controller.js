@@ -52,6 +52,46 @@ export default class extends Controller {
     hideContextMenu()
   }
 
+  // Reverse the direction of a LineString or route
+  // For routes, this also reverses waypoints and updates route extras indices
+  reverseLineString(event) {
+    const target = event.currentTarget
+    const feature = getFeature(target.dataset.featureId, 'geojson')
+
+    if (feature.geometry.type !== 'LineString') { return }
+    addUndoState('Feature update', feature)
+
+    // Reverse coordinates
+    feature.geometry.coordinates.reverse()
+
+    // Reverse route waypoints if they exist
+    if (feature.properties.route?.waypoints) {
+      feature.properties.route.waypoints.reverse()
+    }
+
+    // Update route extras indices if they exist (e.g., steepness, surface, green, noise)
+    // Extras are stored as [startIdx, endIdx, value] arrays that reference coordinate indices
+    if (feature.properties.route?.extras) {
+      const coordsLength = feature.geometry.coordinates.length
+      Object.keys(feature.properties.route.extras).forEach(extrasType => {
+        const extrasData = feature.properties.route.extras[extrasType]
+        if (extrasData?.values) {
+          // Reverse the values array and transform indices to match reversed coordinates
+          extrasData.values = extrasData.values.map(([startIdx, endIdx, value]) => {
+            const newStartIdx = coordsLength - 1 - endIdx
+            const newEndIdx = coordsLength - 1 - startIdx
+            return [newStartIdx, newEndIdx, value]
+          }).reverse()
+        }
+      })
+    }
+
+    renderLayers('geojson', true)
+    mapChannel.send_message('update_feature', { ...feature })
+    status('Track reversed')
+    hideContextMenu()
+  }
+
   addToGeojsonLayer(event) {
     const target = event.currentTarget
     const layerType = target.dataset.layerType || 'basemap'

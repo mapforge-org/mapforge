@@ -74,7 +74,9 @@ describe "Feature edit" do
         find("#edit-button-edit").click
         sleep(0.3) # edit triggers modal pull-up
         find("#edit-button-advanced").click
-        expect(page).to have_selector('textarea[name="properties"]')
+        # Click on the JSON section header to expand it
+        find("#json-section-header").click
+        expect(page).to have_selector('textarea[name="properties"]', visible: true)
         fill_in "properties", with: '{"title": "TEST"}'
         find(".feature-update").click
         wait_for { polygon.reload.properties["title"] }.to eq("TEST")
@@ -142,6 +144,24 @@ describe "Feature edit" do
       expect(map.features.first.geometry["coordinates"]).to eq([ [ 11.041, 49.481 ], [ 11.056, 49.463 ] ])
       expect(map.features.last.geometry["coordinates"]).to eq([ [ 11.056, 49.463 ], [ 11.061, 49.450 ] ])
     end
+
+    it "can reverse line via context menu (reverse track)" do
+      xy = viewport_xy_for_lat_lng(line.geometry['coordinates'][1][1], line.geometry['coordinates'][1][0])
+      original_coords = line.geometry["coordinates"].dup
+      # click on line to select it
+      click_coord("#maplibre-map", xy[:x], xy[:y])
+      find("#edit-button-edit").click
+      # right-click directly on the vertex to see if our menu item appears
+      click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
+
+      # Should show both vertex menu items AND reverse track
+      expect(page).to have_text("Delete point")
+      expect(page).to have_text("Reverse track")
+      find(".context-menu-item", text: "Reverse track").click
+      expect(page).to have_text("Track reversed")
+      wait_for { line.reload.geometry["coordinates"] }.to eq(original_coords.reverse)
+    end
+
   end
 
   context "with point on map" do

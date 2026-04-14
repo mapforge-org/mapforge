@@ -45,6 +45,16 @@ export function addLineVertexMenuItems(f) {
       cutButton.dataset.index = vertexIndex
       el.appendChild(cutButton)
     }
+
+    // Add "Reverse track" for LineStrings
+    if (feature.geometry.type === 'LineString' && feature.geometry.coordinates.length >= 2) {
+      const reverseButton = document.createElement('div')
+      reverseButton.classList.add('context-menu-item')
+      reverseButton.innerText = 'Reverse track'
+      reverseButton.dataset.action = 'click->map--context-menu#reverseLineString'
+      reverseButton.dataset.featureId = f.properties.parent
+      el.appendChild(reverseButton)
+    }
   })
 }
 
