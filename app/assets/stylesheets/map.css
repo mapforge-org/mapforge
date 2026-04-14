@@ -141,6 +141,8 @@ html:has(.map), body:has(.map) {
   position: fixed;
   background: #000; /* For dark space with globe */
   opacity: 0; /* Map will fade in. 'hidden' would break initial map bounds calc */
+  -webkit-touch-callout: none; /* Prevent iOS long-press callout */
+  touch-action: pan-x pan-y; /* Allow panning but prevent browser gestures */
 }
 
 .white-shadow {

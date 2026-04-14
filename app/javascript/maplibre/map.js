@@ -154,6 +154,41 @@ export async function initializeMap (divId = 'maplibre-map') {
     map.once('drag', (_e) => { hideContextMenu() })
   })
 
+  // Long-press support for touch devices
+  if (functions.isTouchDevice()) {
+    let longPressTimer = null
+    let longPressStartPoint = null
+    const cancelLongPress = () => {
+      if (longPressTimer) clearTimeout(longPressTimer)
+      longPressTimer = null
+      longPressStartPoint = null
+    }
+
+    map.on('touchstart', (e) => {
+      if (e.originalEvent.touches.length > 1) return cancelLongPress() // Cancel on multi-touch
+      longPressStartPoint = e.point
+      longPressTimer = setTimeout(() => {
+        map.fire('contextmenu', {
+          point: longPressStartPoint,
+          lngLat: map.unproject(longPressStartPoint),
+          preventDefault: () => {}
+        })
+        map.longPressTriggered = true
+        setTimeout(() => { map.longPressTriggered = false }, 100)
+        cancelLongPress()
+      }, 500)
+    })
+
+    map.on('touchmove', (e) => {
+      if (!longPressTimer) return
+      const dx = Math.abs(e.point.x - longPressStartPoint.x)
+      const dy = Math.abs(e.point.y - longPressStartPoint.y)
+      if (dx > 10 || dy > 10) cancelLongPress()
+    })
+
+    map.on('touchend', cancelLongPress)
+  }
+
   // map.on('error', (err) => {
   //   console.log('map error >>> ', err)
   // })

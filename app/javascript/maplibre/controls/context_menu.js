@@ -22,7 +22,7 @@ export function addLineVertexMenuItems(f) {
   // coord path looks like 0.3 in polygons
   let vertexIndex = parseFloat(f.properties.coord_path, 10)
   if (feature.geometry.type === 'Polygon') { vertexIndex = vertexIndex * 10 }
-  
+
   console.log("vertexIndex", f.properties.coord_path, vertexIndex)
   functions.e('#map-context-menu', el => {
     el.classList.remove('hidden')
@@ -35,7 +35,7 @@ export function addLineVertexMenuItems(f) {
     deleteButton.dataset.index = vertexIndex
     el.appendChild(deleteButton)
 
-    if (feature.geometry.type === 'LineString' && 
+    if (feature.geometry.type === 'LineString' &&
       vertexIndex > 0 && vertexIndex < feature.geometry.coordinates.length - 1) {
       const cutButton = document.createElement('div')
       cutButton.classList.add('context-menu-item')
@@ -54,4 +54,3 @@ export function hideContextMenu () {
     menu.classList.add('hidden')
   })
 }
-

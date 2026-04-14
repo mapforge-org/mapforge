@@ -160,7 +160,8 @@ export async function initializeEditMode () {
     touchEndPosition = e.point
     if (Math.abs(touchStartPosition.x - touchEndPosition.x) < 3  &&
       Math.abs(touchStartPosition.y - touchEndPosition.y) < 3 &&
-      (draw.getMode() === 'simple_select' || draw.getMode().startsWith('directions_'))) {
+      (draw.getMode() === 'simple_select' || draw.getMode().startsWith('directions_')) &&
+      !map.longPressTriggered) {
       map.fire('click', e) // attach original event for coordinates
     }
     // Fix for mapbox-gl-draw issue #650: after a touch-drag, the draw library's

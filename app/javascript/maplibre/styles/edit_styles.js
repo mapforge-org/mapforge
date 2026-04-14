@@ -22,7 +22,10 @@ export function initializeEditStyles() {
     const features = map.queryRenderedFeatures(e.point)
     // console.log(features)
     for (const f of features) {
-      if (f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.cold') {
+      // on right-click layer id is .cold, on touch it's .hot
+      if (f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.cold' ||
+        f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.hot'
+      ) {
         addLineVertexMenuItems(f)
       }
     }
