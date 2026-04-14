@@ -9,7 +9,7 @@ describe "Feature details" do
     expect_map_loaded
   end
 
-  context "mobile", :mobile do
+  context "mobile", :phone do
     context "with selected feature" do
       before do
         click_center_of_screen

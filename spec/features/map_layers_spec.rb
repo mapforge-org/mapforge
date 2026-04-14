@@ -167,7 +167,7 @@ describe "Map" do
     end
   end
 
-  context "layer visibility mobile dropdown", :mobile do
+  context "layer visibility mobile dropdown", :phone do
     it "toggles layer visibility from show to hidden" do
       layer_id = map.layers.first.id
 

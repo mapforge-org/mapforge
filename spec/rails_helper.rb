@@ -58,7 +58,7 @@ RSpec.configure do |config|
     end
   end
 
-  config.around(:each, :mobile) do |spec|
+  config.around(:each, :phone) do |spec|
     page.driver.browser.resize(width: 290, height: 523)
     spec.run
     page.driver.browser.resize(width: 1024, height: 860)
