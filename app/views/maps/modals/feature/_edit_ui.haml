@@ -56,7 +56,7 @@
       #stroke-color-ui.edit-ui.edit-line.edit-polygon.edit-point
         %label.left-label.edit-polygon.edit-line{ for: "stroke-color"} Line color:
         %label.left-label.edit-point{ for: "stroke-color"} Border color:
-        %select#stroke-color-mode.form-select.form-select-sm.edit-line.hidden{ data: { action: "change->feature--edit#addUndo change->feature--edit#updateStrokeColorMode change->feature--edit#saveFeature" } }
+        %select#stroke-color-mode.form-select.form-select-sm.hidden{ data: { action: "change->feature--edit#addUndo change->feature--edit#updateStrokeColorMode change->feature--edit#saveFeature" } }
           %option{ value: "" } Color
         %input.form-control#stroke-color{ type: "color", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateStrokeColor change->feature--edit#saveFeature" }
         %div.edit-polygon.edit-point
@@ -107,19 +107,43 @@
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #show-km-markers-ui.edit-ui.edit-line
-        %label.left-label.edit-line{ for: "show-km-markers"} 
+        %label.left-label.edit-line{ for: "show-km-markers"}
           Distance
-          %br 
+          %br
           markers:
         %input#show-km-markers{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateShowKmMarkers change->feature--edit#saveFeature"} }
 
   .feature-edit-section.hidden{ 'data-edit-section': "advanced" }
-    .feature-section-card.pt-2
-      .feature-section-title JSON
-      = render 'maps/modals/feature/edit_raw'
+    #convert-to-route-section.feature-section-card.hidden
+      .extras-totals-header#convert-to-route-header
+        %h5
+          %i.bi.bi-signpost-split-fill.me-2
+          Convert to routed track
+        %i.bi.bi-chevron-down.extras-totals-chevron
+      #convert-to-route-content.hidden.p-2
+        %p.text-muted.mb-2
+          Copy and transform this line into a routed track with waypoints, elevation and surface info.
+        .flex-center.gap-2
+          %button.btn.btn-sm.btn-outline-secondary{'data-convert-profile': 'foot'}
+            %i.bi.bi-person-walking
+            Foot
+          %button.btn.btn-sm.btn-outline-secondary{'data-convert-profile': 'bike'}
+            %i.bi.bi-bicycle
+            Bike
+          %button.btn.btn-sm.btn-outline-secondary{'data-convert-profile': 'car'}
+            %i.bi.bi-car-front
+            Car
 
     .feature-section-card
+      .extras-totals-header#json-section-header
+        %h5
+          %i.bi.bi-code-slash.me-2
+          JSON
+        %i.bi.bi-chevron-down.extras-totals-chevron
+      #json-section-content.hidden.pt-2
+        = render 'maps/modals/feature/edit_raw'
+
+    .feature-section-card.pt-2
       %button#edit-button-trash.feature-delete-btn{ type: "button", title: "Delete feature", data: { action: "click->feature--edit#delete_feature" } }
         %i.bi.bi-trash
         Delete
-

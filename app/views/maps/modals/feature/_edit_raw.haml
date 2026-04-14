@@ -3,6 +3,8 @@
   %textarea.embed-code.form-control{name: "properties", rows: "6", cols: "50", "data-feature-target": "properties" }
   %span.error
 
-  %button.btn.btn-blue.feature-update.me-2.mt-2{ 'data-action': "click->feature--edit#update_feature_raw"} Update
-
-  = link_to 'Style Help', doc_path(id: 'geojson_style_spec'), { target: '_blank', rel: 'noopener noreferrer' }
+  .d-flex.justify-content-between.align-items-center.mt-2
+    %button.btn.btn-blue.feature-update{ 'data-action': "click->feature--edit#update_feature_raw"} Update
+    = link_to doc_path(id: 'geojson_style_spec'), { target: '_blank', rel: 'noopener noreferrer', class: 'link text-nowrap' } do
+      %i.bi.bi-box-arrow-up-right.me-1
+      Style Help

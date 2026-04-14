@@ -8,6 +8,7 @@ import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromPropertie
 import { draw, select, unselect } from 'maplibre/edit'
 import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
+import { convertToRoute } from 'maplibre/routing/gpx_to_route'
 import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles/styles'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
@@ -127,11 +128,18 @@ export default class extends Controller {
         // Dynamically populate dropdown with available extras
         this.populateExtrasOptions(colorModeSelect, feature.properties.route.extras)
         colorModeSelect.value = feature.properties['show-route-extras'] || ''
-        colorModeSelect.classList.remove('hidden')
+        // Only show dropdown if there are extras options (more than just the default "Color" option)
+        if (colorModeSelect.options.length > 1) {
+          colorModeSelect.classList.remove('hidden')
+        } else {
+          colorModeSelect.classList.add('hidden')
+        }
         if (feature.properties['show-route-extras']) {
           document.querySelector('#stroke-color').setAttribute('disabled', 'true')
         }
       } else {
+        // Clear any extra options from previously selected routed features
+        colorModeSelect.options.length = 1
         colorModeSelect.classList.add('hidden')
         colorModeSelect.value = ''
       }
@@ -166,6 +174,63 @@ export default class extends Controller {
       const feature = this.getSelectedFeature()
       document.querySelector('#feature-edit-raw textarea')
         .value = JSON.stringify(feature.properties, undefined, 2)
+
+      // Show convert-to-route section for non-routed LineStrings
+      const convertSection = document.querySelector('#convert-to-route-section')
+      if (convertSection) {
+        if (window.gon.map_mode === 'rw' &&
+            feature.geometry.type === 'LineString' &&
+            !feature.properties?.route &&
+            getFeature(feature.id, 'geojson')) {
+          convertSection.classList.remove('hidden')
+          // Wire up profile button click handlers
+          document.querySelectorAll('[data-convert-profile]').forEach(btn => {
+            btn.onclick = () => convertToRoute(feature, btn.dataset.convertProfile)
+          })
+        } else {
+          convertSection.classList.add('hidden')
+        }
+      }
+
+      // Initialize collapsible section toggles
+      this.initAdvancedTabToggles()
+    }
+  }
+
+  initAdvancedTabToggles () {
+    // Convert to route section
+    const convertHeader = document.querySelector('#convert-to-route-header')
+    const convertContent = document.querySelector('#convert-to-route-content')
+    const convertChevron = convertHeader?.querySelector('.extras-totals-chevron')
+
+    if (convertHeader && convertContent && convertChevron) {
+      // Remove existing listeners by replacing the element
+      const freshConvertHeader = convertHeader.cloneNode(true)
+      convertHeader.parentNode.replaceChild(freshConvertHeader, convertHeader)
+      const freshConvertChevron = freshConvertHeader.querySelector('.extras-totals-chevron')
+
+      freshConvertHeader.addEventListener('click', () => {
+        convertContent.classList.toggle('hidden')
+        freshConvertChevron.classList.toggle('bi-chevron-down')
+        freshConvertChevron.classList.toggle('bi-chevron-up')
+      })
+    }
+
+    // JSON section
+    const jsonHeader = document.querySelector('#json-section-header')
+    const jsonContent = document.querySelector('#json-section-content')
+    const jsonChevron = jsonHeader?.querySelector('.extras-totals-chevron')
+
+    if (jsonHeader && jsonContent && jsonChevron) {
+      const freshJsonHeader = jsonHeader.cloneNode(true)
+      jsonHeader.parentNode.replaceChild(freshJsonHeader, jsonHeader)
+      const freshJsonChevron = freshJsonHeader.querySelector('.extras-totals-chevron')
+
+      freshJsonHeader.addEventListener('click', () => {
+        jsonContent.classList.toggle('hidden')
+        freshJsonChevron.classList.toggle('bi-chevron-down')
+        freshJsonChevron.classList.toggle('bi-chevron-up')
+      })
     }
   }
 

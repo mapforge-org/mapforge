@@ -20,6 +20,9 @@ export const orsProfiles = {
   foot: { profile: 'foot-hiking',     weightings: { green: 0.6, quiet: 0.3 } }
 }
 
+// ORS route extras to request
+export const ORS_EXTRA_INFO = ['steepness', 'surface', 'waycategory', 'waytype', 'suitability', 'traildifficulty']
+
 // --- Directions adapter (used by CustomMapLibreGlDirections) ---
 
 // Builds ORS-compatible request data from maplibre-gl-directions config
@@ -195,7 +198,7 @@ export async function getRouteUpdate (originalFeature, updatedFeature) {
     waypoints = snapResponse.locations.map(item => item.location)
 
     const routeOptions = { coordinates: waypoints,
-      extra_info: ['steepness', 'surface', 'waycategory', 'waytype', 'suitability', 'traildifficulty', 'green', 'noise'],
+      extra_info: ORS_EXTRA_INFO,
       profile }
     if (Object.keys(weightings).length > 0) {
       routeOptions.options = { profile_params: { weightings } }

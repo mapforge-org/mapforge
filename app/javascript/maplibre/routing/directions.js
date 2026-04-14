@@ -7,7 +7,7 @@ import { setSelectedFeature, updateElevation } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
 import { map, mapProperties, upsert } from 'maplibre/map'
-import { orsBuildRequest, orsFetch, orsProfiles } from 'maplibre/routing/openrouteservice'
+import { orsBuildRequest, orsFetch, orsProfiles, ORS_EXTRA_INFO } from 'maplibre/routing/openrouteservice'
 import { basemaps, defaultFont } from 'maplibre/styles/basemaps'
 import { highlightColor } from 'maplibre/styles/edit_styles'
 import { featureColor, styles } from 'maplibre/styles/styles'
@@ -149,7 +149,7 @@ export function initDirections (profile, feature) {
         profile: orsProfiles[profile]?.profile || profile,
         refreshOnMove: false,
         requestOptions: {
-          extra_info: ['steepness', 'surface', 'waycategory', 'waytype', 'suitability', 'traildifficulty', 'green'],
+          extra_info: ORS_EXTRA_INFO,
           options: Object.keys(orsProfiles[profile]?.weightings || {}).length > 0
             ? { profile_params: { weightings: orsProfiles[profile].weightings } }
             : undefined
