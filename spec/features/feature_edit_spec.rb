@@ -161,7 +161,6 @@ describe "Feature edit" do
       expect(page).to have_text("Track reversed")
       wait_for { line.reload.geometry["coordinates"] }.to eq(original_coords.reverse)
     end
-
   end
 
   context "with point on map" do
