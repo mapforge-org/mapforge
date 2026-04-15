@@ -10,6 +10,13 @@ export function initContextMenu(e) {
   })
 }
 
+export function hideContextMenu() {
+  functions.e('#map-context-menu', menu => {
+    menu.innerHTML = ''
+    menu.classList.add('hidden')
+  })
+}
+
 /**
  * If the context click is on a line/polygon vertex, add "Delete line point" and optionally
  * "Cut line here" items to the context menu.
@@ -23,7 +30,7 @@ export function addLineVertexMenuItems(f) {
   let vertexIndex = parseFloat(f.properties.coord_path, 10)
   if (feature.geometry.type === 'Polygon') { vertexIndex = vertexIndex * 10 }
 
-  console.log("vertexIndex", f.properties.coord_path, vertexIndex)
+  // console.log("vertexIndex", f.properties.coord_path, vertexIndex)
   functions.e('#map-context-menu', el => {
     el.classList.remove('hidden')
 
@@ -45,22 +52,22 @@ export function addLineVertexMenuItems(f) {
       cutButton.dataset.index = vertexIndex
       el.appendChild(cutButton)
     }
-
-    // Add "Reverse track" for LineStrings
-    if (feature.geometry.type === 'LineString' && feature.geometry.coordinates.length >= 2) {
-      const reverseButton = document.createElement('div')
-      reverseButton.classList.add('context-menu-item')
-      reverseButton.innerText = 'Reverse track'
-      reverseButton.dataset.action = 'click->map--context-menu#reverseLineString'
-      reverseButton.dataset.featureId = f.properties.parent
-      el.appendChild(reverseButton)
-    }
   })
 }
 
-export function hideContextMenu () {
-  functions.e('#map-context-menu', menu => {
-    menu.innerHTML = ''
-    menu.classList.add('hidden')
+/**
+ * If the context click is on a line, add 'Reverse track' option
+ */
+export function addLineMenuItems(f) {
+  console.log(f)
+  functions.e('#map-context-menu', el => {
+    el.classList.remove('hidden')
+
+    const reverseButton = document.createElement('div')
+    reverseButton.classList.add('context-menu-item')
+    reverseButton.innerText = 'Reverse track'
+    reverseButton.dataset.action = 'click->map--context-menu#reverseLineString'
+    reverseButton.dataset.featureId = f.properties.id
+    el.appendChild(reverseButton)
   })
 }

@@ -7,7 +7,7 @@ import { setSelectedFeature, updateElevation } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
 import { map, mapProperties, upsert } from 'maplibre/map'
-import { orsBuildRequest, orsFetch, orsProfiles, ORS_EXTRA_INFO } from 'maplibre/routing/openrouteservice'
+import { ORS_EXTRA_INFO, orsBuildRequest, orsFetch, orsProfiles } from 'maplibre/routing/openrouteservice'
 import { basemaps, defaultFont } from 'maplibre/styles/basemaps'
 import { highlightColor } from 'maplibre/styles/edit_styles'
 import { featureColor, styles } from 'maplibre/styles/styles'
@@ -112,8 +112,8 @@ class CustomMapLibreGlDirections extends MapLibreGlDirections {
   }
 
   setRoutelinesFeatures(routeLinesFeatures) {
-    console.log('routeLinesFeatures', routeLinesFeatures)
-    console.log('directions', this)
+    // console.log('routeLinesFeatures', routeLinesFeatures)
+    // console.log('directions', this)
     this.routelines = routeLinesFeatures
     this.draw()
   }

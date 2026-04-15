@@ -1,5 +1,6 @@
 
-import { addLineVertexMenuItems } from 'maplibre/controls/context_menu'
+import { addLineMenuItems, addLineVertexMenuItems } from 'maplibre/controls/context_menu'
+import { draw } from 'maplibre/edit'
 import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
 
 // started from https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
@@ -18,6 +19,7 @@ const vertexSize = 6
 export function initializeEditStyles() {
   map.on('contextmenu', (e) => {
     e.preventDefault()
+    if (draw.getMode() === 'simple_select') { return }
 
     const features = map.queryRenderedFeatures(e.point)
     // console.log(features)
@@ -27,6 +29,9 @@ export function initializeEditStyles() {
         f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.hot'
       ) {
         addLineVertexMenuItems(f)
+      }
+      if (f.layer.id.startsWith('line-layer-hit_geojson')){
+        addLineMenuItems(f)
       }
     }
   })

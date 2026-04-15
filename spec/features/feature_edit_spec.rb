@@ -163,6 +163,33 @@ describe "Feature edit" do
     end
   end
 
+  context "with line with route extras on map" do
+    let!(:line) { create(:feature, :line_string_with_route_extras, title: "Route Extras Line") }
+    let(:map) { create(:map, features: [ line ], center: [ 11.0775, 49.4475 ], zoom: 13) }
+
+    it "can reverse track with route extras indices correctly transformed" do
+      xy = viewport_xy_for_lat_lng(line.geometry['coordinates'][2][1], line.geometry['coordinates'][2][0])
+      original_coords = line.geometry["coordinates"].dup
+      # click on line to select it
+      click_coord("#maplibre-map", xy[:x], xy[:y])
+      find("#edit-button-edit").click
+      # right-click on vertex to open context menu
+      click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
+
+      expect(page).to have_text("Reverse track")
+      all(".context-menu-item", text: "Reverse track").first.click
+      expect(page).to have_text("Track reversed")
+
+      wait_for { line.reload.geometry["coordinates"] }.to eq(original_coords.reverse)
+
+      extras = line.properties["route"]["extras"]
+      expect(extras["steepness"]["values"]).to eq([ [ 0, 1, -2 ], [ 1, 3, 3 ], [ 3, 5, 1 ] ])
+      expect(extras["surface"]["values"]).to eq([ [ 0, 2, 10 ], [ 2, 5, 3 ] ])
+      expect(extras["green"]["values"]).to eq([ [ 0, 2, 7 ], [ 2, 5, 2 ] ])
+      expect(extras["noise"]["values"]).to eq([ [ 0, 5, 4 ] ])
+    end
+  end
+
   context "with point on map" do
     let(:point) { create(:feature, :point_middle, title: "Point Title") }
     let(:map) { create(:map, features: [ point ]) }
