@@ -57,7 +57,9 @@ class CustomMapLibreGlDirections extends MapLibreGlDirections {
         "type": "WAYPOINT",
         "id": functions.featureId(),
         "index": index,
-        "label": String.fromCharCode(64 + index+1),
+        "label": index < 26
+          ? String.fromCharCode(65 + index)      // A-Z
+          : String.fromCharCode(97 + index - 26), // a-z
         "highlight": false
       }
     }

@@ -73,6 +73,9 @@ export default class extends Controller {
 
     dom.hideElements(['.edit-point', '.edit-line', '.edit-polygon'])
 
+    // Hide stroke color mode dropdown by default (only shown for LineStrings with route extras)
+    document.querySelector('#stroke-color-mode')?.classList.add('hidden')
+
     // transparent stroke
     if (feature.properties.stroke === 'transparent') {
       document.querySelector('#stroke-color').setAttribute('disabled', 'true')
@@ -131,8 +134,6 @@ export default class extends Controller {
         // Only show dropdown if there are extras options (more than just the default "Color" option)
         if (colorModeSelect.options.length > 1) {
           colorModeSelect.classList.remove('hidden')
-        } else {
-          colorModeSelect.classList.add('hidden')
         }
         if (feature.properties['show-route-extras']) {
           document.querySelector('#stroke-color').setAttribute('disabled', 'true')
@@ -140,7 +141,6 @@ export default class extends Controller {
       } else {
         // Clear any extra options from previously selected routed features
         colorModeSelect.options.length = 1
-        colorModeSelect.classList.add('hidden')
         colorModeSelect.value = ''
       }
 
