@@ -22,9 +22,15 @@ export function renderKmMarkers (features, sourceId) {
 
       if (i >= Math.ceil(distance)) {
         point.properties['marker-size'] = 15
-        point.properties['km'] = Math.round(distance)
-        if (Math.ceil(distance) < 100) {
+        if (distance < 0.1) {
+          point.properties['km'] = Math.round(distance * 1000)
+          point.properties['km-unit'] = 'm'
+        } else if (Math.ceil(distance) < 100) {
           point.properties['km'] = Math.round(distance * 10) / 10
+          point.properties['km-unit'] = 'km'
+        } else {
+          point.properties['km'] = Math.round(distance)
+          point.properties['km-unit'] = 'km'
         }
         point.properties['km-marker-numbers-end'] = 1
         point.properties['sort-key'] = 2 + index
@@ -77,7 +83,7 @@ function kmMarkerStyles () {
       'text-allow-overlap': true,
       'text-field': ['format',
         ['get', 'km'], { 'font-scale': 1.0 },
-        '\nkm', { 'font-scale': 0.7 }
+        ['concat', '\n', ['get', 'km-unit']], { 'font-scale': 0.7 }
       ],
       'text-size': 12,
       'text-font': ['noto_sans_bold'],
