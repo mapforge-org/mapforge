@@ -1,5 +1,5 @@
 import * as functions from 'helpers/functions'
-import { decodePolyline } from 'helpers/polyline'
+import { decodePolyline, encodePolyline } from 'helpers/polyline'
 import { status } from 'helpers/status'
 import Openrouteservice from 'openrouteservice-js'
 
@@ -23,13 +23,17 @@ export const orsProfiles = {
 // ORS route extras to request
 export const ORS_EXTRA_INFO = ['steepness', 'surface', 'waycategory', 'waytype', 'suitability', 'traildifficulty']
 
+// include elevation data in routing API request
+export const ORS_ELEVATION_IN_ROUTE = true
+
 // --- Directions adapter (used by CustomMapLibreGlDirections) ---
 
 // Builds ORS-compatible request data from maplibre-gl-directions config
 export function orsBuildRequest (config, coordinates, _bearings) {
   const payload = {
     coordinates,
-    extra_info: config.requestOptions.extra_info || []
+    extra_info: config.requestOptions.extra_info || [],
+    elevation: ORS_ELEVATION_IN_ROUTE
   }
   if (config.requestOptions.options) {
     payload.options = config.requestOptions.options
@@ -67,23 +71,27 @@ export async function orsFetch ({ method: _method, url, payload }) {
     throw new Error('No route found')
   }
 
-  // Build OSRM-compatible waypoints from route geometry + way_points indices
-  const routeCoords = decodePolyline(data.routes[0].geometry)
+  // Build waypoints from route geometry + way_points indices for maplibre-gl-directions
+  const routeCoords = decodePolyline(data.routes[0].geometry, ORS_ELEVATION_IN_ROUTE)
+
   const waypoints = payload.coordinates.map((coord, i) => {
     const wpIndex = data.routes[0].way_points[i]
     return {
       location: wpIndex !== undefined
         ? [routeCoords[wpIndex][0], routeCoords[wpIndex][1]]
-        : coord
+        : [coord[0], coord[1]]
     }
   })
 
-  // Return OSRM-compatible response structure
+  // Return response structure expected by maplibre-gl-directions
   return {
     code: "Ok",
     waypoints,
     routes: data.routes.map(route => ({
-      geometry: route.geometry,
+      // Re-encode as 2D polyline so maplibre-gl-directions can decode it correctly
+      geometry: ORS_ELEVATION_IN_ROUTE ? encodePolyline(routeCoords, false) : route.geometry,
+      // Pass decoded coordinates (with elevation) so directions.js can use them directly
+      decodedCoordinates: routeCoords,
       legs: [],
       extras: route.extras,
       way_points: route.way_points
@@ -199,21 +207,16 @@ export async function getRouteUpdate (originalFeature, updatedFeature) {
 
     const routeOptions = { coordinates: waypoints,
       extra_info: ORS_EXTRA_INFO,
+      elevation: ORS_ELEVATION_IN_ROUTE,
       profile }
     if (Object.keys(weightings).length > 0) {
       routeOptions.options = { profile_params: { weightings } }
     }
     const routeResponse = await orsDirections.calculate(routeOptions)
     console.log('route response: ', routeResponse)
-    const routeLocations = decodePolyline(routeResponse.routes[0].geometry)
+    const routeLocations = decodePolyline(routeResponse.routes[0].geometry, ORS_ELEVATION_IN_ROUTE)
 
-    // don't calculate elevation for car routes
-    if (profile.includes('driving')) {
-      updatedFeature.geometry.coordinates = routeLocations
-    } else {
-      const routeLocationsElevation = await getRouteElevation(routeLocations)
-      updatedFeature.geometry.coordinates = routeLocationsElevation
-    }
+    updatedFeature.geometry.coordinates = routeLocations
 
     updatedFeature.properties.route.waypoints = waypoints
     updatedFeature.properties.route.extras = routeResponse.routes[0].extras
