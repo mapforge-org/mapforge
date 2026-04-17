@@ -187,11 +187,11 @@ export function initDirections (profile, feature) {
   directions.interactive = true
 
   directions.on("fetchroutesend", async (e) => {
-    console.log("fetchroutesend", e)
     if (!e.data?.directions) {
-      console.error("fetchroutesend: no directions data (API error?)")
+      console.error("fetchroutesend: no directions data (API error?)", e)
       return
     }
+    console.log("fetchroutesend data:", e.data)
 
     // use 'snapped' waypoints
     let waypoints = e.data.directions.waypoints.map(wp => wp.location)
@@ -208,7 +208,10 @@ export function initDirections (profile, feature) {
                                 "stroke": trackColor,
                                 "stroke-dasharray": true,
                                 "show-km-markers": true }
-    let coords = decodePolyline(e.data.directions.routes[0].geometry)
+    const route = e.data.directions.routes[0]
+    // Use pre-decoded 3D coordinates from ORS adapter, or decode the polyline
+    let coords = route.decodedCoordinates || decodePolyline(route.geometry, false)
+
     currentFeature = { "type": "Feature", "id": currentFeature?.id || functions.featureId(),
       "geometry": { "coordinates": coords || [], "type": "LineString" },
       // deep clone properties to avoid modifying the original feature
@@ -223,12 +226,18 @@ export function initDirections (profile, feature) {
     }
 
     setSelectedFeature(currentFeature)
-    // add elevation from openrouteservice
-    updateElevation(currentFeature).then(() => {
+    // add elevation from openrouteservice (when not included in route response)
+    if (coords[0].length === 2) {
+      updateElevation(currentFeature).then(() => {
+        updateTrack(currentFeature)
+        showFeatureDetails(currentFeature)
+        window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
+      })
+    } else {
       updateTrack(currentFeature)
       showFeatureDetails(currentFeature)
       window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
-    })
+    }
   })
 
   directions.on('movewaypoint', (e) => {
