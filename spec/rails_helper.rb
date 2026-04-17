@@ -71,11 +71,17 @@ RSpec.configure do |config|
       unless spec.metadata[:skip_console_errors]
 
         # https://danielabaron.me/blog/capture-browser-console-logs-capybara-cuprite/
-        browser_logs = page.driver.browser.options.logger.string
+        logger = page.driver.browser.options.logger
+        browser_logs = logger.string
         console_logs = browser_logs.lines.select { |line| line.include?("Runtime.consoleAPICalled") }
         # puts console_logs.join("\n\n")
         error_logs = console_logs.select { |line| line.include?('"type":"error"') }
 
+        # Clear the logger buffer to prevent errors from carrying over to subsequent tests
+        logger.truncate(0)
+        logger.rewind
+
+        # Raise after clearing to ensure isolation even when test fails
         if error_logs.present?
           raise JavaScriptError, error_logs.join("\n\n")
         end
