@@ -2,9 +2,6 @@ import { hexToRgb } from 'helpers/functions'
 import { mapProperties, initializeMaplibreProperties } from 'maplibre/map'
 import maplibregl from 'maplibre-gl'
 
-// eslint expects variables to get imported, but we load the full lib in header
-const deck = window.deck;
-
 ['turbo:load'].forEach(function (e) {
   window.addEventListener(e, function () {
     // console.log(e)
@@ -16,6 +13,9 @@ const deck = window.deck;
 
 async function init () {
   initializeMaplibreProperties()
+
+  const deckModule = await import('deck.gl')
+  const deck = await deckModule.default
 
   const map = new maplibregl.Map({
     container: 'deck-map', // container ID

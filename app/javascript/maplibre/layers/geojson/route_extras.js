@@ -1,7 +1,7 @@
-import { buffer } from "@turf/buffer"
 import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import { map } from 'maplibre/map'
+import { updateDeckExtrusionLines } from 'maplibre/deck_overlay'
 
 // ORS route extras color configurations
 // Each type maps values to colors and labels for data-driven styling
@@ -181,22 +181,12 @@ export function renderRouteExtras (features, sourceId) {
 
   showExtrasLegend(activeExtrasType, activeValues)
 
-  // Buffer LineString segments into polygons for 3D extrusion
-  const extrusionFeatures = extrasFeatures
-    .filter(f => f.properties['fill-extrusion-height'])
-    .map(feature => {
-      const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || 5
-      const extrusionLine = buffer(feature, width, { units: 'meters' })
-      extrusionLine.properties = { ...feature.properties }
-      extrusionLine.properties['fill-extrusion-color'] = feature.properties['stroke']
-      extrusionLine.properties['stroke-width'] = 0
-      extrusionLine.properties['stroke-opacity'] = 0
-      extrusionLine.properties['fill-opacity'] = 0
-      return extrusionLine
-    })
+  // Send extrusion features to deck.gl
+  updateDeckExtrusionLines('route-extras-' + sourceId, extrasFeatures)
 
+  // Only flat features go to MapLibre
   map.getSource(sourceId).setData({
     type: 'FeatureCollection',
-    features: extrasFeatures.concat(extrusionFeatures)
+    features: extrasFeatures
   })
 }

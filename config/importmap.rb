@@ -15,7 +15,11 @@ pin_all_from "app/javascript/maplibre", under: "maplibre", preload: false
 pin_all_from "app/javascript/helpers", under: "helpers", preload: false
 
 # page initializers
-pin "deck", preload: false
+pin "deck-page", to: "deck.js", preload: false
+
+# deck.gl for 3D line extrusion rendering
+# Using local wrapper that loads UMD bundle (avoids ESM bundling issues)
+pin "deck.gl", to: "deck-gl-wrapper.js", preload: false
 
 # vendor
 # examples: https://generator.jspm.io/

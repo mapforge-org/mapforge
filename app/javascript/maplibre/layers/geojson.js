@@ -1,11 +1,11 @@
-import { buffer } from "@turf/buffer"
 import { draw, select } from 'maplibre/edit'
+import { updateDeckExtrusionLines } from 'maplibre/deck_overlay'
 import { Layer } from 'maplibre/layers/layer'
 import { getFeature } from 'maplibre/layers/layers'
 import { initializeKmMarkerStyles, renderKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
-import { addGeoJSONSource, map, mapProperties } from 'maplibre/map'
-import { defaultLineWidth, initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
+import { addGeoJSONSource, map } from 'maplibre/map'
+import { initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
 
 export class GeoJSONLayer extends Layer {
   get kmMarkerSourceId() {
@@ -43,8 +43,8 @@ export class GeoJSONLayer extends Layer {
     this.ensureFeaturePropertyIds()
     renderKmMarkers(this.layer.geojson.features, this.kmMarkerSourceId)
     renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
-    const extrusionLines = this.renderExtrusionLines()
-    const geojson = { type: 'FeatureCollection', features: this.layer.geojson.features.concat(extrusionLines) }
+    updateDeckExtrusionLines(this.sourceId, this.layer.geojson.features)
+    const geojson = { type: 'FeatureCollection', features: this.layer.geojson.features }
     map.getSource(this.sourceId).setData(geojson, false)
     this.resetDrawFeatures(resetDraw)
   }
@@ -65,28 +65,5 @@ export class GeoJSONLayer extends Layer {
         }
       })
     }
-  }
-
-  renderExtrusionLines() {
-    if (mapProperties.terrain) { return [] }
-
-    let extrusionLines = this.layer.geojson.features.filter(feature => (
-      feature.geometry.type === 'LineString' &&
-      feature.properties['fill-extrusion-height'] &&
-      feature.geometry.coordinates.length !== 1
-    ))
-
-    return extrusionLines.map(feature => {
-      const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
-      const extrusionLine = buffer(feature, width, { units: 'meters' })
-      extrusionLine.properties = { ...feature.properties }
-      if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
-        extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
-      }
-      extrusionLine.properties['stroke-width'] = 0
-      extrusionLine.properties['stroke-opacity'] = 0
-      extrusionLine.properties['fill-opacity'] = 0
-      return extrusionLine
-    })
   }
 }
