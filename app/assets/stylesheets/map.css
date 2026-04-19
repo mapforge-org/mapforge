@@ -22,7 +22,6 @@ html:has(.map), body:has(.map) {
   border-radius: 0.7rem;
   box-shadow: 0 0 0 1.5px #BBB;
   margin-top: 0.5rem;
-  min-height: 2rem;
   max-height: 2.5rem;
   padding: 0.7rem;
 
@@ -33,10 +32,10 @@ html:has(.map), body:has(.map) {
   padding: 0 0.7rem 0 0.2rem;
   font-size: 1.8rem;
   color: var(--color-dark-moss-green);
-  -webkit-text-stroke: 3px white;
+  -webkit-text-stroke: 2px white;
   paint-order: stroke fill;
   text-shadow: 0 0 6px white;
-  font-weight: 300;
+  font-weight: 500;
   font-style: italic;
   text-align: center;
   text-overflow: ellipsis;
@@ -90,6 +89,8 @@ html:has(.map), body:has(.map) {
 @media (width < 640px) {
   #map-head {
     max-width: calc(100% - 10px);
+    padding: 0.3rem;
+    margin-top: 0.4rem;
   }
 
   #map-title {
@@ -98,6 +99,11 @@ html:has(.map), body:has(.map) {
 
   .layer-popover {
     top: 3rem;
+  }
+
+  #map-nav-toggle {
+    font-size: 1rem;
+    min-width: 1rem;
   }
 }
 

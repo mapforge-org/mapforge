@@ -116,7 +116,8 @@
     top: 0;
   }
 
- .maplibregl-ctrl-top-left .maplibregl-ctrl {
+ /* Skip the first child, so top margin is aligned to right side */
+  .maplibregl-ctrl-top-left .maplibregl-ctrl ~ .maplibregl-ctrl {
     margin-top: 5px !important;
   }
 }
