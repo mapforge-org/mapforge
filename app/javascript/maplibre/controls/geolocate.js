@@ -63,14 +63,14 @@ export function initializeGeoLocateControl() {
     requestWakeLock()
 
     cachedDot = document.querySelector('.maplibregl-user-location-dot')
+    // Hide cone initially — only show it once valid heading data arrives
+    if (cachedDot) cachedDot.style.setProperty('--display-view', 'none')
 
     const isIOS = typeof DeviceOrientationEvent !== 'undefined'
       && typeof DeviceOrientationEvent.requestPermission === 'function'
 
     if (!isIOS && !('ondeviceorientationabsolute' in window)) {
       status('Device Orientation not supported', 'info')
-      // hiding the direction view
-      if (cachedDot) cachedDot.style.setProperty('--display-view', 'none')
       return
     }
 
@@ -278,6 +278,9 @@ function setLocationOrientation(event) {
     }
     lastHeading = (event.alpha - screen_angle + 360) % 360
   }
+
+  // Show cone now that we have valid heading data
+  dot.style.setProperty('--display-view', 'block')
 
   if (isInCompassMode) {
     // Skip imperceptible heading changes (< 1°) to avoid redundant map re-renders
