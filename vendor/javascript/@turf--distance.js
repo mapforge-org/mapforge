@@ -1,2 +1,2 @@
-import{getCoord as a}from"@turf/invariant";import{degreesToRadians as t,radiansToLength as r}from"@turf/helpers";function h(h,o,n={}){var s=a(h);var v=a(o);var M=t(v[1]-s[1]);var i=t(v[0]-s[0]);var f=t(s[1]);var p=t(v[1]);var u=Math.pow(Math.sin(M/2),2)+Math.pow(Math.sin(i/2),2)*Math.cos(f)*Math.cos(p);return r(2*Math.atan2(Math.sqrt(u),Math.sqrt(1-u)),n.units)}var o=h;export{o as default,h as distance};
+import{getCoord as e}from"@turf/invariant";import{degreesToRadians as t,radiansToLength as n}from"@turf/helpers";function r(r,i,a={}){var o=e(r),s=e(i),c=t(s[1]-o[1]),l=t(s[0]-o[0]),u=t(o[1]),d=t(s[1]),f=Math.sin(c/2)**2+Math.sin(l/2)**2*Math.cos(u)*Math.cos(d);return n(2*Math.atan2(Math.sqrt(f),Math.sqrt(1-f)),a.units)}var i=r;export{i as default,r as distance};
 
