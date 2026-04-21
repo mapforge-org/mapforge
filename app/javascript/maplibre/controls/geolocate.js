@@ -260,6 +260,7 @@ function setLocationOrientation(event) {
   if (!dot) return
 
   const screen_angle = (screen?.orientation?.angle || 0)
+  if (screen_angle === 0) return
 
   // iOS Safari: webkitCompassHeading provides absolute heading via deviceorientation
   if (event.webkitCompassHeading != null && event.webkitCompassHeading >= 0) {
