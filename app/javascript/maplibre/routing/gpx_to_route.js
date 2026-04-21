@@ -122,7 +122,6 @@ export async function convertToRoute(originalFeature, profile) {
     // Snap waypoints to road network
     const Snap = new Openrouteservice.Snap({ api_key: window.gon.map_keys.openrouteservice })
     const orsProfile = orsProfiles[profile]?.profile || profile
-    const weightings = orsProfiles[profile]?.weightings || {}
 
     status('Snapping waypoints to road network...')
     const snapResponse = await Snap.calculate({
@@ -148,6 +147,8 @@ export async function convertToRoute(originalFeature, profile) {
     }
 
     // Route via ORS Directions API
+    // Note: weightings (steepness_difficulty, green, quiet) are intentionally omitted
+    // because they trigger ORS's 150km route length limit
     status('Calculating route...')
     const orsDirections = new Openrouteservice.Directions({ api_key: window.gon.map_keys.openrouteservice })
 
@@ -155,9 +156,6 @@ export async function convertToRoute(originalFeature, profile) {
       coordinates: snappedWaypoints,
       extra_info: ORS_EXTRA_INFO,
       profile: orsProfile
-    }
-    if (Object.keys(weightings).length > 0) {
-      routeOptions.options = { profile_params: { weightings } }
     }
 
     const routeResponse = await orsDirections.calculate(routeOptions)
@@ -252,7 +250,6 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
   const Snap = new Openrouteservice.Snap({ api_key: window.gon.map_keys.openrouteservice })
   const orsDirections = new Openrouteservice.Directions({ api_key: window.gon.map_keys.openrouteservice })
   const orsProfile = orsProfiles[profile]?.profile || profile
-  const weightings = orsProfiles[profile]?.weightings || {}
 
   const allCoordinates = []
   let allExtras = null
@@ -269,14 +266,11 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
     })
     const snappedSegment = snapResponse.locations.map(item => item.location)
 
-    // Route
+    // Route (weightings omitted to avoid 150km limit)
     const routeOptions = {
       coordinates: snappedSegment,
       extra_info: ORS_EXTRA_INFO,
       profile: orsProfile
-    }
-    if (Object.keys(weightings).length > 0) {
-      routeOptions.options = { profile_params: { weightings } }
     }
 
     const routeResponse = await orsDirections.calculate(routeOptions)

@@ -11,6 +11,7 @@ import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData
 import { queries } from 'maplibre/layers/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName, upsert } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
+import { updateElevation } from 'maplibre/edit'
 import toGeoJSON from 'togeojson'
 
 export default class extends Controller {
@@ -63,7 +64,13 @@ export default class extends Controller {
           feature.id = functions.featureId()
           feature.properties ||= {}
           upsert(feature)
-          mapChannel.send_message('new_feature', feature)
+          if (feature.geometry.type === 'LineString') {
+            updateElevation(feature).then(() => {
+              mapChannel.send_message('new_feature', feature)
+            })
+          } else {
+            mapChannel.send_message('new_feature', feature)
+          }
           status('Added feature ' + i++ + '/' + geoJSON.features.length)
         })
 

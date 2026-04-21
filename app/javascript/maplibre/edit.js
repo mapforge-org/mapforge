@@ -325,6 +325,7 @@ export function handleDelete (e) {
   destroyFeature(deletedFeature.id)
   addUndoState('Feature deleted', deletedFeature)
   resetDirections()
+  resetControls()
   status('Feature deleted')
   mapChannel.send_message('delete_feature', { id: deletedFeature.id })
 }
