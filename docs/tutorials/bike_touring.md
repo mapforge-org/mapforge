@@ -4,7 +4,7 @@
 
 Mapforge is a great companion for your next bike tour. Plan your route on the desktop, then open the same map on your phone and follow your track with compass mode and a live elevation profile. This tutorial walks you through the workflow.
 
-Check out the [Havel bike track](https://mapforge.org/m/d4209eabaf51?f=s97ubxrwy7b) for reference.
+Check out the [Havel bike track](https://mapforge.org/m/d77d6b77) for reference.
 
 ### Plan your route
 
@@ -83,7 +83,7 @@ If you want to record your ride and see it on a map in your profile, you can do 
 
 ### After your ride
 
-You can export your track as GPX or GeoJSON from the feature details panel - handy for sharing your route or importing it into other apps.
+You can **export** your track as GPX or GeoJSON from the feature details panel - handy for sharing your route or importing it into other apps.
 
 In the "Share" panel, you can decide to share your track publicly in the Mapforge gallery, or just share the map link with others directly.
 
@@ -96,13 +96,11 @@ There are quite some apps that can be used in combination with Mapforge for opti
 * [komoot gpx merge tool](https://www.komoot.com/de-de/gpx-merge-tool-online) (merge and repair gpx tracks)
 * [cyclosm.org](https://www.cyclosm.org) (base map, also available on mapforge)
 * [opencyclemap.org](https://www.opencyclemap.org/) (another bicycle base map, from thunderforest.com)
-* [citybik.es](https://citybik.es/) (locations and activities on rental city bikes)
 * [graphhopper.com](https://graphhopper.com/maps/?profile=bike&layer=TF+Cycle) (bike routing)
 * [mapillary.com](https://www.mapillary.com/) (street view like photos)
 * [opencampingmap.org](https://opencampingmap.org) (camp sites)
 * [campwild.org](https://map.campwild.org/) (shelters)
-* [bikeparking.lorenz.lu](https://bikeparking.lorenz.lu/parkingmap) (bike stands)
-* [rackfinder.app](https://rackfinder.app) (bike stands)
+* [bikeparking.lorenz.lu](https://bikeparking.lorenz.lu/parkingmap) + [rackfinder.app](https://rackfinder.app) (bike parking)
 * [tilda-geo.de](https://tilda-geo.de/regionen/radinfra) (help to improve bicycle related data in OSM)
 
 
