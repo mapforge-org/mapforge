@@ -9,7 +9,7 @@ import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/queries'
-import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName, upsert } from 'maplibre/map'
+import { map, mapProperties, removeGeoJSONSource, updateMapName, upsert } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
 import toGeoJSON from 'togeojson'
 
@@ -212,7 +212,7 @@ export default class extends Controller {
     if (window.gon.map_mode === "rw") { addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson }) }
 
     layer.show = !wasVisible
-    setLayerVisibility(layer.sourceId, layer.show)
+    layer.setVisibility(layer.show)
 
     // update UI (both desktop and mobile visibility buttons)
     layerElement.querySelectorAll('button.layer-visibility i, button.layer-visibility-mobile i').forEach(icon => {
@@ -267,6 +267,10 @@ export default class extends Controller {
 
   createBaseMapLayer(_event) {
     this.createLayer('basemap', 'Basemap layer')
+  }
+
+  createDeckGLLayer(_event) {
+    this.createLayer('deckgl', 'deck.gl layer')
   }
 
   createLayer(type, name, query=null, geojson=null) {

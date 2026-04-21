@@ -9,7 +9,7 @@ import {
   stickyFeatureHighlight
 } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
-import { addGeoJSONSource, frontFeature, map } from 'maplibre/map'
+import { addGeoJSONSource, frontFeature, map, setLayerVisibility } from 'maplibre/map'
 
 /**
  * Base class for map layers. Subclass to create new layer types.
@@ -239,6 +239,14 @@ export class Layer {
       map.off('mousemove', this.mouseMoveHandler)
       this.mouseMoveHandler = null
     }
+  }
+
+  /**
+   * Sets layer visibility.
+   * Override to customize visibility behavior (e.g., for deck.gl layers).
+   */
+  setVisibility(visible) {
+    setLayerVisibility(this.sourceId, visible)
   }
 
   /**

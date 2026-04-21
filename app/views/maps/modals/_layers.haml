@@ -65,6 +65,13 @@
               %li
                 %button.dropdown-item{
                   type: "button",
+                  data: { action: "click->map--layers#createDeckGLLayer" }
+                }
+                  %i.bi.bi-gpu-card.me-2
+                  deck.gl layer (experimental)
+              %li
+                %button.dropdown-item{
+                  type: "button",
                   data: { action: "click->map--layers#createBaseMapLayer" }
                 }
                   Basemap Info (experimental)
