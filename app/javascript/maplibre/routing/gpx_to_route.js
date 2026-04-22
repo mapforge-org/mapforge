@@ -284,10 +284,10 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
       allCoordinates.push(...segmentCoords.slice(1))
       // Merge extras: shift indices and append
       const offset = allCoordinates.length - segmentCoords.length + 1
-      for (const [key, values] of Object.entries(routeResponse.routes[0].extras || {})) {
-        if (allExtras[key]) {
-          const shiftedValues = values.map(([start, end, value]) => [start + offset, end + offset, value])
-          allExtras[key].push(...shiftedValues)
+      for (const [key, extra] of Object.entries(routeResponse.routes[0].extras || {})) {
+        if (allExtras[key]?.values && extra.values) {
+          const shiftedValues = extra.values.map(([start, end, value]) => [start + offset, end + offset, value])
+          allExtras[key].values.push(...shiftedValues)
         }
       }
     }
