@@ -166,7 +166,7 @@
                 %label Title
 
               .mb-3.form-floating
-                %input.mw-400.form-control.raster-url{type: 'text', autocomplete: 'off', placeholder: 'https://tile.example.com/{z}/{x}/{y}.png'}
+                %input.form-control.raster-url{type: 'text', autocomplete: 'off', placeholder: 'https://tile.example.com/{z}/{x}/{y}.png'}
                 %label Raster URL (https://<host>/{z}/{x}/{y}.png)
 
                 %button.btn.btn-blue.mt-1{ 'data-action': 'click->map--layers#updateRasterLayer'}

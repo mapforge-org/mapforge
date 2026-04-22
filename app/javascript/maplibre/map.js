@@ -139,7 +139,7 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('touchend', (e) => { updateCursorPosition(e) })
   map.on('drag', () => {
     mapInteracted = true
-    if (layers.filter(l => l.type !== 'geojson' && l.show !== false).length) { dom.animateElement('#layer-reload', 'fade-in') }
+    if (layers.filter(l => l.type !== 'geojson' && l.type !== 'raster' && l.show !== false).length) { dom.animateElement('#layer-reload', 'fade-in') }
   })
   map.on('zoom', (_e) => { limitZoom() })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
