@@ -255,6 +255,17 @@ const requestWakeLock = async () => {
   }
 }
 
+function applyTiltCompensation(alpha, beta, gamma) {
+  const alphaRad = alpha * (Math.PI / 180)
+  const betaRad  = beta  * (Math.PI / 180)
+  const gammaRad = gamma * (Math.PI / 180)
+  const x = Math.cos(betaRad) * Math.sin(alphaRad)
+  const y = Math.sin(gammaRad) * Math.sin(betaRad) * Math.sin(alphaRad)
+          - Math.cos(gammaRad) * Math.cos(alphaRad)
+  let adjusted = Math.atan2(y, x) * (180 / Math.PI)
+  return (adjusted + 360) % 360
+}
+
 function setLocationOrientation(event) {
   const dot = cachedDot || document.querySelector('.maplibregl-user-location-dot')
   if (!dot) return
@@ -273,11 +284,12 @@ function setLocationOrientation(event) {
       dot.style.setProperty('--display-view', 'none')
       return
     }
-    if (86 < Math.abs(event.beta) && Math.abs(event.beta) < 94) {
-      // when the phone is around vertical, alpha is unreliable
+    if (89 < Math.abs(event.beta) && Math.abs(event.beta) < 91) {
+      // when the phone is around vertical, alpha is unreliable (gimbal lock)
       return
     }
-    lastHeading = (event.alpha - screen_angle + 360) % 360
+    const compensated = applyTiltCompensation(event.alpha, event.beta, event.gamma)
+    lastHeading = (compensated - screen_angle + 360) % 360
   }
 
   // Show cone now that we have valid heading data
