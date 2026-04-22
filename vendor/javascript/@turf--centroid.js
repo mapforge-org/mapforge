@@ -1,2 +1,2 @@
-import{point as t}from"@turf/helpers";import{coordEach as r}from"@turf/meta";function e(e,o={}){let f=0;let u=0;let p=0;r(e,(function(t){f+=t[0];u+=t[1];p++}),true);return t([f/p,u/p],o.properties)}var o=e;export{e as centroid,o as default};
+import{point as e}from"@turf/helpers";import{coordEach as t}from"@turf/meta";function n(n,r={}){let i=0,a=0,o=0;return t(n,function(e){i+=e[0],a+=e[1],o++},!0),e([i/o,a/o],r.properties)}var r=n;export{n as centroid,r as default};
 
