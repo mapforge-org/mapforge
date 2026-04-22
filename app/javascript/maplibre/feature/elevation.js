@@ -113,10 +113,13 @@ export async function showElevationChart (feature) {
         borderWidth: 2,
         backgroundColor: chartLineColor + '50',
         // Color segments by steepness — uses ORS extras when available, falls back to
-        // manual grade calculation (skipped for very large tracks for performance)
-        segment: (allSteepness || allValues.length < 2500) ? {
-          backgroundColor: (ctx) => segmentColor(ctx, active, chartLineColor)
-        } : undefined,
+        // manual grade calculation (disabled when >1000 points are rendered for performance)
+        segment: {
+          backgroundColor: (ctx) => {
+            if (!active.steepness && active.values.length > 1000) return undefined
+            return segmentColor(ctx, active, chartLineColor)
+          }
+        },
         pointRadius: 0,
         pointHoverRadius: 6,
         pointBackgroundColor: 'white',
