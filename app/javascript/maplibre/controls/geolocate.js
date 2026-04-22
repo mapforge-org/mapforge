@@ -274,6 +274,9 @@ function setLocationOrientation(event) {
   if (screen_angle === undefined) return
 
   // iOS Safari: webkitCompassHeading provides absolute heading via deviceorientation
+  // webkitCompassAccuracy is -1 when compass hardware is unavailable (e.g. iPad without compass)
+  if (event.webkitCompassAccuracy !== undefined && event.webkitCompassAccuracy <= 0) return
+
   if (event.webkitCompassHeading != null && event.webkitCompassHeading >= 0) {
     // webkitCompassHeading is CW from north; convert to alpha convention (CCW)
     // so the existing -lastHeading usage produces the correct CW bearing
