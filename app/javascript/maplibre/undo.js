@@ -3,7 +3,7 @@ import { status } from 'helpers/status'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
 import { getFeature, renderLayers, layers } from 'maplibre/layers/layers'
-import { addFeature, destroyFeature, removeGeoJSONSource } from 'maplibre/map'
+import { addFeature, destroyFeature, removeGeoJSONSource, setLayerVisibility } from 'maplibre/map'
 import { resetDirections } from 'maplibre/routing/directions'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { createLayerInstance } from 'maplibre/layers/factory'
@@ -24,6 +24,7 @@ export function clearUndoHistory() {
     const redoBtn = document.querySelector('button.maplibregl-ctrl-redo')
     if (undoBtn) undoBtn.classList.add('hidden')
     if (redoBtn) redoBtn.classList.add('hidden')
+    updateTooltips()
   } catch {
     // Buttons may not exist yet
   }
@@ -38,6 +39,7 @@ export function addUndoState(type, state, clearRedo = true) {
     hideRedoButton()
     redoStack = []
   }
+  updateTooltips()
 }
 
 function addRedoState(type, state) {
@@ -45,6 +47,7 @@ function addRedoState(type, state) {
   redoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
   console.log('Updated redo stack', redoStack)
   showRedoButton()
+  updateTooltips()
 }
 
 const undoHandlers = {
@@ -83,6 +86,7 @@ export function undo() {
   renderLayers('geojson', true)
   keepSelection()
   if (undoStack.length === 0) { hideUndoButton() }
+  updateTooltips()
 }
 
 export function redo() {
@@ -97,6 +101,7 @@ export function redo() {
   renderLayers('geojson', true)
   keepSelection()
   if (redoStack.length === 0) { hideRedoButton() }
+  updateTooltips()
 }
 
 function undoFeatureUpdate(prevState) {
@@ -252,6 +257,7 @@ function undoLayerUpdated(prevState) {
     addRedoState(prevState.type, getFullLayerData(layer))
     // Update layer properties using the layer's update method
     layer.update(prevState.state)
+    setLayerVisibility(layer.sourceId, layer.show)
     layer.initialize().then(() => { initLayersModal() })
     mapChannel.send_message('update_layer', prevState.state)
   } else {
@@ -265,6 +271,7 @@ function redoLayerUpdated(nextState) {
     addUndoState(nextState.type, getFullLayerData(layer), false)
     // Update layer properties using the layer's update method
     layer.update(nextState.state)
+    setLayerVisibility(layer.sourceId, layer.show)
     layer.initialize().then(() => { initLayersModal() })
     mapChannel.send_message('update_layer', nextState.state)
   } else {
@@ -280,6 +287,38 @@ function keepSelection() {
       showFeatureDetails(geojsonFeature)
       select(geojsonFeature)
     }
+  }
+}
+
+function updateTooltips() {
+  const undoBtn = document.querySelector('button.maplibregl-ctrl-undo')
+  const redoBtn = document.querySelector('button.maplibregl-ctrl-redo')
+
+  if (!undoBtn || !redoBtn) return
+
+  // Update undo button
+  const undoTop = undoStack[undoStack.length - 1]
+  const undoTitle = undoTop ? `Undo: ${undoTop.type}` : 'Undo'
+  undoBtn.setAttribute('title', undoTitle)
+  undoBtn.setAttribute('aria-label', undoTitle)
+  undoBtn.setAttribute('data-bs-original-title', undoTitle)
+
+  // Update redo button
+  const redoTop = redoStack[redoStack.length - 1]
+  const redoTitle = redoTop ? `Redo: ${redoTop.type}` : 'Redo'
+  redoBtn.setAttribute('title', redoTitle)
+  redoBtn.setAttribute('aria-label', redoTitle)
+  redoBtn.setAttribute('data-bs-original-title', redoTitle)
+
+  // Refresh Bootstrap tooltips if they exist
+  if (typeof window.bootstrap !== 'undefined') {
+    [undoBtn, redoBtn].forEach(btn => {
+      const tooltip = window.bootstrap.Tooltip.getInstance(btn)
+      if (tooltip) {
+        // Update the tooltip's internal title
+        tooltip.setContent({ '.tooltip-inner': btn.getAttribute('data-bs-original-title') })
+      }
+    })
   }
 }
 

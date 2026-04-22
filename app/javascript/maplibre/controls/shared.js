@@ -228,8 +228,8 @@ export function initLayersModal () {
         layerElement.querySelector('button.layer-delete-mobile').classList.remove('hidden')
       }
 
-      // Show refresh button only for non-geojson layers that are visible
-      if (layer.type !== 'geojson' && layer.show !== false) {
+      // Show refresh button only for overpass and wikipedia layers that are visible
+      if ((layer.type === 'overpass' || layer.type === 'wikipedia') && layer.show !== false) {
         layerElement.querySelector('button.layer-refresh').classList.remove('hidden')
         layerElement.querySelector('button.layer-refresh-mobile').classList.remove('hidden')
       }
