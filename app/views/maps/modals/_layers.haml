@@ -38,7 +38,7 @@
                   data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: "Custom query" }
                 }
                   %i.bi.bi-pencil-square.me-2
-                  Custom query
+                  Custom Overpass query
               %li
                 %hr.dropdown-divider
               %li
@@ -60,6 +60,39 @@
                     data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: query_name }
                   }
                     = query_name
+              %li
+                %hr.dropdown-divider
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createRasterLayer" }
+                }
+                  %i.bi.bi-grid-3x3.me-2
+                  Custom raster layer
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createHikingWaymarkedtrailsLayer" }
+                }
+                  🥾 waymarkedtrails.org: hiking
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createCyclingWaymarkedtrailsLayer" }
+                }
+                  🚴 waymarkedtrails.org: cycling
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createMtbWaymarkedtrailsLayer" }
+                }
+                  🚵 waymarkedtrails.org: mtb
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createSlopesWaymarkedtrailsLayer" }
+                }
+                  ⛷️ waymarkedtrails.org: slopes
               %li
                 %hr.dropdown-divider
               %li
@@ -108,14 +141,7 @@
                     %i.bi.bi-trash.me-2
                     Delete
 
-          .layer-content.hidden
-
-            .layer-item-overpass.hidden
-              %span.d-none.d-sm-inline
-                This layer is an
-              = image_tag "/icons/osm-icon-small.png", class: 'layer-osm-icon', alt: "OSM Overpass layer"
-              OSM live query
-
+          .layer-content.mt-2.hidden
             .overpass-edit.hidden
               .mb-2.form-floating
                 %input.mw-400.form-control.overpass-name{type: 'text', autocomplete: 'off', placeholder: 'Enter name / Search queries', name: 'overpass-name'}
@@ -130,6 +156,20 @@
                   = link_to 'Overpass tutorial', doc_path(id: 'overpass_layers'), { target: '_blank', rel: 'noopener noreferrer' }
 
                 %button.btn.btn-blue{ 'data-action': 'click->map--layers#updateOverpassLayer'}
+                  Update
+                  %span.d-none.d-sm-inline
+                    Layer
+
+            .raster-edit.hidden
+              .mb-2.form-floating
+                %input.mw-400.form-control.raster-name{type: 'text', autocomplete: 'off', placeholder: 'Layer name'}
+                %label Title
+
+              .mb-3.form-floating
+                %input.mw-400.form-control.raster-url{type: 'text', autocomplete: 'off', placeholder: 'https://tile.example.com/{z}/{x}/{y}.png'}
+                %label Raster URL (https://<host>/{z}/{x}/{y}.png)
+
+                %button.btn.btn-blue.mt-1{ 'data-action': 'click->map--layers#updateRasterLayer'}
                   Update
                   %span.d-none.d-sm-inline
                     Layer

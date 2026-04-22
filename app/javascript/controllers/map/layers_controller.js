@@ -5,13 +5,13 @@ import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { flyToFeature } from 'maplibre/animations'
 import { initLayersModal } from 'maplibre/controls/shared'
+import { updateElevation } from 'maplibre/edit'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName, upsert } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
-import { updateElevation } from 'maplibre/edit'
 import toGeoJSON from 'togeojson'
 
 export default class extends Controller {
@@ -142,11 +142,18 @@ export default class extends Controller {
     const layer = layers.find(f => f.id === layerId)
     const contentElement = layerElement.querySelector('.layer-content')
     if (contentElement.classList.contains('hidden')) { this.toggleLayerList(event) }
-    contentElement.querySelector('.overpass-edit').classList.toggle('hidden')
-    const queryTextarea = contentElement.querySelector('.overpass-query')
-    queryTextarea.value = layer.query
-    contentElement.querySelector('.overpass-name').value = layer.name
-    this.resizeQueryField({ target: queryTextarea })
+
+    if (layer.type === 'overpass') {
+      contentElement.querySelector('.overpass-edit').classList.toggle('hidden')
+      const queryTextarea = contentElement.querySelector('.overpass-query')
+      queryTextarea.value = layer.query || ''
+      contentElement.querySelector('.overpass-name').value = layer.name
+      this.resizeQueryField({ target: queryTextarea })
+    } else if (layer.type === 'raster') {
+      contentElement.querySelector('.raster-edit').classList.toggle('hidden')
+      contentElement.querySelector('.raster-url').value = layer.query || ''
+      contentElement.querySelector('.raster-name').value = layer.name
+    }
   }
 
   resizeQueryField (event) {
@@ -174,6 +181,23 @@ export default class extends Controller {
     mapChannel.send_message('update_layer', layer.toJSON())
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
     layer.initialize().then(() => { initLayersModal() })
+  }
+
+  updateRasterLayer (event) {
+    event.preventDefault()
+    const layerElement = event.target.closest('.layer-item')
+    const layerId = layerElement.getAttribute('data-layer-id')
+    const layer = layers.find(f => f.id === layerId)
+    addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
+
+    layer.query = layerElement.querySelector('.raster-url').value
+    layer.name = layerElement.querySelector('.raster-name').value
+    event.target.closest('.layer-item').querySelector('.layer-name').textContent = layer.name
+    mapChannel.send_message('update_layer', layer.toJSON())
+
+    removeGeoJSONSource(layer.sourceId)
+    initializeLayerSources(layerId)
+    initializeLayerStyles(layerId).then(() => { initLayersModal() })
   }
 
   refreshLayer (event) {
@@ -258,6 +282,29 @@ export default class extends Controller {
     this.createLayer('wikipedia', 'Wikipedia')
   }
 
+  createRasterLayer() {
+    const layerId = this.createLayer('raster', 'Raster layer', '')
+    new Promise(resolve => setTimeout(resolve, 50)).then(() => {
+      document.querySelector('#layer-list-' + layerId + ' button.layer-edit').click()
+    })
+  }
+
+  createHikingWaymarkedtrailsLayer() {
+    this.createLayer('raster', 'waymarkedtrails.org: hiking', 'https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png')
+  }
+
+  createCyclingWaymarkedtrailsLayer() {
+    this.createLayer('raster', 'waymarkedtrails.org: cycling', 'https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png')
+  }
+
+  createMtbWaymarkedtrailsLayer() {
+    this.createLayer('raster', 'waymarkedtrails.org: mtb', 'https://tile.waymarkedtrails.org/mtb/{z}/{x}/{y}.png')
+  }
+
+  createSlopesWaymarkedtrailsLayer() {
+    this.createLayer('raster', 'waymarkedtrails.org: slopes', 'https://tile.waymarkedtrails.org/slopes/{z}/{x}/{y}.png')
+  }
+
   createSelectedOverpassLayer(event) {
     event.preventDefault()
     let queryName = event.target.dataset.queryName
@@ -281,8 +328,8 @@ export default class extends Controller {
     // must match server attribute order, for proper comparison in map_channel
     let layerData = { "id": layerId, "type": type, "name": name,
       "heatmap": false, "cluster": false, "show": true, "geojson": geojson}
+    if (query !== null) { layerData.query = query }
     if (type == 'overpass') {
-      layerData["query"] = query
       // TODO: move cluster + heatmap to layer checkboxes
       const clustered = !layerData.query.includes("heatmap=true") &&
         !layerData.query.includes("cluster=false") &&

@@ -230,7 +230,7 @@ describe "Map" do
     it "can add custom query layer" do
       click_button "Add layer"
       within("#query-dropdown") do
-        first("li", text: "Custom query").click
+        first("li", text: "Custom Overpass query").click
       end
       wait_for { map.layers.find { |m| m.name == "Custom query" } }.to be_present
     end

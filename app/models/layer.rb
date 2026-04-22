@@ -9,6 +9,7 @@ class Layer
   default_scope { reorder(created_at: :asc) }
   scope :geojson, -> { where(type: "geojson") }
   scope :overpass, -> { where(type: "overpass") }
+  scope :raster, -> { where(type: "raster") }
 
   field :type, default: "geojson"
   field :name
@@ -23,7 +24,7 @@ class Layer
 
   def to_summary_json
     json = { id: id, type: type, name: name, heatmap: !!heatmap, cluster: !!cluster, show: show != false }
-    json[:query] = query if type == "overpass"
+    json[:query] = query if %w[overpass raster].include?(type)
     json
   end
 

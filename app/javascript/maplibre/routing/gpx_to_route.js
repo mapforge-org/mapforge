@@ -1,16 +1,16 @@
 import { along } from "@turf/along"
+import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { simplify } from "@turf/simplify"
-import { lineString } from "@turf/helpers"
+import { mapChannel } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { decodePolyline } from 'helpers/polyline'
 import { status } from 'helpers/status'
-import { mapChannel } from 'channels/map_channel'
-import { upsert } from 'maplibre/map'
-import { getRouteElevation, orsProfiles, ORS_EXTRA_INFO } from 'maplibre/routing/openrouteservice'
-import Openrouteservice from 'openrouteservice-js'
-import { addUndoState } from 'maplibre/undo'
 import { showFeatureDetails } from 'maplibre/feature'
+import { upsert } from 'maplibre/map'
+import { getRouteElevation, ORS_EXTRA_INFO, orsProfiles } from 'maplibre/routing/openrouteservice'
+import { addUndoState } from 'maplibre/undo'
+import Openrouteservice from 'openrouteservice-js'
 
 // Convert imported GPX track (plain LineString) to routed track with route metadata.
 // Creates a new feature alongside the original so user can compare.
@@ -101,7 +101,7 @@ export async function convertToRoute(originalFeature, profile) {
     return
   }
 
-  if (originalFeature.properties.route) {
+  if (originalFeature.properties.route?.provider) {
     status('This track is already a routed track', 'error')
     return
   }

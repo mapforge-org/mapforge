@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 * Mobile usability improvements
 * Geolocate compass mode (rotates map with device)
 * Fix elevation graph of long tracks with > 2000 points
+* Allow to color code routes by steepness + surface
+* Option to convert gpx tracks into routes
+* New layer type 'raster' with waymarkedtrails.org examples
 
 ## 2026-03
 

@@ -234,7 +234,12 @@ export function initLayersModal () {
         layerElement.querySelector('button.layer-refresh-mobile').classList.remove('hidden')
       }
       if (layer.type === 'overpass') {
-        layerElement.querySelector('.layer-item-overpass').classList.remove('hidden')
+        if (window.gon.map_mode === "rw" && layer.show !== false) {
+          layerElement.querySelector('button.layer-edit').classList.remove('hidden')
+          layerElement.querySelector('button.layer-edit-mobile').classList.remove('hidden')
+        }
+      }
+      if (layer.type === 'raster') {
         if (window.gon.map_mode === "rw" && layer.show !== false) {
           layerElement.querySelector('button.layer-edit').classList.remove('hidden')
           layerElement.querySelector('button.layer-edit-mobile').classList.remove('hidden')

@@ -1,17 +1,17 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
+import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
-import { copyToClipboard } from 'helpers/clipboard'
+import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { draw, select, unselect } from 'maplibre/edit'
 import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
+import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { getFeature } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
-import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles/styles'
-import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 
 let easyMDE
 
@@ -180,7 +180,7 @@ export default class extends Controller {
       if (convertSection) {
         if (window.gon.map_mode === 'rw' &&
             feature.geometry.type === 'LineString' &&
-            !feature.properties?.route &&
+            !feature.properties?.route?.provider &&
             getFeature(feature.id, 'geojson')) {
           convertSection.classList.remove('hidden')
           // Wire up profile button click handlers

@@ -356,6 +356,7 @@
 
 #query-dropdown .dropdown-item {
   border-radius: .375rem;
+  padding-left: 0.5rem;
 }
 
 /* dim layer name and content when hidden, but not the action buttons/dropdown */
