@@ -12,7 +12,7 @@ export class RasterLayer extends Layer {
     const sourceConfig = {
       type: 'raster',
       tiles: [this.query],
-      tileSize: 512
+      tileSize: 256
     }
 
     // Add attribution for known raster layer providers
