@@ -6,6 +6,7 @@ import { map, mapProperties } from 'maplibre/map'
 let isInFollowMode = false
 let isInCompassMode = false
 let userHasZoomed = false
+let hasFoundFirstPosition = false
 let lastHeading = null
 let lastAppliedHeading = null
 let geolocateControl = null
@@ -50,6 +51,10 @@ export function initializeGeoLocateControl() {
     const coords = position.coords
     console.log('geolocate event', coords)
     if (coords) {
+      if (!hasFoundFirstPosition && isInFollowMode) {
+        hasFoundFirstPosition = true
+        status('Following position', 'info')
+      }
       window.dispatchEvent(new CustomEvent('gps-position', {
         detail: { lng: coords.longitude, lat: coords.latitude }
       }))
@@ -59,7 +64,8 @@ export function initializeGeoLocateControl() {
   // follow mode
   geolocate.on('trackuserlocationstart', () => {
     isInFollowMode = true
-    status('Following position', 'info')
+    hasFoundFirstPosition = false
+    status('Searching position', 'info')
     requestWakeLock()
 
     cachedDot = document.querySelector('.maplibregl-user-location-dot')
