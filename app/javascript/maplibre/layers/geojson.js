@@ -1,9 +1,9 @@
 import { buffer } from "@turf/buffer"
 import { draw, select } from 'maplibre/edit'
-import { Layer } from 'maplibre/layers/layer'
-import { getFeature } from 'maplibre/layers/layers'
 import { initializeKmMarkerStyles, renderKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
+import { Layer } from 'maplibre/layers/layer'
+import { getFeature } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties } from 'maplibre/map'
 import { defaultLineWidth, initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
 
@@ -70,9 +70,12 @@ export class GeoJSONLayer extends Layer {
   renderExtrusionLines() {
     if (mapProperties.terrain) { return [] }
 
+    // LineStrings with fill-extrusion-height are buffered into polygons for MapLibre's fill-extrusion layer
+    // Skipped when 'show-route-extras' would render it's own extrusion
     let extrusionLines = this.layer.geojson.features.filter(feature => (
       feature.geometry.type === 'LineString' &&
       feature.properties['fill-extrusion-height'] &&
+      !feature.properties['show-route-extras'] &&
       feature.geometry.coordinates.length !== 1
     ))
 

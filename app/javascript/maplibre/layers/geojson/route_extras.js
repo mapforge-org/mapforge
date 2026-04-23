@@ -171,9 +171,9 @@ export function renderRouteExtras (features, sourceId) {
         properties: {
           'stroke': resolveExtrasColor(extrasType, value),
           'stroke-width': feature.properties['stroke-width'] || 5,
-          'fill-extrusion-height': feature.properties['fill-extrusion-height'] ? feature.properties['fill-extrusion-height'] + 1 : undefined,
+          'fill-extrusion-height': feature.properties['fill-extrusion-height'],
           'fill-extrusion-base': feature.properties['fill-extrusion-base'],
-          "fill-extrusion-width": feature.properties['fill-extrusion-width'] ? feature.properties['fill-extrusion-width'] + 1 : undefined,
+          "fill-extrusion-width": feature.properties['fill-extrusion-width'],
         }
       })
     })
