@@ -276,6 +276,12 @@ function setLocationOrientation(event) {
   const dot = cachedDot || document.querySelector('.maplibregl-user-location-dot')
   if (!dot) return
 
+  alert("screen?.orientation?.angle: " + screen?.orientation?.angle)
+  alert("event.webkitCompassAccuracy: " + event.webkitCompassAccuracy)
+  alert("event.webkitCompassHeading: " + event.webkitCompassHeading)
+  alert("event.absolute: " + event.absolute)
+  alert("event.alpha, event.beta, event.gamma: " + event.alpha + ' ' + event.beta + ' ' + event.gamma)
+
   const screen_angle = screen?.orientation?.angle
   if (screen_angle === undefined) return
 
