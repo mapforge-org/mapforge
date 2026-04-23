@@ -206,7 +206,7 @@ html:has(.map), body:has(.map) {
 
 .maplibregl-user-location-dot{
   --user-dot-rotation: rotate(0deg);
-  --display-view: block;
+  --display-view: none;
   --view-height: 3rem;
   --view-width: 3rem;
   --view-pitch: 0deg;

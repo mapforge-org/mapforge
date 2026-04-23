@@ -276,12 +276,6 @@ function setLocationOrientation(event) {
   const dot = cachedDot || document.querySelector('.maplibregl-user-location-dot')
   if (!dot) return
 
-  // alert("screen?.orientation?.angle: " + screen?.orientation?.angle)
-  // alert("event.webkitCompassAccuracy: " + event.webkitCompassAccuracy)
-  // alert("event.webkitCompassHeading: " + event.webkitCompassHeading)
-  // alert("event.absolute: " + event.absolute)
-  // alert("event.alpha, event.beta, event.gamma: " + event.alpha + ' ' + event.beta + ' ' + event.gamma)
-
   // device orientation
   const screen_angle = screen?.orientation?.angle || 0
 
@@ -295,11 +289,10 @@ function setLocationOrientation(event) {
     // webkitCompassHeading is CW from north; convert to alpha convention (CCW)
     // so the existing -lastHeading usage produces the correct CW bearing
     lastHeading = (360 - event.webkitCompassHeading - screen_angle + 720) % 360
-    status('ios heading: ' + event.webkitCompassHeading + ' computed: ' + lastHeading)
+    // status('ios heading: ' + event.webkitCompassHeading + ' computed: ' + lastHeading)
   } else {
     // non-iOS: deviceorientationabsolute with event.alpha
     if (!event.absolute) {
-      dot.style.setProperty('--display-view', 'none')
       return
     }
     if (89 < Math.abs(event.beta) && Math.abs(event.beta) < 91) {
@@ -308,7 +301,7 @@ function setLocationOrientation(event) {
     }
     const compensated = applyTiltCompensation(event.alpha, event.beta, event.gamma)
     lastHeading = (compensated - screen_angle + 360) % 360
-    status('android heading: ' + event.alpha + ' computed: ' + lastHeading)
+    // status('android heading: ' + event.alpha + ' computed: ' + lastHeading)
   }
 
   // Show cone now that we have valid heading data
