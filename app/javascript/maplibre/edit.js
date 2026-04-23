@@ -72,6 +72,9 @@ export async function initializeEditMode () {
     modes
   })
 
+  // Expose draw for testing
+  window.draw = draw
+
   initializeEditStyles()
   initializeEditControls()
   initializeDefaultControls()
@@ -96,10 +99,12 @@ export async function initializeEditMode () {
     console.log("Switch draw mode from '" + currentMode + "' to '" + draw.getMode() + "'")
 
     // Reduce extrusion opacity to make edit handles visible
-    const extrusionOpacity = (draw.getMode() === 'simple_select' || draw.getMode().startsWith('draw_')) ? defaultExtrusionOpacity : 0.5
-    map.getStyle().layers
-      .filter(l => l.id.startsWith('polygon-layer-extrusion'))
-      .forEach(l => map.setPaintProperty(l.id, 'fill-extrusion-opacity', extrusionOpacity))
+    if (map.getStyle && map.getStyle().layers) {
+      const extrusionOpacity = (draw.getMode() === 'simple_select' || draw.getMode().startsWith('draw_')) ? defaultExtrusionOpacity : 0.5
+      map.getStyle().layers
+        .filter(l => l.id.startsWith('polygon-layer-extrusion'))
+        .forEach(l => map.setPaintProperty(l.id, 'fill-extrusion-opacity', extrusionOpacity))
+    }
 
     currentMode = draw.getMode()
     resetDirections()

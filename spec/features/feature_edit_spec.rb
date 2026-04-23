@@ -100,6 +100,8 @@ describe "Feature edit" do
       it "can delete a line vertex via context menu (delete midpoint)" do
         xy = viewport_xy_for_lat_lng(polygon.geometry['coordinates'][0][3][1], polygon.geometry['coordinates'][0][3][0])
         find("#edit-button-edit").click
+        # Wait for MapLibre to finish rendering vertex handles after mode change
+        page.evaluate_async_script("window.map.once('idle', arguments[0])")
         # click on line vertex with right mouse
         click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
@@ -123,6 +125,8 @@ describe "Feature edit" do
       # click on line
       click_coord("#maplibre-map", xy[:x], xy[:y])
       find("#edit-button-edit").click
+      # Wait for MapLibre to finish rendering vertex handles after mode change
+      page.evaluate_async_script("window.map.once('idle', arguments[0])")
       # click on line vertex with right mouse
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
@@ -136,6 +140,8 @@ describe "Feature edit" do
       # click on line
       click_coord("#maplibre-map", xy[:x], xy[:y])
       find("#edit-button-edit").click
+      # Wait for MapLibre to finish rendering vertex handles after mode change
+      page.evaluate_async_script("window.map.once('idle', arguments[0])")
       # click on line vertex with right mouse
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
@@ -151,6 +157,8 @@ describe "Feature edit" do
       # click on line to select it
       click_coord("#maplibre-map", xy[:x], xy[:y])
       find("#edit-button-edit").click
+      # Wait for MapLibre to finish rendering vertex handles after mode change
+      page.evaluate_async_script("window.map.once('idle', arguments[0])")
       # right-click directly on the vertex to see if our menu item appears
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
