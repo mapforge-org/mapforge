@@ -44,7 +44,7 @@ export function initializeGeoLocateControl() {
 
   geolocate.on('error', e => {
     console.warn('Error detecting location', e)
-    status('Error detecting location', 'warning')
+    status('Error detecting location: ' + e.message, 'warning')
   })
 
   geolocate.on('geolocate', (position) => {
@@ -276,24 +276,26 @@ function setLocationOrientation(event) {
   const dot = cachedDot || document.querySelector('.maplibregl-user-location-dot')
   if (!dot) return
 
-  alert("screen?.orientation?.angle: " + screen?.orientation?.angle)
-  alert("event.webkitCompassAccuracy: " + event.webkitCompassAccuracy)
-  alert("event.webkitCompassHeading: " + event.webkitCompassHeading)
-  alert("event.absolute: " + event.absolute)
-  alert("event.alpha, event.beta, event.gamma: " + event.alpha + ' ' + event.beta + ' ' + event.gamma)
+  // alert("screen?.orientation?.angle: " + screen?.orientation?.angle)
+  // alert("event.webkitCompassAccuracy: " + event.webkitCompassAccuracy)
+  // alert("event.webkitCompassHeading: " + event.webkitCompassHeading)
+  // alert("event.absolute: " + event.absolute)
+  // alert("event.alpha, event.beta, event.gamma: " + event.alpha + ' ' + event.beta + ' ' + event.gamma)
 
-  const screen_angle = screen?.orientation?.angle
-  if (screen_angle === undefined) return
+  // device orientation
+  const screen_angle = screen?.orientation?.angle || 0
 
   // iOS Safari: webkitCompassHeading provides absolute heading via deviceorientation
   // webkitCompassAccuracy is -1 when compass hardware is unavailable (e.g. iPad without compass)
   if (event.webkitCompassAccuracy !== undefined && event.webkitCompassAccuracy <= 0) return
-  if (event.webkitCompassHeading === 0) return
+  // if (event.webkitCompassHeading === 0) return
 
-  if (event.webkitCompassHeading != null && event.webkitCompassHeading >= 0) {
+  // iOS device with compass heading available
+  if (event.webkitCompassHeading >= 0) {
     // webkitCompassHeading is CW from north; convert to alpha convention (CCW)
     // so the existing -lastHeading usage produces the correct CW bearing
     lastHeading = (360 - event.webkitCompassHeading - screen_angle + 720) % 360
+    status('ios heading: ' + event.webkitCompassHeading + ' computed: ' + lastHeading)
   } else {
     // non-iOS: deviceorientationabsolute with event.alpha
     if (!event.absolute) {
@@ -306,6 +308,7 @@ function setLocationOrientation(event) {
     }
     const compensated = applyTiltCompensation(event.alpha, event.beta, event.gamma)
     lastHeading = (compensated - screen_angle + 360) % 360
+    status('android heading: ' + event.alpha + ' computed: ' + lastHeading)
   }
 
   // Show cone now that we have valid heading data
