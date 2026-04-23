@@ -179,6 +179,31 @@ export function renderRouteExtras (features, sourceId) {
     })
   })
 
+  // Filter activeValues for discrete legends: remove values < 0.5% of total distance
+  const config = EXTRAS_COLOR_CONFIGS[activeExtrasType]
+  if (config && !config.gradient && activeValues.size > 0) {
+    const mergedTotals = {}
+    let mergedTotal = 0
+    features.filter(f =>
+      f.geometry.type === 'LineString' &&
+      f.properties['show-route-extras'] === activeExtrasType &&
+      f.properties.route?.extras
+    ).forEach(f => {
+      const result = computeExtrasTotals(f, activeExtrasType)
+      if (!result) return
+      for (const [v, d] of Object.entries(result.totals)) {
+        mergedTotals[v] = (mergedTotals[v] || 0) + d
+      }
+      mergedTotal += result.totalDistance
+    })
+    if (mergedTotal > 0) {
+      for (const value of activeValues) {
+        const pct = ((mergedTotals[value] || 0) / mergedTotal) * 100
+        if (pct < 0.5) activeValues.delete(value)
+      }
+    }
+  }
+
   showExtrasLegend(activeExtrasType, activeValues)
 
   // Buffer LineString segments into polygons for 3D extrusion
