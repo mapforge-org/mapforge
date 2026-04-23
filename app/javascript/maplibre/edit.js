@@ -4,14 +4,15 @@ import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep
 import * as functions from 'helpers/functions';
 import { hideInfoStatus, status } from 'helpers/status';
 import { disableEditControls, enableEditControls, initializeEditControls } from 'maplibre/controls/edit';
+import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
 import { highlightFeature } from 'maplibre/feature';
 import { getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
-import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { addFeature, destroyFeature, map, mapProperties } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
 import { getPointsElevation, getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
 import { editStyles, initializeEditStyles } from 'maplibre/styles/edit_styles';
+import { defaultExtrusionOpacity } from 'maplibre/styles/styles';
 import { addUndoState, redo, undo } from 'maplibre/undo';
 
 export let draw
@@ -93,8 +94,14 @@ export async function initializeEditMode () {
     if (!isGeolocateCompassModeActive()) map.dragPan.enable()
     if (currentMode === draw.getMode()) { return }
     console.log("Switch draw mode from '" + currentMode + "' to '" + draw.getMode() + "'")
-    currentMode = draw.getMode()
 
+    // Reduce extrusion opacity to make edit handles visible
+    const extrusionOpacity = (draw.getMode() === 'simple_select' || draw.getMode().startsWith('draw_')) ? defaultExtrusionOpacity : 0.5
+    map.getStyle().layers
+      .filter(l => l.id.startsWith('polygon-layer-extrusion'))
+      .forEach(l => map.setPaintProperty(l.id, 'fill-extrusion-opacity', extrusionOpacity))
+
+    currentMode = draw.getMode()
     resetDirections()
     functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
     // any paint mode
@@ -244,6 +251,7 @@ export function unselect() {
   draw.deleteAll()
   resetDirections()
   draw.changeMode('simple_select')
+  map.fire('draw.modechange')
   functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
 }
 

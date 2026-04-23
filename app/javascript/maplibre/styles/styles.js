@@ -20,6 +20,8 @@ export const viewStyleNames = [
   'polygon-layer-extrusion'
 ]
 
+export const defaultExtrusionOpacity = 0.9
+
 export function setStyleDefaultFont(font) { labelFont = [font] }
 
 export function initializeViewStyles (sourceName, heatmap=false) {
@@ -430,7 +432,7 @@ export function styles () {
         'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
         'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)],
         // opacity does not support data expressions, it's a constant per layer
-        'fill-extrusion-opacity': 0.9
+        'fill-extrusion-opacity': defaultExtrusionOpacity
       }
     },
     // polygon outlines
