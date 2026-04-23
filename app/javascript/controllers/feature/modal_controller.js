@@ -3,6 +3,7 @@ import { mapChannel } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
+import { toDegreesMinutes } from 'helpers/functions'
 import { status } from 'helpers/status'
 import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
@@ -341,6 +342,32 @@ export default class extends Controller {
     event.preventDefault()
     const coords = event.currentTarget.dataset.coords
     copyToClipboard(coords, "Coordinates copied to clipboard", event.currentTarget)
+  }
+
+  toggleCoordFormat(event) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    const span = event.currentTarget
+    const lat = parseFloat(span.dataset.lat)
+    const lng = parseFloat(span.dataset.lng)
+
+    // Determine current format by checking if degrees symbol is present
+    const isDegreesMinutes = span.textContent.includes('°')
+
+    // Compute new display string (toggle to the opposite format)
+    const newCoords = isDegreesMinutes
+      ? `${lat.toFixed(6)}, ${lng.toFixed(6)}`
+      : `${toDegreesMinutes(lat, true)}, ${toDegreesMinutes(lng, false)}`
+
+    // Update displayed text
+    span.textContent = newCoords
+
+    // Update copy icon's data-coords to match
+    const copyLink = span.parentElement.querySelector('.copy-link')
+    if (copyLink) {
+      copyLink.dataset.coords = newCoords
+    }
   }
 
   animate () {

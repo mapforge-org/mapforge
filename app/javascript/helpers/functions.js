@@ -144,3 +144,18 @@ export function waitForEvent(emitter, eventName) {
     emitter.once(eventName, (data) => resolve(data))
   })
 }
+
+export function toDegreesMinutes (decimal, isLatitude) {
+  const abs = Math.abs(decimal)
+  const degrees = Math.floor(abs)
+  const minutes = (abs - degrees) * 60
+
+  let hemisphere = ''
+  if (isLatitude) {
+    hemisphere = decimal >= 0 ? 'N' : 'S'
+  } else {
+    hemisphere = decimal >= 0 ? 'E' : 'W'
+  }
+
+  return degrees + '° ' + minutes.toFixed(3) + "' " + hemisphere
+}

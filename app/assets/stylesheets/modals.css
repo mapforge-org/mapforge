@@ -160,7 +160,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem;
   }
 
   .copy-link i {
@@ -287,6 +286,7 @@
   cursor: pointer;
   text-decoration: none;
   transition: none;
+  padding: 0.2rem;
 }
 
 .copy-link:hover {
