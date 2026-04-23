@@ -3,6 +3,13 @@ import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import { map } from 'maplibre/map'
 
+// Steepness value to percentage range mapping for labels
+const STEEPNESS_RANGES = {
+  3: '7-11%',
+  4: '12-15%',
+  5: '>16%'
+}
+
 // ORS route extras color configurations
 // Each type maps values to colors and labels for data-driven styling
 export const EXTRAS_COLOR_CONFIGS = {
@@ -74,6 +81,60 @@ export function computeExtrasTotals (feature, extrasType) {
   })
 
   return { type: extrasType, config, totals, totalDistance }
+}
+
+// Create point features with steepness labels for steep segments
+function createSteepnessLabelFeatures (coords, extrasValues) {
+  const labelFeatures = []
+
+  extrasValues.forEach(([startIdx, endIdx, value]) => {
+    if (Math.abs(value) < 3) return
+    if (endIdx <= startIdx || startIdx >= coords.length) return
+
+    const end = Math.min(endIdx, coords.length - 1)
+    const firstCoord = coords[startIdx]
+    const lastCoord = coords[end]
+
+    // Calculate segment length by summing consecutive point distances
+    let segmentLength = 0
+    for (let i = startIdx; i < end; i++) {
+      segmentLength += distance(point(coords[i]), point(coords[i + 1]), { units: 'meters' })
+    }
+
+    // Skip very short segments
+    if (segmentLength < 50) return
+
+    // Compute midpoint by averaging first and last coordinates
+    const midpoint = [
+      (firstCoord[0] + lastCoord[0]) / 2,
+      (firstCoord[1] + lastCoord[1]) / 2
+    ]
+
+    // Format distance label
+    let distanceLabel
+    if (segmentLength >= 1000) {
+      distanceLabel = `${(segmentLength / 1000).toFixed(1)} km`
+    } else {
+      distanceLabel = `${Math.round(segmentLength)} m`
+    }
+
+    // Format label with direction arrow, range, and length on second line
+    const rangeLabel = STEEPNESS_RANGES[Math.abs(value)]
+    const arrow = value > 0 ? '▲' : '▼'
+    const label = `${arrow} ${rangeLabel}\n${distanceLabel}`
+
+    labelFeatures.push({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: midpoint },
+      properties: {
+        'steepness-label': label,
+        'steepness-color': resolveExtrasColor('steepness', value),
+        'steepness-priority': Math.abs(value)
+      }
+    })
+  })
+
+  return labelFeatures
 }
 
 // Show/hide the map legend for route extras
@@ -177,6 +238,12 @@ export function renderRouteExtras (features, sourceId) {
         }
       })
     })
+
+    // Add steepness labels for steep segments
+    if (extrasType === 'steepness') {
+      const labelFeatures = createSteepnessLabelFeatures(coords, extrasData.values)
+      extrasFeatures.push(...labelFeatures)
+    }
   })
 
   // Filter activeValues for discrete legends: remove values < 0.5% of total distance
@@ -223,5 +290,34 @@ export function renderRouteExtras (features, sourceId) {
   map.getSource(sourceId).setData({
     type: 'FeatureCollection',
     features: extrasFeatures.concat(extrusionFeatures)
+  })
+}
+
+export function initializeSteepnessLabelStyles (sourceId) {
+  const layerId = `steepness-labels_${sourceId}`
+  if (map.getLayer(layerId)) return
+
+  map.addLayer({
+    id: layerId,
+    source: sourceId,
+    type: 'symbol',
+    filter: ['has', 'steepness-label'],
+    layout: {
+      'text-field': ['get', 'steepness-label'],
+      'text-font': ['noto_sans_bold'],
+      'text-size': 11,
+      'text-allow-overlap': false,
+      'text-ignore-placement': false,
+      'text-anchor': 'center',
+      'text-justify': 'center',
+      'text-padding': 4,
+      'symbol-sort-key': ['-', 10, ['get', 'steepness-priority']]
+    },
+    paint: {
+      'text-color': '#ffffff',
+      'text-halo-color': ['get', 'steepness-color'],
+      'text-halo-width': 14,
+      'text-halo-blur': 0
+    }
   })
 }
