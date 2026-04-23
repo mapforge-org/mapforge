@@ -199,14 +199,15 @@ html:has(.map), body:has(.map) {
 }
 
 /* maptiler-sdk messes with the geolocate marker animation */
-.maplibregl-user-location-dot::before{
+.maplibregl-user-location-dot::before {
   left: -0.12rem;
   top: -0.1rem;
 }
 
-.maplibregl-user-location-dot{
+.maplibregl-user-location-dot {
+  /* use vars to access them in : :after */
   --user-dot-rotation: rotate(0deg);
-  --display-view: none;
+  --display-direction-view: none;
   --view-height: 3rem;
   --view-width: 3rem;
   --view-pitch: 0deg;
@@ -230,7 +231,7 @@ html:has(.map), body:has(.map) {
 }
 
 .maplibregl-user-location-dot::after{
-  display: var(--display-view);
+  display: var(--display-direction-view);
   border: unset;
   box-shadow: unset;
   background: conic-gradient(

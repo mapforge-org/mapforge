@@ -70,7 +70,7 @@ export function initializeGeoLocateControl() {
 
     cachedDot = document.querySelector('.maplibregl-user-location-dot')
     // Hide cone initially — only show it once valid heading data arrives
-    if (cachedDot) cachedDot.style.setProperty('--display-view', 'none')
+    if (cachedDot) cachedDot.style.setProperty('--display-direction-view', 'none')
 
     const isIOS = typeof DeviceOrientationEvent !== 'undefined'
       && typeof DeviceOrientationEvent.requestPermission === 'function'
@@ -107,12 +107,6 @@ export function initializeGeoLocateControl() {
   geolocate.on('trackuserlocationend', () => {
     isInFollowMode = false
     userHasZoomed = false
-    cachedDot = null
-    if (orientationListener && orientationEventName) {
-      window.removeEventListener(orientationEventName, orientationListener)
-      orientationListener = null
-      orientationEventName = null
-    }
     if (isInCompassMode) {
       deactivateCompassMode()
     }
@@ -121,6 +115,12 @@ export function initializeGeoLocateControl() {
     // trackuserlocationend is sent as soon as auto-follow is off
     // only fully clean up when tracking is completely turned off
     if (geolocate._watchState === 'OFF') {
+      cachedDot = null
+      if (orientationListener && orientationEventName) {
+        window.removeEventListener(orientationEventName, orientationListener)
+        orientationListener = null
+        orientationEventName = null
+      }
       status('Tracking off', 'info')
       // reset geolocate button icon to default state
       const btn = document.querySelector('button.maplibregl-ctrl-geolocate')
@@ -305,7 +305,7 @@ function setLocationOrientation(event) {
   }
 
   // Show cone now that we have valid heading data
-  dot.style.setProperty('--display-view', 'block')
+  dot.style.setProperty('--display-direction-view', 'block')
 
   if (isInCompassMode) {
     // Skip imperceptible heading changes (< 1°) to avoid redundant map re-renders
