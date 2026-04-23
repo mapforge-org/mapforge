@@ -74,12 +74,43 @@ describe "Feature edit" do
         find("#edit-button-edit").click
         sleep(0.3) # edit triggers modal pull-up
         find("#edit-button-advanced").click
-        # Click on the JSON section header to expand it
-        find("#json-section-header").click
+        # Click on the Style JSON section header to expand it
+        find("#style-json-section-header").click
         expect(page).to have_selector('textarea[name="properties"]', visible: true)
         fill_in "properties", with: '{"title": "TEST"}'
         find(".feature-update").click
         wait_for { polygon.reload.properties["title"] }.to eq("TEST")
+      end
+
+      it "can update raw geometry" do
+        find("#edit-button-edit").click
+        sleep(0.3) # edit triggers modal pull-up
+        find("#edit-button-advanced").click
+        # Click on the Geometry JSON section header to expand it
+        find("#geometry-json-section-header").click
+        expect(page).to have_selector('textarea[name="geometry"]', visible: true)
+
+        # Create a valid closed polygon
+        valid_polygon = {
+          "type" => "Polygon",
+          "coordinates" => [
+            [
+              [ 11.0, 49.0 ],
+              [ 11.0, 49.1 ],
+              [ 11.1, 49.1 ],
+              [ 11.1, 49.0 ],
+              [ 11.0, 49.0 ]
+            ]
+          ]
+        }.to_json
+
+        fill_in "geometry", with: valid_polygon
+        find("#feature-edit-raw-geometry .feature-update").click
+
+        # The polygon should be updated successfully
+        wait_for { polygon.reload.geometry["coordinates"][0].count }.to eq(5)
+        expect(polygon.geometry["coordinates"][0].first).to eq([ 11.0, 49.0 ])
+        expect(polygon.geometry["coordinates"][0].last).to eq([ 11.0, 49.0 ])
       end
 
       it "can delete feature" do

@@ -3,12 +3,12 @@ import { mapChannel } from 'channels/map_channel'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
+import { syncStepperValues } from 'helpers/stepper'
 import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
 import { confirmImageLocation, featureIcon, featureImage, uploadImageToFeature } from 'maplibre/feature'
 import { getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
 import { featureColor, featureOutlineColor } from 'maplibre/styles/styles'
-import { syncStepperValues } from 'helpers/stepper'
 import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
@@ -47,6 +47,21 @@ export default class extends Controller {
       console.error('Error updating feature:', error.message)
       status('Error updating feature', 'error')
       document.querySelector('#feature-edit-raw .error').innerHTML = error.message
+    }
+  }
+
+  update_feature_geometry () {
+    const feature = this.getEditFeature()
+    document.querySelector('#feature-edit-raw-geometry .error').innerHTML = ''
+    try {
+      const newGeometry = JSON.parse(document.querySelector('#feature-edit-raw-geometry textarea').value)
+      feature.geometry = newGeometry
+      renderLayer(this.layerIdValue, true)
+      mapChannel.send_message('update_feature', feature)
+    } catch (error) {
+      console.error('Error updating feature geometry:', error.message)
+      status('Error updating feature geometry', 'error')
+      document.querySelector('#feature-edit-raw-geometry .error').innerHTML = error.message
     }
   }
 

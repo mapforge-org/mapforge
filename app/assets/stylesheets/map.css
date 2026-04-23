@@ -312,6 +312,7 @@ html:has(.map), body:has(.map) {
 .route-extras-legend-labels {
   display: flex;
   justify-content: space-between;
+  gap: 0.5rem;
   color: #64748b;
   font-size: 0.65rem;
 }

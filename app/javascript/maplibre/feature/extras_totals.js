@@ -36,11 +36,11 @@ export function showExtrasTotals (feature) {
 
 function buildExtrasSection ({ config, totals, totalDistance }) {
   const section = document.createElement('div')
-  section.className = 'feature-section-card extras-totals-section'
+  section.className = 'feature-section-card'
 
   // Header with title + chevron
   const header = document.createElement('div')
-  header.className = 'extras-totals-header'
+  header.className = 'feature-details-card-header'
 
   const title = document.createElement('h5')
   title.textContent = config.title + ' analysis'

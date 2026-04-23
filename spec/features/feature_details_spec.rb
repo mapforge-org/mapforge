@@ -116,13 +116,13 @@ describe "Feature details" do
     end
 
     it "can expand steepness details" do
-      steepness_header = find(".extras-totals-header", text: "Steepness")
+      steepness_header = find(".feature-details-card-header", text: "Steepness")
       steepness_header.click
       expect(page).to have_text("Slight uphill")
     end
 
     it "can expand surface details" do
-      surface_header = find(".extras-totals-header", text: "Surface")
+      surface_header = find(".feature-details-card-header", text: "Surface")
       surface_header.click
       expect(page).to have_text("Asphalt")
       expect(page).to have_text("Gravel")
@@ -134,7 +134,7 @@ describe "Feature details" do
 
     it "shows chevron indicator that toggles on expand" do
       expect(page).to have_css(".extras-totals-chevron.bi-chevron-down", count: 4)
-      find(".extras-totals-header", text: "Steepness").click
+      find(".feature-details-card-header", text: "Steepness").click
       expect(page).to have_css(".extras-totals-chevron.bi-chevron-up", minimum: 1)
     end
   end

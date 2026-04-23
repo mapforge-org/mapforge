@@ -9,7 +9,7 @@ export const EXTRAS_COLOR_CONFIGS = {
   steepness: {
     title: 'Steepness',
     gradient: true,
-    legendLabels: { '-5': 'Steep downhill', '0': 'Flat', '5': 'Steep uphill' },
+    legendLabels: { '-5': 'Downhill', '0': 'Flat', '5': 'Uphill' },
     labels: { '-5': 'Steep downhill (>16%)', '-4': 'Downhill (12-15%)', '-3': 'Moderate downhill (7-11%)', '-2': 'Gentle downhill (4-6%)', '-1': 'Slight downhill (1-3%)',
               '0': 'Flat (0%)', '1': 'Slight uphill (1-3%)', '2': 'Gentle uphill (4-6%)', '3': 'Moderate uphill (7-11%)', '4': 'Uphill (12-15%)', '5': 'Steep uphill (>16%)' },
     colors: [[-5, '#1a6a1a'], [-4, '#2d8a2d'], [-3, '#4eaa4e'], [-2, '#7bc47a'], [-1, '#a8d5a0'],

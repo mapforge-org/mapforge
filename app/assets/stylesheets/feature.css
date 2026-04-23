@@ -266,7 +266,6 @@
 }
 
 .edit-ui {
-  padding-top: 0.6rem;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -274,6 +273,10 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.edit-ui:not(:first-child) {
+  padding-top: 0.6rem;
 }
 
 #feature-desc {
@@ -293,7 +296,7 @@
   background: #f1f3f6;
   border: 1px solid #dfe4eb;
   border-radius: 0.9rem;
-  padding: 0.1rem 0.7rem 0.9rem;
+  padding: 0.5rem 0.7rem;
   margin-bottom: 0.8rem;
 }
 
@@ -411,28 +414,23 @@ input {
   color: #000;
 }
 
-/* Route extras totals in feature modal */
-.extras-totals-section {
-  padding: 0.1rem 0.7rem 0.7rem;
-}
-
-.extras-totals-header {
+.feature-details-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  padding: 0.3rem 0.2rem 0;
+  padding: 0 0.2rem 0.5rem;
   user-select: none;
 }
 
-.extras-totals-header h5 {
+.feature-details-card-header h5 {
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-dark-charcoal);
 }
 
 @media (width <=574px), (height < 410px) {
-  .extras-totals-header {
+  .feature-details-card-header {
     justify-content: center;
     gap: 0.5rem;
   }

@@ -52,6 +52,7 @@ export default class extends Controller {
       unselect()
     }
     document.querySelector('#feature-edit-raw .error').innerHTML = ''
+    functions.e('#feature-edit-raw-geometry .error', e => { e.innerHTML = '' })
     event?.stopPropagation()
   }
 
@@ -175,6 +176,8 @@ export default class extends Controller {
       const feature = this.getSelectedFeature()
       document.querySelector('#feature-edit-raw textarea')
         .value = JSON.stringify(feature.properties, undefined, 2)
+      document.querySelector('#feature-edit-raw-geometry textarea')
+        .value = JSON.stringify(feature.geometry, undefined, 2)
 
       // Show convert-to-route section for non-routed LineStrings
       const convertSection = document.querySelector('#convert-to-route-section')
@@ -217,20 +220,37 @@ export default class extends Controller {
       })
     }
 
-    // JSON section
-    const jsonHeader = document.querySelector('#json-section-header')
-    const jsonContent = document.querySelector('#json-section-content')
-    const jsonChevron = jsonHeader?.querySelector('.extras-totals-chevron')
+    // Style JSON section
+    const styleJsonHeader = document.querySelector('#style-json-section-header')
+    const styleJsonContent = document.querySelector('#style-json-section-content')
+    const styleJsonChevron = styleJsonHeader?.querySelector('.extras-totals-chevron')
 
-    if (jsonHeader && jsonContent && jsonChevron) {
-      const freshJsonHeader = jsonHeader.cloneNode(true)
-      jsonHeader.parentNode.replaceChild(freshJsonHeader, jsonHeader)
-      const freshJsonChevron = freshJsonHeader.querySelector('.extras-totals-chevron')
+    if (styleJsonHeader && styleJsonContent && styleJsonChevron) {
+      const freshStyleJsonHeader = styleJsonHeader.cloneNode(true)
+      styleJsonHeader.parentNode.replaceChild(freshStyleJsonHeader, styleJsonHeader)
+      const freshStyleJsonChevron = freshStyleJsonHeader.querySelector('.extras-totals-chevron')
 
-      freshJsonHeader.addEventListener('click', () => {
-        jsonContent.classList.toggle('hidden')
-        freshJsonChevron.classList.toggle('bi-chevron-down')
-        freshJsonChevron.classList.toggle('bi-chevron-up')
+      freshStyleJsonHeader.addEventListener('click', () => {
+        styleJsonContent.classList.toggle('hidden')
+        freshStyleJsonChevron.classList.toggle('bi-chevron-down')
+        freshStyleJsonChevron.classList.toggle('bi-chevron-up')
+      })
+    }
+
+    // Geometry JSON section
+    const geometryJsonHeader = document.querySelector('#geometry-json-section-header')
+    const geometryJsonContent = document.querySelector('#geometry-json-section-content')
+    const geometryJsonChevron = geometryJsonHeader?.querySelector('.extras-totals-chevron')
+
+    if (geometryJsonHeader && geometryJsonContent && geometryJsonChevron) {
+      const freshGeometryJsonHeader = geometryJsonHeader.cloneNode(true)
+      geometryJsonHeader.parentNode.replaceChild(freshGeometryJsonHeader, geometryJsonHeader)
+      const freshGeometryJsonChevron = freshGeometryJsonHeader.querySelector('.extras-totals-chevron')
+
+      freshGeometryJsonHeader.addEventListener('click', () => {
+        geometryJsonContent.classList.toggle('hidden')
+        freshGeometryJsonChevron.classList.toggle('bi-chevron-down')
+        freshGeometryJsonChevron.classList.toggle('bi-chevron-up')
       })
     }
   }
