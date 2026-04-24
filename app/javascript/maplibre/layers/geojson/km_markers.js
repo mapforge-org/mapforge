@@ -118,7 +118,7 @@ function kmMarkerStyles () {
         ['concat', '\n', ['get', 'km-unit']], { 'font-scale': 0.7 }
       ],
       'text-size': 12,
-      'text-font': ['noto_sans_bold'],
+      'text-font': labelFont,
       'text-justify': 'center',
       'text-anchor': 'center',
       'text-line-height': 1.0,
