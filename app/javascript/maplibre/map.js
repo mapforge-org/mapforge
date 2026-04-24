@@ -526,7 +526,9 @@ export function sortLayers () {
   // console.log('Sorting layers', layers)
   const userExtrusions = functions.reduceArray(layers, (e) => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion'))
   const flatLayers = functions.reduceArray(layers, (e) => (e.id.includes('-flat'))) // keep flat layers behin houses
-  const routeExtras = functions.reduceArray(layers, (e) => (e.id.includes('route-extras-source')))
+  const routeExtras = functions.reduceArray(layers, (e) => (e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')))
+  const extrasLabels = functions.reduceArray(layers, (e) => (e.id.startsWith('route-extras-labels')))
+  const kmEndMarkers = functions.reduceArray(layers, (e) => (e.id.startsWith('km-marker-end')))
   const kmMarkers = functions.reduceArray(layers, (e) => (e.id.startsWith('km-marker')))
   const editLayer = functions.reduceArray(layers, (e) => (e.id.startsWith('gl-draw-')))
   const userSymbols = functions.reduceArray(layers, (e) => (e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')))
@@ -541,7 +543,7 @@ export function sortLayers () {
 
   layers = layers.concat(flatLayers).concat(lineLayers).concat(routeExtras).concat(userExtrusions).concat(mapExtrusions).concat(directions)
     .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
-    .concat(kmMarkers).concat(userSymbols).concat(userLabels).concat(lineLayerHits).concat(pointsLayerHits)
+    .concat(kmMarkers).concat(extrasLabels).concat(kmEndMarkers).concat(userSymbols).concat(userLabels).concat(lineLayerHits).concat(pointsLayerHits)
 
   const newStyle = { ...currentStyle, layers }
   map.setStyle(newStyle, { diff: true })

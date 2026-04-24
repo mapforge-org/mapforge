@@ -2,6 +2,25 @@ import { buffer } from "@turf/buffer"
 import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import { map } from 'maplibre/map'
+import { labelFont } from 'maplibre/styles/styles'
+
+// Steepness value to percentage range mapping for labels
+const STEEPNESS_RANGES = {
+  3: '7-11%',
+  4: '12-15%',
+  5: '>16%'
+}
+
+// Precompute cumulative distances for a coordinate array to enable O(1) segment length lookups
+function computeCumulativeDistances (coords) {
+  const cumulative = new Array(coords.length)
+  cumulative[0] = 0
+  for (let i = 1; i < coords.length; i++) {
+    const segmentDist = distance(point(coords[i - 1]), point(coords[i]), { units: 'meters' })
+    cumulative[i] = cumulative[i - 1] + segmentDist
+  }
+  return cumulative
+}
 
 // ORS route extras color configurations
 // Each type maps values to colors and labels for data-driven styling
@@ -74,6 +93,68 @@ export function computeExtrasTotals (feature, extrasType) {
   })
 
   return { type: extrasType, config, totals, totalDistance }
+}
+
+// Create point features with labels for route extras segments
+function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulativeDistances) {
+  const labelFeatures = []
+
+  extrasValues.forEach(([startIdx, endIdx, value]) => {
+    // Type-specific filtering
+    if (extrasType === 'steepness' && Math.abs(value) < 3) return
+    if (endIdx <= startIdx || startIdx >= coords.length) return
+
+    const end = Math.min(endIdx, coords.length - 1)
+    const firstCoord = coords[startIdx]
+    const lastCoord = coords[end]
+
+    // O(1) segment length lookup using precomputed cumulative distances
+    const segmentLength = cumulativeDistances[end] - cumulativeDistances[startIdx]
+
+    // Skip very short segments
+    if (segmentLength < 50) return
+
+    // Compute midpoint by averaging first and last coordinates
+    const midpoint = [
+      (firstCoord[0] + lastCoord[0]) / 2,
+      (firstCoord[1] + lastCoord[1]) / 2
+    ]
+
+    // Format distance label
+    let distanceLabel
+    if (segmentLength >= 1000) {
+      distanceLabel = `${(segmentLength / 1000).toFixed(1)} km`
+    } else {
+      distanceLabel = `${Math.round(segmentLength)} m`
+    }
+
+    // Type-specific label formatting
+    let label, priority
+    if (extrasType === 'steepness') {
+      const rangeLabel = STEEPNESS_RANGES[Math.abs(value)]
+      const arrow = value > 0 ? '▲' : '▼'
+      label = `${arrow} ${rangeLabel}\n${distanceLabel}`
+      priority = Math.abs(value)
+    } else if (extrasType === 'surface') {
+      const surfaceName = EXTRAS_COLOR_CONFIGS.surface.labels[String(value)] || 'Unknown'
+      label = `${surfaceName}\n${distanceLabel}`
+      priority = segmentLength
+    } else {
+      return // Unknown type
+    }
+
+    labelFeatures.push({
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: midpoint },
+      properties: {
+        'route-extras-label': label,
+        'route-extras-color': resolveExtrasColor(extrasType, value),
+        'route-extras-priority': priority
+      }
+    })
+  })
+
+  return labelFeatures
 }
 
 // Show/hide the map legend for route extras
@@ -160,6 +241,12 @@ export function renderRouteExtras (features, sourceId) {
     if (!extrasData?.values) return
 
     const coords = feature.geometry.coordinates
+
+    // Precompute cumulative distances once for O(1) segment length lookups in label creation
+    const cumulativeDistances = (extrasType === 'steepness' || extrasType === 'surface')
+      ? computeCumulativeDistances(coords)
+      : null
+
     extrasData.values.forEach(([startIdx, endIdx, value]) => {
       if (endIdx <= startIdx || startIdx >= coords.length) return
       const segment = coords.slice(startIdx, Math.min(endIdx + 1, coords.length))
@@ -177,6 +264,12 @@ export function renderRouteExtras (features, sourceId) {
         }
       })
     })
+
+    // Add labels for steepness or surface segments
+    if (extrasType === 'steepness' || extrasType === 'surface') {
+      const labelFeatures = createExtrasLabelFeatures(coords, extrasData.values, extrasType, cumulativeDistances)
+      extrasFeatures.push(...labelFeatures)
+    }
   })
 
   // Filter activeValues for discrete legends: remove values < 0.5% of total distance
@@ -223,5 +316,34 @@ export function renderRouteExtras (features, sourceId) {
   map.getSource(sourceId).setData({
     type: 'FeatureCollection',
     features: extrasFeatures.concat(extrusionFeatures)
+  })
+}
+
+export function initializeExtrasLabelStyles (sourceId) {
+  const layerId = `route-extras-labels_${sourceId}`
+  if (map.getLayer(layerId)) return
+
+  map.addLayer({
+    id: layerId,
+    source: sourceId,
+    type: 'symbol',
+    filter: ['has', 'route-extras-label'],
+    layout: {
+      'text-field': ['get', 'route-extras-label'],
+      'text-font': labelFont,
+      'text-size': 11,
+      'text-allow-overlap': false,
+      'text-ignore-placement': false,
+      'text-anchor': 'center',
+      'text-justify': 'center',
+      'text-padding': 0,
+      // on collision, show the highest priority (steepest grade or longest surface segment)
+      'symbol-sort-key': ['-', 10, ['get', 'route-extras-priority']]
+    },
+    paint: {
+      'text-color': '#ffffff',
+      'text-halo-color': ['get', 'route-extras-color'],
+      'text-halo-width': 2
+    }
   })
 }

@@ -1,7 +1,7 @@
 import { buffer } from "@turf/buffer"
 import { draw, select } from 'maplibre/edit'
 import { initializeKmMarkerStyles, renderKmMarkers } from 'maplibre/layers/geojson/km_markers'
-import { renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
+import { initializeExtrasLabelStyles, renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
 import { Layer } from 'maplibre/layers/layer'
 import { getFeature } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties } from 'maplibre/map'
@@ -27,6 +27,7 @@ export class GeoJSONLayer extends Layer {
     if (this.layer.cluster) { initializeClusterStyles(this.sourceId, null) }
     initializeKmMarkerStyles(this.kmMarkerSourceId)
     initializeViewStyles(this.routeExtrasSourceId)
+    initializeExtrasLabelStyles(this.routeExtrasSourceId)
 
     // Override line-cap to 'butt' for route extras line layer to prevent color overlap at segment junctions
     // Keep outline as 'round' to ensure continuous white border
