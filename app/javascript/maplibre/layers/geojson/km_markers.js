@@ -2,7 +2,40 @@ import { along } from "@turf/along"
 import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { map, removeStyleLayers } from 'maplibre/map'
-import { featureColor, labelFont, setSource, styles } from 'maplibre/styles/styles'
+import { featureColor, labelFont, setSource } from 'maplibre/styles/styles'
+
+function createKmMarkerImage (color) {
+  const imageName = `km-marker-circle-${color.replace('#', '')}`
+
+  if (!map.hasImage(imageName)) {
+    const size = 32
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+    const ctx = canvas.getContext('2d')
+
+    const centerX = size / 2
+    const centerY = size / 2
+    const radius = size / 2 - 3
+
+    // Draw gray border
+    ctx.strokeStyle = '#CCC'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
+    ctx.stroke()
+
+    // Draw filled circle
+    ctx.fillStyle = color
+    ctx.beginPath()
+    ctx.arc(centerX, centerY, radius - 1, 0, Math.PI * 2)
+    ctx.fill()
+
+    map.addImage(imageName, ctx.getImageData(0, 0, size, size))
+  }
+
+  return imageName
+}
 
 export function renderKmMarkers (features, sourceId) {
   let kmMarkerFeatures = []
@@ -12,10 +45,14 @@ export function renderKmMarkers (features, sourceId) {
 
     const line = lineString(f.geometry.coordinates)
     const distance = length(line, { units: 'kilometers' })
+    const markerColor = f.properties['stroke'] || featureColor
+    const markerImageName = createKmMarkerImage(markerColor)
+
     let interval = 1
     for (let i = 0; i < Math.ceil(distance) + interval; i += interval) {
       const point = along(line, i, { units: 'kilometers' })
-      point.properties['marker-color'] = f.properties['stroke'] || featureColor
+      point.properties['marker-color'] = markerColor
+      point.properties['marker-image'] = markerImageName
       point.properties['marker-size'] = 11
       point.properties['marker-opacity'] = 1
       point.properties['km'] = i
@@ -45,6 +82,7 @@ export function renderKmMarkers (features, sourceId) {
 
 export function initializeKmMarkerStyles (sourceId) {
   removeStyleLayers(sourceId)
+
   kmMarkerStyles().forEach(style => {
     style = setSource(style, sourceId)
     map.addLayer(style)
@@ -54,33 +92,27 @@ export function initializeKmMarkerStyles (sourceId) {
 function kmMarkerStyles () {
   let styleLayers = []
 
-  styleLayers.push(makePointsLayer(1, 14))
-  styleLayers.push(makeNumbersLayer(1, 14))
-  styleLayers.push(makePointsLayer(2, 11, 14))
-  styleLayers.push(makeNumbersLayer(2, 11, 14))
-  styleLayers.push(makePointsLayer(5, 10, 11))
-  styleLayers.push(makeNumbersLayer(5, 10, 11))
-  styleLayers.push(makePointsLayer(10, 9, 10))
-  styleLayers.push(makeNumbersLayer(10, 9, 10))
-  styleLayers.push(makePointsLayer(25, 8, 9))
-  styleLayers.push(makeNumbersLayer(25, 8, 9))
-  styleLayers.push(makePointsLayer(50, 7, 8))
-  styleLayers.push(makeNumbersLayer(50, 7, 8))
-  styleLayers.push(makePointsLayer(100, 5, 7))
-  styleLayers.push(makeNumbersLayer(100, 5, 7))
+  // Combined marker layers (icon + text in one symbol layer)
+  styleLayers.push(makeKmMarkerLayer(1, 14))
+  styleLayers.push(makeKmMarkerLayer(2, 12, 14))
+  styleLayers.push(makeKmMarkerLayer(5, 10, 12))
+  styleLayers.push(makeKmMarkerLayer(10, 9, 10))
+  styleLayers.push(makeKmMarkerLayer(25, 8, 9))
+  styleLayers.push(makeKmMarkerLayer(50, 7, 8))
+  styleLayers.push(makeKmMarkerLayer(100, 5, 7))
 
-  const base = { ...styles()['points-layer'] }
+  // End marker (total distance) - combined icon + text
   styleLayers.push({
-    ...base,
-    id: `km-marker-points-end`,
-    filter: ["==", ["get", "km-marker-numbers-end"], 1]
-  })
-  styleLayers.push({
-    id: `km-marker-numbers-end`,
+    id: `km-marker-end`,
     type: 'symbol',
     filter: ["==", ["get", "km-marker-numbers-end"], 1],
     layout: {
-      'text-allow-overlap': true,
+      'icon-image': ['get', 'marker-image'],
+      'icon-size': ['/', ['get', 'marker-size'], 14],
+      'icon-allow-overlap': false,
+      'icon-padding': 0,
+      'text-allow-overlap': false,
+      'text-padding': 0,
       'text-field': ['format',
         ['get', 'km'], { 'font-scale': 1.0 },
         ['concat', '\n', ['get', 'km-unit']], { 'font-scale': 0.7 }
@@ -90,7 +122,8 @@ function kmMarkerStyles () {
       'text-justify': 'center',
       'text-anchor': 'center',
       'text-line-height': 1.0,
-      'text-offset': [0, 0.3]
+      'text-offset': [0, 0.3],
+      'symbol-sort-key': 20
     },
     paint: {
       'text-color': '#ffffff'
@@ -100,31 +133,26 @@ function kmMarkerStyles () {
   return styleLayers
 }
 
-function makePointsLayer (divisor, minzoom, maxzoom = 24) {
-  const base = { ...styles()['points-layer'] }
+function makeKmMarkerLayer (divisor, minzoom, maxzoom = 24) {
   return {
-    ...base,
-    id: `km-marker-points-${divisor}`,
-    filter: ["==", ["%", ["get", "km"], divisor], 0],
-    minzoom,
-    maxzoom
-  }
-}
-
-function makeNumbersLayer (divisor, minzoom, maxzoom = 24) {
-  return {
-    id: `km-marker-numbers-${divisor}`,
+    id: `km-marker-${divisor}`,
     type: 'symbol',
     filter: ["==", ["%", ["get", "km"], divisor], 0],
     minzoom,
     maxzoom,
     layout: {
+      'icon-image': ['get', 'marker-image'],
+      'icon-size': ['/', ['get', 'marker-size'], 14],
+      'icon-allow-overlap': false,
+      'icon-padding': 0,
       'text-allow-overlap': false,
+      'text-padding': 0,
       'text-field': ['get', 'km'],
       'text-size': 11,
       'text-font': labelFont,
       'text-justify': 'center',
-      'text-anchor': 'center'
+      'text-anchor': 'center',
+      'symbol-sort-key': 10
     },
     paint: {
       'text-color': '#ffffff'

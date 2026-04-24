@@ -528,6 +528,7 @@ export function sortLayers () {
   const flatLayers = functions.reduceArray(layers, (e) => (e.id.includes('-flat'))) // keep flat layers behin houses
   const routeExtras = functions.reduceArray(layers, (e) => (e.id.includes('route-extras-source') && !e.id.startsWith('steepness-labels')))
   const steepnessLabels = functions.reduceArray(layers, (e) => (e.id.startsWith('steepness-labels')))
+  const kmEndMarkers = functions.reduceArray(layers, (e) => (e.id.startsWith('km-marker-end')))
   const kmMarkers = functions.reduceArray(layers, (e) => (e.id.startsWith('km-marker')))
   const editLayer = functions.reduceArray(layers, (e) => (e.id.startsWith('gl-draw-')))
   const userSymbols = functions.reduceArray(layers, (e) => (e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')))
@@ -542,7 +543,7 @@ export function sortLayers () {
 
   layers = layers.concat(flatLayers).concat(lineLayers).concat(routeExtras).concat(userExtrusions).concat(mapExtrusions).concat(directions)
     .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
-    .concat(kmMarkers).concat(steepnessLabels).concat(userSymbols).concat(userLabels).concat(lineLayerHits).concat(pointsLayerHits)
+    .concat(kmMarkers).concat(steepnessLabels).concat(kmEndMarkers).concat(userSymbols).concat(userLabels).concat(lineLayerHits).concat(pointsLayerHits)
 
   const newStyle = { ...currentStyle, layers }
   map.setStyle(newStyle, { diff: true })

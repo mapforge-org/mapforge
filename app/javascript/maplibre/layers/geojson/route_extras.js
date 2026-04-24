@@ -310,14 +310,14 @@ export function initializeSteepnessLabelStyles (sourceId) {
       'text-ignore-placement': false,
       'text-anchor': 'center',
       'text-justify': 'center',
-      'text-padding': 4,
+      'text-padding': 0,
+      // on collission, show the strongest steepness
       'symbol-sort-key': ['-', 10, ['get', 'steepness-priority']]
     },
     paint: {
       'text-color': '#ffffff',
       'text-halo-color': ['get', 'steepness-color'],
-      'text-halo-width': 14,
-      'text-halo-blur': 0
+      'text-halo-width': 2
     }
   })
 }
