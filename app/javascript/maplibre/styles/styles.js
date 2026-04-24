@@ -526,7 +526,7 @@ export function styles () {
         ['==', ['get', 'flat'], true],
         ["!", ["has", "point_count"]],
         ["!", ["has", "marker-image-url"]],
-        ["!", ["has", "steepness-label"]],
+        ["!", ["has", "route-extras-label"]],
         minZoomFilter],
       paint: {
         "circle-pitch-alignment": "map",
@@ -579,7 +579,7 @@ export function styles () {
         ['!=', ['get', 'flat'], true],
         ["!", ["has", "point_count"]],
         ["!", ["has", "marker-image-url"]],
-        ["!", ["has", "steepness-label"]],
+        ["!", ["has", "route-extras-label"]],
         minZoomFilter
       ],
       paint: {
@@ -628,7 +628,7 @@ export function styles () {
       filter: [
         "all",
         ["==", ["geometry-type"], "Point"],
-        ["!", ["has", "steepness-label"]],
+        ["!", ["has", "route-extras-label"]],
         minZoomFilter
       ],
       paint: {

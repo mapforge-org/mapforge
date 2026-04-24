@@ -83,12 +83,13 @@ export function computeExtrasTotals (feature, extrasType) {
   return { type: extrasType, config, totals, totalDistance }
 }
 
-// Create point features with steepness labels for steep segments
-function createSteepnessLabelFeatures (coords, extrasValues) {
+// Create point features with labels for route extras segments
+function createExtrasLabelFeatures (coords, extrasValues, extrasType) {
   const labelFeatures = []
 
   extrasValues.forEach(([startIdx, endIdx, value]) => {
-    if (Math.abs(value) < 3) return
+    // Type-specific filtering
+    if (extrasType === 'steepness' && Math.abs(value) < 3) return
     if (endIdx <= startIdx || startIdx >= coords.length) return
 
     const end = Math.min(endIdx, coords.length - 1)
@@ -118,18 +119,28 @@ function createSteepnessLabelFeatures (coords, extrasValues) {
       distanceLabel = `${Math.round(segmentLength)} m`
     }
 
-    // Format label with direction arrow, range, and length on second line
-    const rangeLabel = STEEPNESS_RANGES[Math.abs(value)]
-    const arrow = value > 0 ? '▲' : '▼'
-    const label = `${arrow} ${rangeLabel}\n${distanceLabel}`
+    // Type-specific label formatting
+    let label, priority
+    if (extrasType === 'steepness') {
+      const rangeLabel = STEEPNESS_RANGES[Math.abs(value)]
+      const arrow = value > 0 ? '▲' : '▼'
+      label = `${arrow} ${rangeLabel}\n${distanceLabel}`
+      priority = Math.abs(value)
+    } else if (extrasType === 'surface') {
+      const surfaceName = EXTRAS_COLOR_CONFIGS.surface.labels[String(value)] || 'Unknown'
+      label = `${surfaceName}\n${distanceLabel}`
+      priority = segmentLength
+    } else {
+      return // Unknown type
+    }
 
     labelFeatures.push({
       type: 'Feature',
       geometry: { type: 'Point', coordinates: midpoint },
       properties: {
-        'steepness-label': label,
-        'steepness-color': resolveExtrasColor('steepness', value),
-        'steepness-priority': Math.abs(value)
+        'route-extras-label': label,
+        'route-extras-color': resolveExtrasColor(extrasType, value),
+        'route-extras-priority': priority
       }
     })
   })
@@ -239,9 +250,9 @@ export function renderRouteExtras (features, sourceId) {
       })
     })
 
-    // Add steepness labels for steep segments
-    if (extrasType === 'steepness') {
-      const labelFeatures = createSteepnessLabelFeatures(coords, extrasData.values)
+    // Add labels for steepness or surface segments
+    if (extrasType === 'steepness' || extrasType === 'surface') {
+      const labelFeatures = createExtrasLabelFeatures(coords, extrasData.values, extrasType)
       extrasFeatures.push(...labelFeatures)
     }
   })
@@ -293,17 +304,17 @@ export function renderRouteExtras (features, sourceId) {
   })
 }
 
-export function initializeSteepnessLabelStyles (sourceId) {
-  const layerId = `steepness-labels_${sourceId}`
+export function initializeExtrasLabelStyles (sourceId) {
+  const layerId = `route-extras-labels_${sourceId}`
   if (map.getLayer(layerId)) return
 
   map.addLayer({
     id: layerId,
     source: sourceId,
     type: 'symbol',
-    filter: ['has', 'steepness-label'],
+    filter: ['has', 'route-extras-label'],
     layout: {
-      'text-field': ['get', 'steepness-label'],
+      'text-field': ['get', 'route-extras-label'],
       'text-font': ['noto_sans_bold'],
       'text-size': 11,
       'text-allow-overlap': false,
@@ -311,12 +322,12 @@ export function initializeSteepnessLabelStyles (sourceId) {
       'text-anchor': 'center',
       'text-justify': 'center',
       'text-padding': 0,
-      // on collission, show the strongest steepness
-      'symbol-sort-key': ['-', 10, ['get', 'steepness-priority']]
+      // on collision, show the highest priority (steepest grade or longest surface segment)
+      'symbol-sort-key': ['-', 10, ['get', 'route-extras-priority']]
     },
     paint: {
       'text-color': '#ffffff',
-      'text-halo-color': ['get', 'steepness-color'],
+      'text-halo-color': ['get', 'route-extras-color'],
       'text-halo-width': 2
     }
   })
