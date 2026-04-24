@@ -1,2 +1,2 @@
-import{coordEach as t}from"@turf/meta";function n(n,i={}){if(n.bbox!=null&&true!==i.recompute)return n.bbox;const r=[Infinity,Infinity,-Infinity,-Infinity];t(n,(t=>{r[0]>t[0]&&(r[0]=t[0]);r[1]>t[1]&&(r[1]=t[1]);r[2]<t[0]&&(r[2]=t[0]);r[3]<t[1]&&(r[3]=t[1])}));return r}var i=n;export{n as bbox,i as default};
+import{coordEach as e}from"@turf/meta";function t(t,n={}){if(t.bbox!=null&&!0!==n.recompute)return t.bbox;let r=[1/0,1/0,-1/0,-1/0];return e(t,e=>{r[0]>e[0]&&(r[0]=e[0]),r[1]>e[1]&&(r[1]=e[1]),r[2]<e[0]&&(r[2]=e[0]),r[3]<e[1]&&(r[3]=e[1])}),r}var n=t;export{t as bbox,n as default};
 
