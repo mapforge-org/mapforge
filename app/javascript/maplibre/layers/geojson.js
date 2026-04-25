@@ -50,6 +50,18 @@ export class GeoJSONLayer extends Layer {
     this.resetDrawFeatures(resetDraw)
   }
 
+  renderAnimationFrame(feature, frameCount) {
+    feature.properties = feature.properties || {}
+    feature.id = feature.id || feature.properties.id
+    feature.properties.id = feature.id
+    map.getSource(this.sourceId).updateData({ update: [feature] })
+
+    renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
+    if (frameCount % 10 === 0) {
+      renderKmMarkers(this.layer.geojson.features, this.kmMarkerSourceId)
+    }
+  }
+
   resetDrawFeatures(resetDraw) {
     if (draw && resetDraw) {
       // This has a performance drawback over draw.set(), but some feature

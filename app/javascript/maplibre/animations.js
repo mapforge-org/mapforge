@@ -7,7 +7,7 @@ import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
-import { getFeatureSource, renderLayers } from 'maplibre/layers/layers'
+import { getFeatureSource, renderAnimationFrame, renderLayers } from 'maplibre/layers/layers'
 import { map, mapProperties } from 'maplibre/map'
 
 export class AnimationManager {
@@ -40,6 +40,7 @@ export class AnimatePointAnimation extends AnimationManager {
     const starttime = performance.now()
     const start = feature.geometry.coordinates
     console.log('Animating point from: ' + start + ' to ' + end)
+    let frameCounter = 0
 
     const animate = (timestamp) => {
       let progress = (timestamp - starttime) / duration
@@ -50,7 +51,8 @@ export class AnimatePointAnimation extends AnimationManager {
         start[1] + (end[1] - start[1]) * progress
       ]
       feature.geometry.coordinates = newCoordinates
-      renderLayers('geojson', false)
+      renderAnimationFrame(feature, frameCounter)
+      frameCounter++
       if (progress < 1) { this.animationId = requestAnimationFrame(animate) }
     }
     this.animationId = requestAnimationFrame(animate)
@@ -93,7 +95,7 @@ export class AnimateLineAnimation extends AnimationManager {
       // console.log("Frame #" + _frame + ", distance: " + distance + ", coord: " + coordinate)
 
       line.geometry.coordinates.push(coordinate)
-      renderLayers('geojson', false)
+      renderAnimationFrame(line, step)
 
       // Update camera position
       if (follow) { map.jumpTo({ center: coordinate }) }
@@ -105,6 +107,7 @@ export class AnimateLineAnimation extends AnimationManager {
         self.animationId = null
         // reset coords, else line will stay with extrapolated coordinates
         line.geometry.coordinates = lineCoords
+        renderLayers('geojson', false)
       }
     }
 
@@ -124,7 +127,7 @@ export class AnimatePolygonAnimation extends AnimationManager {
       const progress = counter / steps
       polygon.properties['fill-extrusion-height'] = progress * height
       // console.log('New height: ' + polygon.properties['fill-extrusion-height'])
-      renderLayers('geojson', false)
+      renderAnimationFrame(polygon, counter)
 
       counter++
 
@@ -132,6 +135,7 @@ export class AnimatePolygonAnimation extends AnimationManager {
         self.animationId = requestAnimationFrame(animate)
       } else {
         self.animationId = null
+        renderLayers('geojson', false)
       }
     }
 

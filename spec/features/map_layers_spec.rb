@@ -81,7 +81,7 @@ describe "Map" do
       click_button "Yes"
       wait_for { map.reload.features.count }.to eq 1
       # flyTo is finished when the feature details are shown
-      expect(page).to have_text("Properties")
+      expect(page).to have_text("Details")
       # flyToFeature() after async image upload doesn't complete in headless test env
       # expect(page.evaluate_script("[map.getCenter().lng.toFixed(4), map.getCenter().lat.toFixed(4)].toString()"))
       #   .to eq("9.9749,53.5445")
