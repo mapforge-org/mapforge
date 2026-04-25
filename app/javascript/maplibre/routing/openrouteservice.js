@@ -16,7 +16,7 @@ import Openrouteservice from 'openrouteservice-js'
 // quiet (foot only): 0 normal, 1 prefer quiet ways
 export const orsProfiles = {
   car:  { profile: 'driving-car',     weightings: {} },
-  bike: { profile: 'cycling-regular', weightings: { } },
+  bike: { profile: 'cycling-mountain', weightings: { } },
   foot: { profile: 'foot-hiking',     weightings: { green: 0.6, quiet: 0.3 } }
 }
 
