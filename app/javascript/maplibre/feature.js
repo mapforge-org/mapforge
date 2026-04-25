@@ -207,6 +207,22 @@ export function featureIcon (feature) {
   return image
 }
 
+export function getFeatureTypeName(feature) {
+  if (feature.geometry.type === 'LineString' && feature.properties?.route?.profile) {
+    const profile = feature.properties.route.profile
+    if (profile === 'bike' || profile.includes('cycling')) {
+      return 'Bicycle route'
+    }
+    if (profile === 'car' || profile.includes('driving')) {
+      return 'Car route'
+    }
+    if (profile === 'foot' || profile.includes('foot')) {
+      return 'Hiking route'
+    }
+  }
+  return feature.geometry.type
+}
+
 export function featureImage(feature) {
   let image = ''
   if (feature.properties['marker-image-url']) {

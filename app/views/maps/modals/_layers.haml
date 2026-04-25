@@ -35,36 +35,6 @@
               %li
                 %button.dropdown-item{
                   type: "button",
-                  data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: "Custom query" }
-                }
-                  %i.bi.bi-pencil-square.me-2
-                  Custom Overpass query
-              %li
-                %hr.dropdown-divider
-              %li
-                %button.dropdown-item{
-                  type: "button",
-                  data: { action: "click->map--layers#createWikipediaLayer" }
-                }
-                  %i.bi.bi-wikipedia.me-2
-                  Wikipedia articles
-              / Predefined queries, must match definitions in maplibre/layers/queries.js
-              :ruby
-                overpass_queries = ['🚻 Public toilets', '🍻 Breweries', '🚇 Subway', '🚰 Drinking water',
-                '🚶🏾 Hiking routes', '🚴 Bicycle routes', '🏕️ Camping', '🚒 Feuerwehr', '👨🏻‍🚒 Hydranten', '🚆 Trains',
-                '🛜 Wifi', '🏪 Food Shops', '🏊 Swimming pools' ]
-              - overpass_queries.each do |query_name|
-                %li
-                  %button.dropdown-item{
-                    type: "button",
-                    data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: query_name }
-                  }
-                    = query_name
-              %li
-                %hr.dropdown-divider
-              %li
-                %button.dropdown-item{
-                  type: "button",
                   data: { action: "click->map--layers#createRasterLayer" }
                 }
                   %i.bi.bi-grid-3x3.me-2
@@ -93,6 +63,36 @@
                   data: { action: "click->map--layers#createSlopesWaymarkedtrailsLayer" }
                 }
                   ⛷️ waymarkedtrails.org: slopes
+              %li
+                %hr.dropdown-divider
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: "Custom query" }
+                }
+                  %i.bi.bi-pencil-square.me-2
+                  Custom Overpass query
+              / Predefined queries, must match definitions in maplibre/layers/queries.js
+              :ruby
+                overpass_queries = ['🚻 Public toilets', '🍻 Breweries', '🚇 Subway', '🚰 Drinking water',
+                '🚶🏾 Hiking routes', '🚴 Bicycle routes', '🏕️ Camping', '🚒 Feuerwehr', '👨🏻‍🚒 Hydranten', '🚆 Trains',
+                '🛜 Wifi', '🏪 Food Shops', '🏊 Swimming pools' ]
+              - overpass_queries.each do |query_name|
+                %li
+                  %button.dropdown-item{
+                    type: "button",
+                    data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: query_name }
+                  }
+                    = query_name
+              %li
+                %hr.dropdown-divider
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createWikipediaLayer" }
+                }
+                  %i.bi.bi-wikipedia.me-2
+                  Wikipedia articles
               %li
                 %hr.dropdown-divider
               %li

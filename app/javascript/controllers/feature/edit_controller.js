@@ -6,7 +6,7 @@ import { status } from 'helpers/status'
 import { syncStepperValues } from 'helpers/stepper'
 import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
-import { confirmImageLocation, featureIcon, featureImage, uploadImageToFeature } from 'maplibre/feature'
+import { confirmImageLocation, featureIcon, featureImage, getFeatureTypeName, uploadImageToFeature } from 'maplibre/feature'
 import { getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
 import { featureColor, featureOutlineColor } from 'maplibre/styles/styles'
 import { addUndoState } from 'maplibre/undo'
@@ -31,7 +31,7 @@ export default class extends Controller {
     if (dom.isInputElement(e.target)) return // Don't trigger if typing in input
 
     const feature = this.getEditFeature()
-    if (confirm(`Really delete this ${feature.geometry.type}?`)) {
+    if (confirm(`Really delete this ${getFeatureTypeName(feature)}?`)) {
       handleDelete({ features: [feature] })
     }
   }

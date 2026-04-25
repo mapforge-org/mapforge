@@ -7,7 +7,7 @@ import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { initializeGeoLocateControl } from 'maplibre/controls/geolocate'
 import { draw, unselect } from 'maplibre/edit'
-import { featureIcon, resetHighlightedFeature } from 'maplibre/feature'
+import { featureIcon, getFeatureTypeName, resetHighlightedFeature } from 'maplibre/feature'
 import { layers } from 'maplibre/layers/layers'
 import { map, mapProperties } from 'maplibre/map'
 
@@ -263,7 +263,7 @@ export function initLayersModal () {
         listItem.appendChild(icon)
         const name = document.createElement('span')
         name.classList.add('feature-name')
-        name.textContent = (feature.properties.title || feature.properties.name || feature.properties.label || feature.geometry.type)
+        name.textContent = (feature.properties.title || feature.properties.name || feature.properties.label || getFeatureTypeName(feature))
         listItem.appendChild(name)
         const link = document.createElement('a')
         link.setAttribute('href', '#')
