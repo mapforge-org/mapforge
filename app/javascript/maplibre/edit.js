@@ -179,8 +179,8 @@ export async function initializeEditMode () {
     // Fix for mapbox-gl-draw issue #650: after a touch-drag, the draw library's
     // state machine can fail to re-enable dragPan, freezing the map.
     // Run after draw's own touchend handler via setTimeout to restore it.
-    const mode = draw.getMode()
-    if (mode === 'simple_select' || mode === 'direct_select') {
+    // Excluded: draw_paint_mode (intentionally disables dragPan for freehand drawing)
+    if (draw.getMode() !== 'draw_paint_mode') {
       setTimeout(() => { if (!isGeolocateCompassModeActive()) map.dragPan.enable() }, 0)
     }
   })
