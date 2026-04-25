@@ -185,6 +185,32 @@ export class Layer {
     }
 
     map.on('click', this.getStyleLayerIds(), this.clickHandler)
+
+    // Double-click opens geometry edit mode directly
+    this.dblClickHandler = (e) => {
+      if (window.gon.map_mode !== 'rw') { return }
+      if (this.type !== 'geojson') { return }
+      if (draw && draw.getMode() !== 'simple_select') { return }
+
+      let feature = e.features.find(f => !f.properties?.cluster)
+      if (!feature) { return }
+
+      console.log('Double-click on feature:', feature.id)
+
+      frontFeature(feature)
+      highlightFeature(feature, true, this.sourceId)
+
+      // Dispatch custom event to open geometry tab
+      window.dispatchEvent(new CustomEvent('toggle-edit-feature', {
+        detail: { type: 'geometry' }
+      }))
+
+      // Prevent map zoom on double-click
+      e.preventDefault()
+      e.originalEvent.stopPropagation()
+    }
+
+    map.on('dblclick', this.getStyleLayerIds(), this.dblClickHandler)
   }
 
   /**
@@ -234,6 +260,10 @@ export class Layer {
     if (this.clickHandler) {
       map.off('click', this.getStyleLayerIds(), this.clickHandler)
       this.clickHandler = null
+    }
+    if (this.dblClickHandler) {
+      map.off('dblclick', this.getStyleLayerIds(), this.dblClickHandler)
+      this.dblClickHandler = null
     }
     if (this.mouseMoveHandler) {
       map.off('mousemove', this.mouseMoveHandler)

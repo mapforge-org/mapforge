@@ -1,5 +1,12 @@
 #feature-edit-ui.hidden
 
+  .feature-edit-section{ 'data-edit-section': "geometry" }
+    .geometry-hint.text-center.text-muted.pt-4.pb-4
+      %p#geometry-hint-point.edit-point Drag the point to move it
+      %p#geometry-hint-line.edit-line Drag vertices to reshape
+      %p#geometry-hint-polygon.edit-polygon Drag vertices to reshape
+      %p#geometry-hint-routed.hidden Drag or add waypoints to reroute
+
   .feature-edit-section{ 'data-edit-section': "properties" }
     .feature-section-card.pt-2
       #feature-title-input.edit-ui.form-floating

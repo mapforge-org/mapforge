@@ -124,6 +124,10 @@ html:has(.map), body:has(.map) {
     font-size: 0.9rem;
     min-width: 0.9rem;
   }
+
+  #layer-reload {
+    top: 2.5rem;
+  }
 }
 
 /* this is an ugly hack for the profile dropdown not to be cut off */

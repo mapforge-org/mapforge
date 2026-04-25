@@ -90,15 +90,20 @@ function featureMeta (feature) {
 
 function featureVertexes(feature) {
   let vertexes = ''
-  if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString' ||
-    feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
-    let coords = feature.geometry.coordinates.length
-    if (feature.geometry.type === 'Polygon') {
-      coords -= 1 // don't count duplicate last point
-    }
+  if (feature.geometry.type === 'LineString') {
+    const coords = feature.geometry.coordinates.length
+    vertexes = ', ' + coords + ' points'
+  } else if (feature.geometry.type === 'MultiLineString') {
+    const coords = feature.geometry.coordinates.reduce((sum, line) => sum + line.length, 0)
+    vertexes = ', ' + coords + ' points'
+  } else if (feature.geometry.type === 'Polygon') {
+    const coords = feature.geometry.coordinates[0].length - 1
+    vertexes = ', ' + coords + ' points'
+  } else if (feature.geometry.type === 'MultiPolygon') {
+    const coords = feature.geometry.coordinates.reduce((sum, polygon) => sum + polygon[0].length - 1, 0)
     vertexes = ', ' + coords + ' points'
   }
- return vertexes
+  return vertexes
 }
 
 export async function showFeatureDetails (feature) {

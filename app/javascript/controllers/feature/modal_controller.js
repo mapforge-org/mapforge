@@ -24,30 +24,44 @@ export default class extends Controller {
 
   toggle_edit_feature (event) {
     const activeUiTab = document.querySelector('#edit-buttons .feature-tab-btn.active[data-edit-type="ui"]')?.dataset?.editTab
+    const activeGeometry = document.querySelector('#edit-button-geometry')?.classList.contains('active')
     document.querySelector('#edit-button-details')?.classList.remove('active')
+    document.querySelector('#edit-button-geometry')?.classList.remove('active')
     document.querySelector('#edit-button-edit').classList.remove('active')
     document.querySelector('#edit-button-style')?.classList.remove('active')
     document.querySelector('#edit-button-advanced')?.classList.remove('active')
-    let type = event?.currentTarget?.dataset?.editType || 'ui'
-    const tab = event?.currentTarget?.dataset?.editTab || 'properties'
+    let type = event?.detail?.type || event?.currentTarget?.dataset?.editType || 'ui'
+    const tab = event?.detail?.tab || event?.currentTarget?.dataset?.editTab || 'properties'
+
     if (type === 'details') {
       showFeatureDetails(this.getSelectedFeature())
       unselect()
       event?.currentTarget?.classList?.add('active')
-    } else if (type === 'ui' && (document.querySelector('#feature-edit-ui').classList.contains('hidden') || activeUiTab !== tab)) {
-      // console.log('show_feature_edit_ui')
+    } else if (type === 'geometry') {
+      unselect()
       document.querySelector('#feature-details-body').classList.add('hidden')
       event?.currentTarget?.classList?.add('active')
-      this.show_feature_edit_ui(tab)
+      this.show_feature_edit_ui('geometry')
 
-      // add feature to draw
+      // Add feature to draw for geometry editing
       const feature = this.getSelectedFeature()
       if (draw && feature) {
         draw.add(feature)
         select(feature)
       }
+
+      // Update geometry hint based on feature type and routing
+      this.updateGeometryHint(feature)
+    } else if (type === 'ui' && (document.querySelector('#feature-edit-ui').classList.contains('hidden') || activeUiTab !== tab || activeGeometry)) {
+      // Switch to UI tab: unselect if coming from geometry mode
+      if (activeGeometry) {
+        unselect()
+      }
+      document.querySelector('#feature-details-body').classList.add('hidden')
+      event?.currentTarget?.classList?.add('active')
+      this.show_feature_edit_ui(tab)
     } else {
-      // repeated click on the current edit mode returns to feature description
+      // Repeated click on the current edit mode returns to feature description
       showFeatureDetails(this.getSelectedFeature())
       unselect()
     }
@@ -61,9 +75,16 @@ export default class extends Controller {
       this.pullUpModal(this.element)
     }
     const feature = this.getSelectedFeature()
-    dom.showElements(['#feature-edit-ui', '#button-add-desc'])
-    feature.properties.desc ? this.show_add_desc() : dom.hideElements(['#feature-desc-section', '#feature-desc'])
+    dom.showElements(['#feature-edit-ui'])
+
+    // Only show description controls for non-geometry tabs
+    if (tab !== 'geometry') {
+      dom.showElements(['#button-add-desc'])
+      feature.properties.desc ? this.show_add_desc() : dom.hideElements(['#feature-desc-section', '#feature-desc'])
+    }
+
     this.show_ui_tab(tab)
+    if (tab === 'geometry') { document.querySelector('#edit-button-geometry')?.classList.add('active') }
     if (tab === 'properties') { document.querySelector('#edit-button-edit')?.classList.add('active') }
     if (tab === 'style') { document.querySelector('#edit-button-style')?.classList.add('active') }
     if (tab === 'advanced') { document.querySelector('#edit-button-advanced')?.classList.add('active') }
@@ -198,6 +219,20 @@ export default class extends Controller {
 
       // Initialize collapsible section toggles
       this.initAdvancedTabToggles()
+    }
+  }
+
+  updateGeometryHint (feature) {
+    dom.hideElements(['#geometry-hint-point', '#geometry-hint-line', '#geometry-hint-polygon', '#geometry-hint-routed'])
+
+    if (feature.properties?.route?.provider) {
+      dom.showElements(['#geometry-hint-routed'])
+    } else if (feature.geometry.type === 'Point') {
+      dom.showElements(['#geometry-hint-point'])
+    } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
+      dom.showElements(['#geometry-hint-line'])
+    } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+      dom.showElements(['#geometry-hint-polygon'])
     }
   }
 

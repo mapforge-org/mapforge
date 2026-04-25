@@ -105,7 +105,7 @@ export class BasemapLayer extends Layer {
       this.selectedFeature = feature
       hideContextMenu()
 
-      console.log('Selected features: ', features)
+      // console.log('Hovering features: ', features)
 
       const geojsonFeature = {
         type: 'Feature',

@@ -100,7 +100,10 @@ export default class extends Controller {
       document.querySelector(displaySelector).textContent = displayFormat ? displayFormat(value) : value
     }
     feature.properties[propertyName] = value
-    draw.setFeatureProperty(this.featureIdValue, propertyName, value)
+    // Only update draw if feature is in draw (i.e., geometry editing is active)
+    if (draw && draw.get(this.featureIdValue)) {
+      draw.setFeatureProperty(this.featureIdValue, propertyName, value)
+    }
     renderLayer(this.layerIdValue, true)
     syncStepperValues()
   }
@@ -210,7 +213,10 @@ export default class extends Controller {
     symbol = symbol.replace(/\uFE0F/g, '')
     feature.properties['marker-symbol'] = symbol
     // draw layer feature properties aren't getting updated by draw.set()
-    draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
+    // Only update draw if feature is in draw (i.e., geometry editing is active)
+    if (draw && draw.get(this.featureIdValue)) {
+      draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
+    }
     functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
     renderLayer(this.layerIdValue, true)
   }
@@ -222,7 +228,10 @@ export default class extends Controller {
 
     uploadImageToFeature(image, feature)
       .then(data => {
-        draw.setFeatureProperty(this.featureIdValue, 'marker-image-url', data.icon)
+        // Only update draw if feature is in draw (i.e., geometry editing is active)
+        if (draw && draw.get(this.featureIdValue)) {
+          draw.setFeatureProperty(this.featureIdValue, 'marker-image-url', data.icon)
+        }
         document.querySelector('#stroke-color').setAttribute('disabled', 'true')
         document.querySelector('#stroke-color-transparent').checked = true
         document.querySelector('#fill-color').setAttribute('disabled', 'true')

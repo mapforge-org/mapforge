@@ -16,16 +16,20 @@
 
   #edit-buttons.feature-edit-tabs.hidden.flex-center
     %button#edit-button-details.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'details' }
-      Details
+      %i.bi.bi-file-text
+      %span.tab-label Details
+    %button#edit-button-geometry.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'geometry' }
+      %i.bi.bi-bounding-box
+      %span.tab-label Geometry
     %button#edit-button-edit.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'properties' }
-      %i.bi.bi-pencil.me-1
-      Properties
+      %i.bi.bi-pencil
+      %span.tab-label Properties
     %button#edit-button-style.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'style' }
-      %i.bi.bi-palette.me-1
-      Style
+      %i.bi.bi-palette
+      %span.tab-label Style
     %button#edit-button-advanced.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'advanced' }
-      %i.bi.bi-code-slash.me-1
-      Advanced
+      %i.bi.bi-code-slash
+      %span.tab-label Advanced
 
   = render 'maps/modals/feature/edit_ui'
 

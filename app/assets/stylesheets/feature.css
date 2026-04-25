@@ -55,6 +55,8 @@
   padding: 0.8rem 0.5rem 0.3rem;
   font-weight: 500;
   white-space: nowrap;
+  min-width: 2.2rem;
+  margin: 0 0.2rem;
 }
 
 .feature-tab-btn:hover {
@@ -67,7 +69,7 @@
 }
 
 .feature-tab-btn i {
-  font-size: 0.85em;
+  font-size: 1.1em;
   opacity: 0.7;
 }
 
@@ -75,10 +77,13 @@
   opacity: 1;
 }
 
-@media (width < 380px) {
-  .feature-tab-btn i {
-    display: none;
-  }
+.feature-tab-btn .tab-label {
+  display: none;
+  margin-left: 0.35rem;
+}
+
+.feature-tab-btn.active .tab-label {
+  display: inline;
 }
 
 .feature-delete-btn {
@@ -290,6 +295,15 @@
 
 .feature-edit-section {
   margin-bottom: 0.9rem;
+}
+
+.geometry-hint {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.geometry-hint p {
+  margin: 0;
 }
 
 .feature-section-card {
