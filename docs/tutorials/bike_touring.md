@@ -1,10 +1,8 @@
-# Bike Touring with Mapforge
+# Bicycle Touring with Mapforge
 
 ![Bike touring with Mapforge](/images/tutorials/bike_touring_intro.png)
 
 Mapforge is a great companion for your next bike tour. Plan your route on the desktop, then open the same map on your phone and follow your track with compass mode and a live elevation profile. This tutorial walks you through the workflow.
-
-Check out the [Havel bike track](https://mapforge.org/m/d77d6b77) for reference.
 
 ### Plan your route
 
@@ -13,7 +11,7 @@ There are two ways to get a track onto your map: create one with the built-in bi
 #### Create a track manually with bike routing
 
 Create a new map after logging in. Select the **bike routing** tool from the 'draw line' menu (or press `b` on the keyboard). Now click on the map to place waypoints. Mapforge will calculate a bike-friendly route between them using OpenStreetMap data.
-You can also create the track without automatic routing, by creating all waypoints manually.
+You can also create the track without automatic routing, by creating all points manually (select 'Draw line' (`l`) for this).
 
 <video controls preload="metadata" poster="/images/tutorials/bike_touring_routing_poster.jpg">
   <source src="/images/tutorials/bike_touring_routing.webm" type="video/webm">
@@ -21,19 +19,31 @@ You can also create the track without automatic routing, by creating all waypoin
   Your browser does not support the video tag.
 </video>
 
+*See the map of [this track](https://mapforge.org/m/c049e92c) for reference.*
+
 You can drag waypoints to adjust the route after placing them. Add as many waypoints as you need to shape the route to your liking.
 
 #### Import a GPX track
 
 If you already have a GPX file from another app like [Komoot](https://www.komoot.com) or [Bikerouter](https://bikerouter.de), you can import it directly. Open the **layers modal**, click the **import** button and select your file. Mapforge supports GPX, KML and GeoJSON formats (up to 2.5 MB).
 
-The imported track will appear on your map with elevation data preserved, ready to use.
+The imported track will appear on your map with elevation data, ready to use.
 
 <video controls preload="metadata" poster="/images/tutorials/bike_touring_import_poster.jpg">
   <source src="/images/tutorials/bike_touring_import.webm" type="video/webm">
   <source src="/images/tutorials/bike_touring_import.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
+
+#### Convert a GPX track to a route
+
+Imported GPX tracks are plain lines without routing metadata. Converting a track to a route gives you waypoints, and extras like steepness and surface information.
+
+To convert an imported track, select it on the map, open the edit panel, and go to the **Advanced** tab. Under "Convert to routed track", choose a profile (Foot, Bike, or Car).
+
+Mapforge will extract waypoints from your track, snap them to the road network, and calculate a route using OpenRouteService. The result appears as a **new feature** alongside your original track. The routed track gets dashed styling, kilometer markers, and route extras data.
+
+The final route may differ slightly from the original since it follows the road network, but it will preserve the overall path. You can adapt it to your needs and delete the original track afterwards.
 
 #### Customize your map
 
@@ -48,8 +58,20 @@ Once your planned track is on the map, you can tailor everything to your ride:
 - **Segment your track**: right-click on the track to split it into sections at any point. This is useful for highlighting different parts of your route for example in multi-day rides.
 - **Style your track**: change the track color, line width, and enable **distance markers** to see kilometer markers along the route.
 - **Choose a background map**: switch to a base map that suits cycling, such as the topographic or bike map, in the map settings. You can also enable 3D, contour lines or a hillshade effect.
+- **Bicycle tracks overlay**: Add existing bicycle tracks to your map to plan your ride along them (Layers modal -> 'Add Layer').
 - **Add points of interest**: mark stops, water refills, or scenic viewpoints as point features on your map. You can also copy important waymarks from overpass layers.
 - **Share your map**: decide whether to keep your map private or share it publicly so others can ride your track.
+
+#### Color your track by steepness or surface
+
+For routed tracks, you can color the line based on steepness or surface type.
+
+![Data-driven track colors](/images/tutorials/bike_touring_track_colors.png)
+
+In the style panel of your routed track you'll see a **line color dropdown** with extra options. Choose one to apply data-driven coloring:
+
+- **Steepness**: gradient from green (downhill) to red (uphill) with percentage ranges. Labels show steep sections with arrows (▲ 12-15%) and distances.
+- **Surface**: discrete colors per surface type (paved, gravel, dirt, etc.). Labels show surface name and segment length.
 
 ### On the road
 

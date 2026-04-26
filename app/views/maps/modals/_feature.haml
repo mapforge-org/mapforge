@@ -15,19 +15,19 @@
       #feature-title.ms-1.selectable.no-wrap
 
   #edit-buttons.feature-edit-tabs.hidden.flex-center
-    %button#edit-button-details.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'details' }
+    %button#edit-button-details.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'details', title: 'View feature information', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-file-text
       %span.tab-label Details
-    %button#edit-button-geometry.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'geometry' }
+    %button#edit-button-geometry.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'geometry', title: 'Edit shape on map', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-bounding-box
       %span.tab-label Geometry
-    %button#edit-button-edit.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'properties' }
+    %button#edit-button-edit.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'properties', title: 'Edit title and description', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-pencil
       %span.tab-label Properties
-    %button#edit-button-style.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'style' }
+    %button#edit-button-style.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'style', title: 'Change colors and appearance', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-palette
       %span.tab-label Style
-    %button#edit-button-advanced.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'advanced' }
+    %button#edit-button-advanced.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'advanced', title: 'Convert to route and edit JSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-code-slash
       %span.tab-label Advanced
 
