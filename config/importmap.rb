@@ -80,7 +80,7 @@ pin "@turf/clone", to: "@turf--clone.js", preload: false # @7.3.5
 pin "@turf/helpers", to: "@turf--helpers.js" # @7.3.5
 pin "@turf/meta", to: "@turf--meta.js" # @7.3.5
 # Turf libs needed by app
-pin "@turf/simplify", to: "@turf--simplify.js", preload: false # @7.3.4
+pin "@turf/simplify", to: "@turf--simplify.js", preload: false # @7.3.5
 pin "@turf/boolean-point-on-line", to: "@turf--boolean-point-on-line.js", preload: false # @7.3.5
 pin "@turf/clean-coords", to: "@turf--clean-coords.js", preload: false # @7.3.5
 pin "@turf/invariant", to: "@turf--invariant.js", preload: false # @7.3.5
