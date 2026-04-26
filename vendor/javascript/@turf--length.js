@@ -1,2 +1,2 @@
-import{distance as r}from"@turf/distance";import{segmentReduce as t}from"@turf/meta";function o(o,e={}){return t(o,((t,o)=>{const n=o.geometry.coordinates;return t+r(n[0],n[1],e)}),0)}var e=o;export{e as default,o as length};
+import{distance as e}from"@turf/distance";import{segmentReduce as t}from"@turf/meta";function n(n,r={}){return t(n,(t,n)=>{let i=n.geometry.coordinates;return t+e(i[0],i[1],r)},0)}var r=n;export{r as default,n as length};
 
