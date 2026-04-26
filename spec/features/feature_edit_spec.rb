@@ -71,8 +71,6 @@ describe "Feature edit" do
       end
 
       it "can raw update feature" do
-        find("#edit-button-edit").click
-        sleep(0.3) # edit triggers modal pull-up
         find("#edit-button-advanced").click
         # Click on the Style JSON section header to expand it
         find("#style-json-section-header").click
