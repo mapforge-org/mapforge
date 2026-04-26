@@ -1,2 +1,2 @@
-import{bbox as r}from"@turf/bbox";import{point as t}from"@turf/helpers";function o(o,e={}){const f=r(o);const n=(f[0]+f[2])/2;const p=(f[1]+f[3])/2;return t([n,p],e.properties,e)}var e=o;export{o as center,e as default};
+import{bbox as e}from"@turf/bbox";import{point as t}from"@turf/helpers";function n(n,r={}){let i=e(n);return t([(i[0]+i[2])/2,(i[1]+i[3])/2],r.properties,r)}var r=n;export{n as center,r as default};
 
