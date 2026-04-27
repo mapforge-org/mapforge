@@ -105,6 +105,10 @@ html:has(.map), body:has(.map) {
     font-size: 1rem;
     min-width: 1rem;
   }
+
+  .maplibregl-ctrl-attrib-inner {
+    font-size: 0.7rem;
+  }
 }
 
 @media (width < 380px), (height < 410px) {
@@ -127,6 +131,10 @@ html:has(.map), body:has(.map) {
 
   #layer-reload {
     top: 2.5rem;
+  }
+
+  .maplibregl-ctrl-attrib-inner {
+    font-size: 0.6rem;
   }
 }
 

@@ -9,6 +9,11 @@
   pointer-events: none; /* This makes the div transparent to mouse events */
 }
 
+#description-modal {
+  align-items: flex-start;
+  padding-top: 4rem;
+}
+
 .map-modal {
   position: relative;
   pointer-events: auto;
@@ -35,6 +40,10 @@
   .form-select {
     padding-top: 2rem;
   }
+}
+
+#description-modal .map-modal {
+  padding-top: 0;
 }
 
 .map-modal-header {
@@ -434,7 +443,17 @@
   padding-bottom: 0.2rem;
 }
 
-@media (width < 380px) {
+@media (width < 640px) {
+  #description-modal {
+    padding-top: 3rem;
+  }
+
+  #description-modal .map-modal {
+    padding-top: 0;
+  }
+}
+
+@media (width < 380px), (height < 410px) {
   .map-modal {
     margin: 0 0.5rem;
     padding: 1.5rem 0.1rem 0.8rem 0.5rem;
@@ -442,6 +461,14 @@
 
   .map-modal-header {
     padding: 0 0.4rem;
+  }
+
+  #description-modal {
+    padding-top: 2.5rem;
+  }
+
+  #description-modal .map-modal {
+    padding-top: 0;
   }
 }
 
@@ -457,7 +484,3 @@
   padding: 5px;
 }
 
-#description-header {
-  min-height: 1rem;
-  font-weight: 600;
-}

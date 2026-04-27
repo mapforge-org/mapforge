@@ -74,7 +74,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     pitch: mapProperties.pitch,
     bearing: mapProperties.bearing || 0,
     maxPitch: 72,
-    maplibreLogo: !functions.isMobileDevice(),
+    maplibreLogo: true,
     hash: true, // enable hash in URL for map center/zoom
     fadeDuration: 200, // shorter fade
     interactive: (window.gon.map_mode !== 'static') // can move/zoom map

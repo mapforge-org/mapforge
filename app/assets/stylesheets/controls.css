@@ -105,6 +105,10 @@
     /* !important to overwrite geocoder default */
     margin-right: 0.3rem !important;
   }
+
+  .maplibregl-ctrl>.maplibregl-ctrl-logo {
+    display: none;
+  }
 }
 
 @media (height < 410px) {
