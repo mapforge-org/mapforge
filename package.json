@@ -1,9 +1,9 @@
 {
   "scripts": {
-    "fix:js": "eslint --ext .js app/javascript --fix",
-    "lint:js": "eslint --ext .js app/javascript",
-    "fix:css": "stylelint 'app/assets/stylesheets/**/*.css' --fix",
-    "lint:css": "stylelint 'app/assets/stylesheets/**/*.css'"
+    "fix:js": "npx --offline eslint --ext .js app/javascript --fix",
+    "lint:js": "npx --offline eslint --ext .js app/javascript",
+    "fix:css": "npx --offline stylelint 'app/assets/stylesheets/**/*.css' --fix",
+    "lint:css": "npx --offline stylelint 'app/assets/stylesheets/**/*.css'"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

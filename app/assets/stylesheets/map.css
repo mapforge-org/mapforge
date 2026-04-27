@@ -197,6 +197,9 @@ html:has(.map), body:has(.map) {
   transform: translateZ(0);
   will-change: transform;
   contain: layout;
+  background: rgb(255 255 255 / 90%);
+  border-radius: 50%;
+  padding: 0.3rem;
 }
 
 #logo-path {

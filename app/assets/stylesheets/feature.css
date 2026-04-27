@@ -44,10 +44,11 @@
   gap: 0.25rem;
   border-bottom: 1px solid #dde2ea;
   padding: 0 0.7rem;
-  overflow-x: hidden;
 }
 
 .feature-tab-btn {
+  display: inline-flex;
+  align-items: center;
   border: 0;
   border-bottom: 3px solid transparent;
   background: transparent;
@@ -144,7 +145,7 @@
 
   #edit-buttons button {
     font-size: clamp(70%, 2vw + 0.5rem, 100%);
-    padding: 0.8rem 0.2rem 0.3rem;
+    padding: 0.8rem 0.1rem 0.3rem;
   }
 
   #feature-details-meta {
@@ -155,6 +156,9 @@
     padding: 0.45rem;
   }
 
+  .feature-tab-btn {
+    min-width: 1.7rem;
+  }
 }
 
 @media (width > 574px) and (height >=410px) {

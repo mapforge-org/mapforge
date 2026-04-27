@@ -191,14 +191,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgb(0 0 0 / 6%);
+  background: rgb(180 180 180 / 50%);
   border: none;
   border-radius: 0.4rem;
   font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
   color: #555;
-  transition: background 0.15s, color 0.15s;
+  text-shadow: 0 0 2px #fff, 0 0 3px #fff;
+  transition: background 0.15s, color 0.15s, transform 0.2s;
 }
 
 .background-dark .close-button {
@@ -208,6 +209,7 @@
 .modal-close-button:hover {
   background: rgb(0 0 0 / 12%);
   color: #333;
+  transform: scale(1.1) rotate(90deg);
 }
 
 /* Share modal */
@@ -483,4 +485,3 @@
   border: 1px solid #ddd;
   padding: 5px;
 }
-
