@@ -196,7 +196,7 @@ export function featureIcon (feature) {
     image = "<img class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
   } else if (feature.properties['stroke-image-url']) {
     image = "<img class='feature-details-icon' src='" + feature.properties['stroke-image-url'] + "'>"
-  } else if (feature.properties?.route?.profile.startsWith("cycling-") || feature.properties?.route?.profile === "bike") {
+  } else if (feature.properties?.route?.profile?.startsWith("cycling-") || feature.properties?.route?.profile === "bike") {
     image = `<i class='bi bi-bicycle fs-3' ${iconColorStyle}>`
   } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "car") {
     image = `<i class='bi bi-car-front fs-3' ${iconColorStyle}>`
