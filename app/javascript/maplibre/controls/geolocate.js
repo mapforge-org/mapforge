@@ -261,23 +261,6 @@ const requestWakeLock = async () => {
   }
 }
 
-function applyTiltCompensation(alpha, beta, gamma) {
-  const alphaRad = alpha * (Math.PI / 180)
-  const betaRad  = beta  * (Math.PI / 180)
-  const gammaRad = gamma * (Math.PI / 180)
-  const cA = Math.cos(alphaRad), sA = Math.sin(alphaRad)
-  const cG = Math.cos(gammaRad), sG = Math.sin(gammaRad)
-  const sB = Math.sin(betaRad)
-  // W3C spec: project device -z axis onto horizontal plane
-  const Vx = -cA * sG - sA * sB * cG
-  const Vy = -sA * sG + cA * sB * cG
-  if (Math.abs(Vx) < 1e-6 && Math.abs(Vy) < 1e-6) {
-    return (360 - alpha) % 360
-  }
-  let heading = Math.atan2(Vx, Vy) * (180 / Math.PI)
-  return (heading + 360) % 360
-}
-
 function setLocationOrientation(event) {
   const dot = cachedDot || document.querySelector('.maplibregl-user-location-dot')
   if (!dot) return
@@ -305,8 +288,7 @@ function setLocationOrientation(event) {
       // when the phone is around vertical, alpha is unreliable (gimbal lock)
       return
     }
-    const compensated = applyTiltCompensation(event.alpha, event.beta, event.gamma)
-    lastHeading = (360 - compensated - screen_angle + 720) % 360
+    lastHeading = (360 - event.alpha - screen_angle + 720) % 360
     // status('android heading: ' + event.alpha + ' computed: ' + lastHeading)
   }
 
