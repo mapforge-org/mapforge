@@ -8,14 +8,6 @@
   box-shadow: 0 24px 40px rgb(15 23 42 / 15%);
 }
 
-#feature-details-modal .modal-close-button {
-  color: var(--color-dark-charcoal);
-}
-
-#feature-details-modal .modal-close-button:hover {
-  color: var(--color-mid-steel-blue);
-}
-
 .feature-modal-header {
   padding: 1.2rem 1rem 0.5rem;
   border-bottom: 1px solid #dde2ea;
