@@ -72,6 +72,8 @@ describe "Feature edit" do
 
       it "can raw update feature" do
         find("#edit-button-advanced").click
+        # Move mouse away from button to dismiss tooltip
+        find("#style-json-section-header").hover
         # Click on the Style JSON section header to expand it
         find("#style-json-section-header").click
         expect(page).to have_selector('textarea[name="properties"]', visible: true)
