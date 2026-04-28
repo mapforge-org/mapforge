@@ -5,29 +5,22 @@
   "version": "25.08",
   "icons": [
     {
-      "src": "/icons/mapforge-logo-pwa-round.png",
+      "src": "/icons/mapforge-logo-pwa.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any"
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/mapforge-logo-pwa-180.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "any maskable"
     },
     {
       "src": "/icons/mapforge-logo-pwa-192.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/icons/mapforge-logo-pwa.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/icons/mapforge-logo-pwa-dark.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable",
-      "media": "(prefers-color-scheme: dark)"
+      "purpose": "any maskable"
     }
   ],
   "screenshots": [
