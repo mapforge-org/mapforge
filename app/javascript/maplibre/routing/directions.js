@@ -3,7 +3,7 @@ import { mapChannel } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { decodePolyline, encodePolyline } from 'helpers/polyline'
 import { status } from 'helpers/status'
-import { setSelectedFeature, updateElevation } from 'maplibre/edit'
+import { setSelectedFeature, unselect, updateElevation } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
 import { map, mapProperties, upsert } from 'maplibre/map'
@@ -40,6 +40,14 @@ class CustomMapLibreGlDirections extends MapLibreGlDirections {
       this.buildRequest = orsBuildRequest
       this.fetch = orsFetch.bind(this)
     }
+  }
+
+  // Override onMove to be defensive - check if layer exists before querying
+  onMove(e) {
+    if (!this.map.getLayer('maplibre-gl-directions-waypoint')) {
+      return
+    }
+    super.onMove(e)
   }
 
   getWaypointsFeatures() {
@@ -127,6 +135,7 @@ let currentFeature
 export function resetDirections () {
   if (directions) {
     console.log("Resetting directions")
+    directions.interactive = false
     directions.destroy()
     if (map.getSource("maplibre-gl-directions")) {
       map.removeSource("maplibre-gl-directions")
@@ -226,17 +235,31 @@ export function initDirections (profile, feature) {
     }
 
     setSelectedFeature(currentFeature)
+    const isExisting = !!getFeature(currentFeature.id)
+
     // add elevation from openrouteservice (when not included in route response)
     if (coords[0].length === 2) {
       updateElevation(currentFeature).then(() => {
         updateTrack(currentFeature)
-        showFeatureDetails(currentFeature)
-        window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
+        if (!isExisting) {
+          showFeatureDetails(currentFeature)
+          // Defer unselect to avoid destroying directions while event is still being processed
+          setTimeout(() => {
+            unselect()
+            window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
+          }, 10)
+        }
       })
     } else {
       updateTrack(currentFeature)
-      showFeatureDetails(currentFeature)
-      window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
+      if (!isExisting) {
+        showFeatureDetails(currentFeature)
+        // Defer unselect to avoid destroying directions while event is still being processed
+        setTimeout(() => {
+          unselect()
+          window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
+        }, 10)
+      }
     }
   })
 
