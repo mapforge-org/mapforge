@@ -96,7 +96,7 @@ export function computeExtrasTotals (feature, extrasType) {
 }
 
 // Create point features with labels for route extras segments
-function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulativeDistances) {
+function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulativeDistances, featureIndex) {
   const labelFeatures = []
 
   extrasValues.forEach(([startIdx, endIdx, value]) => {
@@ -149,7 +149,8 @@ function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulative
       properties: {
         'route-extras-label': label,
         'route-extras-color': resolveExtrasColor(extrasType, value),
-        'route-extras-priority': priority
+        'route-extras-priority': priority,
+        'feature-order': featureIndex
       }
     })
   })
@@ -234,7 +235,7 @@ export function renderRouteExtras (features, sourceId) {
     feature.geometry.type === 'LineString' &&
     feature.properties['show-route-extras'] &&
     feature.properties.route?.extras
-  )).forEach(feature => {
+  )).forEach((feature, featureIndex) => {
     const extrasType = feature.properties['show-route-extras']
     activeExtrasType = extrasType
     const extrasData = feature.properties.route.extras[extrasType]
@@ -267,7 +268,7 @@ export function renderRouteExtras (features, sourceId) {
 
     // Add labels for steepness or surface segments
     if (extrasType === 'steepness' || extrasType === 'surface') {
-      const labelFeatures = createExtrasLabelFeatures(coords, extrasData.values, extrasType, cumulativeDistances)
+      const labelFeatures = createExtrasLabelFeatures(coords, extrasData.values, extrasType, cumulativeDistances, featureIndex)
       extrasFeatures.push(...labelFeatures)
     }
   })
@@ -337,8 +338,8 @@ export function initializeExtrasLabelStyles (sourceId) {
       'text-anchor': 'center',
       'text-justify': 'center',
       'text-padding': 0,
-      // on collision, show the highest priority (steepest grade or longest surface segment)
-      'symbol-sort-key': ['-', 10, ['get', 'route-extras-priority']]
+      // Negate feature-order so selected feature (higher index) gets lower sort-key and renders on top
+      'symbol-sort-key': ['-', ['-', 10, ['get', 'route-extras-priority']], ['*', ['get', 'feature-order'], 100000]]
     },
     paint: {
       'text-color': '#ffffff',

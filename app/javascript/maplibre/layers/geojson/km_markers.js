@@ -56,6 +56,7 @@ export function renderKmMarkers (features, sourceId) {
       point.properties['marker-size'] = 11
       point.properties['marker-opacity'] = 1
       point.properties['km'] = i
+      point.properties['feature-order'] = index
 
       if (i >= Math.ceil(distance)) {
         point.properties['marker-size'] = 15
@@ -70,7 +71,6 @@ export function renderKmMarkers (features, sourceId) {
           point.properties['km-unit'] = 'km'
         }
         point.properties['km-marker-numbers-end'] = 1
-        point.properties['sort-key'] = 2 + index
       }
       kmMarkerFeatures.push(point)
     }
@@ -123,7 +123,8 @@ function kmMarkerStyles () {
       'text-anchor': 'center',
       'text-line-height': 1.0,
       'text-offset': [0, 0.3],
-      'symbol-sort-key': 20
+      // Negate feature-order so selected feature (higher index) gets lower sort-key and renders on top
+      'symbol-sort-key': ['-', 0, ['*', ['get', 'feature-order'], 100]]
     },
     paint: {
       'text-color': '#ffffff'
@@ -152,7 +153,8 @@ function makeKmMarkerLayer (divisor, minzoom, maxzoom = 24) {
       'text-font': labelFont,
       'text-justify': 'center',
       'text-anchor': 'center',
-      'symbol-sort-key': 10
+      // Negate feature-order so selected feature (higher index) gets lower sort-key and renders on top
+      'symbol-sort-key': ['-', 10, ['*', ['get', 'feature-order'], 100]]
     },
     paint: {
       'text-color': '#ffffff'
