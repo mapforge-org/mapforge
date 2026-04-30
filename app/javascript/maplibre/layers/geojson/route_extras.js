@@ -34,13 +34,6 @@ export const EXTRAS_COLOR_CONFIGS = {
     colors: [[-5, '#1a6a1a'], [-4, '#2d8a2d'], [-3, '#4eaa4e'], [-2, '#7bc47a'], [-1, '#a8d5a0'],
              [0, '#c0e8c0'], [1, '#E6AA68'], [2, '#D97A2E'], [3, '#B85E1E'], [4, '#CA3C25'], [5, '#8B1A1A']]
   },
-  green: {
-    title: 'Green areas',
-    gradient: true,
-    labels: { '0': 'No green', '10': 'Very green' },
-    colors: [[0, '#cccccc'], [1, '#b8d8a8'], [2, '#a0cc90'], [3, '#88c078'], [4, '#70b460'],
-             [5, '#58a848'], [6, '#409c30'], [7, '#309020'], [8, '#208410'], [9, '#107800'], [10, '#006c00']]
-  },
   surface: {
     title: 'Surface',
     gradient: false,
@@ -52,13 +45,6 @@ export const EXTRAS_COLOR_CONFIGS = {
              [5, '#997755'], [6, '#777777'], [7, '#8B6914'], [8, '#bb9955'], [9, '#ccaa66'],
              [10, '#ddbb77'], [11, '#aa7733'], [12, '#996622'], [13, '#aaddff'], [14, '#888866'],
              [15, '#eedd88'], [16, '#bb9944'], [17, '#66aa44'], [18, '#88bb66']]
-  },
-  noise: {
-    title: 'Noise level',
-    gradient: true,
-    labels: { '0': 'Quiet', '10': 'Noisy' },
-    colors: [[0, '#00aa44'], [1, '#33aa33'], [2, '#66aa22'], [3, '#99aa11'], [4, '#ccaa00'],
-             [5, '#ffaa00'], [6, '#ff8800'], [7, '#ff6600'], [8, '#ff4400'], [9, '#ff2200'], [10, '#ff0000']]
   }
 }
 

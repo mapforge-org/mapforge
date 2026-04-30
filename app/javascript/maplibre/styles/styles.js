@@ -99,7 +99,8 @@ export async function loadImage (e) {
 // Mapbox.Draw layers prefix user properties with 'user_'
 
 export const featureColor = '#0A870A' // green
-export const featureOutlineColor = '#cfcfcf'
+export const featureOutlineColor = '#444444'
+export const featureOutlineColorActive = '#000'
 
 // Shorthand for MapLibre coalesce expressions: styleProp(['a', 'b'], x) → ['coalesce', ['get', 'a'], ['get', 'b'], x]
 const styleProp = (keys, defaultVal) => {
@@ -152,13 +153,13 @@ const outlineWidth = [
   5, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
-    ['+', 1, outlineWidthMin],
+    ['+', 2, outlineWidthMin],
     outlineWidthMin
   ], // At zoom level 8, the outline width is min
   17, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
-    ['+', 1, outlineWidthMax],
+    ['+', 3, outlineWidthMax],
     outlineWidthMax
   ] // At zoom level 13, the outline width is max
 ]
@@ -449,7 +450,7 @@ export function styles () {
       paint: {
         'line-color': [
           'case', ['boolean', ['feature-state', 'active'], false],
-          '#000', polygonOutlineColor
+          featureOutlineColorActive, polygonOutlineColor
         ],
         'line-width': [
           'case', ['boolean', ['feature-state', 'active'], false],
@@ -472,7 +473,7 @@ export function styles () {
       paint: {
         'line-color': [
           'case', ['boolean', ['feature-state', 'active'], false],
-          '#000', lineOutlineColor
+          featureOutlineColorActive, lineOutlineColor
         ],
         'line-width': outlineWidth,
         'line-opacity': lineOpacity

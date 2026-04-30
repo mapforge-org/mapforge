@@ -29,8 +29,17 @@ export class GeoJSONLayer extends Layer {
     initializeViewStyles(this.routeExtrasSourceId)
     initializeExtrasLabelStyles(this.routeExtrasSourceId)
 
+    // Exclude features with route extras from the main line layers (they're rendered in route-extras-source instead)
+    const mainLineFilter = ['all',
+      ['==', ['geometry-type'], 'LineString'],
+      ['!', ['has', 'show-route-extras']],
+      [">=", ["zoom"], ["coalesce", ["to-number", ["get", "min-zoom"]], 0]]
+    ]
+    map.setFilter(`line-layer_${this.sourceId}`, mainLineFilter)
+    // Hide the outline layer for route extras - we only want the colored segments visible
+    map.setLayoutProperty(`line-layer-outline_${this.routeExtrasSourceId}`, 'visibility', 'none')
+
     // Override line-cap to 'butt' for route extras line layer to prevent color overlap at segment junctions
-    // Keep outline as 'round' to ensure continuous white border
     map.setLayoutProperty(`line-layer_${this.routeExtrasSourceId}`, 'line-cap', 'butt')
 
     this.setupEventHandlers()
