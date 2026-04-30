@@ -4,13 +4,21 @@
 }
 
 .mapforge-logo {
-  width: 2.2rem;
-  margin-top: 0.4rem;
+  width: auto;
+  height: 100%;
+  margin-top: 0.5rem;
   position: absolute;
+
+  path {
+    fill: var(--color-dark-moss-green);
+    stroke: var(--color-dark-moss-green);
+    stroke-width: 5.5;
+  }
 }
 
 .mapforge-title {
-  margin-left: 2.8rem;
+  margin-left: 4rem;
+  font-size: 1.5rem;
 }
 
 .navbar-brand {
@@ -102,7 +110,8 @@ img.profile-image {
 /* Show burger menu and dropdown for nav items */
 @media (width <= 574px) {
   .mapforge-logo {
-    width: 2.3rem;
+    width: auto;
+    height: 2.7rem;
     left: 1rem;
   }
 

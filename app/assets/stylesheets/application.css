@@ -69,9 +69,8 @@ body {
 }
 
 .mapforge-font {
-  font-family: "Lobster Two", sans-serif;
+  font-family: "Bree Serif", serif;
   font-weight: 400;
-  font-style: italic;
 }
 
 a, .link {
@@ -241,5 +240,7 @@ button {
 }
 
 h1, h2, h3, h4 {
+  font-family: "Bree Serif", serif;
   font-weight: 300;
+  margin-bottom: 1rem;
 }
