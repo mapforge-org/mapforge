@@ -107,12 +107,10 @@ describe "Feature details" do
       expect(page).to have_css("#feature-details-extras")
       expect(page).to have_text("Steepness analysis")
       expect(page).to have_text("Surface analysis")
-      expect(page).to have_text("Green areas analysis")
-      expect(page).to have_text("Noise level analysis")
     end
 
     it "shows stacked color bars for each section" do
-      expect(page).to have_css(".extras-totals-bar", count: 4)
+      expect(page).to have_css(".extras-totals-bar", count: 2)
     end
 
     it "can expand steepness details" do
@@ -129,11 +127,11 @@ describe "Feature details" do
     end
 
     it "detail rows are collapsed by default" do
-      expect(page).to have_css(".extras-totals-list.hidden", count: 4, visible: :all)
+      expect(page).to have_css(".extras-totals-list.hidden", count: 2, visible: :all)
     end
 
     it "shows chevron indicator that toggles on expand" do
-      expect(page).to have_css(".extras-totals-chevron.bi-chevron-down", count: 4)
+      expect(page).to have_css(".extras-totals-chevron.bi-chevron-down", count: 2)
       find(".feature-details-card-header", text: "Steepness").click
       expect(page).to have_css(".extras-totals-chevron.bi-chevron-up", minimum: 1)
     end

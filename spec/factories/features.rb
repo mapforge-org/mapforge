@@ -83,9 +83,7 @@ FactoryBot.define do
           "route" => {
             "extras" => {
               "steepness" => { "values" => [ [ 0, 2, 1 ], [ 2, 4, 3 ], [ 4, 5, -2 ] ] },
-              "surface" => { "values" => [ [ 0, 3, 3 ], [ 3, 5, 10 ] ] },
-              "green" => { "values" => [ [ 0, 3, 2 ], [ 3, 5, 7 ] ] },
-              "noise" => { "values" => [ [ 0, 5, 4 ] ] }
+              "surface" => { "values" => [ [ 0, 3, 3 ], [ 3, 5, 10 ] ] }
             }
           } }
       end
