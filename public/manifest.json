@@ -103,8 +103,14 @@
     "standalone"
   ],
   "scope": "/",
-  "handle_links": "preferred",
   "description": "Mapforge is an open source web application that lets you create and share individual maps for your locations, tracks and events.",
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "url": "url"
+    }
+  },
   "categories": [
     "travel",
     "utilities",
