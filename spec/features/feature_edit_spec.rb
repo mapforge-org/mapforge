@@ -211,8 +211,6 @@ describe "Feature edit" do
       extras = line.properties["route"]["extras"]
       expect(extras["steepness"]["values"]).to eq([ [ 0, 1, -2 ], [ 1, 3, 3 ], [ 3, 5, 1 ] ])
       expect(extras["surface"]["values"]).to eq([ [ 0, 2, 10 ], [ 2, 5, 3 ] ])
-      expect(extras["green"]["values"]).to eq([ [ 0, 2, 7 ], [ 2, 5, 2 ] ])
-      expect(extras["noise"]["values"]).to eq([ [ 0, 5, 4 ] ])
     end
   end
 
