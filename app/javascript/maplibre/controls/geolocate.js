@@ -288,7 +288,7 @@ function setLocationOrientation(event) {
       // when the phone is around vertical, alpha is unreliable (gimbal lock)
       return
     }
-    lastHeading = (360 - event.alpha - screen_angle + 720) % 360
+    lastHeading = (event.alpha - screen_angle + 720) % 360
     // status('android heading: ' + event.alpha + ' computed: ' + lastHeading)
   }
 
