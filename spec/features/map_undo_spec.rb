@@ -72,7 +72,7 @@ describe "Map Undo/Redo" do
       find(".maplibregl-ctrl-layers").click
       click_button "Add layer"
       within("#query-dropdown") do
-        find("li", text: "🚰 Drinking water").click
+        find("button.dropdown-item", text: "🚰 Drinking water").trigger("click")
       end
 
       wait_for { map.reload.layers.count }.to eq(initial_layer_count + 1)
@@ -91,7 +91,7 @@ describe "Map Undo/Redo" do
       # Add a layer
       find(".maplibregl-ctrl-layers").click
       click_button "Add layer"
-      within("#query-dropdown") { find("li", text: "🍻 Breweries").click }
+      within("#query-dropdown") { find("button.dropdown-item", text: "🍻 Breweries").trigger("click") }
       wait_for { map.reload.layers.count }.to eq(initial_layer_count + 1)
       # Close modal
       page.execute_script("document.querySelector('.modal-center.show')?.classList.remove('show')")

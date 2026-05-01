@@ -108,7 +108,9 @@ describe "Map" do
     it "can add overpass layer" do
       expect(page).to have_text("opass")
       click_button "Add layer"
-      find("li", text: "🚰 Drinking water").click
+      within("#query-dropdown") do
+        find("button.dropdown-item", text: "🚰 Drinking water").trigger("click")
+      end
       wait_for { Layer.find_by(name: "🚰 Drinking water") }.not_to be_nil
     end
 
@@ -222,7 +224,7 @@ describe "Map" do
     it "can add predefined query layer" do
       click_button "Add layer"
       within("#query-dropdown") do
-        first("li", text: "🍻 Breweries").click
+        find("button.dropdown-item", text: "🍻 Breweries").trigger("click")
       end
       wait_for { map.layers.find { |m| m.name == "🍻 Breweries" } }.to be_present
     end
@@ -230,7 +232,7 @@ describe "Map" do
     it "can add custom query layer" do
       click_button "Add layer"
       within("#query-dropdown") do
-        first("li", text: "Custom Overpass query").click
+        find("button.dropdown-item", text: "Custom Overpass query").trigger("click")
       end
       wait_for { map.layers.find { |m| m.name == "Custom query" } }.to be_present
     end
@@ -281,7 +283,9 @@ describe "Map" do
     it "can add wikipedia layer" do
       find(".maplibregl-ctrl-layers").click
       click_button "Add layer"
-      find("li", text: "Wikipedia articles").click
+      within("#query-dropdown") do
+        find("button.dropdown-item", text: "Wikipedia articles").trigger("click")
+      end
       wait_for { map.layers.find { |m| m.name == "Wikipedia" } }.to be_present
     end
   end
