@@ -255,24 +255,18 @@ export default class extends Controller {
     const visBtnMobile = layerElement.querySelector('button.layer-visibility-mobile')
     const newText = layer.show ? 'Hide layer' : 'Show layer'
 
-    // Update Bootstrap tooltip to reflect the new title
+    // Update tooltip title attributes
+    visBtn.setAttribute('title', newText)
+    visBtn.setAttribute('data-bs-original-title', newText)
+    visBtn.setAttribute('aria-label', newText)
+    visBtnMobile.querySelector('.layer-visibility-text').textContent = newText
+
+    // Update Bootstrap tooltip content if it exists
     if (typeof bootstrap !== 'undefined' && visBtn) {
       const tooltip = bootstrap.Tooltip.getInstance(visBtn)
       if (tooltip) {
-        tooltip.hide()
-        tooltip.dispose()
+        tooltip.setContent({ '.tooltip-inner': newText })
       }
-    }
-
-    visBtn.setAttribute('title', newText)
-    visBtnMobile.querySelector('.layer-visibility-text').textContent = newText
-
-    // Recreate tooltip with new title
-    if (typeof bootstrap !== 'undefined' && visBtn) {
-      if (!visBtn.hasAttribute('data-bs-custom-class')) {
-        visBtn.setAttribute('data-bs-custom-class', 'maplibregl-ctrl-tooltip')
-      }
-      new bootstrap.Tooltip(visBtn)
     }
     // show/hide refresh and edit buttons based on visibility
     const hideAction = layer.show ? 'remove' : 'add'
