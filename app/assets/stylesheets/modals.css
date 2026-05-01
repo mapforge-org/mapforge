@@ -28,8 +28,8 @@
 
   /* backdrop-filter: blur(3px); */
   z-index: 1000;
-  padding: 1.5em 1rem 0.8rem 1.5rem;
-  box-shadow: 0 24px 40px rgb(15 23 42 / 15%);
+  padding: 1.5em 1rem 0.5rem 1.5rem;
+  box-shadow: 0 0 0 1.5px #BBB;
   scrollbar-color: #888 #f1f1f1;
   scrollbar-width: auto;
 
@@ -47,11 +47,11 @@
 }
 
 .map-modal-header {
-  border-bottom: 2px solid var(--color-dark-charcoal);
+  border-bottom: 2px solid #BBB;
 }
 
 .map-modal-content {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   max-height: calc(100vh - 11rem);
   padding-right: 5px; /* Prevents scrollbar from overlapping content */
 }
@@ -61,6 +61,7 @@
   scrollbar-width: auto; /* auto | thin | none */
   scrollbar-color: #888 #fff;
   padding-right: 0.5rem;
+  mask-image: linear-gradient(to bottom, transparent, black 0.75rem, black calc(100% - 0.75rem), transparent);
 }
 
 /* WebKit-based browsers (Chrome, Edge, Safari) */
@@ -186,6 +187,7 @@
   position: absolute;
   top: 0.6rem;
   right: 0.6rem;
+  z-index: 1;
   width: 2rem;
   height: 2rem;
   display: flex;
@@ -373,6 +375,10 @@
 .layer-dimmed > h4 .link,
 .layer-dimmed > .layer-content {
   opacity: 0.5;
+}
+
+.layer-item {
+  padding-top: 0.4rem;
 }
 
 .layer-item-header {

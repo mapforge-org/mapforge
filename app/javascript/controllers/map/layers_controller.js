@@ -222,7 +222,7 @@ export default class extends Controller {
   toggleLayerList (event) {
     event.preventDefault()
     const list = event.target.closest('.layer-item').querySelector('.layer-content')
-    const icon = event.target.closest('h4').querySelector('span i')
+    const icon = event.target.closest('.layer-item-header').querySelector('span i')
     if (list.classList.contains('hidden')) {
       icon.classList.remove('bi-caret-right-fill')
       icon.classList.add('bi-caret-down-fill')

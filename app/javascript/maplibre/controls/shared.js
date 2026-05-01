@@ -273,13 +273,14 @@ export function initLayersModal () {
       // expand layer items when there is only one layer
       if (layers.length === 1) {
         e.querySelector('.layer-content').classList.remove('hidden')
-        layerElement.querySelector('h4 i').classList.remove('bi-caret-right-fill')
-        layerElement.querySelector('h4 i').classList.add('bi-caret-down-fill')
+        layerElement.querySelector('.layer-item-header i').classList.remove('bi-caret-right-fill')
+        layerElement.querySelector('.layer-item-header i').classList.add('bi-caret-down-fill')
       }
       dom.initTooltips(layerElement)
 
       if (features.length === 0) {
         const newNode = document.createElement('i')
+        newNode.classList.add('ms-3')
         newNode.textContent = 'No elements in this layer'
         layerElement.querySelector('.layer-content').appendChild(newNode)
       }

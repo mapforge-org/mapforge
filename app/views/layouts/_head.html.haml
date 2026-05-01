@@ -28,15 +28,16 @@
   / fonts
   - # https://icons.getbootstrap.com/
   = stylesheet_link_tag "bootstrap-icons", "data-turbo-track": "reload"
+
   / Logo font
-  %link{ href: "https://fonts.googleapis.com", rel: "preconnect" }
-  %link{ href: "https://fonts.gstatic.com", rel: "preconnect", crossorigin: true }
+  - #%link{ href: "https://fonts.googleapis.com", rel: "preconnect" }
+  - #%link{ href: "https://fonts.gstatic.com", rel: "preconnect", crossorigin: true }
 
   :ruby
-    google_fonts_url = "https://fonts.googleapis.com/css2?" \
-      "family=Bree+Serif&" \
-      "display=swap"
-  = stylesheet_link_tag google_fonts_url
+    #google_fonts_url = "https://fonts.googleapis.com/css2?" \
+    #  "family=Bree+Serif&" \
+    #  "display=swap"
+  =# stylesheet_link_tag google_fonts_url
 
   / css
   = stylesheet_link_tag "bootstrap.min.css" # bootstrap@5.3.3

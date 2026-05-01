@@ -1,4 +1,4 @@
-%nav.navbar.navbar-expand-sm.navbar-light.mapforge-font.background-bright{class: "#{'fixed-top' if defined?(static) && static}"}
+%nav.navbar.navbar-expand-sm.navbar-light.background-bright{class: "#{'fixed-top' if defined?(static) && static}"}
   .container-fluid
     %a.navbar-brand{href: frontpage_path}
       %svg.mapforge-logo.me-2{ viewBox: "0 0 351 349", xmlns: "http://www.w3.org/2000/svg" }
@@ -84,15 +84,15 @@
           - if @user.admin?
             %li
               %a.dropdown-item{ href: admin_path }
-                %i.bi.bi-person-workspace
+                %i.bi.bi-person-workspace.me-1
                 Admin
           %li
             = link_to my_path, { class: 'dropdown-item' } do
-              %i.bi.bi-map
+              %i.bi.bi-map.me-1
               = "Your maps (#{@user.owned_maps.count})"
           %li
             = link_to logout_path, { class: 'dropdown-item', data: { turbo: false } } do
-              %i.bi.bi-box-arrow-in-left
+              %i.bi.bi-box-arrow-in-left.me-1
               Logout
     - else
       %a.nav-link.login-link.no-wrap{ href: login_path }
