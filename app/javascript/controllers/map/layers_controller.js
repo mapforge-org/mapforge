@@ -1,6 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
-import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { flyToFeature } from 'maplibre/animations'
@@ -235,7 +234,6 @@ export default class extends Controller {
 
   toggleLayerVisibility (event) {
     event.preventDefault()
-    dom.initTooltips()
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(l => l.id === layerId)
@@ -256,8 +254,26 @@ export default class extends Controller {
     const visBtn = layerElement.querySelector('button.layer-visibility')
     const visBtnMobile = layerElement.querySelector('button.layer-visibility-mobile')
     const newText = layer.show ? 'Hide layer' : 'Show layer'
+
+    // Update Bootstrap tooltip to reflect the new title
+    if (typeof bootstrap !== 'undefined' && visBtn) {
+      const tooltip = bootstrap.Tooltip.getInstance(visBtn)
+      if (tooltip) {
+        tooltip.hide()
+        tooltip.dispose()
+      }
+    }
+
     visBtn.setAttribute('title', newText)
     visBtnMobile.querySelector('.layer-visibility-text').textContent = newText
+
+    // Recreate tooltip with new title
+    if (typeof bootstrap !== 'undefined' && visBtn) {
+      if (!visBtn.hasAttribute('data-bs-custom-class')) {
+        visBtn.setAttribute('data-bs-custom-class', 'maplibregl-ctrl-tooltip')
+      }
+      new bootstrap.Tooltip(visBtn)
+    }
     // show/hide refresh and edit buttons based on visibility
     const hideAction = layer.show ? 'remove' : 'add'
     if (layer.type !== 'geojson') {

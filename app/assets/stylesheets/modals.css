@@ -57,6 +57,10 @@
   padding-right: 5px; /* Prevents scrollbar from overlapping content */
 }
 
+#description-modal .map-modal-content {
+  max-height: calc(100vh - 6rem);
+}
+
 .inline-scroll {
   overflow: hidden auto;
   scrollbar-width: auto; /* auto | thin | none */
@@ -123,6 +127,10 @@
 }
 
 @media (width <= 574px), (height < 410px) {
+  .map-modal-content {
+      max-height: calc(100vh - 7rem);
+  }
+
   .layer-preview {
       width: 28%;
       height: auto;
@@ -333,7 +341,18 @@
 
 /* add layers dropdown should overflow modal window */
 #layers-modal .map-modal {
-  overflow-y: visible;
+  overflow: visible;
+}
+
+#layers-modal .map-modal-content.inline-scroll {
+  overflow: visible;
+  mask-image: none;
+}
+
+/* Keep the layers list scrollable */
+#layers-modal #layers {
+  overflow-y: auto;
+  max-height: calc(100vh - 18rem);
 }
 
 #file-input-label {
@@ -373,7 +392,7 @@
 }
 
 /* dim layer name and content when hidden, but not the action buttons/dropdown */
-.layer-dimmed > h4 .link,
+.layer-dimmed > h5 .link,
 .layer-dimmed > .layer-content {
   opacity: 0.5;
 }
@@ -415,6 +434,12 @@
     max-width: calc(100% - 3rem);
     text-overflow: ellipsis;
   }
+}
+
+/* make features non-clickable in hidden layers */
+.layer-dimmed .layer-feature-item {
+  pointer-events: none;
+  cursor: default;
 }
 
 .feature-icon {
@@ -464,7 +489,7 @@
 @media (width < 380px), (height < 410px) {
   .map-modal {
     margin: 0 0.5rem;
-    padding: 1.5rem 0.1rem 0.8rem 0.5rem;
+    padding: 0.8rem 0.1rem 0.8rem 0.5rem;
   }
 
   .map-modal-header {
@@ -472,7 +497,7 @@
   }
 
   #description-modal {
-    padding-top: 2.5rem;
+    padding-top: 3rem;
   }
 
   #description-modal .map-modal {

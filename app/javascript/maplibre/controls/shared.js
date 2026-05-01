@@ -196,10 +196,27 @@ export function initLayersModal () {
         head.textContent = layerName
       }
 
-      const featureCount = document.createElement('span')
-      featureCount.classList.add('small')
-      featureCount.textContent = '(' + features.length + ')'
-      head.parentNode.insertBefore(featureCount, head.nextSibling)
+      // Don't show feature count for raster layers
+      if (layer.type !== 'raster') {
+        const featureCount = document.createElement('span')
+        featureCount.classList.add('small')
+        featureCount.textContent = '(' + features.length + ')'
+        head.parentNode.insertBefore(featureCount, head.nextSibling)
+      }
+
+      // Make raster layers non-expandable
+      if (layer.type === 'raster') {
+        const toggleLink = layerElement.querySelector('.link[data-action*="toggleLayerList"]')
+        if (toggleLink) {
+          toggleLink.style.cursor = 'default'
+          toggleLink.removeAttribute('data-action')
+          const caretIcon = toggleLink.querySelector('.bi-caret-right-fill')
+          if (caretIcon) {
+            caretIcon.classList.add('hidden')
+          }
+        }
+      }
+
       e.appendChild(layerElement)
       // visibility toggle for all layers
       const visBtn = layerElement.querySelector('button.layer-visibility')
@@ -278,7 +295,7 @@ export function initLayersModal () {
       }
       dom.initTooltips(layerElement)
 
-      if (features.length === 0) {
+      if (features.length === 0 && layer.type !== 'raster') {
         const newNode = document.createElement('i')
         newNode.classList.add('ms-3')
         newNode.textContent = 'No elements in this layer'

@@ -181,12 +181,13 @@ section,
 
 .hero h1 {
   margin: 0;
-  font-size: 3rem;
+  font-size: 2.7rem;
   font-weight: 700;
 }
 
 .hero blockquote {
   padding-left: 20px;
+  padding-right: 10px;
   border-left: 2px solid var(--accent-color);
   margin: 40px 0;
   font-weight: 300;
@@ -194,7 +195,7 @@ section,
 
 @media (width <= 640px) {
   .hero h1 {
-    font-size: clamp(1.8rem, 10vw, 3rem);
+    font-size: clamp(1.5rem, 8.5vw, 2.7rem);
   }
 }
 

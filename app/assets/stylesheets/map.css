@@ -29,7 +29,7 @@ html:has(.map), body:has(.map) {
 }
 
 #map-title {
-  padding: 0 0.7rem 0 0.2rem;
+  padding: 0 0.7rem 0.2rem 0.2rem;
   font-size: 1.8rem;
   color: var(--color-dark-moss-green);
   -webkit-text-stroke: 2px white;
@@ -113,10 +113,8 @@ html:has(.map), body:has(.map) {
 
 @media (width < 380px), (height < 410px) {
   #map-title {
-    font-size: 1rem;
-    max-height: 2rem;
+    font-size: 1.2rem;
     white-space: nowrap;
-    line-height: 1rem;
   }
 
   #map-head {
@@ -129,8 +127,8 @@ html:has(.map), body:has(.map) {
     min-width: 0.9rem;
   }
 
-  #layer-reload {
-    top: 2.5rem;
+  .layer-popover {
+    top: 3rem;
   }
 
   .maplibregl-ctrl-attrib-inner {
