@@ -9,7 +9,7 @@
     "@eslint/js": "^10.0.0",
     "@eslint/eslintrc": "^3.3.5",
     "eslint": "^10.2.1",
-    "globals": "^17.5.0",
+    "globals": "^17.6.0",
     "stylelint": "^17.9.1",
     "stylelint-config-standard": "^40.0.0"
   }
