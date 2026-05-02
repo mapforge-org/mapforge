@@ -1,7 +1,7 @@
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { Layer } from 'maplibre/layers/layer'
-import { applyOverpassQueryStyle } from 'maplibre/layers/queries'
+import { applyOverpassQueryStyle } from 'maplibre/layers/overpass/queries'
 import { map } from 'maplibre/map'
 import { initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
 

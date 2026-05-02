@@ -126,7 +126,13 @@ export async function showFeatureDetails (feature) {
   modal.classList.add('show')
   modal.scrollTo(0, 0)
   modal.setAttribute('data-feature--modal-feature-id-value', feature.id)
-  modal.setAttribute('data-feature--edit-feature-id-value', feature.id)
+  // Only set edit feature id for geojson features to avoid Stimulus controller errors
+  const featureLayer = getLayer(feature.id)
+  if (featureLayer && featureLayer.type === 'geojson') {
+    modal.setAttribute('data-feature--edit-feature-id-value', feature.id)
+  } else {
+    modal.removeAttribute('data-feature--edit-feature-id-value')
+  }
   dom.initTooltips(modal)
 
   if (elevationChart) { elevationChart.destroy() }
@@ -145,7 +151,8 @@ export async function showFeatureDetails (feature) {
   document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
   // Re-initialize tooltips after adding navigation icons
   dom.initTooltips(modal)
-  if (feature.geometry.type === 'Point' || getLayer(feature.id).type !== 'geojson') {
+  // Reuse featureLayer from above to check export eligibility
+  if (feature.geometry.type === 'Point' || !featureLayer || featureLayer.type !== 'geojson') {
     dom.hideElements('.feature-export')
   } else {
     dom.showElements('.feature-export')

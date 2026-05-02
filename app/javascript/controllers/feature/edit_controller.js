@@ -23,7 +23,10 @@ export default class extends Controller {
 
   featureIdValueChanged(value) {
     if (value) {
-      this.layerIdValue = getLayer(value).id
+      const layer = getLayer(value)
+      if (layer) {
+        this.layerIdValue = layer.id
+      }
     }
   }
 

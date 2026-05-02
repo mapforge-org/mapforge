@@ -96,6 +96,11 @@ export default class extends Controller {
     const target = event.currentTarget
     const layerType = target.dataset.layerType || 'basemap'
     const feature = getFeature(target.dataset.featureId, layerType)
+    if (!feature) {
+      console.error('Feature not found:', target.dataset.featureId, layerType)
+      hideContextMenu()
+      return
+    }
     addFeature(feature)
     addUndoState('Feature added', feature)
     mapChannel.send_message('new_feature', feature)
