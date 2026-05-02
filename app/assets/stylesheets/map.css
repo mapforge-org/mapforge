@@ -111,7 +111,32 @@ html:has(.map), body:has(.map) {
   }
 }
 
-@media (width < 380px), (height < 410px) {
+@media (width < 380px) {
+  #map-title {
+    font-size: 1.2rem;
+    white-space: nowrap;
+  }
+
+  #map-head {
+    padding: 0.2rem;
+    margin-top: 0.3rem;
+  }
+
+  #map-nav-toggle {
+    font-size: 0.9rem;
+    min-width: 0.9rem;
+  }
+
+  .layer-popover {
+    top: 3rem;
+  }
+
+  .maplibregl-ctrl-attrib-inner {
+    font-size: 0.6rem;
+  }
+}
+
+@media (height < 410px) {
   #map-title {
     font-size: 1.2rem;
     white-space: nowrap;

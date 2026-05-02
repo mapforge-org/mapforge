@@ -126,7 +126,73 @@
   display: none;
 }
 
-@media (width <= 574px), (height < 410px) {
+@media (width <= 574px) {
+  .map-modal-content {
+      max-height: calc(100vh - 7rem);
+  }
+
+  .layer-preview {
+      width: 28%;
+      height: auto;
+  }
+
+  .modal-pull-button {
+    top: 0.7rem;
+    position: relative;
+    display: block;
+    width: 45px;
+    height: 8px;
+    margin: auto;
+    background-color: rgb(200 200 200);
+    border-radius: 3px;
+  }
+
+  .modal-pull-button:hover {
+    background-color: rgb(124 124 124);
+  }
+
+  .modal-pull-transition {
+    transition:
+      height 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  }
+
+  .modal-pull-up {
+    height: calc(100% - 1rem);
+  }
+
+  .modal-pull-middle {
+    height: 45%;
+  }
+
+  .modal-pull-down {
+    height: 25%;
+  }
+
+  .modal-pull-fade {
+    opacity: 0.4 !important;
+  }
+
+  /* Larger touch targets on mobile */
+  .copy-link {
+    min-width: 2rem;
+    min-height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .copy-link i {
+    font-size: 1rem;
+  }
+
+  /* Touch feedback */
+  .copy-link:active {
+    background-color: rgb(0 0 0 / 8%);
+    border-radius: 0.4rem;
+  }
+}
+
+@media (height < 410px) {
   .map-modal-content {
       max-height: calc(100vh - 7rem);
   }
@@ -486,7 +552,26 @@
   }
 }
 
-@media (width < 380px), (height < 410px) {
+@media (width < 380px) {
+  .map-modal {
+    margin: 0 0.5rem;
+    padding: 0.8rem 0.1rem 0.8rem 0.5rem;
+  }
+
+  .map-modal-header {
+    padding: 0 0.4rem;
+  }
+
+  #description-modal {
+    padding-top: 3rem;
+  }
+
+  #description-modal .map-modal {
+    padding-top: 0;
+  }
+}
+
+@media (height < 410px) {
   .map-modal {
     margin: 0 0.5rem;
     padding: 0.8rem 0.1rem 0.8rem 0.5rem;
