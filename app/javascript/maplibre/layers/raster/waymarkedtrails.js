@@ -53,7 +53,7 @@ function pointToSegmentDistance(p, a, b) {
   return Math.sqrt(dpx * dpx + dpy * dpy)
 }
 
-export async function fetchNearestRoute(theme, lng, lat) {
+export async function fetchNearestRoute(theme, lng, lat, currentZoom) {
   const zoom = 12
   const { x, y } = lngLatToTile(lng, lat, zoom)
   const url = `https://${theme}.waymarkedtrails.org/api/v1/tiles/${zoom}/${x}/${y}.json`
@@ -106,8 +106,9 @@ export async function fetchNearestRoute(theme, lng, lat) {
       }
     }
 
-    // Threshold ~500m in Mercator units (roughly 560 at equator)
-    if (nearestRoute && minDistance < 560) {
+    // Zoom-dependent threshold: 500m (~560 Mercator units) at zoom 10.5, scales by 2x per zoom level
+    const threshold = 560 * Math.pow(2, 10.5 - currentZoom)
+    if (nearestRoute && minDistance < threshold) {
       return nearestRoute
     }
 
@@ -141,12 +142,14 @@ export async function fetchRouteDetails(theme, routeId) {
       return null
     }
 
+    const routeName = details.name || details.ref || 'Unnamed route'
     const feature = {
       type: 'Feature',
       id: featureId(),
       geometry,
       properties: {
-        title: details.name || details.ref || 'Unnamed route',
+        title: routeName,
+        label: routeName,
         desc: buildDescription(details, theme, routeId),
         stroke: determineRouteColor(details, theme),
         waymarkedtrailsId: routeId

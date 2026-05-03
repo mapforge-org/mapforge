@@ -10,11 +10,13 @@ export class RasterLayer extends Layer {
     this.mapClickHandler = null
     this.mapContextMenuHandler = null
     this.isWaymarkedtrails = layer.query && layer.query.includes('waymarkedtrails.org')
+    this.highlightedFeatureId = null
   }
 
   set show(value) {
     this.layer.show = value
     if (!value && this.isWaymarkedtrails) {
+      this.highlightedFeatureId = null
       this.render(null)
     }
   }
@@ -63,6 +65,9 @@ export class RasterLayer extends Layer {
     })
 
     if (this.isWaymarkedtrails) {
+      // Styles defined here rather than in styles.js: these are simple static layers
+      // for a single highlighted track, unlike the geojson styles which need feature-state,
+      // dasharray, hit-test layers, and dynamic color expressions.
       const geojsonSourceId = this.sourceId + '-features'
 
       // Outline layer (black border) - rendered first (below)
@@ -108,6 +113,29 @@ export class RasterLayer extends Layer {
           'line-opacity': 0.9
         }
       })
+
+      // Label layer for route names
+      map.addLayer({
+        id: 'line-labels_' + geojsonSourceId,
+        type: 'symbol',
+        source: geojsonSourceId,
+        filter: ['has', 'label'],
+        layout: {
+          'symbol-placement': 'line',
+          'text-field': ['get', 'label'],
+          'text-font': ['Noto Sans Regular'],
+          'text-size': 14,
+          'text-max-angle': 30,
+          'text-keep-upright': true,
+          'text-rotation-alignment': 'map',
+          'symbol-spacing': 200
+        },
+        paint: {
+          'text-color': '#000',
+          'text-halo-color': '#fff',
+          'text-halo-width': 2
+        }
+      })
     }
 
     this.setupEventHandlers()
@@ -135,7 +163,7 @@ export class RasterLayer extends Layer {
   }
 
   async fetchAndStoreRoute(theme, lng, lat) {
-    const route = await fetchNearestRoute(theme, lng, lat)
+    const route = await fetchNearestRoute(theme, lng, lat, map.getZoom())
     if (!route) return null
 
     const feature = await fetchRouteDetails(theme, route.id)
@@ -170,10 +198,12 @@ export class RasterLayer extends Layer {
       const feature = await this.fetchAndStoreRoute(theme, e.lngLat.lng, e.lngLat.lat)
 
       if (!feature) {
+        this.highlightedFeatureId = null
         this.render(null)
         return
       }
 
+      this.highlightedFeatureId = feature.id
       this.render(feature.id)
 
       const geojsonSourceId = this.sourceId + '-features'
@@ -182,15 +212,13 @@ export class RasterLayer extends Layer {
 
     map.on('click', this.mapClickHandler)
 
-    this.mapContextMenuHandler = async (e) => {
+    this.mapContextMenuHandler = (e) => {
       e.preventDefault()
 
-      if (!this.show) return
+      if (!this.show || !this.highlightedFeatureId) return
 
-      const feature = await this.fetchAndStoreRoute(theme, e.lngLat.lng, e.lngLat.lat)
+      const feature = this.layer.geojson?.features.find(f => f.id === this.highlightedFeatureId)
       if (!feature) return
-
-      this.render(feature.id)
 
       functions.e('#map-context-menu', el => {
         if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
