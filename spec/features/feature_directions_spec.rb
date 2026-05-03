@@ -6,7 +6,7 @@ describe "Feature directions" do
   before do
     ors_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_foot.json"))
     CapybaraMock.stub_request(
-      :post, /api\.openrouteservice\.org\/v2\/directions\/foot-hiking/
+      :post, /api\.heigit\.org\/openrouteservice\/v2\/directions\/foot-hiking/
     ).to_return(
       headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
       status: 200,
@@ -51,7 +51,7 @@ describe "Feature directions" do
       # Mock ORS Snap API
       snap_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_snap.json"))
       CapybaraMock.stub_request(
-        :post, /api\.openrouteservice\.org\/v2\/snap\/foot-hiking/
+        :post, /api\.heigit\.org\/openrouteservice\/v2\/snap\/foot-hiking/
       ).to_return(
         headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
         status: 200,
@@ -61,7 +61,7 @@ describe "Feature directions" do
       # Mock ORS Directions API (reuse existing fixture)
       ors_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_foot.json"))
       CapybaraMock.stub_request(
-        :post, /api\.openrouteservice\.org\/v2\/directions\/foot-hiking/
+        :post, /api\.heigit\.org\/openrouteservice\/v2\/directions\/foot-hiking/
       ).to_return(
         headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
         status: 200,
@@ -71,7 +71,7 @@ describe "Feature directions" do
       # Mock ORS Elevation API
       elevation_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_elevation.json"))
       CapybaraMock.stub_request(
-        :post, /api\.openrouteservice\.org\/elevation\/line/
+        :post, /api\.heigit\.org\/openrouteservice\/elevation\/line/
       ).to_return(
         headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
         status: 200,

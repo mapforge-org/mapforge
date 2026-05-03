@@ -118,7 +118,6 @@ There are quite some apps that can be used in combination with Mapforge for opti
 * [komoot gpx merge tool](https://www.komoot.com/de-de/gpx-merge-tool-online) (merge and repair gpx tracks)
 * [cyclosm.org](https://www.cyclosm.org) (base map, also available on mapforge)
 * [opencyclemap.org](https://www.opencyclemap.org/) (another bicycle base map, from thunderforest.com)
-* [graphhopper.com](https://graphhopper.com/maps/?profile=bike&layer=TF+Cycle) (bike routing)
 * [mapillary.com](https://www.mapillary.com/) (street view like photos)
 * [opencampingmap.org](https://opencampingmap.org) (camp sites)
 * [campwild.org](https://map.campwild.org/) (shelters)
@@ -128,15 +127,23 @@ There are quite some apps that can be used in combination with Mapforge for opti
 
 Creating bike routes:
 
+Netzpolitik.org recently [tested](https://netzpolitik.org/2026/wandern-radfahren-frei-und-dezentral-ins-gruene/) some privacy friendly routing apps (german).
+
 * [onthegomap.com](https://onthegomap.com/) (simple routing and track export)
 * [cycle.travel](https://cycle.travel/map) (routing + mobile app)
 * [bikerouter.de](https://bikerouter.de) (routing with a lot of options)
 * [brouter.de](https://brouter.de/brouter-web/) (original project for bikerouter.de)
 * [sherpa-map.com](https://sherpa-map.com)
 * [veloplanner.com](https://veloplanner.com)
+* [graphhopper.com](https://graphhopper.com/maps/?profile=bike&layer=TF+Cycle) (bike routing)
 
 
 Commercial alternatives for bike routing:
 
 * [ridewithgps.com](https://ridewithgps.com/)
 * [alltrails.com](https://www.alltrails.com) (former gpsies.com)
+* [bikemap.net](https://bikemap.net)
+* [Garmin Connect](https://connect.garmin.com/app/trails)
+* [Komoot](https://www.komoot.com)
+* [Outdooractive](https://www.outdooractive.com)
+* [Strava](https://www.strava.com/)
