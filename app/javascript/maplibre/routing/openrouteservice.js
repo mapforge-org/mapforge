@@ -49,10 +49,11 @@ export function orsBuildRequest (config, coordinates, _bearings) {
 // Must be bound to the CustomMapLibreGlDirections instance (for this.abortController, this.configuration)
 export async function orsFetch ({ method: _method, url, payload }) {
   // console.log('ORS request:', url, JSON.stringify(payload, null, 2))
-  const response = await window.fetch(url, {
+  // Use api_key query parameter to avoid CORS preflight issues with Authorization header
+  const urlWithKey = `${url}?api_key=${encodeURIComponent(this.configuration.apiKey)}`
+  const response = await window.fetch(urlWithKey, {
     method: 'POST',
     headers: {
-      'Authorization': this.configuration.apiKey,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(payload),
@@ -105,7 +106,10 @@ export async function orsFetch ({ method: _method, url, payload }) {
 // The API restricts to 2000 vertexes per request: https://openrouteservice.org/restrictions/
 export async function getRouteElevation (waypoints) {
   const BATCH_SIZE = 2000
-  const Elevation = new Openrouteservice.Elevation({api_key: window.gon.map_keys.openrouteservice})
+  const Elevation = new Openrouteservice.Elevation({
+    api_key: window.gon.map_keys.openrouteservice,
+    host: 'https://api.heigit.org/openrouteservice'
+  })
   const coords = functions.removeElevation(waypoints)
 
   // Split into batches of BATCH_SIZE with 1-point overlap
@@ -152,7 +156,10 @@ export async function getRouteElevation (waypoints) {
 
 // Fetch elevation for specific points only (used when a few points of a large track are moved)
 export async function getPointsElevation (coordinates, changedIndices) {
-  const Elevation = new Openrouteservice.Elevation({api_key: window.gon.map_keys.openrouteservice})
+  const Elevation = new Openrouteservice.Elevation({
+    api_key: window.gon.map_keys.openrouteservice,
+    host: 'https://api.heigit.org/openrouteservice'
+  })
   const updatedCoords = [...coordinates]
 
   const results = await Promise.all(changedIndices.map(async (idx) => {
@@ -179,8 +186,14 @@ export async function getRouteUpdate (originalFeature, updatedFeature) {
   const profile = orsProfiles[profileKey]?.profile || profileKey
   const weightings = orsProfiles[profileKey]?.weightings || {}
 
-  const Snap = new Openrouteservice.Snap({ api_key: window.gon.map_keys.openrouteservice })
-  const orsDirections = new Openrouteservice.Directions({ api_key: window.gon.map_keys.openrouteservice })
+  const Snap = new Openrouteservice.Snap({
+    api_key: window.gon.map_keys.openrouteservice,
+    host: 'https://api.heigit.org/openrouteservice'
+  })
+  const orsDirections = new Openrouteservice.Directions({
+    api_key: window.gon.map_keys.openrouteservice,
+    host: 'https://api.heigit.org/openrouteservice'
+  })
 
   // new waypoints are start, end, changed point and current waypoints that are still in the feature
   let waypoints = [updatedFeature.geometry.coordinates[0]]

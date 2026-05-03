@@ -120,7 +120,10 @@ export async function convertToRoute(originalFeature, profile) {
     }
 
     // Snap waypoints to road network
-    const Snap = new Openrouteservice.Snap({ api_key: window.gon.map_keys.openrouteservice })
+    const Snap = new Openrouteservice.Snap({
+      api_key: window.gon.map_keys.openrouteservice,
+      host: 'https://api.heigit.org/openrouteservice'
+    })
     const orsProfile = orsProfiles[profile]?.profile || profile
 
     status('Snapping waypoints to road network...')
@@ -150,7 +153,10 @@ export async function convertToRoute(originalFeature, profile) {
     // Note: weightings (steepness_difficulty, green, quiet) are intentionally omitted
     // because they trigger ORS's 150km route length limit
     status('Calculating route...')
-    const orsDirections = new Openrouteservice.Directions({ api_key: window.gon.map_keys.openrouteservice })
+    const orsDirections = new Openrouteservice.Directions({
+      api_key: window.gon.map_keys.openrouteservice,
+      host: 'https://api.heigit.org/openrouteservice'
+    })
 
     const routeOptions = {
       coordinates: snappedWaypoints,
@@ -247,8 +253,14 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
 
   console.log(`Routing ${segments.length} segments...`)
 
-  const Snap = new Openrouteservice.Snap({ api_key: window.gon.map_keys.openrouteservice })
-  const orsDirections = new Openrouteservice.Directions({ api_key: window.gon.map_keys.openrouteservice })
+  const Snap = new Openrouteservice.Snap({
+    api_key: window.gon.map_keys.openrouteservice,
+    host: 'https://api.heigit.org/openrouteservice'
+  })
+  const orsDirections = new Openrouteservice.Directions({
+    api_key: window.gon.map_keys.openrouteservice,
+    host: 'https://api.heigit.org/openrouteservice'
+  })
   const orsProfile = orsProfiles[profile]?.profile || profile
 
   const allCoordinates = []

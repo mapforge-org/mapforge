@@ -382,7 +382,7 @@ section,
   }
 }
 
-@media (width <= 575px) {
+@media (width <= 574px) {
   #features .swiper {
     margin: 30px 30px 10px;
   }

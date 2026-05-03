@@ -1,8 +1,8 @@
 import { BasemapLayer } from 'maplibre/layers/basemap'
 import { GeoJSONLayer } from 'maplibre/layers/geojson'
 import { Layer } from 'maplibre/layers/layer'
-import { OverpassLayer } from 'maplibre/layers/overpass'
-import { RasterLayer } from 'maplibre/layers/raster'
+import { OverpassLayer } from 'maplibre/layers/overpass/overpass'
+import { RasterLayer } from 'maplibre/layers/raster/raster'
 import { WikipediaLayer } from 'maplibre/layers/wikipedia'
 
 const layerTypes = {

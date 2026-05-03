@@ -119,12 +119,46 @@
   padding: 0.2rem 0.8rem;
 }
 
-@media (width <=574px), (height < 410px) {
+@media (width <= 574px) {
   #feature-details-modal {
     bottom: 0;
     left: calc(50% - 1rem);
     transform: translate(-50%);
     max-height: calc(100% - 15px); /* px here for easier calculation of scroll behavior */
+    overflow-y: auto;
+    width: calc(100% - 0.6rem);
+    max-width: 25rem;
+    margin: 0.5rem 1rem;
+  }
+
+  #feature-details-body {
+    padding: 0.6rem 0.4rem 0.3rem;
+  }
+
+  #edit-buttons button {
+    font-size: clamp(70%, 2vw + 0.5rem, 100%);
+    padding: 0.8rem 0.1rem 0.3rem;
+  }
+
+  #feature-details-meta {
+    font-size: clamp(60%, 2vw + 0.3rem, 80%);
+  }
+
+  #feature-edit-ui {
+    padding: 0.45rem;
+  }
+
+  .feature-tab-btn {
+    min-width: 1.7rem;
+  }
+}
+
+@media (height < 410px) {
+  #feature-details-modal {
+    bottom: 0;
+    left: calc(50% - 1rem);
+    transform: translate(-50%);
+    max-height: calc(100% - 15px);
     overflow-y: auto;
     width: calc(100% - 0.6rem);
     max-width: 25rem;
@@ -439,7 +473,14 @@ input {
   color: var(--color-dark-charcoal);
 }
 
-@media (width <=574px), (height < 410px) {
+@media (width <= 574px) {
+  .feature-details-card-header {
+    justify-content: center;
+    gap: 0.5rem;
+  }
+}
+
+@media (height < 410px) {
   .feature-details-card-header {
     justify-content: center;
     gap: 0.5rem;

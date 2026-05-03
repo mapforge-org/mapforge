@@ -262,6 +262,10 @@ export function setLayerVisibility(sourceName, visible) {
       sources.push(sourceName.replace('geojson-source-', 'km-marker-source-'))
       sources.push(sourceName.replace('geojson-source-', 'route-extras-source-'))
     }
+    // raster layers with waymarkedtrails have companion sources for clicked routes
+    if (sourceName.startsWith('raster-source-')) {
+      sources.push(sourceName + '-features')
+    }
     map.getStyle().layers
       .filter(l => sources.includes(l.source))
       .forEach(l => {

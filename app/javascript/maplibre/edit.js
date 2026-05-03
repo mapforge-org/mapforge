@@ -188,6 +188,15 @@ export async function initializeEditMode () {
   map.on('online', (_e) => { enableEditControls() })
   map.on('offline', (_e) => { disableEditControls() })
 
+  // Restore dragPan when PWA resumes from background
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && draw) {
+      if (!isGeolocateCompassModeActive() && draw.getMode() !== 'draw_paint_mode') {
+        map.dragPan.enable()
+      }
+    }
+  })
+
   // in edit mode, map click handler is needed to hide modals
   // and to hide feature modal if no feature is selected
   map.on('click', () => {

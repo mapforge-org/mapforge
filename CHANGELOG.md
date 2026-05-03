@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-05
+
+* Switched headline font to "Bree Serif"
+* Enhanced waymarkedtrails.org integration:
+  Select and copy trails to your map
+
 ## 2026-04
 
 * Mobile usability improvements

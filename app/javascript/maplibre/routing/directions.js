@@ -155,7 +155,7 @@ export function initDirections (profile, feature) {
     ? {
         // OpenRouteService backend
         adapter: 'ors',
-        api: "https://api.openrouteservice.org/v2/directions",
+        api: "https://api.heigit.org/openrouteservice/v2/directions",
         apiKey: window.gon.map_keys.openrouteservice,
         profile: orsProfiles[profile]?.profile || profile,
         refreshOnMove: false,

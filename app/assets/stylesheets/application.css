@@ -17,6 +17,12 @@
 
 /* General styles used throughout the whole app */
 
+/* Screen size breakpoints:
+ * narrow:       width <= 574px   (mobile portrait)
+ * extra-narrow: width < 380px    (small phones)
+ * low:          height < 410px   (landscape phones)
+ */
+
 
 /* Palette: https://coolors.co/e5e5d7-dae2c8-cedfb9-dac591-e6aa68-ca3c25-1d1a05-49622d-354a51-4d7a9c */
 :root {

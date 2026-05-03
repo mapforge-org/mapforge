@@ -91,7 +91,7 @@ nav.fixed-top~#docs {
   }
 }
 
-@media (width <= 575px) {
+@media (width <= 574px) {
   #docs {
     padding: 1rem;
   }

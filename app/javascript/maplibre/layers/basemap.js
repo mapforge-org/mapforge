@@ -5,7 +5,7 @@ import {
   stickyFeatureHighlight
 } from 'maplibre/feature'
 import { Layer } from 'maplibre/layers/layer'
-import { overpassDescription } from 'maplibre/layers/overpass'
+import { overpassDescription } from 'maplibre/layers/overpass/overpass'
 import { addGeoJSONSource, map, mapProperties } from 'maplibre/map'
 import { basemaps } from 'maplibre/styles/basemaps'
 import { initializeViewStyles } from 'maplibre/styles/styles'
