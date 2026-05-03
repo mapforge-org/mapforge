@@ -102,7 +102,8 @@ describe "Feature directions" do
       # Verify convert section is visible
       expect(page).to have_text("Convert to routed track")
 
-      # Expand the convert section by clicking the header
+      # Move mouse away from button to dismiss tooltip
+      find("#convert-to-route-header").hover
       find("#convert-to-route-header").click
 
       # Click foot profile button

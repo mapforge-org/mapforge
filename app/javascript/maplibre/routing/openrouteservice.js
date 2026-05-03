@@ -49,10 +49,11 @@ export function orsBuildRequest (config, coordinates, _bearings) {
 // Must be bound to the CustomMapLibreGlDirections instance (for this.abortController, this.configuration)
 export async function orsFetch ({ method: _method, url, payload }) {
   // console.log('ORS request:', url, JSON.stringify(payload, null, 2))
-  const response = await window.fetch(url, {
+  // Use api_key query parameter to avoid CORS preflight issues with Authorization header
+  const urlWithKey = `${url}?api_key=${encodeURIComponent(this.configuration.apiKey)}`
+  const response = await window.fetch(urlWithKey, {
     method: 'POST',
     headers: {
-      'Authorization': this.configuration.apiKey,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(payload),
