@@ -158,6 +158,10 @@ export class RasterLayer extends Layer {
           type: 'FeatureCollection',
           features: featuresToRender
         })
+        if (highlightedFeatureId) {
+          const layerIds = ['line-outline_', 'line_', 'line-labels_'].map(p => p + geojsonSourceId)
+          layerIds.forEach(id => { if (map.getLayer(id)) map.moveLayer(id) })
+        }
       }
     }
   }
