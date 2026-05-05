@@ -106,6 +106,7 @@ export async function orsFetch ({ method: _method, url, payload }) {
 // The API restricts to 2000 vertexes per request: https://openrouteservice.org/restrictions/
 export async function getRouteElevation (waypoints) {
   const BATCH_SIZE = 2000
+  // Note: elevation uses api.openrouteservice.org due to CORS setup
   const Elevation = new Openrouteservice.Elevation({
     api_key: window.gon.map_keys.openrouteservice,
     host: 'https://api.openrouteservice.org'
@@ -156,6 +157,7 @@ export async function getRouteElevation (waypoints) {
 
 // Fetch elevation for specific points only (used when a few points of a large track are moved)
 export async function getPointsElevation (coordinates, changedIndices) {
+  // Note: elevation uses api.openrouteservice.org due to CORS setup
   const Elevation = new Openrouteservice.Elevation({
     api_key: window.gon.map_keys.openrouteservice,
     host: 'https://api.openrouteservice.org'

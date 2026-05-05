@@ -68,10 +68,10 @@ describe "Feature directions" do
         body: ors_file
       )
 
-      # Mock ORS Elevation API
+      # Mock ORS Elevation API (uses different domain due to CORS)
       elevation_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_elevation.json"))
       CapybaraMock.stub_request(
-        :post, /api\.heigit\.org\/openrouteservice\/elevation\/line/
+        :post, /api\.openrouteservice\.org\/elevation\/line/
       ).to_return(
         headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
         status: 200,
