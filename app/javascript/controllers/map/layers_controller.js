@@ -64,7 +64,7 @@ export default class extends Controller {
           feature.properties ||= {}
           upsert(feature)
           if (feature.geometry.type === 'LineString') {
-            updateElevation(feature).then(() => {
+            updateElevation(feature).finally(() => {
               mapChannel.send_message('new_feature', feature)
             })
           } else {

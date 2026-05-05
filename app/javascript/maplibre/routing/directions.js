@@ -239,7 +239,7 @@ export function initDirections (profile, feature) {
 
     // add elevation from openrouteservice (when not included in route response)
     if (coords[0].length === 2) {
-      updateElevation(currentFeature).then(() => {
+      updateElevation(currentFeature).finally(() => {
         updateTrack(currentFeature)
         if (!isExisting) {
           showFeatureDetails(currentFeature)

@@ -170,7 +170,7 @@ export async function convertToRoute(originalFeature, profile) {
     // Fetch elevation (skip for car routes)
     if (!orsProfile.includes('driving')) {
       status('Fetching elevation data...')
-      routeCoordinates = await getRouteElevation(routeCoordinates)
+      routeCoordinates = await getRouteElevation(routeCoordinates) || routeCoordinates
     }
 
     // Compare lengths to warn about significant differences
@@ -314,7 +314,7 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
   let finalCoordinates = allCoordinates
   if (!orsProfile.includes('driving')) {
     status('Fetching elevation data...')
-    finalCoordinates = await getRouteElevation(allCoordinates)
+    finalCoordinates = await getRouteElevation(allCoordinates) || allCoordinates
   }
 
   // Reconstruct snapped waypoints from segment boundaries

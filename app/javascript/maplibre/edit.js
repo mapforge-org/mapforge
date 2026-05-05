@@ -378,9 +378,9 @@ export function updateElevation(feature) {
 }
 
 function fullElevation(feature) {
-  return getRouteElevation(feature.geometry.coordinates).then(coords => {
-    feature.geometry.coordinates = coords
-  })
+  return getRouteElevation(feature.geometry.coordinates)
+    .then(coords => { if (coords) feature.geometry.coordinates = coords })
+    .catch(err => console.error("Elevation update failed:", err))
 }
 
 export function setSelectedFeature(feature) {
