@@ -108,7 +108,7 @@ export async function getRouteElevation (waypoints) {
   const BATCH_SIZE = 2000
   const Elevation = new Openrouteservice.Elevation({
     api_key: window.gon.map_keys.openrouteservice,
-    host: 'https://api.heigit.org/openrouteservice'
+    host: 'https://api.openrouteservice.org'
   })
   const coords = functions.removeElevation(waypoints)
 
@@ -158,7 +158,7 @@ export async function getRouteElevation (waypoints) {
 export async function getPointsElevation (coordinates, changedIndices) {
   const Elevation = new Openrouteservice.Elevation({
     api_key: window.gon.map_keys.openrouteservice,
-    host: 'https://api.heigit.org/openrouteservice'
+    host: 'https://api.openrouteservice.org'
   })
   const updatedCoords = [...coordinates]
 
