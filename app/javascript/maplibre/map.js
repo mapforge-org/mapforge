@@ -479,12 +479,14 @@ async function initializeStyles() {
   }
 }
 
+// Returns true if a basemap reload was triggered (caller can rely on the
+// style.load handler to re-initialize layer sources/styles), false otherwise.
 export function setBackgroundMapLayer (mapName = mapProperties.base_map, force = false) {
   if (backgroundMapLayer === mapName &&
       backgroundTerrain === mapProperties.terrain &&
       backgroundHillshade === mapProperties.hillshade &&
       backgroundContours === mapProperties.contours &&
-      backgroundGlobe === mapProperties.globe && !force) { return }
+      backgroundGlobe === mapProperties.globe && !force) { return false }
   let basemap = basemaps()[mapName]
   if (!basemap) {
     console.error('Base map ' + mapName + ' not available!')
@@ -506,52 +508,61 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     // Clear image cache so icons can be re-loaded after basemap change
     clearImageState()
     map.setStyle(basemap.style, { diff: true, strictMode: true })
+    return true
   }
+  return false
 }
 
 // re-sort layers to overlay geojson layers with labels & extrusion objects
 // workflows to consider: first map load, basemap update, socket reconnect
-// sorting:
+// sorting (bottom to top):
 // - polygons, lines etc.
 // - map labels
 // - extrusions
 // - points
 // - text/symbol
+//
+// Uses map.moveLayer() instead of map.setStyle() to avoid map freeze: a setStyle
+// here on top of the basemap setStyle in setBackgroundMapLayer left interaction
+// handlers attached to a stale canvas after a reconnect/background restore.
 export function sortLayers () {
-  const currentStyle = map.getStyle()
-  let layers = currentStyle.layers
+  const layers = map.getStyle().layers
 
-  const mapExtrusions = functions.reduceArray(layers, (e) => e.paint && e.paint['fill-extrusion-height'] && !e.id.startsWith('polygon-layer-extrusion'))
   // increase opacity of 3D houses
-  mapExtrusions.filter(l => l.id === 'Building 3D').forEach((layer) => {
-    layer.paint['fill-extrusion-opacity'] = 0.8
+  if (map.getLayer('Building 3D')) {
+    map.setPaintProperty('Building 3D', 'fill-extrusion-opacity', 0.8)
+  }
+
+  // Each entry is a layer group; groups are listed bottom-to-top. mapSymbols
+  // excludes user symbol/label layers since the original mutating logic pulled
+  // those out before computing mapSymbols.
+  const groups = [
+    layers.filter(e => e.id.includes('-flat')), // keep flat layers behind houses
+    layers.filter(e => e.id.startsWith('line-layer_geojson-source')),
+    layers.filter(e => e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')),
+    layers.filter(e => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion')),
+    layers.filter(e => e.paint && e.paint['fill-extrusion-height'] && !e.id.startsWith('polygon-layer-extrusion')),
+    layers.filter(e => e.id.startsWith('maplibre-gl-directions')),
+    layers.filter(e => e.type === 'symbol' &&
+      !e.id.startsWith('symbols-layer') && !e.id.startsWith('symbols-border-layer') &&
+      !e.id.startsWith('text-layer') && !e.id.startsWith('cluster_labels')),
+    layers.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('cluster_points')),
+    layers.filter(e => e.id.startsWith('heatmap-layer')),
+    layers.filter(e => e.id.startsWith('gl-draw-')),
+    layers.filter(e => e.id.startsWith('km-marker') && !e.id.startsWith('km-marker-end')),
+    layers.filter(e => e.id.startsWith('route-extras-labels')),
+    layers.filter(e => e.id.startsWith('km-marker-end')),
+    layers.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),
+    layers.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
+    layers.filter(e => e.id.startsWith('line-layer-hit_geojson-source')),
+    layers.filter(e => e.id.startsWith('points-hit-layer_geojson-source'))
+  ]
+
+  // moveLayer(id) with no second arg moves the layer to the top. Iterating
+  // bottom-to-top builds up the desired stack order.
+  groups.forEach(group => {
+    group.forEach(layer => { if (map.getLayer(layer.id)) map.moveLayer(layer.id) })
   })
-
-  // console.log('Sorting layers', layers)
-  const userExtrusions = functions.reduceArray(layers, (e) => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion'))
-  const flatLayers = functions.reduceArray(layers, (e) => (e.id.includes('-flat'))) // keep flat layers behin houses
-  const routeExtras = functions.reduceArray(layers, (e) => (e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')))
-  const extrasLabels = functions.reduceArray(layers, (e) => (e.id.startsWith('route-extras-labels')))
-  const kmEndMarkers = functions.reduceArray(layers, (e) => (e.id.startsWith('km-marker-end')))
-  const kmMarkers = functions.reduceArray(layers, (e) => (e.id.startsWith('km-marker')))
-  const editLayer = functions.reduceArray(layers, (e) => (e.id.startsWith('gl-draw-')))
-  const userSymbols = functions.reduceArray(layers, (e) => (e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')))
-  const userLabels = functions.reduceArray(layers, (e) => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
-  const mapSymbols = functions.reduceArray(layers, (e) => e.type === 'symbol')
-  const points = functions.reduceArray(layers, (e) => (e.id.startsWith('points-layer') || e.id.startsWith('cluster_points')))
-  const lineLayers = functions.reduceArray(layers, (e) => e.id.startsWith('line-layer_geojson-source'))
-  const lineLayerHits = functions.reduceArray(layers, (e) => e.id.startsWith('line-layer-hit_geojson-source'))
-  const pointsLayerHits = functions.reduceArray(layers, (e) => e.id.startsWith('points-hit-layer_geojson-source'))
-  const directions = functions.reduceArray(layers, (e) => (e.id.startsWith('maplibre-gl-directions')))
-  const heatmap = functions.reduceArray(layers, (e) => (e.id.startsWith('heatmap-layer')))
-
-  layers = layers.concat(flatLayers).concat(lineLayers).concat(routeExtras).concat(userExtrusions).concat(mapExtrusions).concat(directions)
-    .concat(mapSymbols).concat(points).concat(heatmap).concat(editLayer)
-    .concat(kmMarkers).concat(extrasLabels).concat(kmEndMarkers).concat(userSymbols).concat(userLabels).concat(lineLayerHits).concat(pointsLayerHits)
-
-  const newStyle = { ...currentStyle, layers }
-  map.setStyle(newStyle, { diff: true })
-  console.log("Sorted layers:", map.getStyle().layers)
 }
 
 export function updateMapName (name) {
