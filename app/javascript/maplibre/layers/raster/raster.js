@@ -2,7 +2,7 @@ import * as functions from 'helpers/functions'
 import { highlightFeature } from 'maplibre/feature'
 import { Layer } from 'maplibre/layers/layer'
 import { extractTheme, fetchNearestRoute, fetchRouteDetails } from 'maplibre/layers/raster/waymarkedtrails'
-import { addGeoJSONSource, map } from 'maplibre/map'
+import { addGeoJSONSource, map, removeStyleLayers } from 'maplibre/map'
 
 export class RasterLayer extends Layer {
   constructor(layer) {
@@ -54,6 +54,13 @@ export class RasterLayer extends Layer {
 
   initialize() {
     if (!this.query) { return Promise.resolve() }
+
+    // Make idempotent: existing layers/handlers must be cleared.
+    removeStyleLayers(this.sourceId)
+    if (this.isWaymarkedtrails) {
+      removeStyleLayers(this.sourceId + '-features')
+    }
+    this.removeEventHandlers()
 
     map.addLayer({
       id: 'raster-layer_' + this.sourceId,
