@@ -73,8 +73,7 @@ function wikipediatoGeoJSON(data) {
         "label": entry.title,
         "wikipediaId": entry.pageid,
         "marker-image-url": "/icons/wikipedia.png",
-        "marker-color": "white",
-        "marker-size": "20"
+        "marker-size": "20",
       }
     }
     geoJSON.features.push(feature)
