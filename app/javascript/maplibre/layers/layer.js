@@ -279,6 +279,14 @@ export class Layer {
     this.removeEventHandlers()
   }
 
+  /**
+   * Clear any layer-specific highlight state.
+   * Override in subclasses that maintain their own highlight state beyond the global highlightedFeatureId.
+   */
+  clearHighlight() {
+    // Default implementation does nothing - most layers rely on global highlightedFeatureId
+  }
+
   // overwrite all layer properties with data,
   // keep geojson if data does not include it
   update(data) {

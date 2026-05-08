@@ -1,6 +1,6 @@
 import * as functions from 'helpers/functions'
 import { draw } from 'maplibre/edit'
-import { highlightFeature } from 'maplibre/feature'
+import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { Layer } from 'maplibre/layers/layer'
 import { layers } from 'maplibre/layers/layers'
 import { extractTheme, fetchNearestRoute, fetchRouteDetails } from 'maplibre/layers/raster/waymarkedtrails'
@@ -18,8 +18,7 @@ export class RasterLayer extends Layer {
   set show(value) {
     this.layer.show = value
     if (!value && this.isWaymarkedtrails) {
-      this.highlightedFeatureId = null
-      this.render(null)
+      this.clearHighlight()
     }
   }
 
@@ -155,6 +154,13 @@ export class RasterLayer extends Layer {
     return Promise.resolve()
   }
 
+  clearHighlight() {
+    if (this.highlightedFeatureId) {
+      this.highlightedFeatureId = null
+      this.render(null)
+    }
+  }
+
   render(highlightedFeatureId = null) {
     if (this.isWaymarkedtrails) {
       const geojsonSourceId = this.sourceId + '-features'
@@ -233,10 +239,12 @@ export class RasterLayer extends Layer {
       const feature = await this.fetchAndStoreRoute(theme, e.lngLat.lng, e.lngLat.lat)
 
       if (!feature) {
-        this.highlightedFeatureId = null
-        this.render(null)
+        this.clearHighlight()
         return
       }
+
+      // Clear any existing highlights before setting waymarkedtrails highlight
+      resetHighlightedFeature()
 
       this.highlightedFeatureId = feature.id
       this.render(feature.id)

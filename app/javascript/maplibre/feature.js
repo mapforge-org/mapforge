@@ -257,12 +257,15 @@ export function resetHighlightedFeature () {
       window.history.replaceState({}, document.title, url.toString())
     }
   }
+  // Clear layer-specific highlight state
+  layers?.forEach(layer => layer.clearHighlight())
   // reset active modals
   f.e('#feature-details-modal', e => { e.classList.remove('show') })
 }
 
 export function highlightFeature (feature, sticky = false, source) {
-  if (highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
+  // Only reset if there's a different feature currently highlighted
+  if (highlightedFeatureId && highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
   // console.log('highlight', feature)
   if (!source) { source = getFeatureSource(feature.id) }
   stickyFeatureHighlight = sticky
