@@ -405,22 +405,6 @@
 
 /* Layers modal */
 
-/* add layers dropdown should overflow modal window */
-#layers-modal .map-modal {
-  overflow: visible;
-}
-
-#layers-modal .map-modal-content.inline-scroll {
-  overflow: visible;
-  mask-image: none;
-}
-
-/* Keep the layers list scrollable */
-#layers-modal #layers {
-  overflow-y: auto;
-  max-height: calc(100vh - 18rem);
-}
-
 #file-input-label {
   max-width: 17rem;
 }
