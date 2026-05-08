@@ -119,7 +119,8 @@
   padding: 0.2rem 0.8rem;
 }
 
-@media (width <= 574px) {
+/* Middle feature details mode */
+@media (width <= 1280px) {
   #feature-details-modal {
     bottom: 0;
     left: calc(50% - 1rem);
@@ -131,38 +132,8 @@
     margin: 0.5rem 1rem;
   }
 
-  #feature-details-body {
-    padding: 0.6rem 0.4rem 0.3rem;
-  }
-
-  #edit-buttons button {
-    font-size: clamp(70%, 2vw + 0.5rem, 100%);
-    padding: 0.8rem 0.1rem 0.3rem;
-  }
-
-  #feature-details-meta {
-    font-size: clamp(60%, 2vw + 0.3rem, 80%);
-  }
-
-  #feature-edit-ui {
-    padding: 0.45rem;
-  }
-
-  .feature-tab-btn {
-    min-width: 1.7rem;
-  }
-}
-
-@media (height < 410px) {
-  #feature-details-modal {
-    bottom: 0;
-    left: calc(50% - 1rem);
-    transform: translate(-50%);
-    max-height: calc(100% - 15px);
-    overflow-y: auto;
-    width: calc(100% - 0.6rem);
-    max-width: 25rem;
-    margin: 0.5rem 1rem;
+  #feature-details-header {
+    justify-content: center;
   }
 
   #feature-details-body {
@@ -185,22 +156,41 @@
   .feature-tab-btn {
     min-width: 1.7rem;
   }
-}
 
-@media (width > 574px) and (height >=410px) {
-  #feature-details-modal {
-    left: 2.2rem;
-    top: 4.2rem;
-    width: 25rem;
-    max-height: calc(100% - 5rem);
-    margin: 0.4rem 1rem 1.5rem;
+  .modal-pull-button {
+    top: 0.7rem;
+    position: relative;
+    display: block;
+    width: 45px;
+    height: 8px;
+    margin: auto;
+    background-color: rgb(200 200 200);
+    border-radius: 3px;
   }
 
-  @media (width >=1024px) {
-    #feature-details-modal {
-      top: 0.2rem;
-      max-height: calc(100% - 1.5rem);
-    }
+  .modal-pull-button:hover {
+    background-color: rgb(124 124 124);
+  }
+
+  .modal-pull-transition {
+    transition:
+      height 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  }
+
+  .modal-pull-up {
+    height: calc(100% - 1rem);
+  }
+
+  .modal-pull-middle {
+    height: 45%;
+  }
+
+  .modal-pull-down {
+    height: 25%;
+  }
+
+  .modal-pull-fade {
+    opacity: 0.4 !important;
   }
 }
 

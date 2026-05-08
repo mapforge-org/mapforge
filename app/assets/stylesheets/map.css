@@ -212,6 +212,7 @@ html:has(.map), body:has(.map) {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 
 .preloader-logo {
