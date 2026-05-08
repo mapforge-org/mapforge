@@ -1,6 +1,8 @@
 import * as functions from 'helpers/functions'
+import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
 import { Layer } from 'maplibre/layers/layer'
+import { layers } from 'maplibre/layers/layers'
 import { extractTheme, fetchNearestRoute, fetchRouteDetails } from 'maplibre/layers/raster/waymarkedtrails'
 import { addGeoJSONSource, map, removeStyleLayers } from 'maplibre/map'
 
@@ -205,6 +207,28 @@ export class RasterLayer extends Layer {
 
     this.mapClickHandler = async (e) => {
       if (!this.show) return
+
+      // Skip waymarkedtrails selection when draw mode is active (not simple_select)
+      if (draw && draw.getMode() !== 'simple_select') return
+
+      // Skip if clicking on draw elements (vertices, midpoints, active features)
+      if (draw) {
+        const allFeatures = map.queryRenderedFeatures(e.point)
+        const drawFeature = allFeatures.find(f => f.layer?.id?.startsWith('gl-draw-'))
+        if (drawFeature) return
+      }
+
+      // Priority: skip waymarkedtrails if user has geojson features at this location
+      const geojsonLayers = layers?.filter(l => l.type === 'geojson' && l.show) || []
+      if (geojsonLayers.length > 0) {
+        const geojsonLayerIds = geojsonLayers.flatMap(l => l.getStyleLayerIds())
+        const geojsonFeatures = map.queryRenderedFeatures(e.point, { layers: geojsonLayerIds })
+        const geojsonFeature = geojsonFeatures.find(f => !f.properties?.cluster)
+        if (geojsonFeature) {
+          // User's geojson feature takes priority - don't select waymarkedtrails
+          return
+        }
+      }
 
       const feature = await this.fetchAndStoreRoute(theme, e.lngLat.lng, e.lngLat.lat)
 
