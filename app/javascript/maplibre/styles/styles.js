@@ -379,6 +379,7 @@ function textLayerStyles(mode) {
       type: 'symbol',
       filter: ['all',
         ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
+        ['!=', ['geometry-type'], 'MultiLineString'], // line labels are in 'line-labels'
         ['has', 'label'],
         flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
         minZoomFilter
@@ -664,7 +665,10 @@ export function styles () {
       id: 'line-labels',
       type: 'symbol',
       filter: ['all',
-        ['==', ['geometry-type'], 'LineString'],
+        ['any',
+          ['==', ['geometry-type'], 'LineString'],
+          ['==', ['geometry-type'], 'MultiLineString']
+        ],
         ['has', 'label'], minZoomFilter],
       layout: {
         'symbol-placement': 'line',
@@ -686,7 +690,10 @@ export function styles () {
       id: "line-label-symbol",
       type: "symbol",
       filter: ['all',
-        ['==', ['geometry-type'], 'LineString'],
+        ['any',
+          ['==', ['geometry-type'], 'LineString'],
+          ['==', ['geometry-type'], 'MultiLineString']
+        ],
         // Line symbols don't work in combination with extrusion
         ['==', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
         ['any',
