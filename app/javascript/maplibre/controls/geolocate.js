@@ -300,7 +300,7 @@ function setLocationOrientation(event) {
     if (lastAppliedHeading !== null && Math.abs(lastHeading - lastAppliedHeading) < 1) return
     lastAppliedHeading = lastHeading
     // geolocateSource flag prevents GeolocateControl from exiting ACTIVE_LOCK on movestart
-    map.setBearing(-lastHeading, { geolocateSource: true, duration: 100 })
+    map.easeTo({ bearing: -lastHeading, duration: 100 }, { geolocateSource: true })
     // Cone points upward in compass mode since the map itself is rotated
     dot.style.setProperty('--user-dot-rotation', 'rotate(0deg)')
   } else {
