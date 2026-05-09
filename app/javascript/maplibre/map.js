@@ -6,10 +6,10 @@ import * as functions from 'helpers/functions';
 import { status } from 'helpers/status';
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
-import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
+import { isGeolocateCompassModeActive, isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls } from 'maplibre/controls/view';
-import { resetEditMode } from 'maplibre/edit';
+import { draw, resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
@@ -144,6 +144,24 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('zoom', (_e) => { limitZoom() })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
   map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
+
+  // Browsers throttle requestAnimationFrame for hidden tabs, which can leave
+  // MapLibre's render loop and handler state machines stuck on resume — drag/zoom
+  // stop responding while clicks still work. Kick the rAF loop and reset handlers.
+  // Skip handlers compass mode intentionally disables (dragPan/dragRotate/touchZoomRotate).
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') return
+    map.triggerRepaint()
+    map.scrollZoom.enable()
+    map.doubleClickZoom.enable()
+    map.keyboard.enable()
+    map.boxZoom.enable()
+    if (!isGeolocateCompassModeActive()) {
+      map.dragRotate.enable()
+      map.touchZoomRotate.enable()
+      if (!draw || draw.getMode() !== 'draw_paint_mode') map.dragPan.enable()
+    }
+  })
 
   map.on('contextmenu', (e) => {
     e.preventDefault()
