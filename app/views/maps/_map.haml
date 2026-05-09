@@ -15,7 +15,7 @@
       - map.owners.each do |owner|
         - if owner.image
           = link_to = link_to url_for(params: { search: "user:#{owner.id}"}), 'aria-label': "Browse maps by user #{owner.email}" do
-            = image_tag avatar_url(owner.image, 40), class: 'map-avatar', loading: 'lazy', alt: "", crossorigin: "anonymous"
+            = image_tag avatar_url(owner.image, 40), class: 'map-avatar', loading: 'lazy', alt: ""
 
   - if clone
     = link_to copy_map_path(id: map.public_id), data: { turbo_method: :post, turbo_confirm: "Do you want to copy this map?" }, title: 'Copy map', class: 'map-copy' do
