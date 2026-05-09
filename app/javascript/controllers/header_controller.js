@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
-import { animateElement } from 'helpers/dom'
 import * as functions from 'helpers/functions'
+import { animateElement  } from 'helpers/dom'
 
 // Note: Don't import map js here for faster frontpage load times
 
@@ -17,7 +17,7 @@ export default class extends Controller {
   showNavBar (_event) {
     functions.e('#map-header nav', e => { e.style.display = 'block' })
     animateElement('#map-header nav', 'fade-down')
-  }
+  }  
 
   hideNavDropdown (event) {
     functions.e('.navbar-collapse.show', e => {
@@ -48,5 +48,5 @@ export default class extends Controller {
   hideNav (event) {
     if (document.querySelector('.map')) { let controller = this; setTimeout(function () { controller.hideNavBar(event) }, 300) }
     this.hideNavDropdown(event)
-  }
+  }  
 }

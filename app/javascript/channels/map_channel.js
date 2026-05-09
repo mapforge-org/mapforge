@@ -148,6 +148,7 @@ export function initializeSocket () {
               const img = document.createElement("img")
               img.src = data.user_image
               img.className = "profile-image remote-cursor-image"
+              img.crossOrigin = "anonymous"
               cursor.appendChild(img)
             }
             remoteCursors[data.uuid] = new maplibregl.Marker({ element: cursor })
