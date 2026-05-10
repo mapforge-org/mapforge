@@ -165,22 +165,51 @@ export async function initializeMap (divId = 'maplibre-map') {
     map.triggerRepaint()
   }, false)
 
-  // Watchdog: after the tab returns to focus, ping triggerRepaint and verify
-  // a render fires within 500ms. If not, surface the cause (GL dead vs rAF
-  // wedged) so we can pick the right recovery strategy in a follow-up.
+  // Visibility watchdog — detects render-loop freezes (GL dead or rAF wedged).
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState !== 'visible') return
+    status('Visibility: visible', 'info', 'medium', 1000)
     const beforeRepaint = performance.now()
     map.triggerRepaint()
     setTimeout(() => {
       const renderedSinceWatchdog = lastRenderAt > beforeRepaint
       const glLost = map.painter?.context?.gl?.isContextLost?.()
       if (!renderedSinceWatchdog || glLost) {
-        console.warn('Map appears frozen', { renderedSinceWatchdog, glLost })
-        status(`Map frozen (gl_lost=${glLost})`, 'warning', 'medium', 3000)
+        console.warn('Map render frozen', { renderedSinceWatchdog, glLost })
+        status(`Map render frozen (gl_lost=${glLost})`, 'warning', 'medium', 3000)
       }
     }, 500)
   })
+
+  // Input watchdog — detects handler-level freezes where render still works but
+  // pointer drag doesn't translate to map movement (clicks work, drag doesn't).
+  let pointerDownAt = null
+  let pointerDownX = 0
+  let pointerDownY = 0
+  let mapMovedSincePointerDown = false
+  let inputFreezeReported = false
+  map.on('movestart', () => { if (pointerDownAt) mapMovedSincePointerDown = true })
+  mapCanvas.addEventListener('pointerdown', (e) => {
+    pointerDownAt = performance.now()
+    pointerDownX = e.clientX
+    pointerDownY = e.clientY
+    mapMovedSincePointerDown = false
+    inputFreezeReported = false
+  })
+  mapCanvas.addEventListener('pointermove', (e) => {
+    if (!pointerDownAt || inputFreezeReported) return
+    const dx = e.clientX - pointerDownX
+    const dy = e.clientY - pointerDownY
+    if (Math.sqrt(dx * dx + dy * dy) < 15) return
+    if (mapMovedSincePointerDown) return
+    if (performance.now() - pointerDownAt < 150) return
+    inputFreezeReported = true
+    const glLost = map.painter?.context?.gl?.isContextLost?.()
+    console.warn('Map drag input frozen', { glLost })
+    status(`Map drag frozen (gl_lost=${glLost})`, 'warning', 'medium', 3000)
+  })
+  mapCanvas.addEventListener('pointerup', () => { pointerDownAt = null })
+  mapCanvas.addEventListener('pointercancel', () => { pointerDownAt = null })
 
   map.on('contextmenu', (e) => {
     e.preventDefault()
