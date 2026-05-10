@@ -145,120 +145,21 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
   map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
 
-  // Render heartbeat — used by the visibilitychange watchdog to detect freezes.
-  let lastRenderAt = performance.now()
-  map.on('render', () => { lastRenderAt = performance.now() })
-
-  // Canvas-level WebGL context handlers. Calling preventDefault() on the lost
-  // event signals the browser we want context restoration; without it the
-  // canvas stays dead silently while DOM events keep firing (matches the
-  // "clicks work, drag dead" symptom).
-  const mapCanvas = map.getCanvas()
-  mapCanvas.addEventListener('webglcontextlost', (e) => {
-    e.preventDefault()
-    console.warn('WebGL context lost')
-    status('Map context lost', 'warning')
-  }, false)
-  mapCanvas.addEventListener('webglcontextrestored', () => {
-    console.log('WebGL context restored')
-    status('Map context restored', 'info')
-    map.triggerRepaint()
-  }, false)
-
-  // Diagnostic state shared with the input watchdog so freeze toasts can carry
-  // the post-resume map activity summary. Tracked for 10s after each resume.
-  let postResumeT0 = 0
-  let postResumeRenderCount = 0
-  let postResumeMaxGap = 0
-  let postResumeLastRender = 0
-  let postResumeCounts = {}
-  const trackedEvents = ['load', 'idle', 'dataloading', 'data', 'sourcedataloading', 'sourcedata',
-    'styledataloading', 'styledata', 'error', 'movestart', 'moveend', 'zoomstart', 'zoomend',
-    'dragstart', 'dragend']
-
-  const diagnosticSummary = () => {
-    const elapsed = Math.round(performance.now() - postResumeT0)
-    return `t+${elapsed}ms R:${postResumeRenderCount} gap:${Math.round(postResumeMaxGap)}ms ` +
-      Object.entries(postResumeCounts).filter(([_, n]) => n > 0)
-        .map(([k, n]) => `${k.replace('source', 'src').replace('style', 'sty').replace('loading', 'L')}×${n}`).join(' ')
-  }
-
-  // Heaviest recovery: force a WebGL context loss/restore cycle. MapLibre's
-  // webglcontextrestored handler rebuilds buffers, reuploads textures, and
-  // restarts the render loop — this is what fixes a fully dead rAF chain that
-  // triggerRepaint can't kick. Idempotent within a 30s window.
-  let lastGLResetAt = 0
-  const forceGLReset = () => {
-    if (performance.now() - lastGLResetAt < 30000) return
-    lastGLResetAt = performance.now()
-    const gl = mapCanvas.getContext('webgl2') || mapCanvas.getContext('webgl')
-    const ext = gl?.getExtension('WEBGL_lose_context')
-    if (!ext) {
-      status('Recovery: WEBGL_lose_context unavailable', 'warning', 'medium', 3000)
-      return
-    }
-    status('Recovery: forcing GL reset', 'info', 'medium', 2000)
-    ext.loseContext()
-    setTimeout(() => ext.restoreContext(), 100)
-  }
-
-  // Visibility watchdog — silently tracks map activity for 10s after resume so
-  // the input/render freeze toasts can include the diagnostic summary inline
-  // (no separate toast that would be clobbered by the freeze toast).
+  // After long backgrounding, the browser evicts MapLibre's tile cache. On
+  // resume MapLibre fires a storm of source/data events that can wedge the
+  // interaction handlers' internal state — clicks still work, drag/zoom don't.
+  // .enable() alone doesn't reset wedged handler state; disable+enable does.
+  // We also dispatch synthetic pointer-up events to clear any in-flight
+  // gesture state from before the background. Runs on first idle (storm
+  // settled) with an 8s fallback in case idle never fires.
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState !== 'visible') return
-    status('Visibility: visible', 'info', 'medium', 1000)
-
-    postResumeT0 = performance.now()
-    postResumeRenderCount = 0
-    postResumeMaxGap = 0
-    postResumeLastRender = postResumeT0
-    postResumeCounts = {}
-
-    const handlers = {}
-    trackedEvents.forEach(name => {
-      handlers[name] = () => { postResumeCounts[name] = (postResumeCounts[name] || 0) + 1 }
-      map.on(name, handlers[name])
-    })
-    handlers.render = () => {
-      const now = performance.now()
-      const gap = now - postResumeLastRender
-      if (gap > postResumeMaxGap) postResumeMaxGap = gap
-      postResumeLastRender = now
-      postResumeRenderCount++
-    }
-    map.on('render', handlers.render)
-
-    const beforeRepaint = performance.now()
-    map.triggerRepaint()
-    setTimeout(() => {
-      const renderedSinceWatchdog = lastRenderAt > beforeRepaint
-      const glLost = map.painter?.context?.gl?.isContextLost?.()
-      if (!renderedSinceWatchdog || glLost) {
-        status(`Map render frozen (gl_lost=${glLost}) | ${diagnosticSummary()}`, 'warning', 'medium', 10000)
-        forceGLReset()
-      }
-    }, 500)
-
-    setTimeout(() => {
-      trackedEvents.forEach(name => map.off(name, handlers[name]))
-      map.off('render', handlers.render)
-    }, 10000)
-
-    // Recovery: after the post-resume tile/data storm settles (first 'idle'),
-    // clear any stuck gesture state with synthetic pointer-up events and cycle
-    // handler enable state. .enable() alone doesn't reset internal handler
-    // state — disable+enable does. Fallback timeout covers the case where idle
-    // never fires.
-    let recoveryDone = false
-    const doRecovery = () => {
-      if (recoveryDone) return
-      recoveryDone = true
+    const recover = () => {
+      map.off('idle', recover)
+      clearTimeout(timeoutId)
       const opts = { bubbles: true, cancelable: true }
       window.dispatchEvent(new MouseEvent('mouseup', opts))
       window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
-      mapCanvas.dispatchEvent(new MouseEvent('mouseup', opts))
-      mapCanvas.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
       const cycle = (h) => { h.disable(); h.enable() }
       cycle(map.scrollZoom)
       cycle(map.doubleClickZoom)
@@ -270,42 +171,10 @@ export async function initializeMap (divId = 'maplibre-map') {
         cycle(map.touchZoomRotate)
         if (!draw || draw.getMode() !== 'draw_paint_mode') cycle(map.dragPan)
       }
-      status('Recovery: handlers reset', 'info', 'medium', 2000)
     }
-    map.once('idle', doRecovery)
-    setTimeout(doRecovery, 8000)
+    map.once('idle', recover)
+    const timeoutId = setTimeout(recover, 8000)
   })
-
-  // Input watchdog — detects handler-level freezes where render still works but
-  // pointer drag doesn't translate to map movement (clicks work, drag doesn't).
-  let pointerDownAt = null
-  let pointerDownX = 0
-  let pointerDownY = 0
-  let mapMovedSincePointerDown = false
-  let inputFreezeReported = false
-  map.on('movestart', () => { if (pointerDownAt) mapMovedSincePointerDown = true })
-  mapCanvas.addEventListener('pointerdown', (e) => {
-    pointerDownAt = performance.now()
-    pointerDownX = e.clientX
-    pointerDownY = e.clientY
-    mapMovedSincePointerDown = false
-    inputFreezeReported = false
-  })
-  mapCanvas.addEventListener('pointermove', (e) => {
-    if (!pointerDownAt || inputFreezeReported) return
-    const dx = e.clientX - pointerDownX
-    const dy = e.clientY - pointerDownY
-    if (Math.sqrt(dx * dx + dy * dy) < 15) return
-    if (mapMovedSincePointerDown) return
-    if (performance.now() - pointerDownAt < 150) return
-    inputFreezeReported = true
-    const glLost = map.painter?.context?.gl?.isContextLost?.()
-    console.warn('Map drag input frozen', { glLost })
-    status(`Map drag frozen (gl_lost=${glLost}) | ${diagnosticSummary()}`, 'warning', 'medium', 10000)
-    forceGLReset()
-  })
-  mapCanvas.addEventListener('pointerup', () => { pointerDownAt = null })
-  mapCanvas.addEventListener('pointercancel', () => { pointerDownAt = null })
 
   map.on('contextmenu', (e) => {
     e.preventDefault()
