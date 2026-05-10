@@ -165,32 +165,48 @@ export async function initializeMap (divId = 'maplibre-map') {
     map.triggerRepaint()
   }, false)
 
-  // Visibility watchdog — surfaces map activity in the 3s after resume via
-  // status toast (no console available on mobile PWA), so we can identify what
-  // triggers the delayed freeze.
+  // Diagnostic state shared with the input watchdog so freeze toasts can carry
+  // the post-resume map activity summary. Tracked for 10s after each resume.
+  let postResumeT0 = 0
+  let postResumeRenderCount = 0
+  let postResumeMaxGap = 0
+  let postResumeLastRender = 0
+  let postResumeCounts = {}
+  const trackedEvents = ['load', 'idle', 'dataloading', 'data', 'sourcedataloading', 'sourcedata',
+    'styledataloading', 'styledata', 'error', 'movestart', 'moveend', 'zoomstart', 'zoomend',
+    'dragstart', 'dragend']
+
+  const diagnosticSummary = () => {
+    const elapsed = Math.round(performance.now() - postResumeT0)
+    return `t+${elapsed}ms R:${postResumeRenderCount} gap:${Math.round(postResumeMaxGap)}ms ` +
+      Object.entries(postResumeCounts).filter(([_, n]) => n > 0)
+        .map(([k, n]) => `${k.replace('source', 'src').replace('style', 'sty').replace('loading', 'L')}×${n}`).join(' ')
+  }
+
+  // Visibility watchdog — silently tracks map activity for 10s after resume so
+  // the input/render freeze toasts can include the diagnostic summary inline
+  // (no separate toast that would be clobbered by the freeze toast).
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState !== 'visible') return
     status('Visibility: visible', 'info', 'medium', 1000)
 
-    const t0 = performance.now()
-    const counts = {}
-    const eventNames = ['load', 'idle', 'dataloading', 'data', 'sourcedataloading', 'sourcedata',
-      'styledataloading', 'styledata', 'error', 'movestart', 'moveend', 'zoomstart', 'zoomend',
-      'dragstart', 'dragend']
+    postResumeT0 = performance.now()
+    postResumeRenderCount = 0
+    postResumeMaxGap = 0
+    postResumeLastRender = postResumeT0
+    postResumeCounts = {}
+
     const handlers = {}
-    eventNames.forEach(name => {
-      handlers[name] = () => { counts[name] = (counts[name] || 0) + 1 }
+    trackedEvents.forEach(name => {
+      handlers[name] = () => { postResumeCounts[name] = (postResumeCounts[name] || 0) + 1 }
       map.on(name, handlers[name])
     })
-    let lastRenderInWindow = t0
-    let maxRenderGap = 0
-    let renderCount = 0
     handlers.render = () => {
       const now = performance.now()
-      const gap = now - lastRenderInWindow
-      if (gap > maxRenderGap) maxRenderGap = gap
-      lastRenderInWindow = now
-      renderCount++
+      const gap = now - postResumeLastRender
+      if (gap > postResumeMaxGap) postResumeMaxGap = gap
+      postResumeLastRender = now
+      postResumeRenderCount++
     }
     map.on('render', handlers.render)
 
@@ -200,17 +216,14 @@ export async function initializeMap (divId = 'maplibre-map') {
       const renderedSinceWatchdog = lastRenderAt > beforeRepaint
       const glLost = map.painter?.context?.gl?.isContextLost?.()
       if (!renderedSinceWatchdog || glLost) {
-        status(`Map render frozen (gl_lost=${glLost})`, 'warning', 'medium', 3000)
+        status(`Map render frozen (gl_lost=${glLost}) | ${diagnosticSummary()}`, 'warning', 'medium', 10000)
       }
     }, 500)
 
     setTimeout(() => {
-      eventNames.forEach(name => map.off(name, handlers[name]))
+      trackedEvents.forEach(name => map.off(name, handlers[name]))
       map.off('render', handlers.render)
-      const summary = `R:${renderCount} gap:${Math.round(maxRenderGap)}ms ` +
-        Object.entries(counts).filter(([_, n]) => n > 0).map(([k, n]) => `${k.replace('source', 'src').replace('style', 'sty').replace('loading', 'L')}×${n}`).join(' ')
-      status(summary, 'info', 'medium', 15000)
-    }, 3000)
+    }, 10000)
   })
 
   // Input watchdog — detects handler-level freezes where render still works but
@@ -238,7 +251,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     inputFreezeReported = true
     const glLost = map.painter?.context?.gl?.isContextLost?.()
     console.warn('Map drag input frozen', { glLost })
-    status(`Map drag frozen (gl_lost=${glLost})`, 'warning', 'medium', 3000)
+    status(`Map drag frozen (gl_lost=${glLost}) | ${diagnosticSummary()}`, 'warning', 'medium', 10000)
   })
   mapCanvas.addEventListener('pointerup', () => { pointerDownAt = null })
   mapCanvas.addEventListener('pointercancel', () => { pointerDownAt = null })
