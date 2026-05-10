@@ -1,4 +1,5 @@
 import consumer from 'channels/consumer'
+import { status } from 'helpers/status'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers'
 import {
@@ -44,6 +45,7 @@ export function initializeSocket () {
       window.mapChannel = mapChannel
       // only reload data when there has been a connection before, to avoid double load
       if (channelStatus === 'off') {
+        status('WS reconnect: rebuilding', 'info', 'medium', 1500)
         reloadMapProperties().then(() => {
           initializeMaplibreProperties()
           loadLayerDefinitions().then(() => {
@@ -54,12 +56,10 @@ export function initializeSocket () {
               initializeLayerSources()
               initializeLayerStyles()
             }
+            status('WS reconnect: rebuild done', 'info', 'medium', 1500)
             map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
           })
-          // status('Connection to server re-established')
         })
-      } else {
-        // status('Connection to server established')
       }
       consumer.connection.webSocket.onerror = function (_event) {
         map.fire('offline', { detail: { message: 'Websocket error' } })
