@@ -183,6 +183,25 @@ export async function initializeMap (divId = 'maplibre-map') {
         .map(([k, n]) => `${k.replace('source', 'src').replace('style', 'sty').replace('loading', 'L')}×${n}`).join(' ')
   }
 
+  // Heaviest recovery: force a WebGL context loss/restore cycle. MapLibre's
+  // webglcontextrestored handler rebuilds buffers, reuploads textures, and
+  // restarts the render loop — this is what fixes a fully dead rAF chain that
+  // triggerRepaint can't kick. Idempotent within a 30s window.
+  let lastGLResetAt = 0
+  const forceGLReset = () => {
+    if (performance.now() - lastGLResetAt < 30000) return
+    lastGLResetAt = performance.now()
+    const gl = mapCanvas.getContext('webgl2') || mapCanvas.getContext('webgl')
+    const ext = gl?.getExtension('WEBGL_lose_context')
+    if (!ext) {
+      status('Recovery: WEBGL_lose_context unavailable', 'warning', 'medium', 3000)
+      return
+    }
+    status('Recovery: forcing GL reset', 'info', 'medium', 2000)
+    ext.loseContext()
+    setTimeout(() => ext.restoreContext(), 100)
+  }
+
   // Visibility watchdog — silently tracks map activity for 10s after resume so
   // the input/render freeze toasts can include the diagnostic summary inline
   // (no separate toast that would be clobbered by the freeze toast).
@@ -217,6 +236,7 @@ export async function initializeMap (divId = 'maplibre-map') {
       const glLost = map.painter?.context?.gl?.isContextLost?.()
       if (!renderedSinceWatchdog || glLost) {
         status(`Map render frozen (gl_lost=${glLost}) | ${diagnosticSummary()}`, 'warning', 'medium', 10000)
+        forceGLReset()
       }
     }, 500)
 
@@ -282,6 +302,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     const glLost = map.painter?.context?.gl?.isContextLost?.()
     console.warn('Map drag input frozen', { glLost })
     status(`Map drag frozen (gl_lost=${glLost}) | ${diagnosticSummary()}`, 'warning', 'medium', 10000)
+    forceGLReset()
   })
   mapCanvas.addEventListener('pointerup', () => { pointerDownAt = null })
   mapCanvas.addEventListener('pointercancel', () => { pointerDownAt = null })

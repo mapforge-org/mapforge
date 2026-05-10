@@ -18,9 +18,9 @@ export let mapChannel
 let channelStatus
 let connectionUUID
 let remoteCursors = new Set()
-let lastVisibilityResumeAt = 0
+let wasHiddenSinceLastConnect = false
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') lastVisibilityResumeAt = Date.now()
+  if (document.visibilityState === 'hidden') wasHiddenSinceLastConnect = true
 });
 
 ['turbo:before-visit'].forEach(function (e) {
@@ -49,12 +49,11 @@ export function initializeSocket () {
       window.mapChannel = mapChannel
       // only reload data when there has been a connection before, to avoid double load
       if (channelStatus === 'off') {
-        // Skip the heavy rebuild when the disconnect was caused by tab
-        // visibility — MapLibre is already reloading evicted tiles, and piling
-        // a layer/style re-init on top contributes to the post-resume freeze.
-        // Real network reconnects (no recent visibility resume) still rebuild.
-        const visibilityTriggered = (Date.now() - lastVisibilityResumeAt) < 5000
-        if (visibilityTriggered) {
+        // Skip the heavy rebuild when the page was hidden at any point since
+        // the last connect — MapLibre is already reloading evicted tiles, and
+        // piling a layer/style re-init on top contributes to the post-resume
+        // freeze. Real network reconnects (no backgrounding) still rebuild.
+        if (wasHiddenSinceLastConnect) {
           status('WS reconnect: skip rebuild (visibility)', 'info', 'medium', 1500)
         } else {
           status('WS reconnect: rebuilding', 'info', 'medium', 1500)
@@ -74,6 +73,7 @@ export function initializeSocket () {
           })
         }
       }
+      wasHiddenSinceLastConnect = false
       consumer.connection.webSocket.onerror = function (_event) {
         map.fire('offline', { detail: { message: 'Websocket error' } })
         channelStatus = 'off'
