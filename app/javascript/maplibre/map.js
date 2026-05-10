@@ -145,29 +145,41 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
   map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
 
-  // Browsers throttle requestAnimationFrame for hidden tabs, which can leave
-  // MapLibre's render loop and handler state machines stuck on resume — drag/zoom
-  // stop responding while clicks still work. Kick the rAF loop and reset handlers.
-  // Skip handlers compass mode intentionally disables (dragPan/dragRotate/touchZoomRotate).
+  // Render heartbeat — used by the visibilitychange watchdog to detect freezes.
+  let lastRenderAt = performance.now()
+  map.on('render', () => { lastRenderAt = performance.now() })
+
+  // Canvas-level WebGL context handlers. Calling preventDefault() on the lost
+  // event signals the browser we want context restoration; without it the
+  // canvas stays dead silently while DOM events keep firing (matches the
+  // "clicks work, drag dead" symptom).
+  const mapCanvas = map.getCanvas()
+  mapCanvas.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault()
+    console.warn('WebGL context lost')
+    status('Map context lost', 'warning')
+  }, false)
+  mapCanvas.addEventListener('webglcontextrestored', () => {
+    console.log('WebGL context restored')
+    status('Map context restored', 'info')
+    map.triggerRepaint()
+  }, false)
+
+  // Watchdog: after the tab returns to focus, ping triggerRepaint and verify
+  // a render fires within 500ms. If not, surface the cause (GL dead vs rAF
+  // wedged) so we can pick the right recovery strategy in a follow-up.
   document.addEventListener('visibilitychange', () => {
-
-    // Debugging map freeze
-    status("Visibility change: " + document.visibilityState, 'info', 'medium', 1000)
     if (document.visibilityState !== 'visible') return
-
-    // map.stop()
-    // map.resize()
-    // map.triggerRepaint()
-    // map.scrollZoom.enable()
-    // map.doubleClickZoom.enable()
-    // map.keyboard.enable()
-    // map.boxZoom.enable()
-    // map.touchPitch.enable()
-    // if (!isGeolocateCompassModeActive()) {
-    //   map.dragRotate.enable()
-    //   map.touchZoomRotate.enable()
-    //   if (!draw || draw.getMode() !== 'draw_paint_mode') map.dragPan.enable()
-    // }
+    const beforeRepaint = performance.now()
+    map.triggerRepaint()
+    setTimeout(() => {
+      const renderedSinceWatchdog = lastRenderAt > beforeRepaint
+      const glLost = map.painter?.context?.gl?.isContextLost?.()
+      if (!renderedSinceWatchdog || glLost) {
+        console.warn('Map appears frozen', { renderedSinceWatchdog, glLost })
+        status(`Map frozen (gl_lost=${glLost})`, 'warning', 'medium', 3000)
+      }
+    }, 500)
   })
 
   map.on('contextmenu', (e) => {
