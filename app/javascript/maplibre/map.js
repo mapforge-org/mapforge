@@ -6,10 +6,10 @@ import * as functions from 'helpers/functions';
 import { status } from 'helpers/status';
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
-import { isGeolocateCompassModeActive, isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
+import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls } from 'maplibre/controls/view';
-import { draw, resetEditMode } from 'maplibre/edit';
+import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
@@ -150,17 +150,24 @@ export async function initializeMap (divId = 'maplibre-map') {
   // stop responding while clicks still work. Kick the rAF loop and reset handlers.
   // Skip handlers compass mode intentionally disables (dragPan/dragRotate/touchZoomRotate).
   document.addEventListener('visibilitychange', () => {
+
+    // Debugging map freeze
+    status("Visibility change: " + document.visibilityState, 'info', 'medium', 1000)
     if (document.visibilityState !== 'visible') return
-    map.triggerRepaint()
-    map.scrollZoom.enable()
-    map.doubleClickZoom.enable()
-    map.keyboard.enable()
-    map.boxZoom.enable()
-    if (!isGeolocateCompassModeActive()) {
-      map.dragRotate.enable()
-      map.touchZoomRotate.enable()
-      if (!draw || draw.getMode() !== 'draw_paint_mode') map.dragPan.enable()
-    }
+
+    // map.stop()
+    // map.resize()
+    // map.triggerRepaint()
+    // map.scrollZoom.enable()
+    // map.doubleClickZoom.enable()
+    // map.keyboard.enable()
+    // map.boxZoom.enable()
+    // map.touchPitch.enable()
+    // if (!isGeolocateCompassModeActive()) {
+    //   map.dragRotate.enable()
+    //   map.touchZoomRotate.enable()
+    //   if (!draw || draw.getMode() !== 'draw_paint_mode') map.dragPan.enable()
+    // }
   })
 
   map.on('contextmenu', (e) => {
