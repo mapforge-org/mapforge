@@ -17,7 +17,11 @@ import {
 export let mapChannel
 let channelStatus
 let connectionUUID
-let remoteCursors = new Set();
+let remoteCursors = new Set()
+let lastVisibilityResumeAt = 0
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') lastVisibilityResumeAt = Date.now()
+});
 
 ['turbo:before-visit'].forEach(function (e) {
   window.addEventListener(e, function () {
@@ -45,21 +49,30 @@ export function initializeSocket () {
       window.mapChannel = mapChannel
       // only reload data when there has been a connection before, to avoid double load
       if (channelStatus === 'off') {
-        status('WS reconnect: rebuilding', 'info', 'medium', 1500)
-        reloadMapProperties().then(() => {
-          initializeMaplibreProperties()
-          loadLayerDefinitions().then(() => {
-            // If basemap actually changed, setBackgroundMapLayer() will trigger
-            // initializeStyles() via style.load (which re-initializes layer sources/styles).
-            // If not, we re-initialize them directly to catch up on any missed updates.
-            if (!setBackgroundMapLayer()) {
-              initializeLayerSources()
-              initializeLayerStyles()
-            }
-            status('WS reconnect: rebuild done', 'info', 'medium', 1500)
-            map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
+        // Skip the heavy rebuild when the disconnect was caused by tab
+        // visibility — MapLibre is already reloading evicted tiles, and piling
+        // a layer/style re-init on top contributes to the post-resume freeze.
+        // Real network reconnects (no recent visibility resume) still rebuild.
+        const visibilityTriggered = (Date.now() - lastVisibilityResumeAt) < 5000
+        if (visibilityTriggered) {
+          status('WS reconnect: skip rebuild (visibility)', 'info', 'medium', 1500)
+        } else {
+          status('WS reconnect: rebuilding', 'info', 'medium', 1500)
+          reloadMapProperties().then(() => {
+            initializeMaplibreProperties()
+            loadLayerDefinitions().then(() => {
+              // If basemap actually changed, setBackgroundMapLayer() will trigger
+              // initializeStyles() via style.load (which re-initializes layer sources/styles).
+              // If not, we re-initialize them directly to catch up on any missed updates.
+              if (!setBackgroundMapLayer()) {
+                initializeLayerSources()
+                initializeLayerStyles()
+              }
+              status('WS reconnect: rebuild done', 'info', 'medium', 1500)
+              map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
+            })
           })
-        })
+        }
       }
       consumer.connection.webSocket.onerror = function (_event) {
         map.fire('offline', { detail: { message: 'Websocket error' } })

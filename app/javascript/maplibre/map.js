@@ -224,6 +224,36 @@ export async function initializeMap (divId = 'maplibre-map') {
       trackedEvents.forEach(name => map.off(name, handlers[name]))
       map.off('render', handlers.render)
     }, 10000)
+
+    // Recovery: after the post-resume tile/data storm settles (first 'idle'),
+    // clear any stuck gesture state with synthetic pointer-up events and cycle
+    // handler enable state. .enable() alone doesn't reset internal handler
+    // state — disable+enable does. Fallback timeout covers the case where idle
+    // never fires.
+    let recoveryDone = false
+    const doRecovery = () => {
+      if (recoveryDone) return
+      recoveryDone = true
+      const opts = { bubbles: true, cancelable: true }
+      window.dispatchEvent(new MouseEvent('mouseup', opts))
+      window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
+      mapCanvas.dispatchEvent(new MouseEvent('mouseup', opts))
+      mapCanvas.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
+      const cycle = (h) => { h.disable(); h.enable() }
+      cycle(map.scrollZoom)
+      cycle(map.doubleClickZoom)
+      cycle(map.keyboard)
+      cycle(map.boxZoom)
+      cycle(map.touchPitch)
+      if (!isGeolocateCompassModeActive()) {
+        cycle(map.dragRotate)
+        cycle(map.touchZoomRotate)
+        if (!draw || draw.getMode() !== 'draw_paint_mode') cycle(map.dragPan)
+      }
+      status('Recovery: handlers reset', 'info', 'medium', 2000)
+    }
+    map.once('idle', doRecovery)
+    setTimeout(doRecovery, 8000)
   })
 
   // Input watchdog — detects handler-level freezes where render still works but
