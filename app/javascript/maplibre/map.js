@@ -165,20 +165,52 @@ export async function initializeMap (divId = 'maplibre-map') {
     map.triggerRepaint()
   }, false)
 
-  // Visibility watchdog — detects render-loop freezes (GL dead or rAF wedged).
+  // Visibility watchdog — surfaces map activity in the 3s after resume via
+  // status toast (no console available on mobile PWA), so we can identify what
+  // triggers the delayed freeze.
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState !== 'visible') return
     status('Visibility: visible', 'info', 'medium', 1000)
+
+    const t0 = performance.now()
+    const counts = {}
+    const eventNames = ['load', 'idle', 'dataloading', 'data', 'sourcedataloading', 'sourcedata',
+      'styledataloading', 'styledata', 'error', 'movestart', 'moveend', 'zoomstart', 'zoomend',
+      'dragstart', 'dragend']
+    const handlers = {}
+    eventNames.forEach(name => {
+      handlers[name] = () => { counts[name] = (counts[name] || 0) + 1 }
+      map.on(name, handlers[name])
+    })
+    let lastRenderInWindow = t0
+    let maxRenderGap = 0
+    let renderCount = 0
+    handlers.render = () => {
+      const now = performance.now()
+      const gap = now - lastRenderInWindow
+      if (gap > maxRenderGap) maxRenderGap = gap
+      lastRenderInWindow = now
+      renderCount++
+    }
+    map.on('render', handlers.render)
+
     const beforeRepaint = performance.now()
     map.triggerRepaint()
     setTimeout(() => {
       const renderedSinceWatchdog = lastRenderAt > beforeRepaint
       const glLost = map.painter?.context?.gl?.isContextLost?.()
       if (!renderedSinceWatchdog || glLost) {
-        console.warn('Map render frozen', { renderedSinceWatchdog, glLost })
         status(`Map render frozen (gl_lost=${glLost})`, 'warning', 'medium', 3000)
       }
     }, 500)
+
+    setTimeout(() => {
+      eventNames.forEach(name => map.off(name, handlers[name]))
+      map.off('render', handlers.render)
+      const summary = `R:${renderCount} gap:${Math.round(maxRenderGap)}ms ` +
+        Object.entries(counts).filter(([_, n]) => n > 0).map(([k, n]) => `${k.replace('source', 'src').replace('style', 'sty').replace('loading', 'L')}×${n}`).join(' ')
+      status(summary, 'info', 'medium', 15000)
+    }, 3000)
   })
 
   // Input watchdog — detects handler-level freezes where render still works but
