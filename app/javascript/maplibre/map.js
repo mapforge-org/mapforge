@@ -26,8 +26,6 @@ let backgroundHillshade
 let backgroundGlobe
 let backgroundContours
 
-<<<<<<< fix_freeze
-=======
 // Cycle handler enable state and dispatch synthetic pointer-up events to clear
 // any wedged interaction state. Idempotent — safe to call any time. Triggered
 // automatically on first idle after visibility resume, and manually via the
@@ -60,7 +58,6 @@ document.addEventListener('visibilitychange', () => {
   // map.once('idle', recoverHandlers)
 })
 
->>>>>>> main
 // Workflow of map loading:
 //
 // initializeMap()
