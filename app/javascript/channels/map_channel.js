@@ -16,7 +16,7 @@ import {
 export let mapChannel
 let channelStatus
 let connectionUUID
-let remoteCursors = new Set();
+let remoteCursors = {};
 
 ['turbo:before-visit'].forEach(function (e) {
   window.addEventListener(e, function () {

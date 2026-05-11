@@ -34,7 +34,9 @@ export function recoverHandlers () {
   status("Recovering handlers")
   const opts = { bubbles: true, cancelable: true }
   window.dispatchEvent(new MouseEvent('mouseup', opts))
-  window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
+  if (window.PointerEvent) {
+    window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
+  }
   const cycle = (h) => { h.disable(); h.enable() }
   cycle(map.scrollZoom)
   cycle(map.doubleClickZoom)
@@ -47,6 +49,14 @@ export function recoverHandlers () {
     if (!draw || draw.getMode() !== 'draw_paint_mode') cycle(map.dragPan)
   }
 }
+
+// Module-scope visibilitychange listener — registered once. Inside initializeMap
+// would re-register on every Stimulus reconnect (Turbo navigation), accumulating
+// stale closures. Guard with `!map` since this can fire before initializeMap runs.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible' || !map) return
+  // map.once('idle', recoverHandlers)
+})
 
 // Workflow of map loading:
 //
@@ -166,17 +176,6 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('zoom', (_e) => { limitZoom() })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
   map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
-
-  // After long backgrounding, the browser evicts MapLibre's tile cache. On
-  // resume MapLibre fires a storm of source/data events that can wedge the
-  // interaction handlers' internal state — clicks still work, drag/zoom don't.
-  // recoverHandlers (module-level, exported) cycles handler enable state and
-  // dispatches synthetic pointer-up events to clear any in-flight gesture
-  // state. Runs on first idle (storm settled).
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible') return
-    // map.once('idle', recoverHandlers)
-  })
 
   map.on('contextmenu', (e) => {
     e.preventDefault()
