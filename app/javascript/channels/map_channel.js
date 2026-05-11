@@ -17,11 +17,15 @@ import {
 export let mapChannel
 let channelStatus
 let connectionUUID
+<<<<<<< fix_freeze
 let remoteCursors = new Set()
 let wasHiddenSinceLastConnect = false
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') wasHiddenSinceLastConnect = true
 });
+=======
+let remoteCursors = {};
+>>>>>>> main
 
 ['turbo:before-visit'].forEach(function (e) {
   window.addEventListener(e, function () {
