@@ -1,4 +1,4 @@
-name: Docker base image
+name: Build base container image
 
 on:
   # rebuild image with updated patches each night:
@@ -50,4 +50,4 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           push: true
           cache-from: type=gha
-          cache-to: type=gha,mode=max          
+          cache-to: type=gha,mode=max

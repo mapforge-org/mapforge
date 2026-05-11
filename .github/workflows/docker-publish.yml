@@ -1,4 +1,4 @@
-name: Docker production image
+name: Build production container image
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -90,6 +90,11 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha
+            type=raw,value=production
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
