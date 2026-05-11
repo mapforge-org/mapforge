@@ -17,6 +17,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to build from (leave empty for current branch)'
+        required: false
+        type: string
 
 
 env:
@@ -28,7 +33,7 @@ env:
 
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -40,6 +45,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Checkout PR
+        if: ${{ github.event.inputs.pr_number != '' }}
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/${{ github.event.inputs.pr_number }}/merge
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
