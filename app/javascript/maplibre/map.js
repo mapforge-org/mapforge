@@ -26,27 +26,6 @@ let backgroundHillshade
 let backgroundGlobe
 let backgroundContours
 
-// Cycle handler enable state and dispatch synthetic pointer-up events to clear
-// any wedged interaction state. Idempotent — safe to call any time. Triggered
-// automatically on first idle after visibility resume, and manually via the
-// select-mode button click.
-export function recoverHandlers () {
-  const opts = { bubbles: true, cancelable: true }
-  window.dispatchEvent(new MouseEvent('mouseup', opts))
-  window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
-  const cycle = (h) => { h.disable(); h.enable() }
-  cycle(map.scrollZoom)
-  cycle(map.doubleClickZoom)
-  cycle(map.keyboard)
-  cycle(map.boxZoom)
-  cycle(map.touchPitch)
-  if (!isGeolocateCompassModeActive()) {
-    cycle(map.dragRotate)
-    cycle(map.touchZoomRotate)
-    if (!draw || draw.getMode() !== 'draw_paint_mode') cycle(map.dragPan)
-  }
-}
-
 // Workflow of map loading:
 //
 // initializeMap()
@@ -169,12 +148,32 @@ export async function initializeMap (divId = 'maplibre-map') {
   // After long backgrounding, the browser evicts MapLibre's tile cache. On
   // resume MapLibre fires a storm of source/data events that can wedge the
   // interaction handlers' internal state — clicks still work, drag/zoom don't.
-  // recoverHandlers (module-level, exported) cycles handler enable state and
-  // dispatches synthetic pointer-up events to clear any in-flight gesture
-  // state. Runs on first idle (storm settled).
+  // .enable() alone doesn't reset wedged handler state; disable+enable does.
+  // We also dispatch synthetic pointer-up events to clear any in-flight
+  // gesture state from before the background. Runs on first idle (storm
+  // settled) with an 8s fallback in case idle never fires.
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState !== 'visible') return
-    // map.once('idle', recoverHandlers)
+    const recover = () => {
+      map.off('idle', recover)
+      clearTimeout(timeoutId)
+      const opts = { bubbles: true, cancelable: true }
+      window.dispatchEvent(new MouseEvent('mouseup', opts))
+      window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
+      const cycle = (h) => { h.disable(); h.enable() }
+      cycle(map.scrollZoom)
+      cycle(map.doubleClickZoom)
+      cycle(map.keyboard)
+      cycle(map.boxZoom)
+      cycle(map.touchPitch)
+      if (!isGeolocateCompassModeActive()) {
+        cycle(map.dragRotate)
+        cycle(map.touchZoomRotate)
+        if (!draw || draw.getMode() !== 'draw_paint_mode') cycle(map.dragPan)
+      }
+    }
+    map.once('idle', recover)
+    const timeoutId = setTimeout(recover, 8000)
   })
 
   map.on('contextmenu', (e) => {
