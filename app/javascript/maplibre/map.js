@@ -31,6 +31,7 @@ let backgroundContours
 // automatically on first idle after visibility resume, and manually via the
 // select-mode button click.
 export function recoverHandlers () {
+  status("Recovering handlers")
   const opts = { bubbles: true, cancelable: true }
   window.dispatchEvent(new MouseEvent('mouseup', opts))
   window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
