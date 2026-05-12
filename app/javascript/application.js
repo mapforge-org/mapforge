@@ -1,9 +1,9 @@
 // Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
 import '@hotwired/turbo-rails'
 
-import 'stimulus-controllers-index'
-import * as functions from 'helpers/functions'
 import AOS from 'aos'
+import * as functions from 'helpers/functions'
+import 'stimulus-controllers-index'
 
 // Note: Don't import map js here for faster frontpage load times
 
@@ -20,7 +20,6 @@ window.addEventListener('turbo:load', function () {
     })
   }
 })
-
 
 if ('serviceWorker' in navigator) {
   // Register the service worker

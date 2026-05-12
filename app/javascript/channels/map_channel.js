@@ -46,16 +46,17 @@ export function initializeSocket () {
       if (channelStatus === 'off') {
         reloadMapProperties().then(() => {
           initializeMaplibreProperties()
-          loadLayerDefinitions().then(() => {
+          loadLayerDefinitions().then(async () => {
             // If basemap actually changed, setBackgroundMapLayer() will trigger
             // initializeStyles() via style.load (which re-initializes layer sources/styles).
             // If not, we re-initialize them directly to catch up on any missed updates.
             if (!setBackgroundMapLayer()) {
               initializeLayerSources()
-              initializeLayerStyles()
+              await initializeLayerStyles()
             }
             map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
           })
+          // status('Connection to server re-established')
         })
       }
       consumer.connection.webSocket.onerror = function (_event) {

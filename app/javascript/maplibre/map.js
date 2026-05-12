@@ -6,10 +6,10 @@ import * as functions from 'helpers/functions';
 import { status } from 'helpers/status';
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
-import { isGeolocateCompassModeActive, isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
+import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls } from 'maplibre/controls/view';
-import { draw, resetEditMode } from 'maplibre/edit';
+import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
@@ -25,38 +25,6 @@ let backgroundTerrain
 let backgroundHillshade
 let backgroundGlobe
 let backgroundContours
-
-// Cycle handler enable state and dispatch synthetic pointer-up events to clear
-// any wedged interaction state. Idempotent — safe to call any time. Triggered
-// automatically on first idle after visibility resume, and manually via the
-// select-mode button click.
-export function recoverHandlers () {
-  status("Recovering handlers")
-  const opts = { bubbles: true, cancelable: true }
-  window.dispatchEvent(new MouseEvent('mouseup', opts))
-  if (window.PointerEvent) {
-    window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
-  }
-  const cycle = (h) => { h.disable(); h.enable() }
-  cycle(map.scrollZoom)
-  cycle(map.doubleClickZoom)
-  cycle(map.keyboard)
-  cycle(map.boxZoom)
-  cycle(map.touchPitch)
-  if (!isGeolocateCompassModeActive()) {
-    cycle(map.dragRotate)
-    cycle(map.touchZoomRotate)
-    if (!draw || draw.getMode() !== 'draw_paint_mode') cycle(map.dragPan)
-  }
-}
-
-// Module-scope visibilitychange listener — registered once. Inside initializeMap
-// would re-register on every Stimulus reconnect (Turbo navigation), accumulating
-// stale closures. Guard with `!map` since this can fire before initializeMap runs.
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState !== 'visible' || !map) return
-  // map.once('idle', recoverHandlers)
-})
 
 // Workflow of map loading:
 //
@@ -171,7 +139,7 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('touchend', (e) => { updateCursorPosition(e) })
   map.on('drag', () => {
     mapInteracted = true
-    if (layers.filter(l => (l.type === 'overpass' || l.type === 'wikipedia') && l.show !== false).length) { dom.animateElement('#layer-reload', 'fade-in') }
+    if (layers && layers.filter(l => (l.type === 'overpass' || l.type === 'wikipedia') && l.show !== false).length) { dom.animateElement('#layer-reload', 'fade-in') }
   })
   map.on('zoom', (_e) => { limitZoom() })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
@@ -525,10 +493,10 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     basemap = basemaps()['osmRasterTiles']
   }
   if (basemap) {
-    map.once('style.load', () => {
+    map.once('style.load', async () => {
       status('Loaded base map ' + mapName)
       // on map style change, all sources and layers are removed, so we need to re-initialize them
-      initializeStyles()
+      await initializeStyles()
       limitZoom()
     })
     backgroundMapLayer = mapName
