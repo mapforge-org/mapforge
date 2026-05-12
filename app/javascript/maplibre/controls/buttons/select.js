@@ -1,7 +1,7 @@
 import { status } from 'helpers/status';
 import { resetEditControls } from 'maplibre/controls/edit';
 import { resetControls } from 'maplibre/controls/shared';
-import { recoverHandlers } from 'maplibre/map';
+import { recoverHandlers, forceGLReset } from 'maplibre/map';
 
 export class MapSelectControl {
   constructor (_options) {
@@ -13,6 +13,7 @@ export class MapSelectControl {
       map.resize()
       map.triggerRepaint()
       recoverHandlers()
+      forceGLReset()
 
       resetControls()
       resetEditControls()

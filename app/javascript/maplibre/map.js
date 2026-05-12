@@ -25,13 +25,13 @@ let backgroundTerrain
 let backgroundHillshade
 let backgroundGlobe
 let backgroundContours
+let lastGLResetAt = 0
 
 // Cycle handler enable state and dispatch synthetic pointer-up events to clear
 // any wedged interaction state. Idempotent — safe to call any time. Triggered
 // automatically on first idle after visibility resume, and manually via the
 // select-mode button click.
 export function recoverHandlers () {
-  status("Recovering handlers")
   const opts = { bubbles: true, cancelable: true }
   window.dispatchEvent(new MouseEvent('mouseup', opts))
   if (window.PointerEvent) {
@@ -48,6 +48,25 @@ export function recoverHandlers () {
     cycle(map.touchZoomRotate)
     if (!draw || draw.getMode() !== 'draw_paint_mode') cycle(map.dragPan)
   }
+}
+
+// Heaviest recovery: force a WebGL context loss/restore cycle. MapLibre's
+// webglcontextrestored handler rebuilds buffers, reuploads textures, and
+// restarts the render loop — this is what fixes a fully dead rAF chain that
+// triggerRepaint can't kick. Idempotent within a 30s window.
+export function forceGLReset () {
+  if (performance.now() - lastGLResetAt < 30000) return
+  lastGLResetAt = performance.now()
+  const mapCanvas = map.getCanvas()
+  const gl = mapCanvas?.getContext('webgl2') || mapCanvas?.getContext('webgl')
+  const ext = gl?.getExtension('WEBGL_lose_context')
+  if (!ext) {
+    status('Recovery: WEBGL_lose_context unavailable', 'warning', 'medium', 3000)
+    return
+  }
+  status('Recovery: forcing GL reset', 'info', 'medium', 2000)
+  ext.loseContext()
+  setTimeout(() => ext.restoreContext(), 100)
 }
 
 // Module-scope visibilitychange listener — registered once. Inside initializeMap
@@ -219,25 +238,6 @@ export async function initializeMap (divId = 'maplibre-map') {
       summary += ' | err: ' + postResumeErrors.join('; ')
     }
     return summary
-  }
-
-  // Heaviest recovery: force a WebGL context loss/restore cycle. MapLibre's
-  // webglcontextrestored handler rebuilds buffers, reuploads textures, and
-  // restarts the render loop — this is what fixes a fully dead rAF chain that
-  // triggerRepaint can't kick. Idempotent within a 30s window.
-  let lastGLResetAt = 0
-  const forceGLReset = () => {
-    if (performance.now() - lastGLResetAt < 30000) return
-    lastGLResetAt = performance.now()
-    const gl = mapCanvas.getContext('webgl2') || mapCanvas.getContext('webgl')
-    const ext = gl?.getExtension('WEBGL_lose_context')
-    if (!ext) {
-      status('Recovery: WEBGL_lose_context unavailable', 'warning', 'medium', 3000)
-      return
-    }
-    status('Recovery: forcing GL reset', 'info', 'medium', 2000)
-    ext.loseContext()
-    setTimeout(() => ext.restoreContext(), 100)
   }
 
   // Visibility watchdog — silently tracks map activity for 10s after resume so
