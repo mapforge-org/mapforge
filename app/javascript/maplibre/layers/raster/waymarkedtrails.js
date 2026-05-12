@@ -142,18 +142,35 @@ export async function fetchRouteDetails(theme, routeId) {
       return null
     }
 
+    const tags = details.tags || {}
     const routeName = details.name || details.ref || 'Unnamed route'
+    const properties = {
+      title: routeName,
+      label: routeName,
+      desc: buildDescription(details, theme, routeId),
+      stroke: determineRouteColor(details, theme),
+      waymarkedtrailsId: routeId
+    }
+
+    // osmc:symbol → badge image along linestring
+    // https://wiki.openstreetmap.org/wiki/Key:osmc:symbol
+    // format: waycolor:background[:foreground][:foreground2][:text:textcolor]
+    if (tags['osmc:symbol'] && (geometry.type === 'LineString' || geometry.type === 'MultiLineString')) {
+      properties['stroke-image-url'] = '/icon/osmc/' + tags['osmc:symbol']
+    }
+
+    // Copy useful OSM metadata so it's visible in the feature popup AND survives
+    // copy-to-user-layer (addFeature copies the whole properties bag).
+    const metadataKeys = ['ref', 'network', 'operator', 'website', 'wikipedia', 'symbol', 'osmc:symbol']
+    for (const key of metadataKeys) {
+      if (tags[key] !== undefined) properties[key] = tags[key]
+    }
+
     const feature = {
       type: 'Feature',
       id: featureId(),
       geometry,
-      properties: {
-        title: routeName,
-        label: routeName,
-        desc: buildDescription(details, theme, routeId),
-        stroke: determineRouteColor(details, theme),
-        waymarkedtrailsId: routeId
-      }
+      properties
     }
 
     routeDetailsCache.set(cacheKey, feature)

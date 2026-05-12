@@ -122,6 +122,21 @@ export class RasterLayer extends Layer {
         }
       })
 
+      // osmc:symbol badge along route (mirrors styles.js stroke-image-url layer)
+      map.addLayer({
+        id: 'line-symbol_' + geojsonSourceId,
+        type: 'symbol',
+        source: geojsonSourceId,
+        filter: ['has', 'stroke-image-url'],
+        layout: {
+          'symbol-placement': 'line',
+          'symbol-spacing': 100,
+          'icon-image': ['get', 'stroke-image-url'],
+          'icon-size': ['interpolate', ['exponential', 1.5], ['zoom'], 12, 0.85, 18, 1.4],
+          'icon-rotation-alignment': 'viewport'
+        }
+      })
+
       // Label layer for route names
       map.addLayer({
         id: 'line-labels_' + geojsonSourceId,
@@ -174,7 +189,7 @@ export class RasterLayer extends Layer {
           features: featuresToRender
         })
         if (highlightedFeatureId) {
-          const layerIds = ['line-outline_', 'line_', 'line-labels_'].map(p => p + geojsonSourceId)
+          const layerIds = ['line-outline_', 'line_', 'line-symbol_', 'line-labels_'].map(p => p + geojsonSourceId)
           layerIds.forEach(id => { if (map.getLayer(id)) map.moveLayer(id) })
         }
       }
