@@ -39,10 +39,12 @@ export function initializeSocket () {
     connected () {
       // Called when the subscription is ready for use on the server
       console.log('Connected to map_channel ' + window.gon.map_id)
-      map.fire('online', { detail: { message: 'Connected to map_channel' } })
       mapChannel = this
       window.mapChannel = mapChannel
-      // only reload data when there has been a connection before, to avoid double load
+      // On reconnect (channelStatus === 'off'), defer the 'online' event until
+      // after the reload chain finishes — otherwise data-online='true' fires
+      // before window.gon catches up, racing against tests and any code that
+      // reads map_properties on reconnect.
       if (channelStatus === 'off') {
         reloadMapProperties().then(() => {
           initializeMaplibreProperties()
@@ -55,9 +57,11 @@ export function initializeSocket () {
               await initializeLayerStyles()
             }
             map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
+            map.fire('online', { detail: { message: 'Reconnected to map_channel' } })
           })
-          // status('Connection to server re-established')
         })
+      } else {
+        map.fire('online', { detail: { message: 'Connected to map_channel' } })
       }
       consumer.connection.webSocket.onerror = function (_event) {
         map.fire('offline', { detail: { message: 'Websocket error' } })

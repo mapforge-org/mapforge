@@ -209,7 +209,6 @@ describe "Map public view" do
       go_online
 
       expect_map_loaded
-      sleep 1 # give some time for the feature to be received
       click_center_of_screen
       expect(page).to have_text("Poly Title")
     end
