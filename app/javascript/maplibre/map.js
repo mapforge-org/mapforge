@@ -33,9 +33,18 @@ let lastGLResetAt = 0
 // select-mode button click.
 export function recoverHandlers () {
   const opts = { bubbles: true, cancelable: true }
+  const mapCanvas = map.getCanvas()
+  // Dispatch on both window and canvas — MapLibre's HandlerManager
+  // listens on canvas for some events, window for others.
   window.dispatchEvent(new MouseEvent('mouseup', opts))
+  mapCanvas.dispatchEvent(new MouseEvent('mouseup', opts))
   if (window.PointerEvent) {
+    // Dispatch both mouse and touch pointer types to clear state for both.
+    // On phones, real events use pointerType:'touch', so mouse-type events alone don't clear touch state.
     window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
+    window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'touch' }))
+    mapCanvas.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
+    mapCanvas.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'touch' }))
   }
   const cycle = (h) => { h.disable(); h.enable() }
   cycle(map.scrollZoom)
@@ -237,6 +246,12 @@ export async function initializeMap (divId = 'maplibre-map') {
     if (postResumeErrors.length > 0) {
       summary += ' | err: ' + postResumeErrors.join('; ')
     }
+    // Add map/handler state for freeze diagnosis
+    const mov = map.isMoving() ? 'T' : 'F'
+    const eas = map.isEasing() ? 'T' : 'F'
+    const dpE = map.dragPan.isEnabled() ? 'E' : 'D'
+    const dpA = map.dragPan.isActive() ? 'A' : 'I'
+    summary += ` | mov:${mov} eas:${eas} dp:${dpE}/${dpA}`
     return summary
   }
 
@@ -304,22 +319,7 @@ export async function initializeMap (divId = 'maplibre-map') {
     const doRecovery = () => {
       if (recoveryDone) return
       recoveryDone = true
-      const opts = { bubbles: true, cancelable: true }
-      window.dispatchEvent(new MouseEvent('mouseup', opts))
-      window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
-      mapCanvas.dispatchEvent(new MouseEvent('mouseup', opts))
-      mapCanvas.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
-      const cycle = (h) => { h.disable(); h.enable() }
-      cycle(map.scrollZoom)
-      cycle(map.doubleClickZoom)
-      cycle(map.keyboard)
-      cycle(map.boxZoom)
-      cycle(map.touchPitch)
-      if (!isGeolocateCompassModeActive()) {
-        cycle(map.dragRotate)
-        cycle(map.touchZoomRotate)
-        if (!draw || draw.getMode() !== 'draw_paint_mode') cycle(map.dragPan)
-      }
+      recoverHandlers()
       status('Recovery: handlers reset', 'info', 'medium', 2000)
     }
     map.once('idle', doRecovery)

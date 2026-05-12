@@ -6,6 +6,7 @@ import {
   initializeMaplibreProperties, map,
   mapProperties,
   reloadMapProperties,
+  recoverHandlers,
   setBackgroundMapLayer,
   setLayerVisibility,
   updateMapName,
@@ -55,6 +56,9 @@ export function initializeSocket () {
               initializeLayerStyles()
             }
             map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
+            // Recover handlers after the heavy data reload completes, in case the
+            // reload left handlers in a wedged state (drag frozen but render working).
+            recoverHandlers()
           })
         })
       }
