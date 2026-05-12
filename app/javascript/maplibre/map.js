@@ -57,6 +57,15 @@ export function recoverHandlers () {
     cycle(map.touchZoomRotate)
     if (!draw || draw.getMode() !== 'draw_paint_mode') cycle(map.dragPan)
   }
+
+  // Deferred re-check: queued browser events (real pointerdown from user's
+  // finger still on screen) fire AFTER our synchronous code. Catch re-activation.
+  setTimeout(() => {
+    if (map.dragPan?.isActive() && !map.isMoving()) {
+      map.dragPan.disable()
+      map.dragPan.enable()
+    }
+  }, 100)
 }
 
 // Heaviest recovery: force a WebGL context loss/restore cycle. MapLibre's
@@ -709,11 +718,14 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     basemap = basemaps()['osmRasterTiles']
   }
   if (basemap) {
-    map.once('style.load', () => {
+    map.once('style.load', async () => {
       status('Loaded base map ' + mapName)
       // on map style change, all sources and layers are removed, so we need to re-initialize them
-      initializeStyles()
+      await initializeStyles()
       limitZoom()
+      // Recover handlers after the async layer initialization completes.
+      // During reconnection, this runs AFTER the heavy sortLayers/setData work.
+      recoverHandlers()
     })
     backgroundMapLayer = mapName
     backgroundTerrain = mapProperties.terrain

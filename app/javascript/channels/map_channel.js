@@ -47,17 +47,17 @@ export function initializeSocket () {
       if (channelStatus === 'off') {
         reloadMapProperties().then(() => {
           initializeMaplibreProperties()
-          loadLayerDefinitions().then(() => {
+          loadLayerDefinitions().then(async () => {
             // If basemap actually changed, setBackgroundMapLayer() will trigger
             // initializeStyles() via style.load (which re-initializes layer sources/styles).
             // If not, we re-initialize them directly to catch up on any missed updates.
             if (!setBackgroundMapLayer()) {
               initializeLayerSources()
-              initializeLayerStyles()
+              await initializeLayerStyles()
             }
             map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
-            // Recover handlers after the heavy data reload completes, in case the
-            // reload left handlers in a wedged state (drag frozen but render working).
+            // Recover handlers after the heavy async work (layer initialization,
+            // sortLayers) completes, so the handler reset doesn't get re-wedged.
             recoverHandlers()
           })
         })
