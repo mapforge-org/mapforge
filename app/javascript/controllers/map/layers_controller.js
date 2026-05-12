@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
+import { centroid } from '@turf/centroid'
 import { mapChannel } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
@@ -63,7 +64,7 @@ export default class extends Controller {
           feature.id = functions.featureId()
           feature.properties ||= {}
           upsert(feature)
-          if (feature.geometry.type === 'LineString') {
+          if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
             updateElevation(feature).finally(() => {
               mapChannel.send_message('new_feature', feature)
             })
@@ -72,6 +73,17 @@ export default class extends Controller {
           }
           status('Added feature ' + i++ + '/' + geoJSON.features.length)
         })
+
+        // Fly to the center of the imported features.
+        if (geoJSON?.features?.length > 0) {
+          const center = centroid(geoJSON)
+          map.flyTo({
+            center: center.geometry.coordinates,
+            duration: 1000,
+            curve: 0.3,
+            essential: true
+          })
+        }
 
         if (file.type === 'application/json') {
           const mapforgeJSON = JSON.parse(content)

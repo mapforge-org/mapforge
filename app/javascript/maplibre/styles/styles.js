@@ -711,9 +711,11 @@ export function styles () {
             ['concat', '/emojis/noto/', ['get', 'stroke-symbol'], '.png'],
             '']],
         "icon-rotation-alignment": "viewport",
-        "icon-size": ['case',
-          ['has', 'stroke-symbol'], 0.35,
-          ["interpolate", ["exponential", 1.5], ["zoom"], 12, 1.1, 18, 1.8]
+        // interpolate must be top-level for "zoom" — case is per stop instead.
+        // stroke-symbol (emoji): fixed 0.35; stroke-image-url (osmc badge): zoom-interpolated.
+        "icon-size": ["interpolate", ["exponential", 1.5], ["zoom"],
+          12, ['case', ['has', 'stroke-symbol'], 0.35, 1.1],
+          18, ['case', ['has', 'stroke-symbol'], 0.35, 1.8]
         ]
       },
       paint: {
