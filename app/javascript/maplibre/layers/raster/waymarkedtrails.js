@@ -78,8 +78,10 @@ export async function fetchNearestRoute(theme, lng, lat, currentZoom) {
     // Convert click point to EPSG:3857 for distance calculation
     const clickPointMercator = toMercator([lng, lat])
 
-    let nearestRoute = null
-    let minDistance = Infinity
+    // Zoom-dependent threshold: 500m (~560 Mercator units) at zoom 10.5, scales by 2x per zoom level
+    const threshold = 560 * Math.pow(2, 10.5 - currentZoom)
+    const candidates = []
+    const seenIds = new Set()
 
     for (const feature of geojson.features) {
       if (!feature.geometry) continue
@@ -93,26 +95,21 @@ export async function fetchNearestRoute(theme, lng, lat, currentZoom) {
         )
       }
 
-      if (distance < minDistance) {
-        minDistance = distance
-        const relationId = feature.properties.top_relations?.[0]
-        if (relationId) {
-          nearestRoute = {
-            id: relationId,
-            name: feature.properties.name,
-            distance
-          }
+      if (distance < threshold) {
+        // top_relations lists ALL routes overlapping this way segment.
+        // Reading only [0] hides every other route at that location.
+        for (const relationId of feature.properties.top_relations || []) {
+          if (seenIds.has(relationId)) continue
+          seenIds.add(relationId)
+          candidates.push({ id: relationId, name: feature.properties.name, distance })
         }
       }
     }
 
-    // Zoom-dependent threshold: 500m (~560 Mercator units) at zoom 10.5, scales by 2x per zoom level
-    const threshold = 560 * Math.pow(2, 10.5 - currentZoom)
-    if (nearestRoute && minDistance < threshold) {
-      return nearestRoute
-    }
-
-    return null
+    // Pick a random track among those under the click position so repeat clicks
+    // can surface different overlapping routes instead of always the nearest one.
+    if (candidates.length === 0) return null
+    return candidates[Math.floor(Math.random() * candidates.length)]
   } catch (error) {
     console.error('Error fetching waymarkedtrails tile:', error)
     return null
