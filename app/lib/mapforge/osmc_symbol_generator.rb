@@ -15,6 +15,14 @@ module Mapforge
       background_img = Rails.root.join("public", "icons", "osmc", "background", "#{File.basename(background)}.png")
       foreground_img = Rails.root.join("public", "icons", "osmc", "#{File.basename(foreground)}.png")
 
+      # Fall back to the color-only background (e.g. "blue.png") when the exact
+      # color+shape variant doesn't ship — covers blue_rectangle, red_rectangle, etc.
+      unless File.exist?(background_img)
+        base_color = background.split("_").first
+        fallback = Rails.root.join("public", "icons", "osmc", "background", "#{base_color}.png")
+        background_img = fallback if File.exist?(fallback)
+      end
+
       # background image is mandatory
       return nil unless File.exist?(background_img)
       result = MiniMagick::Image.open(background_img)
