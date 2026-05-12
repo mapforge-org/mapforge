@@ -61,7 +61,7 @@ export function recoverHandlers () {
   // Deferred re-check: queued browser events (real pointerdown from user's
   // finger still on screen) fire AFTER our synchronous code. Catch re-activation.
   setTimeout(() => {
-    if (map.dragPan?.isActive() && !map.isMoving()) {
+    if (map.dragPan?.isActive() && !map.isEasing()) {
       map.dragPan.disable()
       map.dragPan.enable()
     }
