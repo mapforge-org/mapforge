@@ -187,16 +187,25 @@ function extractGeometry(route) {
   if (lineStrings.length === 0) return null
 
   if (lineStrings.length === 1) {
-    return {
-      type: 'LineString',
-      coordinates: lineStrings[0]
-    }
+    return { type: 'LineString', coordinates: lineStrings[0] }
   }
 
-  return {
-    type: 'MultiLineString',
-    coordinates: lineStrings
+  // If every segment ends where the next begins, merge into one LineString.
+  // OSM ways share nodes at endpoints so byte-equal floats are reliable here.
+  // Compare lng/lat only so any elevation jitter doesn't block merging.
+  let connected = true
+  for (let i = 0; i < lineStrings.length - 1; i++) {
+    const last = lineStrings[i][lineStrings[i].length - 1]
+    const next = lineStrings[i + 1][0]
+    if (last[0] !== next[0] || last[1] !== next[1]) { connected = false; break }
   }
+  if (connected) {
+    const merged = [...lineStrings[0]]
+    for (let i = 1; i < lineStrings.length; i++) merged.push(...lineStrings[i].slice(1))
+    return { type: 'LineString', coordinates: merged }
+  }
+
+  return { type: 'MultiLineString', coordinates: lineStrings }
 }
 
 function extractLineStringsRecursive(segments, lineStrings) {
