@@ -60,7 +60,7 @@ export default class extends Controller {
 
   defaultPitchValueChanged (value) { this.setHTML('#map-pitch', value + '°') }
   currentPitchValueChanged (value) { this.setHTML('#map-pitch-current', value + '°') }
-  defaultZoomValueChanged (value) { this.setHTML('#map-zoom', value) }
+  defaultZoomValueChanged (value) { this.setHTML('#map-zoom', value || 'auto') }
   currentZoomValueChanged (value) { this.setHTML('#map-zoom-current', value) }
   defaultBearingValueChanged (value) { this.setHTML('#map-bearing', value + '°') }
   currentBearingValueChanged (value) { this.setHTML('#map-bearing-current', value + '°') }

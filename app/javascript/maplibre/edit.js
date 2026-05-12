@@ -353,6 +353,10 @@ export function updateElevation(feature) {
     return Promise.resolve()
   }
 
+  // MultiLineString coordinates are nested per-segment; getRouteElevation expects
+  // a flat point array. Skip elevation fetching for these.
+  if (feature.geometry.type === 'MultiLineString') return Promise.resolve()
+
   const coords = feature.geometry.coordinates
   const missing = []
   for (let i = 0; i < coords.length; i++) {
