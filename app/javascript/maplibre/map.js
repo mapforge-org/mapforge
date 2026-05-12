@@ -204,15 +204,21 @@ export async function initializeMap (divId = 'maplibre-map') {
   let postResumeMaxGap = 0
   let postResumeLastRender = 0
   let postResumeCounts = {}
+  let postResumeErrors = []
+  const POST_RESUME_MAX_ERRORS = 5
   const trackedEvents = ['load', 'idle', 'dataloading', 'data', 'sourcedataloading', 'sourcedata',
     'styledataloading', 'styledata', 'error', 'movestart', 'moveend', 'zoomstart', 'zoomend',
     'dragstart', 'dragend']
 
   const diagnosticSummary = () => {
     const elapsed = Math.round(performance.now() - postResumeT0)
-    return `t+${elapsed}ms R:${postResumeRenderCount} gap:${Math.round(postResumeMaxGap)}ms ` +
+    let summary = `t+${elapsed}ms R:${postResumeRenderCount} gap:${Math.round(postResumeMaxGap)}ms ` +
       Object.entries(postResumeCounts).filter(([_, n]) => n > 0)
         .map(([k, n]) => `${k.replace('source', 'src').replace('style', 'sty').replace('loading', 'L')}×${n}`).join(' ')
+    if (postResumeErrors.length > 0) {
+      summary += ' | err: ' + postResumeErrors.join('; ')
+    }
+    return summary
   }
 
   // Heaviest recovery: force a WebGL context loss/restore cycle. MapLibre's
@@ -246,10 +252,22 @@ export async function initializeMap (divId = 'maplibre-map') {
     postResumeMaxGap = 0
     postResumeLastRender = postResumeT0
     postResumeCounts = {}
+    postResumeErrors = []
 
     const handlers = {}
     trackedEvents.forEach(name => {
-      handlers[name] = () => { postResumeCounts[name] = (postResumeCounts[name] || 0) + 1 }
+      if (name === 'error') {
+        handlers[name] = (e) => {
+          postResumeCounts[name] = (postResumeCounts[name] || 0) + 1
+          const msg = e?.error?.message || 'unknown'
+          const src = e?.sourceId ? `[${e.sourceId}]` : ''
+          const label = (src + msg).slice(0, 60)
+          if (postResumeErrors.length >= POST_RESUME_MAX_ERRORS) postResumeErrors.shift()
+          postResumeErrors.push(label)
+        }
+      } else {
+        handlers[name] = () => { postResumeCounts[name] = (postResumeCounts[name] || 0) + 1 }
+      }
       map.on(name, handlers[name])
     })
     handlers.render = () => {
@@ -334,7 +352,11 @@ export async function initializeMap (divId = 'maplibre-map') {
     const glLost = map.painter?.context?.gl?.isContextLost?.()
     console.warn('Map drag input frozen', { glLost })
     status(`Map drag frozen (gl_lost=${glLost}) | ${diagnosticSummary()}`, 'warning', 'medium', 10000)
-    forceGLReset()
+    if (glLost) {
+      forceGLReset()
+    } else {
+      recoverHandlers()
+    }
   })
   mapCanvas.addEventListener('pointerup', () => { pointerDownAt = null })
   mapCanvas.addEventListener('pointercancel', () => { pointerDownAt = null })

@@ -1,25 +1,18 @@
 import { status } from 'helpers/status';
 import { resetEditControls } from 'maplibre/controls/edit';
 import { resetControls } from 'maplibre/controls/shared';
+import { recoverHandlers } from 'maplibre/map';
 
 export class MapSelectControl {
   constructor (_options) {
     this._container = document.createElement('div')
     this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-select" type="button" title="Select mode" aria-label="Select mode" aria-pressed="false"><b><i class="bi bi-hand-index"></i></b></button>'
     this._container.onclick = function (e) {
-
-      // Debugging map freeze
       status("Select Mode")
       map.stop()
       map.resize()
       map.triggerRepaint()
-      map.scrollZoom.enable()
-      map.doubleClickZoom.enable()
-      map.keyboard.enable()
-      map.boxZoom.enable()
-      map.dragRotate.enable()
-      map.touchZoomRotate.enable()
-      map.touchPitch.enable()
+      recoverHandlers()
 
       resetControls()
       resetEditControls()
