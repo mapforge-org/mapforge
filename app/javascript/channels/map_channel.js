@@ -6,7 +6,6 @@ import {
   initializeMaplibreProperties, map,
   mapProperties,
   reloadMapProperties,
-  recoverHandlers,
   setBackgroundMapLayer,
   setLayerVisibility,
   updateMapName,
@@ -56,10 +55,8 @@ export function initializeSocket () {
               await initializeLayerStyles()
             }
             map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
-            // Recover handlers after the heavy async work (layer initialization,
-            // sortLayers) completes, so the handler reset doesn't get re-wedged.
-            recoverHandlers()
           })
+          // status('Connection to server re-established')
         })
       }
       consumer.connection.webSocket.onerror = function (_event) {

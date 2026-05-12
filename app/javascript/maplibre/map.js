@@ -6,10 +6,10 @@ import * as functions from 'helpers/functions';
 import { status } from 'helpers/status';
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
-import { isGeolocateCompassModeActive, isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
+import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls } from 'maplibre/controls/view';
-import { draw, resetEditMode } from 'maplibre/edit';
+import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
@@ -25,75 +25,6 @@ let backgroundTerrain
 let backgroundHillshade
 let backgroundGlobe
 let backgroundContours
-let lastGLResetAt = 0
-
-// Cycle handler enable state and dispatch synthetic pointer-up events to clear
-// any wedged interaction state. Idempotent — safe to call any time. Triggered
-// automatically on first idle after visibility resume, and manually via the
-// select-mode button click.
-export function recoverHandlers () {
-  const opts = { bubbles: true, cancelable: true }
-  const mapCanvas = map.getCanvas()
-  // Dispatch on both window and canvas — MapLibre's HandlerManager
-  // listens on canvas for some events, window for others.
-  window.dispatchEvent(new MouseEvent('mouseup', opts))
-  mapCanvas.dispatchEvent(new MouseEvent('mouseup', opts))
-  if (window.PointerEvent) {
-    // Dispatch both mouse and touch pointer types to clear state for both.
-    // On phones, real events use pointerType:'touch', so mouse-type events alone don't clear touch state.
-    window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
-    window.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'touch' }))
-    mapCanvas.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'mouse' }))
-    mapCanvas.dispatchEvent(new PointerEvent('pointerup', { ...opts, pointerType: 'touch' }))
-  }
-  const cycle = (h) => { h.disable(); h.enable() }
-  cycle(map.scrollZoom)
-  cycle(map.doubleClickZoom)
-  cycle(map.keyboard)
-  cycle(map.boxZoom)
-  cycle(map.touchPitch)
-  if (!isGeolocateCompassModeActive()) {
-    cycle(map.dragRotate)
-    cycle(map.touchZoomRotate)
-    if (!draw || draw.getMode() !== 'draw_paint_mode') cycle(map.dragPan)
-  }
-
-  // Deferred re-check: queued browser events (real pointerdown from user's
-  // finger still on screen) fire AFTER our synchronous code. Catch re-activation.
-  setTimeout(() => {
-    if (map.dragPan?.isActive() && !map.isEasing()) {
-      map.dragPan.disable()
-      map.dragPan.enable()
-    }
-  }, 100)
-}
-
-// Heaviest recovery: force a WebGL context loss/restore cycle. MapLibre's
-// webglcontextrestored handler rebuilds buffers, reuploads textures, and
-// restarts the render loop — this is what fixes a fully dead rAF chain that
-// triggerRepaint can't kick. Idempotent within a 30s window.
-export function forceGLReset () {
-  if (performance.now() - lastGLResetAt < 30000) return
-  lastGLResetAt = performance.now()
-  const mapCanvas = map.getCanvas()
-  const gl = mapCanvas?.getContext('webgl2') || mapCanvas?.getContext('webgl')
-  const ext = gl?.getExtension('WEBGL_lose_context')
-  if (!ext) {
-    status('Recovery: WEBGL_lose_context unavailable', 'warning', 'medium', 3000)
-    return
-  }
-  status('Recovery: forcing GL reset', 'info', 'medium', 2000)
-  ext.loseContext()
-  setTimeout(() => ext.restoreContext(), 100)
-}
-
-// Module-scope visibilitychange listener — registered once. Inside initializeMap
-// would re-register on every Stimulus reconnect (Turbo navigation), accumulating
-// stale closures. Guard with `!map` since this can fire before initializeMap runs.
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState !== 'visible' || !map) return
-  // map.once('idle', recoverHandlers)
-})
 
 // Workflow of map loading:
 //
@@ -208,167 +139,11 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('touchend', (e) => { updateCursorPosition(e) })
   map.on('drag', () => {
     mapInteracted = true
-    if (layers.filter(l => (l.type === 'overpass' || l.type === 'wikipedia') && l.show !== false).length) { dom.animateElement('#layer-reload', 'fade-in') }
+    if (layers && layers.filter(l => (l.type === 'overpass' || l.type === 'wikipedia') && l.show !== false).length) { dom.animateElement('#layer-reload', 'fade-in') }
   })
   map.on('zoom', (_e) => { limitZoom() })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
   map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
-
-  // Render heartbeat — used by the visibilitychange watchdog to detect freezes.
-  let lastRenderAt = performance.now()
-  map.on('render', () => { lastRenderAt = performance.now() })
-
-  // Canvas-level WebGL context handlers. Calling preventDefault() on the lost
-  // event signals the browser we want context restoration; without it the
-  // canvas stays dead silently while DOM events keep firing (matches the
-  // "clicks work, drag dead" symptom).
-  const mapCanvas = map.getCanvas()
-  mapCanvas.addEventListener('webglcontextlost', (e) => {
-    e.preventDefault()
-    console.warn('WebGL context lost')
-    status('Map context lost', 'warning')
-  }, false)
-  mapCanvas.addEventListener('webglcontextrestored', () => {
-    console.log('WebGL context restored')
-    status('Map context restored', 'info')
-    map.triggerRepaint()
-  }, false)
-
-  // Diagnostic state shared with the input watchdog so freeze toasts can carry
-  // the post-resume map activity summary. Tracked for 10s after each resume.
-  let postResumeT0 = 0
-  let postResumeRenderCount = 0
-  let postResumeMaxGap = 0
-  let postResumeLastRender = 0
-  let postResumeCounts = {}
-  let postResumeErrors = []
-  const POST_RESUME_MAX_ERRORS = 5
-  const trackedEvents = ['load', 'idle', 'dataloading', 'data', 'sourcedataloading', 'sourcedata',
-    'styledataloading', 'styledata', 'error', 'movestart', 'moveend', 'zoomstart', 'zoomend',
-    'dragstart', 'dragend']
-
-  const diagnosticSummary = () => {
-    const elapsed = Math.round(performance.now() - postResumeT0)
-    let summary = `t+${elapsed}ms R:${postResumeRenderCount} gap:${Math.round(postResumeMaxGap)}ms ` +
-      Object.entries(postResumeCounts).filter(([_, n]) => n > 0)
-        .map(([k, n]) => `${k.replace('source', 'src').replace('style', 'sty').replace('loading', 'L')}×${n}`).join(' ')
-    if (postResumeErrors.length > 0) {
-      summary += ' | err: ' + postResumeErrors.join('; ')
-    }
-    // Add map/handler state for freeze diagnosis
-    const mov = map.isMoving() ? 'T' : 'F'
-    const eas = map.isEasing() ? 'T' : 'F'
-    const dpE = map.dragPan.isEnabled() ? 'E' : 'D'
-    const dpA = map.dragPan.isActive() ? 'A' : 'I'
-    summary += ` | mov:${mov} eas:${eas} dp:${dpE}/${dpA}`
-    return summary
-  }
-
-  // Visibility watchdog — silently tracks map activity for 10s after resume so
-  // the input/render freeze toasts can include the diagnostic summary inline
-  // (no separate toast that would be clobbered by the freeze toast).
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState !== 'visible') return
-    status('Visibility: visible', 'info', 'medium', 1000)
-
-    postResumeT0 = performance.now()
-    postResumeRenderCount = 0
-    postResumeMaxGap = 0
-    postResumeLastRender = postResumeT0
-    postResumeCounts = {}
-    postResumeErrors = []
-
-    const handlers = {}
-    trackedEvents.forEach(name => {
-      if (name === 'error') {
-        handlers[name] = (e) => {
-          postResumeCounts[name] = (postResumeCounts[name] || 0) + 1
-          const msg = e?.error?.message || 'unknown'
-          const src = e?.sourceId ? `[${e.sourceId}]` : ''
-          const label = (src + msg).slice(0, 60)
-          if (postResumeErrors.length >= POST_RESUME_MAX_ERRORS) postResumeErrors.shift()
-          postResumeErrors.push(label)
-        }
-      } else {
-        handlers[name] = () => { postResumeCounts[name] = (postResumeCounts[name] || 0) + 1 }
-      }
-      map.on(name, handlers[name])
-    })
-    handlers.render = () => {
-      const now = performance.now()
-      const gap = now - postResumeLastRender
-      if (gap > postResumeMaxGap) postResumeMaxGap = gap
-      postResumeLastRender = now
-      postResumeRenderCount++
-    }
-    map.on('render', handlers.render)
-
-    const beforeRepaint = performance.now()
-    map.triggerRepaint()
-    setTimeout(() => {
-      const renderedSinceWatchdog = lastRenderAt > beforeRepaint
-      const glLost = map.painter?.context?.gl?.isContextLost?.()
-      if (!renderedSinceWatchdog || glLost) {
-        status(`Map render frozen (gl_lost=${glLost}) | ${diagnosticSummary()}`, 'warning', 'medium', 10000)
-        forceGLReset()
-      }
-    }, 500)
-
-    setTimeout(() => {
-      trackedEvents.forEach(name => map.off(name, handlers[name]))
-      map.off('render', handlers.render)
-    }, 10000)
-
-    // Recovery: after the post-resume tile/data storm settles (first 'idle'),
-    // clear any stuck gesture state with synthetic pointer-up events and cycle
-    // handler enable state. .enable() alone doesn't reset internal handler
-    // state — disable+enable does. Fallback timeout covers the case where idle
-    // never fires.
-    let recoveryDone = false
-    const doRecovery = () => {
-      if (recoveryDone) return
-      recoveryDone = true
-      recoverHandlers()
-      status('Recovery: handlers reset', 'info', 'medium', 2000)
-    }
-    map.once('idle', doRecovery)
-    setTimeout(doRecovery, 8000)
-  })
-
-  // Input watchdog — detects handler-level freezes where render still works but
-  // pointer drag doesn't translate to map movement (clicks work, drag doesn't).
-  let pointerDownAt = null
-  let pointerDownX = 0
-  let pointerDownY = 0
-  let mapMovedSincePointerDown = false
-  let inputFreezeReported = false
-  map.on('movestart', () => { if (pointerDownAt) mapMovedSincePointerDown = true })
-  mapCanvas.addEventListener('pointerdown', (e) => {
-    pointerDownAt = performance.now()
-    pointerDownX = e.clientX
-    pointerDownY = e.clientY
-    mapMovedSincePointerDown = false
-    inputFreezeReported = false
-  })
-  mapCanvas.addEventListener('pointermove', (e) => {
-    if (!pointerDownAt || inputFreezeReported) return
-    const dx = e.clientX - pointerDownX
-    const dy = e.clientY - pointerDownY
-    if (Math.sqrt(dx * dx + dy * dy) < 15) return
-    if (mapMovedSincePointerDown) return
-    if (performance.now() - pointerDownAt < 150) return
-    inputFreezeReported = true
-    const glLost = map.painter?.context?.gl?.isContextLost?.()
-    console.warn('Map drag input frozen', { glLost })
-    status(`Map drag frozen (gl_lost=${glLost}) | ${diagnosticSummary()}`, 'warning', 'medium', 10000)
-    if (glLost) {
-      forceGLReset()
-    } else {
-      recoverHandlers()
-    }
-  })
-  mapCanvas.addEventListener('pointerup', () => { pointerDownAt = null })
-  mapCanvas.addEventListener('pointercancel', () => { pointerDownAt = null })
 
   map.on('contextmenu', (e) => {
     e.preventDefault()
@@ -723,9 +498,6 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
       // on map style change, all sources and layers are removed, so we need to re-initialize them
       await initializeStyles()
       limitZoom()
-      // Recover handlers after the async layer initialization completes.
-      // During reconnection, this runs AFTER the heavy sortLayers/setData work.
-      recoverHandlers()
     })
     backgroundMapLayer = mapName
     backgroundTerrain = mapProperties.terrain
