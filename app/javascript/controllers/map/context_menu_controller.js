@@ -3,6 +3,7 @@ import { mapChannel } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
+import { updateElevation } from 'maplibre/edit'
 import { getFeature, renderLayers } from 'maplibre/layers/layers'
 import { addFeature } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
@@ -103,7 +104,14 @@ export default class extends Controller {
     }
     addFeature(feature)
     addUndoState('Feature added', feature)
-    mapChannel.send_message('new_feature', feature)
+    // Geometries might arrive without elevation; fetch it before save
+    if (feature.geometry.type === 'LineString' ) {
+      updateElevation(feature).finally(() => {
+        mapChannel.send_message('new_feature', feature)
+      })
+    } else {
+      mapChannel.send_message('new_feature', feature)
+    }
     hideContextMenu()
   }
 }
