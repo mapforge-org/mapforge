@@ -710,9 +710,11 @@ export function styles () {
             ['has', 'stroke-symbol'],
             ['concat', '/emojis/noto/', ['get', 'stroke-symbol'], '.png'],
             '']],
-        "icon-size": ["interpolate", ["exponential", 1.5], ["zoom"], 12, 0.85, 18, 1.4],
         "icon-rotation-alignment": "viewport",
-        "icon-size": ['case', ['has', 'stroke-symbol'], 0.35, 1]
+        "icon-size": ['case',
+          ['has', 'stroke-symbol'], 0.35,
+          ["interpolate", ["exponential", 1.5], ["zoom"], 12, 1.1, 18, 1.8]
+        ]
       },
       paint: {
         "icon-opacity": 1

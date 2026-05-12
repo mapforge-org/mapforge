@@ -132,7 +132,7 @@ export class RasterLayer extends Layer {
           'symbol-placement': 'line',
           'symbol-spacing': 100,
           'icon-image': ['get', 'stroke-image-url'],
-          'icon-size': ['interpolate', ['exponential', 1.5], ['zoom'], 12, 0.85, 18, 1.4],
+          'icon-size': ['interpolate', ['exponential', 1.5], ['zoom'], 12, 1.1, 18, 1.8],
           'icon-rotation-alignment': 'viewport'
         }
       })
