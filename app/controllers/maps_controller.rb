@@ -18,7 +18,7 @@ class MapsController < ApplicationController
   end
 
   def my
-    @recent_map_ids = @user.recent_map_ids
+    @recent_maps = load_recent_maps(@user.recent_map_ids)
     @my_maps = filter_and_sort_maps(@user.owned_maps.includes(:layers, :owners))
 
     respond_to do |format|
@@ -138,6 +138,21 @@ class MapsController < ApplicationController
     nil
   end
   # :nocov:
+
+  # Batch-load recent maps in 2 queries instead of 2N individual find_by calls.
+  # Looks up by private_id (rw) and public_id (ro), preserving view order.
+  def load_recent_maps(ids)
+    return [] if ids.blank?
+    by_private = Map.unscoped.in(private_id: ids).includes(:owners).index_by(&:private_id)
+    by_public = Map.unscoped.in(public_id: ids).includes(:owners).index_by(&:public_id)
+    ids.filter_map do |id|
+      if (map = by_private[id])
+        [ map, true ]
+      elsif (map = by_public[id])
+        [ map, false ]
+      end
+    end
+  end
 
   def require_map_owner
     if !(@user&.admin? || @map.owned_by?(@user))

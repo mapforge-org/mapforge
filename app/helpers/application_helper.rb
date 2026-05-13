@@ -1,4 +1,8 @@
 module ApplicationHelper
+  def owned_maps_count
+    @owned_maps_count ||= @user&.owned_maps&.count || 0
+  end
+
   def avatar_url(base_url, size)
     uri = URI(base_url)
     params = URI.decode_www_form(uri.query.to_s)

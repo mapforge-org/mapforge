@@ -53,11 +53,10 @@ module Ulogger
 
       # Find track layer, fallback to map name which also has the initial track name by default
       track_name = session["track_name"] || @map.name
-      layer = @map.layers.geojson.find { |l| l.name == track_name } || @map.layers.create(name: track_name)
-      features = layer.features
+      layer = @map.layers.geojson.find_by(name: track_name) || @map.layers.create(name: track_name)
 
       # Find track with current name on map, or create new
-      track = features.line_string.find { |l| l.properties['title'] == track_name }
+      track = layer.features.line_string.find_by("properties.title" => track_name)
       track ||= Feature.new(layer: layer, geometry: { "coordinates" => [] },
                             properties: track_properties(track_name, string_to_color(track_name)))
 
@@ -87,11 +86,12 @@ module Ulogger
 
       # reset standard waypoints to default style,
       # keep photos and labels, exclude already styled waypoints
-      features.reject { |f|
-        f.properties["marker-image-url"] ||
-          f.properties["label"] || f.properties["marker-color"].nil? ||
-          f.geometry["type"] == "LineString"
-      }.each do |f|
+      layer.features.where(
+        "properties.marker-image-url" => nil,
+        "properties.label" => nil,
+        "properties.marker-color" => { "$ne" => nil },
+        "geometry.type" => { "$ne" => "LineString" }
+      ).each do |f|
         f.properties["marker-size"] = 2
         f.properties["marker-color"] = "#f6f5f4"
         f.properties["stroke"] = "transparent"
@@ -99,7 +99,7 @@ module Ulogger
         f.save!
       end
       # set leading waypoint
-      features.create!(geometry: geometry, properties: properties, image: image)
+      layer.features.create!(geometry: geometry, properties: properties, image: image)
       @map.update!(center: [ params[:lon].to_f, params[:lat].to_f ])
 
       render json: { error: false }

@@ -152,13 +152,20 @@ class Map
   end
 
   def to_json
-    { properties: properties, layers: layers.map(&:to_json) }.to_json
+    all_layers = layers.to_a
+    all_features = Feature.in(layer: all_layers.map(&:id)).group_by(&:layer_id)
+    { properties: properties, layers: all_layers.map { |l|
+      json = l.to_summary_json
+      json[:geojson] = { type: "FeatureCollection",
+        features: (all_features[l.id] || []).map(&:geojson) }
+      json
+    } }.to_json
   end
 
   # flattened geojson collection of all layers
   def to_geojson
     { type: "FeatureCollection",
-     features: layers.geojson.map(&:features).flatten.map(&:geojson) }
+     features: features.map(&:geojson) }
   end
 
   def to_gpx
