@@ -36,6 +36,54 @@ describe Layer do
     end
   end
 
+  describe "#to_geojson" do
+    it "returns a FeatureCollection with features" do
+      map = create(:map)
+      layer = create(:layer, :with_features)
+      map.layers << layer
+
+      result = layer.to_geojson
+      expect(result[:type]).to eq "FeatureCollection"
+      expect(result[:features].count).to eq 2
+      expect(result[:features].first).to have_key(:id)
+      expect(result[:features].first).to have_key(:type)
+      expect(result[:features].first).to have_key(:geometry)
+      expect(result[:features].first).to have_key(:properties)
+    end
+
+    it "returns an empty features array when layer has no features" do
+      map = create(:map)
+      layer = map.layers.first
+
+      result = layer.to_geojson
+      expect(result[:type]).to eq "FeatureCollection"
+      expect(result[:features]).to eq []
+    end
+  end
+
+  describe "#to_json" do
+    it "includes summary fields and geojson" do
+      map = create(:map)
+      layer = create(:layer, :with_features, name: "Test Layer")
+      map.layers << layer
+
+      result = layer.to_json
+      expect(result[:id]).to eq layer.id
+      expect(result[:type]).to eq "geojson"
+      expect(result[:name]).to eq "Test Layer"
+      expect(result[:geojson]).to be_present
+      expect(result[:geojson]).to eq layer.to_geojson
+    end
+
+    it "includes geojson matching to_geojson output" do
+      map = create(:map)
+      layer = map.layers.first
+
+      result = layer.to_json
+      expect(result[:geojson]).to eq layer.to_geojson
+    end
+  end
+
   describe "#broadcast_update" do
     let!(:map) { create(:map) }
     let!(:layer) { map.layers.first }

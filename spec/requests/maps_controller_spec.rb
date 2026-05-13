@@ -41,4 +41,57 @@ describe MapsController do
       expect(map.reload.owners).to eq [ user ]
     end
   end
+
+  describe "#load_recent_maps" do
+    let(:controller) { described_class.new }
+    let(:map1) { create(:map) }
+    let(:map2) { create(:map) }
+    let(:map3) { create(:map) }
+
+    it "returns [map, true] when ID matches private_id" do
+      result = controller.send(:load_recent_maps, [ map1.private_id ])
+      expect(result.count).to eq 1
+      expect(result.first).to eq [ map1, true ]
+    end
+
+    it "returns [map, false] when ID matches public_id" do
+      result = controller.send(:load_recent_maps, [ map1.public_id ])
+      expect(result.count).to eq 1
+      expect(result.first).to eq [ map1, false ]
+    end
+
+    it "returns empty array for blank input" do
+      expect(controller.send(:load_recent_maps, [])).to eq []
+      expect(controller.send(:load_recent_maps, nil)).to eq []
+    end
+
+    it "skips IDs that don't match any map" do
+      result = controller.send(:load_recent_maps, [ "nonexistent" ])
+      expect(result).to eq []
+    end
+
+    it "preserves input order, mixing private and public IDs" do
+      ids = [ map2.public_id, map1.private_id, map3.public_id ]
+      result = controller.send(:load_recent_maps, ids)
+      expect(result.count).to eq 3
+      expect(result[0]).to eq [ map2, false ]
+      expect(result[1]).to eq [ map1, true ]
+      expect(result[2]).to eq [ map3, false ]
+    end
+
+    it "prioritizes private_id match over public_id for same map" do
+      result = controller.send(:load_recent_maps, [ map1.private_id, map1.public_id ])
+      expect(result.count).to eq 2
+      expect(result[0]).to eq [ map1, true ]
+      expect(result[1]).to eq [ map1, false ]
+    end
+
+    it "skips missing IDs while preserving order of found maps" do
+      ids = [ map1.private_id, "nonexistent", map2.public_id ]
+      result = controller.send(:load_recent_maps, ids)
+      expect(result.count).to eq 2
+      expect(result[0]).to eq [ map1, true ]
+      expect(result[1]).to eq [ map2, false ]
+    end
+  end
 end
