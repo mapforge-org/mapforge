@@ -81,8 +81,7 @@ class MapsController < ApplicationController
   def copy
     require_map_owner if @map.view_permission == "private"
     cloned_map = @map.clone_with_layers
-    cloned_map.update(name: "Copy of " + @map.name.to_s)
-    cloned_map.add_owner(@user)
+    cloned_map.update(owners: [ @user ], name: "Copy of " + @map.name.to_s)
     redirect_to cloned_map.private_map_path, notice: "Map was successfully copied."
   end
 
