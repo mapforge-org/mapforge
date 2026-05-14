@@ -1,6 +1,6 @@
 #status-container {
   position: fixed;
-  z-index: 99;
+  z-index: 1100;
   bottom: 0.3rem;
   left: 50%;
   transform: translateX(-50%);
