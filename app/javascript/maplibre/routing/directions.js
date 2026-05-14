@@ -4,7 +4,7 @@ import * as functions from 'helpers/functions'
 import { decodePolyline, encodePolyline } from 'helpers/polyline'
 import { status } from 'helpers/status'
 import { setSelectedFeature, unselect, updateElevation } from 'maplibre/edit'
-import { showFeatureDetails } from 'maplibre/feature'
+import { refreshFeatureMeta, showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
 import { map, mapProperties, upsert } from 'maplibre/map'
 import { ORS_EXTRA_INFO, orsBuildRequest, orsFetch, orsProfiles } from 'maplibre/routing/openrouteservice'
@@ -248,6 +248,8 @@ export function initDirections (profile, feature) {
             unselect()
             window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
           }, 10)
+        } else {
+          refreshFeatureMeta(currentFeature)
         }
       })
     } else {
@@ -259,6 +261,8 @@ export function initDirections (profile, feature) {
           unselect()
           window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
         }, 10)
+      } else {
+        refreshFeatureMeta(currentFeature)
       }
     }
   })

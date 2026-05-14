@@ -6,7 +6,7 @@ import { hideInfoStatus, status } from 'helpers/status';
 import { disableEditControls, enableEditControls, initializeEditControls } from 'maplibre/controls/edit';
 import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
-import { highlightFeature } from 'maplibre/feature';
+import { highlightFeature, refreshFeatureMeta } from 'maplibre/feature';
 import { getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
 import { addFeature, destroyFeature, map, mapProperties } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
@@ -324,11 +324,11 @@ async function handleUpdate (e) {
     // gets also triggered on failure
     updateElevation(feature).then(() => {
       mapChannel.send_message('update_feature', feature)
-      // showFeatureDetails(feature)
+      refreshFeatureMeta(feature)
     })
   } else {
     mapChannel.send_message('update_feature', feature)
-    // highlightFeature(feature, true)
+    refreshFeatureMeta(feature)
   }
 }
 

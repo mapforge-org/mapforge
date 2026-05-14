@@ -106,6 +106,11 @@ function featureVertexes(feature) {
   return vertexes
 }
 
+export function refreshFeatureMeta (feature) {
+  document.querySelector('#feature-size').innerHTML = featureMeta(feature)
+  document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
+}
+
 export async function showFeatureDetails (feature) {
   dom.hideElements(['#feature-edit-ui'])
   f.e('#edit-buttons button', (e) => { e.classList.remove('active') })
