@@ -22,4 +22,42 @@ describe Feature do
       expect(gpx_data).to include('<wpt lat="49.4731983" lon="11.0557138"/>')
     end
   end
+
+  describe "#coordinates" do
+    context "with corrupted geometry containing nil values" do
+      it "handles nil in LineString coordinates" do
+        feature = described_class.create(
+          type: "Feature",
+          geometry: { "type" => "LineString", "coordinates" => [ [ 11.0, 49.0 ], nil, [ 12.0, 50.0 ] ] }
+        )
+
+        expect { feature.coordinates(include_height: false) }.not_to raise_error
+        expect(feature.coordinates(include_height: false)).to eq [ [ 11.0, 49.0 ], [ 12.0, 50.0 ] ]
+      end
+
+      it "handles nil in Polygon coordinates" do
+        feature = described_class.create(
+          type: "Feature",
+          geometry: {
+            "type" => "Polygon",
+            "coordinates" => [ [ [ 11.0, 49.0 ], [ 12.0, 49.0 ], nil, [ 11.0, 49.0 ] ] ]
+          }
+        )
+
+        expect { feature.coordinates(include_height: false) }.not_to raise_error
+        result = feature.coordinates(include_height: false)
+        expect(result).to eq [ [ [ 11.0, 49.0 ], [ 12.0, 49.0 ], [ 11.0, 49.0 ] ] ]
+      end
+
+      it "handles nil as entire coordinates value" do
+        feature = described_class.create(
+          type: "Feature",
+          geometry: { "type" => "Point", "coordinates" => nil }
+        )
+
+        expect { feature.coordinates(include_height: false) }.not_to raise_error
+        expect(feature.coordinates(include_height: false)).to eq []
+      end
+    end
+  end
 end

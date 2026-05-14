@@ -69,10 +69,12 @@ class Feature
 
   # reduce all coordinates to 2, dropping elevation
   def drop_elevation(coords)
+    return [] if coords.nil?
+
     if coords.all? { |c| !c.is_a?(Array) }
       coords[0...2].map(&:to_f)
     else
-      coords.map { |c| drop_elevation(c) }
+      coords.compact.map { |c| drop_elevation(c) }
     end
   end
 
