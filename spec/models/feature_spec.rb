@@ -60,4 +60,66 @@ describe Feature do
       end
     end
   end
+
+  describe "coordinate sanitization on save" do
+    it "removes nil from LineString coordinates" do
+      feature = described_class.create!(
+        type: "Feature",
+        geometry: { "type" => "LineString", "coordinates" => [ [ 11.0, 49.0 ], nil, [ 12.0, 50.0 ] ] }
+      )
+      expect(feature.geometry["coordinates"]).to eq [ [ 11.0, 49.0 ], [ 12.0, 50.0 ] ]
+    end
+
+    it "removes nil from Polygon coordinates" do
+      feature = described_class.create!(
+        type: "Feature",
+        geometry: {
+          "type" => "Polygon",
+          "coordinates" => [ [ [ 11.0, 49.0 ], [ 12.0, 49.0 ], nil, [ 11.0, 49.0 ] ] ]
+        }
+      )
+      expect(feature.geometry["coordinates"]).to eq [ [ [ 11.0, 49.0 ], [ 12.0, 49.0 ], [ 11.0, 49.0 ] ] ]
+    end
+
+    it "removes nil from MultiLineString coordinates" do
+      feature = described_class.create!(
+        type: "Feature",
+        geometry: {
+          "type" => "MultiLineString",
+          "coordinates" => [ [ [ 11.0, 49.0 ], [ 12.0, 50.0 ] ], nil, [ [ 13.0, 51.0 ], nil, [ 14.0, 52.0 ] ] ]
+        }
+      )
+      expect(feature.geometry["coordinates"]).to eq [
+        [ [ 11.0, 49.0 ], [ 12.0, 50.0 ] ],
+        [ [ 13.0, 51.0 ], [ 14.0, 52.0 ] ]
+      ]
+    end
+
+    it "removes nil from MultiPolygon coordinates" do
+      feature = described_class.create!(
+        type: "Feature",
+        geometry: {
+          "type" => "MultiPolygon",
+          "coordinates" => [
+            [ [ [ 11.0, 49.0 ], [ 12.0, 49.0 ], [ 11.0, 49.0 ] ] ],
+            nil,
+            [ [ [ 13.0, 51.0 ], nil, [ 14.0, 51.0 ], [ 13.0, 51.0 ] ] ]
+          ]
+        }
+      )
+      expect(feature.geometry["coordinates"]).to eq [
+        [ [ [ 11.0, 49.0 ], [ 12.0, 49.0 ], [ 11.0, 49.0 ] ] ],
+        [ [ [ 13.0, 51.0 ], [ 14.0, 51.0 ], [ 13.0, 51.0 ] ] ]
+      ]
+    end
+
+    it "leaves clean coordinates unchanged" do
+      coords = [ [ 11.0, 49.0 ], [ 12.0, 50.0 ] ]
+      feature = described_class.create!(
+        type: "Feature",
+        geometry: { "type" => "LineString", "coordinates" => coords }
+      )
+      expect(feature.geometry["coordinates"]).to eq coords
+    end
+  end
 end

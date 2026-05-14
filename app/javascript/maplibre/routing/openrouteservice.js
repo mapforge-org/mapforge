@@ -135,7 +135,7 @@ export async function getRouteElevation (waypoints) {
       // Drop first point of subsequent batches to avoid duplicates from overlap
       allCoordinates.push(...(index === 0 ? batchCoords : batchCoords.slice(1)))
     }
-    return allCoordinates
+    return allCoordinates.filter(c => c != null)
   } catch (err) {
     // Extract error details from API response
     let errorMessage = 'OpenRouteService elevation error'
@@ -171,7 +171,7 @@ export async function getPointsElevation (coordinates, changedIndices) {
       geometry: coordinates[idx].slice(0, 2)
     })
     console.log(`Openrouteservice elevation response (point #${idx}):`, response)
-    return { idx, coord: response.geometry }
+    return { idx, coord: response.geometry || coordinates[idx] }
   }))
 
   for (const { idx, coord } of results) {

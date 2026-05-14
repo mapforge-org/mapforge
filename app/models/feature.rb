@@ -25,6 +25,7 @@ class Feature
     previous_changes.present? && layer.present? && map.present? &&
       (previous_changes["geometry"] || previous_changes["properties"])
   }
+  before_save :sanitize_coordinates
   validate :require_coords
 
   def geojson
@@ -66,6 +67,21 @@ class Feature
   end
 
   private
+
+  def sanitize_coordinates
+    return unless geometry["coordinates"].is_a?(Array)
+    geometry["coordinates"] = compact_coordinates(geometry["coordinates"])
+  end
+
+  def compact_coordinates(coords)
+    return coords unless coords.is_a?(Array)
+
+    if coords.all? { |c| !c.is_a?(Array) }
+      coords.compact
+    else
+      coords.compact.map { |c| compact_coordinates(c) }
+    end
+  end
 
   # reduce all coordinates to 2, dropping elevation
   def drop_elevation(coords)
