@@ -35,10 +35,12 @@ You can enhance your layers with visual customization, for example setting symbo
 
 * `// heatmap=true` - Results will be rendered as a heat map (default=false)
 * `// label-property` - OSM property that will be shown as label (default=name)
+* `// marker-color=yellow` - Color of marker points
 * `// marker-symbol=🍻` - Nodes/points will use this symbol (emoji)
 * `// marker-image-url=/icons/hydrant.png` - URL pointing to icon image
 * `// stroke=yellow` - Line color
 * `// cluster=true` - Results will be clustered when too many results are close to each other (default=true)
+* `// cluster-color=yellow` - Color of cluster points
 * `// cluster-symbol=🍻` - Emoji/icon path used for clusters
 * `// cluster-image-url=/icons/hydrant.png` - URL pointing to icon image for clusters
 

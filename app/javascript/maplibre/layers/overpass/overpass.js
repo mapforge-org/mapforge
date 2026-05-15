@@ -21,7 +21,8 @@ export class OverpassLayer extends Layer {
     if (clustered) {
       const clusterIcon = getCommentValue(this.layer.query, 'cluster-symbol') || getCommentValue(this.layer.query, 'cluster-image-url') ||
         getCommentValue(this.layer.query, 'marker-symbol') || getCommentValue(this.layer.query, 'marker-image-url')
-      initializeClusterStyles(this.sourceId, clusterIcon)
+      const clusterColor = getCommentValue(this.layer.query, 'cluster-color') || getCommentValue(this.layer.query, 'marker-color')
+      initializeClusterStyles(this.sourceId, clusterIcon, clusterColor)
     }
     this.setupEventHandlers()
     return this.loadData()
@@ -177,6 +178,7 @@ function applyOverpassStyle(geojson, query) {
     }
     f.properties["desc"] = overpassDescription(f.properties)
     if (heatmap) { f.properties["heatmap"] = true }
+    if (getCommentValue(query, 'marker-color')) { f.properties["marker-color"] = getCommentValue(query, 'marker-color') }
     if (markerSymbol) {
       f.properties["marker-symbol"] = markerSymbol
       f.properties["marker-size"] = "30"

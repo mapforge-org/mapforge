@@ -34,8 +34,8 @@ export function initializeViewStyles (sourceName, heatmap=false) {
   // console.log('View styles added for source ' + sourceName)
 }
 
-export function initializeClusterStyles(sourceName, icon) {
-  clusterStyles(icon).forEach(style => {
+export function initializeClusterStyles(sourceName, icon, color=null) {
+  clusterStyles(icon, color).forEach(style => {
     map.addLayer(setSource(style, sourceName))
   })
 
@@ -727,7 +727,7 @@ export function styles () {
   }
 }
 
-export function clusterStyles(icon) {
+export function clusterStyles(icon, color=null) {
   let icon_image = '/emojis/noto/' + icon + '.png'
   if (icon?.includes('/')) { icon_image = icon } // full url / path
 
@@ -739,7 +739,7 @@ export function clusterStyles(icon) {
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': 12,
-        'circle-color': pointColor,
+        'circle-color': color || pointColor,
         'circle-blur': 0.05,
         'circle-stroke-color': pointOutlineColor,
         'circle-stroke-width': pointOutlineSize,
