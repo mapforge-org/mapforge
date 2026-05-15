@@ -400,7 +400,7 @@ export function styles () {
       id: 'polygon-layer-extruded-shadow',
         type: 'fill',
           filter: ['all',
-            ["==", ["geometry-type"], "Polygon"],
+            ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
             ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
             minZoomFilter],
             paint: {
@@ -414,7 +414,7 @@ export function styles () {
       id: 'polygon-layer',
       type: 'fill',
       filter: ['all',
-        ["==", ["geometry-type"], "Polygon"],
+        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
         ['==', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
         minZoomFilter],
       paint: {
@@ -426,7 +426,7 @@ export function styles () {
       id: 'polygon-layer-extrusion',
       type: 'fill-extrusion',
       filter: ['all',
-        ['==', ['geometry-type'], 'Polygon'],
+        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
         ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
         minZoomFilter],
       paint: {
@@ -442,7 +442,7 @@ export function styles () {
       id: 'polygon-layer-outline',
       type: 'line',
       filter: ['all',
-        ["==", ["geometry-type"], "Polygon"],
+        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
         minZoomFilter],
       layout: {
         'line-join': 'round',
