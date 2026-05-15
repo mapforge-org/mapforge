@@ -420,6 +420,15 @@
   --bs-dropdown-padding-y: 0.3rem;
 }
 
+.map-modal:has(#query-dropdown.show) {
+  overflow-y: visible;
+}
+
+.inline-scroll:has(#query-dropdown.show) {
+  overflow: visible;
+  mask-image: none;
+}
+
 .layer-actions-dropdown .dropdown-menu {
   background-color: var(--color-light-alabaster);
   box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 20%);
