@@ -12,6 +12,10 @@ export class WikipediaLayer extends Layer {
     return this.loadData()
   }
 
+  reloadAfterMapMove() {
+    return 'ondemand'
+  }
+
   loadData() {
     // query API docs: https://en.wikipedia.org/w/api.php?action=help&modules=query
     // Cannot include article previews in geo search

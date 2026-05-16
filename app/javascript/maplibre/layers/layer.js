@@ -287,6 +287,14 @@ export class Layer {
     // Default implementation does nothing - most layers rely on global highlightedFeatureId
   }
 
+  /**
+   * Reload mode after map was moved
+   * - ondemand: 'load for this area button'
+   */
+  reloadAfterMapMove() {
+    return false
+  }
+
   // overwrite all layer properties with data,
   // keep geojson if data does not include it
   update(data) {

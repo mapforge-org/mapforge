@@ -62,6 +62,13 @@ export class OverpassLayer extends Layer {
     }
   }
 
+  reloadAfterMapMove() {
+    if (!this.layer.query) { return false }
+    // Only show reload button if query uses dynamic bbox template
+    // Queries with hardcoded bbox coordinates should not trigger reload
+    return (this.layer.query.includes('{{bbox}}') || !this.layer.query.includes('[bbox')) ? 'ondemand' : false
+  }
+
   loadData() {
     if (!this.layer.query) { return Promise.resolve() }
     let query = this.layer.query

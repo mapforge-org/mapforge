@@ -139,7 +139,9 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('touchend', (e) => { updateCursorPosition(e) })
   map.on('drag', () => {
     mapInteracted = true
-    if (layers && layers.filter(l => (l.type === 'overpass' || l.type === 'wikipedia') && l.show !== false).length) { dom.animateElement('#layer-reload', 'fade-in') }
+    if (layers && layers.filter(l => l.reloadAfterMapMove() === 'ondemand' && l.show !== false).length) {
+      dom.animateElement('#layer-reload', 'fade-in')
+    }
   })
   map.on('zoom', (_e) => { limitZoom() })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })

@@ -5,7 +5,7 @@ Mapforge enables you to add custom data layers from OpenStreetMap using **Overpa
 Overpass layers get loaded for the currently visible view of the map. When the map gets moved or zoomed, a reload button appears to fetch data for the new area.
 
 ![Overpass example](https://mapforge.org/images/tutorials/overpass1.png)
-*(Screenshot from hiking routes map, see [source map](https://mapforge.org/m/1181b6f0/Hiking%20routes) )*
+*(Screenshot from hiking routes map, see [source map](https://mapforge.org/m/cd2b8bd930fe/Hiking%20routes) )*
 
 
 ### Pre-defined Overpass layers
@@ -25,11 +25,13 @@ There are prepared queries to cover common mapping needs for example for public 
 Overpass queries are defined in [Overpass QL](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) (short for "Overpass Query Language").
 This powerful language lets you query any data available in OpenStreetMap. You can browse the [official tags list](https://wiki.openstreetmap.org/wiki/Map_features), [taginfo.openstreetmap.org](https://taginfo.openstreetmap.org/), or the 'Query Features' option on [openstreetmap.org](https://openstreetmap.org) to discover interesting tags to create queries for and include in your map.
 
-A simple overpass query for showing all beehives on the current map would look like:
+A simple overpass query for showing all beehives on the current map view would look like:
 
 `// marker-symbol=🍯`
 `nwr["man_made"="beehive"];`
 `out center;`
+
+To load for a specific area and not the current map view, add a bbox tag in the frst line, like: `[bbox:49.3148,10.4681,49.5827,11.6801];`
 
 You can enhance your layers with visual customization, for example setting symbols or icons for clusters and markers. This can be achieved by adding one or more of these settings as comments to the query:
 
