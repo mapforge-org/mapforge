@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { mapChannel } from 'channels/map_channel'
+import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
@@ -28,6 +29,23 @@ export default class extends Controller {
   }
 
   connect () {
+    this.setupCoordinateCopyHandlers()
+  }
+
+  setupCoordinateCopyHandlers () {
+    const coordinateElements = ['#map-center', '#map-center-current']
+    coordinateElements.forEach(selector => {
+      const element = document.querySelector(selector)
+      if (element) {
+        element.style.cursor = 'pointer'
+        element.addEventListener('click', (event) => {
+          const text = event.target.textContent
+          if (text && text !== 'auto') {
+            copyToClipboard(text, 'Coordinates copied to clipboard')
+          }
+        })
+      }
+    })
   }
 
   mapNameValueChanged (value, _previousValue) {
