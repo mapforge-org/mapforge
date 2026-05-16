@@ -114,7 +114,8 @@ In the "Share" panel, you can decide to share your track publicly in the Mapforg
 
 There are quite some apps that can be used in combination with Mapforge for optimal results in planning your bike trip:
 
-* [mapshaper.org](https://mapshaper.org/) (simplify gpx track before import)
+* [gpx-simplify-optimizer](https://opengeo.tech/gpx-simplify-optimizer/) (simplify gpx track before import)
+* [mapshaper.org](https://mapshaper.org/) (another gpx simplifier)
 * [komoot gpx merge tool](https://www.komoot.com/de-de/gpx-merge-tool-online) (merge and repair gpx tracks)
 * [cyclosm.org](https://www.cyclosm.org) (base map, also available on mapforge)
 * [opencyclemap.org](https://www.opencyclemap.org/) (another bicycle base map, from thunderforest.com)

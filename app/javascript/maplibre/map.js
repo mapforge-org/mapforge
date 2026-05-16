@@ -120,6 +120,11 @@ export async function initializeMap (divId = 'maplibre-map') {
     if (!functions.isTestEnvironment()) { map.easeTo({ zoom: map.getZoom() + 1, duration: 1000 })} // zoom in to configured zoom level
     console.log("Map loaded ('load')")
 
+    // Set idle marker for screenshot task — fires after all animations complete and tiles load
+    map.once('idle', () => {
+      functions.e('.map', e => { e.setAttribute('data-map-idle', true) })
+    })
+
     const urlFeatureAnimateId = new URLSearchParams(window.location.search).get('a')
     if (urlFeatureAnimateId && (feature = getFeature(urlFeatureAnimateId))) {
       console.log('Animating ' + feature.id)

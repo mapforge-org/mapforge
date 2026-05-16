@@ -6,7 +6,7 @@ namespace :maps do
     Map.each do |map|
       last_update = File.mtime(map.screenshot_file) if File.exist?(map.screenshot_file)
       # Scheduled job is running each 10 minutes
-      next if File.exist?(map.screenshot_file) && map.updated_at < last_update - 5.minutes
+      next if File.exist?(map.screenshot_file) && map.updated_at < last_update + 5.minutes
 
       puts "Skipping personal map (#{map.public_id}, #{map.name})"
       next if map.edit_permission == "private"
@@ -40,6 +40,7 @@ namespace :maps do
         page.goto(map_url, wait_until: "networkidle0")
         page.wait_for_selector("#maplibre-map[data-map-loaded='true']", timeout: 45000)
         page.wait_for_selector("#maplibre-map[data-geojson-loaded='true']", timeout: 30000)
+        page.wait_for_selector("#maplibre-map[data-map-idle='true']", timeout: 30000)
 
         unless failure
           page.screenshot(path: map.screenshot_file, quality: 100)
