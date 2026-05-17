@@ -181,7 +181,6 @@ export async function initializeMap (divId = 'maplibre-map') {
           preventDefault: () => {}
         })
         map.longPressTriggered = true
-        setTimeout(() => { map.longPressTriggered = false }, 100)
         cancelLongPress()
       }, 500)
     })
@@ -193,7 +192,10 @@ export async function initializeMap (divId = 'maplibre-map') {
       if (dx > 10 || dy > 10) cancelLongPress()
     })
 
-    map.on('touchend', cancelLongPress)
+    map.on('touchend', () => {
+      cancelLongPress()
+      setTimeout(() => { map.longPressTriggered = false }, 0)
+    })
   }
 
   // map.on('error', (err) => {
