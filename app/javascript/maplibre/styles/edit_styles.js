@@ -26,6 +26,7 @@ export function initializeEditStyles() {
       // console.log(features)
       // Only show actions for the first vertex found under cursor
       let vertexHandled = false
+      let lineHandled = false
       for (const f of features) {
         // on right-click layer id is .cold, on touch it's .hot
         if (!vertexHandled && (f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.cold' ||
@@ -34,15 +35,16 @@ export function initializeEditStyles() {
           addLineVertexMenuItems(f)
           vertexHandled = true
         }
-        if (f.layer.id.startsWith('line-layer-hit_geojson')){
+        if (!lineHandled && f.layer.id.startsWith('line-layer-hit_geojson')){
           addLineMenuItems(f)
+          lineHandled = true
         }
       }
     }
 
     for (const f of features) {
       if (f.properties.id && f.layer.id.includes('_geojson-source-')) {
-        addCopyMenuItem(f.properties.id)
+        addCopyMenuItem(f.properties.id, f.geometry.type)
         highlightFeature(f)
         break
       }

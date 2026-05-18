@@ -4,6 +4,7 @@ import { getFeature } from 'maplibre/layers/layers'
 export function initContextMenu(e) {
   functions.e('#map-context-menu', el => {
     el.innerHTML = ''
+    el.classList.add('hidden')
     // Position the context menu
     el.style.left = `${e.point.x}px`
     el.style.top = `${e.point.y}px`
@@ -75,13 +76,13 @@ export function addLineMenuItems(f) {
 /**
  * Add 'Copy' option for any geojson feature
  */
-export function addCopyMenuItem(featureId) {
+export function addCopyMenuItem(featureId, geometryType = null) {
   functions.e('#map-context-menu', el => {
     el.classList.remove('hidden')
 
     const copyButton = document.createElement('div')
     copyButton.classList.add('context-menu-item')
-    copyButton.innerText = 'Copy'
+    copyButton.innerText = geometryType ? `Copy ${geometryType}` : 'Copy'
     copyButton.dataset.action = 'click->map--context-menu#copyFeature'
     copyButton.dataset.featureId = featureId
     el.appendChild(copyButton)
