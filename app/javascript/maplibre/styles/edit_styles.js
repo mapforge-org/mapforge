@@ -1,6 +1,7 @@
 
-import { addLineMenuItems, addLineVertexMenuItems } from 'maplibre/controls/context_menu'
+import { addCopyMenuItem, addLineMenuItems, addLineVertexMenuItems } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
+import { highlightFeature } from 'maplibre/feature'
 import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
 
 // started from https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
@@ -19,22 +20,31 @@ const vertexSize = 6
 export function initializeEditStyles() {
   map.on('contextmenu', (e) => {
     e.preventDefault()
-    if (draw.getMode() === 'simple_select') { return }
-
     const features = map.queryRenderedFeatures(e.point)
-    // console.log(features)
-    // Only show actions for the first vertex found under cursor
-    let vertexHandled = false
-    for (const f of features) {
-      // on right-click layer id is .cold, on touch it's .hot
-      if (!vertexHandled && (f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.cold' ||
-        f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.hot')
-      ) {
-        addLineVertexMenuItems(f)
-        vertexHandled = true
+
+    if (draw.getMode() !== 'simple_select') {
+      // console.log(features)
+      // Only show actions for the first vertex found under cursor
+      let vertexHandled = false
+      for (const f of features) {
+        // on right-click layer id is .cold, on touch it's .hot
+        if (!vertexHandled && (f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.cold' ||
+          f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.hot')
+        ) {
+          addLineVertexMenuItems(f)
+          vertexHandled = true
+        }
+        if (f.layer.id.startsWith('line-layer-hit_geojson')){
+          addLineMenuItems(f)
+        }
       }
-      if (f.layer.id.startsWith('line-layer-hit_geojson')){
-        addLineMenuItems(f)
+    }
+
+    for (const f of features) {
+      if (f.properties.id && f.layer.id.includes('_geojson-source-')) {
+        addCopyMenuItem(f.properties.id)
+        highlightFeature(f)
+        break
       }
     }
   })

@@ -316,7 +316,7 @@ async function handleUpdate (e) {
     feature = await getRouteUpdate(geojsonFeature, feature)
   }
 
-  status('Feature ' + feature.id + ' changed')
+  // status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry
   renderLayers('geojson', false)
 

@@ -453,7 +453,7 @@ function updateFeature (feature, updatedFeature) {
 
   feature.geometry = updatedFeature.geometry
   feature.properties = updatedFeature.properties
-  status('Updated feature ' + updatedFeature.id)
+  status('Updated feature \'' + feature.properties.title || feature.id + '\'')
   renderLayers('geojson')
 }
 

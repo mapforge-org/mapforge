@@ -298,7 +298,7 @@ export default class extends Controller {
 
   saveFeature () {
     const feature = this.getEditFeature()
-    status('Saving feature ' + feature.id)
+    // status('Saving feature \'' + feature.properties.title + '\'')
     // send shallow copy of feature to avoid changes during send
     mapChannel.send_message('update_feature', { ...feature })
   }

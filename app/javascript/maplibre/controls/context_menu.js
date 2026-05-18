@@ -71,3 +71,19 @@ export function addLineMenuItems(f) {
     el.appendChild(reverseButton)
   })
 }
+
+/**
+ * Add 'Copy' option for any geojson feature
+ */
+export function addCopyMenuItem(featureId) {
+  functions.e('#map-context-menu', el => {
+    el.classList.remove('hidden')
+
+    const copyButton = document.createElement('div')
+    copyButton.classList.add('context-menu-item')
+    copyButton.innerText = 'Copy'
+    copyButton.dataset.action = 'click->map--context-menu#copyFeature'
+    copyButton.dataset.featureId = featureId
+    el.appendChild(copyButton)
+  })
+}

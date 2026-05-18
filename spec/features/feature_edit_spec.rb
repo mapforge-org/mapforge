@@ -318,6 +318,14 @@ describe "Feature edit" do
         wait_for { point.reload.properties["marker-symbol"] }.to match("👍")
       end
     end
+
+    it "can copy feature via context menu" do
+      click_coord("#maplibre-map", 512, 430, button: :right)
+      expect(page).to have_text("Copy")
+      find(".context-menu-item", text: "Copy").click
+      expect(page).to have_text("Feature copied to clipboard")
+      expect(page).to have_text("Details")
+    end
   end
 
   context "with cursor sharing" do

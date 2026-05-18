@@ -270,7 +270,9 @@ export function resetHighlightedFeature () {
 
 export function highlightFeature (feature, sticky = false, source) {
   // Only reset if there's a different feature currently highlighted
+  if (highlightedFeatureId === feature.id) { return }
   if (highlightedFeatureId && highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
+
   // console.log('highlight', feature)
   if (!source) { source = getFeatureSource(feature.id) }
   stickyFeatureHighlight = sticky

@@ -66,6 +66,7 @@ export function loadLayerDefinitions() {
     })
     .catch(error => {
       console.error('Failed to fetch map layers:', error)
+      throw error
     })
 }
 
@@ -79,6 +80,10 @@ export function loadLayerDefinitions() {
  * @param {string|null} id - Optional layer ID to initialize only that layer's source
  */
 export function initializeLayerSources(id = null) {
+  if (!layers) {
+    console.warn('initializeLayerSources called but layers not loaded yet')
+    return
+  }
   let initLayers = layers
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 

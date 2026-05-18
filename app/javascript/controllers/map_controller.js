@@ -1,12 +1,18 @@
 import { Controller } from '@hotwired/stimulus'
-import * as functions from 'helpers/functions'
-import { initializeMap, setBackgroundMapLayer, initializeViewMode,
-  initializeStaticMode, addFeature } from 'maplibre/map'
-import { initializeEditMode } from 'maplibre/edit'
 import { initializeSocket, mapChannel } from 'channels/map_channel'
-import { addUndoState, clearUndoHistory } from 'maplibre/undo'
+import * as functions from 'helpers/functions'
+import { status } from 'helpers/status'
+import { initializeEditMode } from 'maplibre/edit'
 import { resetInitializationState } from 'maplibre/layers/layers'
+import {
+  addFeature,
+  initializeMap,
+  initializeStaticMode,
+  initializeViewMode,
+  setBackgroundMapLayer
+} from 'maplibre/map'
 import { clearImageState, resetLabelFont } from 'maplibre/styles/styles'
+import { addUndoState, clearUndoHistory } from 'maplibre/undo'
 
 export default class extends Controller {
   async connect () {
@@ -51,9 +57,15 @@ export default class extends Controller {
 
   // paste feature from clipboard
   async paste(_event) {
-    
+
     if (functions.isFormFieldFocused()) { return }
     if (window.gon.map_mode !== 'rw') { return }
+
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+      status('Clipboard paste requires HTTPS or localhost', 'warning')
+      return
+    }
+
     try {
       const text = await navigator.clipboard.readText()
       const feature = JSON.parse(text)  // just to verify it's valid JSON
@@ -66,5 +78,5 @@ export default class extends Controller {
     } catch (err) {
       console.warn("Failed to read clipboard:", err)
     }
-  } 
+  }
 }
