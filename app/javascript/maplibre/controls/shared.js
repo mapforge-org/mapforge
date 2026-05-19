@@ -483,8 +483,8 @@ function initializeFeatureTouchScroll() {
     if (window.innerWidth > 574 && window.innerHeight >= 390) return
 
     const isFullyExpanded = modal.offsetHeight >= window.innerHeight - 20
-    // Allow form elements to work normally when modal is fully expanded
-    if (dom.isInputElement(event.target) && isFullyExpanded) return
+    // Allow form elements to work normally
+    if (dom.isInputElement(event.target)) return
 
     isDragging = true
     dragStartY = event.clientY || event.touches[0].clientY

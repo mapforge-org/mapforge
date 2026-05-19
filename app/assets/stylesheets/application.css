@@ -107,6 +107,11 @@ a:active, .link:active {
     user-select: text;
     -webkit-touch-callout: default;
   }
+
+  .EasyMDEContainer .CodeMirror {
+    user-select: text;
+    -webkit-touch-callout: default;
+  }
 }
 
 

@@ -72,5 +72,5 @@ export function scrollToId(elementId) {
 }
 
 export function isInputElement(target) {
-  return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT'
+  return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable
 }
