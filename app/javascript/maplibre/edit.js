@@ -3,6 +3,7 @@ import { mapChannel } from 'channels/map_channel';
 import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep-equal
 import * as functions from 'helpers/functions';
 import { hideInfoStatus, status } from 'helpers/status';
+import { hideContextMenu } from 'maplibre/controls/context_menu';
 import { disableEditControls, enableEditControls, initializeEditControls } from 'maplibre/controls/edit';
 import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
@@ -35,7 +36,22 @@ export async function initializeEditMode () {
   const DirectSelectMode = { ...MapboxDraw.modes.direct_select }
   DirectSelectMode.dragFeature = function (_state, _e, _delta) { /* noop */ }
 
-  const DirectionsMode = { ...MapboxDraw.modes.simple_select }
+  // Hide context menu when dragging vertices
+  const originalDragVertex = DirectSelectMode.dragVertex
+  DirectSelectMode.dragVertex = function (state, e, delta) {
+    hideContextMenu()
+    return originalDragVertex.call(this, state, e, delta)
+  }
+
+  // Patch simple select mode to hide context menu when dragging points
+  const SimpleSelectMode = { ...MapboxDraw.modes.simple_select }
+  const originalStartOnActiveFeature = SimpleSelectMode.startOnActiveFeature
+  SimpleSelectMode.startOnActiveFeature = function (state, e) {
+    hideContextMenu()
+    return originalStartOnActiveFeature.call(this, state, e)
+  }
+
+  const DirectionsMode = { ...SimpleSelectMode }
   DirectionsMode.onClick = function (_state, _e, _delta) { /* noop */ }
   const DirectionsCarMode = { ...DirectionsMode }
   const DirectionsBikeMode = { ...DirectionsMode }
@@ -47,6 +63,7 @@ export async function initializeEditMode () {
 
   const modes = {
     ...MapboxDraw.modes,
+    simple_select: SimpleSelectMode,
     directions_car: DirectionsCarMode,
     directions_bike: DirectionsBikeMode,
     directions_foot: DirectionsFootMode,
