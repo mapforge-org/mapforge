@@ -109,7 +109,7 @@ export class OverpassLayer extends Layer {
     })
     .catch(error => {
       console.error('Failed to fetch overpass for ' + this.id, this.layer.query, error.message)
-      // return if layer is gone(likely page change)
+      // return if layer is gone (likely page change)
       if (!layers || !layers.includes(this)) { return }
       status('Failed to load layer ' + this.layer.name, 'error')
       // Set empty geojson so layer can still render
