@@ -257,6 +257,7 @@ export class Layer {
    * Called before re-initialization and during cleanup.
    */
   removeEventHandlers() {
+    if (!map || !map.getStyle()) { return }
     if (this.clickHandler) {
       map.off('click', this.getStyleLayerIds(), this.clickHandler)
       this.clickHandler = null

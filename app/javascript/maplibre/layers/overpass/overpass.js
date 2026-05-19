@@ -1,6 +1,7 @@
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { Layer } from 'maplibre/layers/layer'
+import { layers } from 'maplibre/layers/layers'
 import { applyOverpassQueryStyle } from 'maplibre/layers/overpass/queries'
 import { map } from 'maplibre/map'
 import { initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
@@ -108,6 +109,8 @@ export class OverpassLayer extends Layer {
     })
     .catch(error => {
       console.error('Failed to fetch overpass for ' + this.id, this.layer.query, error.message)
+      // return if layer is gone(likely page change)
+      if (!layers || !layers.includes(this)) { return }
       status('Failed to load layer ' + this.layer.name, 'error')
       // Set empty geojson so layer can still render
       this.layer.geojson = { type: 'FeatureCollection', features: [] }

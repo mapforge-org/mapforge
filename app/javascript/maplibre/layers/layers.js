@@ -12,6 +12,9 @@ let initializePromise = null
  * This allows layers to be re-initialized from scratch.
  */
 export function resetInitializationState() {
+  if (layers) {
+    layers.forEach(layer => layer.cleanup())
+  }
   initializePromise = null
   layers = null
 }
