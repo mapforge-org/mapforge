@@ -41,6 +41,10 @@ export class RasterLayer extends Layer {
 
     if (this.isWaymarkedtrails) {
       sourceConfig.attribution = 'Map overlay &copy; <a href="https://waymarkedtrails.org" target="_blank">Waymarked Trails</a>'
+    } else if (this.query.includes('bayernwolke') || this.query.includes('bayernatlas')) {
+      sourceConfig.attribution = '© Daten: Bayerische Vermessungsverwaltung, Bundesamt für Kartographie und Geodäsie'
+    } else if (this.query.includes('google.com')) {
+      sourceConfig.attribution = 'Traffic data © Google'
     }
 
     map.addSource(this.sourceId, sourceConfig)
