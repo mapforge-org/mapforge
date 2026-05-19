@@ -482,7 +482,6 @@ function initializeFeatureTouchScroll() {
     // only enable bottom sheet behavior on small or short screens
     if (window.innerWidth > 574 && window.innerHeight >= 390) return
 
-    const isFullyExpanded = modal.offsetHeight >= window.innerHeight - 20
     // Allow form elements to work normally
     if (dom.isInputElement(event.target)) return
 

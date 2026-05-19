@@ -108,7 +108,7 @@ a:active, .link:active {
     -webkit-touch-callout: default;
   }
 
-  .EasyMDEContainer .CodeMirror {
+  .EasyMDEContainer .CodeMirror { /* stylelint-disable-line selector-class-pattern */
     user-select: text;
     -webkit-touch-callout: default;
   }
