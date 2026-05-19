@@ -81,6 +81,10 @@ export class MapShareControl {
         if (draw) { resetEditControls() }
         e.target.closest('button').classList.add('active')
         modal.classList.add('show')
+        const galleryToggle = document.querySelector('#map-gallery-toggle')
+        if (galleryToggle) {
+          galleryToggle.checked = mapProperties['view_permission'] === 'listed'
+        }
         window.history.pushState({ modal: 'share' }, '', `${window.location.pathname}#share`)
       }
     }
