@@ -282,10 +282,10 @@ export default class extends Controller {
     }
     // show/hide refresh and edit buttons based on visibility
     const hideAction = layer.show ? 'remove' : 'add'
-    if (layer.type !== 'geojson') {
+    if (layer.type === 'overpass' || layer.type === 'wikipedia') {
       layerElement.querySelectorAll('button.layer-refresh, button.layer-refresh-mobile').forEach(btn => btn.classList[hideAction]('hidden'))
     }
-    if (layer.type === 'overpass' && window.gon.map_mode === 'rw') {
+    if ((layer.type === 'overpass' || layer.type === 'raster') && window.gon.map_mode === 'rw') {
       layerElement.querySelectorAll('button.layer-edit, button.layer-edit-mobile').forEach(btn => btn.classList[hideAction]('hidden'))
     }
     if (layer.show) {
