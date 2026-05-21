@@ -18,7 +18,7 @@ pin_all_from "app/javascript/helpers", under: "helpers", preload: false
 pin "deck", preload: false
 
 # vendor
-# examples: https://generator.jspm.io/
+# examples: https://generator.jspm.io/ or https://esm.sh
 
 # https://github.com/piraveenankirupakaran/mapbox-gl-draw-paint-mode
 # free hand draw; local download because of removal of css import, latest git version, feature id generation

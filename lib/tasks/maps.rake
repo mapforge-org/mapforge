@@ -6,10 +6,12 @@ namespace :maps do
     Map.each do |map|
       last_update = File.mtime(map.screenshot_file) if File.exist?(map.screenshot_file)
       # Scheduled job is running each 10 minutes
-      next if File.exist?(map.screenshot_file) && map.updated_at < last_update + 5.minutes
+      next if File.exist?(map.screenshot_file) && map.updated_at <= last_update
 
-      puts "Skipping personal map (#{map.public_id}, #{map.name})"
-      next if map.edit_permission == "private"
+      if map.edit_permission == "private"
+        puts "Skipping personal map (#{map.public_id}, #{map.name})"
+        next
+      end
       puts "Updating map (#{map.public_id}, #{map.name}) updated #{map.updated_at}, last screenshot from #{last_update || "n/a"}"
 
       # https://github.com/YusukeIwaki/puppeteer-ruby
