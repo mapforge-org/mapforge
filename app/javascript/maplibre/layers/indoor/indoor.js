@@ -1,0 +1,165 @@
+import { Layer } from 'maplibre/layers/layer'
+import { map, removeStyleLayers } from 'maplibre/map'
+import { IndoorLevelControl } from 'maplibre/layers/indoor/control'
+import { addIndoorLayers, getIndoorLayerIds } from 'maplibre/layers/indoor/styles'
+
+export class IndoorLayer extends Layer {
+  constructor(layer) {
+    super(layer)
+    this.currentLevel = '0'
+    this.levels = []
+    this.levelControl = null
+    this.moveEndHandler = null
+  }
+
+  createSource() {
+    const apiKey = window.gon?.map_keys?.indoorequal
+    if (!apiKey) {
+      console.warn('Indoor Equal API key not found in window.gon.map_keys.indoorequal')
+      return
+    }
+
+    if (map.getSource(this.sourceId)) {
+      console.log('Indoor layer: source ' + this.sourceId + ' already exists, skipping add')
+      return
+    }
+
+    console.log('Indoor layer: creating source with API key')
+    map.addSource(this.sourceId, {
+      type: 'vector',
+      tiles: [`https://tiles.indoorequal.org/tiles/{z}/{x}/{y}.pbf?key=${apiKey}`],
+      minzoom: 0,
+      maxzoom: 20,
+      attribution: '© <a href="https://indoorequal.org/" target="_blank">Indoor Equal</a>'
+    })
+  }
+
+  initialize() {
+    console.log('Indoor layer: initializing with level', this.currentLevel)
+    removeStyleLayers(this.sourceId)
+    this.removeLevelControl()
+
+    const levelFilter = ['==', ['get', 'level'], this.currentLevel]
+    addIndoorLayers(this.sourceId, levelFilter)
+
+    this.setupLevelDetection()
+
+    return Promise.resolve()
+  }
+
+  loadData() {
+    return Promise.resolve()
+  }
+
+  render() {
+    // No-op - vector tiles render automatically
+  }
+
+  setupEventHandlers() {
+    // No-op - indoor features are not selectable like GeoJSON features
+  }
+
+  setLevel(level) {
+    if (this.currentLevel === level) return
+
+    this.currentLevel = level
+    const levelFilter = ['==', ['get', 'level'], level]
+
+    const layerIds = getIndoorLayerIds(this.sourceId)
+
+    layerIds.forEach(layerId => {
+      if (map.getLayer(layerId)) {
+        map.setFilter(layerId, levelFilter)
+      }
+    })
+
+    this.updateLevelControlUI()
+  }
+
+  setupLevelDetection() {
+    this.moveEndHandler = () => {
+      if (!this.show) return
+      if (!map.getSource(this.sourceId)) return
+
+      // Query source features directly to get ALL levels, not just currently filtered ones
+      const sourceLayers = ['area']
+      const levelSet = new Set()
+
+      sourceLayers.forEach(sourceLayer => {
+        try {
+          const features = map.querySourceFeatures(this.sourceId, {
+            sourceLayer: sourceLayer
+          })
+
+          features.forEach(feature => {
+            const level = feature.properties?.level
+            if (level !== undefined && level !== null) {
+              levelSet.add(String(level))
+            }
+          })
+        } catch (e) {
+          // Source might not be loaded yet
+          console.log('Indoor layer: source not ready for querying', e.message)
+        }
+      })
+
+      const newLevels = Array.from(levelSet).sort((a, b) => {
+        const numA = parseFloat(a)
+        const numB = parseFloat(b)
+        return numB - numA
+      })
+
+      if (JSON.stringify(newLevels) !== JSON.stringify(this.levels)) {
+        this.levels = newLevels
+        console.log('Indoor layer: detected levels', newLevels)
+        this.updateLevelControl()
+      }
+    }
+
+    map.on('moveend', this.moveEndHandler)
+    map.on('idle', this.moveEndHandler)
+    map.on('sourcedata', this.moveEndHandler)
+    setTimeout(() => this.moveEndHandler(), 1000)
+  }
+
+  updateLevelControl() {
+    if (this.levels.length > 0) {
+      if (!this.levelControl) {
+        this.createLevelControl()
+      }
+      this.updateLevelControlUI()
+    } else {
+      this.removeLevelControl()
+    }
+  }
+
+  createLevelControl() {
+    this.levelControl = new IndoorLevelControl(this.id, (level) => {
+      this.setLevel(level)
+    })
+    this.levelControl.create()
+  }
+
+  updateLevelControlUI() {
+    if (!this.levelControl) return
+    this.levelControl.update(this.levels, this.currentLevel)
+  }
+
+  removeLevelControl() {
+    if (this.levelControl) {
+      this.levelControl.remove()
+      this.levelControl = null
+    }
+  }
+
+  cleanup() {
+    if (this.moveEndHandler) {
+      map.off('moveend', this.moveEndHandler)
+      map.off('idle', this.moveEndHandler)
+      map.off('sourcedata', this.moveEndHandler)
+      this.moveEndHandler = null
+    }
+    this.removeLevelControl()
+    super.cleanup()
+  }
+}

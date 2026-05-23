@@ -83,7 +83,7 @@ export async function initializeEditMode () {
     },
     styles: editStyles(),
     clickBuffer: 5,
-    touchBuffer: 25, // default 25
+    touchBuffer: 20, // default 25
     // user properties are available, prefixed with 'user_'
     userProperties: true,
     modes

@@ -1,5 +1,6 @@
 import { BasemapLayer } from 'maplibre/layers/basemap'
 import { GeoJSONLayer } from 'maplibre/layers/geojson'
+import { IndoorLayer } from 'maplibre/layers/indoor/indoor'
 import { Layer } from 'maplibre/layers/layer'
 import { OverpassLayer } from 'maplibre/layers/overpass/overpass'
 import { RasterLayer } from 'maplibre/layers/raster/raster'
@@ -10,7 +11,8 @@ const layerTypes = {
   overpass: OverpassLayer,
   wikipedia: WikipediaLayer,
   basemap: BasemapLayer,
-  raster: RasterLayer
+  raster: RasterLayer,
+  indoor: IndoorLayer
 }
 
 export function createLayerInstance(data) {
