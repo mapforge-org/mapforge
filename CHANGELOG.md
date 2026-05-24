@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 * Switched headline font to "Bree Serif"
 * Enhanced waymarkedtrails.org integration:
   Select and copy trails to your map
+* Add indoor layer (vector data from [indoorequal](https://indoorequal.org/))
 
 ## 2026-04
 
@@ -16,7 +17,6 @@ All notable changes to this project will be documented in this file.
 * Allow to color code routes by steepness + surface
 * Option to convert gpx tracks into routes
 * New layer type 'raster' with waymarkedtrails.org examples
-* Switched headline font to "Bree Serif"
 
 ## 2026-03
 
