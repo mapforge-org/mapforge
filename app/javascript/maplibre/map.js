@@ -539,8 +539,8 @@ export function sortLayers () {
   const layers = map.getStyle().layers
 
   // increase opacity of 3D houses
-  if (map.getLayer('Building 3D')) {
-    map.setPaintProperty('Building 3D', 'fill-extrusion-opacity', 0.8)
+  if (map.getLayer('building-3d')) { // name in openfreemapLiberty
+    map.setPaintProperty('building-3d', 'fill-extrusion-opacity', 0.6)
   }
 
   // Each entry is a layer group; groups are listed bottom-to-top. mapSymbols
@@ -555,7 +555,8 @@ export function sortLayers () {
     layers.filter(e => e.id.startsWith('line-layer_geojson-source') && !e.id.includes('outline')),
     layers.filter(e => e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')),
     layers.filter(e => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion')),
-    layers.filter(e => e.paint && e.paint['fill-extrusion-height'] && !e.id.startsWith('polygon-layer-extrusion')),
+    layers.filter(e => e.id.startsWith('indoor-area-extrusion_')),
+    layers.filter(e => e.paint && e.paint['fill-extrusion-height'] && !e.id.startsWith('polygon-layer-extrusion') && !e.id.startsWith('indoor-area-extrusion_')),
     layers.filter(e => e.id.startsWith('maplibre-gl-directions')),
     layers.filter(e => e.type === 'symbol' &&
       !e.id.startsWith('symbols-layer') && !e.id.startsWith('symbols-border-layer') &&
@@ -577,6 +578,7 @@ export function sortLayers () {
   groups.forEach(group => {
     group.forEach(layer => { if (map.getLayer(layer.id)) map.moveLayer(layer.id) })
   })
+  // console.log('Sorted layers: ', map.getStyle().layers)
 }
 
 export function updateMapName (name) {

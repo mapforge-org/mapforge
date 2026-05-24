@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 * Switched headline font to "Bree Serif"
 * Enhanced waymarkedtrails.org integration:
   Select and copy trails to your map
-* Add indoor layer (vector data from [indoorequal](https://indoorequal.org/))
+* Added indoor layer (vector data from [indoorequal](https://indoorequal.org/))
 
 ## 2026-04
 

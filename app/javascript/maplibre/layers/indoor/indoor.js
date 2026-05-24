@@ -1,7 +1,8 @@
-import { Layer } from 'maplibre/layers/layer'
-import { map, removeStyleLayers } from 'maplibre/map'
+import { debounce } from 'helpers/functions'
 import { IndoorLevelControl } from 'maplibre/layers/indoor/control'
 import { addIndoorLayers, getIndoorLayerIds } from 'maplibre/layers/indoor/styles'
+import { Layer } from 'maplibre/layers/layer'
+import { map, removeStyleLayers } from 'maplibre/map'
 
 export class IndoorLayer extends Layer {
   constructor(layer) {
@@ -103,40 +104,44 @@ export class IndoorLayer extends Layer {
   setupLevelDetection() {
     this.removeLevelDetection()
 
+    if (this.show === false) return
     if (!map.getSource(this.sourceId)) return
 
     this.idleHandler = () => {
-      // Query source features directly to get ALL levels, not just currently filtered ones
-      const levelSet = new Set()
+      debounce(() => {
+        // Query source features directly to get ALL levels, not just currently filtered ones
+        const levelSet = new Set()
 
-      try {
-        const features = map.querySourceFeatures(this.sourceId, {
-          sourceLayer: 'area'
-        })
+        try {
+          const features = map.querySourceFeatures(this.sourceId, {
+            sourceLayer: 'area'
+          })
+          // console.log(`${features.length} indoor features in current view`)
 
-        features.forEach(feature => {
-          const level = feature.properties?.level
-          if (level !== undefined && level !== null) {
-            levelSet.add(String(level))
-          }
-        })
-      } catch (e) {
-        // Source might not be loaded yet
-        console.log('Indoor layer: source not ready for querying', e.message)
-        return
-      }
+          features.forEach(feature => {
+            const level = feature.properties?.level
+            if (level !== undefined && level !== null) {
+              levelSet.add(String(level))
+            }
+          })
+        } catch (e) {
+          // Source might not be loaded yet
+          console.log('Indoor layer: source not ready for querying', e.message)
+          return
+        }
 
-      const newLevels = Array.from(levelSet).sort((a, b) => parseFloat(b) - parseFloat(a))
+        const newLevels = Array.from(levelSet).sort((a, b) => parseFloat(b) - parseFloat(a))
 
-      if (JSON.stringify(newLevels) !== JSON.stringify(this.levels)) {
-        this.levels = newLevels
-        console.log('Indoor layer: detected levels', newLevels)
-        this.updateLevelControl()
-      }
+        if (JSON.stringify(newLevels) !== JSON.stringify(this.levels)) {
+          this.levels = newLevels
+          // console.log('Indoor layer: detected levels', newLevels)
+          this.updateLevelControl()
+        }
+      }, `indoor-level-${this.id}`, 500)
     }
 
     map.on('idle', this.idleHandler)
-    this.initialTimeout = setTimeout(() => this.idleHandler(), 1000)
+    this.initialTimeout = setTimeout(() => this.idleHandler(), 500)
   }
 
   removeLevelDetection() {
