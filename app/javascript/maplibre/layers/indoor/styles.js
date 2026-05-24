@@ -12,7 +12,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     type: 'fill',
     source: sourceId,
     'source-layer': 'area',
-    minzoom: 17,
+    minzoom: 16,
     filter: levelFilter,
     paint: {
       'fill-color': [
@@ -29,11 +29,26 @@ export function addIndoorLayers(sourceId, levelFilter) {
   })
 
   map.addLayer({
+    id: `indoor-area-extrusion_${sourceId}`,
+    type: 'fill-extrusion',
+    source: sourceId,
+    'source-layer': 'area',
+    minzoom: 16,
+    filter: levelFilter,
+    paint: {
+      'fill-extrusion-color': '#fdbe87',
+      'fill-extrusion-height': ['+', ['*', ['to-number', ['get', 'level']], 5], 5],
+      'fill-extrusion-base': ['*', ['to-number', ['get', 'level']], 5],
+      'fill-extrusion-opacity': 0.8
+    }
+  })
+
+  map.addLayer({
     id: `indoor-area-line_${sourceId}`,
     type: 'line',
     source: sourceId,
     'source-layer': 'area',
-    minzoom: 17,
+    minzoom: 16,
     filter: levelFilter,
     paint: {
       'line-color': '#000',
@@ -51,32 +66,12 @@ export function addIndoorLayers(sourceId, levelFilter) {
     type: 'line',
     source: sourceId,
     'source-layer': 'transportation',
-    minzoom: 17,
+    minzoom: 16,
     filter: levelFilter,
     paint: {
       'line-color': '#999',
       'line-width': 2,
       'line-dasharray': [2, 2]
-    }
-  })
-
-  map.addLayer({
-    id: `indoor-area-label_${sourceId}`,
-    type: 'symbol',
-    source: sourceId,
-    'source-layer': 'area_name',
-    minzoom: 18,
-    filter: levelFilter,
-    layout: {
-      'text-field': ['coalesce', ['get', 'name'], ['get', 'ref']],
-      'text-font': ['Noto Sans Regular'],
-      'text-size': 10,
-      'text-max-width': 10
-    },
-    paint: {
-      'text-color': '#666',
-      'text-halo-color': '#fff',
-      'text-halo-width': 1
     }
   })
 }
@@ -89,6 +84,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
 export function getIndoorLayerIds(sourceId) {
   return [
     `indoor-area-fill_${sourceId}`,
+    `indoor-area-extrusion_${sourceId}`,
     `indoor-area-line_${sourceId}`,
     `indoor-transportation_${sourceId}`,
     `indoor-area-label_${sourceId}`
