@@ -9,6 +9,7 @@ let userHasZoomed = false
 let hasFoundFirstPosition = false
 let lastHeading = null
 let lastAppliedHeading = null
+let lastCenter = null
 let geolocateControl = null
 // Cache DOM element — querySelector in a 20 Hz loop is wasteful
 let cachedDot = null
@@ -51,6 +52,7 @@ export function initializeGeoLocateControl() {
     const coords = position.coords
     console.log('geolocate event', coords)
     if (coords) {
+      lastCenter = [coords.longitude, coords.latitude]
       if (!hasFoundFirstPosition && isInFollowMode) {
         hasFoundFirstPosition = true
         status('Following position', 'info')
@@ -116,6 +118,7 @@ export function initializeGeoLocateControl() {
     // only fully clean up when tracking is completely turned off
     if (geolocate._watchState === 'OFF') {
       cachedDot = null
+      lastCenter = null
       if (orientationListener && orientationEventName) {
         window.removeEventListener(orientationEventName, orientationListener)
         orientationListener = null
@@ -300,7 +303,9 @@ function setLocationOrientation(event) {
     if (lastAppliedHeading !== null && Math.abs(lastHeading - lastAppliedHeading) < 1) return
     lastAppliedHeading = lastHeading
     // geolocateSource flag prevents GeolocateControl from exiting ACTIVE_LOCK on movestart
-    map.easeTo({ bearing: -lastHeading, duration: 100 }, { geolocateSource: true })
+    const easeOptions = { bearing: -lastHeading, duration: 100 }
+    if (lastCenter) easeOptions.center = lastCenter
+    map.easeTo(easeOptions, { geolocateSource: true })
     // Cone points upward in compass mode since the map itself is rotated
     dot.style.setProperty('--user-dot-rotation', 'rotate(0deg)')
   } else {
