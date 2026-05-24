@@ -2,7 +2,7 @@ import { map } from 'maplibre/map'
 
 /**
  * Adds indoor map style layers for a given source
- * Only leval plans right now, no POI points
+ * Only level plans right now, no POI points
  * @param {string} sourceId - The source ID to use for the layers
  * @param {string} levelFilter - MapLibre filter expression for the current level
  */

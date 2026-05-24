@@ -22,6 +22,11 @@ export class IndoorLayer extends Layer {
     if (this.levelControl) {
       value ? this.levelControl.show() : this.levelControl.hide()
     }
+    if (value) {
+      this.setupLevelDetection()
+    } else {
+      this.removeLevelDetection()
+    }
   }
 
   createSource() {
@@ -51,6 +56,12 @@ export class IndoorLayer extends Layer {
     removeStyleLayers(this.sourceId)
     this.removeLevelDetection()
     this.removeLevelControl()
+
+    if (!map.getSource(this.sourceId)) {
+      console.warn('Indoor layer: source not available, skipping layer initialization')
+      this.layer.show = false
+      return Promise.resolve()
+    }
 
     const levelFilter = ['==', ['get', 'level'], this.currentLevel]
     addIndoorLayers(this.sourceId, levelFilter)
@@ -90,10 +101,11 @@ export class IndoorLayer extends Layer {
   }
 
   setupLevelDetection() {
-    this.idleHandler = () => {
-      if (!this.show) return
-      if (!map.getSource(this.sourceId)) return
+    this.removeLevelDetection()
 
+    if (!map.getSource(this.sourceId)) return
+
+    this.idleHandler = () => {
       // Query source features directly to get ALL levels, not just currently filtered ones
       const levelSet = new Set()
 
