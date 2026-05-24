@@ -525,6 +525,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
 // re-sort layers to overlay geojson layers with labels & extrusion objects
 // workflows to consider: first map load, basemap update, socket reconnect
 // sorting (bottom to top):
+// - raster overlays
 // - polygons, lines etc.
 // - map labels
 // - extrusions
@@ -546,8 +547,12 @@ export function sortLayers () {
   // excludes user symbol/label layers since the original mutating logic pulled
   // those out before computing mapSymbols.
   const groups = [
+    layers.filter(e => e.id.startsWith('raster-layer_')), // raster overlays below all geojson layers
+    layers.filter(e => e.id.startsWith('polygon-layer_geojson-source') && !e.id.includes('extrusion') && !e.id.includes('shadow')),
+    layers.filter(e => e.id.startsWith('polygon-layer-outline_geojson-source')),
     layers.filter(e => e.id.includes('-flat')), // keep flat layers behind houses
-    layers.filter(e => e.id.startsWith('line-layer_geojson-source')),
+    layers.filter(e => e.id.startsWith('line-layer-outline_geojson-source')),
+    layers.filter(e => e.id.startsWith('line-layer_geojson-source') && !e.id.includes('outline')),
     layers.filter(e => e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')),
     layers.filter(e => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion')),
     layers.filter(e => e.paint && e.paint['fill-extrusion-height'] && !e.id.startsWith('polygon-layer-extrusion')),
