@@ -539,8 +539,11 @@ export function sortLayers () {
   const layers = map.getStyle().layers
 
   // increase opacity of 3D houses
-  if (map.getLayer('building-3d')) { // name in openfreemapLiberty
+  // Handle both 'building-3d' (openfreemapLiberty) and 'Building 3D' (MapTiler)
+  if (map.getLayer('building-3d')) {
     map.setPaintProperty('building-3d', 'fill-extrusion-opacity', 0.6)
+  } else if (map.getLayer('Building 3D')) {
+    map.setPaintProperty('Building 3D', 'fill-extrusion-opacity', 0.6)
   }
 
   // Each entry is a layer group; groups are listed bottom-to-top. mapSymbols

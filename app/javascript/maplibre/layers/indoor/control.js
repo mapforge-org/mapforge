@@ -18,6 +18,13 @@ export class IndoorLevelControl {
   create() {
     if (this.element) return
 
+    // Check if a control for this layer already exists
+    const existingControl = document.querySelector(`.indoor-level-control[data-layer-id="${this.layerId}"]`)
+    if (existingControl) {
+      this.element = existingControl
+      return
+    }
+
     this.element = document.createElement('div')
     this.element.className = 'indoor-level-control'
     this.element.setAttribute('data-layer-id', this.layerId)

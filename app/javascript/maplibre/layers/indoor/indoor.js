@@ -45,7 +45,7 @@ export class IndoorLayer extends Layer {
     console.log('Indoor layer: creating source with API key')
     map.addSource(this.sourceId, {
       type: 'vector',
-      tiles: [`https://tiles.indoorequal.org/tiles/{z}/{x}/{y}.pbf?key=${apiKey}`],
+      tiles: [`https://tiles.indoorequal.org/tiles/{z}/{x}/{y}.pbf?key=${encodeURIComponent(apiKey)}`],
       minzoom: 0,
       maxzoom: 20,
       attribution: '© <a href="https://indoorequal.org/" target="_blank">Indoor Equal</a>'
@@ -64,7 +64,7 @@ export class IndoorLayer extends Layer {
       return Promise.resolve()
     }
 
-    const levelFilter = ['==', ['get', 'level'], this.currentLevel]
+    const levelFilter = ['==', ['to-string', ['get', 'level']], this.currentLevel]
     addIndoorLayers(this.sourceId, levelFilter)
 
     this.setupLevelDetection()
@@ -88,7 +88,7 @@ export class IndoorLayer extends Layer {
     if (this.currentLevel === level) return
 
     this.currentLevel = level
-    const levelFilter = ['==', ['get', 'level'], level]
+    const levelFilter = ['==', ['to-string', ['get', 'level']], level]
 
     const layerIds = getIndoorLayerIds(this.sourceId)
 
