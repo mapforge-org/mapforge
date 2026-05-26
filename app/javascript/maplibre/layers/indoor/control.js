@@ -47,7 +47,7 @@ export class IndoorLevelControl {
       if (tooltip) {
         try {
           tooltip.dispose()
-        } catch (e) {
+        } catch {
           // Tooltip might be mid-animation when dispose is called
         }
       }

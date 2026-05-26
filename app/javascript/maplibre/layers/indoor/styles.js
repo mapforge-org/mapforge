@@ -1,5 +1,18 @@
 import { map } from 'maplibre/map'
 
+export const indoorFillColor = [
+  'match',
+  ['get', 'class'],
+  'room', '#fdbe87',
+  'corridor', '#f4c97f',
+  'wall', '#c89968',
+  'platform', '#f7d794',
+  'column', '#b8875e',
+  'area', '#f2d9a8',
+  'level', '#e5c88d',
+  '#f2d9a8'
+]
+
 /**
  * Adds indoor map style layers for a given source
  * Only level plans right now, no POI points
@@ -16,13 +29,9 @@ export function addIndoorLayers(sourceId, levelFilter) {
     filter: levelFilter,
     paint: {
       'fill-color': [
-        'match',
-        ['get', 'class'],
-        'room', '#fdfcfa',
-        'corridor', '#fefefe',
-        'platform', '#e8edff',
-        'wall', '#d5d5d5',
-        '#f0f0f0'
+        'case',
+        ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
+        indoorFillColor
       ],
       'fill-opacity': 0.9
     }
@@ -36,7 +45,11 @@ export function addIndoorLayers(sourceId, levelFilter) {
     minzoom: 16,
     filter: levelFilter,
     paint: {
-      'fill-extrusion-color': '#fdbe87',
+      'fill-extrusion-color': [
+        'case',
+        ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
+        indoorFillColor
+      ],
       'fill-extrusion-height': ['+', ['*', ['to-number', ['get', 'level']], 5], 5],
       'fill-extrusion-base': ['*', ['to-number', ['get', 'level']], 5],
       'fill-extrusion-opacity': 0.8
@@ -51,12 +64,15 @@ export function addIndoorLayers(sourceId, levelFilter) {
     minzoom: 16,
     filter: levelFilter,
     paint: {
-      'line-color': '#000',
+      'line-color': [
+        'case',
+        ['boolean', ['feature-state', 'active'], false], '#000',
+        '#888'
+      ],
       'line-width': [
-        'match',
-        ['get', 'class'],
-        'wall', 3,
-        2
+        'case',
+        ['boolean', ['feature-state', 'active'], false], 3,
+        1
       ]
     }
   })

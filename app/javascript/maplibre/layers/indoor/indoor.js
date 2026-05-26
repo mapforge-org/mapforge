@@ -1,8 +1,9 @@
 import { debounce } from 'helpers/functions'
+import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { IndoorLevelControl } from 'maplibre/layers/indoor/control'
-import { addIndoorLayers, getIndoorLayerIds } from 'maplibre/layers/indoor/styles'
+import { addIndoorLayers, getIndoorLayerIds, indoorFillColor } from 'maplibre/layers/indoor/styles'
 import { Layer } from 'maplibre/layers/layer'
-import { map, removeStyleLayers } from 'maplibre/map'
+import { map, removeStyleLayers, updateBuildingOpacity } from 'maplibre/map'
 
 export class IndoorLayer extends Layer {
   constructor(layer) {
@@ -48,6 +49,7 @@ export class IndoorLayer extends Layer {
       tiles: [`https://tiles.indoorequal.org/tiles/{z}/{x}/{y}.pbf?key=${encodeURIComponent(apiKey)}`],
       minzoom: 0,
       maxzoom: 20,
+      promoteId: { area: 'id', transportation: 'id' },
       attribution: '© <a href="https://indoorequal.org/" target="_blank">Indoor Equal</a>'
     })
   }
@@ -67,7 +69,9 @@ export class IndoorLayer extends Layer {
     const levelFilter = ['==', ['to-string', ['get', 'level']], this.currentLevel]
     addIndoorLayers(this.sourceId, levelFilter)
 
+    this.updateFillPaint()
     this.setupLevelDetection()
+    this.setupEventHandlers()
 
     return Promise.resolve()
   }
@@ -81,12 +85,32 @@ export class IndoorLayer extends Layer {
   }
 
   setupEventHandlers() {
-    // No-op - indoor features are not selectable like GeoJSON features
+    this.removeEventHandlers()
+
+    this.clickHandler = (e) => {
+      if (window.gon.map_mode !== 'rw') return
+
+      const feature = e.features?.[0]
+      if (!feature) return
+
+      console.log('Indoor feature clicked:', feature)
+      console.log('Feature id:', feature.id, 'Source:', this.sourceId)
+
+      feature.properties.label = feature.properties.name || feature.properties.class
+      feature.properties.desc = indoorDescription(feature.properties)
+
+      const sourceLayer = feature.layer['source-layer'] || feature.sourceLayer
+      console.log('Source layer:', sourceLayer)
+      highlightFeature(feature, false, this.sourceId, sourceLayer)
+    }
+
+    map.on('click', this.getStyleLayerIds(), this.clickHandler)
   }
 
   setLevel(level) {
     if (this.currentLevel === level) return
 
+    resetHighlightedFeature()
     this.currentLevel = level
     const levelFilter = ['==', ['to-string', ['get', 'level']], level]
 
@@ -98,7 +122,29 @@ export class IndoorLayer extends Layer {
       }
     })
 
+    this.updateFillPaint()
     this.updateLevelControlUI()
+  }
+
+  updateFillPaint() {
+    const fillLayerId = `indoor-area-fill_${this.sourceId}`
+    if (!map.getLayer(fillLayerId)) return
+
+    if (parseFloat(this.currentLevel) >= 1) {
+      map.setPaintProperty(fillLayerId, 'fill-color', [
+        'case',
+        ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
+        'gray'
+      ])
+      map.setPaintProperty(fillLayerId, 'fill-opacity', 0.7)
+    } else {
+      map.setPaintProperty(fillLayerId, 'fill-color', [
+        'case',
+        ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
+        indoorFillColor
+      ])
+      map.setPaintProperty(fillLayerId, 'fill-opacity', 0.9)
+    }
   }
 
   setupLevelDetection() {
@@ -136,6 +182,9 @@ export class IndoorLayer extends Layer {
           this.levels = newLevels
           // console.log('Indoor layer: detected levels', newLevels)
           this.updateLevelControl()
+        } else if (this.levels.length > 0 && !this.levelControl) {
+          // Recreate control if it was removed (e.g., layer was hidden then shown)
+          this.updateLevelControl()
         }
       }, `indoor-level-${this.id}`, 500)
     }
@@ -164,6 +213,7 @@ export class IndoorLayer extends Layer {
     } else {
       this.removeLevelControl()
     }
+    updateBuildingOpacity()
   }
 
   createLevelControl() {
@@ -190,4 +240,26 @@ export class IndoorLayer extends Layer {
     this.removeLevelControl()
     super.cleanup()
   }
+}
+
+function indoorDescription(props) {
+  const skipKeys = ['name', 'label', 'desc']
+
+  let desc = '\n<div class="overpass-data-table">\n'
+  desc += '|               |               |\n'
+  desc += '| ------------- | ------------- |\n'
+
+  const keys = Object.keys(props).filter(key => !skipKeys.includes(key))
+  keys.forEach(key => {
+    desc += `| **${key}** | ${props[key]} |\n`
+  })
+
+  desc += '\n</div>\n'
+
+  if (props['id']) {
+    desc += '\n![osm link](/icons/osm-icon-small.png)'
+    desc += '[See node in OpenStreetMap](https://www.openstreetmap.org/' + props['id'] + ')'
+  }
+
+  return desc
 }
