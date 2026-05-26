@@ -6,7 +6,7 @@ class ImagesController < ApplicationController
   # Overwriting default rate limit from application controller
   rate_limit to: 2000, within: 5.minute, unless: -> { Rails.env.local? }, only: :icon
   rate_limit to: 2000, within: 5.minute, unless: -> { Rails.env.local? }, only: :osmc_symbol
-  rate_limit to: 1000, within: 5.minute, unless: -> { Rails.env.local? }, only: :image
+  rate_limit to: 2000, within: 5.minute, unless: -> { Rails.env.local? }, only: :image
   rate_limit to: 20, within: 1.minute, unless: -> { Rails.env.local? }, only: :upload
 
   IMAGE_CACHE_TIME = 1.week
