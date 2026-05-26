@@ -51,7 +51,7 @@ export class BasemapLayer extends Layer {
       const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
       const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds })
 
-      if (features.length) {
+      if (features.length && window.gon.map_mode === 'rw') {
         functions.e('#map-context-menu', el => {
           if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
           el.classList.remove('hidden')

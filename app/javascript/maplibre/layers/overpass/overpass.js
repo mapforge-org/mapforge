@@ -38,7 +38,7 @@ export class OverpassLayer extends Layer {
       const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds })
 
       const feature = features.find(f => !f.properties?.cluster)
-      if (feature) {
+      if (feature && window.gon.map_mode === 'rw') {
         functions.e('#map-context-menu', el => {
           if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
           el.classList.remove('hidden')

@@ -280,7 +280,7 @@ export class RasterLayer extends Layer {
       if (!this.show || !this.highlightedFeatureId) return
 
       const feature = this.layer.geojson?.features.find(f => f.id === this.highlightedFeatureId)
-      if (!feature) return
+      if (!feature || window.gon.map_mode !== 'rw') return
 
       functions.e('#map-context-menu', el => {
         if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }

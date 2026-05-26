@@ -309,4 +309,55 @@ describe "Map" do
       expect_layer_visibility(layer_id, true)
     end
   end
+
+  context "copy to my layer context menu" do
+    # center matches the feature in spec/fixtures/files/overpass.json
+    subject(:map) { create(:map, name: 'Copy test', center: [ 12.3651437, 44.9165141 ], zoom: 15) }
+
+    let(:layer) { create(:layer, :overpass, name: "opass") }
+
+    before do
+      map.layers << layer
+    end
+
+    context "in read-write mode" do
+      before do
+        visit map.private_map_path
+        expect_map_loaded
+        expect_overpass_loaded
+      end
+
+      it "successfully copies overpass feature to user's geojson layer" do
+        expect(Feature.count).to eq(0)
+
+        center = center_of_screen
+        click_coord("#maplibre-map", center[:x], center[:y], button: :right)
+        expect(page).to have_text("Copy to my layer")
+
+        find(".context-menu-item", text: "Copy to my layer").click
+        wait_for { Feature.count }.to eq(1)
+
+        copied_feature = Feature.first
+        expect(copied_feature.layer).to eq(map.layers.first)
+        expect(copied_feature.properties["name"]).to eq("Agriturismo Caprissio")
+        expect(copied_feature.properties["tourism"]).to eq("camp_site")
+        expect(copied_feature.geometry["type"]).to eq("Point")
+        expect(copied_feature.geometry["coordinates"]).to eq([ 12.3651437, 44.9165141 ])
+      end
+    end
+
+    context "in read-only mode" do
+      before do
+        visit map.public_map_path
+        expect_map_loaded
+        expect_overpass_loaded
+      end
+
+      it "does not show copy to my layer option on overpass feature right-click" do
+        center = center_of_screen
+        click_coord("#maplibre-map", center[:x], center[:y], button: :right)
+        expect(page).not_to have_text("Copy to my layer")
+      end
+    end
+  end
 end
