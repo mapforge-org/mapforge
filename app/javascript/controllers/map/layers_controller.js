@@ -288,6 +288,13 @@ export default class extends Controller {
     if ((layer.type === 'overpass' || layer.type === 'raster') && window.gon.map_mode === 'rw') {
       layerElement.querySelectorAll('button.layer-edit, button.layer-edit-mobile').forEach(btn => btn.classList[hideAction]('hidden'))
     }
+    // hide global "Load for this area" button if no visible overpass/wikipedia layers remain
+    if (!layer.show) {
+      const hasVisibleReloadLayer = layers.some(l => l.reloadAfterMapMove() === 'ondemand' && l.show !== false && l.id !== layerId)
+      if (!hasVisibleReloadLayer) {
+        functions.e('#layer-reload', e => { e.classList.add('hidden') })
+      }
+    }
     if (layer.show) {
       layerElement.classList.remove('layer-dimmed')
     } else {
