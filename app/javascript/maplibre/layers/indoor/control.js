@@ -10,6 +10,7 @@ export class IndoorLevelControl {
     this.onLevelChange = onLevelChange
     this.element = null
     this.currentLevel = null
+    this.levels = []
   }
 
   /**
@@ -44,7 +45,11 @@ export class IndoorLevelControl {
     this.element.querySelectorAll('button').forEach(button => {
       const tooltip = bootstrap.Tooltip.getInstance(button)
       if (tooltip) {
-        tooltip.dispose()
+        try {
+          tooltip.dispose()
+        } catch (e) {
+          // Tooltip might be mid-animation when dispose is called
+        }
       }
     })
   }
@@ -59,32 +64,47 @@ export class IndoorLevelControl {
       this.create()
     }
 
-    this.currentLevel = currentLevel
-    this.disposeTooltips()
-    this.element.innerHTML = ''
+    const levelsChanged = JSON.stringify(levels) !== JSON.stringify(this.levels)
 
-    levels.forEach(level => {
-      const button = document.createElement('button')
-      button.textContent = level
-      button.title = `Level ${level}`
-      button.setAttribute('data-level', level)
-      button.setAttribute('data-toggle', 'tooltip')
-      button.setAttribute('data-bs-trigger', 'hover')
+    if (levelsChanged) {
+      this.levels = levels
+      this.currentLevel = currentLevel
+      this.disposeTooltips()
+      this.element.innerHTML = ''
 
-      if (level === currentLevel) {
-        button.classList.add('active')
-      }
+      levels.forEach(level => {
+        const button = document.createElement('button')
+        button.textContent = level
+        button.title = `Level ${level}`
+        button.setAttribute('data-level', level)
+        button.setAttribute('data-toggle', 'tooltip')
+        button.setAttribute('data-bs-trigger', 'hover')
 
-      button.addEventListener('click', () => {
-        if (this.onLevelChange) {
-          this.onLevelChange(level)
+        if (level === currentLevel) {
+          button.classList.add('active')
         }
+
+        button.addEventListener('click', () => {
+          if (this.onLevelChange) {
+            this.onLevelChange(level)
+          }
+        })
+
+        this.element.appendChild(button)
       })
 
-      this.element.appendChild(button)
-    })
-
-    initTooltips(this.element)
+      initTooltips(this.element)
+    } else if (this.currentLevel !== currentLevel) {
+      this.currentLevel = currentLevel
+      this.element.querySelectorAll('button').forEach(button => {
+        const level = button.getAttribute('data-level')
+        if (level === currentLevel) {
+          button.classList.add('active')
+        } else {
+          button.classList.remove('active')
+        }
+      })
+    }
   }
 
   /**
@@ -96,6 +116,8 @@ export class IndoorLevelControl {
       this.element.parentNode.removeChild(this.element)
     }
     this.element = null
+    this.levels = []
+    this.currentLevel = null
   }
 
   /**
