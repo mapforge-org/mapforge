@@ -1,4 +1,5 @@
 import { map } from 'maplibre/map'
+import { labelFont } from 'maplibre/styles/styles'
 
 export const indoorFillColor = [
   'match',
@@ -51,8 +52,8 @@ export function addIndoorLayers(sourceId, levelFilter) {
         ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
         indoorFillColor
       ],
-      'fill-extrusion-height': ['+', ['*', ['to-number', ['get', 'level']], 5], 5],
-      'fill-extrusion-base': ['*', ['to-number', ['get', 'level']], 5],
+      'fill-extrusion-height': ['+', ['*', ['to-number', ['get', 'level']], 4], 4],
+      'fill-extrusion-base': ['*', ['to-number', ['get', 'level']], 4],
       'fill-extrusion-opacity': 0.8
     }
   })
@@ -98,7 +99,18 @@ export function addIndoorLayers(sourceId, levelFilter) {
     source: sourceId,
     'source-layer': 'poi',
     minzoom: 17,
-    filter: levelFilter,
+    filter: [
+      'all',
+      levelFilter,
+      [
+        '!',
+        [
+          'any',
+          ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets', 'door', 'elevator']]],
+          ['in', ['get', 'class'], ['literal', ['entrance', 'shop']]]
+        ]
+      ]
+    ],
     paint: {
       'circle-radius': [
         'case',
@@ -111,11 +123,8 @@ export function addIndoorLayers(sourceId, levelFilter) {
         [
           'match',
           ['get', 'class'],
-          'entrance', '#4CAF50',
           'stairs', '#FF9800',
-          'elevator', '#2196F3',
           'escalator', '#2196F3',
-          'toilet', '#9C27B0',
           'information', '#00BCD4',
           '#757575'
         ]
@@ -130,6 +139,56 @@ export function addIndoorLayers(sourceId, levelFilter) {
   })
 
   map.addLayer({
+    id: `indoor-poi-icon_${sourceId}`,
+    type: 'symbol',
+    source: sourceId,
+    'source-layer': 'poi',
+    minzoom: 17,
+    filter: [
+      'all',
+      levelFilter,
+      [
+        'any',
+        ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets', 'door', 'elevator']]],
+        ['in', ['get', 'class'], ['literal', ['entrance', 'shop']]]
+      ]
+    ],
+    layout: {
+      'text-field': [
+        'case',
+        ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets']]], '',
+        ['==', ['get', 'subclass'], 'door'], '',
+        ['==', ['get', 'subclass'], 'elevator'], '',
+        ['==', ['get', 'class'], 'entrance'], '',
+        ['==', ['get', 'class'], 'shop'], '',
+        ''
+      ],
+      'text-font': ['bootstrap-icons'],
+      'text-size': 18,
+      'text-allow-overlap': true,
+      'text-ignore-placement': true
+    },
+    paint: {
+      'text-color': [
+        'case',
+        ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
+        ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets']]], '#9C27B0',
+        ['==', ['get', 'subclass'], 'door'], '#4CAF50',
+        ['==', ['get', 'subclass'], 'elevator'], '#2196F3',
+        ['==', ['get', 'class'], 'entrance'], '#4CAF50',
+        ['==', ['get', 'class'], 'shop'], '#FF9800',
+        '#757575'
+      ],
+      'text-halo-color': '#fff',
+      'text-halo-width': [
+        'case',
+        ['boolean', ['feature-state', 'active'], false], 3,
+        2
+      ]
+    }
+  })
+
+  map.addLayer({
     id: `indoor-poi-label_${sourceId}`,
     type: 'symbol',
     source: sourceId,
@@ -139,6 +198,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     layout: {
       'text-field': ['get', 'name'],
       'text-size': 11,
+      'text-font': labelFont,
       'text-anchor': 'top',
       'text-offset': [0, 0.8],
       'text-optional': true
@@ -160,7 +220,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     layout: {
       'text-field': ['get', 'name'],
       'text-size': 12,
-      'text-font': ['Open Sans Regular'],
+      'text-font': labelFont,
       'text-optional': true
     },
     paint: {
@@ -183,6 +243,7 @@ export function getIndoorLayerIds(sourceId) {
     `indoor-area-line_${sourceId}`,
     `indoor-transportation_${sourceId}`,
     `indoor-poi-circle_${sourceId}`,
+    `indoor-poi-icon_${sourceId}`,
     `indoor-poi-label_${sourceId}`,
     `indoor-area-name_${sourceId}`
   ]
