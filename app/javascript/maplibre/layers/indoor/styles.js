@@ -10,12 +10,13 @@ export const indoorFillColor = [
   'column', '#b8875e',
   'area', '#f2d9a8',
   'level', '#e5c88d',
-  '#f2d9a8'
+  '#c0c0c0'
 ]
 
 /**
  * Adds indoor map style layers for a given source
  * Only level plans right now, no POI points
+ * Schema of indoor layers: https://indoorequal.com/doc/schema
  * @param {string} sourceId - The source ID to use for the layers
  * @param {Array} levelFilter - MapLibre filter expression array for the current level
  */
@@ -90,6 +91,84 @@ export function addIndoorLayers(sourceId, levelFilter) {
       'line-dasharray': [2, 2]
     }
   })
+
+  map.addLayer({
+    id: `indoor-poi-circle_${sourceId}`,
+    type: 'circle',
+    source: sourceId,
+    'source-layer': 'poi',
+    minzoom: 17,
+    filter: levelFilter,
+    paint: {
+      'circle-radius': [
+        'case',
+        ['boolean', ['feature-state', 'active'], false], 6,
+        4
+      ],
+      'circle-color': [
+        'case',
+        ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
+        [
+          'match',
+          ['get', 'class'],
+          'entrance', '#4CAF50',
+          'stairs', '#FF9800',
+          'elevator', '#2196F3',
+          'escalator', '#2196F3',
+          'toilet', '#9C27B0',
+          'information', '#00BCD4',
+          '#757575'
+        ]
+      ],
+      'circle-stroke-width': [
+        'case',
+        ['boolean', ['feature-state', 'active'], false], 2,
+        1
+      ],
+      'circle-stroke-color': '#fff'
+    }
+  })
+
+  map.addLayer({
+    id: `indoor-poi-label_${sourceId}`,
+    type: 'symbol',
+    source: sourceId,
+    'source-layer': 'poi',
+    minzoom: 18,
+    filter: levelFilter,
+    layout: {
+      'text-field': ['get', 'name'],
+      'text-size': 11,
+      'text-anchor': 'top',
+      'text-offset': [0, 0.8],
+      'text-optional': true
+    },
+    paint: {
+      'text-color': '#333',
+      'text-halo-color': '#fff',
+      'text-halo-width': 1
+    }
+  })
+
+  map.addLayer({
+    id: `indoor-area-name_${sourceId}`,
+    type: 'symbol',
+    source: sourceId,
+    'source-layer': 'area_name',
+    minzoom: 18,
+    filter: levelFilter,
+    layout: {
+      'text-field': ['get', 'name'],
+      'text-size': 12,
+      'text-font': ['Open Sans Regular'],
+      'text-optional': true
+    },
+    paint: {
+      'text-color': '#555',
+      'text-halo-color': '#fff',
+      'text-halo-width': 1.5
+    }
+  })
 }
 
 /**
@@ -102,6 +181,9 @@ export function getIndoorLayerIds(sourceId) {
     `indoor-area-fill_${sourceId}`,
     `indoor-area-extrusion_${sourceId}`,
     `indoor-area-line_${sourceId}`,
-    `indoor-transportation_${sourceId}`
+    `indoor-transportation_${sourceId}`,
+    `indoor-poi-circle_${sourceId}`,
+    `indoor-poi-label_${sourceId}`,
+    `indoor-area-name_${sourceId}`
   ]
 }

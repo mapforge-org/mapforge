@@ -49,7 +49,7 @@ export class IndoorLayer extends Layer {
       tiles: [`https://tiles.indoorequal.org/tiles/{z}/{x}/{y}.pbf?key=${encodeURIComponent(apiKey)}`],
       minzoom: 0,
       maxzoom: 20,
-      promoteId: { area: 'id', transportation: 'id' },
+      promoteId: { area: 'id', transportation: 'id', poi: 'id' },
       attribution: '© <a href="https://indoorequal.org/" target="_blank">Indoor Equal</a>'
     })
   }
@@ -258,7 +258,7 @@ function indoorDescription(props) {
 
   if (props['id']) {
     desc += '\n![osm link](/icons/osm-icon-small.png)'
-    desc += '[See node in OpenStreetMap](https://www.openstreetmap.org/' + props['id'] + ')'
+    desc += '[See node in OpenStreetMap](https://www.openstreetmap.org/' + props['id'].replace(':', '/') + ')'
   }
 
   return desc
