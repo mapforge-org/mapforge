@@ -55,6 +55,26 @@ export class IndoorLevelControl {
   }
 
   /**
+   * Creates a button for a level
+   * @param {string} level - The level value
+   * @returns {HTMLButtonElement} The created button
+   */
+  createButton(level) {
+    const button = document.createElement('button')
+    button.textContent = level
+    button.title = `Level ${level}`
+    button.setAttribute('data-level', level)
+    button.setAttribute('data-toggle', 'tooltip')
+    button.setAttribute('data-bs-trigger', 'hover')
+    button.addEventListener('click', () => {
+      if (this.onLevelChange) {
+        this.onLevelChange(level)
+      }
+    })
+    return button
+  }
+
+  /**
    * Updates the control with the given levels
    * @param {string[]} levels - Array of level strings, sorted descending
    * @param {string} currentLevel - The currently active level
@@ -68,43 +88,36 @@ export class IndoorLevelControl {
 
     if (levelsChanged) {
       this.levels = levels
-      this.currentLevel = currentLevel
-      this.disposeTooltips()
-      this.element.innerHTML = ''
+
+      const existingButtons = new Map()
+      this.element.querySelectorAll('button').forEach(button => {
+        existingButtons.set(button.getAttribute('data-level'), button)
+      })
+
+      const newLevelSet = new Set(levels)
+      existingButtons.forEach((button, level) => {
+        if (!newLevelSet.has(level)) {
+          const tooltip = bootstrap.Tooltip.getInstance(button)
+          if (tooltip) tooltip.dispose()
+          button.remove()
+        }
+      })
 
       levels.forEach(level => {
-        const button = document.createElement('button')
-        button.textContent = level
-        button.title = `Level ${level}`
-        button.setAttribute('data-level', level)
-        button.setAttribute('data-toggle', 'tooltip')
-        button.setAttribute('data-bs-trigger', 'hover')
-
-        if (level === currentLevel) {
-          button.classList.add('active')
+        let button = existingButtons.get(level)
+        if (!button) {
+          button = this.createButton(level)
         }
-
-        button.addEventListener('click', () => {
-          if (this.onLevelChange) {
-            this.onLevelChange(level)
-          }
-        })
-
         this.element.appendChild(button)
       })
 
       initTooltips(this.element)
-    } else if (this.currentLevel !== currentLevel) {
-      this.currentLevel = currentLevel
-      this.element.querySelectorAll('button').forEach(button => {
-        const level = button.getAttribute('data-level')
-        if (level === currentLevel) {
-          button.classList.add('active')
-        } else {
-          button.classList.remove('active')
-        }
-      })
     }
+
+    this.currentLevel = currentLevel
+    this.element.querySelectorAll('button').forEach(button => {
+      button.classList.toggle('active', button.getAttribute('data-level') === currentLevel)
+    })
   }
 
   /**
