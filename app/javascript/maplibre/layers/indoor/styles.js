@@ -106,8 +106,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
         '!',
         [
           'any',
-          ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets', 'door', 'elevator']]],
-          ['in', ['get', 'class'], ['literal', ['entrance', 'shop']]]
+          ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets', 'elevator']]]
         ]
       ]
     ],
@@ -149,41 +148,25 @@ export function addIndoorLayers(sourceId, levelFilter) {
       levelFilter,
       [
         'any',
-        ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets', 'door', 'elevator']]],
-        ['in', ['get', 'class'], ['literal', ['entrance', 'shop']]]
+        ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets', 'elevator']]]
       ]
     ],
     layout: {
-      'text-field': [
+      'icon-image': [
         'case',
-        ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets']]], '',
-        ['==', ['get', 'subclass'], 'door'], '',
-        ['==', ['get', 'subclass'], 'elevator'], '',
-        ['==', ['get', 'class'], 'entrance'], '',
-        ['==', ['get', 'class'], 'shop'], '',
+        ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets']]], '/emojis/noto/🚻.png',
+        ['==', ['get', 'subclass'], 'elevator'], '/emojis/noto/🛗.png',
         ''
       ],
-      'text-font': ['bootstrap-icons'],
-      'text-size': 18,
-      'text-allow-overlap': true,
-      'text-ignore-placement': true
+      'icon-size': 0.3,
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true
     },
     paint: {
-      'text-color': [
+      'icon-opacity': [
         'case',
-        ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
-        ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets']]], '#9C27B0',
-        ['==', ['get', 'subclass'], 'door'], '#4CAF50',
-        ['==', ['get', 'subclass'], 'elevator'], '#2196F3',
-        ['==', ['get', 'class'], 'entrance'], '#4CAF50',
-        ['==', ['get', 'class'], 'shop'], '#FF9800',
-        '#757575'
-      ],
-      'text-halo-color': '#fff',
-      'text-halo-width': [
-        'case',
-        ['boolean', ['feature-state', 'active'], false], 3,
-        2
+        ['boolean', ['feature-state', 'active'], false], 1,
+        0.85
       ]
     }
   })
@@ -197,7 +180,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     filter: levelFilter,
     layout: {
       'text-field': ['get', 'name'],
-      'text-size': 11,
+      'text-size': 13,
       'text-font': labelFont,
       'text-anchor': 'top',
       'text-offset': [0, 0.8],

@@ -245,7 +245,7 @@ export class IndoorLayer extends Layer {
 function indoorDescription(props) {
   const skipKeys = ['name', 'label', 'desc']
 
-  let desc = '\n<div class="overpass-data-table">\n'
+  let desc = '\n'
   desc += '|               |               |\n'
   desc += '| ------------- | ------------- |\n'
 
@@ -254,7 +254,7 @@ function indoorDescription(props) {
     desc += `| **${key}** | ${props[key]} |\n`
   })
 
-  desc += '\n</div>\n'
+  desc += '\n'
 
   if (props['id']) {
     desc += '\n![osm link](/icons/osm-icon-small.png)'
