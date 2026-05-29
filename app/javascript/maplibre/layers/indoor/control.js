@@ -1,9 +1,5 @@
 import { initTooltips } from 'helpers/dom'
 
-/**
- * Level control UI for indoor maps
- * Displays a vertical stack of buttons for switching between floor levels
- */
 export class IndoorLevelControl {
   constructor(layerId, onLevelChange) {
     this.layerId = layerId
@@ -13,9 +9,6 @@ export class IndoorLevelControl {
     this.levels = []
   }
 
-  /**
-   * Creates and shows the level control
-   */
   create() {
     if (this.element) return
 
@@ -27,18 +20,20 @@ export class IndoorLevelControl {
     }
 
     this.element = document.createElement('div')
-    this.element.className = 'indoor-level-control'
+    this.element.className = 'maplibregl-ctrl maplibregl-ctrl-group indoor-level-control'
     this.element.setAttribute('data-layer-id', this.layerId)
 
-    const mapContainer = document.querySelector('#maplibre-map')
-    if (mapContainer) {
-      mapContainer.appendChild(this.element)
+    const bottomRight = document.querySelector('.maplibregl-ctrl-bottom-right')
+    if (bottomRight) {
+      const attrib = bottomRight.querySelector('.maplibregl-ctrl-attrib')
+      if (attrib) {
+        bottomRight.insertBefore(this.element, attrib)
+      } else {
+        bottomRight.appendChild(this.element)
+      }
     }
   }
 
-  /**
-   * Disposes all tooltips on buttons in this control
-   */
   disposeTooltips() {
     if (!this.element || typeof bootstrap === 'undefined') return
 
@@ -54,11 +49,6 @@ export class IndoorLevelControl {
     })
   }
 
-  /**
-   * Creates a button for a level
-   * @param {string} level - The level value
-   * @returns {HTMLButtonElement} The created button
-   */
   createButton(level) {
     const button = document.createElement('button')
     button.textContent = level
@@ -74,11 +64,6 @@ export class IndoorLevelControl {
     return button
   }
 
-  /**
-   * Updates the control with the given levels
-   * @param {string[]} levels - Array of level strings, sorted descending
-   * @param {string} currentLevel - The currently active level
-   */
   update(levels, currentLevel) {
     if (!this.element) {
       this.create()
@@ -120,9 +105,6 @@ export class IndoorLevelControl {
     })
   }
 
-  /**
-   * Removes the control from the DOM
-   */
   remove() {
     if (this.element && this.element.parentNode) {
       this.disposeTooltips()
@@ -133,18 +115,12 @@ export class IndoorLevelControl {
     this.currentLevel = null
   }
 
-  /**
-   * Shows the control
-   */
   show() {
     if (this.element) {
-      this.element.style.display = 'flex'
+      this.element.style.display = ''
     }
   }
 
-  /**
-   * Hides the control
-   */
   hide() {
     if (this.element) {
       this.disposeTooltips()

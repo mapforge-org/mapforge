@@ -16,42 +16,7 @@
 }
 
 .indoor-level-control {
-  position: absolute;
-  bottom: 3rem;
-  right: 0.5rem;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  background: white;
-  border-radius: 4px;
-  box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
-}
-
-.indoor-level-control button {
-  height: 2rem;
-  width: 2rem;
-  border: none;
-  background: white;
-  cursor: pointer;
-  font-size: 1rem;
-  text-align: center;
-}
-
-.indoor-level-control button.active {
-  background-color: rgb(0 0 0/15%) !important;
-  color: var(--color-ctrl-active) !important;
-}
-
-.indoor-level-control button:first-child {
-  border-radius: 4px 4px 0 0;
-}
-
-.indoor-level-control button:last-child {
-  border-radius: 0 0 4px 4px;
-}
-
-.indoor-level-control button:only-child {
-  border-radius: 4px;
+  margin-bottom: 0 !important;
 }
 
 .maplibregl-ctrl button:disabled {
@@ -78,11 +43,6 @@
 /* only add hover effects to supported browsers */
 @media (hover: hover) {
   .maplibregl-ctrl button:hover, .mapbox-gl-draw_ctrl-draw-btn:hover { /* stylelint-disable-line */
-    background-color: rgb(0 0 0/15%) !important;
-    color: var(--color-ctrl-active) !important;
-  }
-
-  .indoor-level-control button:hover {
     background-color: rgb(0 0 0/15%) !important;
     color: var(--color-ctrl-active) !important;
   }
