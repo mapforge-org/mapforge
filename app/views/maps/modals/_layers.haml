@@ -93,6 +93,14 @@
                 }
                   %i.bi.bi-wikipedia.me-2
                   Wikipedia articles
+              - if ENV['INDOOREQUAL_KEY'].present?
+                %li
+                  %button.dropdown-item{
+                    type: "button",
+                    data: { action: "click->map--layers#createIndoorLayer" }
+                  }
+                    %i.bi.bi-building.me-2
+                    OpenStreetMap indoor
               %li
                 %hr.dropdown-divider
               %li

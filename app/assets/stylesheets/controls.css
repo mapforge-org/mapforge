@@ -15,6 +15,10 @@
   border-top: 1px solid #0000001c;
 }
 
+.indoor-level-control {
+  margin-bottom: 0 !important;
+}
+
 .maplibregl-ctrl button:disabled {
   opacity: 0.2;
 }

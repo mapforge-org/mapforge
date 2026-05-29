@@ -352,6 +352,10 @@ export default class extends Controller {
     this.createLayer('basemap', 'Basemap layer')
   }
 
+  createIndoorLayer(_event) {
+    this.createLayer('indoor', 'Indoor map')
+  }
+
   createLayer(type, name, query=null, geojson=null) {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel

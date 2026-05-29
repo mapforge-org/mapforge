@@ -148,7 +148,8 @@ class Map
     { mapbox: ENV["MAPBOX_KEY"],
      maptiler: ENV["MAPTILER_KEY"],
      openrouteservice: ENV["OPENROUTESERVICE_KEY"],
-     thunderforest: ENV["THUNDERFOREST_KEY"] }
+     thunderforest: ENV["THUNDERFOREST_KEY"],
+     indoorequal: ENV["INDOOREQUAL_KEY"] }
   end
 
   def to_json

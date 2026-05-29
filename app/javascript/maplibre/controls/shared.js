@@ -204,16 +204,16 @@ export function initLayersModal () {
         head.textContent = layerName
       }
 
-      // Don't show feature count for raster layers
-      if (layer.type !== 'raster') {
+      // Don't show feature count for raster and indoor layers
+      if (layer.type !== 'raster' && layer.type !== 'indoor') {
         const featureCount = document.createElement('span')
         featureCount.classList.add('small')
         featureCount.textContent = '(' + features.length + ')'
         head.parentNode.insertBefore(featureCount, head.nextSibling)
       }
 
-      // Make raster layers non-expandable
-      if (layer.type === 'raster') {
+      // Make raster and indoor layers non-expandable
+      if (layer.type === 'raster' || layer.type === 'indoor') {
         const toggleLink = layerElement.querySelector('.link[data-action*="toggleLayerList"]')
         if (toggleLink) {
           toggleLink.style.cursor = 'default'
@@ -303,7 +303,7 @@ export function initLayersModal () {
       }
       dom.initTooltips(layerElement)
 
-      if (features.length === 0 && layer.type !== 'raster') {
+      if (features.length === 0 && layer.type !== 'raster' && layer.type !== 'indoor') {
         const newNode = document.createElement('i')
         newNode.classList.add('ms-3')
         newNode.textContent = 'No elements in this layer'

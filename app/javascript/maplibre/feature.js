@@ -16,6 +16,7 @@ window.marked = marked
 
 export let highlightedFeatureId
 export let highlightedFeatureSource
+export let highlightedSourceLayer = null
 export let stickyFeatureHighlight = false
 let elevationChart
 
@@ -252,9 +253,14 @@ export function featureImage(feature) {
 
 export function resetHighlightedFeature () {
   if (highlightedFeatureId && map.getSource(highlightedFeatureSource)) {
-    map.setFeatureState({ source: highlightedFeatureSource, id: highlightedFeatureId }, { active: false })
+    const stateParams = { source: highlightedFeatureSource, id: highlightedFeatureId }
+    if (highlightedSourceLayer) {
+      stateParams.sourceLayer = highlightedSourceLayer
+    }
+    map.setFeatureState(stateParams, { active: false })
     highlightedFeatureSource = null
     highlightedFeatureId = null
+    highlightedSourceLayer = null
     // drop feature param from url
     const url = new URL(window.location.href)
     if (url.searchParams.get('f')) {
@@ -268,7 +274,8 @@ export function resetHighlightedFeature () {
   f.e('#feature-details-modal', e => { e.classList.remove('show') })
 }
 
-export function highlightFeature (feature, sticky = false, source) {
+// For highlighting features from vector layers, we need to track their sourceLayer.
+export function highlightFeature (feature, sticky = false, source, sourceLayer = null) {
   // Only reset if there's a different feature currently highlighted
   if (highlightedFeatureId === feature.id) { return }
   if (highlightedFeatureId && highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
@@ -278,6 +285,7 @@ export function highlightFeature (feature, sticky = false, source) {
   stickyFeatureHighlight = sticky
   highlightedFeatureId = feature?.id
   highlightedFeatureSource = source
+  highlightedSourceLayer = sourceLayer
   // load feature from source, the style only returns the dimensions on screen
   const sourceFeature = layers
     .filter(l => Array.isArray(l.geojson?.features))
@@ -285,14 +293,20 @@ export function highlightFeature (feature, sticky = false, source) {
     .find(f => f.id === feature.id)
 
   showFeatureDetails(sourceFeature || feature)
-  if (sourceFeature) {
-    // A feature's state is not part of the GeoJSON or vector tile data but can get used in styles
-    map.setFeatureState({ source, id: feature.id }, { active: true })
-    // set url to feature
-    if (sticky) {
-      const newPath = `${window.location.pathname}?f=${feature.id}${window.location.hash}`
-      window.history.pushState({}, '', newPath)
+
+  // Set feature state for both GeoJSON and vector tile features
+  if (feature?.id != null) {
+    const stateParams = { source, id: feature.id }
+    if (sourceLayer) {
+      stateParams.sourceLayer = sourceLayer
     }
+    map.setFeatureState(stateParams, { active: true })
+  }
+
+  // URL persistence only for GeoJSON features (vector tile IDs are not stable across sessions)
+  if (sourceFeature && sticky) {
+    const newPath = `${window.location.pathname}?f=${feature.id}${window.location.hash}`
+    window.history.pushState({}, '', newPath)
   }
 }
 

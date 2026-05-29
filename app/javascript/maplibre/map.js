@@ -522,6 +522,17 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
   return false
 }
 
+export function updateBuildingOpacity () {
+  if (!map || !map.isStyleLoaded()) return
+
+  const opacity = layers?.some(l => l.type === 'indoor' && l.levelControl) ? 0.4 : 0.6
+  if (map.getLayer('building-3d')) {
+    map.setPaintProperty('building-3d', 'fill-extrusion-opacity', opacity)
+  } else if (map.getLayer('Building 3D')) {
+    map.setPaintProperty('Building 3D', 'fill-extrusion-opacity', opacity)
+  }
+}
+
 // re-sort layers to overlay geojson layers with labels & extrusion objects
 // workflows to consider: first map load, basemap update, socket reconnect
 // sorting (bottom to top):
@@ -536,40 +547,38 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
 // here on top of the basemap setStyle in setBackgroundMapLayer left interaction
 // handlers attached to a stale canvas after a reconnect/background restore.
 export function sortLayers () {
-  const layers = map.getStyle().layers
+  const styleLayers = map.getStyle().layers
 
-  // increase opacity of 3D houses
-  if (map.getLayer('Building 3D')) {
-    map.setPaintProperty('Building 3D', 'fill-extrusion-opacity', 0.8)
-  }
+  updateBuildingOpacity()
 
   // Each entry is a layer group; groups are listed bottom-to-top. mapSymbols
   // excludes user symbol/label layers since the original mutating logic pulled
   // those out before computing mapSymbols.
   const groups = [
-    layers.filter(e => e.id.startsWith('raster-layer_')), // raster overlays below all geojson layers
-    layers.filter(e => e.id.startsWith('polygon-layer_geojson-source') && !e.id.includes('extrusion') && !e.id.includes('shadow')),
-    layers.filter(e => e.id.startsWith('polygon-layer-outline_geojson-source')),
-    layers.filter(e => e.id.includes('-flat')), // keep flat layers behind houses
-    layers.filter(e => e.id.startsWith('line-layer-outline_geojson-source')),
-    layers.filter(e => e.id.startsWith('line-layer_geojson-source') && !e.id.includes('outline')),
-    layers.filter(e => e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')),
-    layers.filter(e => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion')),
-    layers.filter(e => e.paint && e.paint['fill-extrusion-height'] && !e.id.startsWith('polygon-layer-extrusion')),
-    layers.filter(e => e.id.startsWith('maplibre-gl-directions')),
-    layers.filter(e => e.type === 'symbol' &&
+    styleLayers.filter(e => e.id.startsWith('raster-layer_')), // raster overlays below all geojson layers
+    styleLayers.filter(e => e.id.startsWith('polygon-layer_geojson-source') && !e.id.includes('extrusion') && !e.id.includes('shadow')),
+    styleLayers.filter(e => e.id.startsWith('polygon-layer-outline_geojson-source')),
+    styleLayers.filter(e => e.id.includes('-flat')), // keep flat layers behind houses
+    styleLayers.filter(e => e.id.startsWith('line-layer-outline_geojson-source')),
+    styleLayers.filter(e => e.id.startsWith('line-layer_geojson-source') && !e.id.includes('outline')),
+    styleLayers.filter(e => e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')),
+    styleLayers.filter(e => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion')),
+    //styleLayers.filter(e => e.id.startsWith('indoor-area-extrusion_')),
+    styleLayers.filter(e => e.paint && e.paint['fill-extrusion-height'] && !e.id.startsWith('polygon-layer-extrusion') && !e.id.startsWith('indoor-area-extrusion_')),
+    styleLayers.filter(e => e.id.startsWith('maplibre-gl-directions')),
+    styleLayers.filter(e => e.type === 'symbol' &&
       !e.id.startsWith('symbols-layer') && !e.id.startsWith('symbols-border-layer') &&
       !e.id.startsWith('text-layer') && !e.id.startsWith('cluster_labels')),
-    layers.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('cluster_points')),
-    layers.filter(e => e.id.startsWith('heatmap-layer')),
-    layers.filter(e => e.id.startsWith('gl-draw-')),
-    layers.filter(e => e.id.startsWith('km-marker') && !e.id.startsWith('km-marker-end')),
-    layers.filter(e => e.id.startsWith('route-extras-labels')),
-    layers.filter(e => e.id.startsWith('km-marker-end')),
-    layers.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),
-    layers.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
-    layers.filter(e => e.id.startsWith('line-layer-hit_geojson-source')),
-    layers.filter(e => e.id.startsWith('points-hit-layer_geojson-source'))
+    styleLayers.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('cluster_points')),
+    styleLayers.filter(e => e.id.startsWith('heatmap-layer')),
+    styleLayers.filter(e => e.id.startsWith('gl-draw-')),
+    styleLayers.filter(e => e.id.startsWith('km-marker') && !e.id.startsWith('km-marker-end')),
+    styleLayers.filter(e => e.id.startsWith('route-extras-labels')),
+    styleLayers.filter(e => e.id.startsWith('km-marker-end')),
+    styleLayers.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),
+    styleLayers.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
+    styleLayers.filter(e => e.id.startsWith('line-layer-hit_geojson-source')),
+    styleLayers.filter(e => e.id.startsWith('points-hit-layer_geojson-source'))
   ]
 
   // moveLayer(id) with no second arg moves the layer to the top. Iterating
@@ -577,6 +586,7 @@ export function sortLayers () {
   groups.forEach(group => {
     group.forEach(layer => { if (map.getLayer(layer.id)) map.moveLayer(layer.id) })
   })
+  // console.log('Sorted layers: ', map.getStyle().layers)
 }
 
 export function updateMapName (name) {
