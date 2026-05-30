@@ -179,7 +179,7 @@ export const pointSizeMax = ['to-number', ['coalesce',
     'case',
     ['has', 'marker-symbol'],
     18,
-    8
+    5
   ]]]
 
 export const pointSize = [

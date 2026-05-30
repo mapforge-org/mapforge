@@ -156,6 +156,8 @@ export class Layer {
     this.clickHandler = (e) => {
       if (draw && draw.getMode() !== 'simple_select') { return }
       if (window.gon.map_mode === 'static') { return }
+      // Exit if another layer already selected a feature on this click
+      if (e.defaultPrevented) { return }
 
       console.log('Features clicked', e.features)
       let feature = e.features.find(f => !f.properties?.cluster)
@@ -182,6 +184,7 @@ export class Layer {
       }
       frontFeature(feature)
       highlightFeature(feature, true, this.sourceId)
+      e.preventDefault()
     }
 
     map.on('click', this.getStyleLayerIds(), this.clickHandler)

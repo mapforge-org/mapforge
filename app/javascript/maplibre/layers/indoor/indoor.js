@@ -89,6 +89,8 @@ export class IndoorLayer extends Layer {
 
     this.clickHandler = (e) => {
       if (window.gon.map_mode !== 'rw') return
+      // Exit if another layer already selected a feature on this click
+      if (e.defaultPrevented) return
 
       const feature = e.features?.[0]
       if (!feature) return
