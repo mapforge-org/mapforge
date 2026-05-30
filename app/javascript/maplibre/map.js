@@ -563,7 +563,7 @@ export function sortLayers () {
     styleLayers.filter(e => e.id.startsWith('line-layer_geojson-source') && !e.id.includes('outline')),
     styleLayers.filter(e => e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')),
     styleLayers.filter(e => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion')),
-    //styleLayers.filter(e => e.id.startsWith('indoor-area-extrusion_')),
+    // styleLayers.filter(e => e.id.startsWith('indoor-area-extrusion_')),
     styleLayers.filter(e => e.paint && e.paint['fill-extrusion-height'] && !e.id.startsWith('polygon-layer-extrusion') && !e.id.startsWith('indoor-area-extrusion_')),
     styleLayers.filter(e => e.id.startsWith('maplibre-gl-directions')),
     styleLayers.filter(e => e.type === 'symbol' &&

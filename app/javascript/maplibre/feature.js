@@ -268,6 +268,7 @@ export function resetHighlightedFeature () {
       window.history.replaceState({}, document.title, url.toString())
     }
   }
+  stickyFeatureHighlight = false
   // Clear layer-specific highlight state
   layers?.forEach(layer => layer.clearHighlight())
   // reset active modals
