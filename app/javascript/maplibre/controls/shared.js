@@ -248,7 +248,7 @@ export function initLayersModal () {
         layers.filter(l => l.type === 'geojson').indexOf(layer) === 0
 
       // Show delete button for all layers except the first geojson layer
-      if (layer.type !== 'geojson' || !isFirstGeojsonLayer) {
+      if ((layer.type !== 'geojson' || !isFirstGeojsonLayer) && window.gon.map_mode === "rw") {
         layerElement.querySelector('button.layer-delete').classList.remove('hidden')
         layerElement.querySelector('button.layer-delete-mobile').classList.remove('hidden')
       }
@@ -269,6 +269,16 @@ export function initLayersModal () {
           layerElement.querySelector('button.layer-edit').classList.remove('hidden')
           layerElement.querySelector('button.layer-edit-mobile').classList.remove('hidden')
         }
+      }
+
+      // Simplify mobile UI when only visibility toggle is available
+      const dropdown = layerElement.querySelector('.layer-actions-dropdown')
+      const visibleMobileActions = dropdown.querySelectorAll('.dropdown-item:not(.hidden)').length
+      if (visibleMobileActions <= 1) {
+        dropdown.classList.add('hidden')
+        const inlineButtons = layerElement.querySelector('.text-nowrap')
+        inlineButtons.classList.remove('d-none', 'd-sm-inline')
+        inlineButtons.classList.add('d-inline')
       }
 
       const ul = layerElement.querySelector('.layer-content ul')
