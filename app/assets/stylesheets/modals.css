@@ -337,6 +337,9 @@
 
 .layer-item-header button {
   max-width: 3rem;
+}
+
+.layer-item-header .btn-layer-actions {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -415,6 +418,14 @@
 
 /* Media queries at end to ensure they override defaults */
 
+@media (width > 574px) {
+  /* Keep layer action buttons on one line on desktop */
+  .layer-item-header .text-nowrap {
+    display: inline-flex !important;
+    align-items: center;
+  }
+}
+
 @media (width <= 574px) {
   .map-modal-content {
       max-height: calc(100vh - 7rem);
@@ -480,8 +491,8 @@
     border-radius: 0.4rem;
   }
 
-  /* Smaller font for layer names on narrow screens */
-  .layer-name {
+  /* Smaller font for layer headers on narrow screens */
+  .layer-item-header {
     font-size: 0.9rem;
   }
 
@@ -500,9 +511,8 @@
 
   /* Reduce spacing between and inside layer blocks */
   .layer-item {
-    margin-top: 0rem;
+    margin-top: 0;
     margin-bottom: 0.5rem;
-    padding-top: 0.2rem;
   }
 
   .permission-badge {
