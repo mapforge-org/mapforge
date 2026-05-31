@@ -173,11 +173,10 @@ describe "Map" do
     it "toggles layer visibility from show to hidden" do
       layer_id = map.layers.first.id
 
-      # Open mobile dropdown
+      # When only visibility toggle is available, it shows inline instead of dropdown
       find(".maplibregl-ctrl-layers").click
-      find(".layer-actions-dropdown button").click
-      expect(page).to have_css("button.layer-visibility-mobile i.bi-eye-slash")
-      find("button.layer-visibility-mobile").click
+      expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
+      find("button.layer-visibility").click
 
       expect(page).to have_css(".layer-item.layer-dimmed")
       wait_for { map.layers.first.reload.show }.to be false
@@ -190,9 +189,8 @@ describe "Map" do
       expect_layer_visibility(layer_id, false)
 
       find(".maplibregl-ctrl-layers").click
-      find(".layer-actions-dropdown button").click
-      expect(page).to have_css("button.layer-visibility-mobile i.bi-eye")
-      find("button.layer-visibility-mobile").click
+      expect(page).to have_css("button.layer-visibility i.bi-eye")
+      find("button.layer-visibility").click
 
       expect(page).not_to have_css(".layer-item.layer-dimmed")
       wait_for { map.layers.first.reload.show }.to be true
