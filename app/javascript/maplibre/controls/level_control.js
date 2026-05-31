@@ -1,9 +1,10 @@
 import { initTooltips } from 'helpers/dom'
 
-export class IndoorLevelControl {
-  constructor(layerId, onLevelChange) {
+export class LevelControl {
+  constructor(layerId, onLevelChange, cssClass = 'level-control') {
     this.layerId = layerId
     this.onLevelChange = onLevelChange
+    this.cssClass = cssClass
     this.element = null
     this.currentLevel = null
     this.levels = []
@@ -13,14 +14,14 @@ export class IndoorLevelControl {
     if (this.element) return
 
     // Check if a control for this layer already exists
-    const existingControl = document.querySelector(`.indoor-level-control[data-layer-id="${this.layerId}"]`)
+    const existingControl = document.querySelector(`.${this.cssClass}[data-layer-id="${this.layerId}"]`)
     if (existingControl) {
       this.element = existingControl
       return
     }
 
     this.element = document.createElement('div')
-    this.element.className = 'maplibregl-ctrl maplibregl-ctrl-group indoor-level-control'
+    this.element.className = `maplibregl-ctrl maplibregl-ctrl-group ${this.cssClass}`
     this.element.setAttribute('data-layer-id', this.layerId)
 
     const bottomRight = document.querySelector('.maplibregl-ctrl-bottom-right')

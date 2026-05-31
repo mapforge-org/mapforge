@@ -11,6 +11,7 @@ import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetCo
 import { initializeViewControls } from 'maplibre/controls/view';
 import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
+import { initLevelFromURL } from 'maplibre/controls/levels';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { clearImageState, loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
@@ -60,6 +61,10 @@ export function initializeMaplibreProperties () {
 
 export async function initializeMap (divId = 'maplibre-map') {
   backgroundMapLayer = null
+
+  // Initialize level from URL FIRST, before any layer initialization
+  // This ensures the level is set before style.load triggers initializeLayers
+  initLevelFromURL()
 
   // async load mapbox-gl-draw
   const maplibreglModule = await import('maplibre-gl')

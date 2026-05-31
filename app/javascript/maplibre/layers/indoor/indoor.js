@@ -1,6 +1,6 @@
 import { debounce } from 'helpers/functions'
+import { detectLevels, getActiveLevel } from 'maplibre/controls/levels'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
-import { IndoorLevelControl } from 'maplibre/layers/indoor/control'
 import { addIndoorLayers, getIndoorLayerIds, indoorFillColor } from 'maplibre/layers/indoor/styles'
 import { Layer } from 'maplibre/layers/layer'
 import { map, removeStyleLayers, updateBuildingOpacity } from 'maplibre/map'
@@ -10,7 +10,6 @@ export class IndoorLayer extends Layer {
     super(layer)
     this.currentLevel = '0'
     this.levels = []
-    this.levelControl = null
     this.idleHandler = null
     this.initialTimeout = null
   }
@@ -21,9 +20,6 @@ export class IndoorLayer extends Layer {
 
   set show(value) {
     this.layer.show = value
-    if (this.levelControl) {
-      value ? this.levelControl.show() : this.levelControl.hide()
-    }
     if (value) {
       this.setupLevelDetection()
     } else {
@@ -58,12 +54,17 @@ export class IndoorLayer extends Layer {
     console.log('Indoor layer: initializing with level', this.currentLevel)
     removeStyleLayers(this.sourceId)
     this.removeLevelDetection()
-    this.removeLevelControl()
 
     if (!map.getSource(this.sourceId)) {
       console.warn('Indoor layer: source not available, skipping layer initialization')
       this.layer.show = false
       return Promise.resolve()
+    }
+
+    // Use active level from shared control if available
+    const activeLevel = getActiveLevel()
+    if (activeLevel) {
+      this.currentLevel = activeLevel
     }
 
     const levelFilter = ['==', ['to-string', ['get', 'level']], this.currentLevel]
@@ -125,7 +126,6 @@ export class IndoorLayer extends Layer {
     })
 
     this.updateFillPaint()
-    this.updateLevelControlUI()
   }
 
   updateFillPaint() {
@@ -207,39 +207,13 @@ export class IndoorLayer extends Layer {
   }
 
   updateLevelControl() {
-    if (this.levels.length > 0) {
-      if (!this.levelControl) {
-        this.createLevelControl()
-      }
-      this.updateLevelControlUI()
-    } else {
-      this.removeLevelControl()
-    }
+    // Notify shared level control system about available levels
+    detectLevels()
     updateBuildingOpacity()
-  }
-
-  createLevelControl() {
-    this.levelControl = new IndoorLevelControl(this.id, (level) => {
-      this.setLevel(level)
-    })
-    this.levelControl.create()
-  }
-
-  updateLevelControlUI() {
-    if (!this.levelControl) return
-    this.levelControl.update(this.levels, this.currentLevel)
-  }
-
-  removeLevelControl() {
-    if (this.levelControl) {
-      this.levelControl.remove()
-      this.levelControl = null
-    }
   }
 
   cleanup() {
     this.removeLevelDetection()
-    this.removeLevelControl()
     super.cleanup()
   }
 }

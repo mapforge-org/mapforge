@@ -1,0 +1,191 @@
+require "rails_helper"
+
+describe "Map GeoJSON levels" do
+  let(:feature_level_0) {
+    create(:feature, :polygon_middle,
+      properties: { title: "Level 0 Feature", level: "0" })
+  }
+  let(:feature_level_1) {
+    create(:feature, :point_middle,
+      properties: { title: "Level 1 Feature", level: "1" })
+  }
+  let(:feature_no_level) {
+    create(:feature, :point,
+      properties: { title: "No Level Feature" })
+  }
+  let(:map) { create(:map, features: [ feature_level_0, feature_level_1, feature_no_level ]) }
+  let(:path) { map.public_map_path }
+
+  before do
+    visit path
+    expect_map_loaded
+  end
+
+  context "initial map load" do
+    it "renders level 0 by default" do
+      # Level 0 feature should be visible (polygon_middle covers center)
+      hover_center_of_screen
+      expect(page).to have_text("Level 0 Feature")
+
+      # Feature without level should be visible (point at specific location)
+      point_coords = viewport_xy_for_lat_lng(
+        feature_no_level.geometry["coordinates"][1],
+        feature_no_level.geometry["coordinates"][0]
+      )
+      hover_coord(point_coords[:x], point_coords[:y])
+      expect(page).to have_text("No Level Feature")
+    end
+
+    it "shows level control" do
+      expect(page).to have_css(".level-control")
+      expect(page).to have_css(".level-control button[data-level='0']")
+      expect(page).to have_css(".level-control button[data-level='1']")
+    end
+
+    it "has level 0 button active" do
+      expect(page).to have_css(".level-control button[data-level='0'].active")
+      expect(page).not_to have_css(".level-control button[data-level='1'].active")
+    end
+
+    it "sets level in url" do
+      expect(page).to have_current_path("/m/#{map.public_id}?level=0", ignore_query: false)
+    end
+  end
+
+  context "switching levels" do
+    before do
+      # Ensure we start at level 0
+      expect(page).to have_css(".level-control button[data-level='0'].active")
+    end
+
+    it "renders features of new level only" do
+      # Click level 1 button
+      find(".level-control button[data-level='1']").click
+
+      wait_for { page.has_css?(".level-control button[data-level='1'].active") }.to be true
+
+      # Hover at center - level 0 polygon should be gone
+      hover_center_of_screen
+      expect(page).not_to have_text("Level 0 Feature")
+
+      # Hover on level 1 point to verify it IS visible
+      point_coords = viewport_xy_for_lat_lng(
+        feature_level_1.geometry["coordinates"][1],
+        feature_level_1.geometry["coordinates"][0]
+      )
+      hover_coord(point_coords[:x], point_coords[:y])
+      expect(page).to have_text("Level 1 Feature")
+    end
+
+    it "updates url level attribute" do
+      find(".level-control button[data-level='1']").click
+
+      wait_for do
+        page.current_url.include?("level=1")
+      end.to be true
+
+      expect(page).to have_current_path("/m/#{map.public_id}?level=1", ignore_query: false)
+    end
+
+    it "updates active button state" do
+      find(".level-control button[data-level='1']").click
+
+      wait_for do
+        page.has_css?(".level-control button[data-level='1'].active")
+      end.to be true
+
+      expect(page).not_to have_css(".level-control button[data-level='0'].active")
+      expect(page).to have_css(".level-control button[data-level='1'].active")
+    end
+  end
+
+  context "loading map with specific level url attribute" do
+    let(:path) { "/m/#{map.public_id}?level=1" }
+
+    it "shows that level" do
+      expect(page).to have_current_path("/m/#{map.public_id}?level=1", ignore_query: false)
+      expect(page).to have_css(".level-control button[data-level='1'].active")
+
+      # Level 0 polygon should not be visible
+      hover_center_of_screen
+      expect(page).not_to have_text("Level 0 Feature")
+
+      # Level 1 point should be visible
+      point_coords = viewport_xy_for_lat_lng(
+        feature_level_1.geometry["coordinates"][1],
+        feature_level_1.geometry["coordinates"][0]
+      )
+      hover_coord(point_coords[:x], point_coords[:y])
+      expect(page).to have_text("Level 1 Feature")
+    end
+  end
+
+  context "url attribute supports multiple levels separated by comma" do
+    # Note: UI only supports single selection for now, but the data model supports multiple levels
+    # This test verifies the URL parameter parsing works for future multi-level support
+    it "parses comma-separated levels from url" do
+      # Create an additional level for this test
+      create(:feature, :line_string,
+        layer: map.layers.first,
+        properties: { title: "Level 2 Feature", level: "2" })
+
+      # Manually set URL with multiple levels
+      page.driver.execute_script("window.history.replaceState({}, '', '?level=0,1')")
+      page.driver.refresh
+
+      expect_map_loaded
+
+      # Currently, with single-selection UI, only the first level (0) will be active
+      # But the URL parsing should not break
+      expect(page).to have_css(".level-control")
+      expect(page).to have_current_path("/m/#{map.public_id}?level=0", ignore_query: false)
+    end
+  end
+
+  context "features without level property" do
+    let(:map) { create(:map, features: [ feature_level_0, feature_no_level ]) }
+
+    it "are always visible regardless of active level" do
+      # At level 0
+      expect(page).to have_css(".level-control button[data-level='0'].active")
+      point_coords = viewport_xy_for_lat_lng(
+        feature_no_level.geometry["coordinates"][1],
+        feature_no_level.geometry["coordinates"][0]
+      )
+      hover_coord(point_coords[:x], point_coords[:y])
+      expect(page).to have_text("No Level Feature")
+    end
+  end
+
+  context "map with no leveled features" do
+    let(:map) { create(:map, features: [ feature_no_level ]) }
+
+    it "does not show level control" do
+      expect(page).not_to have_css(".level-control")
+    end
+  end
+
+  context "switching between levels via url" do
+    it "updates the map when url changes" do
+      expect(page).to have_css(".level-control button[data-level='0'].active")
+
+      # Change URL programmatically to level 1
+      page.driver.execute_script("window.location.search = '?level=1'")
+      expect_map_loaded
+
+      expect(page).to have_css(".level-control button[data-level='1'].active")
+
+      # Level 0 polygon should not be visible anymore
+      hover_center_of_screen
+      expect(page).not_to have_text("Level 0 Feature")
+
+      # Level 1 point should be visible
+      point_coords = viewport_xy_for_lat_lng(
+        feature_level_1.geometry["coordinates"][1],
+        feature_level_1.geometry["coordinates"][0]
+      )
+      hover_coord(point_coords[:x], point_coords[:y])
+      expect(page).to have_text("Level 1 Feature")
+    end
+  end
+end

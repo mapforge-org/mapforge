@@ -1,5 +1,6 @@
 import { buffer } from "@turf/buffer"
 import { draw, select } from 'maplibre/edit'
+import { detectLevels, filterFeaturesByLevel } from 'maplibre/layers/geojson/levels'
 import { initializeKmMarkerStyles, renderKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { initializeExtrasLabelStyles, renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
 import { Layer } from 'maplibre/layers/layer'
@@ -52,12 +53,19 @@ export class GeoJSONLayer extends Layer {
     console.log("Redraw: Setting source data for geojson layer", this.layer)
     if (!this.layer?.geojson?.features) { return }
     this.ensureFeaturePropertyIds()
-    renderKmMarkers(this.layer.geojson.features, this.kmMarkerSourceId)
-    renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
-    const extrusionLines = this.renderExtrusionLines()
-    const geojson = { type: 'FeatureCollection', features: this.layer.geojson.features.concat(extrusionLines) }
+
+    // Filter features by active level(s)
+    const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
+
+    renderKmMarkers(filteredFeatures, this.kmMarkerSourceId)
+    renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
+    const extrusionLines = this.renderExtrusionLines(filteredFeatures)
+    const geojson = { type: 'FeatureCollection', features: filteredFeatures.concat(extrusionLines) }
     map.getSource(this.sourceId).setData(geojson, false)
     this.resetDrawFeatures(resetDraw)
+
+    // Detect available levels after rendering (does not trigger re-render)
+    detectLevels()
   }
 
   renderAnimationFrame(feature, frameCount) {
@@ -66,9 +74,12 @@ export class GeoJSONLayer extends Layer {
     feature.properties.id = feature.id
     map.getSource(this.sourceId).updateData({ update: [feature] })
 
-    renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
+    // Filter features by active level(s) for animation frame
+    const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
+
+    renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
     if (frameCount % 10 === 0) {
-      renderKmMarkers(this.layer.geojson.features, this.kmMarkerSourceId)
+      renderKmMarkers(filteredFeatures, this.kmMarkerSourceId)
     }
   }
 
@@ -90,12 +101,12 @@ export class GeoJSONLayer extends Layer {
     }
   }
 
-  renderExtrusionLines() {
+  renderExtrusionLines(features) {
     if (mapProperties.terrain) { return [] }
 
     // LineStrings with fill-extrusion-height are buffered into polygons for MapLibre's fill-extrusion layer
     // Skipped when 'show-route-extras' would render it's own extrusion
-    let extrusionLines = this.layer.geojson.features.filter(feature => (
+    let extrusionLines = features.filter(feature => (
       feature.geometry.type === 'LineString' &&
       feature.properties['fill-extrusion-height'] &&
       !feature.properties['show-route-extras'] &&

@@ -1,4 +1,5 @@
 import * as functions from 'helpers/functions'
+import { resetLevels } from 'maplibre/controls/levels'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { map, sortLayers } from 'maplibre/map'
 
@@ -15,6 +16,7 @@ export function resetInitializationState() {
   if (layers) {
     layers.forEach(layer => layer.cleanup())
   }
+  resetLevels()
   initializePromise = null
   layers = null
 }
