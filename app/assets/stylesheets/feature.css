@@ -131,6 +131,14 @@
     margin: 0.5rem 1rem;
   }
 
+  .feature-modal-header.no-title {
+    display: none;
+  }
+
+  .feature-modal-header.no-title + #edit-buttons {
+    margin-top: 0.5rem;
+  }
+
   #feature-details-header {
     justify-content: center;
   }

@@ -152,6 +152,7 @@ export async function showFeatureDetails (feature) {
   const titleElement = document.querySelector('#feature-title')
   titleElement.innerHTML = title
   titleElement.style.fontSize = titleElement.textContent.length > 24 ? '1rem' : null;
+  document.querySelector('.feature-modal-header').classList.toggle('no-title', !title)
 
   document.querySelector('#feature-size').innerHTML = featureMeta(feature)
   document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
