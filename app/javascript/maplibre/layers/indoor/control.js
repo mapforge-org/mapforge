@@ -72,6 +72,7 @@ export class IndoorLevelControl {
     const levelsChanged = JSON.stringify(levels) !== JSON.stringify(this.levels)
 
     if (levelsChanged) {
+      this.disposeTooltips()
       this.levels = levels
 
       const existingButtons = new Map()

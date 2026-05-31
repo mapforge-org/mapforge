@@ -202,7 +202,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     filter: levelFilter,
     layout: {
       'text-field': ['get', 'name'],
-      'text-size': 12,
+      'text-size': 15,
       'text-font': labelFont,
       'text-optional': true
     },

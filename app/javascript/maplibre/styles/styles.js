@@ -168,6 +168,7 @@ const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scalin
 const pointColor = styleProp(['user_marker-color', 'marker-color'], featureColor)
 const markerSize = styleProp(['user_marker-size', 'marker-size'])
 const minZoomFilter = [">=", ["zoom"], ["coalesce", ["to-number", ["get", "min-zoom"]], 0]]
+const maxZoomFilter = ["<=", ["zoom"], ["coalesce", ["to-number", ["get", "max-zoom"]], 24]]
 
 const pointSizeMin = ['to-number', ['coalesce',
   ...markerSize.slice(1), 3]]
@@ -313,7 +314,8 @@ function symbolsLayerStyles(mode) {
       filter: ['all',
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
         flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
-        minZoomFilter
+        minZoomFilter,
+        maxZoomFilter
       ],
       layout: {
         ...sharedLayout,
@@ -382,7 +384,8 @@ function textLayerStyles(mode) {
         ['!=', ['geometry-type'], 'MultiLineString'], // line labels are in 'line-labels'
         ['has', 'label'],
         flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
-        minZoomFilter
+        minZoomFilter,
+        maxZoomFilter
       ],
       layout: {
         ...sharedLayout,
@@ -402,7 +405,8 @@ export function styles () {
           filter: ['all',
             ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
             ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
-            minZoomFilter],
+            minZoomFilter,
+            maxZoomFilter],
             paint: {
               'fill-color': 'gray',
               'fill-opacity': [
@@ -416,7 +420,8 @@ export function styles () {
       filter: ['all',
         ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
         ['==', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
-        minZoomFilter],
+        minZoomFilter,
+        maxZoomFilter],
       paint: {
         'fill-color': fillColor,
         'fill-opacity': fillOpacity
@@ -428,7 +433,8 @@ export function styles () {
       filter: ['all',
         ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
         ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
-        minZoomFilter],
+        minZoomFilter,
+        maxZoomFilter],
       paint: {
         'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], featureColor),
         'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
@@ -443,7 +449,8 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
-        minZoomFilter],
+        minZoomFilter,
+        maxZoomFilter],
       layout: {
         'line-join': 'round',
         'line-cap': 'round'
@@ -466,7 +473,8 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
-        minZoomFilter],
+        minZoomFilter,
+        maxZoomFilter],
       layout: {
         'line-join': 'round',
         'line-cap': 'round'
@@ -486,7 +494,8 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
-        minZoomFilter],
+        minZoomFilter,
+        maxZoomFilter],
       layout: {
         'line-join': 'round',
         'line-cap': 'round',
@@ -511,7 +520,8 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
-        minZoomFilter],
+        minZoomFilter,
+        maxZoomFilter],
       paint: {
         'line-width': ['+', 10, outlineWidthMax],
         'line-opacity': 0 // cannot use visibility:none here
@@ -529,7 +539,8 @@ export function styles () {
         ["!", ["has", "point_count"]],
         ["!", ["has", "marker-image-url"]],
         ["!", ["has", "route-extras-label"]],
-        minZoomFilter],
+        minZoomFilter,
+        maxZoomFilter],
       paint: {
         "circle-pitch-alignment": "map",
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
@@ -582,7 +593,8 @@ export function styles () {
         ["!", ["has", "point_count"]],
         ["!", ["has", "marker-image-url"]],
         ["!", ["has", "route-extras-label"]],
-        minZoomFilter
+        minZoomFilter,
+        maxZoomFilter
       ],
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
@@ -631,7 +643,8 @@ export function styles () {
         "all",
         ["==", ["geometry-type"], "Point"],
         ["!", ["has", "route-extras-label"]],
-        minZoomFilter
+        minZoomFilter,
+        maxZoomFilter
       ],
       paint: {
         'circle-radius': ['+', 5, pointSizeMax],
@@ -649,7 +662,8 @@ export function styles () {
       filter: [
         "all",
         ["==", ["geometry-type"], "Point"],
-        minZoomFilter
+        minZoomFilter,
+        maxZoomFilter
       ],
       paint: {
         'heatmap-opacity': 0.7,
@@ -669,7 +683,9 @@ export function styles () {
           ['==', ['geometry-type'], 'LineString'],
           ['==', ['geometry-type'], 'MultiLineString']
         ],
-        ['has', 'label'], minZoomFilter],
+        ['has', 'label'],
+        minZoomFilter,
+        maxZoomFilter],
       layout: {
         'symbol-placement': 'line',
         'text-field': styleProp(['user_label', 'label']),
@@ -699,7 +715,9 @@ export function styles () {
         ['any',
           ["has", "stroke-image-url"],
           ["has", "stroke-symbol"]
-        ], minZoomFilter],
+        ],
+        minZoomFilter,
+        maxZoomFilter],
       layout: {
         "symbol-placement": "line",
         "symbol-spacing": 100, // distance in pixels, only works with 'line'
