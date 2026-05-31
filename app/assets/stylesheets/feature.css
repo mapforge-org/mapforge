@@ -155,6 +155,11 @@
   .feature-tab-btn {
     min-width: 1.7rem;
   }
+
+  #feature-details-modal input,
+  #feature-details-modal textarea {
+    touch-action: pan-x;
+  }
 }
 
 @media (width > 574px) and (height >=410px) {
