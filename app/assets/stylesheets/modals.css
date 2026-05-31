@@ -126,138 +126,6 @@
   display: none;
 }
 
-@media (width <= 574px) {
-  .map-modal-content {
-      max-height: calc(100vh - 7rem);
-  }
-
-  .layer-preview {
-      width: 28%;
-      height: auto;
-  }
-
-  .modal-pull-button {
-    top: 0.7rem;
-    position: relative;
-    display: block;
-    width: 45px;
-    height: 8px;
-    margin: auto;
-    background-color: rgb(200 200 200);
-    border-radius: 3px;
-  }
-
-  .modal-pull-button:hover {
-    background-color: rgb(124 124 124);
-  }
-
-  .modal-pull-transition {
-    transition:
-      height 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
-  }
-
-  .modal-pull-up {
-    height: calc(100% - 1rem);
-  }
-
-  .modal-pull-middle {
-    height: 45%;
-  }
-
-  .modal-pull-down {
-    height: 25%;
-  }
-
-  .modal-pull-fade {
-    opacity: 0.4 !important;
-  }
-
-  /* Larger touch targets on mobile */
-  .copy-link {
-    min-width: 2rem;
-    min-height: 2rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .copy-link i {
-    font-size: 1rem;
-  }
-
-  /* Touch feedback */
-  .copy-link:active {
-    background-color: rgb(0 0 0 / 8%);
-    border-radius: 0.4rem;
-  }
-}
-
-@media (height < 410px) {
-  .map-modal-content {
-      max-height: calc(100vh - 7rem);
-  }
-
-  .layer-preview {
-      width: 28%;
-      height: auto;
-  }
-
-  .modal-pull-button {
-    top: 0.7rem;
-    position: relative;
-    display: block;
-    width: 45px;
-    height: 8px;
-    margin: auto;
-    background-color: rgb(200 200 200);
-    border-radius: 3px;
-  }
-
-  .modal-pull-button:hover {
-    background-color: rgb(124 124 124);
-  }
-
-  .modal-pull-transition {
-    transition:
-      height 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
-  }
-
-  .modal-pull-up {
-    height: calc(100% - 1rem);
-  }
-
-  .modal-pull-middle {
-    height: 45%;
-  }
-
-  .modal-pull-down {
-    height: 25%;
-  }
-
-  .modal-pull-fade {
-    opacity: 0.4 !important;
-  }
-
-  /* Larger touch targets on mobile */
-  .copy-link {
-    min-width: 2rem;
-    min-height: 2rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .copy-link i {
-    font-size: 1rem;
-  }
-
-  /* Touch feedback */
-  .copy-link:active {
-    background-color: rgb(0 0 0 / 8%);
-    border-radius: 0.4rem;
-  }
-}
-
 .modal-close-button {
   position: absolute;
   top: 0.6rem;
@@ -316,12 +184,6 @@
 .badge-owner, .badge-edit, .badge-view {
   background-color: rgb(255 255 255 / 30%);
   color: #fff;
-}
-
-@media (width <= 574px) {
-  .permission-badge {
-    display: none;
-  }
 }
 
 #share-modal .form-floating > .form-select {
@@ -458,6 +320,7 @@
 
 .layer-item {
   padding-top: 0.4rem;
+  margin-top: 1rem;
 }
 
 .layer-item-header {
@@ -474,6 +337,9 @@
 
 .layer-item-header button {
   max-width: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .overpass-docs {
@@ -535,6 +401,198 @@
   padding-bottom: 0.2rem;
 }
 
+#confirmation-yes, #confirmation-no {
+  font-size: 1rem;
+}
+
+#map-description table td,
+#map-description table th,
+#description-content table td,
+#description-content table th {
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+
+/* Media queries at end to ensure they override defaults */
+
+@media (width <= 574px) {
+  .map-modal-content {
+      max-height: calc(100vh - 7rem);
+  }
+
+  .layer-preview {
+      width: 28%;
+      height: auto;
+  }
+
+  .modal-pull-button {
+    top: 0.7rem;
+    position: relative;
+    display: block;
+    width: 45px;
+    height: 8px;
+    margin: auto;
+    background-color: rgb(200 200 200);
+    border-radius: 3px;
+  }
+
+  .modal-pull-button:hover {
+    background-color: rgb(124 124 124);
+  }
+
+  .modal-pull-transition {
+    transition:
+      height 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  }
+
+  .modal-pull-up {
+    height: calc(100% - 1rem);
+  }
+
+  .modal-pull-middle {
+    height: 45%;
+  }
+
+  .modal-pull-down {
+    height: 25%;
+  }
+
+  .modal-pull-fade {
+    opacity: 0.4 !important;
+  }
+
+  /* Larger touch targets on mobile */
+  .copy-link {
+    min-width: 2rem;
+    min-height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .copy-link i {
+    font-size: 1rem;
+  }
+
+  /* Touch feedback */
+  .copy-link:active {
+    background-color: rgb(0 0 0 / 8%);
+    border-radius: 0.4rem;
+  }
+
+  /* Smaller font for layer names on narrow screens */
+  .layer-name {
+    font-size: 0.9rem;
+  }
+
+  /* Smaller layer action buttons on narrow screens */
+  .btn-layer-actions {
+    --bs-btn-padding-x: 0.3rem;
+    --bs-btn-padding-y: 0.15rem;
+
+    font-size: 0.85rem;
+  }
+
+  .layer-item-header button {
+    max-width: 2rem;
+    max-height: 1.5rem;
+  }
+
+  /* Reduce spacing between and inside layer blocks */
+  .layer-item {
+    margin-top: 0rem;
+    margin-bottom: 0.5rem;
+    padding-top: 0.2rem;
+  }
+
+  .permission-badge {
+    display: none;
+  }
+}
+
+@media (height < 410px) {
+  .map-modal-content {
+      max-height: calc(100vh - 7rem);
+  }
+
+  .layer-preview {
+      width: 28%;
+      height: auto;
+  }
+
+  .modal-pull-button {
+    top: 0.7rem;
+    position: relative;
+    display: block;
+    width: 45px;
+    height: 8px;
+    margin: auto;
+    background-color: rgb(200 200 200);
+    border-radius: 3px;
+  }
+
+  .modal-pull-button:hover {
+    background-color: rgb(124 124 124);
+  }
+
+  .modal-pull-transition {
+    transition:
+      height 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  }
+
+  .modal-pull-up {
+    height: calc(100% - 1rem);
+  }
+
+  .modal-pull-middle {
+    height: 45%;
+  }
+
+  .modal-pull-down {
+    height: 25%;
+  }
+
+  .modal-pull-fade {
+    opacity: 0.4 !important;
+  }
+
+  /* Larger touch targets on mobile */
+  .copy-link {
+    min-width: 2rem;
+    min-height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .copy-link i {
+    font-size: 1rem;
+  }
+
+  /* Touch feedback */
+  .copy-link:active {
+    background-color: rgb(0 0 0 / 8%);
+    border-radius: 0.4rem;
+  }
+
+  .map-modal {
+    margin: 0 0.5rem;
+    padding: 0.8rem 0.1rem 0.8rem 0.5rem;
+  }
+
+  .map-modal-header {
+    padding: 0 0.4rem;
+  }
+
+  #description-modal {
+    padding-top: 3rem;
+  }
+
+  #description-modal .map-modal {
+    padding-top: 0;
+  }
+}
+
 @media (width < 640px) {
   #description-modal {
     padding-top: 3rem;
@@ -562,35 +620,4 @@
   #description-modal .map-modal {
     padding-top: 0;
   }
-}
-
-@media (height < 410px) {
-  .map-modal {
-    margin: 0 0.5rem;
-    padding: 0.8rem 0.1rem 0.8rem 0.5rem;
-  }
-
-  .map-modal-header {
-    padding: 0 0.4rem;
-  }
-
-  #description-modal {
-    padding-top: 3rem;
-  }
-
-  #description-modal .map-modal {
-    padding-top: 0;
-  }
-}
-
-#confirmation-yes, #confirmation-no {
-  font-size: 1rem;
-}
-
-#map-description table td,
-#map-description table th,
-#description-content table td,
-#description-content table th {
-  border: 1px solid #ddd;
-  padding: 5px;
 }

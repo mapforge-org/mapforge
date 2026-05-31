@@ -112,13 +112,13 @@
 
       - # used by controls/shared.js
       .hidden
-        #layer-item-template.layer-item.mt-3.feature-section-card
-          %h5.layer-item-header.mb-0
+        #layer-item-template.layer-item.feature-section-card
+          %h5.layer-item-header.mb-0.ms-1
             %span.w-100.link{ data: { action: "click->map--layers#toggleLayerList" }}
               %i.bi.bi-caret-right-fill
               %span.mapforge-font.layer-name.me-2 Layer name
-            -# Desktop: inline buttons
-            %span.text-nowrap.d-none.d-sm-inline
+            -# Desktop (and mobile when there is only one): inline buttons
+            %span.text-nowrap.d-none.d-sm-inline.me-2
               %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-visibility{ data: { action: "click->map--layers#toggleLayerVisibility", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: "Hide layer" }
                 %i.bi.bi-eye-slash
               %button.hidden.btn.btn-secondary.btn-layer-actions.layer-refresh{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: "Refresh layer for current view" }
