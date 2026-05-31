@@ -61,7 +61,7 @@
         %i.bi.bi-download
         GeoJSON
     %span.feature-export#feature-export-gpx.ms-2.link.text-nowrap<
-      =link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), title: 'Download as GPX', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" do
+      =link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), title: 'Download as GPX', data: { turbo: false, toggle: "tooltip", 'bs-placement': "bottom", 'bs-trigger': "hover" } do
         %i.bi.bi-download
         GPX
     / %span#feature-animation.ms-2.link

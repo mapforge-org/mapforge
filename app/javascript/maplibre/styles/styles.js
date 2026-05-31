@@ -167,8 +167,8 @@ const outlineWidth = [
 const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
 const pointColor = styleProp(['user_marker-color', 'marker-color'], featureColor)
 const markerSize = styleProp(['user_marker-size', 'marker-size'])
-const minZoomFilter = [">=", ["zoom"], ["coalesce", ["to-number", ["get", "min-zoom"]], 0]]
-const maxZoomFilter = ["<=", ["zoom"], ["coalesce", ["to-number", ["get", "max-zoom"]], 24]]
+const minZoomFilter = [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], 0]]]
+const maxZoomFilter = ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], 24]]]
 
 const pointSizeMin = ['to-number', ['coalesce',
   ...markerSize.slice(1), 3]]

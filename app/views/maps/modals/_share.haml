@@ -75,7 +75,7 @@
                 %i.bi.bi-download
                 GeoJSON
             %button.btn.btn-secondary.btn-download{ type: "button" }
-              =link_to map_gpx_path(@map.public_id) do
+              =link_to map_gpx_path(@map.public_id), data: { turbo: false } do
                 %i.bi.bi-download
                 GPX
             %button.btn.btn-secondary.btn-download{ type: "button" }

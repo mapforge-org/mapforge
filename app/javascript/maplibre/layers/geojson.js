@@ -33,8 +33,8 @@ export class GeoJSONLayer extends Layer {
     const mainLineFilter = ['all',
       ['==', ['geometry-type'], 'LineString'],
       ['!', ['has', 'show-route-extras']],
-      [">=", ["zoom"], ["coalesce", ["to-number", ["get", "min-zoom"]], 0]],
-      ["<=", ["zoom"], ["coalesce", ["to-number", ["get", "max-zoom"]], 24]]
+      [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], 0]]],
+      ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], 24]]]
     ]
     map.setFilter(`line-layer_${this.sourceId}`, mainLineFilter)
     // Hide the outline layer for route extras - we only want the colored segments visible
