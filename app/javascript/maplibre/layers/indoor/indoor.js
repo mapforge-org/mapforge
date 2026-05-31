@@ -1,4 +1,4 @@
-import { debounce } from 'helpers/functions'
+import { debounce, e, featureId } from 'helpers/functions'
 import { detectLevels, getActiveLevel } from 'maplibre/controls/levels'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { addIndoorLayers, getIndoorLayerIds, indoorFillColor } from 'maplibre/layers/indoor/styles'
@@ -12,6 +12,7 @@ export class IndoorLayer extends Layer {
     this.levels = []
     this.idleHandler = null
     this.initialTimeout = null
+    this.contextMenuHandler = null
   }
 
   get show() {
@@ -108,6 +109,49 @@ export class IndoorLayer extends Layer {
     }
 
     map.on('click', this.getStyleLayerIds(), this.clickHandler)
+
+    this.contextMenuHandler = (e_event) => {
+      e_event.preventDefault()
+      const queryLayerIds = this.getStyleLayerIds()
+      const features = map.queryRenderedFeatures(e_event.point, { layers: queryLayerIds })
+
+      if (features.length && window.gon.map_mode === 'rw') {
+        const feature = features[0]
+        const geojsonFeature = {
+          type: 'Feature',
+          geometry: feature.geometry,
+          properties: { ...feature.properties }
+        }
+        geojsonFeature.id = geojsonFeature.properties.id = featureId()
+        geojsonFeature.properties.label = feature.properties.name || feature.properties.class
+        geojsonFeature.properties.desc = indoorDescription(feature.properties)
+
+        // Store in this layer's geojson so getFeature(id, 'indoor') can find it
+        this.geojson.features = [geojsonFeature]
+
+        e('#map-context-menu', el => {
+          if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
+          el.classList.remove('hidden')
+          const copyButton = document.createElement('div')
+          copyButton.classList.add('context-menu-item')
+          copyButton.innerHTML = '<i class="bi bi-copy me-1"></i>Copy to my layer'
+          copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
+          copyButton.dataset.featureId = geojsonFeature.id
+          copyButton.dataset.layerType = 'indoor'
+          el.appendChild(copyButton)
+        })
+      }
+    }
+
+    map.on('contextmenu', this.contextMenuHandler)
+  }
+
+  removeEventHandlers() {
+    super.removeEventHandlers()
+    if (this.contextMenuHandler) {
+      map.off('contextmenu', this.contextMenuHandler)
+      this.contextMenuHandler = null
+    }
   }
 
   setLevel(level) {

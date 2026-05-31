@@ -18,6 +18,8 @@ export const indoorFillColor = [
  * Adds indoor map style layers for a given source
  * Only level plans right now, no POI points
  * Schema of indoor layers: https://indoorequal.com/doc/schema
+ * OSM indoor tagging guideline: https://wiki.openstreetmap.org/wiki/OpenIndoor +
+ *                               https://wiki.openstreetmap.org/wiki/Simple_Indoor_Tagging
  * @param {string} sourceId - The source ID to use for the layers
  * @param {Array} levelFilter - MapLibre filter expression array for the current level
  */
