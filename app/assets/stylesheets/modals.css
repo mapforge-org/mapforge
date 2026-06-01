@@ -631,3 +631,7 @@
     padding-top: 0;
   }
 }
+
+#description-content img, .editor-preview img {
+  max-width: 100%;
+}
