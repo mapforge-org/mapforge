@@ -632,6 +632,6 @@
   }
 }
 
-#description-content img, .editor-preview img {
+.editor-preview img, #description-content img {
   max-width: 100%;
 }
