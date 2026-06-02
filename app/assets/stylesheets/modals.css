@@ -632,6 +632,6 @@
   }
 }
 
-.editor-preview img, #description-content img {
+.editor-preview img, #description-content img, #map-description img {
   max-width: 100%;
 }
