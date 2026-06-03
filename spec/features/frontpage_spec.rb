@@ -7,7 +7,7 @@ describe "Frontpage" do
     end
 
     it "shows frontpage description" do
-      expect(page).to have_text("Create your own maps")
+      expect(page).to have_text("Create your own map")
     end
   end
 
