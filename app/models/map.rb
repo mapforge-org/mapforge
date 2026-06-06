@@ -52,10 +52,12 @@ class Map
   BASE_MAPS = [ "versatilesColorful", "satelliteStreets", "openTopoTiles",
     "openfreemapLiberty", "versatilesGraybeard", "versatilesEclipse",
     "stamenWatercolorTiles", "cyclosmTiles", "basemapWorld" ]
-  EXPERMENTAL_MAPS = [ "stamenTonerTiles", "openCycleMap", "versatilesGraybeardSnow", "thunderforestContrast" ]
+  # App admins can also select from these maps
+  EXPERIMENTAL_MAPS = [ "stamenTonerTiles", "openCycleMap", "versatilesGraybeardSnow", "thunderforestContrast", "artistic" ]
+
   STADIA_MAPS = [ "stamenTonerTiles", "stamenWatercolorTiles" ]
   OPENFREE_MAPS = [ "openfreemapPositron", "openfreemapBright", "openfreemapLiberty" ]
-  VERSATILES_MAPS = [ "versatilesColorful", "versatilesGraybeard", "versatilesGraybeardSnow" ]
+  VERSATILES_MAPS = [ "versatilesColorful", "versatilesGraybeard", "versatilesGraybeardSnow", "artistic" ]
   MAPTILER_MAPS = [ "maptilerBuildings", "maptilerHybrid", "maptilerDataviz",
     "maptilerStreets", "maptilerNoStreets", "maptilerWinter",
     "maptilerBike", "maptilerBasic" ]

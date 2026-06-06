@@ -35,7 +35,7 @@
         %h4.mapforge-font.mt-2
           Background map
 
-        - maps = (@user&.admin? ? Map::BASE_MAPS + Map::EXPERMENTAL_MAPS : Map::BASE_MAPS)
+        - maps = (@user&.admin? ? Map::BASE_MAPS + Map::EXPERIMENTAL_MAPS : Map::BASE_MAPS)
         - maps.each do |base_map|
           - active = (@map_properties[:base_map] == base_map)
           - map_image = "base_maps/placeholder.jpg"

@@ -206,6 +206,9 @@ export function basemaps () {
     versatilesNeutrino: { style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', font: 'noto_sans_regular' },
     versatilesEclipse: { style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', font: 'noto_sans_regular' },
 
+    // Custom local styles using OpenMapTiles schema
+    artistic: { style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread', font: 'suse' },
+
     // Maptiler maps: https://docs.maptiler.com/sdk-js/api/map-styles/#mapstylelist
     // 3D Houses
     maptilerBasic: { style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=' + window.gon.map_keys.maptiler },

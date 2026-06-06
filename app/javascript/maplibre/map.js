@@ -7,11 +7,11 @@ import { status } from 'helpers/status';
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
 import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
+import { initLevelFromURL } from 'maplibre/controls/levels';
 import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls } from 'maplibre/controls/view';
 import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
-import { initLevelFromURL } from 'maplibre/controls/levels';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { clearImageState, loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
@@ -66,12 +66,13 @@ export async function initializeMap (divId = 'maplibre-map') {
   // This ensures the level is set before style.load triggers initializeLayers
   initLevelFromURL()
 
-  // async load mapbox-gl-draw
+  // async load maplibre-gl
   const maplibreglModule = await import('maplibre-gl')
   const maplibregl = maplibreglModule.default
 
   initializeMaplibreProperties()
   resetEditMode()
+  document.fonts.load("24px 'SUSE'")
   map = new maplibregl.Map({
     container: divId,
     center: (mapProperties.center || mapProperties.default_center),
