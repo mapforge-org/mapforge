@@ -78,44 +78,38 @@
   /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
-/* suse-100italic - latin */
+/* Disabled: no element uses SUSE at weight 100 italic.
+suse-100italic - latin
 @font-face {
   font-display: swap;
-
-  /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: SUSE;
   font-style: italic;
   font-weight: 100;
   src: url('suse-v4-latin-100italic.woff2') format('woff2');
-
-  /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
+*/
 
-/* suse-200 - latin */
+/* Disabled: no element uses SUSE at weight 200 normal.
+suse-200 - latin
 @font-face {
   font-display: swap;
-
-  /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: SUSE;
   font-style: normal;
   font-weight: 200;
   src: url('suse-v4-latin-200.woff2') format('woff2');
-
-  /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
+*/
 
-/* suse-200italic - latin */
+/* Disabled: no element uses SUSE at weight 200 italic.
+suse-200italic - latin
 @font-face {
   font-display: swap;
-
-  /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: SUSE;
   font-style: italic;
   font-weight: 200;
   src: url('suse-v4-latin-200italic.woff2') format('woff2');
-
-  /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
+*/
 
 /* suse-300 - latin */
 @font-face {
@@ -156,18 +150,16 @@
   /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
-/* suse-italic - latin */
+/* Disabled: no element uses SUSE at weight 400 italic.
+suse-italic - latin
 @font-face {
   font-display: swap;
-
-  /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: SUSE;
   font-style: italic;
   font-weight: 400;
   src: url('suse-v4-latin-italic.woff2') format('woff2');
-
-  /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
+*/
 
 /* suse-500 - latin */
 @font-face {
@@ -208,18 +200,16 @@
   /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
-/* suse-600italic - latin */
+/* Disabled: no element uses SUSE at weight 600 italic.
+suse-600italic - latin
 @font-face {
   font-display: swap;
-
-  /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: SUSE;
   font-style: italic;
   font-weight: 600;
   src: url('suse-v4-latin-600italic.woff2') format('woff2');
-
-  /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
+*/
 
 /* suse-700 - latin */
 @font-face {
@@ -234,15 +224,13 @@
   /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
-/* suse-700italic - latin */
+/* Disabled: no element uses SUSE at weight 700 italic.
+suse-700italic - latin
 @font-face {
   font-display: swap;
-
-  /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: SUSE;
   font-style: italic;
   font-weight: 700;
   src: url('suse-v4-latin-700italic.woff2') format('woff2');
-
-  /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
+*/
