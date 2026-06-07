@@ -346,9 +346,15 @@ function textLayerStyles(mode) {
     'text-size': labelSize,
     'text-font': labelFont,
     'text-letter-spacing': ['coalesce', ['get', 'label-letter-spacing'], 0],
-    'text-anchor': 'top', // text under point
+    'text-anchor': styleProp(['user_label-anchor', 'label-anchor'], 'top'), // top: text under point
     // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
-    'text-offset': labelOffset,
+    // default to dynamic labelOffset if not set
+    'text-offset': [
+      'case',
+      ['has', 'label-offset'], ['get', 'label-offset'],
+      ['==', styleProp(['user_label-anchor', 'label-anchor'], 'top'), 'top'], labelOffset,
+      ['literal', [0, 0]]
+    ],
     'text-justify': ['get', 'label-justify'],
     'text-max-width': ['coalesce', ['get', 'label-max-width'], 10],
     'text-line-height': 1.6, // no dynamic value possible
@@ -363,7 +369,7 @@ function textLayerStyles(mode) {
     'text-allow-overlap': true,
     'text-rotation-alignment': 'map'
   } : {
-    'text-ignore-placement': false, // hide on collision
+    'text-ignore-placement': false, // hide on collision, no data-driven styling
     'text-rotation-alignment': 'viewport',
     'symbol-placement': 'point' // TODO: cannot set proper value for polygons and lines here?
   }

@@ -17,6 +17,8 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `label-max-width`: line width (default 10)
 * `label-letter-spacing`: space between letters (default 0)
 * `label-shadow`: font shadow in format "#ffffff" (default)
+* `label-anchor`: text anchor position relative to the feature: top (default), bottom, left, right, center, top-left, top-right, bottom-left, bottom-right
+* `label-offset`: label position offset from the anchor as `[x, y]` in em units (default: depends on marker size for `label-anchor: top`, otherwise `[0, 0]`)
 * `sort-key`: sort order of features: higher numbers overlay lower numbers (default: 1)
 * `min-zoom`: Display feature only on zoom levels bigger than min-zoom
 * `max-zoom`: Display feature only on zoom levels smaller than max-zoom
