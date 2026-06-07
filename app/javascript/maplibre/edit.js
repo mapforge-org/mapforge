@@ -191,7 +191,15 @@ export async function initializeEditMode () {
       Math.abs(touchStartPosition.y - touchEndPosition.y) < 3 &&
       (draw.getMode() === 'simple_select' || draw.getMode().startsWith('directions_')) &&
       !map.longPressTriggered) {
-      map.fire('click', e) // attach original event for coordinates
+      // Construct an event-like object that has preventDefault as an own property.
+      // map.fire('click', e) loses prototype methods like preventDefault during the
+      // event-data extend, breaking layer click handlers that call e.preventDefault().
+      map.fire('click', {
+        point: e.point,
+        lngLat: e.lngLat,
+        originalEvent: e.originalEvent,
+        preventDefault () { this.defaultPrevented = true }
+      })
     }
     // Fix for mapbox-gl-draw issue #650: after a touch-drag, the draw library's
     // state machine can fail to re-enable dragPan, freezing the map.
