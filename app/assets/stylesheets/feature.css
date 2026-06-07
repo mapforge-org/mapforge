@@ -123,7 +123,7 @@
   padding: 0.2rem 0.8rem;
 }
 
-@media (width <= 574px) or (height < 410px) {
+@media (width <= 640px) {
   #feature-details-modal {
     bottom: 0;
     left: calc(50% - 1rem);
@@ -177,7 +177,7 @@
   }
 }
 
-@media (width > 574px) and (height >=410px) {
+@media (width > 640px) {
   #feature-details-modal {
     left: 2.2rem;
     top: 4.2rem;
@@ -338,12 +338,6 @@
   margin-bottom: 0.8rem;
 }
 
-@media (width < 380px) {
-  .feature-section-card {
-      padding: 0.1rem 0.3rem 0.4rem;
-    }
-}
-
 .feature-section-title {
   color: #97a0ae;
   font-weight: 700;
@@ -469,14 +463,7 @@ input {
   color: var(--color-dark-charcoal);
 }
 
-@media (width <= 574px) {
-  .feature-details-card-header {
-    justify-content: center;
-    gap: 0.5rem;
-  }
-}
-
-@media (height < 410px) {
+@media (width <= 640px) {
   .feature-details-card-header {
     justify-content: center;
     gap: 0.5rem;

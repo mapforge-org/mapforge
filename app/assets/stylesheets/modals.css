@@ -440,16 +440,7 @@
   }
 }
 
-@media (width <= 574px) {
-  .map-modal-content {
-      max-height: calc(100vh - 7rem);
-  }
-
-  .layer-preview {
-      width: 28%;
-      height: auto;
-  }
-
+@media (width <= 640px) {
   .modal-pull-button {
     top: 0.7rem;
     position: relative;
@@ -486,6 +477,17 @@
 
   .modal-pull-fade {
     opacity: 0.4 !important;
+  }
+}
+
+@media (width <= 574px) {
+  .map-modal-content {
+      max-height: calc(100vh - 7rem);
+  }
+
+  .layer-preview {
+      width: 28%;
+      height: auto;
   }
 
   /* Larger touch targets on mobile */
@@ -544,44 +546,6 @@
   .layer-preview {
       width: 28%;
       height: auto;
-  }
-
-  .modal-pull-button {
-    top: 0.7rem;
-    position: relative;
-    display: block;
-    width: 45px;
-    height: 8px;
-    margin: auto;
-    background-color: rgb(200 200 200);
-    border-radius: 3px;
-  }
-
-  @media (hover: hover) {
-    .modal-pull-button:hover {
-      background-color: rgb(124 124 124);
-    }
-  }
-
-  .modal-pull-transition {
-    transition:
-      height 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
-  }
-
-  .modal-pull-up {
-    height: calc(100% - 1rem);
-  }
-
-  .modal-pull-middle {
-    height: 45%;
-  }
-
-  .modal-pull-down {
-    height: 25%;
-  }
-
-  .modal-pull-fade {
-    opacity: 0.4 !important;
   }
 
   /* Larger touch targets on mobile */
