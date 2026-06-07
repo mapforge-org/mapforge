@@ -227,41 +227,6 @@ html:has(.map), body:has(.map) {
   padding: 0.3rem;
 }
 
-#logo-path {
-  fill: white;
-  stroke: var(--color-dark-moss-green);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 2500;
-  stroke-dashoffset: 2500;
-  animation: draw-logo 4s linear infinite;
-  will-change: stroke-dashoffset, fill;
-  transform: translateZ(0);
-}
-
-@keyframes draw-logo {
-  0% {
-    fill: white;
-    stroke-dashoffset: 2500;
-  }
-
-  70% {
-    fill: var(--color-dark-moss-green);
-    stroke-dashoffset: 0;
-  }
-
-  85% {
-    fill: var(--color-dark-moss-green);
-    stroke-dashoffset: 0;
-  }
-
-  100% {
-    fill: white;
-    stroke-dashoffset: 2500;
-  }
-}
-
 /* maptiler-sdk messes with the geolocate marker animation */
 .maplibregl-user-location-dot::before {
   left: -0.12rem;
