@@ -182,8 +182,10 @@ export class Layer {
           return
         }
       }
-      frontFeature(feature)
       highlightFeature(feature, true, this.sourceId)
+      // Defer the layer re-upload until after the browser paints the selection state —
+      // frontFeature calls setData on the whole layer, which would otherwise stall feedback.
+      requestAnimationFrame(() => frontFeature(feature))
       e.preventDefault()
     }
 
@@ -200,8 +202,8 @@ export class Layer {
 
       console.log('Double-click on feature:', feature.id)
 
-      frontFeature(feature)
       highlightFeature(feature, true, this.sourceId)
+      requestAnimationFrame(() => frontFeature(feature))
 
       // Dispatch custom event to open geometry tab
       window.dispatchEvent(new CustomEvent('toggle-edit-feature', {
@@ -232,8 +234,8 @@ export class Layer {
 
         if (feature?.id) {
           if (feature.id === highlightedFeatureId) { return }
-          frontFeature(feature)
           highlightFeature(feature, false, this.sourceId)
+          requestAnimationFrame(() => frontFeature(feature))
         } else if (highlightedFeatureSource === this.sourceId) {
           resetHighlightedFeature()
         }

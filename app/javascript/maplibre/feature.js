@@ -18,7 +18,6 @@ export let highlightedFeatureId
 export let highlightedFeatureSource
 export let highlightedSourceLayer = null
 export let stickyFeatureHighlight = false
-let elevationChart
 
 function featureTitle (feature) {
   const title = feature?.properties?.title || feature?.properties?.user_title ||
@@ -139,11 +138,6 @@ export async function showFeatureDetails (feature) {
   } else {
     modal.removeAttribute('data-feature--edit-feature-id-value')
   }
-  dom.initTooltips(modal)
-
-  if (elevationChart) { elevationChart.destroy() }
-  elevationChart = await showElevationChart(feature)
-  showExtrasTotals(feature)
 
   f.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
   f.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
@@ -156,9 +150,6 @@ export async function showFeatureDetails (feature) {
 
   document.querySelector('#feature-size').innerHTML = featureMeta(feature)
   document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
-  // Re-initialize tooltips after adding navigation icons
-  dom.initTooltips(modal)
-  // Reuse featureLayer from above to check export eligibility
   if (feature.geometry.type === 'Point' || !featureLayer || featureLayer.type !== 'geojson') {
     dom.hideElements('.feature-export')
   } else {
@@ -177,6 +168,12 @@ export async function showFeatureDetails (feature) {
     document.querySelector('#feature-details-description').innerHTML = desc
   })
 
+  showExtrasTotals(feature)
+  dom.initTooltips(modal)
+
+  // Fire-and-forget — Chart.js dynamic import shouldn't block the modal's basic info.
+  // showElevationChart destroys any prior chart on the canvas itself.
+  showElevationChart(feature)
 }
 
 async function featureDescription (feature) {
