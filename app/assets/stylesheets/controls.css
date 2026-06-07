@@ -172,6 +172,7 @@
 
 /* fix for https://github.com/maplibre/maplibre-gl-js/issues/5284 */
 @media (hover: none) {
+  /* stylelint-disable-next-line defensive-css/no-accidental-hover -- intentional touch-device hover reset */
   .maplibregl-ctrl button:not(:disabled):hover {
     background-color: inherit;
   }
@@ -181,6 +182,7 @@
     color: inherit;
   }
 
+  /* stylelint-disable-next-line defensive-css/no-accidental-hover -- intentional touch-device hover reset */
   .maplibregl-ctrl .maplibregl-ctrl-icon:hover {
     filter: none;
   }

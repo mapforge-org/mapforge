@@ -51,8 +51,10 @@
   text-decoration-color: var(--color-dark-charcoal);
 }
 
-.footer .footer-links ul a:hover {
-  color: var(--hover-color);
+@media (hover: hover) {
+  .footer .footer-links ul a:hover {
+    color: var(--hover-color);
+  }
 }
 
 .footer .footer-links p {

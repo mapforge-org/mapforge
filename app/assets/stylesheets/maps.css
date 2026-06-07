@@ -69,8 +69,10 @@ nav.fixed-top~#maps {
   max-width: 15rem;
 }
 
-.map-preview a:hover img {
-  opacity: 1;
+@media (hover: hover) {
+  .map-preview a:hover img {
+    opacity: 1;
+  }
 }
 
 .map-preview .last-change {
@@ -96,8 +98,10 @@ nav.fixed-top~#maps {
   min-height: 4rem;
 }
 
-.preview-image:hover {
-  transform: scale(1.15);
+@media (hover: hover) {
+  .preview-image:hover {
+    transform: scale(1.15);
+  }
 }
 
 .map-preview-title {

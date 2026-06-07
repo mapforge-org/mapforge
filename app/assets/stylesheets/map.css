@@ -75,8 +75,10 @@ html:has(.map), body:has(.map) {
   font-weight: 400;
 }
 
-#layer-reload:hover {
-  box-shadow: 0 0 0 3px #BBB;
+@media (hover: hover) {
+  #layer-reload:hover {
+    box-shadow: 0 0 0 3px #BBB;
+  }
 }
 
 /* 640 is breakpoint for search form */

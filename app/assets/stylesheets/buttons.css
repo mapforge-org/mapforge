@@ -1,4 +1,5 @@
 .btn {
+  /* stylelint-disable-next-line defensive-css/no-accidental-hover -- reset rule, same value for all states */
   a, .link, a:hover, a:active, .link:hover, .link:active {
     color: unset;
   };

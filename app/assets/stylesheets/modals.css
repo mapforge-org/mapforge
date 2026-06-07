@@ -102,10 +102,18 @@
 
 /* settings modal */
 
-.layer-preview.active, .layer-preview:hover {
+.layer-preview.active {
   border-color: var(--color-dark-moss-green);
   border-width: 0.2rem;
   opacity: 1;
+}
+
+@media (hover: hover) {
+  .layer-preview:hover {
+    border-color: var(--color-dark-moss-green);
+    border-width: 0.2rem;
+    opacity: 1;
+  }
 }
 
 .map-settings {
@@ -151,9 +159,11 @@
   color: #fff;
 }
 
-.modal-close-button:hover {
-  background: rgb(200 200 200 / 75%);
-  color: #222;
+@media (hover: hover) {
+  .modal-close-button:hover {
+    background: rgb(200 200 200 / 75%);
+    color: #222;
+  }
 }
 
 /* Share modal */
@@ -238,9 +248,11 @@
   padding: 0.2rem;
 }
 
-.copy-link:hover {
-  text-decoration: none;
-  color: var(--bs-secondary-color) !important;
+@media (hover: hover) {
+  .copy-link:hover {
+    text-decoration: none;
+    color: var(--bs-secondary-color) !important;
+  }
 }
 
 .copy-success {
@@ -375,8 +387,10 @@
   height: 2.3rem;
 }
 
-.layer-feature-item:hover {
-  text-decoration: underline;
+@media (hover: hover) {
+  .layer-feature-item:hover {
+    text-decoration: underline;
+  }
 }
 
 .layer-feature-item i.bi {
@@ -447,8 +461,10 @@
     border-radius: 3px;
   }
 
-  .modal-pull-button:hover {
-    background-color: rgb(124 124 124);
+  @media (hover: hover) {
+    .modal-pull-button:hover {
+      background-color: rgb(124 124 124);
+    }
   }
 
   .modal-pull-transition {
@@ -541,8 +557,10 @@
     border-radius: 3px;
   }
 
-  .modal-pull-button:hover {
-    background-color: rgb(124 124 124);
+  @media (hover: hover) {
+    .modal-pull-button:hover {
+      background-color: rgb(124 124 124);
+    }
   }
 
   .modal-pull-transition {
