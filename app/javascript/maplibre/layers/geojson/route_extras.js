@@ -314,7 +314,10 @@ export function initializeExtrasLabelStyles (sourceId) {
     id: layerId,
     source: sourceId,
     type: 'symbol',
-    filter: ['has', 'route-extras-label'],
+    filter: ['all',
+      ['has', 'route-extras-label'],
+      [">=", ["zoom"], 10]
+    ],
     layout: {
       'text-field': ['get', 'route-extras-label'],
       'text-font': labelFont,
