@@ -207,7 +207,8 @@ export function basemaps () {
     versatilesEclipse: { style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', font: 'noto_sans_regular' },
 
     // Custom local styles using OpenMapTiles schema
-    artistic: { style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread', font: 'suse' },
+    // TODO: use 'suse' font when webfont loading works
+    artistic: { style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
 
     // Maptiler maps: https://docs.maptiler.com/sdk-js/api/map-styles/#mapstylelist
     // 3D Houses

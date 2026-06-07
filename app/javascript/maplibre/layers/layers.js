@@ -56,11 +56,20 @@ export function loadLayerDefinitions() {
   layers = null
   const host = new URL(window.location.href).origin
   const url = host + '/m/' + window.gon.map_id + '.json'
-  return fetch(url)
-    .then(response => {
-      if (!response.ok) { throw new Error('Network response was: ', response) }
-      return response.json()
-    })
+
+  // Reuse the in-flight fetch kicked off by the inline script in maplibre.haml,
+  // if it matches this map. Falls back to a fresh fetch otherwise (Turbo navigation,
+  // missing script, etc).
+  const cached = window._mapJsonForId
+  window._mapJsonForId = null
+  const dataPromise = (cached && cached.id === window.gon.map_id)
+    ? cached.promise
+    : fetch(url).then(response => {
+        if (!response.ok) { throw new Error('Network response was: ', response) }
+        return response.json()
+      })
+
+  return dataPromise
     .then(data => {
       console.log('Loaded map layer definitions from server: ', data.layers)
       // make sure we're still showing the map the request came from

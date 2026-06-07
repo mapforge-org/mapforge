@@ -11,6 +11,8 @@ class Feature
   field :geometry, type: Hash, default: {}
   field :properties, type: Hash, default: {}
 
+  index({ layer_id: 1, created_at: 1 }, background: true)
+
   # implicit_order_column is not supported by mongoid
   default_scope { order(created_at: :asc) }
   scope :point, -> { where("geometry.type" => "Point") }
