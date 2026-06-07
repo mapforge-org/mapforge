@@ -1466,7 +1466,7 @@
       "type": "line",
       "source": "versatiles-shortbread",
       "source-layer": "bridges",
-      "minzoom": 13,
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -1539,7 +1539,7 @@
       "type": "line",
       "source": "versatiles-shortbread",
       "source-layer": "bridges",
-      "minzoom": 13,
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -1608,7 +1608,7 @@
       "type": "line",
       "source": "versatiles-shortbread",
       "source-layer": "bridges",
-      "minzoom": 13,
+      "minzoom": 7,
       "filter": [
         "all",
         ["!=", ["get", "link"], true],
@@ -1670,7 +1670,7 @@
       "type": "line",
       "source": "versatiles-shortbread",
       "source-layer": "bridges",
-      "minzoom": 13,
+      "minzoom": 10,
       "filter": [
         "all",
         ["==", ["get", "link"], true],
@@ -1709,7 +1709,6 @@
       "type": "line",
       "source": "versatiles-shortbread",
       "source-layer": "bridges",
-      "minzoom": 13,
       "filter": [
         "all",
         ["!=", ["get", "link"], true],
@@ -1747,7 +1746,7 @@
       "type": "line",
       "source": "versatiles-shortbread",
       "source-layer": "bridges",
-      "minzoom": 13,
+      "minzoom": 10,
       "filter": [
         "all",
         ["==", ["get", "link"], true],
@@ -1780,7 +1779,7 @@
       "type": "line",
       "source": "versatiles-shortbread",
       "source-layer": "bridges",
-      "minzoom": 13,
+      "minzoom": 11,
       "filter": [
         "all",
         [
@@ -1853,7 +1852,7 @@
       "type": "line",
       "source": "versatiles-shortbread",
       "source-layer": "bridges",
-      "minzoom": 13,
+      "minzoom": 7,
       "filter": [
         "all",
         ["!=", ["get", "link"], true],
@@ -1907,7 +1906,6 @@
       "type": "line",
       "source": "versatiles-shortbread",
       "source-layer": "bridges",
-      "minzoom": 13,
       "filter": [
         "all",
         ["!=", ["get", "link"], true],
@@ -2307,13 +2305,20 @@
       "type": "symbol",
       "source": "versatiles-shortbread",
       "source-layer": "place_labels",
+      "minzoom": 11,
       "maxzoom": 15,
       "filter": [
-        "match",
-        ["get", "kind"],
-        ["village", "town"],
-        true,
-        false
+        "step",
+        ["zoom"],
+        false,
+        11, ["==", ["get", "kind"], "town"],
+        12.5, [
+          "match",
+          ["get", "kind"],
+          ["village", "town"],
+          true,
+          false
+        ]
       ],
       "layout": {
         "text-line-height": 1.1,
@@ -2330,8 +2335,7 @@
         "symbol-sort-key": [
           "-",
           ["to-number", ["get", "population"], 0]
-        ],
-        "visibility": "none"
+        ]
       },
       "paint": {
         "text-color": [
@@ -2350,6 +2354,7 @@
       "type": "symbol",
       "source": "versatiles-shortbread",
       "source-layer": "place_labels",
+      "minzoom": 9,
       "maxzoom": 15,
       "filter": [
         "match",
@@ -2373,8 +2378,7 @@
         "symbol-sort-key": [
           "-",
           ["to-number", ["get", "population"], 0]
-        ],
-        "visibility": "none"
+        ]
       },
       "paint": {
         "text-color": "hsl(153, 30%, 42%)",
