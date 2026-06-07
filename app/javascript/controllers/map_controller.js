@@ -2,7 +2,6 @@ import { Controller } from '@hotwired/stimulus'
 import { initializeSocket, mapChannel } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
-import { initializeEditMode } from 'maplibre/edit'
 import { resetInitializationState } from 'maplibre/layers/layers'
 import {
   addFeature,
@@ -28,7 +27,14 @@ export default class extends Controller {
     if (window.gon.map_mode === 'static') {
       initializeStaticMode()
     } else {
-      window.gon.map_mode !== 'rw' ? initializeViewMode() : await initializeEditMode()
+      if (window.gon.map_mode === 'rw') {
+        // Lazy-load the edit module so read-only viewers don't pay for mapbox-gl-draw,
+        // turf, routing, edit_styles and friends.
+        const { initializeEditMode } = await import('maplibre/edit')
+        await initializeEditMode()
+      } else {
+        initializeViewMode()
+      }
       initializeSocket()
     }
     setBackgroundMapLayer()

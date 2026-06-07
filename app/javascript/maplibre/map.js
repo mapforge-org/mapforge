@@ -4,6 +4,7 @@ import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep
 import * as dom from 'helpers/dom';
 import * as functions from 'helpers/functions';
 import { status } from 'helpers/status';
+import maplibregl from 'maplibre-gl';
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
 import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
@@ -65,10 +66,6 @@ export async function initializeMap (divId = 'maplibre-map') {
   // Initialize level from URL FIRST, before any layer initialization
   // This ensures the level is set before style.load triggers initializeLayers
   initLevelFromURL()
-
-  // async load maplibre-gl
-  const maplibreglModule = await import('maplibre-gl')
-  const maplibregl = maplibreglModule.default
 
   initializeMaplibreProperties()
   resetEditMode()
