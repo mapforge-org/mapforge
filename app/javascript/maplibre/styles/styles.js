@@ -204,8 +204,15 @@ export const pointSize = [
 export const pointOutlineSize = ['to-number', styleProp(['user_stroke-width', 'stroke-width'], 2)]
 export const pointOutlineSizeActive = ['+', 1, pointOutlineSize]
 const pointOutlineColor = styleProp(['user_stroke', 'stroke'], featureOutlineColor)
-const pointOpacity = ['to-number', styleProp(['marker-opacity'], 0.9)]
-const pointOpacityActive = ['to-number', ['min', ['+', ['coalesce', ['get', 'marker-opacity'], 0.9], 0.2], 1]]
+const defaultPointOpacity = ['case',
+  ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
+  1,
+  0.9
+]
+const pointOpacity = ['to-number', ['coalesce', ['get', 'marker-opacity'], defaultPointOpacity]]
+const pointOpacityActive = ['to-number',
+  ['min', ['+', ['coalesce', ['get', 'marker-opacity'], defaultPointOpacity], 0.2], 1]
+]
 
 // factor of the original icon size (200x200)
 // in case of external icon url, we don't know the size
