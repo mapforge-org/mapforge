@@ -72,7 +72,8 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   initializeMaplibreProperties()
   resetEditMode()
-  document.fonts.load("24px 'SUSE'")
+  // TODO: This will only work with maplibre 5.25 (https://github.com/maplibre/maplibre-gl-js/pull/7735)
+  // document.fonts.load("24px 'SUSE'")
   map = new maplibregl.Map({
     container: divId,
     center: (mapProperties.center || mapProperties.default_center),
