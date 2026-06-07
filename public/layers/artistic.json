@@ -284,7 +284,7 @@
           [
             "match",
             ["get", "kind"],
-            ["residential", "living_street", "track", "service"],
+            ["residential", "living_street", "track", "service", "unclassified", "pedestrian", "footway", "steps", "path", "cycleway", "busway", "busguideway"],
             true,
             false
           ]
@@ -345,7 +345,7 @@
           [
             "match",
             ["get", "kind"],
-            ["residential", "living_street", "track", "service"],
+            ["residential", "living_street", "track", "service", "unclassified", "pedestrian", "footway", "steps", "path", "cycleway", "busway", "busguideway"],
             true,
             false
           ]
@@ -578,7 +578,7 @@
           [
             "match",
             ["get", "kind"],
-            ["residential", "living_street", "track", "service"],
+            ["residential", "living_street", "track", "service", "unclassified", "pedestrian", "footway", "steps", "path", "cycleway", "busway", "busguideway"],
             true,
             false
           ]
@@ -689,6 +689,33 @@
       }
     },
     {
+      "id": "tunnel-rail",
+      "type": "line",
+      "source": "versatiles-shortbread",
+      "source-layer": "streets",
+      "minzoom": 13,
+      "filter": [
+        "all",
+        ["==", ["get", "tunnel"], true],
+        ["==", ["get", "kind"], "rail"]
+      ],
+      "layout": {
+        "line-join": "round",
+        "visibility": "none"
+      },
+      "paint": {
+        "line-color": "hsl(153, 24%, 84%)",
+        "line-dasharray": [3, 3],
+        "line-width": [
+          "interpolate",
+          ["exponential", 1.5],
+          ["zoom"],
+          14, 0.5,
+          20, 1
+        ]
+      }
+    },
+    {
       "id": "road-minor-low",
       "type": "line",
       "source": "versatiles-shortbread",
@@ -706,7 +733,7 @@
           [
             "match",
             ["get", "kind"],
-            ["track", "service"],
+            ["track", "service", "unclassified", "pedestrian", "footway", "steps", "path", "cycleway", "busway", "busguideway"],
             true,
             false
           ]
@@ -767,7 +794,7 @@
           [
             "match",
             ["get", "kind"],
-            ["track", "service"],
+            ["track", "service", "unclassified", "pedestrian", "footway", "steps", "path", "cycleway", "busway", "busguideway"],
             true,
             false
           ]
@@ -1216,7 +1243,7 @@
           [
             "match",
             ["get", "kind"],
-            ["track", "service"],
+            ["track", "service", "unclassified", "pedestrian", "footway", "steps", "path", "cycleway", "busway", "busguideway"],
             true,
             false
           ]
@@ -1465,10 +1492,11 @@
       "id": "bridge-street-minor-low",
       "type": "line",
       "source": "versatiles-shortbread",
-      "source-layer": "bridges",
+      "source-layer": "streets",
       "minzoom": 11,
       "filter": [
         "all",
+        ["==", ["get", "bridge"], true],
         [
           "step",
           ["zoom"],
@@ -1483,7 +1511,7 @@
           [
             "match",
             ["get", "kind"],
-            ["residential", "living_street", "track", "service"],
+            ["residential", "living_street", "track", "service", "unclassified", "pedestrian", "footway", "steps", "path", "cycleway", "busway", "busguideway"],
             true,
             false
           ]
@@ -1538,10 +1566,11 @@
       "id": "bridge-street-minor-case",
       "type": "line",
       "source": "versatiles-shortbread",
-      "source-layer": "bridges",
+      "source-layer": "streets",
       "minzoom": 11,
       "filter": [
         "all",
+        ["==", ["get", "bridge"], true],
         [
           "step",
           ["zoom"],
@@ -1556,7 +1585,7 @@
           [
             "match",
             ["get", "kind"],
-            ["residential", "living_street", "track", "service"],
+            ["residential", "living_street", "track", "service", "unclassified", "pedestrian", "footway", "steps", "path", "cycleway", "busway", "busguideway"],
             true,
             false
           ]
@@ -1607,10 +1636,11 @@
       "id": "bridge-primary-secondary-tertiary-case",
       "type": "line",
       "source": "versatiles-shortbread",
-      "source-layer": "bridges",
+      "source-layer": "streets",
       "minzoom": 7,
       "filter": [
         "all",
+        ["==", ["get", "bridge"], true],
         ["!=", ["get", "link"], true],
         [
           "match",
@@ -1669,10 +1699,11 @@
       "id": "bridge-major-link-case",
       "type": "line",
       "source": "versatiles-shortbread",
-      "source-layer": "bridges",
+      "source-layer": "streets",
       "minzoom": 10,
       "filter": [
         "all",
+        ["==", ["get", "bridge"], true],
         ["==", ["get", "link"], true],
         [
           "match",
@@ -1708,9 +1739,10 @@
       "id": "bridge-motorway-trunk-case",
       "type": "line",
       "source": "versatiles-shortbread",
-      "source-layer": "bridges",
+      "source-layer": "streets",
       "filter": [
         "all",
+        ["==", ["get", "bridge"], true],
         ["!=", ["get", "link"], true],
         [
           "match",
@@ -1745,10 +1777,11 @@
       "id": "bridge-major-link",
       "type": "line",
       "source": "versatiles-shortbread",
-      "source-layer": "bridges",
+      "source-layer": "streets",
       "minzoom": 10,
       "filter": [
         "all",
+        ["==", ["get", "bridge"], true],
         ["==", ["get", "link"], true],
         [
           "match",
@@ -1778,10 +1811,11 @@
       "id": "bridge-street-minor",
       "type": "line",
       "source": "versatiles-shortbread",
-      "source-layer": "bridges",
+      "source-layer": "streets",
       "minzoom": 11,
       "filter": [
         "all",
+        ["==", ["get", "bridge"], true],
         [
           "step",
           ["zoom"],
@@ -1796,7 +1830,7 @@
           [
             "match",
             ["get", "kind"],
-            ["residential", "living_street", "track", "service"],
+            ["residential", "living_street", "track", "service", "unclassified", "pedestrian", "footway", "steps", "path", "cycleway", "busway", "busguideway"],
             true,
             false
           ]
@@ -1851,10 +1885,11 @@
       "id": "bridge-primary-secondary-tertiary",
       "type": "line",
       "source": "versatiles-shortbread",
-      "source-layer": "bridges",
+      "source-layer": "streets",
       "minzoom": 7,
       "filter": [
         "all",
+        ["==", ["get", "bridge"], true],
         ["!=", ["get", "link"], true],
         [
           "match",
@@ -1905,9 +1940,10 @@
       "id": "bridge-motorway-trunk",
       "type": "line",
       "source": "versatiles-shortbread",
-      "source-layer": "bridges",
+      "source-layer": "streets",
       "filter": [
         "all",
+        ["==", ["get", "bridge"], true],
         ["!=", ["get", "link"], true],
         [
           "match",
@@ -1936,10 +1972,12 @@
       "id": "bridge-rail",
       "type": "line",
       "source": "versatiles-shortbread",
-      "source-layer": "bridges",
+      "source-layer": "streets",
       "minzoom": 13,
       "filter": [
-        "==", ["get", "kind"], "rail"
+        "all",
+        ["==", ["get", "bridge"], true],
+        ["==", ["get", "kind"], "rail"]
       ],
       "layout": {
         "line-join": "round",
