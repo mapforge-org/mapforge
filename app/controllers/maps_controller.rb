@@ -31,11 +31,16 @@ class MapsController < ApplicationController
     respond_to do |format|
       format.html do
         unless params["viewcount"] == "false"
-          # Avoid 'updated_at' update
-          @map.collection.update_one(
-            { _id: @map.id },
-            { "$set" => { view_count: (@map.view_count || 0) + 1, viewed_at: Time.now } }
-          )
+          # Defer view_count update until after the response is flushed so it doesn't add to TTFB.
+          map = @map
+          request.env["rack.after_reply"] ||= []
+          request.env["rack.after_reply"] << -> {
+            # Avoid 'updated_at' update
+            map.collection.update_one(
+              { _id: map.id },
+              { "$set" => { view_count: (map.view_count || 0) + 1, viewed_at: Time.now } }
+            )
+          }
         end
         @map_properties = map_properties
         @user&.track_map_view(params[:id])
@@ -165,7 +170,7 @@ class MapsController < ApplicationController
   end
 
   def set_map
-    @map = Map.find_by(public_id: params[:id]) || Map.find_by(private_id: params[:id])
+    @map = Map.unscoped.where(:$or => [ { public_id: params[:id] }, { private_id: params[:id] } ]).first
     render_not_found unless @map
   end
 
