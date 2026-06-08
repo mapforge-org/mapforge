@@ -530,7 +530,7 @@ function initializeFeatureTouchScroll() {
 
     const sheetHeight = newHeight / window.innerHeight * 100
     // fade out to show modal auto close
-    if (sheetHeight < 25) {
+    if (sheetHeight < 12) {
       modal.classList.add('modal-pull-fade')
     } else {
       modal.classList.remove('modal-pull-fade')
