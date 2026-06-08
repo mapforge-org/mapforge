@@ -183,6 +183,8 @@ app/javascript/maplibre/basemaps.js
   MAPFORGE_HOST=<host> bin/rake maps:screenshots
   ```
 
+- Setup database indexes: `bin/rake db:mongoid:create_indexes`
+
 - Animate a marker along a line:
 
   ```bash

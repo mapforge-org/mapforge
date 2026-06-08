@@ -181,7 +181,12 @@
       "source-layer": "water_polygons",
       "layout": {},
       "paint": {
-        "fill-color": "#a9d0cd"
+        "fill-color": [
+          "match",
+          ["get", "kind"],
+          "glacier", "#dbece8",
+          "#a9d0cd"
+        ]
       }
     },
     {
