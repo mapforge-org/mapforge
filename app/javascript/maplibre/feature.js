@@ -111,6 +111,13 @@ export function refreshFeatureMeta (feature) {
   document.querySelector('#feature-vertexes').innerHTML = featureVertexes(feature)
 }
 
+export function featureHasDescription (feature) {
+  const p = feature?.properties
+  if (!p) return false
+  if (p.wikipediaId) return true
+  return !!p.desc
+}
+
 export async function showFeatureDetails (feature) {
   dom.hideElements(['#feature-edit-ui'])
   f.e('#edit-buttons button', (e) => { e.classList.remove('active') })
@@ -124,7 +131,7 @@ export async function showFeatureDetails (feature) {
   modal.classList.remove('modal-pull-down')
   modal.classList.remove('modal-pull-up')
   modal.classList.remove('modal-pull-fade')
-  modal.classList.add('modal-pull-middle')
+  modal.classList.add(featureHasDescription(feature) ? 'modal-pull-middle' : 'modal-pull-down')
   modal.classList.add('modal-pull-transition')
   // keep custom modal height on selection change
   // modal.style.removeProperty('height')
