@@ -188,4 +188,54 @@ describe "Map GeoJSON levels" do
       expect(page).to have_text("Level 1 Feature")
     end
   end
+
+  context "features with multiple levels (OSM-style semicolon list)" do
+    # Place the multi-level point above the polygon_middle bbox so hovering it
+    # doesn't also pick up the level-0 polygon.
+    def feature_multi
+      @feature_multi ||= create(:feature, :point,
+        coordinates: [ 11.06, 49.475 ],
+        properties: { title: "Multi Level Feature", level: "0;1", "marker-size" => "150" })
+    end
+
+    def multi_coords
+      @multi_coords ||= viewport_xy_for_lat_lng(
+        feature_multi.geometry["coordinates"][1],
+        feature_multi.geometry["coordinates"][0]
+      )
+    end
+
+    context "with multi-level + single-level peers" do
+      let(:map) {
+        create(:map, features: [
+          feature_level_0, feature_level_1, feature_multi,
+          create(:feature, :line_string, properties: { title: "Level 2 Feature", level: "2" })
+        ])
+      }
+
+      it "is visible at level 0" do
+        expect(page).to have_css(".level-control button[data-level='0'].active")
+        hover_coord(multi_coords[:x], multi_coords[:y])
+        expect(page).to have_text("Multi Level Feature")
+      end
+
+      it "is still visible after switching to level 1" do
+        find(".level-control button[data-level='1']").click
+        wait_for { page.has_css?(".level-control button[data-level='1'].active") }.to be true
+
+        hover_coord(multi_coords[:x], multi_coords[:y])
+        expect(page).to have_text("Multi Level Feature")
+      end
+    end
+
+    context "level control reflects the union of declared levels" do
+      # Only the multi feature on the map — both its declared levels must produce buttons.
+      let(:map) { create(:map, features: [ feature_multi ]) }
+
+      it "shows a button for each level the feature declares" do
+        expect(page).to have_css(".level-control button[data-level='0']")
+        expect(page).to have_css(".level-control button[data-level='1']")
+      end
+    end
+  end
 end
