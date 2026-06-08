@@ -347,14 +347,11 @@
   text-overflow: ellipsis;
 }
 
-.layer-item-header button {
-  max-width: 3rem;
-}
-
 .layer-item-header .btn-layer-actions {
   display: flex;
   align-items: center;
   justify-content: center;
+  max-width: 3rem;
 }
 
 .overpass-docs {
@@ -511,7 +508,7 @@
 
   /* Smaller font for layer headers on narrow screens */
   .layer-item-header {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   /* Smaller layer action buttons on narrow screens */
@@ -522,7 +519,7 @@
     font-size: 0.85rem;
   }
 
-  .layer-item-header button {
+  .layer-item-header .btn-layer-actions {
     max-width: 2rem;
     max-height: 1.5rem;
   }
