@@ -30,11 +30,18 @@ export function getActiveLevel() {
   return activeLevel
 }
 
+// Parses a feature's `level` property into trimmed, non-empty level strings.
+// Accepts an OSM-style semicolon-separated list ("0;1;2") or a single value.
+function parseFeatureLevels(level) {
+  if (level === undefined || level === null) return []
+  return String(level).split(';').map(s => s.trim()).filter(s => s.length > 0)
+}
+
 /**
  * Filter GeoJSON features by active level.
  * Returns features that either:
  * - Don't have a level property (always visible)
- * - Have a level matching the active level
+ * - Declare a level (or one of several, OSM-style "0;1") matching the active level
  *
  * If no level is active, returns all features unfiltered.
  */
@@ -44,15 +51,9 @@ export function filterFeaturesByLevel(features) {
   }
 
   return features.filter(feature => {
-    const featureLevel = feature.properties?.level
-
-    // Features without level property are always visible
-    if (featureLevel === undefined || featureLevel === null) {
-      return true
-    }
-
-    // Check if feature's level matches active level
-    return String(featureLevel) === activeLevel
+    const levels = parseFeatureLevels(feature.properties?.level)
+    if (levels.length === 0) return true
+    return levels.includes(activeLevel)
   })
 }
 
@@ -73,10 +74,7 @@ export function detectLevels() {
       if (layer.type === 'geojson') {
         // Scan GeoJSON features
         layer.geojson?.features?.forEach(feature => {
-          const level = feature.properties?.level
-          if (level !== undefined && level !== null) {
-            levelSet.add(String(level))
-          }
+          parseFeatureLevels(feature.properties?.level).forEach(lvl => levelSet.add(lvl))
         })
       } else if (layer.type === 'indoor') {
         // Get levels from indoor layer
