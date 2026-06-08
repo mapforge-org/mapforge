@@ -6,7 +6,8 @@ fi
 
 # If running the rails server then create or migrate existing database
 if [[ "${*}" =~ (rails.*server|thrust.*server) ]]; then
-  ./bin/rails db:migrate
+  # create_indexes is a metadata check when indexes already exist — no scan, independent of collection size
+  ./bin/rails db:migrate db:mongoid:create_indexes
 fi
 
 exec "${@}"
