@@ -19,6 +19,8 @@ class Layer
   field :show, type: Boolean, default: true
   field :features_count, type: Integer, default: 0
 
+  index({ map_id: 1 }, background: true)
+
   after_save :broadcast_update, if: -> { map.present? }
   after_destroy :broadcast_destroy, if: -> { map.present? }
 

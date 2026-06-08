@@ -48,6 +48,11 @@ class Map
   field :edit_permission, type: String, default: "link" # 'private', 'link'
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
 
+  index({ public_id: 1 }, unique: true, background: true)
+  index({ private_id: 1 }, unique: true, background: true)
+  index({ view_permission: 1 }, background: true)
+  index({ owner_ids: 1 }, background: true)
+
   # Only BASE_MAPS are available in the UI
   BASE_MAPS = [ "versatilesColorful", "satelliteStreets", "openTopoTiles",
     "openfreemapLiberty", "versatilesGraybeard", "versatilesEclipse",
