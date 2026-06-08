@@ -1,6 +1,10 @@
 import { map, removeStyleLayers } from 'maplibre/map'
 import { defaultFont } from 'maplibre/styles/basemaps'
 
+// fill-extrusion-opacity is not data-driven in MapLibre, so per-feature opacity
+// is emulated by stacking one fill-extrusion layer per bucket (0.1 … 1.0)
+export const extrusionOpacityBuckets = Array.from({ length: 10 }, (_, i) => (i + 1) / 10)
+
 export const viewStyleNames = [
   'polygon-layer',
   'polygon-layer-outline',
@@ -17,7 +21,7 @@ export const viewStyleNames = [
   'text-layer-flat',
   'text-layer',
   'polygon-layer-extruded-shadow',
-  'polygon-layer-extrusion'
+  ...extrusionOpacityBuckets.map((_, i) => `polygon-layer-extrusion-${i + 1}`)
 ]
 
 export const defaultExtrusionOpacity = 0.9
@@ -112,7 +116,7 @@ const labelColor = styleProp(['user_label-color', 'label-color'], '#000')
 const labelShadow = styleProp(['user_label-shadow', 'label-shadow'], '#fff')
 
 const fillColor = styleProp(['fill', 'user_fill'], featureColor)
-const fillOpacity = ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], 0.7)]
+const fillOpacity = ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaultExtrusionOpacity)]
 
 const lineColor = styleProp(['stroke', 'user_stroke'], featureColor)
 const polygonOutlineColor = styleProp(['stroke', 'user_stroke'], featureOutlineColor)
@@ -409,6 +413,38 @@ function textLayerStyles(mode) {
   }
 }
 
+// Routes each polygon to one of the 10 fill-extrusion buckets by rounding its
+// fill-opacity (default = defaultExtrusionOpacity) to the nearest tenth and
+// clamping to [1, 10]. Default preserves prior visual when fill-opacity is unset.
+const opacityBucketSelector = [
+  'max', 1, ['min', 10,
+    ['round', ['*', 10,
+      ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaultExtrusionOpacity)]]]]
+]
+
+function extrusionBucketLayers () {
+  return Object.fromEntries(extrusionOpacityBuckets.map((opacity, i) => {
+    const bucket = i + 1 // 1..10
+    const id = `polygon-layer-extrusion-${bucket}`
+    return [id, {
+      id,
+      type: 'fill-extrusion',
+      filter: ['all',
+        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
+        ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
+        ['==', opacityBucketSelector, bucket],
+        minZoomFilter,
+        maxZoomFilter],
+      paint: {
+        'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], featureColor),
+        'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
+        'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)],
+        'fill-extrusion-opacity': opacity
+      }
+    }]
+  }))
+}
+
 export function styles () {
   return {
     // make ground of extruded polygon darker when selected
@@ -440,22 +476,9 @@ export function styles () {
         'fill-opacity': fillOpacity
       }
     },
-    'polygon-layer-extrusion': {
-      id: 'polygon-layer-extrusion',
-      type: 'fill-extrusion',
-      filter: ['all',
-        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
-        ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
-        minZoomFilter,
-        maxZoomFilter],
-      paint: {
-        'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], featureColor),
-        'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
-        'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)],
-        // opacity does not support data expressions, it's a constant per layer
-        'fill-extrusion-opacity': defaultExtrusionOpacity
-      }
-    },
+    // fill-extrusion-opacity is not data-driven, so we stack 10 layers, one per
+    // opacity bucket. Each feature is routed to one bucket via opacityBucketSelector.
+    ...extrusionBucketLayers(),
     // polygon outlines
     'polygon-layer-outline': {
       id: 'polygon-layer-outline',

@@ -13,7 +13,6 @@ import { addFeature, destroyFeature, map, mapProperties } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
 import { getPointsElevation, getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
 import { editStyles, initializeEditStyles } from 'maplibre/styles/edit_styles';
-import { defaultExtrusionOpacity } from 'maplibre/styles/styles';
 import { addUndoState, redo, undo } from 'maplibre/undo';
 
 export let draw
@@ -115,12 +114,18 @@ export async function initializeEditMode () {
     if (currentMode === draw.getMode()) { return }
     console.log("Switch draw mode from '" + currentMode + "' to '" + draw.getMode() + "'")
 
-    // Reduce extrusion opacity to make edit handles visible
+    // Reduce extrusion opacity to make edit handles visible. When restoring, each
+    // bucket layer goes back to its own opacity (encoded as the trailing number in
+    // the layer id, e.g. polygon-layer-extrusion-7_... → 0.7).
     if (map.getStyle && map.getStyle().layers) {
-      const extrusionOpacity = (draw.getMode() === 'simple_select' || draw.getMode().startsWith('draw_')) ? defaultExtrusionOpacity : 0.5
+      const restoring = draw.getMode() === 'simple_select' || draw.getMode().startsWith('draw_')
       map.getStyle().layers
-        .filter(l => l.id.startsWith('polygon-layer-extrusion'))
-        .forEach(l => map.setPaintProperty(l.id, 'fill-extrusion-opacity', extrusionOpacity))
+        .filter(l => l.id.startsWith('polygon-layer-extrusion-'))
+        .forEach(l => {
+          const bucket = parseInt(l.id.match(/^polygon-layer-extrusion-(\d+)_/)?.[1], 10)
+          const opacity = restoring ? bucket / 10 : 0.5
+          map.setPaintProperty(l.id, 'fill-extrusion-opacity', opacity)
+        })
     }
 
     currentMode = draw.getMode()

@@ -12,7 +12,7 @@ import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { getFeature } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
-import { defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles/styles'
+import { defaultExtrusionOpacity, defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles/styles'
 
 let easyMDE
 
@@ -175,8 +175,8 @@ export default class extends Controller {
       const size = feature.properties['stroke-width'] || defaultLineWidth
       document.querySelector('#outline-width').value = size
       document.querySelector('#outline-width-val').innerHTML = size
-      document.querySelector('#opacity').value = (feature.properties['fill-opacity'] || 0.7) * 10
-      document.querySelector('#opacity-val').textContent = (feature.properties['fill-opacity'] || 0.7) * 100 + '%'
+      document.querySelector('#opacity').value = (feature.properties['fill-opacity'] || defaultExtrusionOpacity) * 10
+      document.querySelector('#opacity-val').textContent = (feature.properties['fill-opacity'] || defaultExtrusionOpacity) * 100 + '%'
     }
 
     if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString' ||
