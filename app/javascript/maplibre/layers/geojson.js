@@ -54,6 +54,9 @@ export class GeoJSONLayer extends Layer {
     if (!this.layer?.geojson?.features) { return }
     this.ensureFeaturePropertyIds()
 
+    // Detect available levels first so activeLevel is defaulted before filtering
+    detectLevels()
+
     // Filter features by active level(s)
     const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
 
@@ -63,9 +66,6 @@ export class GeoJSONLayer extends Layer {
     const geojson = { type: 'FeatureCollection', features: filteredFeatures.concat(extrusionLines) }
     map.getSource(this.sourceId).setData(geojson, false)
     this.resetDrawFeatures(resetDraw)
-
-    // Detect available levels after rendering (does not trigger re-render)
-    detectLevels()
   }
 
   renderAnimationFrame(feature, frameCount) {
