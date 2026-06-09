@@ -123,8 +123,8 @@ export class IndoorLayer extends Layer {
           properties: { ...feature.properties }
         }
         geojsonFeature.id = geojsonFeature.properties.id = featureId()
-        geojsonFeature.properties.label = feature.properties.name || feature.properties.class
-        geojsonFeature.properties.desc = indoorDescription(feature.properties)
+        delete geojsonFeature.properties.label
+        delete geojsonFeature.properties.desc
 
         // Store in this layer's geojson so getFeature(id, 'indoor') can find it
         this.geojson.features = [geojsonFeature]
