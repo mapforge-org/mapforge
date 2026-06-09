@@ -433,7 +433,21 @@ export function initializeViewMode () {
     initializeViewControls()
     initializeDefaultControls()
   })
-  map.on('click', resetControls)
+  onMapClickAfterLayers(() => { resetControls() })
+}
+
+// Registers a click handler that runs AFTER all synchronous layer-specific
+// click handlers, even ones registered later (including dynamically). Skips
+// the callback if any handler called e.preventDefault().
+export function onMapClickAfterLayers(callback) {
+  map.on('click', (e) => {
+    // queueMicrotask executes after the current task, after
+    // every sync click handler (layer-specific or not)
+    queueMicrotask(() => {
+      if (e.defaultPrevented) return
+      callback(e)
+    })
+  })
 }
 
 export function upsert (updatedFeature) {

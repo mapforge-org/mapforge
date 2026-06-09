@@ -160,8 +160,14 @@ export class Layer {
       if (e.defaultPrevented) { return }
 
       console.log('Features clicked', e.features)
-      let feature = e.features.find(f => !f.properties?.cluster)
-      if (!feature) { return }
+      const stack = e.features.filter(f => !f.properties?.cluster)
+      if (!stack.length) { return }
+
+      // iterate selection through features (in edit mode)
+      const currentIdx = stack.findIndex(f => f.id === highlightedFeatureId)
+      let feature = currentIdx === -1 || currentIdx === stack.length - 1
+        ? stack[0]
+        : stack[currentIdx + 1]
 
       if (window.gon.map_mode === 'ro' || e.originalEvent.shiftKey) {
         feature = e.features.find(f => f.properties?.onclick !== false)

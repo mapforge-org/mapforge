@@ -9,7 +9,7 @@ import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
 import { highlightFeature, refreshFeatureMeta } from 'maplibre/feature';
 import { getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
-import { addFeature, destroyFeature, map, mapProperties } from 'maplibre/map';
+import { addFeature, destroyFeature, map, mapProperties, onMapClickAfterLayers } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
 import { getPointsElevation, getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
 import { editStyles, initializeEditStyles } from 'maplibre/styles/edit_styles';
@@ -220,7 +220,7 @@ export async function initializeEditMode () {
 
   // in edit mode, map click handler is needed to hide modals
   // and to hide feature modal if no feature is selected
-  map.on('click', () => {
+  onMapClickAfterLayers(() => {
     // mapbox draw type features don't fire map.click, but directions does - ignore it
     if (draw.getMode() == 'direct_select' || draw.getMode() == 'simple_select') {
       selectedFeature = null
