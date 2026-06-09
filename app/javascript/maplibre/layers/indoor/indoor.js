@@ -106,6 +106,7 @@ export class IndoorLayer extends Layer {
       const sourceLayer = feature.layer['source-layer'] || feature.sourceLayer
       console.log('Source layer:', sourceLayer)
       highlightFeature(feature, false, this.sourceId, sourceLayer)
+      e.preventDefault()
     }
 
     map.on('click', this.getStyleLayerIds(), this.clickHandler)
