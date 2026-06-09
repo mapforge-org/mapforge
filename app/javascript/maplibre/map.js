@@ -95,6 +95,15 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   map.on('styleimagemissing', loadImage)
 
+  // TODO(#7752): remove once https://github.com/maplibre/maplibre-gl-js/issues/7752 is fixed
+  window.addEventListener('error', (event) => {
+    if (event.error?.message?.includes('Out of bounds') &&
+        event.error?.stack?.includes('loadMatchingFeature')) {
+      console.warn('Swallowed MapLibre #7752 queryRenderedFeatures race')
+      event.preventDefault()
+    }
+  })
+
   // NOTE: map 'load' can happen before layers are loaded when loading features is slow
   map.once('load', async function (_e) {
     // trigger map fade-in
