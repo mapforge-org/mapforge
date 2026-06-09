@@ -48,6 +48,26 @@ describe "Feature edit" do
         # need to wait until feature is saved server side
         wait_for { Feature.polygon.count }.to eq(1)
       end
+
+      it "clears the IP-derived map center on the first feature" do
+        expect(map.center).to eq(Map::DEFAULT_CENTER)
+        find(".mapbox-gl-draw_point").click
+        click_coord("#maplibre-map", 50, 50)
+        wait_for { Feature.point.count }.to eq(1)
+        wait_for { map.reload.center }.to be_nil
+      end
+    end
+  end
+
+  context "with existing feature on map" do
+    let!(:existing_point) { create(:feature, :point_middle) }
+    let(:map) { create(:map, features: [ existing_point ], center: [ 11.0, 49.0 ]) }
+
+    it "preserves the map center when adding subsequent features" do
+      find(".mapbox-gl-draw_point").click
+      click_coord("#maplibre-map", 80, 80)
+      wait_for { Feature.point.count }.to eq(2)
+      expect(map.reload.center).to eq([ 11.0, 49.0 ])
     end
   end
 

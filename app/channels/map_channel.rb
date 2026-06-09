@@ -44,8 +44,11 @@ class MapChannel < ApplicationCable::Channel
   def new_feature(data)
     Yabeda.websocket.messages_received.increment({ action: "new_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
+    first_feature = map.features_count.zero?
     @feature = map.layers.geojson.first.features.create!(feature_atts(data).merge({ id: data["id"] }))
     associate_image(data["properties"]["marker-image-url"]) if data["properties"] && data["properties"]["marker-image-url"]
+    # Clear IP-derived center on first feature, so the view recomputes from features
+    map.update!(center: nil) if first_feature && map.center.present?
   end
 
   # new_layer uses the layer + feature ids set by the client

@@ -75,8 +75,9 @@ class MapsController < ApplicationController
   end
 
   def create
+    # Setting map center to user IP location (will reset on first feature)
     coords = ip_coordinates
-    @map = Map.new(center: coords)
+    @map = Map.new(center: coords || Map::DEFAULT_CENTER)
     @map.add_owner(@user)
     @map.save!
 
@@ -133,7 +134,10 @@ class MapsController < ApplicationController
   def ip_coordinates
     # https://github.com/yhirose/maxminddb
     ret = MAXMIND_DB&.lookup(request.remote_ip)
-    return nil unless ret&.found?
+    unless ret&.found?
+      Rails.logger.warn "Cannot detect location for IP #{request.remote_ip}"
+      return nil
+    end
     ip_coordinates = [ ret.location.longitude, ret.location.latitude ]
     Rails.logger.info "Client IP: #{request.remote_ip}, coords: #{ip_coordinates.inspect}, loc: #{ret.country.name}/#{ret.city.name}"
     ip_coordinates
