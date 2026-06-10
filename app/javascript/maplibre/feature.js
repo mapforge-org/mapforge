@@ -283,7 +283,6 @@ export function resetHighlightedFeature () {
 // For highlighting features from vector layers, we need to track their sourceLayer.
 export function highlightFeature (feature, sticky = false, source, sourceLayer = null) {
   // Only reset if there's a different feature currently highlighted
-  if (highlightedFeatureId === feature.id) { return }
   if (highlightedFeatureId && highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
 
   // console.log('highlight', feature)
