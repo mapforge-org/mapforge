@@ -48,5 +48,16 @@ export default class extends Controller {
   hideNav (event) {
     if (document.querySelector('.map')) { let controller = this; setTimeout(function () { controller.hideNavBar(event) }, 300) }
     this.hideNavDropdown(event)
-  }  
+  }
+
+  openMapSettings (event) {
+    const mapElement = document.querySelector('.map')
+    if (mapElement && mapElement.getAttribute('data-map-loaded') === 'true') {
+      const settingsButton = document.querySelector('.maplibregl-ctrl-map')
+      if (settingsButton) {
+        settingsButton.click()
+      }
+    }
+    event.preventDefault()
+  }
 }
