@@ -50,9 +50,16 @@ export function initializeGeoLocateControl() {
 
   geolocate.on('geolocate', (position) => {
     const coords = position.coords
-    console.log('geolocate event', coords)
+    console.log('[GPS-DEBUG] geolocate event fired', {
+      coords,
+      hasCoords: !!coords,
+      timestamp: new Date().toISOString(),
+      isInFollowMode,
+      isInCompassMode
+    })
     if (coords) {
       lastCenter = [coords.longitude, coords.latitude]
+      console.log('[GPS-DEBUG] lastCenter updated', lastCenter)
       if (!hasFoundFirstPosition && isInFollowMode) {
         hasFoundFirstPosition = true
         status('Following position', 'info')
@@ -60,6 +67,9 @@ export function initializeGeoLocateControl() {
       window.dispatchEvent(new CustomEvent('gps-position', {
         detail: { lng: coords.longitude, lat: coords.latitude }
       }))
+      console.log('[GPS-DEBUG] gps-position event dispatched', { lng: coords.longitude, lat: coords.latitude })
+    } else {
+      console.warn('[GPS-DEBUG] geolocate event fired but coords is null/undefined!', position)
     }
   })
 
@@ -67,6 +77,7 @@ export function initializeGeoLocateControl() {
   geolocate.on('trackuserlocationstart', () => {
     isInFollowMode = true
     hasFoundFirstPosition = false
+    console.log('[GPS-DEBUG] trackuserlocationstart - follow mode activated')
     status('Searching position', 'info')
     requestWakeLock()
 
@@ -107,6 +118,11 @@ export function initializeGeoLocateControl() {
   })
 
   geolocate.on('trackuserlocationend', () => {
+    console.log('[GPS-DEBUG] trackuserlocationend', {
+      watchState: geolocate._watchState,
+      isInCompassMode,
+      timestamp: new Date().toISOString()
+    })
     isInFollowMode = false
     userHasZoomed = false
     if (isInCompassMode) {
@@ -117,6 +133,7 @@ export function initializeGeoLocateControl() {
     // trackuserlocationend is sent as soon as auto-follow is off
     // only fully clean up when tracking is completely turned off
     if (geolocate._watchState === 'OFF') {
+      console.log('[GPS-DEBUG] Cleaning up - tracking completely OFF')
       cachedDot = null
       lastCenter = null
       if (orientationListener && orientationEventName) {
@@ -195,14 +212,26 @@ export function initializeGeoLocateControl() {
 function lockUserZoom() {
   if (userHasZoomed) return
   userHasZoomed = true
+  console.log('[GPS-DEBUG] lockUserZoom - overriding _updateCamera')
   geolocateControl._updateCamera = (position) => {
+    console.log('[GPS-DEBUG] _updateCamera called', {
+      position,
+      hasCoords: !!position?.coords,
+      timestamp: new Date().toISOString()
+    })
+    if (!position?.coords) {
+      console.warn('[GPS-DEBUG] _updateCamera called with null coords!', position)
+      return
+    }
     const center = [position.coords.longitude, position.coords.latitude]
+    console.log('[GPS-DEBUG] _updateCamera updating map center to', center)
     map.easeTo({ center, bearing: map.getBearing(), duration: 200 }, { geolocateSource: true })
   }
 }
 
 function activateCompassMode() {
   isInCompassMode = true
+  console.log('[GPS-DEBUG] Compass mode activated', { lastCenter, lastHeading })
   status('Compass mode', 'info')
 
   // Disable map dragging and rotation in compass mode — map orientation follows device heading
@@ -224,6 +253,7 @@ function activateCompassMode() {
 }
 
 function deactivateCompassMode() {
+  console.log('[GPS-DEBUG] Compass mode deactivated')
   isInCompassMode = false
   lastAppliedHeading = null
 
@@ -304,7 +334,16 @@ function setLocationOrientation(event) {
     lastAppliedHeading = lastHeading
     // geolocateSource flag prevents GeolocateControl from exiting ACTIVE_LOCK on movestart
     const easeOptions = { bearing: -lastHeading, duration: 100 }
-    if (lastCenter) easeOptions.center = lastCenter
+    if (lastCenter) {
+      easeOptions.center = lastCenter
+      console.log('[GPS-DEBUG] setLocationOrientation applying position in compass mode', {
+        heading: lastHeading,
+        center: lastCenter,
+        timestamp: new Date().toISOString()
+      })
+    } else {
+      console.warn('[GPS-DEBUG] setLocationOrientation - lastCenter is null, position not applied!')
+    }
     map.easeTo(easeOptions, { geolocateSource: true })
     // Cone points upward in compass mode since the map itself is rotated
     dot.style.setProperty('--user-dot-rotation', 'rotate(0deg)')
