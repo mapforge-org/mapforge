@@ -114,6 +114,7 @@ const styleProp = (keys, defaultVal) => {
 const sortKey = ['to-number', styleProp(['user_sort-key', 'sort-key'], 1)]
 const labelColor = styleProp(['user_label-color', 'label-color'], '#000')
 const labelShadow = styleProp(['user_label-shadow', 'label-shadow'], '#fff')
+const labelShadowWidth = styleProp(['user_label-shadow-width', 'label-shadow-width'], 2)
 
 const fillColor = styleProp(['fill', 'user_fill'], featureColor)
 const fillOpacity = ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaultExtrusionOpacity)]
@@ -389,7 +390,7 @@ function textLayerStyles(mode) {
   const sharedPaint = {
     'text-color': labelColor,
     'text-halo-color': labelShadow,
-    'text-halo-width': 2
+    'text-halo-width': labelShadowWidth
   }
 
   return {
@@ -735,7 +736,7 @@ export function styles () {
       paint: {
         'text-color': labelColor,
         'text-halo-color': labelShadow,
-        'text-halo-width': 2
+        'text-halo-width': labelShadowWidth
       }
     },
     'line-label-symbol': {
