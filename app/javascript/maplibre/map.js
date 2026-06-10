@@ -96,7 +96,7 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   map.on('styleimagemissing', loadImage)
 
-  // TODO(#7752): remove once https://github.com/maplibre/maplibre-gl-js/issues/7752 is fixed
+  // TODO: remove once https://github.com/maplibre/maplibre-gl-js/issues/7752 is fixed (5.25)
   window.addEventListener('error', (event) => {
     if (event.error?.message?.includes('Out of bounds') &&
         event.error?.stack?.includes('loadMatchingFeature')) {

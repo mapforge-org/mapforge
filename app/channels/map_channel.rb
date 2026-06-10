@@ -48,7 +48,7 @@ class MapChannel < ApplicationCable::Channel
     @feature = map.layers.geojson.first.features.create!(feature_atts(data).merge({ id: data["id"] }))
     associate_image(data["properties"]["marker-image-url"]) if data["properties"] && data["properties"]["marker-image-url"]
     # Clear IP-derived center on first feature, so the view recomputes from features
-    map.update!(center: nil) if first_feature && map.center.present?
+    map.update!(center: nil, zoom: nil) if first_feature && map.center.present?
   end
 
   # new_layer uses the layer + feature ids set by the client
