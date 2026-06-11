@@ -24,3 +24,9 @@ end
 def expect_layer_visibility(layer_id, visible, type = 'geojson')
   wait_for { layer_visibility(layer_id, type) }.to be visible
 end
+
+def wait_for_geojson_render
+  wait_for {
+    page.evaluate_script("document.querySelector('#maplibre-map').dataset.geojsonLoaded")
+  }.to eq('true')
+end
