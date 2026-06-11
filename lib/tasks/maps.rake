@@ -3,6 +3,10 @@ namespace :maps do
   task screenshots: :environment do |_, args|
     base_url = ENV.fetch("MAPFORGE_HOST", "http://localhost:3000") + "/m/"
 
+    # Verify MAPFORGE_HOST is reachable before processing maps
+    uri = URI.parse(base_url)
+    Net::HTTP.get_response(URI("#{uri.scheme}://#{uri.host}:#{uri.port}")) rescue abort "ERROR: MAPFORGE_HOST (#{base_url}) is not reachable: #{$!.message}"
+
     Map.each do |map|
       last_update = File.mtime(map.screenshot_file) if File.exist?(map.screenshot_file)
       # Scheduled job is running each 10 minutes
