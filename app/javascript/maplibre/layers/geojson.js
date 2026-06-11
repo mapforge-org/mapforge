@@ -54,6 +54,9 @@ export class GeoJSONLayer extends Layer {
     if (!this.layer?.geojson?.features) { return }
     this.ensureFeaturePropertyIds()
 
+    // Signal that GeoJSON is re-rendering (set to false)
+    map.getContainer().setAttribute('data-geojson-loaded', 'false')
+
     // Detect available levels first so activeLevel is defaulted before filtering
     detectLevels()
 
@@ -65,6 +68,12 @@ export class GeoJSONLayer extends Layer {
     const extrusionLines = this.renderExtrusionLines(filteredFeatures)
     const geojson = { type: 'FeatureCollection', features: filteredFeatures.concat(extrusionLines) }
     map.getSource(this.sourceId).setData(geojson, false)
+
+    // Wait for MapLibre to complete the render, then signal completion
+    map.once('render', () => {
+      map.getContainer().setAttribute('data-geojson-loaded', 'true')
+    })
+
     this.resetDrawFeatures(resetDraw)
   }
 

@@ -224,7 +224,7 @@ class Map
   end
 
   def screenshot
-    "/previews/#{safe_public_id}.jpg?#{updated_at.to_i}" if File.exist?(screenshot_file)
+    "/previews/#{updated_at.to_i}/#{safe_public_id}.jpg" if File.exist?(screenshot_file)
   end
 
   def screenshot_file
