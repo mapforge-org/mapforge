@@ -39,7 +39,7 @@
 
 - if params['nomenu'] == 'true'
   = link_to root_url, { '_target': 'blank' } do
-    %img.mapforge-embed-logo{ src: "/icons/mapforge-logo-icon.png", alt: "Logo" }
+    %img.mapforge-embed-logo{ src: "/logo/mapforge-logo-icon.png", alt: "Logo" }
 
 #maplibre-map.map{ data: { 'controller': "map header", 'action': "click->header#hideNav touchstart->header#hideNav keydown.ctrl+v@window->map#paste" } }
 
