@@ -62,11 +62,12 @@
   = yield(:head)
 
   %link{ rel: "manifest", href: "/manifest.json?v=4" }
-  %link{ rel: "icon", sizes: "512x512", href: "/icons/mapforge-logo-pwa-round.png", type: "image/png" }
-  %link{ rel: "icon", sizes: "192x192", href: "/icons/mapforge-logo-pwa-192.png", type: "image/png" }
-  %link{ rel: "icon", sizes: "50x50", href: "/icons/mapforge-logo-icon.png", type: "image/png" }
-  %link{ rel: "apple-touch-icon", sizes: "512x512", href: "/icons/mapforge-logo-pwa.png" }
-  %link{ rel: "apple-touch-icon", sizes: "180x180", href: "/icons/mapforge-logo-pwa-180.png" }
+  %link{ rel: "icon", sizes: "512x512", href: "/logo/pwa/mapforge-logo-pwa-512.png", type: "image/png" }
+  %link{ rel: "icon", sizes: "192x192", href: "/logo/pwa/mapforge-logo-pwa-192.png", type: "image/png" }
+  / Used as Favicon
+  %link{ rel: "icon", sizes: "50x50", href: "/logo/mapforge-logo-icon.png", type: "image/png" }
+  %link{ rel: "apple-touch-icon", sizes: "512x512", href: "/logo/pwa/mapforge-logo-pwa-512.png" }
+  %link{ rel: "apple-touch-icon", sizes: "180x180", href: "/logo/pwa/mapforge-logo-pwa-180.png" }
 
 
   - if content_for?(:alternate_md_url)
