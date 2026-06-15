@@ -30,16 +30,34 @@ describe "Feature details" do
     let(:polygon) { create(:feature, :polygon_middle, title: "Poly") }
     let(:point1) { create(:feature, :point_middle, title: "Point 1") }
     let(:point2) { create(:feature, :point_middle, title: "Point 2") }
-    let(:map) { create(:map, features: [ polygon, point1, point2 ]) }
+    let(:map) { create(:map, features: [ polygon, point1, point2, create(:feature, :point_middle, title: "Hidden", properties: { "marker-size" => "150", "onclick" => false }) ]) }
 
     it "cycles through all overlapping features on repeated clicks" do
       titles = []
-      3.times do
+      4.times do
         click_center_of_screen
         expect(page).to have_css("#feature-details-modal.show")
         titles << find("#feature-title").text
       end
-      expect(titles.uniq).to contain_exactly("Poly", "Point 1", "Point 2")
+      expect(titles.uniq).to contain_exactly("Poly", "Point 1", "Point 2", "Hidden")
+    end
+
+    context "in view mode" do
+      before do
+        visit map.public_map_path
+        expect_map_loaded
+      end
+
+      it "skips features with onclick false" do
+        titles = []
+        4.times do
+          click_center_of_screen
+          expect(page).to have_css("#feature-details-modal.show")
+          titles << find("#feature-title").text
+        end
+        expect(titles).not_to include("Hidden")
+        expect(titles.uniq).to contain_exactly("Poly", "Point 1", "Point 2")
+      end
     end
   end
 

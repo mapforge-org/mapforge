@@ -173,17 +173,19 @@ export class Layer {
         .sort((a, b) => String(a.id).localeCompare(String(b.id)))
       if (!stack.length) { return }
 
-      // iterate selection through features (in edit mode)
-      const currentIdx = stack.findIndex(f => f.id === highlightedFeatureId)
-      let feature = (currentIdx === -1 || currentIdx === stack.length - 1)
-        ? stack[0]
-        : stack[currentIdx + 1]
+      const isViewMode = window.gon.map_mode === 'ro' || e.originalEvent.shiftKey
+      const clickableStack = isViewMode
+        ? stack.filter(f => f.properties?.onclick !== false)
+        : stack
 
-      if (window.gon.map_mode === 'ro' || e.originalEvent.shiftKey) {
-        if (feature.properties?.onclick === false) {
-          feature = stack.find(f => f.properties?.onclick !== false)
-        }
-        if (!feature) { return }
+      if (!clickableStack.length) { return }
+
+      const currentIdx = clickableStack.findIndex(f => f.id === highlightedFeatureId)
+      let feature = (currentIdx === -1 || currentIdx === clickableStack.length - 1)
+        ? clickableStack[0]
+        : clickableStack[currentIdx + 1]
+
+      if (isViewMode) {
 
         if (feature.properties?.onclick === 'link' && feature.properties?.['onclick-target']) {
           window.location.href = feature.properties?.['onclick-target']
