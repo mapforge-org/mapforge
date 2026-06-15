@@ -67,7 +67,13 @@ export class GeoJSONLayer extends Layer {
     renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
     const extrusionLines = this.renderExtrusionLines(filteredFeatures)
     const geojson = { type: 'FeatureCollection', features: filteredFeatures.concat(extrusionLines) }
-    map.getSource(this.sourceId).setData(geojson, false)
+
+    const source = map.getSource(this.sourceId)
+    if (!source) {
+      console.warn(`Source ${this.sourceId} not found, skipping render`)
+      return
+    }
+    source.setData(geojson, false)
 
     // Wait for MapLibre to complete the render, then signal completion
     map.once('render', () => {
@@ -78,16 +84,29 @@ export class GeoJSONLayer extends Layer {
   }
 
   renderAnimationFrame(feature, frameCount) {
+    // Skip if a full render is in progress (data-geojson-loaded='false')
+    if (map.getContainer().getAttribute('data-geojson-loaded') === 'false') {
+      return
+    }
+
     feature.properties = feature.properties || {}
     feature.id = feature.id || feature.properties.id
     feature.properties.id = feature.id
-    map.getSource(this.sourceId).updateData({ update: [feature] })
 
-    // Filter features by active level(s) for animation frame
-    const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
+    const source = map.getSource(this.sourceId)
+    if (!source) return
 
-    renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
+    source.updateData({ update: [feature] })
+
+    // Only update route extras if this feature has them
+    if (feature.properties['show-route-extras']) {
+      const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
+      renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
+    }
+
+    // Reduce km marker updates - only every 10 frames
     if (frameCount % 10 === 0) {
+      const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
       renderKmMarkers(filteredFeatures, this.kmMarkerSourceId)
     }
   }

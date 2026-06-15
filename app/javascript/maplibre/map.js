@@ -475,7 +475,17 @@ function updateFeature (feature, updatedFeature) {
     const newCoords = updatedFeature.geometry.coordinates
     if (!equal(feature.geometry.coordinates, newCoords)) {
       const animation = new AnimatePointAnimation()
-      animation.animatePoint(feature, newCoords)
+
+      // Wait for data-geojson-loaded='true' before starting animation
+      const checkReady = () => {
+        if (map.getContainer().getAttribute('data-geojson-loaded') === 'true') {
+          animation.animatePoint(feature, newCoords)
+        } else {
+          // Check again on next frame
+          requestAnimationFrame(checkReady)
+        }
+      }
+      requestAnimationFrame(checkReady)
     }
   }
 
