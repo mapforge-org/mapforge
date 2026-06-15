@@ -180,11 +180,13 @@ const pointSizeMin = ['to-number', ['coalesce',
 
 export const pointSizeMax = ['to-number', ['coalesce',
   ...markerSize.slice(1),
-  // set default size of point depending on if there is an emoji
+  // set default size of point depending on if there is an emoji or marker image
   [
     'case',
     ['has', 'marker-symbol'],
     18,
+    ['has', 'marker-image-url'],
+    20,
     5
   ]]]
 
