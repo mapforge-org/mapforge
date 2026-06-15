@@ -21,8 +21,8 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `label-anchor`: text anchor position relative to the feature: top (default), bottom, left, right, center, top-left, top-right, bottom-left, bottom-right
 * `label-offset`: label position offset from the anchor as `[x, y]` in em units (default: depends on marker size for `label-anchor: top`, otherwise `[0, 0]`)
 * `sort-key`: sort order of features: higher numbers overlay lower numbers (default: 1)
-* `min-zoom`: Display feature only on zoom levels bigger than min-zoom
-* `max-zoom`: Display feature only on zoom levels smaller than max-zoom
+* `min-zoom`: Display feature only on zoom levels bigger than min-zoom (only integer values)
+* `max-zoom`: Display feature only on zoom levels smaller than max-zoom (only integer values)
 * `level`: floor the feature belongs to (e.g. `"0"`, `"1"`, `"-1"`). Accepts an OSM-style semicolon-separated list (`"0;1;2"`) for features that span multiple floors. Features without this property are always visible.
 * `title`: title
 * `desc`: detailed description (markdown supported)
