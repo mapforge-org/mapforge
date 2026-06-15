@@ -348,6 +348,23 @@ describe "Feature edit" do
     end
   end
 
+  context "cycling through overlapping features" do
+    let(:polygon) { create(:feature, :polygon_middle, title: "Poly") }
+    let(:point1) { create(:feature, :point_middle, title: "Point 1") }
+    let(:point2) { create(:feature, :point_middle, title: "Point 2") }
+    let(:map) { create(:map, features: [ polygon, point1, point2 ]) }
+
+    it "cycles through all overlapping features on repeated clicks" do
+      titles = []
+      3.times do
+        click_center_of_screen
+        expect(page).to have_css("#feature-details-modal.show")
+        titles << find("#feature-title").text
+      end
+      expect(titles.uniq).to contain_exactly("Poly", "Point 1", "Point 2")
+    end
+  end
+
   context "with cursor sharing" do
     let(:map) { create(:map, name: "Share Cursor", share_cursor: true) }
 

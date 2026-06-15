@@ -4,6 +4,7 @@ import { length } from "@turf/length"
 import * as dom from 'helpers/dom'
 import * as f from 'helpers/functions'
 import { status } from 'helpers/status'
+import { resetControls } from 'maplibre/controls/shared'
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { showExtrasTotals } from 'maplibre/feature/extras_totals'
 import { getFeature, getFeatureSource, getLayer, layers } from "maplibre/layers/layers"
@@ -284,6 +285,15 @@ export function resetHighlightedFeature () {
 export function highlightFeature (feature, sticky = false, source, sourceLayer = null) {
   // Only reset if there's a different feature currently highlighted
   if (highlightedFeatureId && highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
+
+  // Close any open modals (settings, layers, share) when initially selecting a feature
+  // Don't reset when:
+  // - cycling through overlaying features (highlightedFeatureId already set), OR
+  // - context menu is currently being shown (right-click interaction)
+  const contextMenuVisible = !document.querySelector('#map-context-menu')?.classList.contains('hidden')
+  if (!highlightedFeatureId && !contextMenuVisible) {
+    resetControls()
+  }
 
   // console.log('highlight', feature)
   if (!source) { source = getFeatureSource(feature.id) }

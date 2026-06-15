@@ -1,5 +1,6 @@
 import * as functions from 'helpers/functions'
 import { flyToFeature } from 'maplibre/animations'
+import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import {
   highlightFeature,
@@ -159,11 +160,17 @@ export class Layer {
       // Exit if another layer already selected a feature on this click
       if (e.defaultPrevented) { return }
 
-      console.log('Features clicked', e.features)
-      // Skip clusters, unique stack by feature id
-      const stack = [...new Map(e.features
-        .filter(f => !f.properties?.cluster)
+      // Query all features at click point across all layers (not just registered layers)
+      const allFeatures = map.queryRenderedFeatures(e.point, {
+        filter: ['!', ['has', 'cluster']]
+      })
+
+      console.log('Features clicked', allFeatures)
+      // Sort by ID so cycling order is stable even after frontFeature() reorders the source
+      const stack = [...new Map(allFeatures
+        .filter(f => !f.properties?.cluster && (f.source.startsWith('geojson-source-') || f.source.startsWith('tileset-')))
         .map(f => [f.id, f])).values()]
+        .sort((a, b) => String(a.id).localeCompare(String(b.id)))
       if (!stack.length) { return }
 
       // iterate selection through features (in edit mode)
@@ -173,7 +180,9 @@ export class Layer {
         : stack[currentIdx + 1]
 
       if (window.gon.map_mode === 'ro' || e.originalEvent.shiftKey) {
-        feature = e.features.find(f => f.properties?.onclick !== false)
+        if (feature.properties?.onclick === false) {
+          feature = stack.find(f => f.properties?.onclick !== false)
+        }
         if (!feature) { return }
 
         if (feature.properties?.onclick === 'link' && feature.properties?.['onclick-target']) {
@@ -191,6 +200,7 @@ export class Layer {
           return
         }
       }
+      hideContextMenu()
       highlightFeature(feature, true, this.sourceId)
       // Defer the layer re-upload until after the browser paints the selection state —
       // frontFeature calls setData on the whole layer, which would otherwise stall feedback.
