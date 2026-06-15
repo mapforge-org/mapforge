@@ -243,12 +243,30 @@ const iconSize = [
 const userLabelSize = styleProp(['user_label-size', 'label-size'])
 const scaledLabelSize = ['coalesce', ...userLabelSize.slice(1), ['*', 2, pointSizeMax]] // fallback to 2*pointSizeMax
 const staticLabelSize = ['coalesce', ...userLabelSize.slice(1), 16] // fallback to 16
-const labelOffset =
-  ["interpolate", ["linear"],
+// Label offset based on marker size, with geometry-aware handling
+const labelOffsetBySize = [
+  'case',
+  ['any',
+    ['==', ['geometry-type'], 'Polygon'],
+    ['==', ['geometry-type'], 'MultiPolygon']
+  ],
+  ['literal', [0, 0]],  // Zero offset for polygons
+  // For points with marker-image-url: steeper offset curve
+  ['has', 'marker-image-url'],
+  ['interpolate', ['linear'],
     ['to-number', pointSizeMax],
-    0, ["literal", [0, 0]],
-    10, ["literal", [0, 1]],
-    300, ["literal", [0, 20]]]
+    0, ['literal', [0, 0]],
+    10, ['literal', [0, 1]],
+    300, ['literal', [0, 26]]
+  ],
+  // For other points (emoji, plain): original offset curve
+  ['interpolate', ['linear'],
+    ['to-number', pointSizeMax],
+    0, ['literal', [0, 0]],
+    10, ['literal', [0, 0.4]],
+    300, ['literal', [0, 18]]
+  ]
+]
 
 export const labelFontSize = [
   'case', shouldScale,
@@ -361,12 +379,12 @@ function textLayerStyles(mode) {
     'text-font': labelFont,
     'text-letter-spacing': ['coalesce', ['get', 'label-letter-spacing'], 0],
     'text-anchor': styleProp(['user_label-anchor', 'label-anchor'], 'top'), // top: text under point
-    // TODO: set this to 0 for polygons, needs 'geometry-type' implementation: https://github.com/maplibre/maplibre-style-spec/discussions/536
+    // labelOffset is now geometry-aware: 0 for polygons, scaled for points
     // default to dynamic labelOffset if not set
     'text-offset': [
       'case',
       ['has', 'label-offset'], ['get', 'label-offset'],
-      ['==', styleProp(['user_label-anchor', 'label-anchor'], 'top'), 'top'], labelOffset,
+      ['==', styleProp(['user_label-anchor', 'label-anchor'], 'top'), 'top'], labelOffsetBySize,
       ['literal', [0, 0]]
     ],
     'text-justify': ['get', 'label-justify'],
