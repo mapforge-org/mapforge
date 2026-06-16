@@ -15,8 +15,83 @@
   border-top: 1px solid #0000001c;
 }
 
+/* Level Control Panel */
 .level-control {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
+  padding: 0.35rem;
+  max-height: calc(100vh - 10rem);
+  overflow-y: auto;
   margin-bottom: 0 !important;
+}
+
+.level-control-header {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ctrl-button-color);
+  padding: 0.15rem 0.35rem 0.25rem;
+  user-select: none;
+}
+
+.level-control-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  text-align: left;
+}
+
+.level-control-btn + .level-control-btn {
+  margin-top: 0.2rem;
+}
+
+.level-control-btn.active {
+  border-color: var(--color-ctrl-active) !important;
+  background-color: rgb(32 145 176 / 8%) !important;
+}
+
+.level-control-icon {
+  font-size: 1rem;
+  color: var(--ctrl-button-color);
+  flex-shrink: 0;
+}
+
+.level-control-btn.active .level-control-icon {
+  color: var(--color-ctrl-active);
+}
+
+.level-control-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  min-width: 0;
+}
+
+.level-control-number {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ctrl-button-color);
+}
+
+.level-control-btn.active .level-control-number {
+  color: var(--color-ctrl-active);
+}
+
+.level-control-label {
+  font-size: 0.6rem;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .maplibregl-ctrl button:disabled {
@@ -42,9 +117,14 @@
 
 /* only add hover effects to supported browsers */
 @media (hover: hover) {
-  .maplibregl-ctrl button:hover, .mapbox-gl-draw_ctrl-draw-btn:hover { /* stylelint-disable-line */
+  .maplibregl-ctrl button:not(.level-control-btn):hover, .mapbox-gl-draw_ctrl-draw-btn:hover { /* stylelint-disable-line */
     background-color: rgb(0 0 0/15%) !important;
     color: var(--color-ctrl-active) !important;
+  }
+
+  .level-control-btn:not(.active):hover {
+    background-color: rgb(0 0 0 / 5%);
+    border-color: rgb(0 0 0 / 15%);
   }
 
   /* Need to overwrite the mapbox draw icons with hover color */
@@ -73,7 +153,8 @@
   }
 }
 
-.maplibregl-ctrl button.active, .maplibregl-ctrl button:active {
+.maplibregl-ctrl button:not(.level-control-btn).active,
+.maplibregl-ctrl button:not(.level-control-btn):active {
   background-color: rgb(0 0 0/15%) !important;
   color: var(--color-ctrl-active) !important;
 }
@@ -212,4 +293,48 @@
 .maplibregl-ctrl-scale {
   font-size: 0.8rem;
   margin-bottom: 5px;
+}
+
+/* Level control: mobile */
+@media (width < 640px) {
+  .level-control {
+    padding: 0.25rem;
+  }
+
+  .level-control-header {
+    font-size: 0.55rem;
+    padding: 0.1rem 0.25rem 0.15rem;
+  }
+
+  .level-control-btn {
+    padding: 0.25rem 0.35rem;
+    gap: 0.3rem;
+  }
+
+  .level-control-icon {
+    font-size: 0.85rem;
+  }
+
+  .level-control-number {
+    font-size: 0.85rem;
+  }
+
+  .level-control-label {
+    font-size: 0.5rem;
+  }
+}
+
+/* Level control: short viewport */
+@media (height < 410px) {
+  .level-control-header {
+    display: none;
+  }
+
+  .level-control-label {
+    display: none;
+  }
+
+  .level-control-btn {
+    padding: 0.2rem 0.3rem;
+  }
 }

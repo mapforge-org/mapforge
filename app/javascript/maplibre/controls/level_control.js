@@ -1,5 +1,24 @@
 import { initTooltips } from 'helpers/dom'
 
+function levelLabel(level) {
+  const n = parseFloat(level)
+  if (isNaN(n)) return level
+  if (!Number.isInteger(n)) return `Level ${level}`
+  if (n === 0) return 'Ground'
+  if (n < 0) return `Basement ${Math.abs(n)}`
+
+  const abs = Math.abs(n)
+  const mod100 = abs % 100
+  const suffix = (mod100 >= 11 && mod100 <= 13) ? 'th' : (['th', 'st', 'nd', 'rd'][abs % 10] || 'th')
+  return `${abs}${suffix} Floor`
+}
+
+function levelIcon(level) {
+  const n = parseFloat(level)
+  if (n === 0 || isNaN(n)) return 'bi-building'
+  return n < 0 ? 'bi-arrow-down-circle' : 'bi-arrow-up-circle'
+}
+
 export class LevelControl {
   constructor(layerId, onLevelChange, cssClass = 'level-control') {
     this.layerId = layerId
@@ -13,7 +32,6 @@ export class LevelControl {
   create() {
     if (this.element) return
 
-    // Check if a control for this layer already exists
     const existingControl = document.querySelector(`.${this.cssClass}[data-layer-id="${this.layerId}"]`)
     if (existingControl) {
       this.element = existingControl
@@ -21,8 +39,13 @@ export class LevelControl {
     }
 
     this.element = document.createElement('div')
-    this.element.className = `maplibregl-ctrl maplibregl-ctrl-group ${this.cssClass}`
+    this.element.className = `maplibregl-ctrl ${this.cssClass}`
     this.element.setAttribute('data-layer-id', this.layerId)
+
+    const header = document.createElement('div')
+    header.className = 'level-control-header'
+    header.textContent = 'Levels'
+    this.element.appendChild(header)
 
     const bottomRight = document.querySelector('.maplibregl-ctrl-bottom-right')
     if (bottomRight) {
@@ -41,22 +64,39 @@ export class LevelControl {
     this.element.querySelectorAll('button').forEach(button => {
       const tooltip = bootstrap.Tooltip.getInstance(button)
       if (tooltip) {
-        try {
-          tooltip.dispose()
-        } catch {
-          // Tooltip might be mid-animation when dispose is called
-        }
+        try { tooltip.dispose() } catch { /* noop */ }
       }
     })
   }
 
   createButton(level) {
+    const label = levelLabel(level)
+    const icon = levelIcon(level)
+
     const button = document.createElement('button')
-    button.textContent = level
-    button.title = `Level ${level}`
+    button.className = 'level-control-btn'
     button.setAttribute('data-level', level)
-    button.setAttribute('data-toggle', 'tooltip')
-    button.setAttribute('data-bs-trigger', 'hover')
+    button.setAttribute('aria-label', `Level ${level} – ${label}`)
+
+    const iconEl = document.createElement('i')
+    iconEl.className = `bi ${icon} level-control-icon`
+    button.appendChild(iconEl)
+
+    const info = document.createElement('span')
+    info.className = 'level-control-info'
+
+    const numberEl = document.createElement('span')
+    numberEl.className = 'level-control-number'
+    numberEl.textContent = level
+    info.appendChild(numberEl)
+
+    const labelEl = document.createElement('span')
+    labelEl.className = 'level-control-label'
+    labelEl.textContent = label
+    info.appendChild(labelEl)
+
+    button.appendChild(info)
+
     button.addEventListener('click', () => {
       if (this.onLevelChange) {
         this.onLevelChange(level)
@@ -97,7 +137,6 @@ export class LevelControl {
         }
         this.element.appendChild(button)
       })
-
       initTooltips(this.element)
     }
 
