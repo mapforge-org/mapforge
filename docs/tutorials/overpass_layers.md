@@ -5,7 +5,7 @@ Mapforge enables you to add custom data layers from OpenStreetMap using **Overpa
 Overpass layers get loaded for the currently visible view of the map. When the map gets moved or zoomed, a reload button appears to fetch data for the new area.
 
 ![Overpass example](https://mapforge.org/images/tutorials/overpass1.png)
-*(Screenshot from hiking routes map, see [source map](https://mapforge.org/m/cd2b8bd930fe/Hiking%20routes) )*
+*(Screenshot from hiking routes map, see [source map](https://mapforge.org/m/49ee89e4/Hiking%20routes) )*
 
 
 ### Pre-defined Overpass layers
