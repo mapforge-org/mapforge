@@ -64,9 +64,9 @@ Before running the application container, make sure MongoDB and Redis are runnin
 
 ```bash
 podman run -d --name mongo \
-  -v <local_dir>:/data/db \
+  -v <local_dir>:/data/db:U,z \
   -p 27017:27017 \
-  mongo:7.0
+  mongo:8.2
 
 podman run -d --name redis \
   -p 6379:6379 \
