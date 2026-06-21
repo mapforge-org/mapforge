@@ -44,8 +44,9 @@ describe "Map" do
       find("li[data-feature-id='#{feature.id}']").click
       # flyTo is finished when the feature details are shown
       expect(page).to have_text("F1 desc")
-      expect(page.evaluate_script("[map.getCenter().lng, map.getCenter().lat].toString()"))
-        .to eq(feature.coordinates.join(","))
+      center = page.evaluate_script("[map.getCenter().lng, map.getCenter().lat]")
+      expect(center[0]).to be_within(1e-6).of(feature.coordinates[0])
+      expect(center[1]).to be_within(1e-6).of(feature.coordinates[1])
     end
   end
 
