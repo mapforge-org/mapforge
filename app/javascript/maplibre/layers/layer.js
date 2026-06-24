@@ -12,6 +12,10 @@ import {
 import { getFeature } from 'maplibre/layers/layers'
 import { addGeoJSONSource, frontFeature, map } from 'maplibre/map'
 
+// Source prefixes whose features are selectable via click. Excludes basemap
+// vector features and raster layers (which handle their own clicks).
+const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overpass-source-', 'wikipedia-source-']
+
 /**
  * Base class for map layers. Subclass to create new layer types.
  *
@@ -165,10 +169,9 @@ export class Layer {
         filter: ['!', ['has', 'cluster']]
       })
 
-      console.log('Features clicked', allFeatures)
       // Sort by ID so cycling order is stable even after frontFeature() reorders the source
       const stack = [...new Map(allFeatures
-        .filter(f => !f.properties?.cluster && (f.source.startsWith('geojson-source-') || f.source.startsWith('tileset-')))
+        .filter(f => !f.properties?.cluster && SELECTABLE_SOURCE_PREFIXES.some(p => f.source.startsWith(p)))
         .map(f => [f.id, f])).values()]
         .sort((a, b) => String(a.id).localeCompare(String(b.id)))
       if (!stack.length) { return }
@@ -203,7 +206,7 @@ export class Layer {
         }
       }
       hideContextMenu()
-      highlightFeature(feature, true, this.sourceId)
+      highlightFeature(feature, true, feature.source)
       // Defer the layer re-upload until after the browser paints the selection state —
       // frontFeature calls setData on the whole layer, which would otherwise stall feedback.
       requestAnimationFrame(() => frontFeature(feature))
