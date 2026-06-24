@@ -265,11 +265,13 @@ export class RasterLayer extends Layer {
       // Clear any existing highlights before setting waymarkedtrails highlight
       resetHighlightedFeature()
 
-      this.highlightedFeatureId = feature.id
-      this.render(feature.id)
-
+      // highlightFeature() triggers reset cascades that clearHighlight() every layer,
+      // so render the track LAST — otherwise it gets wiped right after rendering.
       const geojsonSourceId = this.sourceId + '-features'
       highlightFeature(feature, true, geojsonSourceId)
+
+      this.highlightedFeatureId = feature.id
+      this.render(feature.id)
     }
 
     map.on('click', this.mapClickHandler)

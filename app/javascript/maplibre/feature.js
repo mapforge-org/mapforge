@@ -264,6 +264,8 @@ export function resetHighlightedFeature () {
       stateParams.sourceLayer = highlightedSourceLayer
     }
     map.setFeatureState(stateParams, { active: false })
+  }
+  if (highlightedFeatureId) {
     highlightedFeatureSource = null
     highlightedFeatureId = null
     highlightedSourceLayer = null
