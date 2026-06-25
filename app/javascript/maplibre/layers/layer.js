@@ -144,6 +144,16 @@ export class Layer {
   }
 
   /**
+   * Brings a feature to the front in render order. The feature has already been
+   * moved to the end of this.layer.geojson.features by the caller.
+   * Default implementation re-renders the whole layer; subclasses may override
+   * with a more efficient source update.
+   */
+  bringToFront(_feature) {
+    this.render()
+  }
+
+  /**
    * Sets up event handlers for feature interaction (click, hover).
    * Called during layer initialization. Override to customize or disable handlers.
    */

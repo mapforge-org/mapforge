@@ -297,7 +297,7 @@ export function highlightFeature (feature, sticky = false, source, sourceLayer =
     resetControls()
   }
 
-  // console.log('highlight', feature)
+  console.log('highlight feature', feature)
   if (!source) { source = getFeatureSource(feature.id) }
   stickyFeatureHighlight = sticky
   highlightedFeatureId = feature?.id

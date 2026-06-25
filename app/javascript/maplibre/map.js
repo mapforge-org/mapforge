@@ -643,9 +643,10 @@ export function frontFeature(frontFeature) {
     const features = layer.geojson.features
     const idx = features.findIndex(f => f.id === frontFeature.id)
     if (idx !== -1) {
+      if (idx === features.length - 1) { break } // already in front, nothing to do
       const [feature] = features.splice(idx, 1) // Remove it
       features.push(feature) // Add to end
-      layer.render()
+      layer.bringToFront(feature)
 
       break // done, exit loop
     }

@@ -83,6 +83,20 @@ export class GeoJSONLayer extends Layer {
     this.resetDrawFeatures(resetDraw)
   }
 
+  bringToFront(feature) {
+    const source = map.getSource(this.sourceId)
+    if (!source) { return }
+    // Only LineStrings spawn derived companion geometry (route-extras segments/labels,
+    // buffered extrusion polygons) that a surgical reorder would leave stale.
+    const spawnsCompanionGeometry = feature.geometry?.type === 'LineString' &&
+      (feature.properties?.['show-route-extras'] || feature.properties?.['fill-extrusion-height'])
+    if (spawnsCompanionGeometry) {
+      return this.render()
+    }
+    this.ensureFeaturePropertyIds()
+    source.updateData({ remove: [feature.id], add: [feature] })
+  }
+
   renderAnimationFrame(feature, frameCount) {
     // Skip if a full render is in progress (data-geojson-loaded='false')
     if (map.getContainer().getAttribute('data-geojson-loaded') === 'false') {
