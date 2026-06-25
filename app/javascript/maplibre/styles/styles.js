@@ -77,13 +77,19 @@ export async function loadImage (e) {
   if (imageUrl.startsWith('http') || imageUrl.startsWith('/')) {
     try {
       imageState[e.id] = 'loading'
+      // Synchronously register a transparent 1x1 placeholder before any await, so
+      // MapLibre's getImage re-check (right after the styleimagemissing event fires)
+      // succeeds and skips the "Image could not be loaded" warning. The real image
+      // is swapped in below once it has loaded.
+      if (!map.hasImage(imageUrl)) {
+        map.addImage(imageUrl, { width: 1, height: 1, data: new Uint8Array(4) })
+      }
       let response = await map.loadImage(imageUrl)
       if (response && map) {
-        if (!map.hasImage(imageUrl)) {
-          // console.log('Adding ' + imageUrl + ' to map')
-          map.addImage(imageUrl, response.data)
-          imageState[e.id] = 'loaded'
-        }
+        // replace the placeholder (remove + add, since dimensions differ)
+        if (map.hasImage(imageUrl)) { map.removeImage(imageUrl) }
+        map.addImage(imageUrl, response.data)
+        imageState[e.id] = 'loaded'
       } else {
         console.warn(imageUrl + ' not found')
       }
