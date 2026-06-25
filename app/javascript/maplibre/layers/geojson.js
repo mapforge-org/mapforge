@@ -1,7 +1,7 @@
 import { buffer } from "@turf/buffer"
 import { draw, select } from 'maplibre/edit'
-import { detectLevels, filterFeaturesByLevel } from 'maplibre/layers/geojson/levels'
 import { initializeKmMarkerStyles, renderKmMarkers } from 'maplibre/layers/geojson/km_markers'
+import { detectLevels, filterFeaturesByLevel } from 'maplibre/layers/geojson/levels'
 import { initializeExtrasLabelStyles, renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
 import { Layer } from 'maplibre/layers/layer'
 import { getFeature } from 'maplibre/layers/layers'
@@ -164,7 +164,6 @@ export class GeoJSONLayer extends Layer {
       }
       extrusionLine.properties['stroke-width'] = 0
       extrusionLine.properties['stroke-opacity'] = 0
-      extrusionLine.properties['fill-opacity'] = 0
       return extrusionLine
     })
   }

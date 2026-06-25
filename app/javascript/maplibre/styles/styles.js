@@ -441,12 +441,13 @@ function textLayerStyles(mode) {
 }
 
 // Routes each polygon to one of the 10 fill-extrusion buckets by rounding its
-// fill-opacity (default = defaultExtrusionOpacity) to the nearest tenth and
-// clamping to [1, 10]. Default preserves prior visual when fill-opacity is unset.
+// fill-extrusion-opacity (falling back to fill-opacity so the polygon opacity
+// slider keeps working; default = defaultExtrusionOpacity) to the nearest tenth
+// and clamping to [1, 10].
 const opacityBucketSelector = [
   'max', 1, ['min', 10,
     ['round', ['*', 10,
-      ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaultExtrusionOpacity)]]]]
+      ['to-number', styleProp(['fill-extrusion-opacity', 'user_fill-extrusion-opacity', 'fill-opacity', 'user_fill-opacity'], defaultExtrusionOpacity)]]]]
 ]
 
 function extrusionBucketLayers () {

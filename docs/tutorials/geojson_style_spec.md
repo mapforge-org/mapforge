@@ -55,6 +55,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-width`: width in m
 * `fill-extrusion-base`: ground distance in m (default: 0)
+* `fill-extrusion-opacity`: opacity of the extrusion, rounded to nearest 0.1 (default: 0.9)
 * `show-km-markers`: show markers at each kilometer (default: false)
 
 #### *Polygon* geometry:
@@ -67,3 +68,4 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `fill-extrusion-color`: color of the extrusion (default: green)
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-base`: ground distance in m (default: 0)
+* `fill-extrusion-opacity`: opacity of the extrusion, rounded to nearest 0.1 (defaults to `fill-opacity`, else 0.9)

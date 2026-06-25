@@ -296,7 +296,6 @@ export function renderRouteExtras (features, sourceId) {
       extrusionLine.properties['fill-extrusion-color'] = feature.properties['stroke']
       extrusionLine.properties['stroke-width'] = 0
       extrusionLine.properties['stroke-opacity'] = 0
-      extrusionLine.properties['fill-opacity'] = 0
       return extrusionLine
     })
 
