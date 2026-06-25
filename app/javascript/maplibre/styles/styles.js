@@ -314,7 +314,7 @@ function symbolsLayerStyles(mode) {
     ],
     'icon-size': iconSize,
     'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
-    'icon-rotate': ['get', 'marker-rotate'],
+    'icon-rotate': ['coalesce', ['get', 'marker-rotate'], 0],
     'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
   }
 
@@ -387,7 +387,7 @@ function textLayerStyles(mode) {
       ['==', styleProp(['user_label-anchor', 'label-anchor'], 'top'), 'top'], labelOffsetBySize,
       ['literal', [0, 0]]
     ],
-    'text-justify': ['get', 'label-justify'],
+    'text-justify': ['coalesce', ['get', 'label-justify'], 'auto'],
     'text-max-width': ['coalesce', ['get', 'label-max-width'], 10],
     'text-line-height': 1.6, // no dynamic value possible
     // TODO: sort keys on text are ascending, on symbols descending???
