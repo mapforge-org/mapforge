@@ -5,8 +5,8 @@ import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { flyToFeature } from 'maplibre/animations'
 import { initLayersModal } from 'maplibre/controls/shared'
-import { select, updateElevation } from 'maplibre/edit'
-import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature'
+import { updateElevation } from 'maplibre/edit'
+import { confirmImageLocation, highlightFeature, uploadImageToFeature } from 'maplibre/feature'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/overpass/queries'
@@ -144,7 +144,8 @@ export default class extends Controller {
     const layer = layers.find(l => l?.geojson?.features?.some(f => f.id === id))
     const feature = layer.geojson.features.find(f => f.id === id)
     flyToFeature(feature)
-    select(feature)
+    // Highlight + open details like a map click
+    highlightFeature(feature, true)
   }
 
   toggleEdit (event) {
