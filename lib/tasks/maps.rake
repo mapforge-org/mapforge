@@ -7,6 +7,19 @@ namespace :maps do
     uri = URI.parse(base_url)
     Net::HTTP.get_response(URI("#{uri.scheme}://#{uri.host}:#{uri.port}")) rescue abort "ERROR: MAPFORGE_HOST (#{base_url}) is not reachable: #{$!.message}"
 
+    # puppeteer-ruby logs harmless CDP teardown errors ("Target Closed",
+    # "No session with given id") straight to $stderr from background Async
+    # fibers during page/browser close. They can't be caught or silenced via
+    # config, so filter them out at the $stderr level for the task's duration.
+    ignore = /Protocol error \((?:Runtime\.runIfWaitingForDebugger|Target\.detachFromTarget)\)/
+    real_stderr = $stderr
+    filtered = Object.new.tap do |io|
+      io.define_singleton_method(:write) { |*a| a.any? { |s| s.to_s.match?(ignore) } ? 0 : real_stderr.write(*a) }
+      io.define_singleton_method(:method_missing) { |name, *a, &b| real_stderr.send(name, *a, &b) }
+      io.define_singleton_method(:respond_to_missing?) { |name, inc = false| real_stderr.respond_to?(name, inc) }
+    end
+    $stderr = filtered
+
     # https://github.com/YusukeIwaki/puppeteer-ruby
     # Launch browser once for all maps
     Puppeteer.launch(headless: true, ignore_https_errors: true, args: [ "--disable-features=ServiceWorker" ]) do |browser|
@@ -19,7 +32,7 @@ namespace :maps do
           puts "Skipping personal map (#{map.public_id}, #{map.name})"
           next
         end
-        puts "Updating map (#{map.public_id}, #{map.name}) updated #{map.updated_at}, last screenshot from #{last_update || "n/a"}"
+        puts "Updating map (#{map.public_id}, #{map.name}) updated #{map.updated_at.getlocal}, last screenshot from #{last_update&.getlocal || "n/a"}"
 
         begin
           page = browser.new_page
@@ -70,5 +83,7 @@ namespace :maps do
         end
       end
     end
+  ensure
+    $stderr = real_stderr if real_stderr
   end
 end
