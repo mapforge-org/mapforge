@@ -149,6 +149,7 @@ export function initializeSocket () {
             if (data.user_image) {
               const img = document.createElement("img")
               img.src = data.user_image
+              img.referrerPolicy = "no-referrer"
               img.className = "profile-image remote-cursor-image"
               cursor.appendChild(img)
             }
