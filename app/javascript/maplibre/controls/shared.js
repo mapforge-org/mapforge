@@ -365,6 +365,7 @@ export const geocoderConfig = {
           properties: feature.properties,
           text: feature.properties.display_name,
           place_type: ['place'],
+          bbox: feature.bbox,
           center
         }
         features.push(point)
@@ -393,7 +394,8 @@ export function initializeDefaultControls () {
   map.addControl(
     new MaplibreGeocoder(geocoderConfig, {
       maplibregl,
-      zoom: 15,
+      zoom: 16,
+      flyTo: { maxZoom: 16 },
       clearAndBlurOnEsc: true,
       // prioritize results near map center
       proximity: {
