@@ -158,6 +158,9 @@ export class GeoJSONLayer extends Layer {
     return extrusionLines.map(feature => {
       const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
       const extrusionLine = buffer(feature, width, { units: 'meters' })
+      // Needs a unique top-level id so updateData() diffing can index the source
+      // (turf buffer drops the id, which breaks MapLibre's keyed diff)
+      extrusionLine.id = `${feature.id}-extrusion`
       extrusionLine.properties = { ...feature.properties }
       if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
         extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
