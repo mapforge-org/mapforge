@@ -116,7 +116,7 @@ describe Layer do
     it "broadcasts when show changes" do
       allow(ActionCable.server).to receive(:broadcast)
       layer.update!(show: false)
-      expect(ActionCable.server).to have_received(:broadcast).twice
+      expect(ActionCable.server).to have_received(:broadcast).once
     end
 
     it "does not broadcast when show is unchanged" do
@@ -125,11 +125,9 @@ describe Layer do
       expect(ActionCable.server).not_to have_received(:broadcast)
     end
 
-    it "broadcasts update_layer to both the private and public channel when feature_order changes" do
+    it "broadcasts update_layer to the map channel when feature_order changes" do
       allow(ActionCable.server).to receive(:broadcast)
       layer.update!(feature_order: [ "a", "b" ])
-      expect(ActionCable.server).to have_received(:broadcast)
-        .with("map_channel_#{map.private_id}", hash_including(event: "update_layer")).once
       expect(ActionCable.server).to have_received(:broadcast)
         .with("map_channel_#{map.public_id}", hash_including(event: "update_layer")).once
     end

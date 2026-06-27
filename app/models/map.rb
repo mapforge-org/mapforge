@@ -323,13 +323,8 @@ class Map
   end
 
   def broadcast_update
-    # calculate properties only once
-    map_properties = properties
-    # broadcast to private + public channel
-    [ private_id, public_id ].each do |id|
-      ActionCable.server.broadcast("map_channel_#{id}",
-        { event: "update_map", map: map_properties.as_json })
-    end
+    ActionCable.server.broadcast("map_channel_#{public_id}",
+      { event: "update_map", map: properties.as_json })
   end
 
   def delete_screenshot

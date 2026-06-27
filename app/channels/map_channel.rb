@@ -1,12 +1,13 @@
 class MapChannel < ApplicationCable::Channel
-  # Allow to subscribe to changes with public + private id,
-  # Check auth on update methods by looking up map with private id
+  # Accept subscriptions with either private_id or public_id; write operations
+  # are authorized by requiring the private_id in the message payload.
   def subscribed
     super
     map = Map.find_by(private_id: params[:map_id]) || Map.find_by(public_id: params[:map_id])
     Rails.logger.warn "Invalid map id #{params[:map_id]} for subscribing to channel" and return unless map
 
-    stream_from "map_channel_#{params[:map_id]}"
+    @public_id = map.public_id
+    stream_from "map_channel_#{@public_id}"
     transmit({ event: "connection", uuid: uuid })
     Rails.logger.debug { "MapChannel subscribed '#{uuid}' for '#{params[:map_id]}'" }
   end
@@ -14,7 +15,7 @@ class MapChannel < ApplicationCable::Channel
   def unsubscribed
     super
     payload = { event: "mouse_disconnect", uuid: uuid }
-    ActionCable.server.broadcast("map_channel_#{params[:map_id]}", payload)
+    ActionCable.server.broadcast("map_channel_#{@public_id}", payload) if @public_id
     # Rails.logger.debug "MapChannel unsubscribed"
   end
 
@@ -83,7 +84,7 @@ class MapChannel < ApplicationCable::Channel
       data[:user_name] = user.name
       data[:user_image] = user.image
     end
-    ActionCable.server.broadcast("map_channel_#{data["map_id"]}", data)
+    ActionCable.server.broadcast("map_channel_#{@public_id}", data) if @public_id
   end
 
   private

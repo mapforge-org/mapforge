@@ -60,18 +60,13 @@ class Layer
 
   def broadcast_update
     if (%w[name query heatmap cluster show feature_order] & previous_changes.keys).any?
-      # broadcast to private + public channel
-      [ map.private_id, map.public_id ].each do |map_id|
-        ActionCable.server.broadcast("map_channel_#{map_id}",
-          { event: "update_layer", layer: to_summary_json.as_json })
-      end
+      ActionCable.server.broadcast("map_channel_#{map.public_id}",
+        { event: "update_layer", layer: to_summary_json.as_json })
     end
   end
 
   def broadcast_destroy
-    [ map.private_id, map.public_id ].each do |map_id|
-      ActionCable.server.broadcast("map_channel_#{map_id}",
-        { event: "delete_layer", layer: { id: id } })
-    end
+    ActionCable.server.broadcast("map_channel_#{map.public_id}",
+      { event: "delete_layer", layer: { id: id } })
   end
 end
