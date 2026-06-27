@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 * New [styling properties](/doc/geojson_style_spec): text-offset, text-anchor, label-shadow-width
 * New [logo](/logo/mapforge-logo-pwa-512.png) and [sticker](/logo/sticker/mapforge-sticker.jpg)
 * Performance: deferred loading, optimized fonts, database indexes
+* Allow to re-order layer items with drag & drop
 
 ## 2026-05
 

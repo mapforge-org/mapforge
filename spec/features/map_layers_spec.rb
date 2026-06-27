@@ -359,4 +359,39 @@ describe "Map" do
       end
     end
   end
+
+  context "reordering features" do
+    let!(:f1) { create(:feature, :point, title: "Reorder A", layer: map.layers.first) }
+    let!(:f2) { create(:feature, :point_middle, title: "Reorder B", layer: map.layers.first) }
+    let!(:f3) { create(:feature, :polygon_middle, title: "Reorder C", layer: map.layers.first) }
+
+    # reload after features exist so they render server-side in created_at order
+    before do
+      visit map.private_map_path
+      expect_map_loaded
+      find(".maplibregl-ctrl-layers").click
+      expect(page).to have_css("li[data-feature-id='#{f1.id}'] .feature-drag-handle")
+    end
+
+    def feature_ids = page.all("#layers li[data-feature-id]").map { |li| li["data-feature-id"] }
+
+    it "drags a feature to a new position and persists the order" do
+      # listed top-first: the last-created feature (drawn on top) appears first
+      expect(feature_ids).to eq [ f3.id.to_s, f2.id.to_s, f1.id.to_s ]
+
+      # drag the bottom feature (f1) up onto the top one (f3)
+      drag_element("li[data-feature-id='#{f1.id}'] .feature-drag-handle",
+        "li[data-feature-id='#{f3.id}']")
+
+      new_order = feature_ids
+      expect(new_order.first).to eq f1.id.to_s
+      expect(new_order).not_to eq [ f3.id.to_s, f2.id.to_s, f1.id.to_s ]
+
+      # feature_order is the draw order (bottom first) — the reverse of the shown list
+      wait_for { map.layers.first.reload.feature_order }.to eq new_order.reverse
+
+      # dragging must not select a feature or open its details
+      expect(page).not_to have_css("#feature-details-modal.show")
+    end
+  end
 end

@@ -398,6 +398,17 @@
   margin: 0.3em 0 0;
 }
 
+.feature-drag-handle {
+  cursor: grab;
+  color: var(--bs-secondary-color);
+  padding-right: 0.3rem;
+  touch-action: none;
+}
+
+.layer-feature-item.sortable-chosen {
+  background-color: var(--bs-tertiary-bg);
+}
+
 .layer-refresh-animate {
   display: inline-block;
   animation: spin 1s linear infinite;

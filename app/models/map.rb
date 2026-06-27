@@ -165,7 +165,7 @@ class Map
     { properties: properties, layers: all_layers.map { |l|
       json = l.to_summary_json
       json[:geojson] = { type: "FeatureCollection",
-        features: (all_features[l.id] || []).map(&:geojson) }
+        features: l.order_features(all_features[l.id] || []).map(&:geojson) }
       json
     } }.to_json
   end

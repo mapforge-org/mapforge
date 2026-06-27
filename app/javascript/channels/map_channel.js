@@ -119,6 +119,7 @@ export function initializeSocket () {
             if (JSON.stringify(layerDef) !== JSON.stringify(data.layer)) {
               console.log('Layer updated on server, reloading layer styles', data.layer)
               layers[index].update(data.layer)
+              layers[index].applyFeatureOrder(data.layer.feature_order)
               initializeLayerStyles(data.layer.id)
               setLayerVisibility(layers[index].sourceId, data.layer.show !== false)
             }

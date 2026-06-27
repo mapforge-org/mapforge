@@ -43,3 +43,21 @@ def hover_coord(x, y)
   browser = page.driver.browser
   browser.mouse.move(x: x, y: y)
 end
+
+# Drags one element onto another via a multi-step pointer drag. Capybara's drag_to
+# does not emit enough intermediate pointer moves headless for libraries like
+# SortableJS (forceFallback), so we drive the mouse directly.
+def drag_element(source_selector, target_selector)
+  rect = page.evaluate_script(<<~JS)
+    (() => {
+      const s = document.querySelector(#{source_selector.to_json}).getBoundingClientRect();
+      const t = document.querySelector(#{target_selector.to_json}).getBoundingClientRect();
+      return [s.x + s.width / 2, s.y + s.height / 2, t.x + t.width / 2, t.y + t.height / 2];
+    })()
+  JS
+  mouse = page.driver.browser.mouse
+  mouse.move(x: rect[0], y: rect[1])
+  mouse.down
+  mouse.move(x: rect[2], y: rect[3], steps: 12)
+  mouse.up
+end

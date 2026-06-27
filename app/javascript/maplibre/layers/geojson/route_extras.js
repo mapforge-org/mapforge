@@ -291,7 +291,7 @@ export function renderRouteExtras (features, sourceId) {
     .filter(f => f.properties['fill-extrusion-height'])
     .map(feature => {
       const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || 5
-      const extrusionLine = buffer(feature, width, { units: 'meters' })
+      const extrusionLine = buffer(feature, width / 2, { units: 'meters' })
       extrusionLine.properties = { ...feature.properties }
       extrusionLine.properties['fill-extrusion-color'] = feature.properties['stroke']
       extrusionLine.properties['stroke-width'] = 0

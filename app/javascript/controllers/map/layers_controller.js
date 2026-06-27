@@ -139,7 +139,9 @@ export default class extends Controller {
     })
   }
 
-  flyToLayerElement () {
+  flyToLayerElement (event) {
+    // Ignore clicks on the drag handle so reordering never selects/flies to a feature
+    if (event?.target?.closest('.feature-drag-handle')) { return }
     const id = this.element.getAttribute('data-feature-id')
     const layer = layers.find(l => l?.geojson?.features?.some(f => f.id === id))
     const feature = layer.geojson.features.find(f => f.id === id)

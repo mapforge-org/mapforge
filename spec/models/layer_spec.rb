@@ -59,6 +59,31 @@ describe Layer do
       expect(result[:type]).to eq "FeatureCollection"
       expect(result[:features]).to eq []
     end
+
+    context "with feature_order set" do
+      let(:map) { create(:map) }
+      let(:layer) { map.layers.first }
+      let!(:a) { create(:feature, :point, title: "A", layer: layer) }
+      let!(:b) { create(:feature, :point, title: "B", layer: layer) }
+      let!(:c) { create(:feature, :point, title: "C", layer: layer) }
+
+      def ids(result) = result[:features].map { |f| f[:id] }
+
+      it "orders features by feature_order" do
+        layer.update!(feature_order: [ c.id.to_s, a.id.to_s, b.id.to_s ])
+        expect(ids(layer.to_geojson)).to eq [ c.id.to_s, a.id.to_s, b.id.to_s ]
+      end
+
+      it "appends features missing from feature_order after the listed ones" do
+        layer.update!(feature_order: [ c.id.to_s, a.id.to_s ])
+        expect(ids(layer.to_geojson)).to eq [ c.id.to_s, a.id.to_s, b.id.to_s ]
+      end
+
+      it "ignores stale ids in feature_order" do
+        layer.update!(feature_order: [ "deadbeef", b.id.to_s, a.id.to_s ])
+        expect(ids(layer.to_geojson)).to eq [ b.id.to_s, a.id.to_s, c.id.to_s ]
+      end
+    end
   end
 
   describe "#to_json" do
@@ -98,6 +123,15 @@ describe Layer do
       allow(ActionCable.server).to receive(:broadcast)
       layer.update!(features_count: 5)
       expect(ActionCable.server).not_to have_received(:broadcast)
+    end
+
+    it "broadcasts update_layer to both the private and public channel when feature_order changes" do
+      allow(ActionCable.server).to receive(:broadcast)
+      layer.update!(feature_order: [ "a", "b" ])
+      expect(ActionCable.server).to have_received(:broadcast)
+        .with("map_channel_#{map.private_id}", hash_including(event: "update_layer")).once
+      expect(ActionCable.server).to have_received(:broadcast)
+        .with("map_channel_#{map.public_id}", hash_including(event: "update_layer")).once
     end
   end
 end

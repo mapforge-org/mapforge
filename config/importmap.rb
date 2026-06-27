@@ -68,6 +68,8 @@ pin "swiper", to: "swiper-bundle.min.js", preload: false # @12.1.4
 pin "swiper/modules", to: "swiper-modules.js", preload: false # @11.2.10
 # Emoji picker: https://github.com/missive/emoji-mart (alternative: https://www.npmjs.com/package/emoji-picker-element)
 pin "emoji-mart", preload: false # @5.6.0
+# Drag-and-drop reordering: https://github.com/SortableJS/Sortable
+pin "sortablejs", preload: false # @1.15.6
 # Extract coords from uploaded images
 pin "exif-reader", preload: false # @2.3.0
 pin "@kurkle/color", to: "@kurkle--color.js", preload: false # @0.4.0

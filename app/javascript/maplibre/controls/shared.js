@@ -1,3 +1,4 @@
+import { mapChannel } from 'channels/map_channel'
 import * as dom from 'helpers/dom'
 import { animateElement, initTooltips } from 'helpers/dom'
 import * as f from 'helpers/functions'
@@ -282,7 +283,8 @@ export function initLayersModal () {
       }
 
       const ul = layerElement.querySelector('.layer-content ul')
-      features.slice(0, 300).forEach(feature => {
+      // List top-down: later features draw on top
+      features.slice(0, 500).reverse().forEach(feature => {
         const listItem = document.createElement('li')
         listItem.classList.add('layer-feature-item')
         listItem.classList.add('flex-center')
@@ -290,6 +292,13 @@ export function initLayersModal () {
         listItem.setAttribute('data-feature-id', feature.id)
         listItem.setAttribute('data-controller', 'map--layers')
         listItem.setAttribute('data-action', 'click->map--layers#flyToLayerElement')
+
+        if (window.gon.map_mode === 'rw' && layer.type === 'geojson') {
+          const handle = document.createElement('span')
+          handle.classList.add('feature-drag-handle', 'flex-center')
+          handle.innerHTML = `<i class="bi bi-grip-vertical"></i>`
+          listItem.appendChild(handle)
+        }
 
         const icon = document.createElement('span')
         icon.classList.add('feature-icon')
@@ -305,6 +314,35 @@ export function initLayersModal () {
         listItem.appendChild(link)
         ul.appendChild(listItem)
       })
+      if (window.gon.map_mode === 'rw' && layer.type === 'geojson') {
+        let dragging = false
+        // Swallow the click that fires after a drop so reordering never selects a feature
+        ul.addEventListener('click', e => {
+          if (dragging) { e.stopPropagation(); e.preventDefault() }
+        }, true)
+        // Loaded lazily so the lib is never fetched in read-only mode, where features can't be reordered
+        import('sortablejs').then(({ default: Sortable }) => {
+          Sortable.create(ul, {
+            handle: '.feature-drag-handle',
+            animation: 150,
+            // Use the JS fallback (pointer events) instead of native HTML5 DnD for
+            // consistent touch + mouse behaviour and styling
+            forceFallback: true,
+            onStart: () => { dragging = true },
+            onEnd: () => {
+              // The list is shown top-first, so reverse it back to draw order (bottom first)
+              const orderedIds = Array.from(ul.querySelectorAll('li[data-feature-id]'))
+                .map(li => li.getAttribute('data-feature-id'))
+                .reverse()
+              layer.applyFeatureOrder(orderedIds)
+              layer.render()
+              mapChannel.send_message('update_layer', { id: layer.id, feature_order: orderedIds })
+              // reset after the post-drop click has been processed
+              setTimeout(() => { dragging = false }, 0)
+            }
+          })
+        })
+      }
       // expand layer items when there is only one layer
       if (layers.length === 1) {
         e.querySelector('.layer-content').classList.remove('hidden')

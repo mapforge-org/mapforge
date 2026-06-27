@@ -136,6 +136,18 @@ export class Layer {
     map.getSource(this.sourceId).setData(this.layer.geojson, false)
   }
 
+  // Reorder this.layer.geojson.features to match orderedIds (feature id strings).
+  // Features not in orderedIds keep their relative order and sort after listed ones.
+  applyFeatureOrder(orderedIds) {
+    const features = this.layer?.geojson?.features
+    if (!orderedIds || !features) { return }
+    this.layer.feature_order = orderedIds
+    const rank = new Map(orderedIds.map((id, i) => [id, i]))
+    features.sort((a, b) =>
+      (rank.has(a.id) ? rank.get(a.id) : Infinity) - (rank.has(b.id) ? rank.get(b.id) : Infinity)
+    )
+  }
+
   ensureFeaturePropertyIds() {
     this.layer?.geojson?.features?.forEach((feature) => {
       feature.properties = feature.properties || {}
