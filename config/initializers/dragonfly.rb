@@ -31,13 +31,20 @@ Dragonfly.app.configure do
 
   processor :rounded do |content|
     Yabeda.dragonfly_transformations.increment({ processor: "rounded" })
+    width = content.analyse(:width)
+    height = content.analyse(:height)
+    r = [ width, height ].min / 3
     content.shell_update(ext: "png") do |old_path, new_path|
-      # Instagram style rounded corners, preserving inner transparency
+      # Instagram style rounded corners. Build the corner mask on a white clone and
+      # multiply it into the image's existing alpha, so transparency is preserved
+      # (the white circle fill can never turn transparent pixels opaque).
       "/usr/bin/convert #{old_path} -alpha set \
                           ( +clone -alpha extract \
-                             -draw 'fill black polygon 0,0 0,50 50,0 fill white circle 50,50 50,0' \
-                             ( +clone -flip ) -compose Multiply -composite \
-                             ( +clone -flop ) -compose Multiply -composite \
+                             ( +clone -fill white -colorize 100 \
+                                -draw 'fill black polygon 0,0 0,#{r} #{r},0 fill white circle #{r},#{r} #{r},0' \
+                                ( +clone -flip ) -compose Multiply -composite \
+                                ( +clone -flop ) -compose Multiply -composite \
+                             ) -compose Multiply -composite \
                           ) -alpha off -compose CopyOpacity -composite #{new_path}"
     end
   end

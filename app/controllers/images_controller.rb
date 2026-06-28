@@ -18,7 +18,6 @@ class ImagesController < ApplicationController
     expires_in IMAGE_CACHE_TIME, public: true
 
     # resize, crop if necessary to maintain aspect ratio (centre gravity)
-    # TODO: skip first `rounded` for icons with transparency
     image_url = @image.img.thumb("150x150#", quality: 75).rounded.border.rounded.url
     redirect_to image_url, status: 301
   end
