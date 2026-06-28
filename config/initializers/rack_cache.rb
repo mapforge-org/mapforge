@@ -9,7 +9,7 @@ class ConditionalRackCache
   # https://github.com/rack/rack-cache
   # rails sets "cache-control", "private" by default
 
-  PATHS = [ "/icon/", "/image/" ]
+  PATHS = [ "/icon/", "/image/", "/media/" ]
 
   def initialize(app)
     @app = app
