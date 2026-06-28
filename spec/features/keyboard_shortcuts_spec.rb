@@ -58,7 +58,6 @@ describe "Keyboard Shortcuts" do
         page.execute_script("document.activeElement.blur()")
         page.execute_script("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'y', ctrlKey: true, bubbles: true }))")
 
-        wait_for_geojson_render
         expect(page).to have_text("Redo")
 
         wait_for { Feature.count }.to eq(0)
