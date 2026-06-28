@@ -131,15 +131,18 @@ class Map
   end
 
   def properties
+    # Compute the coordinate list once and share it between center/zoom defaults
+    # (each is only needed when its value isn't explicitly set).
+    points = all_points if center.nil? || zoom.nil?
     { name: name,
      description: description,
      public_id: public_id,
      base_map: get_base_map,
      type: type,
      center: center,
-     default_center: center ? nil : calculated_center, # only set when no center defined
+     default_center: center ? nil : calculated_center(points), # only set when no center defined
      zoom: zoom,
-     default_zoom: zoom ? nil : calculated_zoom, # only set when no zoom defined
+     default_zoom: zoom ? nil : calculated_zoom(points), # only set when no zoom defined
      pitch: pitch || DEFAULT_PITCH,
      bearing: bearing || DEFAULT_BEARING,
      terrain: terrain || DEFAULT_TERRAIN,
@@ -270,8 +273,7 @@ class Map
   end
 
   # setting center to average of all coordinates
-  def calculated_center
-    coordinates = all_points
+  def calculated_center(coordinates = all_points)
     if coordinates.present?
       average_latitude = coordinates.map(&:first).reduce(:+) / coordinates.size.to_f
       average_longitude = coordinates.map(&:last).reduce(:+) / coordinates.size.to_f
@@ -282,8 +284,7 @@ class Map
     end
   end
 
-  def calculated_zoom
-    coordinates = all_points
+  def calculated_zoom(coordinates = all_points)
     if coordinates.present?
       point1 = RGeo::Geographic.spherical_factory.point(coordinates.map(&:first).max, coordinates.map(&:last).max)
       point2 = RGeo::Geographic.spherical_factory.point(coordinates.map(&:first).min, coordinates.map(&:last).min)
