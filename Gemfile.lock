@@ -164,7 +164,7 @@ GEM
       fiber-annotation
       fiber-local (~> 1.1)
       json
-    crass (1.0.6)
+    crass (1.0.7)
     csv (3.3.5)
     cuprite (0.17)
       capybara (~> 3.0)
