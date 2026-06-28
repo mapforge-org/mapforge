@@ -62,4 +62,11 @@ Rails.application.configure do
 
   # allow access with any hostname
   config.hosts.clear
+
+  # Colorize log lines by severity: warnings yellow, errors/fatals red.
+  config.log_formatter = proc do |severity, _timestamp, _progname, msg|
+    body  = msg.is_a?(String) ? msg : msg.inspect
+    color = { "WARN" => 33, "ERROR" => 31, "FATAL" => 31 }[severity]
+    color ? "\e[#{color}m#{body}\e[0m\n" : "#{body}\n"
+  end
 end
