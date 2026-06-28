@@ -29,23 +29,47 @@ Dragonfly.app.configure do
   end
 
 
+  # ImageMagick fragment that rounds the current image's corners with radius `r`.
+  # Instagram style: the corner mask is built on a white clone and multiplied into
+  # the image's existing alpha, so transparency is preserved (the white circle fill
+  # can never turn transparent pixels opaque). Leaves the result with alpha applied.
+  round_corners = lambda do |r|
+    "( +clone -alpha extract \
+        ( +clone -fill white -colorize 100 \
+           -draw 'fill black polygon 0,0 0,#{r} #{r},0 fill white circle #{r},#{r} #{r},0' \
+           ( +clone -flip ) -compose Multiply -composite \
+           ( +clone -flop ) -compose Multiply -composite \
+        ) -compose Multiply -composite \
+     ) -alpha off -compose CopyOpacity -composite"
+  end
+
   processor :rounded do |content|
     Yabeda.dragonfly_transformations.increment({ processor: "rounded" })
     width = content.analyse(:width)
     height = content.analyse(:height)
     r = [ width, height ].min / 3
     content.shell_update(ext: "png") do |old_path, new_path|
-      # Instagram style rounded corners. Build the corner mask on a white clone and
-      # multiply it into the image's existing alpha, so transparency is preserved
-      # (the white circle fill can never turn transparent pixels opaque).
-      "/usr/bin/convert #{old_path} -alpha set \
-                          ( +clone -alpha extract \
-                             ( +clone -fill white -colorize 100 \
-                                -draw 'fill black polygon 0,0 0,#{r} #{r},0 fill white circle #{r},#{r} #{r},0' \
-                                ( +clone -flip ) -compose Multiply -composite \
-                                ( +clone -flop ) -compose Multiply -composite \
-                             ) -compose Multiply -composite \
-                          ) -alpha off -compose CopyOpacity -composite #{new_path}"
+      "/usr/bin/convert #{old_path} -alpha set #{round_corners.call(r)} #{new_path}"
+    end
+  end
+
+  # Combined round + white border + round in a single ImageMagick invocation,
+  # replacing the `.rounded.border.rounded` chain (3 shellouts -> 1). The
+  # `-colorspace sRGB -type TrueColorAlpha` reset between the two rounds is
+  # required: chaining two alpha composites in one process otherwise leaks a
+  # grayscale image type that the border step would bake in.
+  processor :rounded_border do |content, border_width|
+    Yabeda.dragonfly_transformations.increment({ processor: "rounded_border" })
+    border_width ||= 5
+    side = [ content.analyse(:width), content.analyse(:height) ].min
+    r1 = side / 3
+    r2 = (side + 2 * border_width) / 3
+    content.shell_update(ext: "png") do |old_path, new_path|
+      "/usr/bin/convert #{old_path} -alpha set #{round_corners.call(r1)} \
+        -colorspace sRGB -type TrueColorAlpha -alpha on -compose Over \
+        -bordercolor white -border #{border_width}x#{border_width} \
+        #{round_corners.call(r2)} \
+        -colorspace sRGB -type TrueColorAlpha #{new_path}"
     end
   end
 

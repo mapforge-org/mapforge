@@ -18,7 +18,8 @@ class ImagesController < ApplicationController
     expires_in IMAGE_CACHE_TIME, public: true
 
     # resize, crop if necessary to maintain aspect ratio (centre gravity)
-    image_url = @image.img.thumb("150x150#", quality: 75).rounded.border.rounded.url
+    # rounded_border = round + white border + round, in a single ImageMagick call
+    image_url = @image.img.thumb("150x150#", quality: 75).rounded_border.url
     redirect_to image_url, status: 301
   end
 
