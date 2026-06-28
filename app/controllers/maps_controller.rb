@@ -60,7 +60,13 @@ class MapsController < ApplicationController
           render "maplibre"
         end
       end
-      format.json { render json: @map.to_json }
+      format.json do
+        # updated_at bumps on any feature/layer/map change via the touch chain,
+        # so it's a sufficient (and private) validator for a 304 on repeat loads.
+        if stale?(etag: @map.updated_at)
+          render json: @map.to_json
+        end
+      end
       format.geojson { render json: @map.to_geojson }
       format.gpx do
         name = @map.name.presence&.parameterize || @map.public_id
