@@ -5,7 +5,7 @@ import { detectLevels, filterFeaturesByLevel } from 'maplibre/layers/geojson/lev
 import { initializeExtrasLabelStyles, renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
 import { Layer } from 'maplibre/layers/layer'
 import { getFeature } from 'maplibre/layers/layers'
-import { addGeoJSONSource, map, mapProperties } from 'maplibre/map'
+import { addGeoJSONSource, map, mapProperties, removeGeoJSONSource } from 'maplibre/map'
 import { defaultLineWidth, initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
 
 export class GeoJSONLayer extends Layer {
@@ -17,10 +17,22 @@ export class GeoJSONLayer extends Layer {
     return `route-extras-source-${this.id}`
   }
 
+  get extrusionSourceId() {
+    return `extrusion-source-${this.id}`
+  }
+
   createSource() {
     super.createSource()
     addGeoJSONSource(this.kmMarkerSourceId, false)
     addGeoJSONSource(this.routeExtrasSourceId, false)
+    addGeoJSONSource(this.extrusionSourceId, false)
+  }
+
+  cleanup() {
+    super.cleanup()
+    removeGeoJSONSource(this.kmMarkerSourceId)
+    removeGeoJSONSource(this.routeExtrasSourceId)
+    removeGeoJSONSource(this.extrusionSourceId)
   }
 
   initialize() {
@@ -29,6 +41,7 @@ export class GeoJSONLayer extends Layer {
     initializeKmMarkerStyles(this.kmMarkerSourceId)
     initializeViewStyles(this.routeExtrasSourceId)
     initializeExtrasLabelStyles(this.routeExtrasSourceId)
+    initializeViewStyles(this.extrusionSourceId)
 
     // Exclude features with route extras from the main line layers (they're rendered in route-extras-source instead)
     const mainLineFilter = ['all',
@@ -65,8 +78,8 @@ export class GeoJSONLayer extends Layer {
 
     renderKmMarkers(filteredFeatures, this.kmMarkerSourceId)
     renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
-    const extrusionLines = this.renderExtrusionLines(filteredFeatures)
-    const geojson = { type: 'FeatureCollection', features: filteredFeatures.concat(extrusionLines) }
+    this.renderExtrusionLines(filteredFeatures)
+    const geojson = { type: 'FeatureCollection', features: filteredFeatures }
 
     const source = map.getSource(this.sourceId)
     if (!source) {
@@ -118,6 +131,12 @@ export class GeoJSONLayer extends Layer {
       renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
     }
 
+    // Only update extrusion polygons if this feature has them
+    if (feature.properties['fill-extrusion-height']) {
+      const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
+      this.renderExtrusionLines(filteredFeatures)
+    }
+
     // Reduce km marker updates - only every 10 frames
     if (frameCount % 10 === 0) {
       const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
@@ -144,30 +163,37 @@ export class GeoJSONLayer extends Layer {
   }
 
   renderExtrusionLines(features) {
-    if (mapProperties.terrain) { return [] }
+    const source = map.getSource(this.extrusionSourceId)
+    if (!source) { return }
 
-    // LineStrings with fill-extrusion-height are buffered into polygons for MapLibre's fill-extrusion layer
-    // Skipped when 'show-route-extras' would render it's own extrusion
-    let extrusionLines = features.filter(feature => (
-      feature.geometry.type === 'LineString' &&
-      feature.properties['fill-extrusion-height'] &&
-      !feature.properties['show-route-extras'] &&
-      feature.geometry.coordinates.length !== 1
-    ))
+    if (mapProperties.terrain) {
+      source.setData({ type: 'FeatureCollection', features: [] })
+      return
+    }
 
-    return extrusionLines.map(feature => {
-      const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
-      const extrusionLine = buffer(feature, width / 2, { units: 'meters' })
-      // Needs a unique id so updateData() diffing can index the source. The source uses
-      // promoteId: 'id', so the diff key is properties.id - override both with a unique extrusion id.
-      extrusionLine.id = `${feature.id}-extrusion`
-      extrusionLine.properties = { ...feature.properties, id: extrusionLine.id }
-      if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
-        extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
-      }
-      extrusionLine.properties['stroke-width'] = 0
-      extrusionLine.properties['stroke-opacity'] = 0
-      return extrusionLine
-    })
+    // LineStrings with fill-extrusion-height are buffered into polygons for MapLibre's fill-extrusion layer.
+    // Placed in a separate non-selectable source so the polygons are never clickable.
+    // Skipped when 'show-route-extras' renders its own extrusion.
+    const extrusionFeatures = features
+      .filter(feature => (
+        feature.geometry.type === 'LineString' &&
+        feature.properties['fill-extrusion-height'] &&
+        !feature.properties['show-route-extras'] &&
+        feature.geometry.coordinates.length !== 1
+      ))
+      .map(feature => {
+        const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
+        const extrusionLine = buffer(feature, width / 2, { units: 'meters' })
+        extrusionLine.id = `${feature.id}-extrusion`
+        extrusionLine.properties = { ...feature.properties, id: extrusionLine.id }
+        if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
+          extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
+        }
+        extrusionLine.properties['stroke-width'] = 0
+        extrusionLine.properties['stroke-opacity'] = 0
+        return extrusionLine
+      })
+
+    source.setData({ type: 'FeatureCollection', features: extrusionFeatures })
   }
 }
