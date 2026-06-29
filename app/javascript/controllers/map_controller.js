@@ -43,8 +43,12 @@ export default class extends Controller {
   disconnect() {
     // Clean up when navigating away from the map
     console.log('Map controller disconnecting, cleaning up...')
+    resetInitializationState()
+    clearImageState()
+    clearUndoHistory()
+    resetLabelFont()
 
-    // Remove the map instance
+    // Remove the map instance last
     if (window.map) {
       try {
         window.map.remove()
@@ -53,12 +57,6 @@ export default class extends Controller {
         console.warn('Error removing map instance:', e)
       }
     }
-
-    // Clear module-level state
-    resetInitializationState()
-    clearImageState()
-    clearUndoHistory()
-    resetLabelFont()
   }
 
   // paste feature from clipboard

@@ -267,9 +267,10 @@ export function addGeoJSONSource(sourceName, cluster=false) {
 }
 
 export function removeStyleLayers(sourceName) {
-  if (map.getStyle && map.getStyle().layers) {
+  const style = map.getStyle()
+  if (style?.layers) {
     // Remove all layers that use this source
-    map.getStyle().layers
+    style.layers
       .filter(l => l.source === sourceName)
       .forEach(l => {
         if (map.getLayer(l.id)) map.removeLayer(l.id)
@@ -278,7 +279,8 @@ export function removeStyleLayers(sourceName) {
 }
 
 export function setLayerVisibility(sourceName, visible) {
-  if (map.getStyle && map.getStyle().layers) {
+  const style = map.getStyle()
+  if (style?.layers) {
     const sources = [sourceName]
     // geojson layers have companion sources for km-markers and route extras
     if (sourceName.startsWith('geojson-source-')) {
@@ -290,7 +292,7 @@ export function setLayerVisibility(sourceName, visible) {
     if (sourceName.startsWith('raster-source-')) {
       sources.push(sourceName + '-features')
     }
-    map.getStyle().layers
+    style.layers
       .filter(l => sources.includes(l.source))
       .forEach(l => {
         if (map.getLayer(l.id)) map.setLayoutProperty(l.id, 'visibility', visible ? 'visible' : 'none')
