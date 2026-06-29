@@ -47,22 +47,22 @@ class ImagesController < ApplicationController
   # upload image
   def upload
     uploaded_file = params[:image]
-    ext = uploaded_file.content_type.split("/").last
     tempfile = uploaded_file.tempfile
-    # Avoid duplicate files by identifying uploaded files by <name>-<size>
+    # Avoid duplicate files by identifying uploaded files by <name>-<size>.
+    # Always stored as WebP, so the public_id ends in .webp regardless of source format.
     filename = uploaded_file.original_filename.gsub(/[^0-9A-Za-z.\-_]/, "_")
     filename = filename.sub(/\.[^.]*$/, "")
-    filename = "#{filename}-#{tempfile.size}.#{ext}"
+    filename = "#{filename}-#{tempfile.size}.webp"
 
     # use existing image if already uploaded
     unless (img = Image.find_by(public_id: filename))
       # https://github.com/mtgrosser/rszr
       image = Rszr::Image.load(tempfile.path)
       # resize image if it exceeds 1024px
-      if image.width > 1024 || image.height > 1024
-        image.resize!(1024, 1024, crop: false)
-        image.save(tempfile.path, quality: 75)
-      end
+      image.resize!(1024, 1024, crop: false) if image.width > 1024 || image.height > 1024
+      # always re-encode to lossy WebP so the stored size stays small regardless of
+      # the source format (PNG is lossless, so `quality` alone would not shrink it)
+      image.save(tempfile.path, format: "webp", quality: 75)
       uid = Dragonfly.app.store(tempfile, "name" => filename) # name needs to be a string here
       img = Image.create!(img_uid: uid, public_id: filename, user: @user)
     end
