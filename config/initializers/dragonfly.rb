@@ -64,12 +64,12 @@ Dragonfly.app.configure do
     side = [ content.analyse(:width), content.analyse(:height) ].min
     r1 = side / 3
     r2 = (side + 2 * border_width) / 3
-    content.shell_update(ext: "png") do |old_path, new_path|
+    content.shell_update(ext: "webp") do |old_path, new_path|
       "/usr/bin/convert #{old_path} -alpha set #{round_corners.call(r1)} \
         -colorspace sRGB -type TrueColorAlpha -alpha on -compose Over \
         -bordercolor white -border #{border_width}x#{border_width} \
         #{round_corners.call(r2)} \
-        -colorspace sRGB -type TrueColorAlpha #{new_path}"
+        -colorspace sRGB -type TrueColorAlpha -strip -quality 75 #{new_path}"
     end
   end
 
