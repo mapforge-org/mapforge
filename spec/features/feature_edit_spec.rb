@@ -306,7 +306,7 @@ describe "Feature edit" do
         attach_file("marker-image", image_path)
 
         wait_for { point.reload.properties["marker-image-url"] }.to match(/icon\/.+/)
-        wait_for { point.reload.image&.public_id }.to match(/mapforge-logo-icon-\d+.png/)
+        wait_for { point.reload.image&.public_id }.to match(/mapforge-logo-icon-\d+.webp/)
       end
 
       it "can upload image bigger 1024px" do
