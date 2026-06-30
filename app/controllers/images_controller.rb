@@ -58,13 +58,7 @@ class ImagesController < ApplicationController
 
     # use existing image if already uploaded
     unless (img = Image.find_by(public_id: filename))
-      # https://github.com/mtgrosser/rszr
-      image = Rszr::Image.load(tempfile.path)
-      # resize image if it exceeds 1024px
-      image.resize!(1024, 1024, crop: false) if image.width > 1024 || image.height > 1024
-      # always re-encode to lossy WebP so the stored size stays small regardless of
-      # the source format (PNG is lossless, so `quality` alone would not shrink it)
-      image.save(tempfile.path, format: "webp", quality: 75)
+      Image.compress_to_webp!(tempfile.path)
       uid = Dragonfly.app.store(tempfile, "name" => filename) # name needs to be a string here
       img = Image.create!(img_uid: uid, public_id: filename, user: @user)
     end

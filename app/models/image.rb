@@ -20,6 +20,17 @@ class Image
   validate :public_id_must_be_unique_or_nil
   before_create :create_public_id
 
+  # Resize (if larger than 1024px) and re-encode the image at `path` to lossy
+  # WebP, in place. Always re-encodes (PNG is lossless, so `quality` alone would
+  # not shrink it) so the stored size stays small regardless of the source format.
+  # Shared by ImagesController#upload and the migrations:dragonfly_to_webp task.
+  def self.compress_to_webp!(path)
+    # https://github.com/mtgrosser/rszr
+    image = Rszr::Image.load(path)
+    image.resize!(1024, 1024, crop: false) if image.width > 1024 || image.height > 1024
+    image.save(path, format: "webp", quality: 75)
+  end
+
   def create_public_id
     self.public_id = SecureRandom.hex(4) unless public_id.present?
   end
