@@ -2,7 +2,12 @@ class ApplicationController < ActionController::Base
   before_action :set_user
   before_action :disable_session_cookies
 
-  rate_limit to: 240, within: 1.minute, unless: -> { Rails.env.local? }
+  # Rails Bug: Actions that define their own rate limit
+  # (see ImagesController) must be excluded from the global one.
+  RATE_LIMITED_ACTIONS = %w[icon image osmc_symbol upload].freeze
+
+  rate_limit to: 120, within: 1.minute, name: "global",
+    unless: -> { RATE_LIMITED_ACTIONS.include?(action_name) }
 
   rescue_from ActionController::RoutingError, with: :render_not_found
 

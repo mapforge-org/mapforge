@@ -3,11 +3,12 @@ class ImagesController < ApplicationController
   before_action :set_image, only: %i[icon image]
   before_action :require_map, only: %i[upload]
 
-  # Overwriting default rate limit from application controller
-  rate_limit to: 2000, within: 5.minute, unless: -> { Rails.env.local? }, only: :icon
-  rate_limit to: 2000, within: 5.minute, unless: -> { Rails.env.local? }, only: :osmc_symbol
-  rate_limit to: 2000, within: 5.minute, unless: -> { Rails.env.local? }, only: :image
-  rate_limit to: 20, within: 1.minute, unless: -> { Rails.env.local? }, only: :upload
+  # Higher/lower limits for image actions; the global limit is skipped for these (see ApplicationController).
+  # Each needs a unique name: otherwise they'd share a single rate-limit counter (scope defaults to controller_path).
+  rate_limit to: 600, within: 3.minute, only: :icon, name: "icon"
+  rate_limit to: 600, within: 3.minute, only: :osmc_symbol, name: "osmc_symbol"
+  rate_limit to: 600, within: 3.minute, only: :image, name: "image"
+  rate_limit to: 20, within: 1.minute, only: :upload, name: "upload"
 
   IMAGE_CACHE_TIME = 1.week
 
@@ -19,6 +20,7 @@ class ImagesController < ApplicationController
 
     # resize, crop if necessary to maintain aspect ratio (centre gravity)
     # rounded_border = round + white border + round, in a single ImageMagick call
+    # The resulting icon is 160x160px
     image_url = @image.img.thumb("150x150#", quality: 75).rounded_border.url
     redirect_to image_url, status: 301
   end
