@@ -66,7 +66,7 @@ namespace :maps do
             page.screenshot(path: map.screenshot_file, quality: 100)
             image = Rszr::Image.load(map.screenshot_file)
             image.resize!(600, :auto)
-            image.save(map.screenshot_file)
+            image.save(map.screenshot_file, quality: 75)
             # Set file timestamps to match map's updated_at
             File.utime(map.updated_at.to_time, map.updated_at.to_time, map.screenshot_file)
             puts "Map preview stored at: #{map.screenshot_file}"
