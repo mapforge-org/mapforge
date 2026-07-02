@@ -1,6 +1,6 @@
 import consumer from 'channels/consumer'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers'
+import { initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, resetLayerInitialization } from 'maplibre/layers/layers'
 import {
   destroyFeature,
   initializeMaplibreProperties, map,
@@ -46,9 +46,12 @@ export function initializeSocket () {
       // before window.gon catches up, racing against tests and any code that
       // reads map_properties on reconnect.
       if (channelStatus === 'off') {
+        // Rebuild layers directly (rather than initializeLayers()) to force a refetch and handle
+        // a possible basemap change; reset the memoization so a later initializeLayers() re-runs.
+        resetLayerInitialization()
         reloadMapProperties().then(() => {
           initializeMaplibreProperties()
-          loadLayerDefinitions().then(async () => {
+          loadLayerDefinitions({ refetch: true }).then(async () => {
             // If basemap actually changed, setBackgroundMapLayer() will trigger
             // initializeStyles() via style.load (which re-initializes layer sources/styles).
             // If not, we re-initialize them directly to catch up on any missed updates.

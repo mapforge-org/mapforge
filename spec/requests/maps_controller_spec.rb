@@ -28,6 +28,37 @@ describe MapsController do
     end
   end
 
+  describe "#layer" do
+    let(:layer) { map.layers.first }
+
+    before do
+      create(:feature, :point, layer: layer)
+      create(:feature, :line_string, layer: layer)
+    end
+
+    it "returns the layer's features as a GeoJSON FeatureCollection" do
+      get map_layer_geo_path(id: map.public_id, layer_id: layer.id)
+
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      expect(body["type"]).to eq "FeatureCollection"
+      expect(body["features"].size).to eq 2
+      # MapLibre's promoteId:'id' reads the id from properties
+      expect(body["features"].map { |f| f["properties"]["id"] }).to all(be_present)
+    end
+
+    it "returns 404 for an unknown layer id" do
+      get map_layer_geo_path(id: map.public_id, layer_id: BSON::ObjectId.new.to_s)
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "denies access to a private map for non-owners" do
+      map.update!(view_permission: "private")
+      get map_layer_geo_path(id: map.public_id, layer_id: layer.id)
+      expect(response).to redirect_to(maps_path)
+    end
+  end
+
   describe "#map" do
     before do
       allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })

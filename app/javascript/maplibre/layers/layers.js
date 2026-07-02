@@ -1,12 +1,27 @@
 import * as functions from 'helpers/functions'
 import { resetLevels } from 'maplibre/controls/levels'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { map, sortLayers } from 'maplibre/map'
+import { sortLayers } from 'maplibre/map'
 
 export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLayer, BasemapLayer
 
 // Cached promise to ensure initializeLayers only runs once
 let initializePromise = null
+
+// Layer setup workflow (three steps; initializeLayers() runs all three and is memoized):
+//
+// initializeLayers()  <- use this for normal setup
+//   ├─> loadLayerDefinitions()   build Layer instances from summaries (from gon on initial
+//   │                            load, or refetched from /m/:id.json). No sources/features yet.
+//   ├─> initializeLayerSources() create the MapLibre source for every layer
+//   └─> initializeLayerStyles()  for visible layers: apply styles + layer.initialize()
+//                                └─> loadData() per layer type: GeoJSON streams its features
+//                                    from the layer URL (MapLibre setData, read back via
+//                                    getData); Overpass/Wikipedia query their APIs; Raster tiles
+//
+// Reconnect (map_channel.js) assembles these steps directly instead of calling
+// initializeLayers(), to bypass memoization and force a refetch:
+// loadLayerDefinitions({ refetch: true }) -> initializeLayerSources() -> initializeLayerStyles().
 
 /**
  * Resets the initialization state when navigating to a new map.
@@ -19,6 +34,12 @@ export function resetInitializationState() {
   resetLevels()
   initializePromise = null
   layers = null
+}
+
+// Clear the initializeLayers() memoization without tearing down existing layers, so a later
+// initializeLayers() re-runs from scratch. Used on reconnect, which rebuilds layers directly.
+export function resetLayerInitialization() {
+  initializePromise = null
 }
 
 /**
@@ -49,35 +70,34 @@ export async function initializeLayers() {
 }
 
 /**
- * Loads layer definitions from server.
- * Prefer using initializeLayers() for full initialization.
+ * Loads layer definitions (summaries only; feature geometry loads per-layer from the
+ * layer URL via GeoJSONLayer.loadData). On initial load these are embedded in gon, so no
+ * request is needed. On reconnect, pass { refetch: true } to pull fresh state from the server.
  */
-export function loadLayerDefinitions() {
+export function loadLayerDefinitions({ refetch = false } = {}) {
   layers = null
-  const host = new URL(window.location.href).origin
-  const url = host + '/m/' + window.gon.map_id + '.json'
 
-  // Reuse the in-flight fetch kicked off by the inline script in maplibre.haml,
-  // if it matches this map. Falls back to a fresh fetch otherwise (Turbo navigation,
-  // missing script, etc).
-  const cached = window._mapJsonForId
-  window._mapJsonForId = null
-  const dataPromise = (cached && cached.id === window.gon.map_id)
-    ? cached.promise
-    : fetch(url).then(response => {
-        if (!response.ok) { throw new Error('Network response was: ', response) }
-        return response.json()
-      })
+  const createLayers = (data) => {
+    console.log('Loaded map layer definitions: ', data.layers)
+    // make sure we're still showing the map the definitions came from
+    if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
+    layers = data.layers.map(l => createLayerInstance(l))
+    window._layers = layers
+    // console.log(`Map layers (${layers.length}) instantiated`)
+  }
 
-  return dataPromise
-    .then(data => {
-      console.log('Loaded map layer definitions from server: ', data.layers)
-      // make sure we're still showing the map the request came from
-      if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
-      layers = data.layers.map(l => createLayerInstance(l))
-      window._layers = layers
-      map.fire('layers.load', { detail: { message: `Map data (${layers.length} layers) loaded from server` } })
+  if (!refetch && window.gon.map_layers) {
+    createLayers({ properties: window.gon.map_properties, layers: window.gon.map_layers })
+    return Promise.resolve()
+  }
+
+  const url = '/m/' + window.gon.map_id + '.json'
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) { throw new Error('Network response was: ' + response.status) }
+      return response.json()
     })
+    .then(createLayers)
     .catch(error => {
       console.error('Failed to fetch map layers:', error)
       throw error
@@ -124,8 +144,16 @@ export async function initializeLayerStyles(id = null) {
 
   const promises = initLayers.map(layer => layer.initialize())
 
+  // Hidden geojson layers aren't styled, but their feature data is still loaded so feature
+  // lookups (deep links, onclick targets, undo) and layer feature counts work, matching the
+  // pre-streaming behaviour when features were embedded in the map JSON. Overpass/Wikipedia
+  // stay lazy because their loadData() hits external APIs.
+  let dataOnlyLayers = layers.filter(l => l.show === false && l.type === 'geojson')
+  if (id) { dataOnlyLayers = dataOnlyLayers.filter(l => l.id === id) }
+  promises.push(...dataOnlyLayers.map(layer => layer.loadData()))
+
   await Promise.all(promises).then(_results => {
-    map.fire('geojson.load', { detail: { message: 'geojson source + styles loaded' } })
+    console.log('geojson source + styles loaded')
     // re-sort layers after style changes
     sortLayers()
     functions.e('#layer-loading', e => { e.classList.add('hidden') })

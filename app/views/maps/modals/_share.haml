@@ -79,7 +79,7 @@
                 %i.bi.bi-download
                 GPX
             %button.btn.btn-secondary.btn-download{ type: "button" }
-              =link_to map_json_path(@map.public_id),target: '_blank' do
+              =link_to map_json_path(@map.public_id, export: true), target: '_blank' do
                 %i.bi.bi-download
                 Map
                 %span.d-none.d-sm-inline export

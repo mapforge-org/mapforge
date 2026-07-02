@@ -7,6 +7,25 @@ describe Map do
     it "included properties & layers" do
       expect(map.to_json).to be_a(String)
     end
+
+    it "returns layer summaries without embedded geojson" do
+      parsed = JSON.parse(map.to_json)
+      expect(parsed).to have_key("properties")
+      expect(parsed["layers"]).to be_present
+      parsed["layers"].each do |layer|
+        expect(layer).to have_key("id")
+        expect(layer).not_to have_key("geojson")
+      end
+    end
+
+    it "embeds layer geojson when include_features is true (re-importable export)" do
+      parsed = JSON.parse(map.to_json(include_features: true))
+      expect(parsed["layers"]).to be_present
+      layer_with_features = parsed["layers"].find { |l| l.dig("geojson", "features").present? }
+      expect(layer_with_features).to be_present
+      # MapLibre's promoteId:'id' reads the id from properties
+      expect(layer_with_features["geojson"]["features"].map { |f| f["properties"]["id"] }).to all(be_present)
+    end
   end
 
   describe "#features_count" do

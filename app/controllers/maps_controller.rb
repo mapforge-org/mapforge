@@ -1,11 +1,11 @@
 class MapsController < ApplicationController
   include MapListFilters
 
-  before_action :set_map, only: %i[show properties feature destroy copy]
-  before_action :set_map_mode, only: %i[show]
+  before_action :set_map, only: %i[show properties feature layer destroy copy]
+  before_action :set_map_mode, only: %i[show layer]
   before_action :join, only: %i[show]
   before_action :set_global_js_values, only: %i[show tutorial]
-  before_action :check_permissions, only: %i[show properties]
+  before_action :check_permissions, only: %i[show properties layer]
   before_action :require_login, only: %i[my create copy]
   before_action :require_map_owner, only: %i[destroy]
 
@@ -52,6 +52,7 @@ class MapsController < ApplicationController
         gon.rails_env = Rails.env
         gon.csrf_token = form_authenticity_token
         gon.map_properties = @map_properties
+        gon.map_layers = @map.layers.map(&:to_summary_json)
 
         case params["engine"]
         when "deck"
@@ -64,7 +65,7 @@ class MapsController < ApplicationController
         # updated_at bumps on any feature/layer/map change via the touch chain,
         # so it's a sufficient (and private) validator for a 304 on repeat loads.
         if stale?(etag: @map.updated_at)
-          render json: @map.to_json
+          render json: @map.to_json(include_features: params[:export].present?)
         end
       end
       format.geojson { render json: @map.to_geojson }
@@ -113,6 +114,14 @@ class MapsController < ApplicationController
         send_data feature.to_gpx, filename: "#{name}.gpx", disposition: "attachment"
       }
     end
+  end
+
+  def layer
+    layer = @map.layers.find(params["layer_id"])
+    head :not_found and return unless layer
+    # updated_at bumps on any feature/layer change via the touch chain,
+    # so it's a sufficient validator for a 304 on repeat loads.
+    render json: layer.to_geojson if stale?(etag: layer.updated_at)
   end
 
   # Turbo sends the DELETE request automatically with Content-Type: text/vnd.turbo-stream.html

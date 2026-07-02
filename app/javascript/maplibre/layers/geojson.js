@@ -1,7 +1,7 @@
 import { buffer } from "@turf/buffer"
 import { draw, select } from 'maplibre/edit'
 import { initializeKmMarkerStyles, renderKmMarkers } from 'maplibre/layers/geojson/km_markers'
-import { detectLevels, filterFeaturesByLevel } from 'maplibre/layers/geojson/levels'
+import { detectLevels, filterFeaturesByLevel, getActiveLevel } from 'maplibre/controls/levels'
 import { initializeExtrasLabelStyles, renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
 import { Layer } from 'maplibre/layers/layer'
 import { getFeature } from 'maplibre/layers/layers'
@@ -19,6 +19,10 @@ export class GeoJSONLayer extends Layer {
 
   get extrusionSourceId() {
     return `extrusion-source-${this.id}`
+  }
+
+  get dataUrl() {
+    return `/m/${window.gon.map_id}/layer/${this.id}.geojson`
   }
 
   createSource() {
@@ -43,7 +47,7 @@ export class GeoJSONLayer extends Layer {
     initializeExtrasLabelStyles(this.routeExtrasSourceId)
     initializeViewStyles(this.extrusionSourceId)
 
-    // Exclude features with route extras from the main line layers (they're rendered in route-extras-source instead)
+    // Exclude features with route extras from the main linestring layers (they're rendered in route-extras-source instead)
     const mainLineFilter = ['all',
       ['==', ['geometry-type'], 'LineString'],
       ['!', ['has', 'show-route-extras']],
@@ -58,17 +62,51 @@ export class GeoJSONLayer extends Layer {
     map.setLayoutProperty(`line-layer_${this.routeExtrasSourceId}`, 'line-cap', 'butt')
 
     this.setupEventHandlers()
-    this.render()
-    return Promise.resolve()
+    return this.loadData()
   }
 
-  render(resetDraw = true) {
-    console.log("Redraw: Setting source data for geojson layer", this.layer)
-    if (!this.layer?.geojson?.features) { return }
-    this.ensureFeaturePropertyIds()
+  // setData(url) lets MapLibre fetch AND parse the features in its web worker (off the main
+  // thread, so the UI stays responsive even for large layers); once loaded we read them back
+  // via getData() into this.layer.geojson (for lookup/sync/derived sources) without a 2nd request.
+  loadData() {
+    const sourceId = this.sourceId
+    const source = map.getSource(sourceId)
+    return new Promise((resolve) => {
+      const cleanup = () => {
+        map.off('sourcedata', onData)
+        map.off('error', onError)
+      }
+      const onData = (e) => {
+        // make sure to only act on the completed load of this source
+        if (e.sourceId !== sourceId || e.sourceDataType === 'metadata' || !map.isSourceLoaded(sourceId)) { return }
+        cleanup()
+        source.getData()
+          .then(geojson => { this.layer.geojson = geojson; this.render(true, { sourceLoaded: true }); resolve(geojson) })
+          .catch(error => { console.error(`Failed to read data for ${sourceId}`, error); resolve() })
+      }
+      // A failed URL fetch fires an 'error' event (not a completed 'sourcedata'). Resolve rather
+      // than reject so a single failing layer doesn't hang initializeLayerStyles' Promise.all.
+      const onError = (e) => {
+        if (e.sourceId !== sourceId) { return }
+        cleanup()
+        console.error(`Failed to load data for ${sourceId}`, e.error)
+        resolve()
+      }
+      map.on('sourcedata', onData)
+      map.on('error', onError)
+      source.setData(this.dataUrl)
+    })
+  }
 
-    // Signal that GeoJSON is re-rendering (set to false)
-    map.getContainer().setAttribute('data-geojson-loaded', 'false')
+  // sourceLoaded=true means the main MapLibre source already holds this.layer.geojson
+  // (loadData just streamed it from the layer URL). When no level filter is active, the
+  // source already holds exactly the features we'd upload, so skip the redundant re-parse.
+  render(resetDraw = true, { sourceLoaded = false } = {}) {
+    if (!this.layer?.geojson?.features) { return }
+    const source = map.getSource(this.sourceId)
+    if (!source) { console.warn(`Source ${this.sourceId} not found, skipping render`); return }
+
+    this.ensureFeaturePropertyIds()
 
     // Detect available levels first so activeLevel is defaulted before filtering
     detectLevels()
@@ -79,19 +117,19 @@ export class GeoJSONLayer extends Layer {
     renderKmMarkers(filteredFeatures, this.kmMarkerSourceId)
     renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
     this.renderExtrusionLines(filteredFeatures)
-    const geojson = { type: 'FeatureCollection', features: filteredFeatures }
 
-    const source = map.getSource(this.sourceId)
-    if (!source) {
-      console.warn(`Source ${this.sourceId} not found, skipping render`)
-      return
-    }
-    source.setData(geojson, false)
-
-    // Wait for MapLibre to complete the render, then signal completion
-    map.once('render', () => {
+    if (sourceLoaded && !getActiveLevel()) {
+      // MapLibre's URL load already holds exactly this set; don't re-parse it.
       map.getContainer().setAttribute('data-geojson-loaded', 'true')
-    })
+    } else {
+      console.log("Redraw: Setting source data for geojson layer", this.layer)
+      map.getContainer().setAttribute('data-geojson-loaded', 'false')
+      source.setData({ type: 'FeatureCollection', features: filteredFeatures }, false)
+      // Wait for MapLibre to complete the render, then signal completion
+      map.once('render', () => {
+        map.getContainer().setAttribute('data-geojson-loaded', 'true')
+      })
+    }
 
     this.resetDrawFeatures(resetDraw)
   }
