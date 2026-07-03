@@ -132,28 +132,29 @@ export class GeoJSONLayer extends Layer {
     }
   }
 
-  updateAnimatedFeature(feature, frameCount) {
-    // Skip if a full render is in progress (data-geojson-loaded='false')
-    if (map.getContainer().getAttribute('data-geojson-loaded') === 'false') {
-      return
-    }
-
+  // Surgically update a SINGLE already-present feature and its companion geometry,
+  // instead of a full render() that re-serializes the whole source and re-buffers every
+  // extrusion line. Use for property/geometry changes to an existing feature.
+  // NOT suitable for: adding/removing a feature (use render()), geometry edits that need
+  // MapboxDraw sync (render() runs resetDrawFeatures), or level/visibility changes
+  // (render() runs detectLevels). Companion refreshes assume the feature's companion
+  // flags are current — a feature that just had route-extras/km/extrusion toggled OFF
+  // still needs render() to purge its stale companion geometry (see updateKmMarkers note).
+  applyFeatureUpdate(feature, { updateKmMarkers = true } = {}) {
     feature.properties = feature.properties || {}
     feature.id = feature.id || feature.properties.id
     feature.properties.id = feature.id
 
     const source = map.getSource(this.sourceId)
-    if (!source) return
-
+    if (!source) { return }
     source.updateData({ update: [feature] })
 
-    // Only update route extras if this feature has them
+    // Route-extras labels use a feature-index sort-key, so rebuild the (small, route-only) source.
     if (feature.properties['show-route-extras']) {
-      const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
-      renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
+      renderRouteExtras(filterFeaturesByLevel(this.layer.geojson.features), this.routeExtrasSourceId)
     }
 
-    // Only re-buffer THIS feature's extrusion polygon (if it's a bufferable line)
+    // Re-buffer only THIS feature's extrusion polygon (if it's a bufferable line).
     if (feature.geometry?.type === 'LineString' && feature.properties['fill-extrusion-height'] &&
         !feature.properties['show-route-extras'] && !mapProperties.terrain) {
       const extrusionSource = map.getSource(this.extrusionSourceId)
@@ -163,11 +164,20 @@ export class GeoJSONLayer extends Layer {
       }
     }
 
-    // Reduce km marker updates - only every 10 frames
-    if (frameCount % 10 === 0) {
-      const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
-      renderKmMarkers(filteredFeatures, this.kmMarkerSourceId)
+    // km-markers rebuild from the whole feature set; callers in a hot loop (animation)
+    // can throttle this via updateKmMarkers, one-shot callers should leave it on.
+    if (updateKmMarkers) {
+      renderKmMarkers(filterFeaturesByLevel(this.layer.geojson.features), this.kmMarkerSourceId)
     }
+  }
+
+  updateAnimatedFeature(feature, frameCount) {
+    // Skip if a full render is in progress (data-geojson-loaded='false')
+    if (map.getContainer().getAttribute('data-geojson-loaded') === 'false') {
+      return
+    }
+    // km-marker rebuilds are relatively expensive, so throttle them to every 10th frame.
+    this.applyFeatureUpdate(feature, { updateKmMarkers: frameCount % 10 === 0 })
   }
 
   resetDrawFeatures(resetDraw) {
