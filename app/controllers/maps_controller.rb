@@ -53,6 +53,9 @@ class MapsController < ApplicationController
         gon.csrf_token = form_authenticity_token
         gon.map_properties = @map_properties
         gon.map_layers = @map.layers.map(&:to_summary_json)
+        # Seed the loaded-map version so the channel reconnect handler can compare it against
+        # /properties and skip a full reload when nothing changed (see map_channel.js).
+        gon.map_updated_at = @map.updated_at
 
         case params["engine"]
         when "deck"
@@ -100,7 +103,7 @@ class MapsController < ApplicationController
 
   # Endpoint for reloading map properties
   def properties
-    properties = { properties: map_properties, layers: @map.layers.map(&:to_summary_json) }
+    properties = { properties: map_properties, updated_at: @map.updated_at, layers: @map.layers.map(&:to_summary_json) }
     render json: properties
   end
 

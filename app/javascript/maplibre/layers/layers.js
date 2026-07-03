@@ -1,7 +1,7 @@
 import * as functions from 'helpers/functions'
 import { resetLevels } from 'maplibre/controls/levels'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { sortLayers } from 'maplibre/map'
+import { map, setLoadedMapUpdatedAt, sortLayers } from 'maplibre/map'
 
 export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLayer, BasemapLayer
 
@@ -34,6 +34,7 @@ export function resetInitializationState() {
   resetLevels()
   initializePromise = null
   layers = null
+  setLoadedMapUpdatedAt(null)
 }
 
 // Clear the initializeLayers() memoization without tearing down existing layers, so a later
@@ -82,12 +83,19 @@ export function loadLayerDefinitions({ refetch = false } = {}) {
     // make sure we're still showing the map the definitions came from
     if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
     layers = data.layers.map(l => createLayerInstance(l))
+    // Track the loaded map version so the channel reconnect handler can skip the heavy
+    // reload when nothing changed while we were disconnected (see map_channel.js).
+    setLoadedMapUpdatedAt(data.updated_at)
     window._layers = layers
     // console.log(`Map layers (${layers.length}) instantiated`)
   }
 
   if (!refetch && window.gon.map_layers) {
-    createLayers({ properties: window.gon.map_properties, layers: window.gon.map_layers })
+    createLayers({
+      properties: window.gon.map_properties,
+      updated_at: window.gon.map_updated_at,
+      layers: window.gon.map_layers
+    })
     return Promise.resolve()
   }
 
@@ -97,7 +105,10 @@ export function loadLayerDefinitions({ refetch = false } = {}) {
       if (!response.ok) { throw new Error('Network response was: ' + response.status) }
       return response.json()
     })
-    .then(createLayers)
+    .then(data => {
+      createLayers(data)
+      map.fire('layers.load', { detail: { message: `Map data (${layers.length} layers) loaded from server` } })
+    })
     .catch(error => {
       console.error('Failed to fetch map layers:', error)
       throw error
@@ -136,6 +147,7 @@ export function initializeLayerSources(id = null) {
  * @returns {Promise<void>} Promise that resolves when all layer styles are loaded
  */
 export async function initializeLayerStyles(id = null) {
+  if (!layers) { console.warn('initializeLayerStyles called but layers not loaded yet'); return }
   functions.e('#layer-reload', e => { e.classList.add('hidden') })
   functions.e('#layer-loading', e => { e.classList.remove('hidden') })
 
@@ -230,9 +242,18 @@ export function renderLayers(type, ...args) {
   layers.filter(l => l.type === type).forEach(l => l.render(...args))
 }
 
-export function renderAnimationFrame(feature, frameCount) {
+export function updateAnimatedFeature(feature, frameCount) {
   const layer = getLayer(feature.id)
-  if (layer?.renderAnimationFrame) {
-    layer.renderAnimationFrame(feature, frameCount)
+  if (layer?.updateAnimatedFeature) {
+    layer.updateAnimatedFeature(feature, frameCount)
+  }
+}
+
+// Surgically update a single changed feature (and its companion geometry) on its layer,
+// avoiding the full render()/setData path. See GeoJSONLayer.applyFeatureUpdate.
+export function applyFeatureUpdate(feature, options) {
+  const layer = getLayer(feature.id)
+  if (layer?.applyFeatureUpdate) {
+    layer.applyFeatureUpdate(feature, options)
   }
 }

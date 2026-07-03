@@ -8,6 +8,26 @@ import { getFeature } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties, removeGeoJSONSource } from 'maplibre/map'
 import { defaultLineWidth, initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
 
+// Buffer a single extrusion LineString into a polygon for MapLibre's fill-extrusion layer.
+// Returns null for geometry that can't be buffered (non-line, <2 coords, or degenerate).
+// @turf/buffer (JSTS) is expensive, so callers should only invoke this for features that changed.
+function buildLineExtrusion(feature) {
+  if (feature.geometry?.type !== 'LineString' || feature.geometry.coordinates.length < 2) {
+    return null
+  }
+  const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
+  const extrusionLine = buffer(feature, width / 2, { units: 'meters' })
+  if (!extrusionLine) { return null }
+  extrusionLine.id = `${feature.id}-extrusion`
+  extrusionLine.properties = { ...feature.properties, id: extrusionLine.id }
+  if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
+    extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
+  }
+  extrusionLine.properties['stroke-width'] = 0
+  extrusionLine.properties['stroke-opacity'] = 0
+  return extrusionLine
+}
+
 export class GeoJSONLayer extends Layer {
   get kmMarkerSourceId() {
     return `km-marker-source-${this.id}`
@@ -137,49 +157,77 @@ export class GeoJSONLayer extends Layer {
   bringToFront(feature) {
     const source = map.getSource(this.sourceId)
     if (!source) { return }
-    // Only LineStrings spawn derived companion geometry (route-extras segments/labels,
-    // buffered extrusion polygons) that a surgical reorder would leave stale.
-    const spawnsCompanionGeometry = feature.geometry?.type === 'LineString' &&
-      (feature.properties?.['show-route-extras'] || feature.properties?.['fill-extrusion-height'])
-    if (spawnsCompanionGeometry) {
-      return this.render()
-    }
+    // A reorder-to-front changes render order only, never geometry, so we do a
+    // surgical single-feature update moving it to the end of the list
     this.ensureFeaturePropertyIds()
     source.updateData({ remove: [feature.id], add: [feature] })
+
+    // Buffered extrusion polygons are GPU depth-sorted, so their source order is
+    // irrelevant. Route-extras labels, however, use a feature-index-based
+    // symbol-sort-key, so their (small, route-only) companion source must be refreshed.
+    if (feature.geometry?.type === 'LineString' && feature.properties?.['show-route-extras']) {
+      renderRouteExtras(filterFeaturesByLevel(this.layer.geojson.features), this.routeExtrasSourceId)
+    }
   }
 
-  renderAnimationFrame(feature, frameCount) {
-    // Skip if a full render is in progress (data-geojson-loaded='false')
-    if (map.getContainer().getAttribute('data-geojson-loaded') === 'false') {
-      return
-    }
-
+  // Surgically update a single existing feature (and, when asked, its companion geometry)
+  // without a full render(). The route-extras and km-marker companion sources are rebuilt
+  // from ALL features and run turf ops, so they are ONLY refreshed when the caller opts in.
+  // A plain property edit (color, height, title, …) doesn't affect those companions, so it
+  // skips them and stays instant. Callers that change geometry or toggle a companion on/off
+  // pass the matching flag.
+  // Options:
+  // - resetDraw: re-sync the MapboxDraw overlay (geometry edits in draw); no-op otherwise.
+  // - refreshRouteExtras: rebuild the route-extras companion source (geometry change / toggle).
+  // - refreshKmMarkers: rebuild the km-marker companion source (geometry change / toggle).
+  applyFeatureUpdate(feature, { resetDraw = false, refreshRouteExtras = false, refreshKmMarkers = false } = {}) {
     feature.properties = feature.properties || {}
     feature.id = feature.id || feature.properties.id
     feature.properties.id = feature.id
 
     const source = map.getSource(this.sourceId)
-    if (!source) return
+    if (!source) { return }
+    source.updateData({ remove: [feature.id], add: [feature] })
 
-    source.updateData({ update: [feature] })
-
-    // Only update route extras if this feature has them
-    if (feature.properties['show-route-extras']) {
-      const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
-      renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
+    if (refreshRouteExtras) {
+      renderRouteExtras(filterFeaturesByLevel(this.layer.geojson.features), this.routeExtrasSourceId)
     }
 
-    // Only update extrusion polygons if this feature has them
-    if (feature.properties['fill-extrusion-height']) {
-      const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
-      this.renderExtrusionLines(filteredFeatures)
+    // Extrusion polygon lives in a separate source (only LineStrings ever have one): upsert it
+    // for a non-route extrusion line, otherwise remove any stale polygon (height cleared,
+    // route-extras enabled, terrain on, …).
+    const extrusionSource = map.getSource(this.extrusionSourceId)
+    if (extrusionSource && feature.geometry?.type === 'LineString') {
+      const polygon = (feature.properties['fill-extrusion-height'] &&
+        !feature.properties['show-route-extras'] && !mapProperties.terrain)
+        ? buildLineExtrusion(feature)
+        : null
+      if (polygon) {
+        extrusionSource.updateData({ remove: [polygon.id], add: [polygon] })
+      } else {
+        extrusionSource.updateData({ remove: [`${feature.id}-extrusion`] })
+      }
     }
 
-    // Reduce km marker updates - only every 10 frames
-    if (frameCount % 10 === 0) {
-      const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
-      renderKmMarkers(filteredFeatures, this.kmMarkerSourceId)
+    if (refreshKmMarkers) {
+      renderKmMarkers(filterFeaturesByLevel(this.layer.geojson.features), this.kmMarkerSourceId)
     }
+
+    // Keep the MapboxDraw overlay in sync for geometry edits (no-op when nothing is in draw).
+    if (resetDraw) { this.resetDrawFeatures(true) }
+  }
+
+  updateAnimatedFeature(feature, frameCount) {
+    // Skip if a full render is in progress (data-geojson-loaded='false')
+    if (map.getContainer().getAttribute('data-geojson-loaded') === 'false') {
+      return
+    }
+    // Geometry moves every frame, so companions follow it: rebuild route-extras when the
+    // animating feature has them, and throttle the (pricier) km-marker rebuild to every 10th frame.
+    this.applyFeatureUpdate(feature, {
+      refreshRouteExtras: !!feature.properties['show-route-extras'],
+      refreshKmMarkers: frameCount % 10 === 0
+    })
   }
 
   resetDrawFeatures(resetDraw) {
@@ -214,23 +262,11 @@ export class GeoJSONLayer extends Layer {
     // Skipped when 'show-route-extras' renders its own extrusion.
     const extrusionFeatures = features
       .filter(feature => (
-        feature.geometry.type === 'LineString' &&
         feature.properties['fill-extrusion-height'] &&
-        !feature.properties['show-route-extras'] &&
-        feature.geometry.coordinates.length !== 1
+        !feature.properties['show-route-extras']
       ))
-      .map(feature => {
-        const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
-        const extrusionLine = buffer(feature, width / 2, { units: 'meters' })
-        extrusionLine.id = `${feature.id}-extrusion`
-        extrusionLine.properties = { ...feature.properties, id: extrusionLine.id }
-        if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
-          extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
-        }
-        extrusionLine.properties['stroke-width'] = 0
-        extrusionLine.properties['stroke-opacity'] = 0
-        return extrusionLine
-      })
+      .map(buildLineExtrusion)
+      .filter(Boolean)
 
     source.setData({ type: 'FeatureCollection', features: extrusionFeatures })
   }

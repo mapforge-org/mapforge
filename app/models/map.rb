@@ -164,13 +164,15 @@ class Map
 
   # By default returns layer summaries only (features stream per-layer from the layer URL).
   # Pass include_features: true for a self-contained, re-importable export (Share > Map export).
+  # updated_at is exposed top-level so the client's reconnect handler can compare it against
+  # /properties to decide whether a full reload is needed.
   def to_json(include_features: false)
     layers_json = layers.map do |l|
       json = l.to_summary_json
       json[:geojson] = l.to_geojson if include_features
       json
     end
-    { properties: properties, layers: layers_json }.to_json
+    { properties: properties, updated_at: updated_at, layers: layers_json }.to_json
   end
 
   # flattened geojson collection of all layers
@@ -211,7 +213,7 @@ class Map
       map.layers << layer
     end
 
-    Rails.logger.info "Created map with #{map.features.size} features from #{path}"
+    Rails.logger.info "Created map with #{map.features_count} features from #{path}"
     Rails.logger.info "Public id: #{map.public_id}, private id: #{map.private_id}"
     map
   end
@@ -325,7 +327,7 @@ class Map
 
   def broadcast_update
     ActionCable.server.broadcast("map_channel_#{public_id}",
-      { event: "update_map", map: properties.as_json })
+      { event: "update_map", map: properties.as_json, map_updated_at: updated_at })
   end
 
   def delete_screenshot

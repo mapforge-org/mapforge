@@ -30,3 +30,25 @@ def wait_for_geojson_render
     page.evaluate_script("document.querySelector('#maplibre-map').dataset.geojsonLoaded")
   }.to eq('true')
 end
+
+# Wait until a geojson feature with the given title has been applied on the client.
+def wait_for_feature(title)
+  wait_for {
+    page.evaluate_script(<<~JS)
+      !!window._layers && window._layers.some(l =>
+        l.type === 'geojson' && l.geojson &&
+        l.geojson.features.some(f => f.properties && f.properties.title === #{title.to_json}))
+    JS
+  }.to be true
+end
+
+def reset_resource_timings
+  page.evaluate_script("performance.clearResourceTimings()")
+end
+
+# Number of full map-data (/m/:id.json) fetches recorded since the last reset.
+def map_json_fetch_count
+  page.evaluate_script(
+    "performance.getEntriesByType('resource').filter(e => /\\/m\\/[^\\/]+\\.json/.test(e.name)).length"
+  )
+end

@@ -13,7 +13,7 @@ import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetCo
 import { initializeViewControls } from 'maplibre/controls/view';
 import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
-import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
+import { applyFeatureUpdate, getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { clearImageState, loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
 
@@ -21,6 +21,12 @@ export let map
 export let mapProperties
 export let lastMousePosition
 export let backgroundMapLayer
+
+// Server `updated_at` of the map data currently held in memory. Compared on socket
+// reconnect (against the freshly fetched value) to decide whether a full, main-thread
+// -blocking reload is actually needed. Set on every full (re)load of the map data.
+export let loadedMapUpdatedAt = null
+export function setLoadedMapUpdatedAt (value) { loadedMapUpdatedAt = value }
 
 let mapInteracted
 let backgroundTerrain
@@ -318,6 +324,7 @@ export function reloadMapProperties () {
     .then(data => {
       // console.log('reloaded map properties', data)
       window.gon.map_properties = data.properties
+      window.gon.map_updated_at = data.updated_at
     })
     .catch(error => { console.error('Failed to fetch map properties', error) })
 }
@@ -498,7 +505,10 @@ function updateFeature (feature, updatedFeature) {
   feature.geometry = updatedFeature.geometry
   feature.properties = updatedFeature.properties
   status('Updated feature \'' + feature.properties.title || feature.id + '\'')
-  renderLayers('geojson')
+  // Surgical single-feature update instead of a full re-render of every geojson layer.
+  // A remote update may have changed geometry or toggled companions, so refresh them.
+  // (A remote change to a feature's level won't re-filter here — that needs a full render.)
+  applyFeatureUpdate(feature, { refreshRouteExtras: true, refreshKmMarkers: true })
 }
 
 export function destroyFeature (featureId) {

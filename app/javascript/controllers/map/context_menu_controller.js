@@ -5,7 +5,7 @@ import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { updateElevation } from 'maplibre/edit'
-import { getFeature, renderLayers } from 'maplibre/layers/layers'
+import { applyFeatureUpdate, getFeature, renderLayers } from 'maplibre/layers/layers'
 import { addFeature } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
 
@@ -19,7 +19,7 @@ export default class extends Controller {
     addUndoState('Feature update', feature)
     if (feature.geometry.type === 'LineString') { feature.geometry.coordinates.splice(vertexIndex, 1) }
     if (feature.geometry.type === 'Polygon') { feature.geometry.coordinates[0].splice(vertexIndex, 1) }
-    renderLayers('geojson', true)
+    applyFeatureUpdate(feature, { resetDraw: true, refreshRouteExtras: true, refreshKmMarkers: true })
     mapChannel.send_message('update_feature', { ...feature })
     status('Point deleted')
     hideContextMenu()
@@ -88,7 +88,7 @@ export default class extends Controller {
       })
     }
 
-    renderLayers('geojson', true)
+    applyFeatureUpdate(feature, { resetDraw: true, refreshRouteExtras: true, refreshKmMarkers: true })
     mapChannel.send_message('update_feature', { ...feature })
     status('Track reversed')
     hideContextMenu()

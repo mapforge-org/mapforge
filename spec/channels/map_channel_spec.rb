@@ -19,7 +19,7 @@ RSpec.describe MapChannel, type: :channel do
 
       expect(layer.reload.feature_order).to eq order
       expect(ActionCable.server).to have_received(:broadcast)
-        .with("map_channel_#{map.public_id}", hash_including(event: "update_layer")).once
+        .with("map_channel_#{map.public_id}", hash_including(:map_updated_at, event: "update_layer")).once
     end
 
     it "rejects writes made with the public id" do
