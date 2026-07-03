@@ -22,6 +22,12 @@ export let mapProperties
 export let lastMousePosition
 export let backgroundMapLayer
 
+// Server `updated_at` of the map data currently held in memory. Compared on socket
+// reconnect (against the freshly fetched value) to decide whether a full, main-thread
+// -blocking reload is actually needed. Set on every full (re)load of the map data.
+export let loadedMapUpdatedAt = null
+export function setLoadedMapUpdatedAt (value) { loadedMapUpdatedAt = value }
+
 let mapInteracted
 let backgroundTerrain
 let backgroundHillshade
@@ -318,6 +324,7 @@ export function reloadMapProperties () {
     .then(data => {
       // console.log('reloaded map properties', data)
       window.gon.map_properties = data.properties
+      window.gon.map_updated_at = data.updated_at
     })
     .catch(error => { console.error('Failed to fetch map properties', error) })
 }

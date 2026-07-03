@@ -99,7 +99,7 @@ class MapsController < ApplicationController
 
   # Endpoint for reloading map properties
   def properties
-    properties = { properties: map_properties, layers: @map.layers.map(&:to_summary_json) }
+    properties = { properties: map_properties, updated_at: @map.updated_at, layers: @map.layers.map(&:to_summary_json) }
     render json: properties
   end
 

@@ -3,11 +3,14 @@ import { createLayerInstance } from 'maplibre/layers/factory'
 import { initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers'
 import {
   destroyFeature,
-  initializeMaplibreProperties, map,
+  initializeMaplibreProperties,
+  loadedMapUpdatedAt,
+  map,
   mapProperties,
   reloadMapProperties,
   setBackgroundMapLayer,
   setLayerVisibility,
+  setLoadedMapUpdatedAt,
   updateMapName,
   upsert
 } from 'maplibre/map'
@@ -15,6 +18,7 @@ import {
 
 export let mapChannel
 let channelStatus
+let reloadInProgress = false
 let connectionUUID
 let remoteCursors = {};
 
@@ -47,18 +51,35 @@ export function initializeSocket () {
       // reads map_properties on reconnect.
       if (channelStatus === 'off') {
         reloadMapProperties().then(() => {
-          initializeMaplibreProperties()
-          loadLayerDefinitions().then(async () => {
-            // If basemap actually changed, setBackgroundMapLayer() will trigger
-            // initializeStyles() via style.load (which re-initializes layer sources/styles).
-            // If not, we re-initialize them directly to catch up on any missed updates.
-            if (!setBackgroundMapLayer()) {
-              initializeLayerSources()
-              await initializeLayerStyles()
-            }
-            map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
+          const propsChanged = initializeMaplibreProperties()
+          // Only reload layer data if the map actually changed while we were disconnected.
+          // The full reload re-fetches + re-parses the entire map and blocks the main
+          // thread, which is what turned a single stale-connection disconnect into an
+          // endless disconnect/reload loop on large maps. reloadMapProperties() already
+          // refreshed window.gon.map_updated_at from the lightweight /properties endpoint.
+          const dataChanged = window.gon.map_updated_at !== loadedMapUpdatedAt
+          if (dataChanged && !reloadInProgress) {
+            reloadInProgress = true
+            loadLayerDefinitions().then(async () => {
+              // If basemap actually changed, setBackgroundMapLayer() will trigger
+              // initializeStyles() via style.load (which re-initializes layer sources/styles).
+              // If not, we re-initialize them directly to catch up on any missed updates.
+              if (!setBackgroundMapLayer()) {
+                initializeLayerSources()
+                await initializeLayerStyles()
+              }
+              map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
+              map.fire('online', { detail: { message: 'Reconnected to map_channel' } })
+            }).catch(error => {
+              console.error('Failed to reload map on reconnect:', error)
+            }).finally(() => { reloadInProgress = false })
+          } else {
+            // Nothing changed (or a reload is already running): the map already holds the
+            // current data, so skip the heavy reload. Still apply a basemap-only change.
+            console.log('Channel reconnect: no data change, no layer reload needed')
+            if (propsChanged) { setBackgroundMapLayer() }
             map.fire('online', { detail: { message: 'Reconnected to map_channel' } })
-          })
+          }
         })
       } else {
         map.fire('online', { detail: { message: 'Connected to map_channel' } })
@@ -86,6 +107,12 @@ export function initializeSocket () {
     },
 
     received (data) {
+      // Advance the loaded-map version for every applied change — including our own
+      // echoed edits, captured here before the self-ignore return below. This keeps
+      // loadedMapUpdatedAt current so a later reconnect only does the heavy reload when
+      // something changed while we were disconnected. (mouse/connection carry no map_updated_at.)
+      if (data.map_updated_at) { setLoadedMapUpdatedAt(data.map_updated_at) }
+
       if (data.uuid && data.uuid === connectionUUID) {
         // console.log(`ignore message from self ('${data.uuid}')`)
         return

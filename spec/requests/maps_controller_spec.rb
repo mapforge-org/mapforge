@@ -3,6 +3,25 @@ require "rails_helper"
 describe MapsController do
   let(:map) { create(:map) }
 
+  # The client's reconnect handler compares the map's updated_at (from /properties)
+  # against the value loaded with the full map (from /m/:id.json) to decide whether a
+  # full reload is needed. Both endpoints must expose it as a top-level field.
+  describe "#show (json)" do
+    it "includes the map updated_at" do
+      get map_json_path(id: map.public_id)
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)["updated_at"]).to be_present
+    end
+  end
+
+  describe "#properties" do
+    it "includes the map updated_at" do
+      get map_properties_path(id: map.public_id)
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)["updated_at"]).to be_present
+    end
+  end
+
   describe "#destroy" do
     it "fails if not called from owning user or admin" do
       response = delete destroy_map_path(id: map.private_id)

@@ -165,7 +165,7 @@ class Map
   def to_json
     all_layers = layers.to_a
     all_features = Feature.in(layer: all_layers.map(&:id)).group_by(&:layer_id)
-    { properties: properties, layers: all_layers.map { |l|
+    { properties: properties, updated_at: updated_at, layers: all_layers.map { |l|
       json = l.to_summary_json
       json[:geojson] = { type: "FeatureCollection",
         features: l.order_features(all_features[l.id] || []).map(&:geojson) }
@@ -211,7 +211,7 @@ class Map
       map.layers << layer
     end
 
-    Rails.logger.info "Created map with #{map.features.size} features from #{path}"
+    Rails.logger.info "Created map with #{map.features_count} features from #{path}"
     Rails.logger.info "Public id: #{map.public_id}, private id: #{map.private_id}"
     map
   end
@@ -325,7 +325,7 @@ class Map
 
   def broadcast_update
     ActionCable.server.broadcast("map_channel_#{public_id}",
-      { event: "update_map", map: properties.as_json })
+      { event: "update_map", map: properties.as_json, map_updated_at: updated_at })
   end
 
   def delete_screenshot

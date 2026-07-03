@@ -1,7 +1,7 @@
 import * as functions from 'helpers/functions'
 import { resetLevels } from 'maplibre/controls/levels'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { map, sortLayers } from 'maplibre/map'
+import { map, setLoadedMapUpdatedAt, sortLayers } from 'maplibre/map'
 
 export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLayer, BasemapLayer
 
@@ -19,6 +19,7 @@ export function resetInitializationState() {
   resetLevels()
   initializePromise = null
   layers = null
+  setLoadedMapUpdatedAt(null)
 }
 
 /**
@@ -75,6 +76,7 @@ export function loadLayerDefinitions() {
       // make sure we're still showing the map the request came from
       if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
       layers = data.layers.map(l => createLayerInstance(l))
+      setLoadedMapUpdatedAt(data.updated_at)
       window._layers = layers
       map.fire('layers.load', { detail: { message: `Map data (${layers.length} layers) loaded from server` } })
     })
