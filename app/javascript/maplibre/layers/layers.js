@@ -211,3 +211,12 @@ export function updateAnimatedFeature(feature, frameCount) {
     layer.updateAnimatedFeature(feature, frameCount)
   }
 }
+
+// Surgically update a single changed feature (and its companion geometry) on its layer,
+// avoiding the full render()/setData path. See GeoJSONLayer.applyFeatureUpdate.
+export function applyFeatureUpdate(feature, options) {
+  const layer = getLayer(feature.id)
+  if (layer?.applyFeatureUpdate) {
+    layer.applyFeatureUpdate(feature, options)
+  }
+}

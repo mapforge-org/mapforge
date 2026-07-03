@@ -7,7 +7,7 @@ import { syncStepperValues } from 'helpers/stepper'
 import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
 import { confirmImageLocation, featureIcon, featureImage, getFeatureTypeName, uploadImageToFeature } from 'maplibre/feature'
-import { getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
+import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
 import { featureColor, featureOutlineColor } from 'maplibre/styles/styles'
 import { addUndoState } from 'maplibre/undo'
 
@@ -74,7 +74,7 @@ export default class extends Controller {
     feature.properties.title = title
     if (document.querySelector('#feature-show-title-on-map')?.checked) {
       feature.properties.label = title
-      renderLayer(this.layerIdValue, false)
+      this.renderFeature()
     }
     document.querySelector('#feature-title').textContent = title
     functions.debounce(() => { this.saveFeature() }, 'title')
@@ -88,7 +88,7 @@ export default class extends Controller {
     } else {
       delete feature.properties.label
     }
-    renderLayer(this.layerIdValue, false)
+    this.renderFeature()
     functions.debounce(() => { this.saveFeature() }, 'show-title-on-map', 1000)
   }
 
@@ -103,11 +103,12 @@ export default class extends Controller {
       document.querySelector(displaySelector).textContent = displayFormat ? displayFormat(value) : value
     }
     feature.properties[propertyName] = value
-    // Only update draw if feature is in draw (i.e., geometry editing is active)
+    // Only update draw if feature is in draw (i.e., geometry editing is active).
+    // setFeatureProperty already syncs the draw overlay, so no resetDraw needed here.
     if (draw && draw.get(this.featureIdValue)) {
       draw.setFeatureProperty(this.featureIdValue, propertyName, value)
     }
-    renderLayer(this.layerIdValue, true)
+    this.renderFeature()
     syncStepperValues()
   }
 
@@ -154,7 +155,8 @@ export default class extends Controller {
       delete feature.properties['show-route-extras']
       document.querySelector('#stroke-color').removeAttribute('disabled')
     }
-    renderLayer(this.layerIdValue, true)
+    // Toggling route-extras on/off adds/removes its companion segments.
+    this.renderFeature({ refreshRouteExtras: true })
   }
 
   updateStrokeColorTransparent () {
@@ -169,7 +171,7 @@ export default class extends Controller {
       document.querySelector('#stroke-color').removeAttribute('disabled')
     }
     feature.properties.stroke = color
-    renderLayer(this.layerIdValue, true)
+    this.renderFeature()
   }
 
   updateFillColor () {
@@ -177,7 +179,7 @@ export default class extends Controller {
     const color = document.querySelector('#fill-color').value
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
     if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
-    renderLayer(this.layerIdValue, true)
+    this.renderFeature()
   }
 
   updateFillColorTransparent () {
@@ -193,7 +195,7 @@ export default class extends Controller {
     }
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
     if (feature.geometry.type === 'Point') { feature.properties['marker-color'] = color }
-    renderLayer(this.layerIdValue, true)
+    this.renderFeature()
   }
 
   updateShowKmMarkers () {
@@ -205,7 +207,8 @@ export default class extends Controller {
       delete feature.properties['show-km-markers']
       delete feature.properties['stroke-image-url']
     }
-    renderLayer(this.layerIdValue, true)
+    // Toggling km-markers on/off adds/removes their companion icons.
+    this.renderFeature({ refreshKmMarkers: true })
   }
 
   updateMarkerSymbol () {
@@ -221,7 +224,7 @@ export default class extends Controller {
       draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
     }
     functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
-    renderLayer(this.layerIdValue, true)
+    this.renderFeature()
   }
 
   async updateMarkerImage () {
@@ -246,7 +249,7 @@ export default class extends Controller {
           feature.geometry.coordinates = imageLocation
           flyToFeature(feature)
         }
-        renderLayer(this.layerIdValue, true)
+        this.renderFeature()
         this.saveFeature()
       })
   }
@@ -311,5 +314,12 @@ export default class extends Controller {
   getEditFeature () {
     const id = this.featureIdValue
     return getFeature(id)
+  }
+
+  // Apply the edited feature to the map with a fast surgical single-feature update (no full
+  // re-render). Plain property edits pass no options and skip the (expensive) companion
+  // rebuilds; toggles pass { refreshRouteExtras } / { refreshKmMarkers }. See applyFeatureUpdate.
+  renderFeature (options = {}) {
+    applyFeatureUpdate(this.getEditFeature(), options)
   }
 }

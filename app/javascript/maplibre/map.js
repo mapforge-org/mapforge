@@ -13,7 +13,7 @@ import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetCo
 import { initializeViewControls } from 'maplibre/controls/view';
 import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
-import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
+import { applyFeatureUpdate, getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { clearImageState, loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
 
@@ -502,7 +502,10 @@ function updateFeature (feature, updatedFeature) {
   feature.geometry = updatedFeature.geometry
   feature.properties = updatedFeature.properties
   status('Updated feature \'' + feature.properties.title || feature.id + '\'')
-  renderLayers('geojson')
+  // Surgical single-feature update instead of a full re-render of every geojson layer.
+  // A remote update may have changed geometry or toggled companions, so refresh them.
+  // (A remote change to a feature's level won't re-filter here — that needs a full render.)
+  applyFeatureUpdate(feature, { refreshRouteExtras: true, refreshKmMarkers: true })
 }
 
 export function destroyFeature (featureId) {

@@ -8,7 +8,7 @@ import { disableEditControls, enableEditControls, initializeEditControls } from 
 import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
 import { highlightFeature, refreshFeatureMeta } from 'maplibre/feature';
-import { getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
+import { applyFeatureUpdate, getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
 import { addFeature, destroyFeature, map, mapProperties, onMapClickAfterLayers } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
 import { getPointsElevation, getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
@@ -348,7 +348,9 @@ async function handleUpdate (e) {
 
   // status('Feature ' + feature.id + ' changed')
   geojsonFeature.geometry = feature.geometry
-  renderLayers('geojson', false)
+  // Surgical single-feature update; MapboxDraw already reflects the drag, so no resetDraw.
+  // Geometry changed, so companion segments/markers must follow.
+  applyFeatureUpdate(geojsonFeature, { refreshRouteExtras: true, refreshKmMarkers: true })
 
   if (feature.geometry.type === 'LineString') {
     // gets also triggered on failure
