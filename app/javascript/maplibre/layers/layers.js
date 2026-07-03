@@ -116,6 +116,7 @@ export function initializeLayerSources(id = null) {
  * @returns {Promise<void>} Promise that resolves when all layer styles are loaded
  */
 export async function initializeLayerStyles(id = null) {
+  if (!layers) { console.warn('initializeLayerStyles called but layers not loaded yet'); return }
   functions.e('#layer-reload', e => { e.classList.add('hidden') })
   functions.e('#layer-loading', e => { e.classList.remove('hidden') })
 
