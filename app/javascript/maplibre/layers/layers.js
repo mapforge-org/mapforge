@@ -107,7 +107,11 @@ export function loadLayerDefinitions({ refetch = false } = {}) {
     })
     .then(data => {
       createLayers(data)
-      map.fire('layers.load', { detail: { message: `Map data (${layers.length} layers) loaded from server` } })
+      // createLayers bails (leaving layers null) if we've since navigated to another map;
+      // only announce the load when it actually happened.
+      if (layers) {
+        map.fire('layers.load', { detail: { message: `Map data (${layers.length} layers) loaded from server` } })
+      }
     })
     .catch(error => {
       console.error('Failed to fetch map layers:', error)
