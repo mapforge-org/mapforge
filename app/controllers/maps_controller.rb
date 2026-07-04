@@ -53,8 +53,6 @@ class MapsController < ApplicationController
         gon.csrf_token = form_authenticity_token
         gon.map_properties = @map_properties
         gon.map_layers = @map.layers.map(&:to_summary_json)
-        # Seed the loaded-map version so the channel reconnect handler can compare it against
-        # /properties and skip a full reload when nothing changed (see map_channel.js).
         gon.map_updated_at = @map.updated_at
 
         case params["engine"]
@@ -122,8 +120,7 @@ class MapsController < ApplicationController
   def layer
     layer = @map.layers.find(params["layer_id"])
     head :not_found and return unless layer
-    # updated_at bumps on any feature/layer change via the touch chain,
-    # so it's a sufficient validator for a 304 on repeat loads.
+    # Sending 304 on repeat loads un unchanged layer.
     render json: layer.to_geojson if stale?(etag: layer.updated_at)
   end
 

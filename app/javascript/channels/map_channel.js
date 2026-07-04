@@ -45,10 +45,7 @@ export function initializeSocket () {
       console.log('Connected to map_channel ' + window.gon.map_id)
       mapChannel = this
       window.mapChannel = mapChannel
-      // On reconnect (channelStatus === 'off'), defer the 'online' event until
-      // after the reload chain finishes — otherwise data-online='true' fires
-      // before window.gon catches up, racing against tests and any code that
-      // reads map_properties on reconnect.
+      // On reconnect (channelStatus === 'off'), defer the 'online' event
       if (channelStatus === 'off') {
         // Rebuild layers directly (rather than initializeLayers()) to force a refetch and handle
         // a possible basemap change; reset the memoization so a later initializeLayers() re-runs.
