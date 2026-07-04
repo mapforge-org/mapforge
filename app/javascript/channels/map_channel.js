@@ -1,6 +1,6 @@
 import consumer from 'channels/consumer'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers'
+import { initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, resetLayerInitialization } from 'maplibre/layers/layers'
 import {
   destroyFeature,
   initializeMaplibreProperties,
@@ -45,11 +45,11 @@ export function initializeSocket () {
       console.log('Connected to map_channel ' + window.gon.map_id)
       mapChannel = this
       window.mapChannel = mapChannel
-      // On reconnect (channelStatus === 'off'), defer the 'online' event until
-      // after the reload chain finishes — otherwise data-online='true' fires
-      // before window.gon catches up, racing against tests and any code that
-      // reads map_properties on reconnect.
+      // On reconnect (channelStatus === 'off'), defer the 'online' event
       if (channelStatus === 'off') {
+        // Rebuild layers directly (rather than initializeLayers()) to force a refetch and handle
+        // a possible basemap change; reset the memoization so a later initializeLayers() re-runs.
+        resetLayerInitialization()
         reloadMapProperties().then(() => {
           const propsChanged = initializeMaplibreProperties()
           // Only reload layer data if the map actually changed while we were disconnected.
@@ -60,7 +60,9 @@ export function initializeSocket () {
           const dataChanged = window.gon.map_updated_at !== loadedMapUpdatedAt
           if (dataChanged && !reloadInProgress) {
             reloadInProgress = true
-            loadLayerDefinitions().then(async () => {
+            // refetch: true forces a fresh pull from the server (bypassing the gon-embedded
+            // summaries used on initial load) so we pick up whatever changed while offline.
+            loadLayerDefinitions({ refetch: true }).then(async () => {
               // If basemap actually changed, setBackgroundMapLayer() will trigger
               // initializeStyles() via style.load (which re-initializes layer sources/styles).
               // If not, we re-initialize them directly to catch up on any missed updates.
@@ -193,13 +195,16 @@ export function initializeSocket () {
     },
 
     send_message (event, data) {
-      // copy feature to avoid mutation
-      const payload = JSON.parse(JSON.stringify(data))
+      // shallow copy to avoid mutating caller's data; geometry is never touched so it's left shared
+      const payload = { ...data }
       payload.map_id = window.gon.map_id
       payload.user_id = window.gon.user_id
       payload.uuid = connectionUUID
       // dropping properties.id before sending to server
-      if (payload.properties && payload.properties.id) { delete payload.properties.id }
+      if (payload.properties && payload.properties.id) {
+        payload.properties = { ...payload.properties }
+        delete payload.properties.id
+      }
       if (event !== 'mouse') console.log('Sending: [' + event + '] :', payload)
       // Call the original perform method
       this.perform(event, payload)

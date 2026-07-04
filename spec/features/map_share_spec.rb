@@ -31,7 +31,7 @@ describe "Map" do
     end
 
     it "has share map export link" do
-      expect(page).to have_link("Map export", href: "/m/" + subject.public_id + ".json")
+      expect(page).to have_link("Map export", href: "/m/" + subject.public_id + ".json?export=true")
     end
   end
 

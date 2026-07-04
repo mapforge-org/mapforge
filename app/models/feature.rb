@@ -31,10 +31,12 @@ class Feature
   validate :require_coords
 
   def geojson
+    # MapLibre's promoteId:'id' reads the id from properties, so expose it there too,
+    # alongside the top-level id used by feature lookups/frontFeature.
     { id: _id.to_s,
      type:,
      geometry:,
-     properties: properties || {} }
+     properties: (properties || {}).merge("id" => _id.to_s) }
   end
 
   def to_geojson

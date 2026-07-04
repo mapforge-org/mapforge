@@ -6,15 +6,6 @@
 
 - content_for :title, "Mapforge map: #{(@map.name.presence || 'Unnamed map')}"
 - content_for :head do
-  - # Kick off the layer-data fetch as early as possible (in parallel with maplibre-gl import
-  - # and the rest of head parsing). loadLayerDefinitions() consumes this in-flight promise
-  - # instead of issuing a second request.
-  %script{ nonce: content_security_policy_nonce }
-    :plain
-      window._mapJsonForId = (function() {
-        var id = #{params[:id].to_json};
-        return { id: id, promise: fetch('/m/' + id + '.json').then(function(r) { return r.json(); }) };
-      })();
   - # Speed up default basemap tile fetches (versatilesColorful uses tiles.versatiles.org)
   %link{ rel: "preconnect", href: "https://tiles.versatiles.org", crossorigin: true }
   %link{ rel: "dns-prefetch", href: "https://tiles.versatiles.org" }

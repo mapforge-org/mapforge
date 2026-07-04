@@ -259,7 +259,7 @@ export function addGeoJSONSource(sourceName, cluster=false) {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
   // console.log("Adding source: " + sourceName)
   if (map.getSource(sourceName)) {
-    console.log('Source ' + sourceName + ' already exists, skipping add')
+    console.log('Source ' + sourceName + ' already exists, re-using it')
     return
   }
   map.addSource(sourceName, {
@@ -464,10 +464,13 @@ export function upsert (updatedFeature) {
   const feature = getFeature(updatedFeature.id)
   if (!feature) { addFeature(updatedFeature); return }
 
-  // only update feature if it was changed, disregard properties.id
+  // only update feature if it was changed, disregarding properties.id on both sides
+  // (the server now includes it for MapLibre's promoteId, so it isn't a meaningful diff)
   const existingFeature = JSON.parse(JSON.stringify(feature))
+  const incomingFeature = JSON.parse(JSON.stringify(updatedFeature))
   delete existingFeature.properties.id
-  if (!equal(existingFeature, updatedFeature)) {
+  delete incomingFeature.properties.id
+  if (!equal(existingFeature, incomingFeature)) {
     updateFeature(feature, updatedFeature)
   }
 }

@@ -191,24 +191,32 @@ export class Layer {
         filter: ['!', ['has', 'cluster']]
       })
 
-      // Sort by ID so cycling order is stable even after frontFeature() reorders the source
-      const stack = [...new Map(allFeatures
+      // queryRenderedFeatures returns features top-most first → visual z-order
+      const selectable = allFeatures
         .filter(f => !f.properties?.cluster && SELECTABLE_SOURCE_PREFIXES.some(p => f.source.startsWith(p)))
-        .map(f => [f.id, f])).values()]
-        .sort((a, b) => String(a.id).localeCompare(String(b.id)))
-      if (!stack.length) { return }
 
       const isViewMode = window.gon.map_mode === 'ro' || e.originalEvent.shiftKey
-      const clickableStack = isViewMode
-        ? stack.filter(f => f.properties?.onclick !== false)
-        : stack
+      const clickable = isViewMode
+        ? selectable.filter(f => f.properties?.onclick !== false)
+        : selectable
+      if (!clickable.length) { return }
 
-      if (!clickableStack.length) { return }
+      // Visual top = first in z-order (matches hover behavior)
+      const visualTop = clickable[0]
+
+      // Stable cycling order, deduped by id, independent of z-order reshuffling by frontFeature()
+      const clickableStack = [...new Map(clickable.map(f => [f.id, f])).values()]
+        .sort((a, b) => String(a.id).localeCompare(String(b.id)))
 
       const currentIdx = clickableStack.findIndex(f => f.id === highlightedFeatureId)
-      let feature = (currentIdx === -1 || currentIdx === clickableStack.length - 1)
-        ? clickableStack[0]
-        : clickableStack[currentIdx + 1]
+      let feature
+      if (!stickyFeatureHighlight || currentIdx === -1) {
+        feature = visualTop                                   // fresh click → top feature
+      } else {
+        feature = currentIdx === clickableStack.length - 1    // re-click → advance cycle
+          ? clickableStack[0]
+          : clickableStack[currentIdx + 1]
+      }
 
       if (isViewMode) {
 

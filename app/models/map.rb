@@ -162,15 +162,17 @@ class Map
      indoorequal: ENV["INDOOREQUAL_KEY"] }
   end
 
-  def to_json
-    all_layers = layers.to_a
-    all_features = Feature.in(layer: all_layers.map(&:id)).group_by(&:layer_id)
-    { properties: properties, updated_at: updated_at, layers: all_layers.map { |l|
+  # By default returns layer summaries only (features stream per-layer from the layer URL).
+  # Pass include_features: true for a self-contained, re-importable export (Share > Map export).
+  # updated_at is exposed top-level so the client's reconnect handler can compare it against
+  # /properties to decide whether a full reload is needed.
+  def to_json(include_features: false)
+    layers_json = layers.map do |l|
       json = l.to_summary_json
-      json[:geojson] = { type: "FeatureCollection",
-        features: l.order_features(all_features[l.id] || []).map(&:geojson) }
+      json[:geojson] = l.to_geojson if include_features
       json
-    } }.to_json
+    end
+    { properties: properties, updated_at: updated_at, layers: layers_json }.to_json
   end
 
   # flattened geojson collection of all layers

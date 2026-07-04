@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-07
+
+* Performance improvements for large maps
+
 ## 2026-06
 
 * Providing the official [OpenSUSE Conference 2026 map](https://mapforge.org/m/osc26/openSUSE%20Conference%202026)
