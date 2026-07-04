@@ -195,13 +195,16 @@ export function initializeSocket () {
     },
 
     send_message (event, data) {
-      // copy feature to avoid mutation
-      const payload = JSON.parse(JSON.stringify(data))
+      // shallow copy to avoid mutating caller's data; geometry is never touched so it's left shared
+      const payload = { ...data }
       payload.map_id = window.gon.map_id
       payload.user_id = window.gon.user_id
       payload.uuid = connectionUUID
       // dropping properties.id before sending to server
-      if (payload.properties && payload.properties.id) { delete payload.properties.id }
+      if (payload.properties && payload.properties.id) {
+        payload.properties = { ...payload.properties }
+        delete payload.properties.id
+      }
       if (event !== 'mouse') console.log('Sending: [' + event + '] :', payload)
       // Call the original perform method
       this.perform(event, payload)
