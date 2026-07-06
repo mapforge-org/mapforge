@@ -2,4 +2,5 @@
 # CVEs that are not relevant to the application can be enumerated on the ignore list below.
 
 ignore:
-  - CVE-THAT-DOES-NOT-APPLY
+  # webrick: only a transitive test-only dependency via ferrum/cuprite (headless Chrome specs), never loaded in production; no patched webrick release exists yet
+  - CVE-2026-38969
