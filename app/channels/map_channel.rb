@@ -57,6 +57,7 @@ class MapChannel < ApplicationCable::Channel
     Yabeda.websocket.messages_received.increment({ action: "new_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     layer = map.layers.create!(layer_atts(data).merge({ id: data["id"] }))
+    Yabeda.layers_created.increment(type: layer.type)
     if data["geojson"] && data["geojson"]["features"]
       data["geojson"]["features"].each do |feature|
         layer.features.create!(feature_atts(feature).merge({ id: feature["id"] }))

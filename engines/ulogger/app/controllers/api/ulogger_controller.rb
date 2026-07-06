@@ -39,6 +39,7 @@ module Ulogger
         render json: { error: false, trackid:  @map.private_id.to_i }
       else
         Rails.logger.error("Cannot create map for track '#{params[:track]}'")
+        Yabeda.ulogger.errors.increment(reason: "invalid_trackid")
         render json: { error: true, message: "Invalid trackid" }
       end
     end

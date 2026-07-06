@@ -151,6 +151,7 @@ class MapsController < ApplicationController
     ret = MAXMIND_DB&.lookup(request.remote_ip)
     unless ret&.found?
       Rails.logger.warn "Cannot detect location for IP #{request.remote_ip}"
+      Yabeda.geolocation_lookup_failures.increment({})
       return nil
     end
     ip_coordinates = [ ret.location.longitude, ret.location.latitude ]
@@ -158,6 +159,7 @@ class MapsController < ApplicationController
     ip_coordinates
   rescue => e
     Rails.logger.error "Error getting IP coordinates: #{e.message}"
+    Yabeda.geolocation_lookup_failures.increment({})
     nil
   end
   # :nocov:
