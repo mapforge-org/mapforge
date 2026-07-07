@@ -4,6 +4,8 @@ NAME_PATTERN = /[^\/]+/ # all characters but '/'
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
+  get "/favicon.png", to: redirect("/icon.png")
+
   # login routes
   get "auth/:provider/callback", to: "sessions#create"
   get "auth/developer/login", to: "sessions#new"
