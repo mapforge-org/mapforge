@@ -156,6 +156,7 @@ class MapsController < ApplicationController
     end
     ip_coordinates = [ ret.location.longitude, ret.location.latitude ]
     Rails.logger.info "Client IP: #{request.remote_ip}, coords: #{ip_coordinates.inspect}, loc: #{ret.country.name}/#{ret.city.name}"
+    Yabeda.geolocation_lookup_successes.increment({})
     ip_coordinates
   rescue => e
     Rails.logger.error "Error getting IP coordinates: #{e.message}"

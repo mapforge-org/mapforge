@@ -41,6 +41,9 @@ Yabeda.configure do
   counter :geolocation_lookup_failures,
     comment: "Total number of failed MaxMind IP geolocation lookups"
 
+  counter :geolocation_lookup_successes,
+    comment: "Total number of successful MaxMind IP geolocation lookups"
+
   group :ulogger do
     counter :errors,
       comment: "Total number of µlogger API requests that failed at the application level",
