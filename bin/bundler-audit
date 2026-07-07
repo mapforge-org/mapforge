@@ -2,5 +2,8 @@
 require_relative "../config/boot"
 require "bundler/audit/cli"
 
-ARGV.concat %w[ --config config/bundler-audit.yml ] if ARGV.empty? || ARGV.include?("check")
+# "check" is bundler-audit's default task, so "--update" (a check option) runs
+# check implicitly without the literal word "check" ever appearing in ARGV.
+non_check_commands = %w[stats download update version]
+ARGV.concat %w[ --config config/bundler-audit.yml ] unless non_check_commands.include?(ARGV.first)
 Bundler::Audit::CLI.start
