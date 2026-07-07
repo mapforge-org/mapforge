@@ -72,7 +72,8 @@ module Ulogger
       # properties of leading point
       properties = { "title" => timestamp,
                     "desc" => description || "",
-                    "marker-size" => 4 }
+                    "marker-size" => 4,
+                    "leading": true }
       properties["label"] = params["comment"] if params["comment"]
 
       uploaded = params.fetch(:image, nil)
@@ -85,18 +86,16 @@ module Ulogger
         properties.merge!(location_properties)
       end
 
-      # reset standard waypoints to default style,
-      # keep photos and labels, exclude already styled waypoints
+      # reset last leading waypoints to default style
       layer.features.where(
-        "properties.marker-image-url" => nil,
-        "properties.label" => nil,
-        "properties.marker-color" => { "$ne" => nil },
-        "geometry.type" => { "$ne" => "LineString" }
+        "properties.leading" => true,
+        "geometry.type" => "Point"
       ).each do |f|
         f.properties["marker-size"] = 2
         f.properties["marker-color"] = "#f6f5f4"
         f.properties["stroke"] = "transparent"
         f.properties["min-zoom"] = 14
+        f.properties.delete("leading")
         f.save!
       end
       # set leading waypoint
