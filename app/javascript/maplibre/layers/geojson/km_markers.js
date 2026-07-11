@@ -1,6 +1,7 @@
 import { along } from "@turf/along"
 import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
+import { withLevelFilter } from 'maplibre/controls/levels'
 import { map, removeStyleLayers } from 'maplibre/map'
 import { featureColor, labelFont, setSource } from 'maplibre/styles/styles'
 
@@ -62,6 +63,7 @@ export function renderKmMarkers (features, sourceId) {
       point.properties['marker-opacity'] = 1
       point.properties['km'] = i
       point.properties['feature-order'] = index
+      if ('level' in f.properties) point.properties.level = f.properties.level
 
       if (i >= Math.ceil(distance)) {
         point.properties['marker-size'] = 15
@@ -89,8 +91,17 @@ export function initializeKmMarkerStyles (sourceId) {
   removeStyleLayers(sourceId)
 
   kmMarkerStyles().forEach(style => {
-    style = setSource(style, sourceId)
+    style = setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceId)
     map.addLayer(style)
+  })
+}
+
+// Re-applies the current level filter to already-added km-marker style layers, without
+// rebuilding the companion source (see GeoJSONLayer.applyLevelFilter).
+export function applyLevelFilter (sourceId) {
+  kmMarkerStyles().forEach(style => {
+    const layerId = `${style.id}_${sourceId}`
+    if (map.getLayer(layerId)) { map.setFilter(layerId, withLevelFilter(style.filter)) }
   })
 }
 

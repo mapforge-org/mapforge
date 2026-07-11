@@ -1,12 +1,22 @@
 import { buffer } from "@turf/buffer"
 import { draw, select } from 'maplibre/edit'
-import { hasKmMarkers, initializeKmMarkerStyles, renderKmMarkers } from 'maplibre/layers/geojson/km_markers'
-import { detectLevels, filterFeaturesByLevel, getActiveLevel } from 'maplibre/controls/levels'
-import { hasRouteExtras, initializeExtrasLabelStyles, renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
+import {
+  applyLevelFilter as applyKmMarkerLevelFilter,
+  hasKmMarkers,
+  initializeKmMarkerStyles,
+  renderKmMarkers
+} from 'maplibre/layers/geojson/km_markers'
+import { detectLevels, withLevelFilter } from 'maplibre/controls/levels'
+import {
+  applyLevelFilter as applyRouteExtrasLevelFilter,
+  hasRouteExtras,
+  initializeExtrasLabelStyles,
+  renderRouteExtras
+} from 'maplibre/layers/geojson/route_extras'
 import { Layer } from 'maplibre/layers/layer'
 import { getFeature } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties, removeGeoJSONSource } from 'maplibre/map'
-import { defaultLineWidth, initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
+import { clusterStyles, defaultLineWidth, initializeClusterStyles, initializeViewStyles, styles, viewStyleNames } from 'maplibre/styles/styles'
 
 // Buffer a single extrusion LineString into a polygon for MapLibre's fill-extrusion layer.
 // Returns null for geometry that can't be buffered (non-line, <2 coords, or degenerate).
@@ -50,6 +60,17 @@ export class GeoJSONLayer extends Layer {
     return `extrusion-source-${this.id}`
   }
 
+  // Excludes features with route extras from the main linestring layers (they're rendered in
+  // route-extras-source instead).
+  get mainLineFilter() {
+    return ['all',
+      ['==', ['geometry-type'], 'LineString'],
+      ['!', ['has', 'show-route-extras']],
+      [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], 0]]],
+      ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], 24]]]
+    ]
+  }
+
   get dataUrl() {
     return `/m/${window.gon.map_id}/layer/${this.id}.geojson`
   }
@@ -76,14 +97,7 @@ export class GeoJSONLayer extends Layer {
     initializeExtrasLabelStyles(this.routeExtrasSourceId)
     initializeViewStyles(this.extrusionSourceId)
 
-    // Exclude features with route extras from the main linestring layers (they're rendered in route-extras-source instead)
-    const mainLineFilter = ['all',
-      ['==', ['geometry-type'], 'LineString'],
-      ['!', ['has', 'show-route-extras']],
-      [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], 0]]],
-      ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], 24]]]
-    ]
-    map.setFilter(`line-layer_${this.sourceId}`, mainLineFilter)
+    map.setFilter(`line-layer_${this.sourceId}`, withLevelFilter(this.mainLineFilter))
     // Hide the outline layer for route extras - we only want the colored segments visible
     map.setLayoutProperty(`line-layer-outline_${this.routeExtrasSourceId}`, 'visibility', 'none')
 
@@ -92,6 +106,39 @@ export class GeoJSONLayer extends Layer {
 
     this.setupEventHandlers()
     return this.loadData()
+  }
+
+  // Re-applies the current level filter to every already-added style layer for this GeoJSON
+  // layer (main view styles, heatmap, clusters, and the km-marker/route-extras companions),
+  // instead of re-filtering features and re-uploading the source (see render()).
+  applyLevelFilter() {
+    const styleDefs = styles()
+    const sourceIds = [this.sourceId, this.routeExtrasSourceId, this.extrusionSourceId]
+    sourceIds.forEach(sourceId => {
+      viewStyleNames.forEach(styleName => {
+        const layerId = `${styleName}_${sourceId}`
+        if (!map.getLayer(layerId)) { return }
+        const baseFilter = (styleName === 'line-layer' && sourceId === this.sourceId)
+          ? this.mainLineFilter
+          : styleDefs[styleName].filter
+        map.setFilter(layerId, withLevelFilter(baseFilter))
+      })
+
+      const heatmapLayerId = `heatmap-layer_${sourceId}`
+      if (map.getLayer(heatmapLayerId)) {
+        map.setFilter(heatmapLayerId, withLevelFilter(styleDefs['heatmap-layer'].filter))
+      }
+    })
+
+    if (this.layer.cluster) {
+      clusterStyles(null).forEach(style => {
+        const layerId = `${style.id}_${this.sourceId}`
+        if (map.getLayer(layerId)) { map.setFilter(layerId, withLevelFilter(style.filter)) }
+      })
+    }
+
+    applyKmMarkerLevelFilter(this.kmMarkerSourceId)
+    applyRouteExtrasLevelFilter(this.routeExtrasSourceId)
   }
 
   // setData(url) lets MapLibre fetch AND parse the features in its web worker (off the main
@@ -128,8 +175,9 @@ export class GeoJSONLayer extends Layer {
   }
 
   // sourceLoaded=true means the main MapLibre source already holds this.layer.geojson
-  // (loadData just streamed it from the layer URL). When no level filter is active, the
-  // source already holds exactly the features we'd upload, so skip the redundant re-parse.
+  // (loadData just streamed it from the layer URL), so it already holds exactly the
+  // features we'd upload, and re-parsing them is skipped. Level visibility is handled by
+  // style filters (see applyLevelFilter), not by pre-filtering features here.
   render(resetDraw = true, { sourceLoaded = false } = {}) {
     if (!this.layer?.geojson?.features) { return }
     const source = map.getSource(this.sourceId)
@@ -137,23 +185,22 @@ export class GeoJSONLayer extends Layer {
 
     this.ensureFeaturePropertyIds()
 
-    // Detect available levels first so activeLevel is defaulted before filtering
+    // Detect available levels so the level control reflects this layer's data
     detectLevels()
 
-    // Filter features by active level(s)
-    const filteredFeatures = filterFeaturesByLevel(this.layer.geojson.features)
+    const features = this.layer.geojson.features
 
-    renderKmMarkers(filteredFeatures, this.kmMarkerSourceId)
-    renderRouteExtras(filteredFeatures, this.routeExtrasSourceId)
-    this.renderExtrusionLines(filteredFeatures)
+    renderKmMarkers(features, this.kmMarkerSourceId)
+    renderRouteExtras(features, this.routeExtrasSourceId)
+    this.renderExtrusionLines(features)
 
-    if (sourceLoaded && !getActiveLevel()) {
+    if (sourceLoaded) {
       // MapLibre's URL load already holds exactly this set; don't re-parse it.
       map.getContainer().setAttribute('data-geojson-loaded', 'true')
     } else {
       console.log("Redraw: Setting source data for geojson layer", this.layer)
       map.getContainer().setAttribute('data-geojson-loaded', 'false')
-      source.setData({ type: 'FeatureCollection', features: filteredFeatures }, false)
+      source.setData({ type: 'FeatureCollection', features }, false)
       // Wait for MapLibre to complete the render, then signal completion
       map.once('render', () => {
         map.getContainer().setAttribute('data-geojson-loaded', 'true')
@@ -175,7 +222,7 @@ export class GeoJSONLayer extends Layer {
     // irrelevant. Route-extras labels, however, use a feature-index-based
     // symbol-sort-key, so their (small, route-only) companion source must be refreshed.
     if (hasRouteExtras(feature)) {
-      renderRouteExtras(filterFeaturesByLevel(this.layer.geojson.features), this.routeExtrasSourceId)
+      renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
     }
   }
 
@@ -199,7 +246,7 @@ export class GeoJSONLayer extends Layer {
     source.updateData({ remove: [feature.id], add: [feature] })
 
     if (refreshRouteExtras) {
-      renderRouteExtras(filterFeaturesByLevel(this.layer.geojson.features), this.routeExtrasSourceId)
+      renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
     }
 
     // Extrusion polygon lives in a separate source (only LineStrings ever have one): upsert it
@@ -216,7 +263,7 @@ export class GeoJSONLayer extends Layer {
     }
 
     if (refreshKmMarkers) {
-      renderKmMarkers(filterFeaturesByLevel(this.layer.geojson.features), this.kmMarkerSourceId)
+      renderKmMarkers(this.layer.geojson.features, this.kmMarkerSourceId)
     }
 
     // Keep the MapboxDraw overlay in sync for geometry edits (no-op when nothing is in draw).
@@ -225,14 +272,14 @@ export class GeoJSONLayer extends Layer {
 
   // Surgically add a feature to this layer's source without a full render(). Unlike
   // applyFeatureUpdate, there's no prior state to compare against, so companion refreshes are
-  // decided from the feature's own properties instead of caller flags. Not re-filtered by level.
+  // decided from the feature's own properties instead of caller flags.
   applyFeatureAdd(feature) {
     const source = map.getSource(this.sourceId)
     if (!source) { return }
     source.updateData({ add: [feature] })
 
     if (hasRouteExtras(feature)) {
-      renderRouteExtras(filterFeaturesByLevel(this.layer.geojson.features), this.routeExtrasSourceId)
+      renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
     }
 
     const extrusionSource = map.getSource(this.extrusionSourceId)
@@ -242,7 +289,7 @@ export class GeoJSONLayer extends Layer {
     }
 
     if (hasKmMarkers(feature)) {
-      renderKmMarkers(filterFeaturesByLevel(this.layer.geojson.features), this.kmMarkerSourceId)
+      renderKmMarkers(this.layer.geojson.features, this.kmMarkerSourceId)
     }
   }
 
@@ -254,7 +301,7 @@ export class GeoJSONLayer extends Layer {
     source.updateData({ remove: [feature.id] })
 
     if (hasRouteExtras(feature)) {
-      renderRouteExtras(filterFeaturesByLevel(this.layer.geojson.features), this.routeExtrasSourceId)
+      renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
     }
 
     const extrusionSource = map.getSource(this.extrusionSourceId)
@@ -263,7 +310,7 @@ export class GeoJSONLayer extends Layer {
     }
 
     if (hasKmMarkers(feature)) {
-      renderKmMarkers(filterFeaturesByLevel(this.layer.geojson.features), this.kmMarkerSourceId)
+      renderKmMarkers(this.layer.geojson.features, this.kmMarkerSourceId)
     }
 
     // Cheap regardless of draw's contents, so always keep it in sync (e.g. a feature deleted
