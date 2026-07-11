@@ -37,11 +37,16 @@ function createKmMarkerImage (color) {
   return imageName
 }
 
+// Whether a feature currently contributes km markers, i.e. needs renderKmMarkers to run.
+export function hasKmMarkers (feature) {
+  return feature.geometry.type === 'LineString' &&
+    !!feature.properties['show-km-markers'] &&
+    feature.geometry.coordinates.length >= 2
+}
+
 export function renderKmMarkers (features, sourceId) {
   let kmMarkerFeatures = []
-  features.filter(feature => (feature.geometry.type === 'LineString' &&
-    feature.properties['show-km-markers'] &&
-    feature.geometry.coordinates.length >= 2)).forEach((f, index) => {
+  features.filter(hasKmMarkers).forEach((f, index) => {
 
     const line = lineString(f.geometry.coordinates)
     const distance = length(line, { units: 'kilometers' })

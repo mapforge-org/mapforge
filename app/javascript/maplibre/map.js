@@ -13,7 +13,7 @@ import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetCo
 import { initializeViewControls } from 'maplibre/controls/view';
 import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
-import { applyFeatureUpdate, getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers, renderLayers } from 'maplibre/layers/layers';
+import { applyFeatureUpdate, getFeature, getLayer, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
 import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { clearImageState, loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
 
@@ -478,8 +478,10 @@ export function upsert (updatedFeature) {
 export function addFeature (feature) {
   feature.properties.id = feature.id
   // Adding new features to the first geojson layer
-  layers.find(l => l.type === 'geojson').geojson.features.push(feature)
-  renderLayers('geojson', false)
+  const layer = layers.find(l => l.type === 'geojson')
+  layer.geojson.features.push(feature)
+  // Surgical single-feature add instead of a full re-render of every geojson layer.
+  layer.applyFeatureAdd(feature)
   status('Added feature')
 }
 
@@ -512,10 +514,13 @@ function updateFeature (feature, updatedFeature) {
 }
 
 export function destroyFeature (featureId) {
-  if (getFeature(featureId)) {
+  const feature = getFeature(featureId)
+  if (feature) {
     status('Deleting feature ' + featureId)
-    layers.forEach(l => l.geojson.features = l.geojson.features.filter(f => f.id !== featureId))
-    renderLayers('geojson')
+    const layer = getLayer(featureId)
+    layer.geojson.features = layer.geojson.features.filter(f => f.id !== featureId)
+    // Surgical single-feature remove instead of a full re-render of every geojson layer.
+    layer.applyFeatureRemove(feature)
     resetHighlightedFeature()
   }
 }

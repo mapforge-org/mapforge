@@ -1,8 +1,8 @@
 import { buffer } from "@turf/buffer"
 import { draw, select } from 'maplibre/edit'
-import { initializeKmMarkerStyles, renderKmMarkers } from 'maplibre/layers/geojson/km_markers'
+import { hasKmMarkers, initializeKmMarkerStyles, renderKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { detectLevels, filterFeaturesByLevel, getActiveLevel } from 'maplibre/controls/levels'
-import { initializeExtrasLabelStyles, renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
+import { hasRouteExtras, initializeExtrasLabelStyles, renderRouteExtras } from 'maplibre/layers/geojson/route_extras'
 import { Layer } from 'maplibre/layers/layer'
 import { getFeature } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties, removeGeoJSONSource } from 'maplibre/map'
@@ -26,6 +26,15 @@ function buildLineExtrusion(feature) {
   extrusionLine.properties['stroke-width'] = 0
   extrusionLine.properties['stroke-opacity'] = 0
   return extrusionLine
+}
+
+// Whether a feature needs a buffered extrusion polygon: a LineString with a height set, not
+// already rendered as a route-extras segment (which builds its own extrusion), and not hidden by 3D terrain.
+function needsExtrusionPolygon(feature) {
+  return feature.geometry?.type === 'LineString' &&
+    !!feature.properties?.['fill-extrusion-height'] &&
+    !feature.properties?.['show-route-extras'] &&
+    !mapProperties.terrain
 }
 
 export class GeoJSONLayer extends Layer {
@@ -165,7 +174,7 @@ export class GeoJSONLayer extends Layer {
     // Buffered extrusion polygons are GPU depth-sorted, so their source order is
     // irrelevant. Route-extras labels, however, use a feature-index-based
     // symbol-sort-key, so their (small, route-only) companion source must be refreshed.
-    if (feature.geometry?.type === 'LineString' && feature.properties?.['show-route-extras']) {
+    if (hasRouteExtras(feature)) {
       renderRouteExtras(filterFeaturesByLevel(this.layer.geojson.features), this.routeExtrasSourceId)
     }
   }
@@ -198,10 +207,7 @@ export class GeoJSONLayer extends Layer {
     // route-extras enabled, terrain on, …).
     const extrusionSource = map.getSource(this.extrusionSourceId)
     if (extrusionSource && feature.geometry?.type === 'LineString') {
-      const polygon = (feature.properties['fill-extrusion-height'] &&
-        !feature.properties['show-route-extras'] && !mapProperties.terrain)
-        ? buildLineExtrusion(feature)
-        : null
+      const polygon = needsExtrusionPolygon(feature) ? buildLineExtrusion(feature) : null
       if (polygon) {
         extrusionSource.updateData({ remove: [polygon.id], add: [polygon] })
       } else {
@@ -217,6 +223,54 @@ export class GeoJSONLayer extends Layer {
     if (resetDraw) { this.resetDrawFeatures(true) }
   }
 
+  // Surgically add a feature to this layer's source without a full render(). Unlike
+  // applyFeatureUpdate, there's no prior state to compare against, so companion refreshes are
+  // decided from the feature's own properties instead of caller flags. Not re-filtered by level.
+  applyFeatureAdd(feature) {
+    const source = map.getSource(this.sourceId)
+    if (!source) { return }
+    source.updateData({ add: [feature] })
+
+    if (hasRouteExtras(feature)) {
+      renderRouteExtras(filterFeaturesByLevel(this.layer.geojson.features), this.routeExtrasSourceId)
+    }
+
+    const extrusionSource = map.getSource(this.extrusionSourceId)
+    if (extrusionSource && needsExtrusionPolygon(feature)) {
+      const polygon = buildLineExtrusion(feature)
+      if (polygon) { extrusionSource.updateData({ add: [polygon] }) }
+    }
+
+    if (hasKmMarkers(feature)) {
+      renderKmMarkers(filterFeaturesByLevel(this.layer.geojson.features), this.kmMarkerSourceId)
+    }
+  }
+
+  // Surgically remove a feature from this layer's source without a full render(). See
+  // applyFeatureAdd for why companion refreshes are derived from the feature, not caller flags.
+  applyFeatureRemove(feature) {
+    const source = map.getSource(this.sourceId)
+    if (!source) { return }
+    source.updateData({ remove: [feature.id] })
+
+    if (hasRouteExtras(feature)) {
+      renderRouteExtras(filterFeaturesByLevel(this.layer.geojson.features), this.routeExtrasSourceId)
+    }
+
+    const extrusionSource = map.getSource(this.extrusionSourceId)
+    if (extrusionSource && feature.geometry?.type === 'LineString') {
+      extrusionSource.updateData({ remove: [`${feature.id}-extrusion`] })
+    }
+
+    if (hasKmMarkers(feature)) {
+      renderKmMarkers(filterFeaturesByLevel(this.layer.geojson.features), this.kmMarkerSourceId)
+    }
+
+    // Cheap regardless of draw's contents, so always keep it in sync (e.g. a feature deleted
+    // remotely while selected locally).
+    this.resetDrawFeatures(true)
+  }
+
   updateAnimatedFeature(feature, frameCount) {
     // Skip if a full render is in progress (data-geojson-loaded='false')
     if (map.getContainer().getAttribute('data-geojson-loaded') === 'false') {
@@ -225,7 +279,7 @@ export class GeoJSONLayer extends Layer {
     // Geometry moves every frame, so companions follow it: rebuild route-extras when the
     // animating feature has them, and throttle the (pricier) km-marker rebuild to every 10th frame.
     this.applyFeatureUpdate(feature, {
-      refreshRouteExtras: !!feature.properties['show-route-extras'],
+      refreshRouteExtras: hasRouteExtras(feature),
       refreshKmMarkers: frameCount % 10 === 0
     })
   }
@@ -261,10 +315,7 @@ export class GeoJSONLayer extends Layer {
     // Placed in a separate non-selectable source so the polygons are never clickable.
     // Skipped when 'show-route-extras' renders its own extrusion.
     const extrusionFeatures = features
-      .filter(feature => (
-        feature.properties['fill-extrusion-height'] &&
-        !feature.properties['show-route-extras']
-      ))
+      .filter(needsExtrusionPolygon)
       .map(buildLineExtrusion)
       .filter(Boolean)
 

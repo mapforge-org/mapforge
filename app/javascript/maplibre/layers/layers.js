@@ -261,3 +261,4 @@ export function applyFeatureUpdate(feature, options) {
     layer.applyFeatureUpdate(feature, options)
   }
 }
+

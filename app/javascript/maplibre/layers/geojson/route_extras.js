@@ -212,16 +212,19 @@ export function showExtrasLegend (extrasType, activeValues) {
   }
 }
 
+// Whether a feature currently contributes route extras, i.e. needs renderRouteExtras to run.
+export function hasRouteExtras (feature) {
+  return feature.geometry.type === 'LineString' &&
+    !!feature.properties['show-route-extras'] &&
+    !!feature.properties.route?.extras
+}
+
 export function renderRouteExtras (features, sourceId) {
   const extrasFeatures = []
   let activeExtrasType = null
   const activeValues = new Set()
 
-  features.filter(feature => (
-    feature.geometry.type === 'LineString' &&
-    feature.properties['show-route-extras'] &&
-    feature.properties.route?.extras
-  )).forEach((feature, featureIndex) => {
+  features.filter(hasRouteExtras).forEach((feature, featureIndex) => {
     const extrasType = feature.properties['show-route-extras']
     activeExtrasType = extrasType
     const extrasData = feature.properties.route.extras[extrasType]
@@ -264,11 +267,7 @@ export function renderRouteExtras (features, sourceId) {
   if (config && !config.gradient && activeValues.size > 0) {
     const mergedTotals = {}
     let mergedTotal = 0
-    features.filter(f =>
-      f.geometry.type === 'LineString' &&
-      f.properties['show-route-extras'] === activeExtrasType &&
-      f.properties.route?.extras
-    ).forEach(f => {
+    features.filter(f => hasRouteExtras(f) && f.properties['show-route-extras'] === activeExtrasType).forEach(f => {
       const result = computeExtrasTotals(f, activeExtrasType)
       if (!result) return
       for (const [v, d] of Object.entries(result.totals)) {
