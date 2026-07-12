@@ -346,6 +346,17 @@ describe "Feature edit" do
       expect(page).to have_text("Feature copied to clipboard")
       expect(page).to have_text("Details")
     end
+
+    it "can delete feature via context menu" do
+      click_coord("#maplibre-map", 512, 430, button: :right)
+      expect(page).to have_text("Delete")
+      accept_alert do
+        find(".context-menu-item", text: "Delete").click
+      end
+      expect(page).to have_text("Feature deleted")
+      # need to wait until feature is saved server side
+      wait_for { Feature.count }.to eq(0)
+    end
   end
 
   context "cycling through overlapping features" do

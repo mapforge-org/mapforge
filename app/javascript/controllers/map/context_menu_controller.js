@@ -4,7 +4,8 @@ import { copyToClipboard } from 'helpers/clipboard'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
-import { updateElevation } from 'maplibre/edit'
+import { handleDelete, updateElevation } from 'maplibre/edit'
+import { getFeatureTypeName } from 'maplibre/feature'
 import { applyFeatureUpdate, getFeature, renderLayers } from 'maplibre/layers/layers'
 import { addFeature } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
@@ -120,6 +121,14 @@ export default class extends Controller {
     const feature = getFeature(event.currentTarget.dataset.featureId, 'geojson')
     if (feature) {
       copyToClipboard(JSON.stringify(feature), 'Feature copied to clipboard')
+    }
+    hideContextMenu()
+  }
+
+  deleteFeature(event) {
+    const feature = getFeature(event.currentTarget.dataset.featureId, 'geojson')
+    if (feature && confirm(`Really delete this ${getFeatureTypeName(feature)}?`)) {
+      handleDelete({ features: [feature] })
     }
     hideContextMenu()
   }

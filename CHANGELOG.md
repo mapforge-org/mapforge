@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 2026-07
 
 * Performance improvements for large maps
+* Option to delete items from context menu
 
 ## 2026-06
 

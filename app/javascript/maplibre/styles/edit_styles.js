@@ -1,5 +1,5 @@
 
-import { addCopyMenuItem, addLineMenuItems, addLineVertexMenuItems } from 'maplibre/controls/context_menu'
+import { addCopyMenuItem, addDeleteMenuItem, addLineMenuItems, addLineVertexMenuItems } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
 import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
@@ -45,6 +45,7 @@ export function initializeEditStyles() {
     for (const f of features) {
       if (f.properties.id && f.layer.id.includes('_geojson-source-')) {
         addCopyMenuItem(f.properties.id, f.geometry.type)
+        addDeleteMenuItem(f.properties.id)
         highlightFeature(f)
         break
       }

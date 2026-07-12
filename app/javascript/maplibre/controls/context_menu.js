@@ -88,3 +88,19 @@ export function addCopyMenuItem(featureId, geometryType = null) {
     el.appendChild(copyButton)
   })
 }
+
+/**
+ * Add 'Delete' option for any geojson feature
+ */
+export function addDeleteMenuItem(featureId) {
+  functions.e('#map-context-menu', el => {
+    el.classList.remove('hidden')
+
+    const deleteButton = document.createElement('div')
+    deleteButton.classList.add('context-menu-item')
+    deleteButton.innerText = 'Delete'
+    deleteButton.dataset.action = 'click->map--context-menu#deleteFeature'
+    deleteButton.dataset.featureId = featureId
+    el.appendChild(deleteButton)
+  })
+}
