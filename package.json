@@ -6,8 +6,9 @@
     "lint:css": "npx --offline stylelint 'app/assets/stylesheets/**/*.css'"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.0",
+    "@bubblewrap/cli": "^1.24.1",
     "@eslint/eslintrc": "^3.3.6",
+    "@eslint/js": "^10.0.0",
     "eslint": "^10.7.0",
     "globals": "^17.7.0",
     "stylelint": "^17.14.0",
