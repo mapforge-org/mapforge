@@ -1,4 +1,4 @@
-import { mapChannel } from 'channels/map_channel'
+import { sendMessage } from 'channels/map_channel'
 import { status } from 'helpers/status'
 import { select, selectedFeature } from 'maplibre/edit'
 import { showFeatureDetails } from 'maplibre/feature'
@@ -110,7 +110,7 @@ function undoFeatureUpdate(prevState) {
     addRedoState(prevState.type, feature)
     feature = prevState.state
     resetDirections()
-    mapChannel.send_message('update_feature', prevState.state)
+    sendMessage('update_feature', prevState.state)
   } else {
     console.warn('Feature with id ' + prevState.state.id + ' not found for undo')
   }
@@ -122,7 +122,7 @@ function redoFeatureUpdate(nextState) {
     addUndoState(nextState.type, feature, false)
     feature = nextState.state
     resetDirections()
-    mapChannel.send_message('update_feature', nextState.state)
+    sendMessage('update_feature', nextState.state)
   } else {
     console.warn('Feature with id ' + nextState.state.id + ' not found in geojsonData')
   }
@@ -133,7 +133,7 @@ function undoFeatureDelete(prevState) {
   if (!feature) {
     addRedoState(prevState.type, prevState.state)
     addFeature(prevState.state)
-    mapChannel.send_message('new_feature', prevState.state)
+    sendMessage('new_feature', prevState.state)
   } else {
     console.warn('Feature with id ' + prevState.state.id + ' still present in layer geojson')
   }
@@ -144,7 +144,7 @@ function redoFeatureDelete(nextState) {
   if (feature) {
     addUndoState(nextState.type, feature, false)
     destroyFeature(nextState.state.id)
-    mapChannel.send_message('delete_feature', { id: nextState.state.id })
+    sendMessage('delete_feature', { id: nextState.state.id })
   } else {
     console.warn('Feature with id ' + nextState.state.id + ' not found in layer geojson')
   }
@@ -155,7 +155,7 @@ function undoFeatureAdded(prevState) {
   if (feature) {
     addRedoState(prevState.type, feature, false)
     destroyFeature(prevState.state.id)
-    mapChannel.send_message('delete_feature', { id: prevState.state.id })
+    sendMessage('delete_feature', { id: prevState.state.id })
   } else {
     console.warn('Feature with id ' + prevState.state.id + ' not found in layer geojson')
   }
@@ -166,7 +166,7 @@ function redoFeatureAdded(nextState) {
   if (!feature) {
     addUndoState(nextState.type, nextState.state, false)
     addFeature(nextState.state)
-    mapChannel.send_message('new_feature', nextState.state)
+    sendMessage('new_feature', nextState.state)
   } else {
     console.warn('Feature with id ' + nextState.state.id + ' still present in layer geojson')
   }
@@ -178,7 +178,7 @@ function undoTrackAdded(prevState) {
     addRedoState(prevState.type, feature, false)
     destroyFeature(prevState.state.id)
     resetDirections()
-    mapChannel.send_message('delete_feature', { id: prevState.state.id })
+    sendMessage('delete_feature', { id: prevState.state.id })
   } else {
     console.warn('Feature with id ' + prevState.state.id + ' not found in layer geojson')
   }
@@ -200,7 +200,7 @@ function undoLayerAdded(prevState) {
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)
-    mapChannel.send_message('delete_layer', layer.toJSON())
+    sendMessage('delete_layer', layer.toJSON())
     initLayersModal()
   } else {
     console.warn('Layer with id ' + prevState.state.id + ' not found')
@@ -216,7 +216,7 @@ function redoLayerAdded(nextState) {
     initLayersModal()
     initializeLayerSources(newLayer.id)
     initializeLayerStyles(newLayer.id)
-    mapChannel.send_message('new_layer', nextState.state)
+    sendMessage('new_layer', nextState.state)
   } else {
     console.warn('Layer with id ' + nextState.state.id + ' already exists')
   }
@@ -231,7 +231,7 @@ function undoLayerDeleted(prevState) {
     initLayersModal()
     initializeLayerSources(newLayer.id)
     initializeLayerStyles(newLayer.id)
-    mapChannel.send_message('new_layer', prevState.state)
+    sendMessage('new_layer', prevState.state)
   } else {
     console.warn('Layer with id ' + prevState.state.id + ' still exists')
   }
@@ -244,7 +244,7 @@ function redoLayerDeleted(nextState) {
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)
-    mapChannel.send_message('delete_layer', layer.toJSON())
+    sendMessage('delete_layer', layer.toJSON())
     initLayersModal()
   } else {
     console.warn('Layer with id ' + nextState.state.id + ' not found')
@@ -259,7 +259,7 @@ function undoLayerUpdated(prevState) {
     layer.update(prevState.state)
     setLayerVisibility(layer.sourceId, layer.show)
     layer.initialize().then(() => { initLayersModal() })
-    mapChannel.send_message('update_layer', prevState.state)
+    sendMessage('update_layer', prevState.state)
   } else {
     console.warn('Layer with id ' + prevState.state.id + ' not found')
   }
@@ -273,7 +273,7 @@ function redoLayerUpdated(nextState) {
     layer.update(nextState.state)
     setLayerVisibility(layer.sourceId, layer.show)
     layer.initialize().then(() => { initLayersModal() })
-    mapChannel.send_message('update_layer', nextState.state)
+    sendMessage('update_layer', nextState.state)
   } else {
     console.warn('Layer with id ' + nextState.state.id + ' not found')
   }

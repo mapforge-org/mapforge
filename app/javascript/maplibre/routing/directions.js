@@ -1,5 +1,5 @@
 import MapLibreGlDirections, { MapLibreGlDirectionsNonCancelableEvent, layersFactory } from "@maplibre/maplibre-gl-directions"
-import { mapChannel } from 'channels/map_channel'
+import { sendMessage } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { decodePolyline, encodePolyline } from 'helpers/polyline'
 import { status } from 'helpers/status'
@@ -287,11 +287,11 @@ function updateTrack(feature) {
     // store undo state from unchanged feature
     addUndoState('Track update', geojsonFeature)
     upsert(feature)
-    mapChannel.send_message('update_feature', feature)
+    sendMessage('update_feature', feature)
   } else {
     addUndoState('Track added', feature)
     upsert(feature)
-    mapChannel.send_message('new_feature', feature)
+    sendMessage('new_feature', feature)
   }
 }
 

@@ -1,4 +1,4 @@
-import { mapChannel } from 'channels/map_channel'
+import { sendMessage } from 'channels/map_channel'
 import * as dom from 'helpers/dom'
 import { animateElement, initTooltips } from 'helpers/dom'
 import * as f from 'helpers/functions'
@@ -336,7 +336,7 @@ export function initLayersModal () {
                 .reverse()
               layer.applyFeatureOrder(orderedIds)
               layer.render()
-              mapChannel.send_message('update_layer', { id: layer.id, feature_order: orderedIds })
+              sendMessage('update_layer', { id: layer.id, feature_order: orderedIds })
               // reset after the post-drop click has been processed
               setTimeout(() => { dragging = false }, 0)
             }

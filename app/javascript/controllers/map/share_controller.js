@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
-import { mapChannel } from 'channels/map_channel'
+import { sendMessage } from 'channels/map_channel'
 import { initTooltips } from 'helpers/dom'
 import { copyToClipboard } from 'helpers/clipboard'
 import { mapProperties } from 'maplibre/map'
@@ -41,7 +41,7 @@ export default class extends Controller {
   updateGalleryVisibility () {
     const isListed = document.querySelector('#map-gallery-toggle').checked
     mapProperties['view_permission'] = isListed ? 'listed' : 'link'
-    mapChannel.send_message('update_map', { view_permission: mapProperties['view_permission'] })
+    sendMessage('update_map', { view_permission: mapProperties['view_permission'] })
   }
 
   copyOwnershipLink (e) {

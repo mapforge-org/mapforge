@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
-import { mapChannel } from 'channels/map_channel'
+import { sendMessage } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
@@ -327,7 +327,7 @@ export default class extends Controller {
     const feature = this.getSelectedFeature()
     status('Saving feature ' + feature.id)
     // send shallow copy of feature to avoid changes during send
-    mapChannel.send_message('update_feature', { ...feature })
+    sendMessage('update_feature', { ...feature })
   }
 
   toggleModalSize (e) {

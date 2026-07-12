@@ -4,7 +4,11 @@ class MapChannel < ApplicationCable::Channel
   def subscribed
     super
     map = Map.find_by(private_id: params[:map_id]) || Map.find_by(public_id: params[:map_id])
-    Rails.logger.warn "Invalid map id #{params[:map_id]} for subscribing to channel" and return unless map
+    unless map
+      Rails.logger.warn "Invalid map id #{params[:map_id]} for subscribing to channel"
+      reject
+      return
+    end
 
     @public_id = map.public_id
     stream_from "map_channel_#{@public_id}"

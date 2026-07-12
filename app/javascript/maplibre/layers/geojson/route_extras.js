@@ -1,8 +1,11 @@
 import { buffer } from "@turf/buffer"
 import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
+import { withLevelFilter } from 'maplibre/controls/levels'
 import { map } from 'maplibre/map'
 import { labelFont } from 'maplibre/styles/styles'
+
+const labelsBaseFilter = ['all', ['has', 'route-extras-label'], [">=", ["zoom"], 10]]
 
 // Steepness value to percentage range mapping for labels
 const STEEPNESS_RANGES = {
@@ -82,7 +85,7 @@ export function computeExtrasTotals (feature, extrasType) {
 }
 
 // Create point features with labels for route extras segments
-function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulativeDistances, featureIndex) {
+function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulativeDistances, featureIndex, level) {
   const labelFeatures = []
 
   extrasValues.forEach(([startIdx, endIdx, value]) => {
@@ -136,7 +139,8 @@ function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulative
         'route-extras-label': label,
         'route-extras-color': resolveExtrasColor(extrasType, value),
         'route-extras-priority': priority,
-        'feature-order': featureIndex
+        'feature-order': featureIndex,
+        ...(level !== undefined ? { level } : {})
       }
     })
   })
@@ -251,13 +255,14 @@ export function renderRouteExtras (features, sourceId) {
           'fill-extrusion-height': feature.properties['fill-extrusion-height'],
           'fill-extrusion-base': feature.properties['fill-extrusion-base'],
           "fill-extrusion-width": feature.properties['fill-extrusion-width'],
+          ...('level' in feature.properties ? { level: feature.properties.level } : {})
         }
       })
     })
 
     // Add labels for steepness or surface segments
     if (extrasType === 'steepness' || extrasType === 'surface') {
-      const labelFeatures = createExtrasLabelFeatures(coords, extrasData.values, extrasType, cumulativeDistances, featureIndex)
+      const labelFeatures = createExtrasLabelFeatures(coords, extrasData.values, extrasType, cumulativeDistances, featureIndex, feature.properties.level)
       extrasFeatures.push(...labelFeatures)
     }
   })
@@ -312,10 +317,7 @@ export function initializeExtrasLabelStyles (sourceId) {
     id: layerId,
     source: sourceId,
     type: 'symbol',
-    filter: ['all',
-      ['has', 'route-extras-label'],
-      [">=", ["zoom"], 10]
-    ],
+    filter: withLevelFilter(labelsBaseFilter),
     layout: {
       'text-field': ['get', 'route-extras-label'],
       'text-font': labelFont,
@@ -334,4 +336,11 @@ export function initializeExtrasLabelStyles (sourceId) {
       'text-halo-width': 2
     }
   })
+}
+
+// Re-applies the current level filter to the already-added route-extras label style layer,
+// without rebuilding the companion source (see GeoJSONLayer.applyLevelFilter).
+export function applyLevelFilter (sourceId) {
+  const layerId = `route-extras-labels_${sourceId}`
+  if (map.getLayer(layerId)) { map.setFilter(layerId, withLevelFilter(labelsBaseFilter)) }
 }

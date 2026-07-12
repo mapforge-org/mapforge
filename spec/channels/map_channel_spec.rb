@@ -8,6 +8,14 @@ RSpec.describe MapChannel, type: :channel do
 
   before { stub_connection(uuid: SecureRandom.uuid) }
 
+  describe "#subscribed" do
+    it "rejects the subscription for an unknown map id" do
+      subscribe(map_id: "nonexistent")
+
+      expect(subscription).to be_rejected
+    end
+  end
+
   describe "#update_layer with feature_order" do
     let(:order) { [ b.id.to_s, a.id.to_s ] }
 

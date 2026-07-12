@@ -1,3 +1,4 @@
+import { withLevelFilter } from 'maplibre/controls/levels'
 import { map, removeStyleLayers } from 'maplibre/map'
 import { defaultFont } from 'maplibre/styles/basemaps'
 
@@ -32,15 +33,19 @@ export function initializeViewStyles (sourceName, heatmap=false) {
   // console.log('Initializing view styles for source ' + sourceName)
   removeStyleLayers(sourceName)
   viewStyleNames.forEach(styleName => {
-    map.addLayer(setSource(styles()[styleName], sourceName))
+    const style = styles()[styleName]
+    map.addLayer(setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceName))
   })
-  if (heatmap) { map.addLayer(setSource(styles()['heatmap-layer'], sourceName)) }
+  if (heatmap) {
+    const heatmapStyle = styles()['heatmap-layer']
+    map.addLayer(setSource({ ...heatmapStyle, filter: withLevelFilter(heatmapStyle.filter) }, sourceName))
+  }
   // console.log('View styles added for source ' + sourceName)
 }
 
 export function initializeClusterStyles(sourceName, icon, color=null) {
   clusterStyles(icon, color).forEach(style => {
-    map.addLayer(setSource(style, sourceName))
+    map.addLayer(setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceName))
   })
 
   // zoom into cluster on click

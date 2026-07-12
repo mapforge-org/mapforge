@@ -1,5 +1,5 @@
 import { LevelControl } from 'maplibre/controls/level_control'
-import { layers, renderLayers } from 'maplibre/layers/layers'
+import { layers } from 'maplibre/layers/layers'
 
 // Active level (single selection shared across all layer types)
 let activeLevel = null
@@ -38,23 +38,27 @@ function parseFeatureLevels(level) {
 }
 
 /**
- * Filter GeoJSON features by active level.
- * Returns features that either:
+ * MapLibre filter expression matching features that either:
  * - Don't have a level property (always visible)
- * - Declare a level (or one of several, OSM-style "0;1") matching the active level
+ * - Declare a level (or several, OSM-style "0;1", no whitespace) matching the active level
  *
- * If no level is active, returns all features unfiltered.
+ * Both sides are wrapped in ';' so the substring `in` check can't match "1" inside "10".
+ * Returns null when no level is active (nothing to filter).
  */
-export function filterFeaturesByLevel(features) {
-  if (!features || !activeLevel) {
-    return features
-  }
+export function levelFilterFragment() {
+  if (!activeLevel) return null
+  return ['any',
+    ['!', ['has', 'level']],
+    ['in', `;${activeLevel};`, ['concat', ';', ['to-string', ['get', 'level']], ';']]
+  ]
+}
 
-  return features.filter(feature => {
-    const levels = parseFeatureLevels(feature.properties?.level)
-    if (levels.length === 0) return true
-    return levels.includes(activeLevel)
-  })
+/**
+ * Compose a style layer's base filter with the current level filter fragment.
+ */
+export function withLevelFilter(baseFilter) {
+  const fragment = levelFilterFragment()
+  return fragment ? ['all', baseFilter, fragment] : baseFilter
 }
 
 /**
@@ -73,9 +77,18 @@ export function detectLevels() {
     .forEach(layer => {
       if (layer.type === 'geojson') {
         // Scan GeoJSON features
+        let hasLevel = false
         layer.geojson?.features?.forEach(feature => {
-          parseFeatureLevels(feature.properties?.level).forEach(lvl => levelSet.add(lvl))
+          const featureLevels = parseFeatureLevels(feature.properties?.level)
+          featureLevels.forEach(lvl => levelSet.add(lvl))
+          if (featureLevels.length > 0) hasLevel = true
         })
+
+        // Clustering happens at the source level, before any style filter runs, so a
+        // clustered layer's clusters keep aggregating features from every level.
+        if (hasLevel && layer.cluster) {
+          console.warn(`Layer "${layer.name || layer.id}" uses clustering with leveled features. Not fully supported.`)
+        }
       } else if (layer.type === 'indoor') {
         // Get levels from indoor layer
         if (layer.levels && Array.isArray(layer.levels)) {
@@ -94,8 +107,8 @@ export function detectLevels() {
 }
 
 /**
- * Set the active level and trigger re-render/re-filter.
- * Updates URL state and re-renders all layers that support levels.
+ * Set the active level. Updates URL state and re-applies the level filter on every
+ * layer type that supports levels (indoor and GeoJSON both use map.setFilter).
  */
 export function setLevel(level) {
   activeLevel = String(level)
@@ -115,8 +128,14 @@ export function setLevel(level) {
       }
     })
 
-  // Trigger re-render of GeoJSON layers (they filter in render())
-  renderLayers('geojson', false)
+  // Update GeoJSON layers (they use map.setFilter via applyLevelFilter)
+  layers
+    .filter(layer => layer.type === 'geojson' && layer.show !== false)
+    .forEach(layer => {
+      if (typeof layer.applyLevelFilter === 'function') {
+        layer.applyLevelFilter()
+      }
+    })
 }
 
 /**

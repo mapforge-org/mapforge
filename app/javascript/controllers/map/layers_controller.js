@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { centroid } from '@turf/centroid'
-import { mapChannel } from 'channels/map_channel'
+import { sendMessage } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { flyToFeature } from 'maplibre/animations'
@@ -66,10 +66,10 @@ export default class extends Controller {
           upsert(feature)
           if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
             updateElevation(feature).finally(() => {
-              mapChannel.send_message('new_feature', feature)
+              sendMessage('new_feature', feature)
             })
           } else {
-            mapChannel.send_message('new_feature', feature)
+            sendMessage('new_feature', feature)
           }
           status('Added feature ' + i++ + '/' + geoJSON.features.length)
         })
@@ -95,7 +95,7 @@ export default class extends Controller {
             mapProperties.pitch = props.pitch
             mapProperties.bearing = props.bearing
             updateMapName(props.name)
-            mapChannel.send_message('update_map', mapProperties)
+            sendMessage('update_map', mapProperties)
           }
         }
 
@@ -133,7 +133,7 @@ export default class extends Controller {
       upsert(feature)
       // redraw first geojson layer
       renderLayer(layers.find(l => l.type === 'geojson').id)
-      mapChannel.send_message('new_feature', { ...feature })
+      sendMessage('new_feature', { ...feature })
       status('Added image')
       flyToFeature(feature)
     })
@@ -192,7 +192,7 @@ export default class extends Controller {
     layer["cluster"] = clustered
     layer["heatmap"] = layer.query.includes("heatmap=true")
     event.target.closest('.layer-item').querySelector('.layer-name').innerHTML = layer.name
-    mapChannel.send_message('update_layer', layer.toJSON())
+    sendMessage('update_layer', layer.toJSON())
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
     layer.initialize().then(() => { initLayersModal() })
   }
@@ -207,7 +207,7 @@ export default class extends Controller {
     layer.query = layerElement.querySelector('.raster-url').value
     layer.name = layerElement.querySelector('.raster-name').value
     event.target.closest('.layer-item').querySelector('.layer-name').textContent = layer.name
-    mapChannel.send_message('update_layer', layer.toJSON())
+    sendMessage('update_layer', layer.toJSON())
 
     removeGeoJSONSource(layer.sourceId)
     initializeLayerSources(layerId)
@@ -307,7 +307,7 @@ export default class extends Controller {
     // when showing: initialize styles (and load data for overpass/wikipedia if needed)
     if (layer.show) { initializeLayerStyles(layerId) }
     // sync to server only in rw mode
-    if (window.gon.map_mode === "rw") { mapChannel.send_message('update_layer', layer.toJSON()) }
+    if (window.gon.map_mode === "rw") { sendMessage('update_layer', layer.toJSON()) }
   }
 
   createWikipediaLayer() {
@@ -380,7 +380,7 @@ export default class extends Controller {
     initLayersModal()
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)
-    mapChannel.send_message('new_layer', layerData)
+    sendMessage('new_layer', layerData)
     return layerId
   }
 
@@ -395,7 +395,7 @@ export default class extends Controller {
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)
-    mapChannel.send_message('delete_layer', layer.toJSON())
+    sendMessage('delete_layer', layer.toJSON())
     initLayersModal()
   }
 }

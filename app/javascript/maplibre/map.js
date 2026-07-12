@@ -1,5 +1,5 @@
 import { centroid } from "@turf/centroid";
-import { mapChannel } from 'channels/map_channel';
+import { sendMessage } from 'channels/map_channel';
 import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep-equal
 import * as dom from 'helpers/dom';
 import * as functions from 'helpers/functions';
@@ -245,10 +245,10 @@ function limitZoom() {
 
 function updateCursorPosition(e) {
   lastMousePosition = e.lngLat
-  if (mapChannel && window.gon.map_mode === 'rw' && window.gon.map_properties.share_cursor) {
+  if (window.gon.map_mode === 'rw' && window.gon.map_properties.share_cursor) {
     const coords = e.lngLat
     functions.throttle(() => {
-      mapChannel.send_message('mouse', { lng: coords.lng, lat: coords.lat })
+      sendMessage('mouse', { lng: coords.lng, lat: coords.lat })
     }, 'mouse', 100)
   }
 }

@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
-import { mapChannel } from 'channels/map_channel'
+import { sendMessage } from 'channels/map_channel'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
@@ -45,7 +45,7 @@ export default class extends Controller {
     try {
       feature.properties = JSON.parse(document.querySelector('#feature-edit-raw textarea').value)
       renderLayer(this.layerIdValue, true)
-      mapChannel.send_message('update_feature', feature)
+      sendMessage('update_feature', feature)
     } catch (error) {
       console.error('Error updating feature:', error.message)
       status('Error updating feature', 'error')
@@ -60,7 +60,7 @@ export default class extends Controller {
       const newGeometry = JSON.parse(document.querySelector('#feature-edit-raw-geometry textarea').value)
       feature.geometry = newGeometry
       renderLayer(this.layerIdValue, true)
-      mapChannel.send_message('update_feature', feature)
+      sendMessage('update_feature', feature)
     } catch (error) {
       console.error('Error updating feature geometry:', error.message)
       status('Error updating feature geometry', 'error')
@@ -303,7 +303,7 @@ export default class extends Controller {
     const feature = this.getEditFeature()
     // status('Saving feature \'' + feature.properties.title + '\'')
     // send shallow copy of feature to avoid changes during send
-    mapChannel.send_message('update_feature', { ...feature })
+    sendMessage('update_feature', { ...feature })
   }
 
   addUndo() {

@@ -242,4 +242,67 @@ describe "Map GeoJSON levels" do
       end
     end
   end
+
+  context "companion features (km-markers) carry the parent feature's level" do
+    def feature_with_km_markers
+      @feature_with_km_markers ||= create(:feature, :line_string,
+        properties: { title: "Km Marker Feature", level: "0", "show-km-markers" => true })
+    end
+
+    let(:map) { create(:map, features: [ feature_with_km_markers, feature_level_1 ]) }
+
+    def km_marker_rendered?
+      page.evaluate_script(
+        "map.queryRenderedFeatures().some(f => f.properties && f.properties.km !== undefined)"
+      )
+    end
+
+    it "renders km-markers at the feature's declared level" do
+      wait_for { km_marker_rendered? }.to be true
+    end
+
+    it "hides km-markers after switching to a level the feature doesn't declare" do
+      wait_for { km_marker_rendered? }.to be true
+
+      find(".level-control button[data-level='1']").click
+      wait_for { page.has_css?(".level-control button[data-level='1'].active") }.to be true
+
+      wait_for { km_marker_rendered? }.to be false
+    end
+  end
+
+  context "level filter matches whole numeric entries only" do
+    def feature_level_10
+      @feature_level_10 ||= create(:feature, :point,
+        coordinates: [ 11.06, 49.478 ],
+        properties: { title: "Level 10 Feature", level: "10" })
+    end
+
+    let(:map) { create(:map, features: [ feature_level_1, feature_level_10 ]) }
+
+    def level_10_coords
+      viewport_xy_for_lat_lng(
+        feature_level_10.geometry["coordinates"][1],
+        feature_level_10.geometry["coordinates"][0]
+      )
+    end
+
+    it "is visible at level 10" do
+      find(".level-control button[data-level='10']").click
+      wait_for { page.has_css?(".level-control button[data-level='10'].active") }.to be true
+
+      coords = level_10_coords
+      hover_coord(coords[:x], coords[:y])
+      expect(page).to have_text("Level 10 Feature")
+    end
+
+    it "is not visible at level 1 (guards against '1' matching inside '10')" do
+      find(".level-control button[data-level='1']").click
+      wait_for { page.has_css?(".level-control button[data-level='1'].active") }.to be true
+
+      coords = level_10_coords
+      hover_coord(coords[:x], coords[:y])
+      expect(page).not_to have_text("Level 10 Feature")
+    end
+  end
 end
