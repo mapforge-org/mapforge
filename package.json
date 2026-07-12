@@ -1,8 +1,4 @@
 {
-  "engines": {
-    "node": ">=20",
-    "npm": "10.8.2"
-  },
   "scripts": {
     "fix:js": "npx --offline eslint --ext .js app/javascript --fix",
     "lint:js": "npx --offline eslint --ext .js app/javascript",
