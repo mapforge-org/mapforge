@@ -227,10 +227,11 @@ To build the Android app yourself using
 [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap):
 
 ```bash
-npm install -g @bubblewrap/cli
+npm install -D @bubblewrap/cli
 # init is only needed on the first run
-bubblewrap init --manifest=http://localhost:3000/manifest.json
-bubblewrap build
+cd android
+npx bubblewrap init --manifest=http://localhost:3000/manifest.json
+npx bubblewrap build
 ```
 
 To establish trust between the app and the website, host a file
@@ -251,3 +252,5 @@ Then add the fingerprint(s) to `assetlinks.json` using the
 ```bash
 bubblewrap fingerprint add
 ```
+
+- Create a Playstore release: "Test and Release" -> "Production" -> "Create new release"

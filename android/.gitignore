@@ -1,0 +1,13 @@
+build 
+app
+gradle
+.gradle/
+android.keystore
+app-release-*
+build.gradle
+gradle.properties
+gradlew
+gradlew.bat
+manifest-checksum.txt
+settings.gradle
+store_icon.png

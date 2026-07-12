@@ -1,0 +1,60 @@
+{
+  "packageId": "org.mapforge.twa",
+  "host": "mapforge.org",
+  "name": "Mapforge",
+  "launcherName": "Mapforge",
+  "display": "standalone",
+  "themeColor": "#DAE2C8",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#354620",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://mapforge.org/logo/pwa/mapforge-logo-pwa-512.png",
+  "maskableIconUrl": "https://mapforge.org/logo/pwa/mapforge-logo-pwa-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "/space/workspace/mapforge/android/android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "19",
+  "appVersionCode": 19,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://mapforge.org/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": true
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://mapforge.org/",
+  "minSdkVersion": 21,
+  "shareTarget": {
+    "action": "https://mapforge.org/",
+    "method": "GET",
+    "params": {
+      "url": "url"
+    }
+  },
+  "orientation": "any",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [
+    "standalone"
+  ],
+  "appVersion": "19"
+}

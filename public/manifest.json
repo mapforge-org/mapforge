@@ -2,7 +2,7 @@
   "name": "Mapforge",
   "short_name": "Mapforge",
   "id": "org.mapforge.twa",
-  "version": "25.08",
+  "version": "26.07.12",
   "icons": [
     {
       "src": "/logo/pwa/mapforge-logo-pwa-512.png",
