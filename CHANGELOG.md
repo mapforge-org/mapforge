@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 * Providing the official [OpenSUSE Conference 2026 map](https://mapforge.org/m/osc26/openSUSE%20Conference%202026)
 * [Indoor Maps](https://mapforge.org/m/e3d9c526/Indoor%20map): support for multiple levels and improved level control UI
 * New [styling properties](/doc/geojson_style_spec): text-offset, text-anchor, label-shadow-width
-* New [logo](/logo/mapforge-logo-pwa-512.png) and [sticker](/logo/sticker/mapforge-sticker.jpg)
+* New [logo](/public/logo/mapforge-logo-pwa-512.png) and [sticker](/public/logo/sticker/mapforge-sticker.jpg)
 * Performance: deferred loading, optimized fonts, database indexes
 * Allow to re-order layer items with drag & drop
 

@@ -16,7 +16,7 @@ import {
 } from 'maplibre/map'
 
 
-export let mapChannel
+let mapChannel
 let channelStatus
 let reloadInProgress = false
 let connectionUUID
@@ -33,6 +33,10 @@ function unload () {
     console.log('Unsubscribing from map_channel', mapChannel.identifier)
     mapChannel.unsubscribe(); mapChannel = null; channelStatus = undefined
   }
+  Object.values(remoteCursors).forEach(cursor => cursor.remove())
+  remoteCursors = {}
+  reloadInProgress = false
+  connectionUUID = undefined
   map.fire('offline')
 }
 
@@ -50,14 +54,19 @@ export function initializeSocket () {
         // Rebuild layers directly (rather than initializeLayers()) to force a refetch and handle
         // a possible basemap change; reset the memoization so a later initializeLayers() re-runs.
         resetLayerInitialization()
-        reloadMapProperties().then(() => {
+        reloadMapProperties().then(() => true, error => {
+          // If we can't confirm what changed while offline, don't silently assume
+          // nothing did — fall through to the reload path below as a safe default.
+          console.error('Failed to refresh map properties on reconnect, forcing full reload:', error)
+          return false
+        }).then((propsFetchOk) => {
           const propsChanged = initializeMaplibreProperties()
           // Only reload layer data if the map actually changed while we were disconnected.
           // The full reload re-fetches + re-parses the entire map and blocks the main
           // thread, which is what turned a single stale-connection disconnect into an
           // endless disconnect/reload loop on large maps. reloadMapProperties() already
           // refreshed window.gon.map_updated_at from the lightweight /properties endpoint.
-          const dataChanged = window.gon.map_updated_at !== loadedMapUpdatedAt
+          const dataChanged = !propsFetchOk || window.gon.map_updated_at !== loadedMapUpdatedAt
           if (dataChanged && !reloadInProgress) {
             reloadInProgress = true
             // refetch: true forces a fresh pull from the server (bypassing the gon-embedded
@@ -85,10 +94,6 @@ export function initializeSocket () {
         })
       } else {
         map.fire('online', { detail: { message: 'Connected to map_channel' } })
-      }
-      consumer.connection.webSocket.onerror = function (_event) {
-        map.fire('offline', { detail: { message: 'Websocket error' } })
-        channelStatus = 'off'
       }
       channelStatus = 'on'
     },
@@ -192,22 +197,25 @@ export function initializeSocket () {
           remoteCursors[data.uuid]?.remove()
           delete remoteCursors[data.uuid]
       }
-    },
-
-    send_message (event, data) {
-      // shallow copy to avoid mutating caller's data; geometry is never touched so it's left shared
-      const payload = { ...data }
-      payload.map_id = window.gon.map_id
-      payload.user_id = window.gon.user_id
-      payload.uuid = connectionUUID
-      // dropping properties.id before sending to server
-      if (payload.properties && payload.properties.id) {
-        payload.properties = { ...payload.properties }
-        delete payload.properties.id
-      }
-      if (event !== 'mouse') console.log('Sending: [' + event + '] :', payload)
-      // Call the original perform method
-      this.perform(event, payload)
     }
   })
+}
+
+export function sendMessage (event, data) {
+  if (!mapChannel) {
+    console.warn(`Cannot send '${event}': map_channel not connected`)
+    return
+  }
+  // shallow copy to avoid mutating caller's data; geometry is never touched so it's left shared
+  const payload = { ...data }
+  payload.map_id = window.gon.map_id
+  payload.user_id = window.gon.user_id
+  payload.uuid = connectionUUID
+  // dropping properties.id before sending to server
+  if (payload.properties && payload.properties.id) {
+    payload.properties = { ...payload.properties }
+    delete payload.properties.id
+  }
+  if (event !== 'mouse') console.log('Sending: [' + event + '] :', payload)
+  mapChannel.perform(event, payload)
 }

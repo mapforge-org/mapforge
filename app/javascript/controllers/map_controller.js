@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
-import { initializeSocket, mapChannel } from 'channels/map_channel'
+import { initializeSocket, sendMessage } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { resetInitializationState } from 'maplibre/layers/layers'
@@ -77,7 +77,7 @@ export default class extends Controller {
         feature.id = functions.featureId()
         addFeature(feature)
         addUndoState('Feature added', feature)
-        mapChannel.send_message('new_feature', feature)
+        sendMessage('new_feature', feature)
       }
     } catch (err) {
       console.warn("Failed to read clipboard:", err)

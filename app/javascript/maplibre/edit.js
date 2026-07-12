@@ -1,5 +1,5 @@
 import { simplify } from "@turf/simplify";
-import { mapChannel } from 'channels/map_channel';
+import { sendMessage } from 'channels/map_channel';
 import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep-equal
 import * as functions from 'helpers/functions';
 import { hideInfoStatus, status } from 'helpers/status';
@@ -308,7 +308,7 @@ function handleCreate (e) {
   if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') {
     renderLayers('geojson', false)
   }
-  mapChannel.send_message('new_feature', feature)
+  sendMessage('new_feature', feature)
   if (feature.geometry.type === 'LineString') { updateElevation(feature) }
 
   // Switch to feature edit mode after create
@@ -355,11 +355,11 @@ async function handleUpdate (e) {
   if (feature.geometry.type === 'LineString') {
     // gets also triggered on failure
     updateElevation(feature).then(() => {
-      mapChannel.send_message('update_feature', feature)
+      sendMessage('update_feature', feature)
       refreshFeatureMeta(feature)
     })
   } else {
-    mapChannel.send_message('update_feature', feature)
+    sendMessage('update_feature', feature)
     refreshFeatureMeta(feature)
   }
 }
@@ -372,7 +372,7 @@ export function handleDelete (e) {
   resetDirections()
   resetControls()
   status('Feature deleted')
-  mapChannel.send_message('delete_feature', { id: deletedFeature.id })
+  sendMessage('delete_feature', { id: deletedFeature.id })
 }
 
 // Fetch elevation from openrouteservice. Coords without elevation (length 2)

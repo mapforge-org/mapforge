@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
-import { mapChannel } from 'channels/map_channel'
+import { sendMessage } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
@@ -110,7 +110,7 @@ export default class extends Controller {
     mapProperties.terrain = this.mapTerrainValue
     setBackgroundMapLayer()
     if (window.gon.map_mode === 'rw') {
-      mapChannel.send_message('update_map', { terrain: mapProperties.terrain, globe: mapProperties.globe })
+      sendMessage('update_map', { terrain: mapProperties.terrain, globe: mapProperties.globe })
     }
   }
 
@@ -119,7 +119,7 @@ export default class extends Controller {
     mapProperties.hillshade = this.mapHillshadeValue
     setBackgroundMapLayer()
     if (window.gon.map_mode === 'rw') {
-      mapChannel.send_message('update_map', { hillshade: mapProperties.hillshade })
+      sendMessage('update_map', { hillshade: mapProperties.hillshade })
     }
   }
 
@@ -128,7 +128,7 @@ export default class extends Controller {
     mapProperties.contours = this.mapContoursValue
     setBackgroundMapLayer()
     if (window.gon.map_mode === 'rw') {
-      mapChannel.send_message('update_map', { contours: mapProperties.contours })
+      sendMessage('update_map', { contours: mapProperties.contours })
     }
   }
 
@@ -142,7 +142,7 @@ export default class extends Controller {
     mapProperties.globe = this.mapGlobeValue
     setBackgroundMapLayer()
     if (window.gon.map_mode === 'rw') {
-      mapChannel.send_message('update_map', { globe: mapProperties.globe, terrain: mapProperties.terrain })
+      sendMessage('update_map', { globe: mapProperties.globe, terrain: mapProperties.terrain })
     }
   }
 
@@ -151,7 +151,7 @@ export default class extends Controller {
     mapProperties.base_map = this.baseMapValue
     setBackgroundMapLayer()
     if (window.gon.map_mode === 'rw') {
-      mapChannel.send_message('update_map', { base_map: mapProperties.base_map })
+      sendMessage('update_map', { base_map: mapProperties.base_map })
     }
   }
 
@@ -160,7 +160,7 @@ export default class extends Controller {
     const name = document.querySelector('#map-name').value
     updateMapName(name)
     functions.debounce(() => {
-      mapChannel.send_message('update_map', { name })
+      sendMessage('update_map', { name })
     }, 'map_name', 2000)
   }
 
@@ -169,7 +169,7 @@ export default class extends Controller {
     if (descEasyMDE && mapProperties.description !== descEasyMDE.value()) {
       mapProperties.description = descEasyMDE.value()
       functions.debounce(() => {
-        mapChannel.send_message('update_map', { description: descEasyMDE.value() })
+        sendMessage('update_map', { description: descEasyMDE.value() })
       }, 'map_description', 2000)
     }
   }
@@ -215,7 +215,7 @@ export default class extends Controller {
     mapProperties.default_zoom = this.currentZoomValue
     mapProperties.default_pitch = this.currentPitchValue
     mapProperties.default_bearing = this.currentBearingValue
-    mapChannel.send_message('update_map', { center: this.currentCenterValue,
+    sendMessage('update_map', { center: this.currentCenterValue,
       zoom: this.currentZoomValue, pitch: this.currentPitchValue, bearing: this.currentBearingValue })
   }
 
@@ -223,7 +223,7 @@ export default class extends Controller {
     event.preventDefault()
     window.history.replaceState(null, '', window.location.pathname + window.location.search)
     // need to receive default values from server
-    mapChannel.send_message('update_map', { center: null,
+    sendMessage('update_map', { center: null,
       zoom: null, pitch: null, bearing: null })
   }
 }

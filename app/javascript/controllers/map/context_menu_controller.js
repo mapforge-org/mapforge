@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
-import { mapChannel } from 'channels/map_channel'
+import { sendMessage } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
@@ -20,7 +20,7 @@ export default class extends Controller {
     if (feature.geometry.type === 'LineString') { feature.geometry.coordinates.splice(vertexIndex, 1) }
     if (feature.geometry.type === 'Polygon') { feature.geometry.coordinates[0].splice(vertexIndex, 1) }
     applyFeatureUpdate(feature, { resetDraw: true, refreshRouteExtras: true, refreshKmMarkers: true })
-    mapChannel.send_message('update_feature', { ...feature })
+    sendMessage('update_feature', { ...feature })
     status('Point deleted')
     hideContextMenu()
   }
@@ -38,7 +38,7 @@ export default class extends Controller {
     addUndoState('Feature update', feature)
     feature.geometry.coordinates = firstCoords
     renderLayers('geojson', true)
-    mapChannel.send_message('update_feature', { ...feature })
+    sendMessage('update_feature', { ...feature })
 
     const secondFeature = {
       type: 'Feature',
@@ -48,7 +48,7 @@ export default class extends Controller {
     }
     addUndoState('Feature added', secondFeature)
     addFeature(secondFeature)
-    mapChannel.send_message('new_feature', secondFeature)
+    sendMessage('new_feature', secondFeature)
 
     status('Line cut into 2 segments')
     hideContextMenu()
@@ -89,7 +89,7 @@ export default class extends Controller {
     }
 
     applyFeatureUpdate(feature, { resetDraw: true, refreshRouteExtras: true, refreshKmMarkers: true })
-    mapChannel.send_message('update_feature', { ...feature })
+    sendMessage('update_feature', { ...feature })
     status('Track reversed')
     hideContextMenu()
   }
@@ -108,10 +108,10 @@ export default class extends Controller {
     // Geometries might arrive without elevation; fetch it before save
     if (feature.geometry.type === 'LineString' ) {
       updateElevation(feature).finally(() => {
-        mapChannel.send_message('new_feature', feature)
+        sendMessage('new_feature', feature)
       })
     } else {
-      mapChannel.send_message('new_feature', feature)
+      sendMessage('new_feature', feature)
     }
     hideContextMenu()
   }

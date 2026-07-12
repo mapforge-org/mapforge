@@ -2,7 +2,7 @@ import { along } from "@turf/along"
 import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { simplify } from "@turf/simplify"
-import { mapChannel } from 'channels/map_channel'
+import { sendMessage } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { decodePolyline } from 'helpers/polyline'
 import { status } from 'helpers/status'
@@ -221,7 +221,7 @@ export async function convertToRoute(originalFeature, profile) {
     // Add to map and persist
     addUndoState('Route created from GPX', newFeature)
     upsert(newFeature)
-    mapChannel.send_message('new_feature', newFeature)
+    sendMessage('new_feature', newFeature)
 
     status(`Route created successfully (${routedLength.toFixed(1)}km, ${snappedWaypoints.length} waypoints)`)
 
@@ -367,7 +367,7 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
 
   addUndoState('Route created from GPX', newFeature)
   upsert(newFeature)
-  mapChannel.send_message('new_feature', newFeature)
+  sendMessage('new_feature', newFeature)
 
   status(`Route created successfully (${routedLength.toFixed(1)}km, ${segments.length} segments)`)
   showFeatureDetails(newFeature)
