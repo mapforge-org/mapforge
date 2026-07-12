@@ -169,6 +169,8 @@ function updateLevelControl() {
  * Create the level control UI.
  */
 function createLevelControl() {
+  if (window.gon.map_mode === 'static') { return }
+
   levelControl = new LevelControl('shared-levels', (level) => {
     setLevel(level)
   }, 'level-control')

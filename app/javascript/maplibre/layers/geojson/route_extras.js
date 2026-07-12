@@ -150,6 +150,8 @@ function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulative
 
 // Show/hide the map legend for route extras
 export function showExtrasLegend (extrasType, activeValues) {
+  if (window.gon.map_mode === 'static') { return }
+
   let container = document.getElementById('route-extras-legend')
 
   if (!extrasType) {
