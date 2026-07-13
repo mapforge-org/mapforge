@@ -152,11 +152,17 @@ export function initializeLayerSources(id = null) {
  */
 export async function initializeLayerStyles(id = null) {
   if (!layers) { console.warn('initializeLayerStyles called but layers not loaded yet'); return }
-  functions.e('#layer-reload', e => { e.classList.add('hidden') })
-  functions.e('#layer-loading', e => { e.classList.remove('hidden') })
 
   let initLayers = layers.filter(l => l.show !== false)
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
+
+  // "Loading live layer" only applies to layers that refetch from an external API
+  // (overpass/wikipedia); plain geojson layers shouldn't flash this banner.
+  const hasLiveLayers = initLayers.some(l => l.reloadAfterMapMove() === 'ondemand')
+  if (hasLiveLayers) {
+    functions.e('#layer-reload', e => { e.classList.add('hidden') })
+    functions.e('#layer-loading', e => { e.classList.remove('hidden') })
+  }
 
   const promises = initLayers.map(layer => layer.initialize())
 
@@ -172,7 +178,9 @@ export async function initializeLayerStyles(id = null) {
     console.log('geojson source + styles loaded')
     // re-sort layers after style changes
     sortLayers()
-    functions.e('#layer-loading', e => { e.classList.add('hidden') })
+    if (hasLiveLayers) {
+      functions.e('#layer-loading', e => { e.classList.add('hidden') })
+    }
   })
 }
 
