@@ -1,0 +1,39 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.8 e802775f",
+  "osm3s": {
+    "timestamp_osm_base": "2025-09-02T20:55:01Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+    {
+      "type": "way",
+      "id": 98765001,
+      "nodes": [ 1001, 1002 ],
+      "geometry": [
+        { "lat": 49.4470, "lon": 11.0770 },
+        { "lat": 49.4480, "lon": 11.0790 }
+      ],
+      "tags": {
+        "highway": "path",
+        "name": "Test path"
+      }
+    },
+    {
+      "type": "way",
+      "id": 98765011,
+      "nodes": [ 1011, 1012, 1013, 1014, 1011 ],
+      "geometry": [
+        { "lat": 49.4460, "lon": 11.0750 },
+        { "lat": 49.4465, "lon": 11.0750 },
+        { "lat": 49.4465, "lon": 11.0760 },
+        { "lat": 49.4460, "lon": 11.0760 },
+        { "lat": 49.4460, "lon": 11.0750 }
+      ],
+      "tags": {
+        "building": "yes",
+        "name": "Test building"
+      }
+    }
+  ]
+}

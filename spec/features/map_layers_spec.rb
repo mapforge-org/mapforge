@@ -133,6 +133,54 @@ describe "Map" do
     end
   end
 
+  context "overpass comment styling" do
+    subject(:map) { create(:map, name: "Styling test", center: [ 11.077, 49.447 ], zoom: 15) }
+
+    let(:layer) do
+      create(:layer, :overpass, name: "styled", query: <<~QUERY)
+        // stroke=#ff0000
+        // stroke-width=6
+        // fill=#00ff00
+        // fill-opacity=0.3
+        way["highway"];
+        out geom;
+      QUERY
+    end
+
+    before do
+      CapybaraMock.clear_stubs
+      overpass_file = File.read(Rails.root.join("spec", "fixtures", "files", "overpass_line_polygon.json"))
+      CapybaraMock.stub_request(
+        :post, "https://overpass-api.de/api/interpreter"
+      ).to_return(
+        headers: { "Access-Control-Allow-Origin" => "*" },
+        status: 200,
+        body: overpass_file
+      )
+      map.layers << layer
+      visit map.private_map_path
+      expect_map_loaded
+      expect_overpass_loaded
+    end
+
+    it "applies stroke, stroke-width, fill and fill-opacity from query comments" do
+      line_props = page.evaluate_script(
+        "map.queryRenderedFeatures().find(f => f.geometry.type === 'LineString')?.properties"
+      )
+      polygon_props = page.evaluate_script(
+        "map.queryRenderedFeatures().find(f => f.geometry.type === 'Polygon')?.properties"
+      )
+
+      expect(line_props["stroke"]).to eq("#ff0000")
+      expect(line_props["stroke-width"]).to eq("6")
+
+      expect(polygon_props["stroke"]).to eq("#ff0000")
+      expect(polygon_props["stroke-width"]).to eq("6")
+      expect(polygon_props["fill"]).to eq("#00ff00")
+      expect(polygon_props["fill-opacity"]).to eq("0.3")
+    end
+  end
+
   context "layer visibility" do
     it "toggles layer visibility via websocket" do
       map.layers.first.update!(show: false)

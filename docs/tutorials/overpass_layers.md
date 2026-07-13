@@ -4,7 +4,7 @@ Mapforge enables you to add custom data layers from OpenStreetMap using **Overpa
 
 Overpass layers get loaded for the currently visible view of the map. When the map gets moved or zoomed, a reload button appears to fetch data for the new area.
 
-![Overpass example](https://mapforge.org/images/tutorials/overpass1.png)
+![Overpass example](/images/tutorials/overpass1.png)
 *(Screenshot from hiking routes map, see [source map](https://mapforge.org/m/49ee89e4/Hiking%20routes) )*
 
 
@@ -40,7 +40,10 @@ You can enhance your layers with visual customization, for example setting symbo
 * `// marker-color=yellow` - Color of marker points
 * `// marker-symbol=🍻` - Nodes/points will use this symbol (emoji)
 * `// marker-image-url=/icons/hydrant.png` - URL pointing to icon image
-* `// stroke=yellow` - Line color
+* `// stroke=yellow` - Outline color for points, lines and polygons
+* `// stroke-width=4` - Outline width for points, lines and polygons
+* `// fill=yellow` - Fill color for polygons
+* `// fill-opacity=0.5` - Fill opacity for polygons
 * `// cluster=true` - Results will be clustered when too many results are close to each other (default=true)
 * `// cluster-color=yellow` - Color of cluster points
 * `// cluster-symbol=🍻` - Emoji/icon path used for clusters
