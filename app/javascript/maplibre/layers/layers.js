@@ -174,12 +174,16 @@ export async function initializeLayerStyles(id = null) {
   if (id) { dataOnlyLayers = dataOnlyLayers.filter(l => l.id === id) }
   promises.push(...dataOnlyLayers.map(layer => layer.loadData()))
 
-  await Promise.all(promises).then(_results => {
+  await Promise.all(promises).then(results => {
     console.log('geojson source + styles loaded')
     // re-sort layers after style changes
     sortLayers()
     if (hasLiveLayers) {
       functions.e('#layer-loading', e => { e.classList.add('hidden') })
+      // keep the reload frame open on failure so the user can retry
+      if (results.some(result => result === false)) {
+        functions.e('#layer-reload', e => { e.classList.remove('hidden') })
+      }
     }
   })
 }
@@ -203,7 +207,8 @@ export function loadLayerData(id) {
 
 // triggered by layer reload in the UI
 export async function loadAllLayerData() {
-  await Promise.all(layers.map((layer) => { return loadLayerData(layer.id) }))
+  const results = await Promise.all(layers.map((layer) => { return loadLayerData(layer.id) }))
+  return results.some(result => result === false)
 }
 
 export function getFeature(id, type = null) {

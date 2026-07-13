@@ -219,9 +219,11 @@ export default class extends Controller {
     const layerId = event.target.closest('.layer-item').getAttribute('data-layer-id')
     functions.e('#layer-reload', e => { e.classList.add('hidden') })
     functions.e('#layer-loading', e => { e.classList.remove('hidden') })
-    loadLayerData(layerId).then( () => {
+    loadLayerData(layerId).then( (result) => {
       initLayersModal()
       functions.e('#layer-loading', e => { e.classList.add('hidden') })
+      // keep the reload frame open on failure so the user can retry
+      if (result === false) { functions.e('#layer-reload', e => { e.classList.remove('hidden') }) }
     })
   }
 
@@ -229,8 +231,10 @@ export default class extends Controller {
     event.preventDefault()
     functions.e('#layer-reload', e => { e.classList.add('hidden') })
     functions.e('#layer-loading', e => { e.classList.remove('hidden') })
-    await loadAllLayerData()
+    const anyFailed = await loadAllLayerData()
     functions.e('#layer-loading', e => { e.classList.add('hidden') })
+    // keep the reload frame open on failure so the user can retry
+    if (anyFailed) { functions.e('#layer-reload', e => { e.classList.remove('hidden') }) }
   }
 
   toggleLayerList (event) {

@@ -115,6 +115,7 @@ export class OverpassLayer extends Layer {
       // Set empty geojson so layer can still render
       this.layer.geojson = { type: 'FeatureCollection', features: [] }
       this.render()
+      return false
     })
   }
 }
