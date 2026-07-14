@@ -80,10 +80,13 @@ export function initializeSocket () {
                 await initializeLayerStyles()
               }
               map.fire('load', { detail: { message: 'Map re-loaded by map_channel' } })
-              map.fire('online', { detail: { message: 'Reconnected to map_channel' } })
             }).catch(error => {
               console.error('Failed to reload map on reconnect:', error)
-            }).finally(() => { reloadInProgress = false })
+            }).finally(() => {
+              reloadInProgress = false
+              // Fire even on failure — the channel is connected regardless of reload outcome.
+              map.fire('online', { detail: { message: 'Reconnected to map_channel' } })
+            })
           } else {
             // Nothing changed (or a reload is already running): the map already holds the
             // current data, so skip the heavy reload. Still apply a basemap-only change.
@@ -91,6 +94,10 @@ export function initializeSocket () {
             if (propsChanged) { setBackgroundMapLayer() }
             map.fire('online', { detail: { message: 'Reconnected to map_channel' } })
           }
+        }).catch(error => {
+          // Same as above: don't strand the UI offline over a failed reconnect refresh.
+          console.error('Failed to process reconnect, re-enabling anyway:', error)
+          map.fire('online', { detail: { message: 'Reconnected to map_channel' } })
         })
       } else {
         map.fire('online', { detail: { message: 'Connected to map_channel' } })
@@ -100,6 +107,9 @@ export function initializeSocket () {
 
     disconnected () {
       // Called when the subscription has been terminated by the server
+      // The socket is shared, so a drop notifies every subscription, even one just
+      // created here but not yet confirmed by connected(). Ignore that case.
+      if (this !== mapChannel) return
       console.warn('Disconnected from map_channel ' + window.gon.map_id)
       map.fire('offline', { detail: { message: 'Disconnected from map_channel' } })
       channelStatus = 'off'
@@ -107,7 +117,8 @@ export function initializeSocket () {
       // setTimeout(function () { status('Connection to server lost', 'error', 'medium', 60 * 60 * 1000) }, 2000)
     },
     rejected() {
-      // Called when subscription is rejected by the server
+      // Called when subscription is rejected by the server (e.g. invalid map id).
+      // Unlike disconnected(), this is targeted, so no identity check is needed.
       console.warn('Rejected from map_channel ' + window.gon.map_id)
       map.fire('offline', { detail: { message: 'Rejected from map_channel' } })
       channelStatus = 'off'
