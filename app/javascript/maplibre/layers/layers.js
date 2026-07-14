@@ -157,8 +157,10 @@ export async function initializeLayerStyles(id = null) {
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
   // "Loading live layer" only applies to layers that refetch from an external API
-  // (overpass/wikipedia); plain geojson layers shouldn't flash this banner.
-  const hasLiveLayers = initLayers.some(l => l.reloadAfterMapMove() === 'ondemand')
+  // (overpass/wikipedia); plain geojson layers shouldn't flash this banner. Checked by type
+  // rather than reloadAfterMapMove(), which is false for overpass layers with a hardcoded
+  // bbox even though they still fetch live data on initial load.
+  const hasLiveLayers = initLayers.some(l => l.type === 'overpass' || l.type === 'wikipedia')
   if (hasLiveLayers) {
     functions.e('#layer-reload', e => { e.classList.add('hidden') })
     functions.e('#layer-loading', e => { e.classList.remove('hidden') })
