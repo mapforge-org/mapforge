@@ -303,6 +303,16 @@
   mask-image: none;
 }
 
+/* let the per-layer mobile action dropdown expand past the modal, like #query-dropdown above */
+.map-modal:has(.layer-actions-dropdown .dropdown-menu.show) { /* stylelint-disable-line no-descending-specificity */
+  overflow-y: visible;
+}
+
+.inline-scroll:has(.layer-actions-dropdown .dropdown-menu.show) { /* stylelint-disable-line no-descending-specificity */
+  overflow: visible;
+  mask-image: none;
+}
+
 .layer-actions-dropdown .dropdown-menu {
   background-color: var(--color-light-alabaster);
   box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 20%);
