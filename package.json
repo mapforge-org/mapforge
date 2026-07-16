@@ -12,6 +12,6 @@
     "globals": "^17.7.0",
     "stylelint": "^17.14.0",
     "stylelint-config-standard": "^40.0.0",
-    "stylelint-plugin-defensive-css": "^2.9.3"
+    "stylelint-plugin-defensive-css": "^2.9.4"
   }
 }
