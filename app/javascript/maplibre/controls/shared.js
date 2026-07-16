@@ -232,16 +232,16 @@ export function initLayersModal () {
       const visBtnMobile = layerElement.querySelector('button.layer-visibility-mobile')
       visBtn.classList.remove('hidden')
       visBtnMobile.classList.remove('hidden')
-      // Icon represents the ACTION (what will happen when clicked)
+      // Icon represents the STATE (eye = shown, eye-slash = hidden)
       if (layer.show === false) {
-        visBtn.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
-        visBtnMobile.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
+        visBtn.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
+        visBtnMobile.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
         visBtn.setAttribute('title', 'Show layer')
         visBtnMobile.querySelector('.layer-visibility-text').textContent = 'Show layer'
         layerElement.classList.add('layer-dimmed')
       } else {
-        visBtn.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
-        visBtnMobile.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
+        visBtn.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
+        visBtnMobile.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
         visBtn.setAttribute('title', 'Hide layer')
         visBtnMobile.querySelector('.layer-visibility-text').textContent = 'Hide layer'
       }

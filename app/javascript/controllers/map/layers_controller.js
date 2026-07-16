@@ -265,9 +265,9 @@ export default class extends Controller {
     // update UI (both desktop and mobile visibility buttons)
     layerElement.querySelectorAll('button.layer-visibility i, button.layer-visibility-mobile i').forEach(icon => {
       if (layer.show) {
-        icon.classList.replace('bi-eye', 'bi-eye-slash')
-      } else {
         icon.classList.replace('bi-eye-slash', 'bi-eye')
+      } else {
+        icon.classList.replace('bi-eye', 'bi-eye-slash')
       }
     })
     const visBtn = layerElement.querySelector('button.layer-visibility')
