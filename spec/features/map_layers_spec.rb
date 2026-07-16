@@ -197,7 +197,7 @@ describe "Map" do
       find("button.layer-visibility").click
 
       expect(page).to have_css(".layer-item.layer-dimmed")
-      expect(page).to have_css("button.layer-visibility i.bi-eye")
+      expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
       wait_for { map.layers.first.reload.show }.to be false
       expect_layer_visibility(layer_id, false)
     end
@@ -208,10 +208,10 @@ describe "Map" do
       expect_layer_visibility(layer_id, false)
 
       find(".maplibregl-ctrl-layers").click
-      expect(page).to have_css("button.layer-visibility i.bi-eye")
+      expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
       find("button.layer-visibility").click
 
-      expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
+      expect(page).to have_css("button.layer-visibility i.bi-eye")
       expect(page).not_to have_css(".layer-item.layer-dimmed")
       wait_for { map.layers.first.reload.show }.to be true
       expect_layer_visibility(layer_id, true)
@@ -224,7 +224,7 @@ describe "Map" do
 
       # When only visibility toggle is available, it shows inline instead of dropdown
       find(".maplibregl-ctrl-layers").click
-      expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
+      expect(page).to have_css("button.layer-visibility i.bi-eye")
       find("button.layer-visibility").click
 
       expect(page).to have_css(".layer-item.layer-dimmed")
@@ -238,7 +238,7 @@ describe "Map" do
       expect_layer_visibility(layer_id, false)
 
       find(".maplibregl-ctrl-layers").click
-      expect(page).to have_css("button.layer-visibility i.bi-eye")
+      expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
       find("button.layer-visibility").click
 
       expect(page).not_to have_css(".layer-item.layer-dimmed")
@@ -254,9 +254,9 @@ describe "Map" do
       expect_map_loaded
 
       find(".maplibregl-ctrl-layers").click
-      expect(page).to have_css("button.layer-visibility i.bi-eye")
-      find("button.layer-visibility").click
       expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
+      find("button.layer-visibility").click
+      expect(page).to have_css("button.layer-visibility i.bi-eye")
       expect_layer_visibility(map.layers.first.id, true)
       # server state unchanged
       expect(map.layers.first.reload.show).to be false
