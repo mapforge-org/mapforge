@@ -31,6 +31,12 @@ gem "gon"
 gem "ostruct" # needed by 'gon', but not included in Ruby 3.5
 gem "stimulus-rails"
 
+# Translations (see README.md#translations)
+gem "fast_gettext"
+gem "gettext_i18n_rails"
+gem "gettext_i18n_rails_js"
+gem "gettext", require: false # needed at build time by rake gettext:find / gettext:po_to_json
+
 # Databases
 gem "redis", ">= 4.0.1"
 gem "mongoid"

@@ -20,14 +20,12 @@
 
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*
-!/tmp/pids/
 !/tmp/pids/.keep
 
 # Ignore storage (uploaded files in development and any SQLite databases).
 /storage/*
 !/storage/.keep
 /tmp/storage/*
-!/tmp/storage/
 !/tmp/storage/.keep
 
 /public/assets
@@ -38,7 +36,7 @@
 # npm
 /node_modules/
 
-# test artifacts 
+# test artifacts
 capybara-*
 coverage/
 
@@ -49,3 +47,9 @@ public/emojis/test
 
 db/GeoLite2-City.mmdb
 
+# gettext build artifacts (see README.md#translations); app.pot and app.po are committed
+locale/*/app.edit.po
+locale/*/app.po.time_stamp
+locale/*/LC_MESSAGES/
+/app/assets/javascripts/locale/*
+!/app/assets/javascripts/locale/.keep
