@@ -27,7 +27,7 @@ msgid "3D Terrain: View your map with"
 msgstr "3D-Gelände: Betrachte deine Karte mit"
 
 msgid "A free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
-msgstr "Ein kostenloser, quelloffener Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Strecken und Veranstaltungen - passe sie an, arbeite zusammen und teile sie in Echtzeit."
+msgstr "Ein kostenloser, open-source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Tracks und Veranstaltungen - mit einfacher Anpassung, Teamarbeit und Live-Sharing."
 
 msgid "Access control: Keep maps private or share with view-only or edit permissions"
 msgstr "Zugriffskontrolle: Halte Karten privat oder teile sie mit Lese- oder Bearbeitungsrechten"
@@ -45,25 +45,26 @@ msgid "Also available as %{app_link}."
 msgstr "Auch verfügbar als %{app_link}."
 
 msgid "Also available for self-hosting, giving you full control over your data."
-msgstr "Auch für Self-Hosting verfügbar, für die volle Kontrolle über deine Daten."
+msgstr "Auch zum Self-Hosting verfügbar, mit voller Kontrolle über deine Daten."
 
 msgid "Background"
 msgstr "Hintergrund"
 
-msgid "Bicycle May!"
-msgstr "Fahrrad-Mai!"
+msgid "Bicycle Touring!"
+msgstr ""
 
 msgid "Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map."
-msgstr "Durchstöbere %{maps_link}, erfahre mehr auf der %{tutorial_link} oder %{create_link} eine neue Karte."
+msgstr "Verwalte %{maps_link}, lerne mehr auf der %{tutorial_link} oder %{create_link} direkt eine neue Karte."
 
 msgid "Browse the %{gallery_link}, learn how to use it on the %{tutorial_link} or %{login_link} to create your own maps."
 msgstr "Durchstöbere die %{gallery_link}, erfahre auf der %{tutorial_link}, wie du sie nutzt, oder %{login_link}, um eigene Karten zu erstellen."
 
 msgid "Check out how to use Mapforge to"
-msgstr "Erfahre, wie du Mapforge nutzt, um"
+msgstr "Tourenplanung mit Mapforge:"
 
-msgid "Choose your base map:"
-msgstr "Wähle deine Basiskarte:"
+#, fuzzy
+msgid "Choose your base map: Streets, Satellite, Topographic, Biking"
+msgstr "Straßen, Satellit, Topografisch, Fahrrad"
 
 msgid "Collaboration"
 msgstr "Zusammenarbeit"
@@ -72,7 +73,7 @@ msgid "Create map"
 msgstr "Karte erstellen"
 
 msgid "Create your own map"
-msgstr "Erstelle deine eigene Karte"
+msgstr "Gestalte deine eigene Karte"
 
 msgid "Cross platform"
 msgstr "Plattformübergreifend"
@@ -84,13 +85,13 @@ msgid "Delete"
 msgstr "Löschen"
 
 msgid "Draw shapes and style them:"
-msgstr "Zeichne Formen und gestalte sie:"
+msgstr "Zeichne Objekte und gestalte sie:"
 
 msgid "Dynamic layers: Use"
 msgstr "Dynamische Ebenen: Nutze"
 
 msgid "Happy mapping!"
-msgstr "Viel Spaß beim Kartieren!"
+msgstr "Viel Spaß mit deiner Karte!"
 
 msgid "Import"
 msgstr "Importiere"
@@ -142,9 +143,6 @@ msgstr "Auf den Schultern von Giganten"
 
 msgid "Storing only minimal data about you, no sharing of data with ad- or analytics companies."
 msgstr "Speichert nur minimale Daten über dich, keine Weitergabe von Daten an Werbe- oder Analyseunternehmen."
-
-msgid "Streets, Satellite, Topographic, Biking"
-msgstr "Straßen, Satellit, Topografisch, Fahrrad"
 
 msgid "Toggle navigation"
 msgstr "Navigation umschalten"
@@ -210,7 +208,7 @@ msgid "or"
 msgstr "oder"
 
 msgid "plan your next tour"
-msgstr "deine nächste Tour zu planen"
+msgstr "So funktioniert’s"
 
 msgid "realistic"
 msgstr "realistischer"
