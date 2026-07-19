@@ -5,14 +5,14 @@
 
     / News Banner – update the text below to advertise new features or site news.
     / Remove or comment out this block when there is nothing to announce.
-    .banner-explorer{ role: "note", 'aria-label': "Site news" }
+    .banner-explorer{ role: "note", 'aria-label': _("News") }
       .banner-explorer-inner
         .banner-explorer-content
-          %h4 Bicycle May!
+          %h4= _("Bicycle May!")
           .divider
           %p
-            Check out how to use Mapforge to
-            =link_to 'plan your next tour', '/doc/bike_touring'
+            = _("Check out how to use Mapforge to")
+            =link_to _('plan your next tour'), '/doc/bike_touring'
 
     .container
       .row
@@ -23,122 +23,113 @@
               %p
                 = _("A free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time.")
                 - if @user
-                  %p
-                    Browse
-                    = link_to('your maps', my_path, class: 'btn btn-orange call-to-action') + ','
-                    learn more on the
-                    = link_to 'tutorial map', tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
-                    = ' or '
-                    = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
-                    a new map.
+                  - maps_link = link_to(_('your maps'), my_path, class: 'btn btn-orange call-to-action')
+                  - tutorial_link = link_to(_('tutorial map'), tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
+                  - create_link = link_to(_('create'), create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
+                  %p= raw(_("Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map.") % { maps_link: maps_link, tutorial_link: tutorial_link, create_link: create_link })
                 - else
-                  %p
-                    Browse the
-                    = link_to('gallery', maps_path, class: 'btn btn-orange call-to-action') + ','
-                    learn how to use it on the
-                    = link_to 'tutorial map', tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
-                    = ' or '
-                    = link_to 'log in', login_path, class: 'btn btn-orange call-to-action'
-                    to create your own maps.
+                  - gallery_link = link_to(_('gallery'), maps_path, class: 'btn btn-orange call-to-action')
+                  - tutorial_link = link_to(_('tutorial map'), tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
+                  - login_link = link_to(_('log in'), login_path, class: 'btn btn-orange call-to-action')
+                  %p= raw(_("Browse the %{gallery_link}, learn how to use it on the %{tutorial_link} or %{login_link} to create your own maps.") % { gallery_link: gallery_link, tutorial_link: tutorial_link, login_link: login_link })
                 %p
                   %span.d-none.d-sm-inline
-                    Mapforge is ad-free and respects your privacy.
-                    Also available for self-hosting, giving you full control over your data.
+                    = _("Mapforge is ad-free and respects your privacy.")
+                    = _("Also available for self-hosting, giving you full control over your data.")
                   %span.d-sm-none
-                    Also available as
-                    = link_to 'app', doc_path(id: 'app'), class: 'btn btn-orange call-to-action'
-                    = '.'
+                    - app_link = link_to(_('app'), doc_path(id: 'app'), class: 'btn btn-orange call-to-action')
+                    = raw(_("Also available as %{app_link}.") % { app_link: app_link })
             %p.fs-4.mapforge-font
-              %i Happy mapping!
+              %i= _("Happy mapping!")
 
   %section#features.why-us.section
     .row.g-0
       .col-lg-5.img-bg.d-none.d-sm-block
         %img{ src: "/images/frontpage/feature0.png",
-              id: 'swiper-image', alt: "Background", loading: 'lazy' }
+              id: 'swiper-image', alt: _("Background"), loading: 'lazy' }
       .col-lg-5.img-bg.d-sm-none
         %img{ src: "/images/frontpage/feature0_small.png",
-              id: 'swiper-image-mobile', alt: "Background", loading: 'lazy' }
+              id: 'swiper-image-mobile', alt: _("Background"), loading: 'lazy' }
       .col-lg-7.background-dark.slides.position-relative
         .swiper.init-swiper
           .swiper-wrapper
             .swiper-slide
               .item
-                %h2.mb-3.mapforge-font Map tools
-                %h4.mb-3 Customize your map
+                %h2.mb-3.mapforge-font= _("Map tools")
+                %h4.mb-3= _("Customize your map")
                 %ul
                   %li
-                    Choose your base map:
-                    Streets, Satellite, Topographic, Biking
+                    = _("Choose your base map:")
+                    = _("Streets, Satellite, Topographic, Biking")
                     %span.d-none.d-sm-inline
-                      , 3D houses etc.
+                      = _(", 3D houses etc.")
                   %li
-                    Add your own data:
-                    Import
+                    = _("Add your own data:")
+                    = _("Import")
                     %span.d-none.d-sm-inline
-                      your data
-                    from GeoJSON, GPX and KML
+                      = _("your data")
+                    = _("from GeoJSON, GPX and KML")
                   %li
-                    Draw shapes and style them:
-                    Add pictures, customize colors, symbols, labels
+                    = _("Draw shapes and style them:")
+                    = _("Add pictures, customize colors, symbols, labels")
                     %span.d-none.d-sm-inline
-                      , (3D) polygons and more
+                      = _(", (3D) polygons and more")
                   %li
-                    Dynamic layers: Use
+                    = _("Dynamic layers: Use")
                     =link_to 'Overpass', doc_path(id: 'overpass_layers')
-                    to add custom layers from OpenStreetMap data
+                    = _("to add custom layers from OpenStreetMap data")
                   %li
-                    3D Terrain: View your map with
+                    = _("3D Terrain: View your map with")
                     %span.d-none.d-sm-inline
-                      realistic
-                    elevation
+                      = _("realistic")
+                    = _("elevation")
             .swiper-slide
               .item
-                %h2.mb-3.mapforge-font Collaboration
-                %h4.mb-3 Work with others and stream map changes to all connected clients
+                %h2.mb-3.mapforge-font= _("Collaboration")
+                %h4.mb-3= _("Work with others and stream map changes to all connected clients")
                 %ul
-                  %li Live updates: Map changes are synchronized via websockets
-                  %li Login: Have your maps assigned to your account
-                  %li Access control: Keep maps private or share with view-only or edit permissions
+                  %li= _("Live updates: Map changes are synchronized via websockets")
+                  %li= _("Login: Have your maps assigned to your account")
+                  %li= _("Access control: Keep maps private or share with view-only or edit permissions")
             .swiper-slide
               .item
-                %h2.mb-3.mapforge-font Cross platform
-                %h4.mb-3 Use Mapforge with different clients + apps
+                %h2.mb-3.mapforge-font= _("Cross platform")
+                %h4.mb-3= _("Use Mapforge with different clients + apps")
                 %ul
-                  %li Responsive Design: Works well both on desktop and mobile
+                  %li= _("Responsive Design: Works well both on desktop and mobile")
                   %li
-                    Run from your home screen as
-                    = link_to 'app on your phone', doc_path(id: 'app')
+                    = _("Run from your home screen as")
+                    = link_to _('app on your phone'), doc_path(id: 'app')
                   %li
-                    Map your track: Use
+                    = _("Map your track: Use")
                     = link_to "µlogger", "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md"
-                    to visualize and share your tracks live
+                    = _("to visualize and share your tracks live")
             .swiper-slide
               .item
-                %h2.mb-3.mapforge-font Open Source
-                %h4.mb-3 Standing on the shoulders of giants
+                %h2.mb-3.mapforge-font= _("Open Source")
+                %h4.mb-3= _("Standing on the shoulders of giants")
                 %ul
                   %li
-                    Used open source projects:
+                    = _("Used open source projects:")
                     = link_to "Ruby on Rails", "https://rubyonrails.org/"
-                    for the backend,
+                    = _("for the backend,")
                     = link_to "MapLibre GL JS", "https://github.com/maplibre/maplibre-gl-js"
-                    and
+                    = _("and")
                     = link_to "OpenStreetMap", "https://www.openstreetmap.org"
-                    for the frontend,
+                    = _("for the frontend,")
                     = link_to("mapbox-gl-draw", "https://github.com/mapbox/mapbox-gl-draw") + ','
                     = link_to("Turf.js", "https://turfjs.org/") + ','
                     = link_to "Openrouteservice", "https://openrouteservice.org/"
-                    as helping libraries.
+                    = _("as helping libraries.")
                   %li
-                    Storing only minimal data about you, no sharing of data with ad- or analytics companies.
+                    = _("Storing only minimal data about you, no sharing of data with ad- or analytics companies.")
                   %li
-                    Self-Hosted Solution:
-                    You can use Mapforge either on
+                    = _("Self-Hosted Solution:")
+                    = _("You can use Mapforge either on")
                     = link_to("mapforge.org", "https://mapforge.org") + ','
-                    or
-                    = link_to "deploy it", "https://github.com/mapforge-org/mapforge/blob/main/README.md"
-                    in your own infrastructure
+                    = _("or")
+                    = link_to _('deploy it'), "https://github.com/mapforge-org/mapforge/blob/main/README.md"
+                    = _("in your own infrastructure")
           .swiper-pagination
         .swiper-button-prev
         .swiper-button-next
