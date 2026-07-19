@@ -22,3 +22,6 @@ msgstr "Ein kostenloser, quelloffener Karteneditor auf Basis von OpenStreetMap. 
 
 msgid "Create your own map"
 msgstr "Erstelle deine eigene Karte"
+
+msgid "Delete"
+msgstr "Löschen"

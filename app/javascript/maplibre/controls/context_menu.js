@@ -98,7 +98,7 @@ export function addDeleteMenuItem(featureId) {
 
     const deleteButton = document.createElement('div')
     deleteButton.classList.add('context-menu-item')
-    deleteButton.innerText = 'Delete'
+    deleteButton.innerText = window.__('Delete')
     deleteButton.dataset.action = 'click->map--context-menu#deleteFeature'
     deleteButton.dataset.featureId = featureId
     el.appendChild(deleteButton)

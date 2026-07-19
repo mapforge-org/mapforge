@@ -25,3 +25,7 @@ msgstr ""
 #: ../app/views/frontpage/index.haml:20
 msgid "Create your own map"
 msgstr ""
+
+#: ../app/javascript/maplibre/controls/context_menu.js:101
+msgid "Delete"
+msgstr ""
