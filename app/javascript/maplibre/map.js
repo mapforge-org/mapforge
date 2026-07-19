@@ -9,7 +9,7 @@ import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, a
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
 import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
 import { initLevelFromURL } from 'maplibre/controls/levels';
-import { initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
+import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls } from 'maplibre/controls/view';
 import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
@@ -164,11 +164,15 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('touchend', (e) => { updateCursorPosition(e) })
   map.on('drag', () => {
     mapInteracted = true
+    hideModals()
     if (layers && layers.filter(l => l.reloadAfterMapMove() === 'ondemand' && l.show !== false).length) {
       dom.animateElement('#layer-reload', 'fade-in')
     }
   })
-  map.on('zoom', (_e) => { limitZoom() })
+  map.on('zoom', (e) => {
+    limitZoom()
+    if (e.originalEvent) { hideModals() } // ignore programmatic zoom (e.g. initial zoom-in effect)
+  })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
   map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
 

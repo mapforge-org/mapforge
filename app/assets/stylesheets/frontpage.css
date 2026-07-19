@@ -277,7 +277,7 @@ section,
   font-weight: 500;
 }
 
-@media (width <= 860px) {
+@media (width <= 992px) {
   .banner-explorer {
     display: none;
   }

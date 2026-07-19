@@ -361,6 +361,10 @@ export function initLayersModal () {
   })
 }
 
+export function hideModals () {
+  functions.e('.modal-center', e => { e.classList.remove('show') })
+}
+
 export function resetControls () {
   if (draw) { unselect() }
   resetHighlightedFeature()
@@ -372,8 +376,7 @@ export function resetControls () {
   // reset line submenu
   functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
 
-  // reset active modals
-  functions.e('.modal-center', e => { e.classList.remove('show') })
+  hideModals()
   // reset context menu
   hideContextMenu()
   // re-initialize tooltips for map controls

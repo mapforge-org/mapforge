@@ -190,9 +190,9 @@ app/javascript/maplibre/basemaps.js
   ```bash
   bin/rake animation:path[<map_id>,<line_id>,<point_id>]
   ```
-- Update .pot/.po files with new translatable strings from the code: `gettext:find`
+- Update .pot/.po files with new translatable strings from the code: `bin/rake gettext:find`
 
-- Export translation for use in js: `gettext:po_to_json` (automatically called in container image build)
+- Export translation for use in js: `bin/rake gettext:po_to_json` (automatically called in container image build)
 
 
 ### Translations
