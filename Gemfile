@@ -36,6 +36,7 @@ gem "fast_gettext"
 gem "gettext_i18n_rails"
 gem "gettext_i18n_rails_js"
 gem "gettext", require: false # needed at build time by rake gettext:find / gettext:po_to_json
+gem "rails-i18n" # core Rails i18n strings (date/time, number formatting, etc.) for non-English locales
 
 # Databases
 gem "redis", ">= 4.0.1"
