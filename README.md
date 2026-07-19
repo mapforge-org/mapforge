@@ -190,6 +190,28 @@ app/javascript/maplibre/basemaps.js
   ```bash
   bin/rake animation:path[<map_id>,<line_id>,<point_id>]
   ```
+- Update .pot/.po files with new translatable strings from the code: `gettext:find`
+
+- Export translation for use in js: `gettext:po_to_json` (automatically called in container image build)
+
+
+### Translations
+
+Mapforge uses [gettext](https://github.com/grosser/gettext_i18n_rails) (via `fast_gettext`, `gettext_i18n_rails` and `gettext_i18n_rails_js`) for translations, locale files are in `locale/<lang>/app.po`.
+
+Mark a string as translatable:
+
+```ruby
+# Ruby / Haml
+_("Delete this feature?")
+n_("%{count} feature", "%{count} features", count) % { count: count }
+```
+
+```js
+// JavaScript
+window.__('Delete this feature?')
+window.n__('%d feature', '%d features', count)
+```
 
 ### Tests
 

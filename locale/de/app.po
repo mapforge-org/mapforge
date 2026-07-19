@@ -1,0 +1,24 @@
+# German translations for app package.
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the app package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: app 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-07-18 23:12+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=; plural=;\n"
+"\n"
+
+msgid "A free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
+msgstr "Ein kostenloser, quelloffener Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Strecken und Veranstaltungen - passe sie an, arbeite zusammen und teile sie in Echtzeit."
+
+msgid "Create your own map"
+msgstr "Erstelle deine eigene Karte"

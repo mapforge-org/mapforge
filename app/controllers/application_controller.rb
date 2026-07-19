@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   before_action :set_user
   before_action :disable_session_cookies
+  before_action :set_gettext_locale
 
   # Rails Bug: Actions that define their own rate limit
   # (see ImagesController) must be excluded from the global one.

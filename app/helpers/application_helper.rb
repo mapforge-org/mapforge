@@ -1,4 +1,17 @@
 module ApplicationHelper
+  # Loads the compiled JS translations for the current locale
+  # plus the gettext.js runtime. The locale file is
+  # skipped when it doesn't exist yet (e.g. "en", which has no locale/en/app.po).
+  def gettext_javascript_tags
+    tags = []
+    locale_asset = "locale/#{I18n.locale}/app"
+    if File.exist?(Rails.root.join("app/assets/javascripts/#{locale_asset}.js"))
+      tags << javascript_include_tag(locale_asset, "data-turbo-track": "reload")
+    end
+    tags << javascript_include_tag("gettext/all", "data-turbo-track": "reload")
+    safe_join(tags, "\n")
+  end
+
   def owned_maps_count
     @owned_maps_count ||= @user&.owned_maps&.count || 0
   end
