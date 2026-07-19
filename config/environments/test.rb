@@ -49,4 +49,9 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   config.assets.quiet = true
+
+  # The locale JS files (app/assets/javascripts/locale/*/app.js) are generated at
+  # runtime by translations_spec.rb, not present at boot. Since cache_classes is on,
+  # Rails freezes its precompiled-assets list on first check, before that file exists.
+  config.assets.check_precompiled_asset = false
 end

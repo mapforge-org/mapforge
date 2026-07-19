@@ -89,3 +89,12 @@ Capybara.save_path = Rails.root.join("tmp/capybara_downloads")
 
 # Start Puma silently
 Capybara.server = :puma, { Silent: true }
+
+# Chrome derives Accept-Language/navigator.language from the OS locale (LANG/LC_ALL),
+# not from --lang, so tests would otherwise depend on the machine's locale.
+# `browser.reset` between examples rebinds the page, so this must be reapplied every example.
+RSpec.configure do |config|
+  config.before(:each, type: :feature) do
+    page.driver.headers = { "Accept-Language" => "en-US,en;q=0.9" }
+  end
+end
