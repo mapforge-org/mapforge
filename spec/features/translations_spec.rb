@@ -8,17 +8,28 @@ describe "Translations" do
     # Drop the generated JS locale dirs, then regenerate them from scratch.
     FileUtils.rm_rf(Rails.root.glob("app/assets/javascripts/locale/*/"))
     silence_stdout { GettextI18nRailsJs::Task.po_to_json }
-
-    visit root_path(locale: "de")
   end
 
-  it "translates Haml strings" do
-    expect(page).to have_text("Erstelle deine eigene Karte")
+  context "with valid locale" do
+    before { visit root_path(locale: "de") }
+
+    it "translates Haml strings" do
+      expect(page).to have_text("Gestalte deine eigene Karte")
+    end
+
+    it "translates JavaScript strings" do
+      expect(page.evaluate_script("document.documentElement.lang")).to eq("de")
+      expect(page.evaluate_script("window.__('Delete')")).to eq("Löschen")
+    end
   end
 
-  it "translates JavaScript strings" do
-    expect(page.evaluate_script("document.documentElement.lang")).to eq("de")
-    expect(page.evaluate_script("window.__('Delete')")).to eq("Löschen")
+  context "with invalid locale" do
+    before { visit root_path(locale: "xx") }
+
+    it "falls back to the default locale" do
+      expect(page.evaluate_script("document.documentElement.lang")).to eq("en")
+      expect(page).to have_text("Create your own map")
+    end
   end
 
   def silence_stdout
