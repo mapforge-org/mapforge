@@ -46,6 +46,27 @@ class ApplicationController < ActionController::Base
     request.session_options[:skip] = true unless @user
   end
 
+  # Overrides gettext_i18n_rails' version. Anonymous users carry locale via
+  # the URL param (see default_url_options) instead of a session cookie.
+  # Logged-in users get it persisted to their session so links don't need it.
+  def set_gettext_locale
+    natural_locale = (session[:locale] if @user) || request.env["HTTP_ACCEPT_LANGUAGE"] || I18n.default_locale
+    requested_locale = params[:locale] || natural_locale
+
+    implicit_locale = FastGettext.set_locale(natural_locale)
+    locale = FastGettext.set_locale(requested_locale)
+
+    # Only append ?locale= for anonymous users when it actually changes what
+    # they'd get without it (e.g. an explicit switch away from Accept-Language).
+    @append_locale_param = !@user && locale != implicit_locale
+    session[:locale] = locale if @user
+    I18n.locale = locale
+  end
+
+  def default_url_options
+    @append_locale_param ? { locale: I18n.locale } : {}
+  end
+
   def static_pages_data
     [
       {
