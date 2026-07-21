@@ -28,14 +28,14 @@
 }
 
 .footer .footer-links ul i {
-  padding-right: 2px;
+  padding-right: 6px;
   line-height: 0;
 }
 
 .footer .footer-links ul li {
   padding: 5px 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .footer .footer-links ul li:first-child {
@@ -44,8 +44,9 @@
 
 .footer .footer-links ul a {
   color: var(--text-color);
-  display: inline-block;
-  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  line-height: 1.1;
   text-decoration-line: underline;
   text-decoration-style: dotted;
   text-decoration-color: var(--color-dark-charcoal);
