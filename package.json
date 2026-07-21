@@ -10,7 +10,7 @@
     "@eslint/js": "^10.0.0",
     "eslint": "^10.7.0",
     "globals": "^17.7.0",
-    "stylelint": "^17.14.0",
+    "stylelint": "^17.14.1",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-plugin-defensive-css": "^2.9.4"
   }
