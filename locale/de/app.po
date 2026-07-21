@@ -1,21 +1,27 @@
 # German translations for app package.
 # Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the app package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Tom <mapforge@mapforge.org>, 2026.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: 2026-07-18 23:12+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Tom <mapforge@mapforge.org>\n"
 "Language-Team: German\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=; plural=;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "\n"
+
+msgid "%{count} features"
+msgstr "%{count} Objekte"
+
+msgid "%{count} views"
+msgstr "%{count} Aufrufe"
 
 msgid "3D Terrain: View your map with elevation"
 msgstr "3D-Gelände: Betrachte deine Karte mit Höhendaten"
@@ -25,6 +31,9 @@ msgstr "3D-Gelände: Betrachte deine Karte mit realistischen Höhendaten"
 
 msgid "A free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
 msgstr "Ein kostenloser, open-source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Tracks und Veranstaltungen - passe sie an, arbeite gemeinsam daran und teile sie in Echtzeit."
+
+msgid "About"
+msgstr "Über"
 
 msgid "Access control: Keep maps private or share with view-only or edit permissions"
 msgstr "Zugriffskontrolle: Speichere Karten privat oder teile sie mit Lese- oder Bearbeitungsrechten"
@@ -47,6 +56,9 @@ msgstr "Auch verfügbar als %{app_link}."
 msgid "Also available for self-hosting, giving you full control over your data."
 msgstr "Auch zum Self-Hosting verfügbar, mit voller Kontrolle über deine Daten."
 
+msgid "Ascending"
+msgstr "Aufsteigend"
+
 msgid "Background"
 msgstr "Hintergrund"
 
@@ -56,8 +68,17 @@ msgstr "Fahrradtouren!"
 msgid "Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map."
 msgstr "Verwalte %{maps_link}, lerne mehr auf der %{tutorial_link} oder %{create_link} direkt eine neue Karte."
 
+msgid "Browse maps by user %{email}"
+msgstr "Durchstöbere Karten von Benutzer %{email}"
+
 msgid "Browse the %{gallery_link}, learn how to use it on the %{tutorial_link} or %{login_link} to create your own maps."
 msgstr "Durchstöbere die %{gallery_link}, erfahre auf der %{tutorial_link} wie du sie nutzt, oder %{login_link} um eigene Karten zu erstellen."
+
+msgid "Buy me a coffee"
+msgstr "Spende mir einen Kaffee"
+
+msgid "Changelog"
+msgstr "Changelog"
 
 msgid "Choose your base map: Streets, Satellite, Topographic, Biking"
 msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad"
@@ -65,8 +86,14 @@ msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad"
 msgid "Choose your base map: Streets, Satellite, Topographic, Biking, 3D houses etc."
 msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad, 3D-Gebäude usw."
 
+msgid "Clear filter"
+msgstr "Filter entfernen"
+
 msgid "Collaboration"
 msgstr "Zusammenarbeit"
+
+msgid "Copy map"
+msgstr "Karte kopieren"
 
 msgid "Create map"
 msgstr "Karte erstellen"
@@ -86,6 +113,24 @@ msgstr "Passe deine Karte an"
 msgid "Delete"
 msgstr "Löschen"
 
+msgid "Delete map"
+msgstr "Karte löschen"
+
+msgid "Descending"
+msgstr "Absteigend"
+
+msgid "Discuss"
+msgstr "Diskutieren"
+
+msgid "Do you really want to delete this map?"
+msgstr "Möchtest du diese Karte wirklich löschen?"
+
+msgid "Do you want to copy this map?"
+msgstr "Möchtest du diese Karte kopieren?"
+
+msgid "Docs"
+msgstr "Doku"
+
 msgid "Draw shapes and style them:"
 msgstr "Zeichne Objekte und gestalte sie:"
 
@@ -101,6 +146,9 @@ msgstr "Importiere GeoJSON, GPX und KML"
 msgid "Import your data from GeoJSON, GPX and KML"
 msgstr "Importiere deine Daten aus GeoJSON, GPX und KML"
 
+msgid "In this gallery, your personal maps will be shown."
+msgstr "In dieser Galerie werden deine persönlichen Karten angezeigt."
+
 msgid "Live updates: Map changes are synchronized via websockets"
 msgstr "Live-Updates: Kartenänderungen werden über WebSockets synchronisiert"
 
@@ -112,6 +160,9 @@ msgstr "Login: Ordne deine Karten deinem Konto zu"
 
 msgid "Logout"
 msgstr "Abmelden"
+
+msgid "Map '%{name}'"
+msgstr "Karte '%{name}'"
 
 msgid "Map Gallery"
 msgstr "Kartengalerie"
@@ -125,14 +176,38 @@ msgstr "Erfasse deinen Track: Nutze %{ulogger_link} zum Visualisieren und Teilen
 msgid "Mapforge is ad-free and respects your privacy."
 msgstr "Mapforge ist werbefrei und respektiert deine Privatsphäre."
 
+msgid "Most viewed"
+msgstr "Meistgesehen"
+
+msgid "Newest"
+msgstr "Neueste"
+
 msgid "News"
 msgstr "Neuigkeiten"
 
 msgid "Open Source"
 msgstr "Open Source"
 
+msgid "Open map '%{name}'"
+msgstr "Karte '%{name}' öffnen"
+
+msgid "Privacy Policy"
+msgstr "Datenschutzerklärung"
+
 msgid "Profile"
 msgstr "Profil"
+
+msgid "Project"
+msgstr "Projekt"
+
+msgid "Recently updated"
+msgstr "Kürzlich aktualisiert"
+
+msgid "Recently viewed Maps"
+msgstr "Kürzlich angesehene Karten"
+
+msgid "Report issue"
+msgstr "Fehler melden"
 
 msgid "Responsive Design: Works well both on desktop and mobile"
 msgstr "Responsives Design: Funktioniert gut auf Desktop und Mobilgeräten"
@@ -140,14 +215,28 @@ msgstr "Responsives Design: Funktioniert gut auf Desktop und Mobilgeräten"
 msgid "Run from your home screen as %{app_link}"
 msgstr "Starte vom Homescreen als %{app_link}"
 
+msgid "Search maps"
+msgstr "Karten suchen"
+
 msgid "See how it works"
 msgstr "So funktioniert's"
 
 msgid "Self-Hosted Solution: You can use Mapforge either on %{mapforge_link}, or %{deploy_link} it in your own infrastructure"
 msgstr "Selbst gehostete Lösung: Du kannst Mapforge entweder unter %{mapforge_link} nutzen, oder %{deploy_link} es in deiner eigenen Infrastruktur"
 
+msgid "Showing %{count} map"
+msgid_plural "Showing %{count} maps"
+msgstr[0] "Zeige %{count} Karte"
+msgstr[1] "Zeige %{count} Karten"
+
 msgid "Storing only minimal data about you, no sharing of data with ad- or analytics companies."
 msgstr "Speichert nur minimale Daten über dich, keine Weitergabe von Daten an Werbe- oder Analyseunternehmen."
+
+msgid "Terms of Service"
+msgstr "Nutzungsbedingungen"
+
+msgid "This map is private and not linked from the public listing."
+msgstr "Diese Karte ist privat und nicht in der öffentlichen Liste verlinkt."
 
 msgid "Toggle navigation"
 msgstr "Navigation umschalten"
@@ -167,6 +256,12 @@ msgstr "Verwendete Open-Source-Projekte: %{rails_link} für das Backend, %{mapli
 msgid "Work with others and stream map changes to all connected clients"
 msgstr "Arbeite mit anderen zusammen und übertrage Kartenänderungen live an alle verbundenen Geräte"
 
+msgid "You can try out the %{tutorial_link} to learn how Mapforge works, or you can %{create_link} your first map right away."
+msgstr "Du kannst die %{tutorial_link} ausprobieren, um zu sehen, wie Mapforge funktioniert, oder %{create_link} direkt deine erste Karte."
+
+msgid "Your Maps"
+msgstr "Deine Karten"
+
 msgid "Your maps (%{count})"
 msgstr "Deine Karten (%{count})"
 
@@ -185,8 +280,14 @@ msgstr "installiere"
 msgid "gallery"
 msgstr "Galerie"
 
+msgid "last change %{time} ago"
+msgstr "letzte Änderung vor %{time}"
+
 msgid "log in"
 msgstr "melde dich an"
+
+msgid "public id:"
+msgstr "öffentliche ID:"
 
 msgid "tutorial map"
 msgstr "Tutorial-Karte"

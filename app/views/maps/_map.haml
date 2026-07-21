@@ -7,41 +7,41 @@
 .grid-item.map-preview.background-bright{class: "map_#{map.public_id}"}
 
   - unless map.view_permission == 'listed'
-    .map-auth{title: 'This map is private and not linked from the public listing.'}
+    .map-auth{title: _('This map is private and not linked from the public listing.')}
       %i.bi.bi-lock-fill
 
   - if avatar
     .map-avatars
       - map.owners.each do |owner|
         - if owner.image
-          = link_to = link_to url_for(params: { search: "user:#{owner.id}"}), 'aria-label': "Browse maps by user #{owner.email}" do
+          = link_to = link_to url_for(params: { search: "user:#{owner.id}"}), 'aria-label': _("Browse maps by user %{email}") % { email: owner.email } do
             = image_tag avatar_url(owner.image, 40), class: 'map-avatar', loading: 'lazy', alt: "", referrerpolicy: 'no-referrer'
 
   - if clone
-    = link_to copy_map_path(id: map.public_id), data: { turbo_method: :post, turbo_confirm: "Do you want to copy this map?" }, title: 'Copy map', class: 'map-copy' do
+    = link_to copy_map_path(id: map.public_id), data: { turbo_method: :post, turbo_confirm: _("Do you want to copy this map?") }, title: _('Copy map'), class: 'map-copy' do
       %i.bi.bi-copy
 
   - if delete
-    = link_to destroy_map_path(id: map.private_id), data: { turbo_method: :delete, turbo_confirm: "Do you really want to delete this map?" }, title: 'Delete map', class: 'map-delete' do
+    = link_to destroy_map_path(id: map.private_id), data: { turbo_method: :delete, turbo_confirm: _("Do you really want to delete this map?") }, title: _('Delete map'), class: 'map-delete' do
       %i.bi.bi-trash
 
   .preview-image-link
-    = link_to(map_path(id: (rw ? map.private_id : map.public_id), name: map.name), 'aria-label': "Open map '#{map.name}'") do
+    = link_to(map_path(id: (rw ? map.private_id : map.public_id), name: map.name), 'aria-label': _("Open map '%{name}'") % { name: map.name }) do
       - if map.screenshot
         %img{src: map.screenshot,
             class: 'preview-image',
             loading: 'lazy',
-            alt: "Map '#{map.name}'"}
+            alt: _("Map '%{name}'") % { name: map.name }}
       - else
-        = image_tag "preview.png", class: 'preview-image', loading: 'lazy', alt: "Map '#{map.name}'"
+        = image_tag "preview.png", class: 'preview-image', loading: 'lazy', alt: _("Map '%{name}'") % { name: map.name }
     .map-preview-title.mapforge-font.text-glow= map.name
 
   - if last_change
-    %i= "last change #{distance_of_time_in_words(DateTime.now, map.updated_at)} ago"
+    %i= _("last change %{time} ago") % { time: distance_of_time_in_words(DateTime.now, map.updated_at) }
     %br
-    = "#{ map.view_count } views"
+    = _("%{count} views") % { count: map.view_count }
     %br
-    = "#{ map.features_count } features"
+    = _("%{count} features") % { count: map.features_count }
     %br
-    public id:
+    = _("public id:")
     = link_to map.public_id, map.public_map_path

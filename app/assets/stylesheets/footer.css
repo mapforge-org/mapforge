@@ -64,7 +64,7 @@
 /* improve alignment on small screen */
 @media (width <= 574px) {
   .footer-links-left {
-    padding-left: 20vw;
+    padding-left: 17vw;
   }
 
   .footer-links-about {
@@ -72,7 +72,7 @@
   }
 }
 
-@media (width <= 400px) {
+@media (width <= 380px) {
   .footer-links-left {
     padding-left: 10vw;
   }

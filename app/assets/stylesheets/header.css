@@ -152,3 +152,9 @@ img.profile-image {
     margin-top: 2.8rem;
   }
 }
+
+@media (width < 380px) {
+  .login-link .bi-person-circle {
+    display: none;
+  }
+}

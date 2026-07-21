@@ -7,7 +7,7 @@
 
 #maps-list.maps-list
 
-  %span#map-list-count= "Showing #{pluralize(maps.size, 'map')}"
+  %span#map-list-count= n_("Showing %{count} map", "Showing %{count} maps", maps.size) % { count: maps.size }
 
   .grid-container.flex-center{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
     - maps.each do |map|

@@ -3,14 +3,14 @@
 #maps
 
   - if @recent_maps.present?
-    %h1.mapforge-font Recently viewed Maps
+    %h1.mapforge-font= _("Recently viewed Maps")
     .maps-list.recently-viewed-maps.mb-4
       - @recent_maps.each do |recent_map, rw|
         = render recent_map, rw: rw
 
 
   %h1.mapforge-font
-    Your Maps
+    = _("Your Maps")
 
   = render "list_filter"
   = render "list" , maps: @my_maps, rw: true, delete: true, clone: false, last_change: false
@@ -19,10 +19,8 @@
   - if @my_maps.empty?
     .container.pt-4.pb-2.mt-4.mb-4.empty-map-list.background-bright
       %p.text-center
-        In this gallery, your personal maps will be shown.
+        = _("In this gallery, your personal maps will be shown.")
         %br
-        You can try out the
-        = link_to 'tutorial map', tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
-        to learn how Mapforge works, or you can
-        = link_to 'create', create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post }
-        your first map right away.
+        - tutorial_link = link_to(_('tutorial map'), tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
+        - create_link = link_to(_('create'), create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
+        = raw(_("You can try out the %{tutorial_link} to learn how Mapforge works, or you can %{create_link} your first map right away.") % { tutorial_link: tutorial_link, create_link: create_link })

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-21 22:36+0200\n"
-"PO-Revision-Date: 2026-07-21 22:36+0200\n"
+"POT-Creation-Date: 2026-07-21 23:41+0200\n"
+"PO-Revision-Date: 2026-07-21 23:41+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: ../app/views/maps/_map.haml:44
+msgid "%{count} features"
+msgstr ""
+
+#: ../app/views/maps/_map.haml:42
+msgid "%{count} views"
+msgstr ""
 
 #: ../app/views/frontpage/index.haml:86
 msgid "3D Terrain: View your map with elevation"
@@ -28,6 +36,10 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:26
 msgid "A free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
+msgstr ""
+
+#: ../app/views/shared/_footer.html.haml:44
+msgid "About"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:94
@@ -58,6 +70,10 @@ msgstr ""
 msgid "Also available for self-hosting, giving you full control over your data."
 msgstr ""
 
+#: ../app/views/maps/_list_filter.haml:50
+msgid "Ascending"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:50 ../app/views/frontpage/index.haml:53
 msgid "Background"
 msgstr ""
@@ -70,8 +86,20 @@ msgstr ""
 msgid "Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map."
 msgstr ""
 
+#: ../app/views/maps/_map.haml:17
+msgid "Browse maps by user %{email}"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:35
 msgid "Browse the %{gallery_link}, learn how to use it on the %{tutorial_link} or %{login_link} to create your own maps."
+msgstr ""
+
+#: ../app/views/shared/_footer.html.haml:41
+msgid "Buy me a coffee"
+msgstr ""
+
+#: ../app/views/shared/_footer.html.haml:18
+msgid "Changelog"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:66
@@ -82,8 +110,16 @@ msgstr ""
 msgid "Choose your base map: Streets, Satellite, Topographic, Biking, 3D houses etc."
 msgstr ""
 
+#: ../app/views/maps/_search_filters.haml:7 ../app/views/maps/_search_filters.haml:14
+msgid "Clear filter"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:89
 msgid "Collaboration"
+msgstr ""
+
+#: ../app/views/maps/_map.haml:21
+msgid "Copy map"
 msgstr ""
 
 #: ../app/views/shared/_header.html.haml:25 ../app/views/shared/_header.html.haml:58
@@ -110,6 +146,30 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: ../app/views/maps/_map.haml:25
+msgid "Delete map"
+msgstr ""
+
+#: ../app/views/maps/_list_filter.haml:43
+msgid "Descending"
+msgstr ""
+
+#: ../app/views/shared/_footer.html.haml:33
+msgid "Discuss"
+msgstr ""
+
+#: ../app/views/maps/_map.haml:25
+msgid "Do you really want to delete this map?"
+msgstr ""
+
+#: ../app/views/maps/_map.haml:21
+msgid "Do you want to copy this map?"
+msgstr ""
+
+#: ../app/views/shared/_footer.html.haml:9
+msgid "Docs"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:74
 msgid "Draw shapes and style them:"
 msgstr ""
@@ -130,6 +190,10 @@ msgstr ""
 msgid "Import your data from GeoJSON, GPX and KML"
 msgstr ""
 
+#: ../app/views/maps/my.haml:22
+msgid "In this gallery, your personal maps will be shown."
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:92
 msgid "Live updates: Map changes are synchronized via websockets"
 msgstr ""
@@ -146,7 +210,11 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: ../app/views/shared/_header.html.haml:17 ../app/views/shared/_header.html.haml:34
+#: ../app/views/maps/_map.haml:34 ../app/views/maps/_map.haml:36
+msgid "Map '%{name}'"
+msgstr ""
+
+#: ../app/views/maps/index.html.haml:6 ../app/views/shared/_header.html.haml:17 ../app/views/shared/_header.html.haml:34
 msgid "Map Gallery"
 msgstr ""
 
@@ -162,6 +230,14 @@ msgstr ""
 msgid "Mapforge is ad-free and respects your privacy."
 msgstr ""
 
+#: ../app/views/maps/_list_filter.haml:1
+msgid "Most viewed"
+msgstr ""
+
+#: ../app/views/maps/_list_filter.haml:1
+msgid "Newest"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:8
 msgid "News"
 msgstr ""
@@ -170,8 +246,32 @@ msgstr ""
 msgid "Open Source"
 msgstr ""
 
+#: ../app/views/maps/_map.haml:29
+msgid "Open map '%{name}'"
+msgstr ""
+
+#: ../app/views/shared/_footer.html.haml:58
+msgid "Privacy Policy"
+msgstr ""
+
 #: ../app/views/shared/_header.html.haml:73 ../app/views/shared/_header.html.haml:80
 msgid "Profile"
+msgstr ""
+
+#: ../app/views/shared/_footer.html.haml:24
+msgid "Project"
+msgstr ""
+
+#: ../app/views/maps/_list_filter.haml:1
+msgid "Recently updated"
+msgstr ""
+
+#: ../app/views/maps/my.haml:6
+msgid "Recently viewed Maps"
+msgstr ""
+
+#: ../app/views/shared/_footer.html.haml:37
+msgid "Report issue"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:100
@@ -182,6 +282,10 @@ msgstr ""
 msgid "Run from your home screen as %{app_link}"
 msgstr ""
 
+#: ../app/views/maps/_list_filter.haml:13
+msgid "Search maps"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:15
 msgid "See how it works"
 msgstr ""
@@ -190,8 +294,22 @@ msgstr ""
 msgid "Self-Hosted Solution: You can use Mapforge either on %{mapforge_link}, or %{deploy_link} it in your own infrastructure"
 msgstr ""
 
+#: ../app/views/maps/_list.haml:10
+msgid "Showing %{count} map"
+msgid_plural "Showing %{count} maps"
+msgstr[0] ""
+msgstr[1] ""
+
 #: ../app/views/frontpage/index.haml:121
 msgid "Storing only minimal data about you, no sharing of data with ad- or analytics companies."
+msgstr ""
+
+#: ../app/views/shared/_footer.html.haml:54
+msgid "Terms of Service"
+msgstr ""
+
+#: ../app/views/maps/_map.haml:10
+msgid "This map is private and not linked from the public listing."
 msgstr ""
 
 #: ../app/views/shared/_header.html.haml:8 ../app/views/shared/_header.html.haml:71
@@ -202,7 +320,7 @@ msgstr ""
 msgid "Tour planning with Mapforge:"
 msgstr ""
 
-#: ../app/views/shared/_header.html.haml:20 ../app/views/shared/_header.html.haml:39
+#: ../app/views/shared/_footer.html.haml:14 ../app/views/shared/_header.html.haml:20 ../app/views/shared/_header.html.haml:39
 msgid "Tutorials"
 msgstr ""
 
@@ -218,6 +336,14 @@ msgstr ""
 msgid "Work with others and stream map changes to all connected clients"
 msgstr ""
 
+#: ../app/views/maps/my.haml:26
+msgid "You can try out the %{tutorial_link} to learn how Mapforge works, or you can %{create_link} your first map right away."
+msgstr ""
+
+#: ../app/views/maps/my.haml:13
+msgid "Your Maps"
+msgstr ""
+
 #: ../app/views/shared/_header.html.haml:45 ../app/views/shared/_header.html.haml:92
 msgid "Your maps (%{count})"
 msgstr ""
@@ -230,7 +356,7 @@ msgstr ""
 msgid "app on your phone"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:30
+#: ../app/views/frontpage/index.haml:30 ../app/views/maps/my.haml:25
 msgid "create"
 msgstr ""
 
@@ -242,11 +368,19 @@ msgstr ""
 msgid "gallery"
 msgstr ""
 
+#: ../app/views/maps/_map.haml:40
+msgid "last change %{time} ago"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:34
 msgid "log in"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:27
+#: ../app/views/maps/_map.haml:46
+msgid "public id:"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:27 ../app/views/maps/my.haml:24
 msgid "tutorial map"
 msgstr ""
 

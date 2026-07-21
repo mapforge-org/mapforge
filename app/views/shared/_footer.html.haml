@@ -6,42 +6,42 @@
       .col-lg-5.col-0.footer-about.d-none.d-lg-block
 
       .col-lg-2.col-sm-4.col-6.footer-links.footer-links-left.mb-sm-2
-        %h3.mapforge-font.white-shadow Docs
+        %h3.mapforge-font.white-shadow= _("Docs")
         %ul
           %li
             %a{ href: docs_path }
               %i.bi.bi-file-text.me-1>
-              Tutorials
+              = _("Tutorials")
           %li
             %a{ href: doc_path(id: 'CHANGELOG') }
               %i.bi.bi-file-text.me-1>
-              Changelog
+              = _("Changelog")
           %li
             %a{ href: doc_path(id: 'ulogger') }
               %i.bi.bi-file-text.me-1>
-              µlogger API
+              = "µlogger API"
       .col-lg-2.col-sm-4.col-6.footer-links
-        %h3.mapforge-font.white-shadow Project
+        %h3.mapforge-font.white-shadow= _("Project")
         %ul
           %li
             %a{ href: "https://github.com/mapforge-org/mapforge/" }
               %i.bi.bi-github.me-1>
-              Github
+              = "Github"
           %li
             %a{ href: "https://github.com/mapforge-org/mapforge/discussions" }
               %i.bi.bi-chat.me-1>
-              Discuss
+              = _("Discuss")
           %li
             %a{ href: "https://github.com/mapforge-org/mapforge/issues/new" }
               %i.bi.bi-github.me-1>
-              Report issue
+              = _("Report issue")
           %li
             %a{ href: "https://buymeacoffee.com/mapforge" }
               %i.bi.bi-cup-hot.me-1>
-              Buy me a coffee
+              = _("Buy me a coffee")
       .col-lg-3.col-sm-4.mx-auto.footer-links.footer-links-about.text-center.text-sm-start.text-md-start.mb-2
         %div
-          %h3.mapforge-font.white-shadow About
+          %h3.mapforge-font.white-shadow= _("About")
           %ul
             %li
               .text-nowrap
@@ -51,8 +51,8 @@
             %li
               %a{ href: doc_path(id: 'terms') }
                 %i.bi.bi-file-text.me-1>
-                Terms of Service
+                = _("Terms of Service")
             %li
               %a{ href: doc_path(id: 'privacy') }
                 %i.bi.bi-file-text.me-1>
-                Privacy Policy
+                = _("Privacy Policy")
