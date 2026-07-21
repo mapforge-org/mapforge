@@ -11,25 +11,26 @@
           %h6= _("Bicycle Touring!")
           .divider
           %p
-            = _("Check out how to use Mapforge to")
-            =link_to _('plan your next tour'), '/doc/bike_touring'
+            = _("Tour planning with Mapforge:")
+            =link_to _('See how it works'), '/doc/bike_touring'
 
     .container
       .row
         .col-lg-6.welcome-text
-          %h1.mapforge-font{ 'data-aos': "fade-up" }= _("Create your own map")
+          %h1.d-none.d-sm-inline.mapforge-font{ 'data-aos': "fade-up" }= _("Create your own map")
+          %h1.d-sm-none.mapforge-font{ 'data-aos': "fade-up" }= _("Create your map")
+
           %div{ 'data-aos': "fade-up" }
             %blockquote{ 'data-aos': "fade-up" }
               %p
                 = _("A free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time.")
+                - tutorial_link = link_to(_('tutorial map'), tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
                 - if @user
                   - maps_link = link_to(_('your maps'), my_path, class: 'btn btn-orange call-to-action')
-                  - tutorial_link = link_to(_('tutorial map'), tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
                   - create_link = link_to(_('create'), create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
                   %p= raw(_("Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map.") % { maps_link: maps_link, tutorial_link: tutorial_link, create_link: create_link })
                 - else
                   - gallery_link = link_to(_('gallery'), maps_path, class: 'btn btn-orange call-to-action')
-                  - tutorial_link = link_to(_('tutorial map'), tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
                   - login_link = link_to(_('log in'), login_path, class: 'btn btn-orange call-to-action')
                   %p= raw(_("Browse the %{gallery_link}, learn how to use it on the %{tutorial_link} or %{login_link} to create your own maps.") % { gallery_link: gallery_link, tutorial_link: tutorial_link, login_link: login_link })
                 %p
@@ -59,29 +60,30 @@
                 %h4.mb-3= _("Customize your map")
                 %ul
                   %li
-                    = _("Choose your base map: Streets, Satellite, Topographic, Biking")
                     %span.d-none.d-sm-inline><
-                      = _(", 3D houses etc.")
+                      = _("Choose your base map: Streets, Satellite, Topographic, Biking, 3D houses etc.")
+                    %span.d-sm-none><
+                      = _("Choose your base map: Streets, Satellite, Topographic, Biking")
                   %li
                     = _("Add your own data:")
-                    = _("Import")
                     %span.d-none.d-sm-inline
-                      = _("your data")
-                    = _("from GeoJSON, GPX and KML")
+                      = _("Import your data from GeoJSON, GPX and KML")
+                    %span.d-sm-none
+                      = _("Import from GeoJSON, GPX and KML")
                   %li
                     = _("Draw shapes and style them:")
-                    = _("Add pictures, customize colors, symbols, labels")
                     %span.d-none.d-sm-inline><
-                      = _(", (3D) polygons and more")
+                      = _("Add pictures, customize colors, symbols, labels, (3D) polygons and more")
+                    %span.d-sm-none
+                      = _("Add pictures, customize colors, symbols, labels")
                   %li
-                    = _("Dynamic layers: Use")
-                    =link_to 'Overpass', doc_path(id: 'overpass_layers')
-                    = _("to add custom layers from OpenStreetMap data")
+                    - overpass_link = link_to 'Overpass', doc_path(id: 'overpass_layers')
+                    = raw(_("Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data") % { overpass_link: overpass_link })
                   %li
-                    = _("3D Terrain: View your map with")
                     %span.d-none.d-sm-inline
-                      = _("realistic")
-                    = _("elevation")
+                      = _("3D Terrain: View your map with realistic elevation")
+                    %span.d-sm-none
+                      = _("3D Terrain: View your map with elevation")
             .swiper-slide
               .item
                 %h2.mb-3.mapforge-font= _("Collaboration")
@@ -97,38 +99,30 @@
                 %ul
                   %li= _("Responsive Design: Works well both on desktop and mobile")
                   %li
-                    = _("Run from your home screen as")
-                    = link_to _('app on your phone'), doc_path(id: 'app')
+                    - app_link = link_to _('app on your phone'), doc_path(id: 'app')
+                    = raw(_("Run from your home screen as %{app_link}") % { app_link: app_link })
                   %li
-                    = _("Map your track: Use")
-                    = link_to "µlogger", "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md"
-                    = _("to visualize and share your tracks live")
+                    - ulogger_link = link_to "µlogger", "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md"
+                    = raw(_("Map your track: Use %{ulogger_link} to visualize and share your tracks live") % { ulogger_link: ulogger_link })
             .swiper-slide
               .item
                 %h2.mb-3.mapforge-font= _("Open Source")
-                %h4.mb-3= _("Standing on the shoulders of giants")
+                %h4.mb-3= "\"Standing on the shoulders of giants\""
                 %ul
                   %li
-                    = _("Used open source projects:")
-                    = link_to "Ruby on Rails", "https://rubyonrails.org/"
-                    = _("for the backend,")
-                    = link_to "MapLibre GL JS", "https://github.com/maplibre/maplibre-gl-js"
-                    = _("and")
-                    = link_to "OpenStreetMap", "https://www.openstreetmap.org"
-                    = _("for the frontend,")
-                    = link_to("mapbox-gl-draw", "https://github.com/mapbox/mapbox-gl-draw") + ','
-                    = link_to("Turf.js", "https://turfjs.org/") + ','
-                    = link_to "Openrouteservice", "https://openrouteservice.org/"
-                    = _("as helping libraries.")
+                    - rails_link = link_to "Ruby on Rails", "https://rubyonrails.org/"
+                    - maplibre_link = link_to "MapLibre GL JS", "https://github.com/maplibre/maplibre-gl-js"
+                    - osm_link = link_to "OpenStreetMap", "https://www.openstreetmap.org"
+                    - draw_link = link_to "mapbox-gl-draw", "https://github.com/mapbox/mapbox-gl-draw"
+                    - turf_link = link_to "Turf.js", "https://turfjs.org/"
+                    - ors_link = link_to "Openrouteservice", "https://openrouteservice.org/"
+                    = raw(_("Used open source projects: %{rails_link} for the backend, %{maplibre_link} and %{osm_link} for the frontend, %{draw_link}, %{turf_link}, %{ors_link} as helping libraries.") % { rails_link: rails_link, maplibre_link: maplibre_link, osm_link: osm_link, draw_link: draw_link, turf_link: turf_link, ors_link: ors_link })
                   %li
                     = _("Storing only minimal data about you, no sharing of data with ad- or analytics companies.")
                   %li
-                    = _("Self-Hosted Solution:")
-                    = _("You can use Mapforge either on")
-                    = link_to("mapforge.org", "https://mapforge.org") + ','
-                    = _("or")
-                    = link_to _('deploy it'), "https://github.com/mapforge-org/mapforge/blob/main/README.md"
-                    = _("in your own infrastructure")
+                    - mapforge_link = link_to("mapforge.org", "https://mapforge.org")
+                    - deploy_link = link_to _('deploy'), "https://github.com/mapforge-org/mapforge/blob/main/README.md"
+                    = raw(_("Self-Hosted Solution: You can use Mapforge either on %{mapforge_link}, or %{deploy_link} it in your own infrastructure") % { mapforge_link: mapforge_link, deploy_link: deploy_link })
           .swiper-pagination
         .swiper-button-prev
         .swiper-button-next

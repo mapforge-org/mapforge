@@ -17,23 +17,23 @@ msgstr ""
 "Plural-Forms: nplurals=; plural=;\n"
 "\n"
 
-msgid ", (3D) polygons and more"
-msgstr ", (3D-)Polygone und mehr"
+msgid "3D Terrain: View your map with elevation"
+msgstr "3D-Gelände: Betrachte deine Karte mit Höhendaten"
 
-msgid ", 3D houses etc."
-msgstr ", 3D-Gebäude usw."
-
-msgid "3D Terrain: View your map with"
-msgstr "3D-Gelände: Betrachte deine Karte mit"
+msgid "3D Terrain: View your map with realistic elevation"
+msgstr "3D-Gelände: Betrachte deine Karte mit realistischen Höhendaten"
 
 msgid "A free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
-msgstr "Ein kostenloser, open-source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Tracks und Veranstaltungen - mit einfacher Anpassung, Teamarbeit und Live-Sharing."
+msgstr "Ein kostenloser, open-source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Tracks und Veranstaltungen - passe sie an, arbeite gemeinsam daran und teile sie in Echtzeit."
 
 msgid "Access control: Keep maps private or share with view-only or edit permissions"
-msgstr "Zugriffskontrolle: Halte Karten privat oder teile sie mit Lese- oder Bearbeitungsrechten"
+msgstr "Zugriffskontrolle: Speichere Karten privat oder teile sie mit Lese- oder Bearbeitungsrechten"
 
 msgid "Add pictures, customize colors, symbols, labels"
 msgstr "Füge Bilder hinzu, passe Farben, Symbole und Beschriftungen an"
+
+msgid "Add pictures, customize colors, symbols, labels, (3D) polygons and more"
+msgstr "Füge Bilder hinzu, passe Farben, Symbole, Beschriftungen, (3D-)Polygone und mehr an"
 
 msgid "Add your own data:"
 msgstr "Füge eigene Daten hinzu:"
@@ -51,26 +51,28 @@ msgid "Background"
 msgstr "Hintergrund"
 
 msgid "Bicycle Touring!"
-msgstr ""
+msgstr "Fahrradtouren!"
 
 msgid "Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map."
 msgstr "Verwalte %{maps_link}, lerne mehr auf der %{tutorial_link} oder %{create_link} direkt eine neue Karte."
 
 msgid "Browse the %{gallery_link}, learn how to use it on the %{tutorial_link} or %{login_link} to create your own maps."
-msgstr "Durchstöbere die %{gallery_link}, erfahre auf der %{tutorial_link}, wie du sie nutzt, oder %{login_link}, um eigene Karten zu erstellen."
+msgstr "Durchstöbere die %{gallery_link}, erfahre auf der %{tutorial_link} wie du sie nutzt, oder %{login_link} um eigene Karten zu erstellen."
 
-msgid "Check out how to use Mapforge to"
-msgstr "Tourenplanung mit Mapforge:"
-
-#, fuzzy
 msgid "Choose your base map: Streets, Satellite, Topographic, Biking"
-msgstr "Straßen, Satellit, Topografisch, Fahrrad"
+msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad"
+
+msgid "Choose your base map: Streets, Satellite, Topographic, Biking, 3D houses etc."
+msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad, 3D-Gebäude usw."
 
 msgid "Collaboration"
 msgstr "Zusammenarbeit"
 
 msgid "Create map"
 msgstr "Karte erstellen"
+
+msgid "Create your map"
+msgstr "Erstelle deine Karte"
 
 msgid "Create your own map"
 msgstr "Gestalte deine eigene Karte"
@@ -87,14 +89,17 @@ msgstr "Löschen"
 msgid "Draw shapes and style them:"
 msgstr "Zeichne Objekte und gestalte sie:"
 
-msgid "Dynamic layers: Use"
-msgstr "Dynamische Ebenen: Nutze"
+msgid "Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data"
+msgstr "Dynamische Ebenen: Nutze %{overpass_link}, um Ebenen aus OpenStreetMap-Daten hinzuzufügen"
 
 msgid "Happy mapping!"
 msgstr "Viel Spaß mit deiner Karte!"
 
-msgid "Import"
-msgstr "Importiere"
+msgid "Import from GeoJSON, GPX and KML"
+msgstr "Importiere GeoJSON, GPX und KML"
+
+msgid "Import your data from GeoJSON, GPX and KML"
+msgstr "Importiere deine Daten aus GeoJSON, GPX und KML"
 
 msgid "Live updates: Map changes are synchronized via websockets"
 msgstr "Live-Updates: Kartenänderungen werden über WebSockets synchronisiert"
@@ -114,8 +119,8 @@ msgstr "Kartengalerie"
 msgid "Map tools"
 msgstr "Kartenwerkzeuge"
 
-msgid "Map your track: Use"
-msgstr "Erfasse deine Strecke mit"
+msgid "Map your track: Use %{ulogger_link} to visualize and share your tracks live"
+msgstr "Erfasse deinen Track: Nutze %{ulogger_link} zum Visualisieren und Teilen deiner Strecken in Echtzeit"
 
 msgid "Mapforge is ad-free and respects your privacy."
 msgstr "Mapforge ist werbefrei und respektiert deine Privatsphäre."
@@ -132,14 +137,14 @@ msgstr "Profil"
 msgid "Responsive Design: Works well both on desktop and mobile"
 msgstr "Responsives Design: Funktioniert gut auf Desktop und Mobilgeräten"
 
-msgid "Run from your home screen as"
-msgstr "Starte vom Homescreen als"
+msgid "Run from your home screen as %{app_link}"
+msgstr "Starte vom Homescreen als %{app_link}"
 
-msgid "Self-Hosted Solution:"
-msgstr "Selbst gehostete Lösung:"
+msgid "See how it works"
+msgstr "So funktioniert's"
 
-msgid "Standing on the shoulders of giants"
-msgstr "Auf den Schultern von Giganten"
+msgid "Self-Hosted Solution: You can use Mapforge either on %{mapforge_link}, or %{deploy_link} it in your own infrastructure"
+msgstr "Selbst gehostete Lösung: Du kannst Mapforge entweder unter %{mapforge_link} nutzen, oder %{deploy_link} es in deiner eigenen Infrastruktur"
 
 msgid "Storing only minimal data about you, no sharing of data with ad- or analytics companies."
 msgstr "Speichert nur minimale Daten über dich, keine Weitergabe von Daten an Werbe- oder Analyseunternehmen."
@@ -147,26 +152,23 @@ msgstr "Speichert nur minimale Daten über dich, keine Weitergabe von Daten an W
 msgid "Toggle navigation"
 msgstr "Navigation umschalten"
 
+msgid "Tour planning with Mapforge:"
+msgstr "Tourenplanung mit Mapforge:"
+
 msgid "Tutorials"
 msgstr "Tutorials"
 
 msgid "Use Mapforge with different clients + apps"
 msgstr "Nutze Mapforge mit verschiedenen Clients und Apps"
 
-msgid "Used open source projects:"
-msgstr "Verwendete Open-Source-Projekte:"
+msgid "Used open source projects: %{rails_link} for the backend, %{maplibre_link} and %{osm_link} for the frontend, %{draw_link}, %{turf_link}, %{ors_link} as helping libraries."
+msgstr "Verwendete Open-Source-Projekte: %{rails_link} für das Backend, %{maplibre_link} und %{osm_link} für das Frontend, %{draw_link}, %{turf_link}, %{ors_link} als Hilfsbibliotheken."
 
 msgid "Work with others and stream map changes to all connected clients"
 msgstr "Arbeite mit anderen zusammen und übertrage Kartenänderungen live an alle verbundenen Geräte"
 
-msgid "You can use Mapforge either on"
-msgstr "Du kannst Mapforge entweder unter"
-
 msgid "Your maps (%{count})"
 msgstr "Deine Karten (%{count})"
-
-msgid "and"
-msgstr "und"
 
 msgid "app"
 msgstr "App"
@@ -174,56 +176,20 @@ msgstr "App"
 msgid "app on your phone"
 msgstr "App auf deinem Handy"
 
-msgid "as helping libraries."
-msgstr "als unterstützende Bibliotheken."
-
 msgid "create"
 msgstr "erstelle"
 
-msgid "deploy it"
-msgstr "selbst hosten"
-
-msgid "elevation"
-msgstr "Höhendarstellung"
-
-msgid "for the backend,"
-msgstr "für das Backend,"
-
-msgid "for the frontend,"
-msgstr "für das Frontend,"
-
-msgid "from GeoJSON, GPX and KML"
-msgstr "aus GeoJSON, GPX und KML"
+msgid "deploy"
+msgstr "installiere"
 
 msgid "gallery"
 msgstr "Galerie"
 
-msgid "in your own infrastructure"
-msgstr "in deiner eigenen Infrastruktur"
-
 msgid "log in"
 msgstr "melde dich an"
 
-msgid "or"
-msgstr "oder"
-
-msgid "plan your next tour"
-msgstr "So funktioniert’s"
-
-msgid "realistic"
-msgstr "realistischer"
-
-msgid "to add custom layers from OpenStreetMap data"
-msgstr "um eigene Ebenen aus OpenStreetMap-Daten hinzuzufügen"
-
-msgid "to visualize and share your tracks live"
-msgstr "zum Visualisieren und Teilen deiner Strecken in Echtzeit"
-
 msgid "tutorial map"
 msgstr "Tutorial-Karte"
-
-msgid "your data"
-msgstr "deine Daten"
 
 msgid "your maps"
 msgstr "deine Karten"

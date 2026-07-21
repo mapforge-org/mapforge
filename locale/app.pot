@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-20 00:29+0200\n"
-"PO-Revision-Date: 2026-07-20 00:29+0200\n"
+"POT-Creation-Date: 2026-07-21 22:36+0200\n"
+"PO-Revision-Date: 2026-07-21 22:36+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,31 +18,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../app/views/frontpage/index.haml:75
-msgid ", (3D) polygons and more"
+#: ../app/views/frontpage/index.haml:86
+msgid "3D Terrain: View your map with elevation"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:64
-msgid ", 3D houses etc."
+#: ../app/views/frontpage/index.haml:84
+msgid "3D Terrain: View your map with realistic elevation"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:81
-msgid "3D Terrain: View your map with"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:24
+#: ../app/views/frontpage/index.haml:26
 msgid "A free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:92
+#: ../app/views/frontpage/index.haml:94
 msgid "Access control: Keep maps private or share with view-only or edit permissions"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:73
+#: ../app/views/frontpage/index.haml:78
 msgid "Add pictures, customize colors, symbols, labels"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:66
+#: ../app/views/frontpage/index.haml:76
+msgid "Add pictures, customize colors, symbols, labels, (3D) polygons and more"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:68
 msgid "Add your own data:"
 msgstr ""
 
@@ -50,15 +50,15 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:41
+#: ../app/views/frontpage/index.haml:42
 msgid "Also available as %{app_link}."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:38
+#: ../app/views/frontpage/index.haml:39
 msgid "Also available for self-hosting, giving you full control over your data."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:49 ../app/views/frontpage/index.haml:52
+#: ../app/views/frontpage/index.haml:50 ../app/views/frontpage/index.haml:53
 msgid "Background"
 msgstr ""
 
@@ -66,23 +66,23 @@ msgstr ""
 msgid "Bicycle Touring!"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:29
+#: ../app/views/frontpage/index.haml:31
 msgid "Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:34
+#: ../app/views/frontpage/index.haml:35
 msgid "Browse the %{gallery_link}, learn how to use it on the %{tutorial_link} or %{login_link} to create your own maps."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:14
-msgid "Check out how to use Mapforge to"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:62
+#: ../app/views/frontpage/index.haml:66
 msgid "Choose your base map: Streets, Satellite, Topographic, Biking"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:87
+#: ../app/views/frontpage/index.haml:64
+msgid "Choose your base map: Streets, Satellite, Topographic, Biking, 3D houses etc."
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:89
 msgid "Collaboration"
 msgstr ""
 
@@ -90,15 +90,19 @@ msgstr ""
 msgid "Create map"
 msgstr ""
 
+#: ../app/views/frontpage/index.haml:21
+msgid "Create your map"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:20
 msgid "Create your own map"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:95
+#: ../app/views/frontpage/index.haml:97
 msgid "Cross platform"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:59
+#: ../app/views/frontpage/index.haml:60
 msgid "Customize your map"
 msgstr ""
 
@@ -106,23 +110,27 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:72
+#: ../app/views/frontpage/index.haml:74
 msgid "Draw shapes and style them:"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:77
-msgid "Dynamic layers: Use"
+#: ../app/views/frontpage/index.haml:81
+msgid "Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:43
+#: ../app/views/frontpage/index.haml:44
 msgid "Happy mapping!"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:67
-msgid "Import"
+#: ../app/views/frontpage/index.haml:72
+msgid "Import from GeoJSON, GPX and KML"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:90
+#: ../app/views/frontpage/index.haml:70
+msgid "Import your data from GeoJSON, GPX and KML"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:92
 msgid "Live updates: Map changes are synchronized via websockets"
 msgstr ""
 
@@ -130,7 +138,7 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:93
 msgid "Login: Have your maps assigned to your account"
 msgstr ""
 
@@ -142,15 +150,15 @@ msgstr ""
 msgid "Map Gallery"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:58
+#: ../app/views/frontpage/index.haml:59
 msgid "Map tools"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:103
-msgid "Map your track: Use"
+#: ../app/views/frontpage/index.haml:106
+msgid "Map your track: Use %{ulogger_link} to visualize and share your tracks live"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:37
+#: ../app/views/frontpage/index.haml:38
 msgid "Mapforge is ad-free and respects your privacy."
 msgstr ""
 
@@ -158,7 +166,7 @@ msgstr ""
 msgid "News"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:108
+#: ../app/views/frontpage/index.haml:109
 msgid "Open Source"
 msgstr ""
 
@@ -166,23 +174,23 @@ msgstr ""
 msgid "Profile"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:98
+#: ../app/views/frontpage/index.haml:100
 msgid "Responsive Design: Works well both on desktop and mobile"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:100
-msgid "Run from your home screen as"
+#: ../app/views/frontpage/index.haml:103
+msgid "Run from your home screen as %{app_link}"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:126
-msgid "Self-Hosted Solution:"
+#: ../app/views/frontpage/index.haml:15
+msgid "See how it works"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:109
-msgid "Standing on the shoulders of giants"
+#: ../app/views/frontpage/index.haml:125
+msgid "Self-Hosted Solution: You can use Mapforge either on %{mapforge_link}, or %{deploy_link} it in your own infrastructure"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:124
+#: ../app/views/frontpage/index.haml:121
 msgid "Storing only minimal data about you, no sharing of data with ad- or analytics companies."
 msgstr ""
 
@@ -190,110 +198,58 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
+#: ../app/views/frontpage/index.haml:14
+msgid "Tour planning with Mapforge:"
+msgstr ""
+
 #: ../app/views/shared/_header.html.haml:20 ../app/views/shared/_header.html.haml:39
 msgid "Tutorials"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:96
+#: ../app/views/frontpage/index.haml:98
 msgid "Use Mapforge with different clients + apps"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:112
-msgid "Used open source projects:"
+#: ../app/views/frontpage/index.haml:119
+msgid "Used open source projects: %{rails_link} for the backend, %{maplibre_link} and %{osm_link} for the frontend, %{draw_link}, %{turf_link}, %{ors_link} as helping libraries."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:88
+#: ../app/views/frontpage/index.haml:90
 msgid "Work with others and stream map changes to all connected clients"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:127
-msgid "You can use Mapforge either on"
 msgstr ""
 
 #: ../app/views/shared/_header.html.haml:45 ../app/views/shared/_header.html.haml:92
 msgid "Your maps (%{count})"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:116
-msgid "and"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:40
+#: ../app/views/frontpage/index.haml:41
 msgid "app"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:101
+#: ../app/views/frontpage/index.haml:102
 msgid "app on your phone"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:122
-msgid "as helping libraries."
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:28
+#: ../app/views/frontpage/index.haml:30
 msgid "create"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:130
-msgid "deploy it"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:84
-msgid "elevation"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:114
-msgid "for the backend,"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:118
-msgid "for the frontend,"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:70
-msgid "from GeoJSON, GPX and KML"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:31
-msgid "gallery"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:131
-msgid "in your own infrastructure"
+#: ../app/views/frontpage/index.haml:124
+msgid "deploy"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:33
+msgid "gallery"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:34
 msgid "log in"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:129
-msgid "or"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:15
-msgid "plan your next tour"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:83
-msgid "realistic"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:79
-msgid "to add custom layers from OpenStreetMap data"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:105
-msgid "to visualize and share your tracks live"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:27 ../app/views/frontpage/index.haml:32
+#: ../app/views/frontpage/index.haml:27
 msgid "tutorial map"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:69
-msgid "your data"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:26
+#: ../app/views/frontpage/index.haml:29
 msgid "your maps"
 msgstr ""

@@ -1,4 +1,4 @@
-FastGettext.add_text_domain "app", path: "locale", type: :po
+FastGettext.add_text_domain "app", path: "locale", type: :po, ignore_fuzzy: true
 
 # "en" needs no locale/en/app.po file, so it is added explicitly here.
 FastGettext.default_available_locales =
