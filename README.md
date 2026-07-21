@@ -20,15 +20,16 @@ The main instance is running at [mapforge.org](https://mapforge.org), see [self-
 ### Features
 
 - Create maps with your own data on top of various available base maps.
+- [Self-host](#selfhosting) via container image, needs only Redis and MongoDB
 - Draw shapes and [style them](https://mapforge.org/doc/geojson_style_spec): Add pictures, customize colors, symbols, labels, (3D) polygons and more
-- Import your data from GeoJSON, GPX and KML
-- Collaborative, real-time editing, synchronized via WebSockets
+- Import and export GeoJSON, GPX and KML
+- Real-time collaborative editing, changes sync to every connected client over WebSockets
 - Share maps and embed on your own web page
 - Desktop and mobile UI
-- User login with Google or GitHub account
 - [Integration](https://mapforge.org/doc/overpass_layers) with [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) for custom OpenStreetMap queries
-- PWA support and available as [Android app](https://play.google.com/store/apps/details?id=org.mapforge.twa)
-- Record your track with the [µlogger API](engines/ulogger/README.md)
+- Login with Google, GitHub or OSM OAuth, no auth system to maintain
+- PWA support by default, ships as an [Android app](https://play.google.com/store/apps/details?id=org.mapforge.twa) via Bubblewrap
+- Record GPS tracks with the built in [µlogger API](engines/ulogger/README.md)
 
 ### Styling & Data Sources
 
@@ -79,10 +80,9 @@ A minimal example using the GitHub Container Registry image:
 
 ```bash
 podman run \
+  --name mapforge
   -e SECRET_KEY_BASE=e3c9f2... \
   -e DEVELOPER_LOGIN_ENABLED=true \
-  -e HTTP_PORT=3001 \
-  -e SSL=false \
   --network=host \
   ghcr.io/mapforge-org/mapforge:main
 ```
@@ -112,8 +112,11 @@ podman run ... -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb 
 - `MONGO_DB` — MongoDB database name (default: 'mapforge_production')
 - `REDIS_URL` — Redis URL for Action Cable (default: `redis://localhost:6379/1`)
 - `OPENROUTESERVICE_KEY` — API key for routing features with [openrouteservice.org](https://openrouteservice.org/)
+- `INDOOREQUAL_KEY` — API key for [Indoorequal](https://indoorequal.com/)
+- `THUNDERFOREST_KEY` — API key for [Thunderforest](https://www.thunderforest.com/) maps
 - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — GitHub OAuth credentials
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth credentials
+- `OSM_CLIENT_ID`, `OSM_CLIENT_SECRET` — OSM OAuth credentials
 - `DEFAULT_MAP` — default base map identifier (default: [versatilesColorful](https://versatiles.org/))
 
 ---
@@ -137,11 +140,7 @@ bundle
 
 To resolve users’ client IPs to coordinates for centering new maps, download the
 [MaxMind GeoLite2](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data/)
-database and save it as:
-
-```text
-db/GeoLite2-City.mmdb
-```
+database and save it as `db/GeoLite2-City.mmdb`.
 
 ### Running the Development Server
 
@@ -183,7 +182,11 @@ app/javascript/maplibre/basemaps.js
   MAPFORGE_HOST=<host> bin/rake maps:screenshots
   ```
 
-- Setup database indexes: `bin/rake db:mongoid:create_indexes`
+- Setup database indexes:
+
+  ```bash
+  bin/rake db:mongoid:create_indexes
+  ```
 
 - Animate a marker along a line:
 
