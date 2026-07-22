@@ -1,3 +1,7 @@
+html:has(#frontpage) {
+  scroll-behavior: smooth;
+}
+
 #frontpage-map {
   opacity: 0.5;
   transition: opacity 1.5s ease-out;
@@ -117,7 +121,7 @@ section,
   width: 100%;
   min-height: 100vh;
   position: relative;
-  padding: 120px 0 60px;
+  padding: 100px 0 60px;
   display: flex;
   align-items: center;
 }
@@ -189,13 +193,52 @@ section,
   padding-left: 20px;
   padding-right: 10px;
   border-left: 2px solid var(--accent-color);
-  margin: 40px 0;
+  margin: 1.5rem 0;
   font-weight: 300;
 }
 
 @media (width <= 640px) {
   .hero h1 {
     font-size: clamp(1.5rem, 8.5vw, 2.7rem);
+  }
+}
+
+.hero .container.feature-tour-col {
+  position: absolute;
+  bottom: 0.5rem;
+}
+
+.feature-tour-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  color: inherit !important;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.feature-tour-link .bi-chevron-double-down {
+  font-size: 1.75rem;
+  animation: chevron-bounce 4s ease-in-out infinite;
+}
+
+@keyframes chevron-bounce {
+  0%, 100% { transform: translateY(0); }
+  4% { transform: translateY(-10px); }
+  8% { transform: translateY(0); }
+  12% { transform: translateY(-5px); }
+  16% { transform: translateY(0); }
+}
+
+/* only add hover effects to supported browsers */
+@media (hover: hover) {
+  .feature-tour-link:hover {
+    opacity: 1;
+    color: inherit !important;
+    text-decoration: none;
   }
 }
 
@@ -389,6 +432,10 @@ section,
 
   #hero .container {
     margin-left: 1rem;
+  }
+
+  #hero .container.feature-tour-col {
+    margin-left: 3rem;
   }
 
   #features .swiper-button-prev {

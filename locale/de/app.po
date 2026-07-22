@@ -29,9 +29,6 @@ msgstr "3D-Gelände: Betrachte deine Karte mit Höhendaten"
 msgid "3D Terrain: View your map with realistic elevation"
 msgstr "3D-Gelände: Betrachte deine Karte mit realistischen Höhendaten"
 
-msgid "A free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
-msgstr "Ein kostenloser, open-source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Tracks und Veranstaltungen - passe sie an, arbeite gemeinsam daran und teile sie in Echtzeit."
-
 msgid "About"
 msgstr "Über"
 
@@ -49,9 +46,6 @@ msgstr "Füge eigene Daten hinzu:"
 
 msgid "Admin"
 msgstr "Admin"
-
-msgid "Also available as %{app_link}."
-msgstr "Auch verfügbar als %{app_link}."
 
 msgid "Also available for self-hosting, giving you full control over your data."
 msgstr "Auch zum Self-Hosting verfügbar, mit voller Kontrolle über deine Daten."
@@ -71,8 +65,8 @@ msgstr "Verwalte %{maps_link}, lerne mehr auf der %{tutorial_link} oder %{create
 msgid "Browse maps by user %{email}"
 msgstr "Durchstöbere Karten von Benutzer %{email}"
 
-msgid "Browse the %{gallery_link}, learn how to use it on the %{tutorial_link} or %{login_link} to create your own maps."
-msgstr "Durchstöbere die %{gallery_link}, erfahre auf der %{tutorial_link} wie du sie nutzt, oder %{login_link} um eigene Karten zu erstellen."
+msgid "Browse the %{gallery_link}, learn how to use Mapforge on the %{tutorial_link} or %{login_link} to create your own maps."
+msgstr "Durchstöbere die %{gallery_link}, lerne auf der %{tutorial_link} wie du Mapforge nutzt, oder %{login_link} um eigene Karten zu erstellen."
 
 msgid "Buy me a coffee"
 msgstr "Spende mir einen Kaffee"
@@ -99,7 +93,7 @@ msgid "Create map"
 msgstr "Karte erstellen"
 
 msgid "Create your map"
-msgstr "Erstelle deine Karte"
+msgstr "Gestalte deine Karte"
 
 msgid "Create your own map"
 msgstr "Gestalte deine eigene Karte"
@@ -136,6 +130,9 @@ msgstr "Zeichne Objekte und gestalte sie:"
 
 msgid "Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data"
 msgstr "Dynamische Ebenen: Nutze %{overpass_link}, um Ebenen aus OpenStreetMap-Daten hinzuzufügen"
+
+msgid "Feature Tour"
+msgstr "Feature Tour"
 
 msgid "Happy mapping!"
 msgstr "Viel Spaß mit deiner Karte!"
@@ -262,11 +259,14 @@ msgstr "Du kannst die %{tutorial_link} ausprobieren, um zu sehen, wie Mapforge f
 msgid "Your Maps"
 msgstr "Deine Karten"
 
+msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
+msgstr "Dein kostenloser, open-source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Tracks und Veranstaltungen - passe sie an, arbeite gemeinsam daran und teile sie in Echtzeit."
+
 msgid "Your maps (%{count})"
 msgstr "Deine Karten (%{count})"
 
-msgid "app"
-msgstr "App"
+msgid "Your open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events."
+msgstr "Dein open-source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Tracks und Veranstaltungen."
 
 msgid "app on your phone"
 msgstr "App auf deinem Handy"

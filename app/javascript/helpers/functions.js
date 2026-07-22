@@ -69,7 +69,7 @@ export function isTouchDevice () {
 }
 
 export function isApp () {
-  window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 }
 
 // takes a css selector and callback method

@@ -23,7 +23,10 @@
           %div{ 'data-aos': "fade-up" }
             %blockquote{ 'data-aos': "fade-up" }
               %p
-                = _("A free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time.")
+                %span.d-none.d-sm-inline
+                  = _("Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time.")
+                %span.d-sm-none
+                  = _("Your open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events.")
                 - tutorial_link = link_to(_('tutorial map'), tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
                 - if @user
                   - maps_link = link_to(_('your maps'), my_path, class: 'btn btn-orange call-to-action')
@@ -32,16 +35,22 @@
                 - else
                   - gallery_link = link_to(_('gallery'), maps_path, class: 'btn btn-orange call-to-action')
                   - login_link = link_to(_('log in'), login_path, class: 'btn btn-orange call-to-action')
-                  %p= raw(_("Browse the %{gallery_link}, learn how to use it on the %{tutorial_link} or %{login_link} to create your own maps.") % { gallery_link: gallery_link, tutorial_link: tutorial_link, login_link: login_link })
+                  %p= raw(_("Browse the %{gallery_link}, learn how to use Mapforge on the %{tutorial_link} or %{login_link} to create your own maps.") % { gallery_link: gallery_link, tutorial_link: tutorial_link, login_link: login_link })
                 %p
                   %span.d-none.d-sm-inline
                     = _("Mapforge is ad-free and respects your privacy.")
                     = _("Also available for self-hosting, giving you full control over your data.")
-                  %span.d-sm-none
-                    - app_link = link_to(_('app'), doc_path(id: 'app'), class: 'btn btn-orange call-to-action')
-                    = raw(_("Also available as %{app_link}.") % { app_link: app_link })
+                  /%span.d-sm-none
+                  /  - app_link = link_to(_('app'), doc_path(id: 'app'), class: 'btn btn-orange call-to-action')
+                  /  = raw(_("Also available as %{app_link}.") % { app_link: app_link })
             %p.fs-4.mapforge-font
               %i= _("Happy mapping!")
+
+    .container.feature-tour-col{ 'data-aos': "fade-up", 'data-aos-offset': "0" }
+      .col-lg-6.d-flex.justify-content-center
+        %a.feature-tour-link{ href: "#features", data: { action: "click->frontpage#scrollToFeatures" } }
+          = _("Feature Tour")
+          %i.bi.bi-chevron-double-down
 
   %section#features.why-us.section
     .row.g-0
