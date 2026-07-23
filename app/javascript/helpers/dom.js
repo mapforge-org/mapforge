@@ -71,6 +71,14 @@ export function scrollToId(elementId) {
   }
 }
 
+export function loadStylesheet (href) {
+  if (document.querySelector(`link[href="${href}"]`)) return
+  const link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.href = href
+  document.head.appendChild(link)
+}
+
 export function isInputElement(target) {
   return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable
 }
