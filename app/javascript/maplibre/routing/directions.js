@@ -40,6 +40,18 @@ class CustomMapLibreGlDirections extends MapLibreGlDirections {
       this.buildRequest = orsBuildRequest
       this.fetch = orsFetch.bind(this)
     }
+
+    // queryRenderedFeatures only supports string/number properties; object-valued ones come
+    // back mangled, breaking the library's JSON.parse in onMove (hover-insert never fires).
+    const buildRoutelines = this.buildRoutelines
+    this.buildRoutelines = (...args) => {
+      const routelines = buildRoutelines(...args)
+      routelines.forEach(group => group.forEach(routeline => {
+        routeline.properties.departSnappointProperties = JSON.stringify(routeline.properties.departSnappointProperties)
+        routeline.properties.arriveSnappointProperties = JSON.stringify(routeline.properties.arriveSnappointProperties)
+      }))
+      return routelines
+    }
   }
 
   // Override onMove to be defensive - check if layer exists before querying
@@ -296,7 +308,7 @@ function updateTrack(feature) {
 }
 
 export function getDirectionsLayers () {
-  let layers = layersFactory()
+  let layers = layersFactory(1.2)
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline")
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline-casing")
 
