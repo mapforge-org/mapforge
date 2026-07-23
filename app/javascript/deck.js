@@ -1,6 +1,6 @@
 import { hexToRgb } from 'helpers/functions'
 import { mapProperties, initializeMaplibreProperties } from 'maplibre/map'
-import maplibregl from 'maplibre-gl'
+import * as maplibregl from 'maplibre-gl'
 
 // eslint expects variables to get imported, but we load the full lib in header
 const deck = window.deck;

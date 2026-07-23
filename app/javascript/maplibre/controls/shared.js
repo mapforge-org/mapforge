@@ -3,7 +3,7 @@ import * as dom from 'helpers/dom'
 import { animateElement, initTooltips } from 'helpers/dom'
 import * as f from 'helpers/functions'
 import * as functions from 'helpers/functions'
-import MaplibreGeocoder from 'maplibre-gl-geocoder'
+import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { initializeGeoLocateControl } from 'maplibre/controls/geolocate'
@@ -437,11 +437,9 @@ export function initializeDefaultControls () {
       maplibregl,
       zoom: 16,
       flyTo: { maxZoom: 16 },
-      clearAndBlurOnEsc: true,
-      // prioritize results near map center
-      proximity: {
-        latitude: () => { map.getCenter().lat }, longitude: () => { map.getCenter().lng }
-      }
+      clearAndBlurOnEsc: true
+      // trackProximity defaults to true, which already biases results toward
+      // the current map center — no need to wire up proximity manually
     }), 'top-right'
   )
   const geocoderButton = document.querySelector('.maplibregl-ctrl-geocoder')
