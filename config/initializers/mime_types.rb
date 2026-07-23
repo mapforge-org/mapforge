@@ -10,5 +10,5 @@ Rack::Mime::MIME_TYPES[".mjs"] = "application/javascript"
 Rails.application.config.assets.configure do |env|
   # register_mime_type replaces the whole entry rather than merging, so re-list
   # .js alongside .mjs to avoid dropping it from Sprockets' internal mime_types map.
-  env.register_mime_type "application/javascript", extensions: [".js", ".mjs"], charset: :unicode
+  env.register_mime_type "application/javascript", extensions: [ ".js", ".mjs" ], charset: :unicode
 end
