@@ -70,20 +70,20 @@ export function clearImageState() {
 // Reset labelFont to default when clearing state
 export function resetLabelFont() { labelFont = [defaultFont] }
 
-export async function loadImage (e) {
+export async function loadImage (id) {
   // Skip if already loading, loaded, or failed
-  if (imageState[e.id]) {
-    // console.log(`Skipped loading image '${e.id}'`, imageState[e.id])
+  if (imageState[id]) {
+    // console.log(`Skipped loading image '${id}'`, imageState[id])
     return
   }
 
-  const imageUrl = e.id
+  const imageUrl = id
 
   if (imageUrl.startsWith('http') || imageUrl.startsWith('/')) {
     try {
-      imageState[e.id] = 'loading'
+      imageState[id] = 'loading'
       // Synchronously register a transparent 1x1 placeholder before any await, so
-      // MapLibre's getImage re-check (right after the styleimagemissing event fires)
+      // MapLibre's getImage re-check (right after the missing-image resolver is invoked)
       // succeeds and skips the "Image could not be loaded" warning. The real image
       // is swapped in below once it has loaded.
       if (!map.hasImage(imageUrl)) {
@@ -94,14 +94,14 @@ export async function loadImage (e) {
         // replace the placeholder (remove + add, since dimensions differ)
         if (map.hasImage(imageUrl)) { map.removeImage(imageUrl) }
         map.addImage(imageUrl, response.data)
-        imageState[e.id] = 'loaded'
+        imageState[id] = 'loaded'
       } else {
         console.warn(imageUrl + ' not found')
       }
     } catch (error) {
       // Handle errors here
       console.error(`Failed to load image ${imageUrl}: ` + error)
-      imageState[e.id] = 'error'
+      imageState[id] = 'error'
     }
   }
 }

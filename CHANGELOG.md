@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-07
 
+* Update to [Maplibre GL JS 6.0](https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.0.0)
 * Performance improvements for large maps
 * Option to delete items from context menu
 

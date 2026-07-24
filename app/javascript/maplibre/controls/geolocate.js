@@ -1,6 +1,6 @@
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
-import maplibregl from 'maplibre-gl'
+import * as maplibregl from 'maplibre-gl'
 import { map, mapProperties } from 'maplibre/map'
 
 let isInFollowMode = false

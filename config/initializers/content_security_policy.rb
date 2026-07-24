@@ -8,7 +8,7 @@ Rails.application.configure do
   config.content_security_policy do |policy|
     # policy.default_src :self, :https
     policy.font_src :self, :https, :data
-    policy.img_src :self, :https, :data
+    policy.img_src :self, :https, :data, :blob
     policy.object_src :none
     # TODO: It seems not possible yet to use Turbo and csp without :unsafe_inline, :unsafe_eval
     policy.script_src :self, :https, :blob, :unsafe_inline, :unsafe_eval

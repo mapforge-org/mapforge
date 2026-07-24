@@ -191,12 +191,17 @@ export default class extends Controller {
     dom.showElements(['#map-description'])
 
     await import('easymde') // import EasyMDE UMD bundle
+    // EasyMDE defaults to a broken font-awesome build from bootstrapcdn; load a working one ourselves
+    // (v4-shims maps EasyMDE's old "fa fa-*" classes to FA6 icons)
+    dom.loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css')
+    dom.loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/v4-shims.min.css')
     descEasyMDE = new window.EasyMDE({
       element: document.getElementById('map-description-input'),
       placeholder: 'Add a description text',
       toolbar: ["bold", "italic", "heading", "code", "table", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
       minHeight: '4em',
       spellChecker: false,
+      autoDownloadFontAwesome: false,
       status: [{
         className: 'autosave',
         onUpdate: () => { this.updateDescription() }

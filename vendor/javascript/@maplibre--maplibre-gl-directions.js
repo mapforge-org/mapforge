@@ -1,3 +1,5 @@
+// @maplibre/maplibre-gl-directions@0.9.1 downloaded from https://ga.jspm.io/npm:@maplibre/maplibre-gl-directions@0.9.1/dist/maplibre-gl-directions.js
+
 var e=Object.defineProperty;var t=(t,i,n)=>i in t?e(t,i,{enumerable:!0,configurable:!0,writable:!0,value:n}):t[i]=n;var i=(e,i,n)=>(t(e,typeof i!="symbol"?i+"":i,n),n);class xe{constructor(e){i(this,"map");i(this,"listeners",{});i(this,"oneTimeListeners",{});this.map=e}
 /**
    * Fires an event and notifies all listeners.

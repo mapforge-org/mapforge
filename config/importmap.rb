@@ -1,4 +1,4 @@
-# Pin npm packages by running ./bin/importmap pin <npm module name>@<version> --from jspm|unpkg|jsdelivr --download
+# Pin npm packages by running ./bin/importmap pin <npm module name>@<version> --from jspm|unpkg|jsdelivr
 # https://github.com/rails/importmap-rails
 
 pin "application"
@@ -27,9 +27,9 @@ pin_all_from "vendor/javascript/mapbox-gl-draw-paint-mode",
   under: "mapbox-gl-draw-paint-mode", preload: false
 
 # https://github.com/maplibre/maplibre-gl-js
-pin "maplibre-gl" # @5.24.0 — preloaded so the browser fetches during head parse
+pin "maplibre-gl" # @6.0.0 — preloaded so the browser fetches during head parse
 # https://github.com/maplibre/maplibre-gl-geocoder
-pin "maplibre-gl-geocoder", to: "maplibre-gl-geocoder.js", preload: false
+pin "@maplibre/maplibre-gl-geocoder", preload: false, to: "@maplibre--maplibre-gl-geocoder.js" # @1.9.4
 # https://github.com/GIScience/openrouteservice-js?tab=readme-ov-file
 pin "openrouteservice-js", preload: false # @0.4.1
 # https://github.com/maplibre/maplibre-gl-directions/tree/main
