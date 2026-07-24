@@ -52,7 +52,9 @@ def drag_element(source_selector, target_selector)
     (() => {
       const s = document.querySelector(#{source_selector.to_json}).getBoundingClientRect();
       const t = document.querySelector(#{target_selector.to_json}).getBoundingClientRect();
-      return [s.x + s.width / 2, s.y + s.height / 2, t.x + t.width / 2, t.y + t.height / 2];
+      // Top quarter, not dead-center: SortableJS's before/after threshold sits
+      // at the midpoint, and landing exactly on it flaked on sub-pixel rounding.
+      return [s.x + s.width / 2, s.y + s.height / 2, t.x + t.width / 2, t.y + t.height * 0.25];
     })()
   JS
   mouse = page.driver.browser.mouse
