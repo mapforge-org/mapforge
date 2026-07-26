@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-23 00:35+0200\n"
-"PO-Revision-Date: 2026-07-23 00:35+0200\n"
+"POT-Creation-Date: 2026-07-26 23:35+0200\n"
+"PO-Revision-Date: 2026-07-26 23:35+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -110,6 +110,10 @@ msgstr ""
 msgid "Collaboration"
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/context_menu.js:85
+msgid "Copy"
+msgstr ""
+
 #: ../app/views/maps/_map.haml:21
 msgid "Copy map"
 msgstr ""
@@ -142,12 +146,20 @@ msgstr ""
 msgid "Delete map"
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/context_menu.js:40
+msgid "Delete midpoint"
+msgstr ""
+
 #: ../app/views/maps/_list_filter.haml:43
 msgid "Descending"
 msgstr ""
 
 #: ../app/views/shared/_footer.html.haml:33
 msgid "Discuss"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/context_menu.js:50
+msgid "Divide line here"
 msgstr ""
 
 #: ../app/views/maps/_map.haml:25
@@ -272,6 +284,10 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:109
 msgid "Responsive Design: Works well both on desktop and mobile"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/context_menu.js:69
+msgid "Reverse track"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:112

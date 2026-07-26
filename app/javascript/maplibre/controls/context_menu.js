@@ -37,7 +37,7 @@ export function addLineVertexMenuItems(f) {
 
     const deleteButton = document.createElement('div')
     deleteButton.classList.add('context-menu-item')
-    deleteButton.innerText = 'Delete point'
+    deleteButton.innerHTML = `<i class="bi bi-dash-circle me-1"></i>${window.__('Delete midpoint')}`
     deleteButton.dataset.action = 'click->map--context-menu#deleteMidpoint'
     deleteButton.dataset.featureId = f.properties.parent
     deleteButton.dataset.index = vertexIndex
@@ -47,7 +47,7 @@ export function addLineVertexMenuItems(f) {
       vertexIndex > 0 && vertexIndex < feature.geometry.coordinates.length - 1) {
       const cutButton = document.createElement('div')
       cutButton.classList.add('context-menu-item')
-      cutButton.innerText = 'Divide line here'
+      cutButton.innerHTML = `<i class="bi bi-scissors me-1"></i>${window.__('Divide line here')}`
       cutButton.dataset.action = 'click->map--context-menu#cutLine'
       cutButton.dataset.featureId = f.properties.parent
       cutButton.dataset.index = vertexIndex
@@ -66,7 +66,7 @@ export function addLineMenuItems(f) {
 
     const reverseButton = document.createElement('div')
     reverseButton.classList.add('context-menu-item')
-    reverseButton.innerText = 'Reverse track'
+    reverseButton.innerHTML = `<i class="bi bi-arrow-left-right me-1"></i>${window.__('Reverse track')}`
     reverseButton.dataset.action = 'click->map--context-menu#reverseLineString'
     reverseButton.dataset.featureId = f.properties.id
     el.appendChild(reverseButton)
@@ -82,7 +82,7 @@ export function addCopyMenuItem(featureId, geometryType = null) {
 
     const copyButton = document.createElement('div')
     copyButton.classList.add('context-menu-item')
-    copyButton.innerText = geometryType ? `Copy ${geometryType}` : 'Copy'
+    copyButton.innerHTML = `<i class="bi bi-clipboard me-1"></i>${geometryType ? window.__('Copy %{type}').replace('%{type}', geometryType) : window.__('Copy')}`
     copyButton.dataset.action = 'click->map--context-menu#copyFeature'
     copyButton.dataset.featureId = featureId
     el.appendChild(copyButton)
@@ -98,7 +98,7 @@ export function addDeleteMenuItem(featureId) {
 
     const deleteButton = document.createElement('div')
     deleteButton.classList.add('context-menu-item')
-    deleteButton.innerText = window.__('Delete')
+    deleteButton.innerHTML = `<i class="bi bi-trash me-1"></i>${window.__('Delete')}`
     deleteButton.dataset.action = 'click->map--context-menu#deleteFeature'
     deleteButton.dataset.featureId = featureId
     el.appendChild(deleteButton)

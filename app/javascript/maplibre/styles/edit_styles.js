@@ -2,6 +2,7 @@
 import { addCopyMenuItem, addDeleteMenuItem, addLineMenuItems, addLineVertexMenuItems } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
+import { getFeature } from 'maplibre/layers/layers'
 import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
 
 // started from https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
@@ -44,7 +45,9 @@ export function initializeEditStyles() {
 
     for (const f of features) {
       if (f.properties.id && f.layer.id.includes('_geojson-source-')) {
-        addCopyMenuItem(f.properties.id, f.geometry.type)
+        // f.geometry.type is from the tiled render and can wrongly report MultiLineString
+        const geometryType = getFeature(f.properties.id, 'geojson')?.geometry.type
+        addCopyMenuItem(f.properties.id, geometryType)
         addDeleteMenuItem(f.properties.id)
         highlightFeature(f)
         break
