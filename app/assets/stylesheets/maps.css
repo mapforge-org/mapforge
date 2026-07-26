@@ -60,11 +60,12 @@ nav.fixed-top~#maps {
 .recently-viewed-maps {
   display: flex;
   flex-wrap: wrap;
+  column-gap: 0.5rem;
 }
 
 .recently-viewed-maps .map-preview {
   width: 30vw;
-  margin: 0.5rem 0.5rem 0.5rem 0;
+  margin: 0.5rem 0;
   min-width: 7.5rem;
   max-width: 15rem;
 }

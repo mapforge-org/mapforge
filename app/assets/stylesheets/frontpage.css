@@ -199,13 +199,13 @@ section,
 
 @media (width <= 640px) {
   .hero h1 {
-    font-size: clamp(1.5rem, 8.5vw, 2.7rem);
+    font-size: clamp(1.5rem, 9.5vw, 2.3rem);
   }
 }
 
 .hero .container.feature-tour-col {
   position: absolute;
-  bottom: 0.5rem;
+  bottom: 0.1rem;
 }
 
 .feature-tour-link {
@@ -221,7 +221,9 @@ section,
 }
 
 .feature-tour-link .bi-chevron-double-down {
+  margin-top: -0.5rem;
   font-size: 1.75rem;
+  color: var(--color-orange);
   animation: chevron-bounce 4s ease-in-out infinite;
 }
 
@@ -426,6 +428,10 @@ section,
 }
 
 @media (width <= 574px) {
+  .hero h1 {
+    margin-bottom: 2rem;
+  }
+
   #features .swiper {
     margin: 30px 30px 10px;
   }
@@ -435,7 +441,7 @@ section,
   }
 
   #hero .container.feature-tour-col {
-    margin-left: 3rem;
+    margin-left: 0;
   }
 
   #features .swiper-button-prev {

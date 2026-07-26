@@ -260,13 +260,13 @@ msgid "Your Maps"
 msgstr "Deine Karten"
 
 msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
-msgstr "Dein kostenloser, open-source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Tracks und Veranstaltungen - passe sie an, arbeite gemeinsam daran und teile sie in Echtzeit."
+msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - passe sie an, arbeite gemeinsam daran und teile sie in Echtzeit."
 
 msgid "Your maps (%{count})"
 msgstr "Deine Karten (%{count})"
 
 msgid "Your open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events."
-msgstr "Dein open-source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten für deine Orte, Tracks und Veranstaltungen."
+msgstr "Dein Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen."
 
 msgid "app on your phone"
 msgstr "App auf deinem Handy"

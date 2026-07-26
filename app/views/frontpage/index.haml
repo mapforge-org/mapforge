@@ -17,8 +17,8 @@
     .container
       .row
         .col-lg-6.welcome-text
-          %h1.d-none.d-sm-inline.mapforge-font{ 'data-aos': "fade-up" }= _("Create your own map")
-          %h1.d-sm-none.mapforge-font{ 'data-aos': "fade-up" }= _("Create your map")
+          %h1.d-none.d-md-inline.mapforge-font{ 'data-aos': "fade-up" }= _("Create your own map")
+          %h1.d-md-none.mapforge-font{ 'data-aos': "fade-up" }= _("Create your map")
 
           %div{ 'data-aos': "fade-up" }
             %blockquote{ 'data-aos': "fade-up" }
@@ -43,7 +43,7 @@
                   /%span.d-sm-none
                   /  - app_link = link_to(_('app'), doc_path(id: 'app'), class: 'btn btn-orange call-to-action')
                   /  = raw(_("Also available as %{app_link}.") % { app_link: app_link })
-            %p.fs-4.mapforge-font
+            %p.d-none.d-sm-inline.fs-4.mapforge-font
               %i= _("Happy mapping!")
 
     .container.feature-tour-col{ 'data-aos': "fade-up", 'data-aos-offset': "0" }
