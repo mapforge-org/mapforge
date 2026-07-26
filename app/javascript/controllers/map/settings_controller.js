@@ -4,6 +4,7 @@ import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
+import { basemaps } from 'maplibre/styles/basemaps'
 import { marked } from 'marked'
 
 let descEasyMDE
@@ -30,6 +31,20 @@ export default class extends Controller {
 
   connect () {
     this.setupCoordinateCopyHandlers()
+    this.setupBaseMapTooltips()
+  }
+
+  setupBaseMapTooltips () {
+    const maps = basemaps()
+    this.element.querySelectorAll('.layer-preview').forEach(img => {
+      const description = maps[img.dataset.baseMap]?.description
+      if (description) {
+        img.title = description
+        img.dataset.toggle = 'tooltip'
+        img.dataset.bsTrigger = 'hover'
+      }
+    })
+    dom.initTooltips(this.element)
   }
 
   setupCoordinateCopyHandlers () {
