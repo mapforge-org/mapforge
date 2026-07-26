@@ -53,14 +53,19 @@ module Ulogger
     def addpos
       coords = [ params[:lon].to_f, params[:lat].to_f, params[:altitude].to_f.round(2) ]
 
-      # Find track layer, fallback to map name which also has the initial track name by default
+      # Fallback to map name which also has the initial track name by default
       track_name = session["track_name"] || @map.name
-      layer = @map.layers.geojson.find_by(name: track_name) || @map.layers.create(name: track_name)
 
-      # Find track with current name on map, or create new
-      track = layer.features.line_string.find_by("properties.title" => track_name)
-      track ||= Feature.new(layer: layer, geometry: { "coordinates" => [] },
+      # Find track with current name in any layer on the map, or create new in a layer named after the track.
+      # If several tracks share the name, keep logging to the one most recently changed.
+      track = @map.features.line_string.where("properties.title" => track_name).order_by(updated_at: :desc).first
+      if track
+        layer = track.layer
+      else
+        layer = @map.layers.geojson.find_by(name: track_name) || @map.layers.create(name: track_name)
+        track = Feature.new(layer: layer, geometry: { "coordinates" => [] },
                             properties: track_properties(track_name, string_to_color(track_name)))
+      end
 
       track_coords = track.geometry["coordinates"] << coords
       track.update(geometry: { "type" => "LineString",

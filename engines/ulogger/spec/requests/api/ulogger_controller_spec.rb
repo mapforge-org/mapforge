@@ -135,6 +135,52 @@ RSpec.describe Api::UloggerController do
       expect(map.reload.features.point.first.properties["marker-color"]).to eq("#f6f5f4")
     end
 
+    context "when a track with the same name already exists in a different layer" do
+      let(:default_layer) { map.layers.first }
+      let(:map) do
+        create(:map, private_id: trackid, name: "ulogger").tap do |m|
+          create(:feature, :line_string, layer: m.layers.first, properties: { "title" => "ulogger" })
+        end
+      end
+
+      it "does not create an additional layer for the track" do
+        expect(map.reload.layers.count).to eq 1
+      end
+
+      it "appends the point to the existing track instead of creating a new one" do
+        expect(map.reload.features.line_string.count).to eq 1
+        expect(map.reload.features.line_string.first.geometry["coordinates"])
+          .to eq([ [ 11.0416378, 49.4812338 ], [ 11.056744, 49.4631524 ],
+                  [ 11.1268342, 49.4492029, 374.29 ] ])
+      end
+
+      it "adds the leading point into the track's existing layer" do
+        expect(default_layer.reload.features.point.count).to eq 1
+      end
+    end
+
+    context "when multiple tracks share the same name" do
+      let(:map) do
+        create(:map, private_id: trackid, name: "ulogger").tap do |m|
+          older_track = create(:feature, :line_string, layer: m.layers.first, properties: { "title" => "ulogger" })
+          create(:feature, :line_string,
+            layer: create(:layer, map: m, name: "newer track layer"),
+            properties: { "title" => "ulogger" })
+          older_track.touch # the older track was changed most recently, so it should receive the new position
+        end
+      end
+
+      it "logs the position to the track with the most recent change" do
+        expect(map.reload.layers.first.features.line_string.first.geometry["coordinates"].last)
+          .to eq([ 11.1268342, 49.4492029, 374.29 ])
+      end
+
+      it "leaves the more recently created but not recently changed track untouched" do
+        newer_layer = map.reload.layers.geojson.find_by(name: "newer track layer")
+        expect(newer_layer.features.line_string.first.geometry["coordinates"].size).to eq(2)
+      end
+    end
+
     context "with attached image file" do
       before do
         payload[:image] = fixture_file_upload("mapforge-logo-icon.png", "image/png", :binary)

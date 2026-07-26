@@ -13,6 +13,6 @@ ConnectionMonitor.staleThreshold = 8 // default 6
 // Surfaces connection lifecycle (open/close/error/stale/reopen) to the console.
 // Off by default in @rails/actioncable, but the websocket is mandatory for the
 // app to function, so a silent failure to connect should never go unlogged.
-logger.enabled = true
+logger.enabled = false
 
 export default createConsumer()
