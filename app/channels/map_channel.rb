@@ -13,7 +13,7 @@ class MapChannel < ApplicationCable::Channel
     @public_id = map.public_id
     stream_from "map_channel_#{@public_id}"
     transmit({ event: "connection", uuid: uuid })
-    Rails.logger.debug { "MapChannel subscribed '#{uuid}' for '#{params[:map_id]}'" }
+    Rails.logger.info { "MapChannel subscribed '#{uuid}' for '#{params[:map_id]}'" }
   end
 
   def unsubscribed

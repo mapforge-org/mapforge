@@ -38,6 +38,7 @@ export default class extends Controller {
     // Keep original feature, shorten it to the first segment
     addUndoState('Feature update', feature)
     feature.geometry.coordinates = firstCoords
+    if (feature.properties.name) { feature.properties.name = `${feature.properties.name}_1` }
     renderLayers('geojson', true)
     sendMessage('update_feature', { ...feature })
 

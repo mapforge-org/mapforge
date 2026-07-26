@@ -21,7 +21,8 @@ module Ulogger
 
     # Called by the app on first waypoint upload
     # params: { "track" => "tom_2026-03-24_11.08" }
-    # When track name matches "<private_map_id>#<track name>", you can log into an existing map/track
+    # When track name matches "<private_map_id>#<track name>",
+    # you can log into an existing map/track
     def addtrack
       @user = User.find_by(email: session["email"])
       if params[:track] =~ /^(\d+)#(\S+)/
