@@ -23,9 +23,13 @@ const defaultRasterLayer = [
 const host = new URL(window.location.href).origin
 
 // provides caching for dem tiles used by 3d, hillshade + contour
+// alternatives:
+// url: "https://elevation-tiles-prod.s3.amazonaws.com/terrarium/{z}/{x}/{y}.png",
+// url: "https://tiles.mapterhorn.com/tilejson.json",
+// maptiler terrain tiles:
+// url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
 export let demSource = new mlcontour.DemSource({
-  url: "https://elevation-tiles-prod.s3.amazonaws.com/terrarium/{z}/{x}/{y}.png",
-  // url: "https://tiles.mapterhorn.com/tilejson.json",
+  url: "https://tiles.versatiles.org/tiles/elevation/{z}/{x}/{y}",
   encoding: "terrarium",
   maxzoom: 13,
   worker: true, // offload isoline computation to a web worker to reduce jank
@@ -37,14 +41,11 @@ export let elevationSource = {
   type: 'raster-dem',
   //encoding: "terrarium",
   tiles: [
-    // From https://registry.opendata.aws/terrain-tiles/, Mapzen terrain tiles
-    // 'https://s3.amazonaws.com/elevation-tiles-prod/normal/{z}/{x}/{y}.png'
     demSource.sharedDemProtocolUrl
   ],
-  // maptiler terrain tiles:
-  // url: 'https://api.maptiler.com/tiles/terrain-rgb/tiles.json?key=' + window.gon.map_keys.maptiler,
-  tileSize: 256,
-  maxzoom: 13
+  tileSize: 512,
+  maxzoom: 13,
+  attribution: '© <a href="https://mapterhorn.com" target="_blank">Mapterhorn</a>'
 }
 
 export function basemaps () {
@@ -205,6 +206,8 @@ export function basemaps () {
     versatilesGraybeardSnow: { style: host + '/layers/graybeard_snow.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
     versatilesNeutrino: { style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', font: 'noto_sans_regular' },
     versatilesEclipse: { style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', font: 'noto_sans_regular' },
+    // VersaTiles satellite imagery (alpha) composited with OpenFreeMap street/label overlay
+    versatilesSatelliteStreets: { style: host + '/layers/versatiles_satellite_streets.json' },
 
     // Custom local styles using OpenMapTiles schema
     // TODO: use 'suse' font when webfont loading works
