@@ -124,9 +124,9 @@ class MapChannel < ApplicationCable::Channel
     if (img = Image.find_by(public_id:))
       @feature.update!(image: img)
     else
-      # :nocov:
+      # simplecov:disable
       Rails.logger.info "Cannot associate image object '#{public_id}' to feature, not hosted on mapforge"
-      # :nocov:
+      # simplecov:enable
     end
   end
 end

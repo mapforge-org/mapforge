@@ -145,7 +145,7 @@ class MapsController < ApplicationController
     properties
   end
 
-  # :nocov:
+  # simplecov:disable
   def ip_coordinates
     # https://github.com/yhirose/maxminddb
     ret = MAXMIND_DB&.lookup(request.remote_ip)
@@ -163,7 +163,7 @@ class MapsController < ApplicationController
     Yabeda.geolocation_lookup_failures.increment({})
     nil
   end
-  # :nocov:
+  # simplecov:enable
 
   # Batch-load recent maps in 2 queries instead of 2N individual find_by calls.
   # Looks up by private_id (rw) and public_id (ro), preserving view order.
