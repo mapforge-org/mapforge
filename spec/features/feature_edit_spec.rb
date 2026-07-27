@@ -142,8 +142,8 @@ describe "Feature edit" do
         # click on line vertex with right mouse
         click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
-        expect(page).to have_text("Delete point")
-        find(".context-menu-item", text: "Delete point").click
+        expect(page).to have_text("Delete midpoint")
+        find(".context-menu-item", text: "Delete midpoint").click
         wait_for { polygon.reload.geometry["coordinates"][0].length }.to eq(4)
       end
     end
@@ -167,8 +167,8 @@ describe "Feature edit" do
       # click on line vertex with right mouse
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
-      expect(page).to have_text("Delete point")
-      find(".context-menu-item", text: "Delete point").click
+      expect(page).to have_text("Delete midpoint")
+      find(".context-menu-item", text: "Delete midpoint").click
       wait_for { line.reload.geometry["coordinates"].length }.to eq(2)
     end
 
@@ -200,7 +200,7 @@ describe "Feature edit" do
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
       # Should show both vertex menu items AND reverse track
-      expect(page).to have_text("Delete point")
+      expect(page).to have_text("Delete midpoint")
       expect(page).to have_text("Reverse track")
       find(".context-menu-item", text: "Reverse track").click
       expect(page).to have_text("Track reversed")
