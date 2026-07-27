@@ -95,6 +95,9 @@ msgstr "%{type} kopieren"
 msgid "Copy map"
 msgstr "Karte kopieren"
 
+msgid "Create individual maps for your places, tracks and events. Share your maps in real-time."
+msgstr "Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen. Teile deine Karten in Echtzeit."
+
 msgid "Create map"
 msgstr "Karte erstellen"
 
@@ -184,6 +187,9 @@ msgstr "Erfasse deinen Track: Nutze %{ulogger_link} zum Visualisieren und Teilen
 
 msgid "Mapforge is ad-free and respects your privacy."
 msgstr "Mapforge ist werbefrei und respektiert deine Privatsphäre."
+
+msgid "Mapforge: Create and share your own maps online"
+msgstr "Mapforge: Erstelle und teile deine eigenen Karten online"
 
 msgid "Most viewed"
 msgstr "Meistgesehen"
@@ -300,6 +306,9 @@ msgstr "letzte Änderung vor %{time}"
 
 msgid "log in"
 msgstr "melde dich an"
+
+msgid "map maker, create map, my maps, share maps, my maps, custom map, travel maps, map editor, indoor, geojson, maplibre, openstreetmap, privacy, open source, free to use"
+msgstr "Map erstellen, Karte erstellen, meine Karten, Karten teilen, meine Karten, individuelle Karte, Reisekarten, Karteneditor, Indoor, geojson, maplibre, openstreetmap, Datenschutz, open source, kostenlos nutzbar"
 
 msgid "public id:"
 msgstr "öffentliche ID:"
