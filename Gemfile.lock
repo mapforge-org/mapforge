@@ -184,7 +184,7 @@ GEM
     dotenv-rails (3.2.0)
       dotenv (= 3.2.0)
       railties (>= 6.1)
-    dragonfly (1.4.1)
+    dragonfly (1.4.2)
       addressable (~> 2.3)
       multi_json (~> 1.0)
       ostruct (~> 0.6.1)
