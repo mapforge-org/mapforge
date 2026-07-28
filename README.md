@@ -110,6 +110,7 @@ podman run ... -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb 
 - `SSL` — set to `true` if your container is running behind a TLS terminating reverse proxy (default: true)
 - `MONGO_URL` — MongoDB connection string (default: `localhost:27017`)
 - `MONGO_DB` — MongoDB database name (default: 'mapforge_production')
+- `MONGO_USER`, `MONGO_PASSWORD` — MongoDB credentials (optional; leave unset to connect without authentication)
 - `REDIS_URL` — Redis URL for Action Cable (default: `redis://localhost:6379/1`)
 - `OPENROUTESERVICE_KEY` — API key for routing features with [openrouteservice.org](https://openrouteservice.org/)
 - `INDOOREQUAL_KEY` — API key for [Indoorequal](https://indoorequal.com/)
