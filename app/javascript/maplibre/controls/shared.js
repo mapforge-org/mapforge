@@ -329,7 +329,11 @@ export function initLayersModal () {
             // consistent touch + mouse behaviour and styling
             forceFallback: true,
             onStart: () => { dragging = true },
-            onEnd: () => {
+            onEnd: evt => {
+              if (evt.oldIndex === evt.newIndex) {
+                setTimeout(() => { dragging = false }, 0)
+                return
+              }
               // The list is shown top-first, so reverse it back to draw order (bottom first)
               const orderedIds = Array.from(ul.querySelectorAll('li[data-feature-id]'))
                 .map(li => li.getAttribute('data-feature-id'))
