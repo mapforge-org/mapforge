@@ -14,7 +14,9 @@ default: &default
       # of host:port pairs. (required)
       hosts:
         - <%= ENV.fetch("MONGO_URL") { "localhost:27017" } %>
-      options:
+      # Anchored so env-specific clients below can merge these in; a plain
+      # `<<: *default` replaces the whole `clients` tree and would drop them.
+      options: &default_options
         # Note that all options listed below are Ruby driver client options (the mongo gem).
         # Please refer to the driver documentation of the version of the mongo gem you are using
         # for the most up-to-date list of options.
@@ -299,6 +301,7 @@ test:
       hosts:
         - <%= ENV.fetch("MONGO_URL") { "localhost:27017" } %>
       options:
+        <<: *default_options
         read:
           mode: :primary
         max_pool_size: 1
@@ -312,6 +315,7 @@ production:
       hosts:
         - <%= ENV.fetch("MONGO_URL") { "localhost:27017" } %>
       options:
+        <<: *default_options
         read:
           mode: :primary
         max_pool_size: 1

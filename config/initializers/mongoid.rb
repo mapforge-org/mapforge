@@ -28,8 +28,10 @@ begin
   Mongoid.load!(File.join(Rails.root, "config", "mongoid.yml"))
   # skip test in asset precompilation
   return if ENV["SECRET_KEY_BASE_DUMMY"]
-  Mongoid.client(:default).command({ isMaster: 1 })
-rescue Mongo::Error::NoServerAvailable, Mongo::Auth::Unauthorized => e
+  # dbStats, not ping/isMaster: those are exempt from authentication, so they
+  # succeed even when no credentials reach the server.
+  Mongoid.client(:default).command({ dbStats: 1 })
+rescue Mongo::Error::NoServerAvailable, Mongo::Auth::Unauthorized, Mongo::Error::OperationFailure => e
   puts "Could not connect to MongoDB. #{e.message}"
   exit 1
 end
