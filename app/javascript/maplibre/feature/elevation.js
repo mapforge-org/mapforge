@@ -160,15 +160,18 @@ export async function showElevationChart (feature) {
     }
   })
 
-  // Set up collapsible elevation toggle (expanded by default)
+  // Set up collapsible elevation toggle (expanded by default, except for car routes)
   const elevToggle = document.getElementById('elevation-toggle')
   const elevContent = document.getElementById('elevation-content')
   if (elevToggle && elevContent) {
+    const routeProfile = feature.properties.route?.profile || ''
+    const collapsed = routeProfile === 'car' || routeProfile.includes('driving')
     const freshToggle = elevToggle.cloneNode(true)
     elevToggle.parentNode.replaceChild(freshToggle, elevToggle)
     const elevChevron = freshToggle.querySelector('.extras-totals-chevron')
-    elevContent.classList.remove('hidden')
-    elevChevron?.classList?.replace('bi-chevron-down', 'bi-chevron-up')
+    elevContent.classList.toggle('hidden', collapsed)
+    elevChevron?.classList?.remove('bi-chevron-down', 'bi-chevron-up')
+    elevChevron?.classList?.add(collapsed ? 'bi-chevron-down' : 'bi-chevron-up')
     freshToggle.addEventListener('click', () => {
       elevContent.classList.toggle('hidden')
       elevChevron?.classList?.toggle('bi-chevron-down')

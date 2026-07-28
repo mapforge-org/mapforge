@@ -453,7 +453,7 @@ input {
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  padding: 0 0.2rem 0.5rem;
+  padding: 0.25rem 0.5rem;
   user-select: none;
 }
 
@@ -461,6 +461,7 @@ input {
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-dark-charcoal);
+  margin-bottom: 0;
 }
 
 @media (width <= 640px) {

@@ -43,7 +43,10 @@ function buildExtrasSection ({ config, totals, totalDistance }) {
   header.className = 'feature-details-card-header'
 
   const title = document.createElement('h5')
-  title.textContent = config.title + ' analysis'
+  const titleIcon = document.createElement('i')
+  titleIcon.className = 'bi ' + config.icon + ' me-2'
+  title.appendChild(titleIcon)
+  title.appendChild(document.createTextNode(config.title + ' analysis'))
   header.appendChild(title)
 
   const chevron = document.createElement('i')
