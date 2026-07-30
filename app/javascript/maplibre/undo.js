@@ -298,14 +298,14 @@ function updateTooltips() {
 
   // Update undo button
   const undoTop = undoStack[undoStack.length - 1]
-  const undoTitle = undoTop ? `Undo: ${undoTop.type}` : 'Undo'
+  const undoTitle = undoTop ? window.__('Undo: %{type}').replace('%{type}', window.__(undoTop.type)) : window.__('Undo')
   undoBtn.setAttribute('title', undoTitle)
   undoBtn.setAttribute('aria-label', undoTitle)
   undoBtn.setAttribute('data-bs-original-title', undoTitle)
 
   // Update redo button
   const redoTop = redoStack[redoStack.length - 1]
-  const redoTitle = redoTop ? `Redo: ${redoTop.type}` : 'Redo'
+  const redoTitle = redoTop ? window.__('Redo: %{type}').replace('%{type}', window.__(redoTop.type)) : window.__('Redo')
   redoBtn.setAttribute('title', redoTitle)
   redoBtn.setAttribute('aria-label', redoTitle)
   redoBtn.setAttribute('data-bs-original-title', redoTitle)

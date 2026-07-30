@@ -41,7 +41,7 @@ export class ControlGroup {
 export class MapSettingsControl {
   constructor (_options) {
     this._container = document.createElement('div')
-    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-map" type="button" title="Map settings" aria-label="Map settings" aria-pressed="false"><b><i class="bi bi-globe-americas"></i></b></button>'
+    this._container.innerHTML = `<button class="maplibregl-ctrl-btn maplibregl-ctrl-map" type="button" title="${window.__('Map settings')}" aria-label="${window.__('Map settings')}" aria-pressed="false"><b><i class="bi bi-globe-americas"></i></b></button>`
     this._container.onclick = function (e) {
       const modal = document.querySelector('#settings-modal')
       if (modal.classList.contains('show')) {
@@ -72,7 +72,7 @@ export class MapSettingsControl {
 export class MapShareControl {
   constructor (_options) {
     this._container = document.createElement('div')
-    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-share" type="button" title="Share map" aria-label="Share map" aria-pressed="false"><b><i class="bi bi-share-fill"></i></b></button>'
+    this._container.innerHTML = `<button class="maplibregl-ctrl-btn maplibregl-ctrl-share" type="button" title="${window.__('Share map')}" aria-label="${window.__('Share map')}" aria-pressed="false"><b><i class="bi bi-share-fill"></i></b></button>`
     this._container.onclick = function (e) {
       const modal = document.querySelector('#share-modal')
       if (modal.classList.contains('show')) {
@@ -107,7 +107,7 @@ export class MapLayersControl {
   constructor (_options) {
     this._container = document.createElement('div')
     this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-layers" ' +
-      'type="button" title="Map layers" aria-label="Map layers" aria-pressed="false">' +
+      `type="button" title="${window.__('Map layers')}" aria-label="${window.__('Map layers')}" aria-pressed="false">` +
       '<b><i class="bi bi-stack"></i></b></button>'
     this._container.onclick = function (e) {
       const modal = document.querySelector('#layers-modal')
@@ -140,7 +140,7 @@ export class ConnectionStatusControl {
   constructor(_options) {
     this._container = document.createElement('div')
     this._container.classList.add('hidden')
-    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-connection" type="button" title="Connection error" aria-label="Connection error" aria-pressed="false"><b><i class="bi bi-wifi-off"></i></b></button>'
+    this._container.innerHTML = `<button class="maplibregl-ctrl-btn maplibregl-ctrl-connection" type="button" title="${window.__('Connection error')}" aria-label="${window.__('Connection error')}" aria-pressed="false"><b><i class="bi bi-wifi-off"></i></b></button>`
   }
 
   onAdd(map) {
@@ -236,13 +236,13 @@ export function initLayersModal () {
       if (layer.show === false) {
         visBtn.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
         visBtnMobile.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
-        visBtn.setAttribute('title', 'Show layer')
+        visBtn.setAttribute('title', window.__('Show layer'))
         visBtnMobile.querySelector('.layer-visibility-text').textContent = 'Show layer'
         layerElement.classList.add('layer-dimmed')
       } else {
         visBtn.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
         visBtnMobile.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
-        visBtn.setAttribute('title', 'Hide layer')
+        visBtn.setAttribute('title', window.__('Hide layer'))
         visBtnMobile.querySelector('.layer-visibility-text').textContent = 'Hide layer'
       }
       const isFirstGeojsonLayer = layer.type === 'geojson' &&
@@ -448,7 +448,7 @@ export function initializeDefaultControls () {
   )
   const geocoderButton = document.querySelector('.maplibregl-ctrl-geocoder')
   geocoderButton.classList.add('hidden')
-  geocoderButton.title = 'Search location'
+  geocoderButton.title = window.__('Search location')
   document.querySelector('.maplibregl-ctrl-geocoder--icon-search').addEventListener('click', (_e) => {
     if (parseFloat(window.getComputedStyle(geocoderButton).width) > 100) {
       geocoderButton.style.removeProperty('width')
@@ -480,7 +480,7 @@ export function initializeDefaultControls () {
   map.once('load', function (_e) {
     if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
       document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('disabled', '1')
-      document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('data-bs-original-title', 'Location (https only)')
+      document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('data-bs-original-title', window.__('Location (https only)'))
     }
     // delayed via timeout, the geocoders !important transition overrides data-aos-delay
     setTimeout(() => { animateElement('.maplibregl-ctrl-geocoder', 'fade-left') }, 500)

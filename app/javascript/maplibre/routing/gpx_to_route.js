@@ -219,7 +219,7 @@ export async function convertToRoute(originalFeature, profile) {
     }
 
     // Add to map and persist
-    addUndoState('Route created from GPX', newFeature)
+    addUndoState(window.__('Route created from GPX'), newFeature)
     upsert(newFeature)
     sendMessage('new_feature', newFeature)
 
@@ -365,7 +365,7 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
     newFeature.properties.title = originalFeature.properties.title + ' (routed)'
   }
 
-  addUndoState('Route created from GPX', newFeature)
+  addUndoState(window.__('Route created from GPX'), newFeature)
   upsert(newFeature)
   sendMessage('new_feature', newFeature)
 

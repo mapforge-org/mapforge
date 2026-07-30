@@ -4,7 +4,7 @@ import { resetControls } from 'maplibre/controls/shared';
 export class MapSelectControl {
   constructor (_options) {
     this._container = document.createElement('div')
-    this._container.innerHTML = '<button class="maplibregl-ctrl-btn maplibregl-ctrl-select" type="button" title="Select mode" aria-label="Select mode" aria-pressed="false"><b><i class="bi bi-hand-index"></i></b></button>'
+    this._container.innerHTML = `<button class="maplibregl-ctrl-btn maplibregl-ctrl-select" type="button" title="${window.__('Select mode')}" aria-label="${window.__('Select mode')}" aria-pressed="false"><b><i class="bi bi-hand-index"></i></b></button>`
     this._container.onclick = function (e) {
       resetControls()
       resetEditControls()

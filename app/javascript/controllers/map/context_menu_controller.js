@@ -17,7 +17,7 @@ export default class extends Controller {
     const feature = getFeature(target.dataset.featureId, 'geojson')
 
     const vertexIndex = target.dataset.index
-    addUndoState('Feature update', feature)
+    addUndoState(window.__('Feature update'), feature)
     if (feature.geometry.type === 'LineString') { feature.geometry.coordinates.splice(vertexIndex, 1) }
     if (feature.geometry.type === 'Polygon') { feature.geometry.coordinates[0].splice(vertexIndex, 1) }
     applyFeatureUpdate(feature, { resetDraw: true, refreshRouteExtras: true, refreshKmMarkers: true })
@@ -36,7 +36,7 @@ export default class extends Controller {
     const secondCoords = coords.slice(vertexIndex)
 
     // Keep original feature, shorten it to the first segment
-    addUndoState('Feature update', feature)
+    addUndoState(window.__('Feature update'), feature)
     feature.geometry.coordinates = firstCoords
     if (feature.properties.name) { feature.properties.name = `${feature.properties.name}_1` }
     renderLayers('geojson', true)
@@ -48,7 +48,7 @@ export default class extends Controller {
       geometry: { type: 'LineString', coordinates: secondCoords },
       properties: JSON.parse(JSON.stringify(feature.properties || {}))
     }
-    addUndoState('Feature added', secondFeature)
+    addUndoState(window.__('Feature added'), secondFeature)
     addFeature(secondFeature)
     sendMessage('new_feature', secondFeature)
 
@@ -63,7 +63,7 @@ export default class extends Controller {
     const feature = getFeature(target.dataset.featureId, 'geojson')
 
     if (feature.geometry.type !== 'LineString') { return }
-    addUndoState('Feature update', feature)
+    addUndoState(window.__('Feature update'), feature)
 
     // Reverse coordinates
     feature.geometry.coordinates.reverse()
@@ -106,7 +106,7 @@ export default class extends Controller {
       return
     }
     addFeature(feature)
-    addUndoState('Feature added', feature)
+    addUndoState(window.__('Feature added'), feature)
     // Geometries might arrive without elevation; fetch it before save
     if (feature.geometry.type === 'LineString' ) {
       updateElevation(feature).finally(() => {

@@ -25,8 +25,8 @@
   -# map header and title
   %nav.mapforge-font#map-head.dark-shadow{ data: { 'controller': "header" } }
     - unless params['nomenu'] == 'true'
-      #map-nav-toggle.navbar-toggler-icon.ms-2.me-2{ title: "Toggle Navigation", data: { 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom" } }
-    %h1#map-title{ title: "Map settings", data: { 'action': "click->header#openMapSettings", 'toggle': "tooltip", 'bs-placement': "bottom" } }= @map.name
+      #map-nav-toggle.navbar-toggler-icon.ms-2.me-2{ title: _("Show navigation"), data: { 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom" } }
+    %h1#map-title{ title: _("Map settings"), data: { 'action': "click->header#openMapSettings", 'toggle': "tooltip", 'bs-placement': "bottom" } }= @map.name
 
 - if params['nomenu'] == 'true'
   = link_to root_url, { '_target': 'blank' } do

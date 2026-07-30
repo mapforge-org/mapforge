@@ -181,7 +181,7 @@ export default class extends Controller {
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
-    addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
+    addUndoState(window.__('Layer updated'), { ...layer.toJSON(), geojson: layer.geojson })
 
     layer.query = layerElement.querySelector('.overpass-query').value
     layer.name = layerElement.querySelector('.overpass-name').value
@@ -202,7 +202,7 @@ export default class extends Controller {
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
-    addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
+    addUndoState(window.__('Layer updated'), { ...layer.toJSON(), geojson: layer.geojson })
 
     layer.query = layerElement.querySelector('.raster-url').value
     layer.name = layerElement.querySelector('.raster-name').value
@@ -257,7 +257,7 @@ export default class extends Controller {
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(l => l.id === layerId)
     const wasVisible = layer.show !== false
-    if (window.gon.map_mode === "rw") { addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson }) }
+    if (window.gon.map_mode === "rw") { addUndoState(window.__('Layer updated'), { ...layer.toJSON(), geojson: layer.geojson }) }
 
     layer.show = !wasVisible
     setLayerVisibility(layer.sourceId, layer.show)
@@ -272,7 +272,7 @@ export default class extends Controller {
     })
     const visBtn = layerElement.querySelector('button.layer-visibility')
     const visBtnMobile = layerElement.querySelector('button.layer-visibility-mobile')
-    const newText = layer.show ? 'Hide layer' : 'Show layer'
+    const newText = layer.show ? window.__('Hide layer') : window.__('Show layer')
 
     // Update tooltip title attributes
     visBtn.setAttribute('title', newText)
@@ -380,7 +380,7 @@ export default class extends Controller {
     let layer = createLayerInstance(layerData)
     layers.push(layer)
 
-    addUndoState('Layer added', layerData)
+    addUndoState(window.__('Layer added'), layerData)
     initLayersModal()
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)
@@ -395,7 +395,7 @@ export default class extends Controller {
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
 
-    addUndoState('Layer deleted', { ...layer.toJSON(), geojson: layer.geojson })
+    addUndoState(window.__('Layer deleted'), { ...layer.toJSON(), geojson: layer.geojson })
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)

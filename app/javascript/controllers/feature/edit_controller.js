@@ -308,7 +308,7 @@ export default class extends Controller {
 
   addUndo() {
     const feature = this.getEditFeature()
-    addUndoState('Feature property update', feature)
+    addUndoState(window.__('Feature property update'), feature)
   }
 
   getEditFeature () {

@@ -303,7 +303,7 @@ function handleCreate (e) {
 
   // status('Feature ' + feature.id + ' created')
   addFeature(feature)
-  addUndoState('Feature added', feature)
+  addUndoState(window.__('Feature added'), feature)
   // redraw if the painted feature was changed in this method
   if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') {
     renderLayers('geojson', false)
@@ -339,7 +339,7 @@ async function handleUpdate (e) {
     // console.log('Feature update event triggered without update')
     return
   }
-  addUndoState('Feature update', geojsonFeature)
+  addUndoState(window.__('Feature update'), geojsonFeature)
 
   // change route with openrouteservice
   if (selectedFeature?.properties?.route?.provider === 'ors') {
@@ -368,7 +368,7 @@ export function handleDelete (e) {
   selectedFeature = null
   const deletedFeature = e.features[0] // Assuming one feature is deleted at a time
   destroyFeature(deletedFeature.id)
-  addUndoState('Feature deleted', deletedFeature)
+  addUndoState(window.__('Feature deleted'), deletedFeature)
   resetDirections()
   resetControls()
   status('Feature deleted')

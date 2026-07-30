@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-26 23:35+0200\n"
-"PO-Revision-Date: 2026-07-26 23:35+0200\n"
+"POT-Creation-Date: 2026-07-30 23:47+0200\n"
+"PO-Revision-Date: 2026-07-30 23:47+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -90,6 +90,22 @@ msgstr ""
 msgid "Buy me a coffee"
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/buttons/lines.js:115
+msgid "Calculate a bike route (b)"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/lines.js:93
+msgid "Calculate a car route (r)"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/lines.js:135
+msgid "Calculate a walking route (w)"
+msgstr ""
+
+#: ../app/views/maps/modals/_feature.haml:27
+msgid "Change colors and appearance"
+msgstr ""
+
 #: ../app/views/shared/_footer.html.haml:18
 msgid "Changelog"
 msgstr ""
@@ -106,16 +122,44 @@ msgstr ""
 msgid "Clear filter"
 msgstr ""
 
+#: ../app/javascript/maplibre/feature.js:75
+msgid "Click to toggle format"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:98
 msgid "Collaboration"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/shared.js:143
+msgid "Connection error"
+msgstr ""
+
+#: ../app/views/maps/modals/_feature.haml:30
+msgid "Convert to route and edit JSON"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/context_menu.js:85
 msgid "Copy"
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/context_menu.js:85
+msgid "Copy %{type}"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature.js:78
+msgid "Copy coordinates to clipboard"
+msgstr ""
+
+#: ../app/views/maps/modals/_share.haml:25 ../app/views/maps/modals/_share.haml:38 ../app/views/maps/modals/_share.haml:51
+msgid "Copy link to clipboard"
+msgstr ""
+
 #: ../app/views/maps/_map.haml:21
 msgid "Copy map"
+msgstr ""
+
+#: ../app/views/layouts/_head.html.haml:17
+msgid "Create individual maps for your places, tracks and events. Share your maps in real-time."
 msgstr ""
 
 #: ../app/views/shared/_header.html.haml:25 ../app/views/shared/_header.html.haml:58
@@ -140,6 +184,14 @@ msgstr ""
 
 #: ../app/javascript/maplibre/controls/context_menu.js:101
 msgid "Delete"
+msgstr ""
+
+#: ../app/views/maps/modals/_layers.haml:128
+msgid "Delete Layer"
+msgstr ""
+
+#: ../app/views/maps/modals/feature/_edit_ui.haml:163
+msgid "Delete feature"
 msgstr ""
 
 #: ../app/views/maps/_map.haml:25
@@ -174,6 +226,42 @@ msgstr ""
 msgid "Docs"
 msgstr ""
 
+#: ../app/views/maps/modals/_feature.haml:66
+msgid "Download as GPX"
+msgstr ""
+
+#: ../app/views/maps/modals/_feature.haml:62
+msgid "Download as geoJSON"
+msgstr ""
+
+#: ../app/javascript/maplibre/map.js:99
+msgid "Drag to rotate map, click to reset north"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/lines.js:71
+msgid "Draw freehand (f)"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/lines.js:57
+msgid "Draw line (l)"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/point.js:7
+msgid "Draw point"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/point.js:7
+msgid "Draw point (p)"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/polygon.js:7
+msgid "Draw polygon"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/polygon.js:7
+msgid "Draw polygon (o)"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:83
 msgid "Draw shapes and style them:"
 msgstr ""
@@ -182,12 +270,48 @@ msgstr ""
 msgid "Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data"
 msgstr ""
 
+#: ../app/views/maps/modals/_layers.haml:126
+msgid "Edit query"
+msgstr ""
+
+#: ../app/views/maps/modals/_feature.haml:21
+msgid "Edit shape on map"
+msgstr ""
+
+#: ../app/views/maps/modals/_feature.haml:24
+msgid "Edit title and description"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:52
 msgid "Feature Tour"
 msgstr ""
 
+#: ../app/javascript/controllers/map/context_menu_controller.js:51 ../app/javascript/controllers/map/context_menu_controller.js:109 ../app/javascript/controllers/map_controller.js:79 ../app/javascript/maplibre/edit.js:306
+msgid "Feature added"
+msgstr ""
+
+#: ../app/javascript/maplibre/edit.js:371
+msgid "Feature deleted"
+msgstr ""
+
+#: ../app/javascript/controllers/feature/edit_controller.js:311
+msgid "Feature property update"
+msgstr ""
+
+#: ../app/javascript/controllers/map/context_menu_controller.js:20 ../app/javascript/controllers/map/context_menu_controller.js:39 ../app/javascript/controllers/map/context_menu_controller.js:66 ../app/javascript/maplibre/edit.js:342
+msgid "Feature update"
+msgstr ""
+
+#: ../app/javascript/maplibre/map.js:95
+msgid "Find my location"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:47
 msgid "Happy mapping!"
+msgstr ""
+
+#: ../app/views/maps/modals/_layers.haml:122 ../app/views/maps/modals/_layers.haml:138 ../app/javascript/controllers/map/layers_controller.js:275 ../app/javascript/maplibre/controls/shared.js:245
+msgid "Hide layer"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:81
@@ -202,8 +326,28 @@ msgstr ""
 msgid "In this gallery, your personal maps will be shown."
 msgstr ""
 
+#: ../app/javascript/controllers/map/layers_controller.js:383
+msgid "Layer added"
+msgstr ""
+
+#: ../app/javascript/controllers/map/layers_controller.js:398
+msgid "Layer deleted"
+msgstr ""
+
+#: ../app/javascript/controllers/map/layers_controller.js:184 ../app/javascript/controllers/map/layers_controller.js:205 ../app/javascript/controllers/map/layers_controller.js:260
+msgid "Layer updated"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:101
 msgid "Live updates: Map changes are synchronized via websockets"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/shared.js:483
+msgid "Location (https only)"
+msgstr ""
+
+#: ../app/javascript/maplibre/map.js:96
+msgid "Location not available"
 msgstr ""
 
 #: ../app/views/shared/_header.html.haml:100
@@ -218,12 +362,28 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+#: ../app/javascript/maplibre/map.js:97
+msgid "Map"
+msgstr ""
+
 #: ../app/views/maps/_map.haml:34 ../app/views/maps/_map.haml:36
 msgid "Map '%{name}'"
 msgstr ""
 
 #: ../app/views/maps/index.html.haml:6 ../app/views/shared/_header.html.haml:17 ../app/views/shared/_header.html.haml:34
 msgid "Map Gallery"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/shared.js:110
+msgid "Map layers"
+msgstr ""
+
+#: ../app/javascript/maplibre/map.js:98
+msgid "Map marker"
+msgstr ""
+
+#: ../app/views/maps/maplibre.haml:29 ../app/javascript/maplibre/controls/shared.js:44
+msgid "Map settings"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:68
@@ -236,6 +396,10 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:41
 msgid "Mapforge is ad-free and respects your privacy."
+msgstr ""
+
+#: ../app/views/layouts/_head.html.haml:2
+msgid "Mapforge: Create and share your own maps online"
 msgstr ""
 
 #: ../app/views/maps/_list_filter.haml:1
@@ -278,6 +442,22 @@ msgstr ""
 msgid "Recently viewed Maps"
 msgstr ""
 
+#: ../app/javascript/maplibre/undo.js:308
+msgid "Redo"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/undo.js:25
+msgid "Redo last change"
+msgstr ""
+
+#: ../app/javascript/maplibre/undo.js:308
+msgid "Redo: %{type}"
+msgstr ""
+
+#: ../app/views/maps/modals/_layers.haml:124
+msgid "Refresh layer for current view"
+msgstr ""
+
 #: ../app/views/shared/_footer.html.haml:37
 msgid "Report issue"
 msgstr ""
@@ -290,8 +470,16 @@ msgstr ""
 msgid "Reverse track"
 msgstr ""
 
+#: ../app/javascript/maplibre/routing/gpx_to_route.js:222 ../app/javascript/maplibre/routing/gpx_to_route.js:368
+msgid "Route created from GPX"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:112
 msgid "Run from your home screen as %{app_link}"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/shared.js:451
+msgid "Search location"
 msgstr ""
 
 #: ../app/views/maps/_list_filter.haml:13
@@ -302,8 +490,28 @@ msgstr ""
 msgid "See how it works"
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/buttons/lines.js:13
+msgid "Select line draw mode"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/lines.js:13 ../app/javascript/maplibre/controls/buttons/select.js:7
+msgid "Select mode"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:134
 msgid "Self-Hosted Solution: You can use Mapforge either on %{mapforge_link}, or %{deploy_link} it in your own infrastructure"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/shared.js:75
+msgid "Share map"
+msgstr ""
+
+#: ../app/javascript/controllers/map/layers_controller.js:275 ../app/javascript/maplibre/controls/shared.js:239
+msgid "Show layer"
+msgstr ""
+
+#: ../app/views/maps/maplibre.haml:28
+msgid "Show navigation"
 msgstr ""
 
 #: ../app/views/maps/_list.haml:10
@@ -316,6 +524,10 @@ msgstr[1] ""
 msgid "Storing only minimal data about you, no sharing of data with ad- or analytics companies."
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/view.js:8
+msgid "Switch to edit mode"
+msgstr ""
+
 #: ../app/views/shared/_footer.html.haml:54
 msgid "Terms of Service"
 msgstr ""
@@ -324,7 +536,11 @@ msgstr ""
 msgid "This map is private and not linked from the public listing."
 msgstr ""
 
-#: ../app/views/shared/_header.html.haml:8 ../app/views/shared/_header.html.haml:71
+#: ../app/javascript/maplibre/map.js:94
+msgid "Toggle attribution"
+msgstr ""
+
+#: ../app/views/maps/maplibre.haml:28 ../app/views/shared/_header.html.haml:8 ../app/views/shared/_header.html.haml:71
 msgid "Toggle navigation"
 msgstr ""
 
@@ -332,8 +548,28 @@ msgstr ""
 msgid "Tour planning with Mapforge:"
 msgstr ""
 
+#: ../app/javascript/maplibre/routing/directions.js:304
+msgid "Track added"
+msgstr ""
+
+#: ../app/javascript/maplibre/routing/directions.js:300
+msgid "Track update"
+msgstr ""
+
 #: ../app/views/shared/_footer.html.haml:14 ../app/views/shared/_header.html.haml:20 ../app/views/shared/_header.html.haml:39
 msgid "Tutorials"
+msgstr ""
+
+#: ../app/javascript/maplibre/undo.js:301
+msgid "Undo"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/buttons/undo.js:6
+msgid "Undo last change"
+msgstr ""
+
+#: ../app/javascript/maplibre/undo.js:301
+msgid "Undo: %{type}"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:107
@@ -342,6 +578,14 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:128
 msgid "Used open source projects: %{rails_link} for the backend, %{maplibre_link} and %{osm_link} for the frontend, %{draw_link}, %{turf_link}, %{ors_link} as helping libraries."
+msgstr ""
+
+#: ../app/views/maps/modals/_layers.haml:13
+msgid "Valid formats are gpx, kml, geojson and image files. WGS84 format, max. 2.5MB"
+msgstr ""
+
+#: ../app/views/maps/modals/_feature.haml:18
+msgid "View feature information"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:99
@@ -368,6 +612,14 @@ msgstr ""
 msgid "Your open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events."
 msgstr ""
 
+#: ../app/javascript/maplibre/map.js:100
+msgid "Zoom in"
+msgstr ""
+
+#: ../app/javascript/maplibre/map.js:101
+msgid "Zoom out"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:111
 msgid "app on your phone"
 msgstr ""
@@ -390,6 +642,10 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:37
 msgid "log in"
+msgstr ""
+
+#: ../app/views/layouts/_head.html.haml:18
+msgid "map maker, create map, my maps, share maps, my maps, custom map, travel maps, map editor, indoor, geojson, maplibre, openstreetmap, privacy, open source, free to use"
 msgstr ""
 
 #: ../app/views/maps/_map.haml:46

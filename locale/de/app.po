@@ -71,6 +71,18 @@ msgstr "Durchstöbere die %{gallery_link}, lerne auf der %{tutorial_link} wie du
 msgid "Buy me a coffee"
 msgstr "Spende mir einen Kaffee"
 
+msgid "Calculate a bike route (b)"
+msgstr "Fahrradroute berechnen (b)"
+
+msgid "Calculate a car route (r)"
+msgstr "Autoroute berechnen (r)"
+
+msgid "Calculate a walking route (w)"
+msgstr "Fußweg berechnen (w)"
+
+msgid "Change colors and appearance"
+msgstr "Farben und Aussehen ändern"
+
 msgid "Changelog"
 msgstr "Changelog"
 
@@ -83,14 +95,29 @@ msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad, 3D-G
 msgid "Clear filter"
 msgstr "Filter entfernen"
 
+msgid "Click to toggle format"
+msgstr "Format wechseln"
+
 msgid "Collaboration"
 msgstr "Zusammenarbeit"
+
+msgid "Connection error"
+msgstr "Verbindungsfehler"
+
+msgid "Convert to route and edit JSON"
+msgstr "In Route umwandeln und JSON bearbeiten"
 
 msgid "Copy"
 msgstr "Kopieren"
 
 msgid "Copy %{type}"
 msgstr "%{type} kopieren"
+
+msgid "Copy coordinates to clipboard"
+msgstr "Koordinaten in die Zwischenablage kopieren"
+
+msgid "Copy link to clipboard"
+msgstr "Link in die Zwischenablage kopieren"
 
 msgid "Copy map"
 msgstr "Karte kopieren"
@@ -116,6 +143,12 @@ msgstr "Passe deine Karte an"
 msgid "Delete"
 msgstr "Löschen"
 
+msgid "Delete Layer"
+msgstr "Ebene löschen"
+
+msgid "Delete feature"
+msgstr "Objekt löschen"
+
 msgid "Delete map"
 msgstr "Karte löschen"
 
@@ -140,17 +173,71 @@ msgstr "Möchtest du diese Karte kopieren?"
 msgid "Docs"
 msgstr "Doku"
 
+msgid "Download as GPX"
+msgstr "Als GPX herunterladen"
+
+msgid "Download as geoJSON"
+msgstr "Als geoJSON herunterladen"
+
+msgid "Drag to rotate map, click to reset north"
+msgstr "Ziehen zum Drehen der Karte, klicken für Norden"
+
+msgid "Draw freehand (f)"
+msgstr "Freihand zeichnen (f)"
+
+msgid "Draw line (l)"
+msgstr "Linie zeichnen (l)"
+
+msgid "Draw point"
+msgstr "Punkt zeichnen"
+
+msgid "Draw point (p)"
+msgstr "Punkt zeichnen (p)"
+
+msgid "Draw polygon"
+msgstr "Polygon zeichnen"
+
+msgid "Draw polygon (o)"
+msgstr "Polygon zeichnen (o)"
+
 msgid "Draw shapes and style them:"
 msgstr "Zeichne Objekte und gestalte sie:"
 
 msgid "Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data"
 msgstr "Dynamische Ebenen: Nutze %{overpass_link}, um Ebenen aus OpenStreetMap-Daten hinzuzufügen"
 
+msgid "Edit query"
+msgstr "Abfrage bearbeiten"
+
+msgid "Edit shape on map"
+msgstr "Form auf der Karte bearbeiten"
+
+msgid "Edit title and description"
+msgstr "Titel und Beschreibung bearbeiten"
+
 msgid "Feature Tour"
 msgstr "Feature Tour"
 
+msgid "Feature added"
+msgstr "Objekt hinzugefügt"
+
+msgid "Feature deleted"
+msgstr "Objekt gelöscht"
+
+msgid "Feature property update"
+msgstr "Objekteigenschaft geändert"
+
+msgid "Feature update"
+msgstr "Objekt geändert"
+
+msgid "Find my location"
+msgstr "Meinen Standort finden"
+
 msgid "Happy mapping!"
 msgstr "Viel Spaß mit deiner Karte!"
+
+msgid "Hide layer"
+msgstr "Ebene ausblenden"
 
 msgid "Import from GeoJSON, GPX and KML"
 msgstr "Importiere GeoJSON, GPX und KML"
@@ -161,8 +248,23 @@ msgstr "Importiere deine Daten aus GeoJSON, GPX und KML"
 msgid "In this gallery, your personal maps will be shown."
 msgstr "In dieser Galerie werden deine persönlichen Karten angezeigt."
 
+msgid "Layer added"
+msgstr "Ebene hinzugefügt"
+
+msgid "Layer deleted"
+msgstr "Ebene gelöscht"
+
+msgid "Layer updated"
+msgstr "Ebene geändert"
+
 msgid "Live updates: Map changes are synchronized via websockets"
 msgstr "Live-Updates: Kartenänderungen werden über WebSockets synchronisiert"
+
+msgid "Location (https only)"
+msgstr "Standort (nur mit https)"
+
+msgid "Location not available"
+msgstr "Standort nicht verfügbar"
 
 msgid "Login"
 msgstr "Anmelden"
@@ -173,11 +275,23 @@ msgstr "Login: Ordne deine Karten deinem Konto zu"
 msgid "Logout"
 msgstr "Abmelden"
 
+msgid "Map"
+msgstr "Karte"
+
 msgid "Map '%{name}'"
 msgstr "Karte '%{name}'"
 
 msgid "Map Gallery"
 msgstr "Kartengalerie"
+
+msgid "Map layers"
+msgstr "Kartenebenen"
+
+msgid "Map marker"
+msgstr "Kartenmarkierung"
+
+msgid "Map settings"
+msgstr "Karteneinstellungen"
 
 msgid "Map tools"
 msgstr "Kartenwerkzeuge"
@@ -221,6 +335,18 @@ msgstr "Kürzlich aktualisiert"
 msgid "Recently viewed Maps"
 msgstr "Kürzlich angesehene Karten"
 
+msgid "Redo"
+msgstr "Wiederherstellen"
+
+msgid "Redo last change"
+msgstr "Letzte Änderung wiederherstellen"
+
+msgid "Redo: %{type}"
+msgstr "Wiederherstellen: %{type}"
+
+msgid "Refresh layer for current view"
+msgstr "Ebene für aktuellen Kartenausschnitt neu laden"
+
 msgid "Report issue"
 msgstr "Fehler melden"
 
@@ -230,8 +356,14 @@ msgstr "Responsives Design: Funktioniert gut auf Desktop und Mobilgeräten"
 msgid "Reverse track"
 msgstr "Track umkehren"
 
+msgid "Route created from GPX"
+msgstr "Route aus GPX erstellt"
+
 msgid "Run from your home screen as %{app_link}"
 msgstr "Starte vom Homescreen als %{app_link}"
+
+msgid "Search location"
+msgstr "Ort suchen"
 
 msgid "Search maps"
 msgstr "Karten suchen"
@@ -239,8 +371,23 @@ msgstr "Karten suchen"
 msgid "See how it works"
 msgstr "So funktioniert's"
 
+msgid "Select line draw mode"
+msgstr "Linien-Zeichenmodus wählen"
+
+msgid "Select mode"
+msgstr "Auswahlmodus"
+
 msgid "Self-Hosted Solution: You can use Mapforge either on %{mapforge_link}, or %{deploy_link} it in your own infrastructure"
 msgstr "Selbst gehostete Lösung: Du kannst Mapforge entweder unter %{mapforge_link} nutzen, oder %{deploy_link} es in deiner eigenen Infrastruktur"
+
+msgid "Share map"
+msgstr "Karte teilen"
+
+msgid "Show layer"
+msgstr "Ebene einblenden"
+
+msgid "Show navigation"
+msgstr "Navigation anzeigen"
 
 msgid "Showing %{count} map"
 msgid_plural "Showing %{count} maps"
@@ -250,11 +397,17 @@ msgstr[1] "Zeige %{count} Karten"
 msgid "Storing only minimal data about you, no sharing of data with ad- or analytics companies."
 msgstr "Speichert nur minimale Daten über dich, keine Weitergabe von Daten an Werbe- oder Analyseunternehmen."
 
+msgid "Switch to edit mode"
+msgstr "Zum Bearbeitungsmodus wechseln"
+
 msgid "Terms of Service"
 msgstr "Nutzungsbedingungen"
 
 msgid "This map is private and not linked from the public listing."
 msgstr "Diese Karte ist privat und nicht in der öffentlichen Liste verlinkt."
+
+msgid "Toggle attribution"
+msgstr "Quellenangaben ein-/ausblenden"
 
 msgid "Toggle navigation"
 msgstr "Navigation umschalten"
@@ -262,14 +415,35 @@ msgstr "Navigation umschalten"
 msgid "Tour planning with Mapforge:"
 msgstr "Tourenplanung mit Mapforge:"
 
+msgid "Track added"
+msgstr "Track hinzugefügt"
+
+msgid "Track update"
+msgstr "Track geändert"
+
 msgid "Tutorials"
 msgstr "Tutorials"
+
+msgid "Undo"
+msgstr "Rückgängig"
+
+msgid "Undo last change"
+msgstr "Letzte Änderung rückgängig machen"
+
+msgid "Undo: %{type}"
+msgstr "Rückgängig: %{type}"
 
 msgid "Use Mapforge with different clients + apps"
 msgstr "Nutze Mapforge mit verschiedenen Clients und Apps"
 
 msgid "Used open source projects: %{rails_link} for the backend, %{maplibre_link} and %{osm_link} for the frontend, %{draw_link}, %{turf_link}, %{ors_link} as helping libraries."
 msgstr "Verwendete Open-Source-Projekte: %{rails_link} für das Backend, %{maplibre_link} und %{osm_link} für das Frontend, %{draw_link}, %{turf_link}, %{ors_link} als Hilfsbibliotheken."
+
+msgid "Valid formats are gpx, kml, geojson and image files. WGS84 format, max. 2.5MB"
+msgstr "Gültige Formate sind gpx, kml, geojson und Bilddateien. WGS84-Format, max. 2,5 MB"
+
+msgid "View feature information"
+msgstr "Objektinformationen anzeigen"
 
 msgid "Work with others and stream map changes to all connected clients"
 msgstr "Arbeite mit anderen zusammen und übertrage Kartenänderungen live an alle verbundenen Geräte"
@@ -288,6 +462,12 @@ msgstr "Deine Karten (%{count})"
 
 msgid "Your open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events."
 msgstr "Dein Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen."
+
+msgid "Zoom in"
+msgstr "Vergrößern"
+
+msgid "Zoom out"
+msgstr "Verkleinern"
 
 msgid "app on your phone"
 msgstr "App auf deinem Handy"

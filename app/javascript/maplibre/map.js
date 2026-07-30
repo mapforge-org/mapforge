@@ -88,7 +88,18 @@ export async function initializeMap (divId = 'maplibre-map') {
     maplibreLogo: true,
     hash: true, // enable hash in URL for map center/zoom
     fadeDuration: 200, // shorter fade
-    interactive: (window.gon.map_mode !== 'static') // can move/zoom map
+    interactive: (window.gon.map_mode !== 'static'), // can move/zoom map
+    // merged over maplibres defaultLocale, only listed keys get overridden
+    locale: {
+      'AttributionControl.ToggleAttribution': window.__('Toggle attribution'),
+      'GeolocateControl.FindMyLocation': window.__('Find my location'),
+      'GeolocateControl.LocationNotAvailable': window.__('Location not available'),
+      'Map.Title': window.__('Map'),
+      'Marker.Title': window.__('Map marker'),
+      'NavigationControl.ResetBearing': window.__('Drag to rotate map, click to reset north'),
+      'NavigationControl.ZoomIn': window.__('Zoom in'),
+      'NavigationControl.ZoomOut': window.__('Zoom out')
+    }
     // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
   })
 

@@ -10,7 +10,7 @@ let lineMenu
 export class LineMenuControl {
   constructor(_options) {
     this._container = document.createElement('div')
-    this._container.innerHTML = '<button class="line-menu-btn mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_line" type="button" title="Select line draw mode" aria-label="Select mode" aria-pressed="false" data-bs-placement="right"></button>'
+    this._container.innerHTML = `<button class="line-menu-btn mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_line" type="button" title="${window.__('Select line draw mode')}" aria-label="${window.__('Select mode')}" aria-pressed="false" data-bs-placement="right"></button>`
     this._container.onclick = function (e) {
     resetHighlightedFeature()
     resetControls()
@@ -54,7 +54,7 @@ export function addLineMenu() {
 function addLineButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const lineButton = originalButton.cloneNode(true)
-  lineButton.title = 'Draw line (l)'
+  lineButton.title = window.__('Draw line (l)')
   lineButton.removeEventListener('click', null)
   lineButton.addEventListener('click', (_e) => { toggleDrawMode('draw_line_string') })
   document.addEventListener('keydown', (e) => {
@@ -68,7 +68,7 @@ function addLineButton() {
 function addPaintButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const paintButton = originalButton.cloneNode(true)
-  paintButton.title = 'Draw freehand (f)'
+  paintButton.title = window.__('Draw freehand (f)')
   paintButton.classList.remove('mapbox-gl-draw_line')
   paintButton.classList.add('mapbox-gl-draw_paint')
   const icon = document.createElement('i')
@@ -90,7 +90,7 @@ function addPaintButton() {
 function addRoadButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const roadButton = originalButton.cloneNode(true)
-  roadButton.title = 'Calculate a car route (r)'
+  roadButton.title = window.__('Calculate a car route (r)')
   roadButton.classList.remove('mapbox-gl-draw_line')
   roadButton.classList.add('mapbox-gl-draw_road')
   const icon = document.createElement('i')
@@ -112,7 +112,7 @@ function addRoadButton() {
 function addBicycleButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const bicycleButton = originalButton.cloneNode(true)
-  bicycleButton.title = 'Calculate a bike route (b)'
+  bicycleButton.title = window.__('Calculate a bike route (b)')
   bicycleButton.classList.remove('mapbox-gl-draw_line')
   bicycleButton.classList.add('mapbox-gl-draw_bicycle')
   const icon = document.createElement('i')
@@ -132,7 +132,7 @@ function addBicycleButton() {
 function addFootButton() {
   const originalButton = document.querySelector('.line-menu-btn')
   const footButton = originalButton.cloneNode(true)
-  footButton.title = 'Calculate a walking route (w)'
+  footButton.title = window.__('Calculate a walking route (w)')
   footButton.classList.remove('mapbox-gl-draw_line')
   footButton.classList.add('mapbox-gl-draw_foot')
   const icon = document.createElement('i')

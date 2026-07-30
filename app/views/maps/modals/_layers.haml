@@ -10,7 +10,7 @@
         .row.align-items-center
           .col-6
             - if @user
-              %label.no-wrap.form-control.btn.btn-blue#file-input-label{ for: "fileInput", title: 'Valid formats are gpx, kml, geojson and image files. WGS84 format, max. 2.5MB' }
+              %label.no-wrap.form-control.btn.btn-blue#file-input-label{ for: "fileInput", title: _('Valid formats are gpx, kml, geojson and image files. WGS84 format, max. 2.5MB') }
                 %i.bi.bi-upload.me-1
                 Import
                 .d-none.d-sm-inline
@@ -119,13 +119,13 @@
               %span.mapforge-font.layer-name.me-2 Layer name
             -# Desktop (and mobile when there is only one): inline buttons
             %span.text-nowrap.d-none.d-sm-inline.me-2
-              %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-visibility{ data: { action: "click->map--layers#toggleLayerVisibility", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: "Hide layer" }
+              %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-visibility{ data: { action: "click->map--layers#toggleLayerVisibility", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: _("Hide layer") }
                 %i.bi.bi-eye
-              %button.hidden.btn.btn-secondary.btn-layer-actions.layer-refresh.ms-2{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: "Refresh layer for current view" }
+              %button.hidden.btn.btn-secondary.btn-layer-actions.layer-refresh.ms-2{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: _("Refresh layer for current view") }
                 %i.bi.bi-arrow-clockwise.reload-icon
-              %button.hidden.btn.btn-secondary.btn-layer-actions.layer-edit.ms-2{ data: { action: "click->map--layers#toggleEdit", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: "Edit query" }
+              %button.hidden.btn.btn-secondary.btn-layer-actions.layer-edit.ms-2{ data: { action: "click->map--layers#toggleEdit", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: _("Edit query") }
                 %i.bi.bi-pencil-square
-              %button.hidden.btn.btn-orange.btn-layer-actions.layer-delete.ms-2{ data: { action: "click->map--layers#deleteLayer", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: "Delete Layer" }
+              %button.hidden.btn.btn-orange.btn-layer-actions.layer-delete.ms-2{ data: { action: "click->map--layers#deleteLayer", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: _("Delete Layer") }
                 %i.bi.bi-trash
             -# Mobile: dropdown menu
             .dropdown.d-sm-none.d-inline.layer-actions-dropdown
@@ -135,7 +135,7 @@
                 %li
                   %button.hidden.dropdown-item.layer-visibility-mobile{ type: "button", data: { action: "click->map--layers#toggleLayerVisibility" } }
                     %i.bi.bi-eye.me-2
-                    %span.layer-visibility-text Hide layer
+                    %span.layer-visibility-text= _("Hide layer")
                 %li
                   %button.hidden.dropdown-item.layer-refresh-mobile{ type: "button", data: { action: "click->map--layers#refreshLayer" } }
                     %i.bi.bi-arrow-clockwise.me-2

@@ -76,7 +76,7 @@ export default class extends Controller {
       if (feature.type === "Feature") {
         feature.id = functions.featureId()
         addFeature(feature)
-        addUndoState('Feature added', feature)
+        addUndoState(window.__('Feature added'), feature)
         sendMessage('new_feature', feature)
       }
     } catch (err) {

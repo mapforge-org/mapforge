@@ -4,7 +4,7 @@ import * as dom from 'helpers/dom'
 export class PointControl {
   constructor(_options) {
     this._container = document.createElement('div')
-    this._container.innerHTML = '<button class="mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_point" type="button" title="Draw point (p)" aria-label="Draw point" aria-pressed="false"></button>'
+    this._container.innerHTML = `<button class="mapbox-gl-draw_ctrl-draw-btn mapbox-gl-draw_point" type="button" title="${window.__('Draw point (p)')}" aria-label="${window.__('Draw point')}" aria-pressed="false"></button>`
     
     this._container.onclick = (_e) => { toggleDrawMode('draw_point') }
     document.addEventListener('keydown', (e) => {

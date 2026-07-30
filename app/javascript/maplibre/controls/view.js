@@ -5,7 +5,7 @@ import { animateElement } from 'helpers/dom'
 export class MapEditControl {
   constructor (_options) {
     this._container = document.createElement('div')
-    this._container.innerHTML = '<a href="/m/' + window.gon.edit_id + '"><button class="maplibregl-ctrl-btn maplibregl-ctrl-edit" type="button" title="Switch to edit mode" aria-label="Switch to edit mode" aria-pressed="false"><b><i class="bi bi-pencil-square"></i></b></button></a>'
+    this._container.innerHTML = `<a href="/m/${window.gon.edit_id}"><button class="maplibregl-ctrl-btn maplibregl-ctrl-edit" type="button" title="${window.__('Switch to edit mode')}" aria-label="${window.__('Switch to edit mode')}" aria-pressed="false"><b><i class="bi bi-pencil-square"></i></b></button></a>`
     this._container.onclick = function (e) {
       const url = '/m/' + window.gon.edit_id + location.hash
       window.location.href = url

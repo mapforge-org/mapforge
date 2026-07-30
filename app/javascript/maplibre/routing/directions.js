@@ -297,11 +297,11 @@ function updateTrack(feature) {
   let geojsonFeature = getFeature(feature.id)
   if (geojsonFeature) {
     // store undo state from unchanged feature
-    addUndoState('Track update', geojsonFeature)
+    addUndoState(window.__('Track update'), geojsonFeature)
     upsert(feature)
     sendMessage('update_feature', feature)
   } else {
-    addUndoState('Track added', feature)
+    addUndoState(window.__('Track added'), feature)
     upsert(feature)
     sendMessage('new_feature', feature)
   }

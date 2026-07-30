@@ -15,19 +15,19 @@
       #feature-title.ms-1.selectable.no-wrap
 
   #edit-buttons.feature-edit-tabs.hidden.flex-center
-    %button#edit-button-details.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'details', title: 'View feature information', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
+    %button#edit-button-details.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'details', title: _('View feature information'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-file-text
       .tab-label Details
-    %button#edit-button-geometry.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'geometry', title: 'Edit shape on map', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
+    %button#edit-button-geometry.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'geometry', title: _('Edit shape on map'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-bounding-box
       .tab-label Geometry
-    %button#edit-button-edit.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'properties', title: 'Edit title and description', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
+    %button#edit-button-edit.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'properties', title: _('Edit title and description'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-pencil
       .tab-label Properties
-    %button#edit-button-style.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'style', title: 'Change colors and appearance', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
+    %button#edit-button-style.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'style', title: _('Change colors and appearance'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-palette
       .tab-label Style
-    %button#edit-button-advanced.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'advanced', title: 'Convert to route and edit JSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
+    %button#edit-button-advanced.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'advanced', title: _('Convert to route and edit JSON'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-code-slash
       .tab-label Advanced
 
@@ -59,11 +59,11 @@
     %span#feature-size.center.selectable.text-nowrap
     %span#feature-vertexes.selectable.text-nowrap.d-none.d-sm-inline
     %span.feature-export#feature-export-geo.ms-4.link.text-nowrap<
-      =link_to map_feature_geo_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: 'Download as geoJSON', 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" do
+      =link_to map_feature_geo_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: _('Download as geoJSON'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" do
         %i.bi.bi-download
         GeoJSON
     %span.feature-export#feature-export-gpx.ms-2.link.text-nowrap<
-      =link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), title: 'Download as GPX', data: { turbo: false, toggle: "tooltip", 'bs-placement': "bottom", 'bs-trigger': "hover" } do
+      =link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), title: _('Download as GPX'), data: { turbo: false, toggle: "tooltip", 'bs-placement': "bottom", 'bs-trigger': "hover" } do
         %i.bi.bi-download
         GPX
     / %span#feature-animation.ms-2.link

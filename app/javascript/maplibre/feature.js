@@ -72,10 +72,10 @@ function featureMeta (feature) {
     const coords = `${lat.toFixed(6)}, ${lng.toFixed(6)}`
 
     // Clickable coordinates span with data attributes for toggle
-    const coordsSpan = `<span class="link coords-text" data-action="click->feature--modal#toggleCoordFormat" data-lat="${lat}" data-lng="${lng}" title="Click to toggle format">${coords}</span>`
+    const coordsSpan = `<span class="link coords-text" data-action="click->feature--modal#toggleCoordFormat" data-lat="${lat}" data-lng="${lng}" title="${window.__('Click to toggle format')}">${coords}</span>`
 
     // Copy to clipboard icon for coordinates
-    const copyIcon = `<a class="link text-muted copy-link ms-1" data-action="click->feature--modal#copyCoordinates" data-coords="${coords}" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" title="Copy coordinates to clipboard"><i class="bi bi-copy"></i></a>`
+    const copyIcon = `<a class="link text-muted copy-link ms-1" data-action="click->feature--modal#copyCoordinates" data-coords="${coords}" data-toggle="tooltip" data-bs-placement="bottom" data-bs-trigger="hover" title="${window.__('Copy coordinates to clipboard')}"><i class="bi bi-copy"></i></a>`
 
     // Navigation links
     const googleMapsUrl = `https://www.google.com/maps?q=${lat.toFixed(6)},${lng.toFixed(6)}`
