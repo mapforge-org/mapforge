@@ -451,7 +451,7 @@ export function initializeDefaultControls () {
   geocoderButton.title = 'Search location'
   document.querySelector('.maplibregl-ctrl-geocoder--icon-search').addEventListener('click', (_e) => {
     if (parseFloat(window.getComputedStyle(geocoderButton).width) > 100) {
-      geocoderButton.style.setProperty('width', '32px', 'important')
+      geocoderButton.style.removeProperty('width')
     } else {
       geocoderButton.style.setProperty('width', '14rem', 'important')
     }
@@ -482,7 +482,8 @@ export function initializeDefaultControls () {
       document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('disabled', '1')
       document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('data-bs-original-title', 'Location (https only)')
     }
-    animateElement('.maplibregl-ctrl-geocoder', 'fade-left', 500)
+    // delayed via timeout, the geocoders !important transition overrides data-aos-delay
+    setTimeout(() => { animateElement('.maplibregl-ctrl-geocoder', 'fade-left') }, 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)

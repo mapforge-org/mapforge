@@ -220,11 +220,13 @@
   min-width: unset !important;
   width: 2rem !important;
   height: 2rem !important;
-  transition: width 0.5s ease !important;
+
+  /* opacity/transform included, else the !important kills the aos fade-in */
+  transition: width 0.5s ease, opacity 0.5s ease, transform 0.5s ease !important;
 }
 
-.maplibregl-ctrl-geocoder--input { /* stylelint-disable-line */
-  height: 32px !important;
+.maplibregl-ctrl-geocoder--input:focus { /* stylelint-disable-line */
+  outline: none !important;
 }
 
 .maplibregl-ctrl-geocoder .maplibregl-ctrl-geocoder--pin-right { /* stylelint-disable-line */
