@@ -195,7 +195,7 @@ export function initLayersModal () {
       layerElement.setAttribute('data-layer-type', layer.type)
       const head = layerElement.querySelector('.layer-name')
 
-      const layerName = layer.name || 'Layer elements'
+      const layerName = layer.name || window.__('Layer elements')
       // Regex to match a leading emoji (covers most common emoji including compound ones)
       const emojiRegex = /^(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*)/u
       const match = layerName.match(emojiRegex)
@@ -237,13 +237,13 @@ export function initLayersModal () {
         visBtn.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
         visBtnMobile.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
         visBtn.setAttribute('title', window.__('Show layer'))
-        visBtnMobile.querySelector('.layer-visibility-text').textContent = 'Show layer'
+        visBtnMobile.querySelector('.layer-visibility-text').textContent = window.__('Show layer')
         layerElement.classList.add('layer-dimmed')
       } else {
         visBtn.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
         visBtnMobile.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
         visBtn.setAttribute('title', window.__('Hide layer'))
-        visBtnMobile.querySelector('.layer-visibility-text').textContent = 'Hide layer'
+        visBtnMobile.querySelector('.layer-visibility-text').textContent = window.__('Hide layer')
       }
       const isFirstGeojsonLayer = layer.type === 'geojson' &&
         layers.filter(l => l.type === 'geojson').indexOf(layer) === 0
@@ -358,7 +358,7 @@ export function initLayersModal () {
       if (features.length === 0 && layer.type !== 'raster' && layer.type !== 'indoor') {
         const newNode = document.createElement('i')
         newNode.classList.add('ms-3')
-        newNode.textContent = 'No elements in this layer'
+        newNode.textContent = window.__('No elements in this layer')
         layerElement.querySelector('.layer-content').appendChild(newNode)
       }
     })

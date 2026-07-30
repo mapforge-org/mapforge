@@ -34,7 +34,7 @@ export default class extends Controller {
     if (dom.isInputElement(e.target)) return // Don't trigger if typing in input
 
     const feature = this.getEditFeature()
-    if (confirm(`Really delete this ${getFeatureTypeName(feature)}?`)) {
+    if (confirm(window.__('Really delete this %{type}?').replace('%{type}', getFeatureTypeName(feature)))) {
       handleDelete({ features: [feature] })
     }
   }
@@ -48,7 +48,7 @@ export default class extends Controller {
       sendMessage('update_feature', feature)
     } catch (error) {
       console.error('Error updating feature:', error.message)
-      status('Error updating feature', 'error')
+      status(window.__('Error updating feature'), 'error')
       document.querySelector('#feature-edit-raw .error').innerHTML = error.message
     }
   }
@@ -63,7 +63,7 @@ export default class extends Controller {
       sendMessage('update_feature', feature)
     } catch (error) {
       console.error('Error updating feature geometry:', error.message)
-      status('Error updating feature geometry', 'error')
+      status(window.__('Error updating feature geometry'), 'error')
       document.querySelector('#feature-edit-raw-geometry .error').innerHTML = error.message
     }
   }
@@ -308,7 +308,7 @@ export default class extends Controller {
 
   addUndo() {
     const feature = this.getEditFeature()
-    addUndoState(window.__('Feature property update'), feature)
+    addUndoState('Feature property update', feature)
   }
 
   getEditFeature () {

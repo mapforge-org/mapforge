@@ -47,19 +47,19 @@ export default class extends Controller {
   copyOwnershipLink (e) {
     e.preventDefault()
     const ownershipLink = window.location.origin + document.querySelector('#share-ownership-link a').getAttribute('href')
-    copyToClipboard(ownershipLink, "Ownership link copied", e.currentTarget)
+    copyToClipboard(ownershipLink, window.__('Ownership link copied'), e.currentTarget)
   }
 
   copyEditLink (e) {
     e.preventDefault()
     const editLink = window.location.origin + document.querySelector('#share-edit-link a').getAttribute('href')
-    copyToClipboard(editLink, "Edit link copied", e.currentTarget)
+    copyToClipboard(editLink, window.__('Edit link copied'), e.currentTarget)
   }
 
   copyViewLink (e) {
     e.preventDefault()
     const viewLink = window.location.origin + document.querySelector('#share-view-link a').getAttribute('href')
-    copyToClipboard(viewLink, "View link copied", e.currentTarget)
+    copyToClipboard(viewLink, window.__('View link copied'), e.currentTarget)
   }
 
   nativeShareOwnershipLink (e) {
@@ -98,6 +98,6 @@ export default class extends Controller {
   copyEmbedCode (e) {
     e.preventDefault()
     const embedCode = document.querySelector('#embed-code').value
-    copyToClipboard(embedCode, "Embed code copied", e.currentTarget)
+    copyToClipboard(embedCode, window.__('Embed code copied'), e.currentTarget)
   }
 }

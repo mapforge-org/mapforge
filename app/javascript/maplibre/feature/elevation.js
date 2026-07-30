@@ -135,7 +135,7 @@ export async function showElevationChart (feature) {
       plugins: {
         legend: { display: false },
         tooltip: { enabled: false },
-        title: { display: true, text: 'Track elevation chart' }
+        title: { display: true, text: window.__('Track elevation chart') }
       },
       scales: {
         x: {
@@ -191,11 +191,11 @@ export async function showElevationChart (feature) {
       e.stopPropagation()
       viewportSyncEnabled = !viewportSyncEnabled
       if (viewportSyncEnabled) {
-        freshLabel.textContent = 'Visible section'
+        freshLabel.textContent = window.__('Visible section')
         freshIcon.className = 'bi bi-map me-1'
         filterToViewport(active, allLabels, allValues, allCoords, allSteepness)
       } else {
-        freshLabel.textContent = 'Full track'
+        freshLabel.textContent = window.__('Full track')
         freshIcon.className = 'bi bi-signpost-split me-1'
         active.labels = allLabels
         active.values = allValues
@@ -231,7 +231,7 @@ export async function showElevationChart (feature) {
     const elevation = active.values[i].toFixed(0)
     const grade = i === 0 ? 0 : computeGrade(active.values, active.labels, i)
 
-    infoLine.innerHTML = `Waypoint: ${distance} • <i class="bi bi-triangle"></i> ${elevation}m • <i class="bi bi-arrow-up-right"></i> ${grade.toFixed(1)}%`
+    infoLine.innerHTML = `${window.__('Waypoint:')} ${distance} • <i class="bi bi-triangle"></i> ${elevation}m • <i class="bi bi-arrow-up-right"></i> ${grade.toFixed(1)}%`
     infoLine.style.visibility = 'visible'
 
     // Place a marker on the map at the hovered point

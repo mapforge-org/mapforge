@@ -2,7 +2,7 @@
   .map-modal{'data-controller': "map--modal map--share", 'data-action': "keydown.esc@window->map--modal#close"}
     %button.modal-close-button{ data: { action: "click->map--modal#close" } } &times;
     .map-modal-header
-      %h3.mapforge-font Share Map
+      %h3.mapforge-font= _("Share Map")
 
     .map-modal-content.inline-scroll
 
@@ -20,12 +20,12 @@
                             - if owner.image
                               = image_tag avatar_url(owner.image, 24), class: 'map-avatar', title: owner.name || owner.email, data: { "toggle": 'tooltip', 'bs-placement': 'top' }, referrerpolicy: 'no-referrer'
                       %i.bi.bi-shield-fill-check.me-2
-                      Share ownership link
-                      %span.permission-badge.badge-owner.ms-2 Owner
+                      = _("Share ownership link")
+                      %span.permission-badge.badge-owner.ms-2= _("Owner")
                   %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyOwnershipLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: _("Copy link to clipboard") }
                     %i.bi.bi-copy.me-1
                 %small.text-muted.mt-2.flex-center.center
-                  Map owners have this map listed in their account with full permissions.
+                  = _("Map owners have this map listed in their account with full permissions.")
 
           .row.mb-3
             .col-12
@@ -33,12 +33,12 @@
                 %button#share-edit-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
                   =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShareEditLink" }) do
                     %i.bi.bi-pencil-square.me-2
-                    Share edit link
-                    %span.permission-badge.badge-edit.ms-2 Can Edit
+                    = _("Share edit link")
+                    %span.permission-badge.badge-edit.ms-2= _("Can Edit")
                 %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyEditLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: _("Copy link to clipboard") }
                   %i.bi.bi-copy.me-1
               %small.text-muted.mt-2.flex-center.center
-                With this link, users can modify the map, add layers, and make changes.
+                = _("With this link, users can modify the map, add layers, and make changes.")
 
         .row.mb-3
           .col-12
@@ -46,12 +46,12 @@
               %button#share-view-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
                 =link_to(map_path(id: @map.public_id), data: { turbo: false, action: "click->map--share#nativeShareViewLink" }) do
                   %i.bi.bi-eye-fill.me-2
-                  Share view link
-                  %span.permission-badge.badge-view.ms-2 Read Only
+                  = _("Share view link")
+                  %span.permission-badge.badge-view.ms-2= _("Read Only")
               %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyViewLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: _("Copy link to clipboard") }
                 %i.bi.bi-copy.me-1
             %small.text-muted.mt-2.flex-center.center
-              Users can explore the map but cannot modify it.
+              = _("Users can explore the map but cannot modify it.")
 
         - if @map_mode == 'rw'
           .row.mb-2
@@ -59,16 +59,13 @@
               .form-check.form-switch.flex-center
                 %input.form-check-input.me-2#map-gallery-toggle{ type: "checkbox", data: { action: "change->map--share#updateGalleryVisibility" }}
                 %label.form-check-label{ for: "map-gallery-toggle" }
-                  Show
-                  %span.d-none.d-sm-inline map
-                  in public
-                  %span.d-none.d-sm-inline Mapforge
-                  gallery
+                  %span.d-none.d-sm-inline= _("Show map in public Mapforge gallery")
+                  %span.d-sm-none= _("Show in public gallery")
 
       .feature-section-card
         .btn-group-sm.mt-2{ role: "group" }
           %p.me-2.mb-3.center
-            %b Download map
+            %b= _("Download map")
           .center
             %button.btn.btn-secondary.btn-download{ type: "button" }
               =link_to map_geojson_path(@map.public_id), target: '_blank' do
@@ -81,17 +78,17 @@
             %button.btn.btn-secondary.btn-download{ type: "button" }
               =link_to map_json_path(@map.public_id, export: true), target: '_blank' do
                 %i.bi.bi-download
-                Map
-                %span.d-none.d-sm-inline export
+                %span.d-none.d-sm-inline= _("Map export")
+                %span.d-sm-none= _("Map")
           %small.text-muted.mt-2.flex-center.center
-            Single tracks or points of the map can get exported from their details view.
+            = _("Single tracks or points of the map can get exported from their details view.")
 
       .feature-section-card.pt-2.d-none.d-sm-block
         %p.mt-2.center.mb-3
-          %b Embed map
+          %b= _("Embed map")
         .center
           %textarea.embed-code.form-control{ rows: "3", readonly: "readonly" }
             = raw("<iframe width='600' height='450' style='border:0' loading='lazy' src='#{map_url(@map.public_id, { nomenu: true })}'></iframe>")
           %small.link.text-muted.flex-center.mt-1.text-nowrap{ data: { action: "click->map--share#copyEmbedCode" } }
             %i.bi.bi-copy.me-1
-            Click to copy html to embed in your website
+            = _("Click to copy html to embed in your website")

@@ -56,7 +56,7 @@ export function initializeMaplibreProperties () {
     console.log('Update map properties:', mapProperties)
     updateMapName(mapProperties.name)
     initSettingsModal()
-    status('Map properties updated')
+    status(window.__('Map properties updated'))
     // initial load
     if (Object.keys(lastProperties).length === 0 || !mapProperties) { return }
     // animate to new view if map had no interaction yet and not in geolocate follow mode
@@ -250,11 +250,11 @@ function limitZoom() {
   // block zooming in closer than defined max zoom level
   if (maxZoom && (map.getZoom() > maxZoom - 0.2)) {
     map.setZoom(maxZoom - 0.2)
-    status('Maximum zoom level ' + maxZoom + ' reached', 'info', 'medium', 1000)
+    status(window.__('Maximum zoom level %{zoom} reached').replace('%{zoom}', maxZoom), 'info', 'medium', 1000)
   }
   if (minZoom && (map.getZoom() < minZoom + 0.2)) {
     map.setZoom(minZoom + 0.2)
-    status('Minimum zoom level ' + minZoom + ' reached', 'info', 'medium', 1000)
+    status(window.__('Minimum zoom level %{zoom} reached').replace('%{zoom}', minZoom), 'info', 'medium', 1000)
   }
 }
 
@@ -351,7 +351,7 @@ function addTerrain () {
     source: 'map-terrain',
     exaggeration: 0.05
   })
-  status('Terrain added to map')
+  status(window.__('Terrain added to map'))
 }
 
 function addHillshade () {
@@ -368,7 +368,7 @@ function addHillshade () {
       "hillshade-exaggeration": 0.2
     }
   })
-  status('Hillshade added to map')
+  status(window.__('Hillshade added to map'))
 }
 
 function addContours () {
@@ -430,7 +430,7 @@ function addContours () {
       "text-font": [basemaps()[mapProperties.base_map].font || defaultFont]
     }
   })
-  status('Contour lines added to map')
+  status(window.__('Contour lines added to map'))
 }
 
 function addGlobe () {
@@ -497,7 +497,7 @@ export function addFeature (feature) {
   layer.geojson.features.push(feature)
   // Surgical single-feature add instead of a full re-render of every geojson layer.
   layer.applyFeatureAdd(feature)
-  status('Added feature')
+  status(window.__('Added feature'))
 }
 
 function updateFeature (feature, updatedFeature) {
@@ -521,7 +521,7 @@ function updateFeature (feature, updatedFeature) {
 
   feature.geometry = updatedFeature.geometry
   feature.properties = updatedFeature.properties
-  status('Updated feature \'' + feature.properties.title || feature.id + '\'')
+  status(window.__("Updated feature '%{title}'").replace('%{title}', feature.properties.title || feature.id))
   // Surgical single-feature update instead of a full re-render of every geojson layer.
   // A remote update may have changed geometry or toggled companions, so refresh them.
   // (A remote change to a feature's level won't re-filter here — that needs a full render.)
@@ -531,7 +531,7 @@ function updateFeature (feature, updatedFeature) {
 export function destroyFeature (featureId) {
   const feature = getFeature(featureId)
   if (feature) {
-    status('Deleting feature ' + featureId)
+    status(window.__('Deleting feature %{id}').replace('%{id}', featureId))
     const layer = getLayer(featureId)
     layer.geojson.features = layer.geojson.features.filter(f => f.id !== featureId)
     // Surgical single-feature remove instead of a full re-render of every geojson layer.
@@ -577,7 +577,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
   }
   if (basemap) {
     map.once('style.load', async () => {
-      status('Loaded base map ' + mapName)
+      status(window.__('Loaded base map %{name}').replace('%{name}', mapName))
       // on map style change, all sources and layers are removed, so we need to re-initialize them
       await initializeStyles()
       limitZoom()

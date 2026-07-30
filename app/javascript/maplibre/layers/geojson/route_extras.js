@@ -29,23 +29,26 @@ function computeCumulativeDistances (coords) {
 // Each type maps values to colors and labels for data-driven styling
 export const EXTRAS_COLOR_CONFIGS = {
   steepness: {
-    title: 'Steepness',
+    title: window.__('Steepness'),
     icon: 'bi-graph-up-arrow',
     gradient: true,
-    legendLabels: { '-5': 'Downhill', '0': 'Flat', '5': 'Uphill' },
-    labels: { '-5': 'Steep downhill (>16%)', '-4': 'Downhill (12-15%)', '-3': 'Moderate downhill (7-11%)', '-2': 'Gentle downhill (4-6%)', '-1': 'Slight downhill (1-3%)',
-              '0': 'Flat (0%)', '1': 'Slight uphill (1-3%)', '2': 'Gentle uphill (4-6%)', '3': 'Moderate uphill (7-11%)', '4': 'Uphill (12-15%)', '5': 'Steep uphill (>16%)' },
+    legendLabels: { '-5': window.__('Downhill'), '0': window.__('Flat'), '5': window.__('Uphill') },
+    labels: { '-5': window.__('Steep downhill (>16%)'), '-4': window.__('Downhill (12-15%)'), '-3': window.__('Moderate downhill (7-11%)'),
+              '-2': window.__('Gentle downhill (4-6%)'), '-1': window.__('Slight downhill (1-3%)'), '0': window.__('Flat (0%)'),
+              '1': window.__('Slight uphill (1-3%)'), '2': window.__('Gentle uphill (4-6%)'), '3': window.__('Moderate uphill (7-11%)'),
+              '4': window.__('Uphill (12-15%)'), '5': window.__('Steep uphill (>16%)') },
     colors: [[-5, '#1a6a1a'], [-4, '#2d8a2d'], [-3, '#4eaa4e'], [-2, '#7bc47a'], [-1, '#a8d5a0'],
              [0, '#c0e8c0'], [1, '#E6AA68'], [2, '#D97A2E'], [3, '#B85E1E'], [4, '#CA3C25'], [5, '#8B1A1A']]
   },
   surface: {
-    title: 'Surface',
+    title: window.__('Surface'),
     icon: 'bi-layers-half',
     gradient: false,
-    labels: { '0': 'Unknown', '1': 'Paved', '2': 'Unpaved', '3': 'Asphalt', '4': 'Concrete', '5': 'Cobblestone',
-              '6': 'Metal', '7': 'Wood', '8': 'Compacted gravel', '9': 'Fine gravel', '10': 'Gravel',
-              '11': 'Dirt', '12': 'Ground', '13': 'Ice', '14': 'Paving stones', '15': 'Sand',
-              '16': 'Woodchips', '17': 'Grass', '18': 'Grass paver' },
+    labels: { '0': window.__('Unknown'), '1': window.__('Paved'), '2': window.__('Unpaved'), '3': window.__('Asphalt'),
+              '4': window.__('Concrete'), '5': window.__('Cobblestone'), '6': window.__('Metal'), '7': window.__('Wood'),
+              '8': window.__('Compacted gravel'), '9': window.__('Fine gravel'), '10': window.__('Gravel'),
+              '11': window.__('Dirt'), '12': window.__('Ground'), '13': window.__('Ice'), '14': window.__('Paving stones'),
+              '15': window.__('Sand'), '16': window.__('Woodchips'), '17': window.__('Grass'), '18': window.__('Grass paver') },
     colors: [[0, '#888888'], [1, '#555555'], [2, '#aa8844'], [3, '#444444'], [4, '#666666'],
              [5, '#997755'], [6, '#777777'], [7, '#8B6914'], [8, '#bb9955'], [9, '#ccaa66'],
              [10, '#ddbb77'], [11, '#aa7733'], [12, '#996622'], [13, '#aaddff'], [14, '#888866'],
@@ -127,7 +130,7 @@ function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulative
       label = `${arrow} ${rangeLabel}\n${distanceLabel}`
       priority = Math.abs(value)
     } else if (extrasType === 'surface') {
-      const surfaceName = EXTRAS_COLOR_CONFIGS.surface.labels[String(value)] || 'Unknown'
+      const surfaceName = EXTRAS_COLOR_CONFIGS.surface.labels[String(value)] || window.__('Unknown')
       label = `${surfaceName}\n${distanceLabel}`
       priority = segmentLength
     } else {

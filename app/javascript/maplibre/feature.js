@@ -171,7 +171,7 @@ export async function showFeatureDetails (feature) {
     if (feature.properties.title) { link.setAttribute('href', link.getAttribute('href') + '/' + encodeURIComponent(feature.properties.title.replace(/[\s\/]+/g, "_"))) }
   }
 
-  document.querySelector('#feature-details-description').innerHTML = 'Loading description...'
+  document.querySelector('#feature-details-description').innerHTML = window.__('Loading description...')
   featureDescription(feature).then(desc => {
     document.querySelector('#feature-details-description').innerHTML = desc
   })
@@ -235,13 +235,13 @@ export function getFeatureTypeName(feature) {
   if (feature.geometry.type === 'LineString' && feature.properties?.route?.profile) {
     const profile = feature.properties.route.profile
     if (profile === 'bike' || profile.includes('cycling')) {
-      return 'Bicycle route'
+      return window.__('Bicycle route')
     }
     if (profile === 'car' || profile.includes('driving')) {
-      return 'Car route'
+      return window.__('Car route')
     }
     if (profile === 'foot' || profile.includes('foot')) {
-      return 'Hiking route'
+      return window.__('Hiking route')
     }
   }
   return feature.geometry.type
@@ -343,7 +343,7 @@ export async function uploadImage(image) {
       return response.json()
     } else {
       // const bodyText = await response.text()
-      status('Error uploading image', 'error')
+      status(window.__('Error uploading image'), 'error')
       return Promise.reject(response.statusText)
     }
   })
@@ -382,7 +382,8 @@ export async function confirmImageLocation(file) {
       const cleanup = () => document.getElementById('confirmation-modal').classList.remove('show')
 
       document.getElementById('confirmation-message').innerHTML =
-        `The image contains GPS coordinates (<code>${gpsLat.toFixed(6)}, ${gpsLng.toFixed(6)}</code>).<br/>Do you want to place the marker there?`
+        window.__('The image contains GPS coordinates (<code>%{coordinates}</code>).<br/>Do you want to place the marker there?')
+          .replace('%{coordinates}', `${gpsLat.toFixed(6)}, ${gpsLng.toFixed(6)}`)
 
       yesBtn.addEventListener("click", () => { cleanup(); resolve([gpsLng, gpsLat]) })
       noBtn.addEventListener("click", () => { cleanup(); resolve(false) })

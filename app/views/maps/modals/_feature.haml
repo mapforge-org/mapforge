@@ -17,19 +17,19 @@
   #edit-buttons.feature-edit-tabs.hidden.flex-center
     %button#edit-button-details.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'details', title: _('View feature information'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-file-text
-      .tab-label Details
+      .tab-label= _("Details")
     %button#edit-button-geometry.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'geometry', title: _('Edit shape on map'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-bounding-box
-      .tab-label Geometry
+      .tab-label= _("Geometry")
     %button#edit-button-edit.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'properties', title: _('Edit title and description'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-pencil
-      .tab-label Properties
+      .tab-label= _("Properties")
     %button#edit-button-style.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'style', title: _('Change colors and appearance'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-palette
-      .tab-label Style
+      .tab-label= _("Style")
     %button#edit-button-advanced.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'ui', 'data-edit-tab': 'advanced', title: _('Convert to route and edit JSON'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
       %i.bi.bi-code-slash
-      .tab-label Advanced
+      .tab-label= _("Advanced")
 
   = render 'maps/modals/feature/edit_ui'
 
@@ -40,7 +40,7 @@
       .feature-details-card-header#elevation-toggle
         %h5
           %i.bi.bi-graph-up.me-2
-          Elevation profile
+          = _("Elevation profile")
         %i.bi.bi-chevron-up.extras-totals-chevron
       #elevation-content.text-center
         %canvas#route-elevation-chart
@@ -51,7 +51,7 @@
             %span#elevation-loss.text-nowrap.ms-3
           %span#elevation-scope-toggle.link.text-nowrap.ms-3
             %i.bi.bi-map.me-1
-            %span#elevation-scope-label Visible section
+            %span#elevation-scope-label= _("Visible section")
 
     #feature-details-extras.hidden
 

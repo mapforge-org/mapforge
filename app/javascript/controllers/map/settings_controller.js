@@ -56,7 +56,7 @@ export default class extends Controller {
         element.addEventListener('click', (event) => {
           const text = event.target.textContent
           if (text && text !== 'auto') {
-            copyToClipboard(text, 'Coordinates copied to clipboard')
+            copyToClipboard(text, window.__('Coordinates copied to clipboard'))
           }
         })
       }
@@ -212,7 +212,7 @@ export default class extends Controller {
     dom.loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/v4-shims.min.css')
     descEasyMDE = new window.EasyMDE({
       element: document.getElementById('map-description-input'),
-      placeholder: 'Add a description text',
+      placeholder: window.__('Add a description text'),
       toolbar: ["bold", "italic", "heading", "code", "table", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
       minHeight: '4em',
       spellChecker: false,

@@ -2,7 +2,7 @@
   .map-modal{'data-controller': "map--modal map--layers", 'data-action': "keydown.esc@window->map--modal#close"}
     %button.modal-close-button{ data: { action: "click->map--modal#close" } } &times;
     .map-modal-header
-      %h3.mapforge-font Layers
+      %h3.mapforge-font= _("Layers")
 
     .map-modal-content.inline-scroll
 
@@ -12,13 +12,13 @@
             - if @user
               %label.no-wrap.form-control.btn.btn-blue#file-input-label{ for: "fileInput", title: _('Valid formats are gpx, kml, geojson and image files. WGS84 format, max. 2.5MB') }
                 %i.bi.bi-upload.me-1
-                Import
+                = _("Import")
                 .d-none.d-sm-inline
-                  (track / image)
+                  = _("(track / image)")
               %input.hidden#fileInput{ type: "file", data: { action: "change->map--layers#upload" } }
             - else
               %i.bi.bi-info-circle
-                Please log in to upload tracks
+                = _("Please log in to upload tracks")
 
           .col-6
             %button#newLayerDropdown.no-wrap.form-control.btn.btn-blue.dropdown-toggle{
@@ -27,9 +27,8 @@
               "aria-expanded": "false"
             }
               %i.bi.bi-plus-square.me-1
-              Add
-              %span.d-none.d-sm-inline
-                layer
+              %span.d-none.d-sm-inline= _("Add layer")
+              %span.d-sm-none= _("Add")
 
             %ul#query-dropdown.dropdown-menu{ "aria-labelledby": "newLayerDropdown" }
               %li
@@ -38,7 +37,7 @@
                   data: { action: "click->map--layers#createRasterLayer" }
                 }
                   %i.bi.bi-grid-3x3.me-2
-                  Custom raster layer
+                  = _("Custom raster layer")
               %li
                 %button.dropdown-item{
                   type: "button",
@@ -71,19 +70,20 @@
                   data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: "Custom query" }
                 }
                   %i.bi.bi-pencil-square.me-2
-                  Custom Overpass query
+                  = _("Custom Overpass query")
               / Predefined queries, must match definitions in maplibre/layers/queries.js
+              - # query_name stays untranslated, it is the lookup key into queries.js
               :ruby
-                overpass_queries = ['🚻 Public toilets', '🍻 Breweries', '🚇 Subway', '🚰 Drinking water',
-                '🚶🏾 Hiking routes', '🚴 Bicycle routes', '🏕️ Camping', '🚒 Feuerwehr', '👨🏻‍🚒 Hydranten', '🚆 Trains',
-                '🛜 Wifi', '🏪 Food Shops', '🏊 Swimming pools' ]
+                overpass_queries = [N_('🚻 Public toilets'), N_('🍻 Breweries'), N_('🚇 Subway'), N_('🚰 Drinking water'),
+                N_('🚶🏾 Hiking routes'), N_('🚴 Bicycle routes'), N_('🏕️ Camping'), N_('🚒 Feuerwehr'), N_('👨🏻‍🚒 Hydranten'),
+                N_('🚆 Trains'), N_('🛜 Wifi'), N_('🏪 Food Shops'), N_('🏊 Swimming pools') ]
               - overpass_queries.each do |query_name|
                 %li
                   %button.dropdown-item{
                     type: "button",
                     data: { action: "click->map--layers#createSelectedOverpassLayer", query_name: query_name }
                   }
-                    = query_name
+                    = _(query_name)
               %li
                 %hr.dropdown-divider
               %li
@@ -92,7 +92,7 @@
                   data: { action: "click->map--layers#createWikipediaLayer" }
                 }
                   %i.bi.bi-wikipedia.me-2
-                  Wikipedia articles
+                  = _("Wikipedia articles")
               - if ENV['INDOOREQUAL_KEY'].present?
                 %li
                   %button.dropdown-item{
@@ -100,7 +100,7 @@
                     data: { action: "click->map--layers#createIndoorLayer" }
                   }
                     %i.bi.bi-building.me-2
-                    OpenStreetMap indoor
+                    = _("OpenStreetMap indoor")
               %li
                 %hr.dropdown-divider
               %li
@@ -108,7 +108,7 @@
                   type: "button",
                   data: { action: "click->map--layers#createBaseMapLayer" }
                 }
-                  Basemap Info (experimental)
+                  = _("Basemap Info (experimental)")
 
       - # used by controls/shared.js
       .hidden
@@ -116,7 +116,7 @@
           %h5.layer-item-header.mb-0.ms-1
             %span.w-100.link{ data: { action: "click->map--layers#toggleLayerList" }}
               %i.bi.bi-caret-right-fill
-              %span.mapforge-font.layer-name.me-2 Layer name
+              %span.mapforge-font.layer-name.me-2= _("Layer name")
             -# Desktop (and mobile when there is only one): inline buttons
             %span.text-nowrap.d-none.d-sm-inline.me-2
               %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-visibility{ data: { action: "click->map--layers#toggleLayerVisibility", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: _("Hide layer") }
@@ -139,48 +139,46 @@
                 %li
                   %button.hidden.dropdown-item.layer-refresh-mobile{ type: "button", data: { action: "click->map--layers#refreshLayer" } }
                     %i.bi.bi-arrow-clockwise.me-2
-                    Refresh
+                    = _("Refresh")
                 %li
                   %button.hidden.dropdown-item.layer-edit-mobile{ type: "button", data: { action: "click->map--layers#toggleEdit" } }
                     %i.bi.bi-pencil-square.me-2
-                    Edit query
+                    = _("Edit query")
                 %li
                   %button.hidden.dropdown-item.text-danger.layer-delete-mobile{ type: "button", data: { action: "click->map--layers#deleteLayer" } }
                     %i.bi.bi-trash.me-2
-                    Delete
+                    = _("Delete")
 
           .layer-content.mt-2.hidden
             .overpass-edit.hidden
               .mb-2.form-floating
-                %input.mw-400.form-control.overpass-name{type: 'text', autocomplete: 'off', placeholder: 'Enter name / Search queries', name: 'overpass-name'}
-                %label{ for: "overpass-name"} Title
+                %input.mw-400.form-control.overpass-name{type: 'text', autocomplete: 'off', placeholder: _('Enter name / Search queries'), name: 'overpass-name'}
+                %label{ for: "overpass-name"}= _("Title")
                 .autocomplete-list.dropdown-menu
 
               .mb-3.form-floating
                 %textarea.mb-1.form-control.overpass-query{name: 'overpass-query', data: { action: "input->map--layers#resizeQueryField"} }
-                %label{ for: "overpass-query"} Query
+                %label{ for: "overpass-query"}= _("Query")
                 %span.d-none.d-sm-inline.overpass-docs
                   %i.bi.bi-info-circle-fill
-                  = link_to 'Overpass tutorial', doc_path(id: 'overpass_layers'), { target: '_blank', rel: 'noopener noreferrer' }
+                  = link_to _('Overpass tutorial'), doc_path(id: 'overpass_layers'), { target: '_blank', rel: 'noopener noreferrer' }
 
                 %button.btn.btn-blue{ 'data-action': 'click->map--layers#updateOverpassLayer'}
-                  Update
-                  %span.d-none.d-sm-inline
-                    Layer
+                  %span.d-none.d-sm-inline= _("Update Layer")
+                  %span.d-sm-none= _("Update")
 
             .raster-edit.hidden
               .mb-2.form-floating
-                %input.mw-400.form-control.raster-name{type: 'text', autocomplete: 'off', placeholder: 'Layer name'}
-                %label Title
+                %input.mw-400.form-control.raster-name{type: 'text', autocomplete: 'off', placeholder: _('Layer name')}
+                %label= _("Title")
 
               .mb-3.form-floating
                 %input.form-control.raster-url{type: 'text', autocomplete: 'off', placeholder: 'https://tile.example.com/{z}/{x}/{y}.png'}
-                %label Raster URL (https://<host>/{z}/{x}/{y}.png)
+                %label= _("Raster URL (https://<host>/{z}/{x}/{y}.png)")
 
                 %button.btn.btn-blue.mt-1{ 'data-action': 'click->map--layers#updateRasterLayer'}
-                  Update
-                  %span.d-none.d-sm-inline
-                    Layer
+                  %span.d-none.d-sm-inline= _("Update Layer")
+                  %span.d-sm-none= _("Update")
 
             %ul.list-unstyled
 

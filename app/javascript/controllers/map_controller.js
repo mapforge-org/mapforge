@@ -66,7 +66,7 @@ export default class extends Controller {
     if (window.gon.map_mode !== 'rw') { return }
 
     if (!navigator.clipboard || !navigator.clipboard.readText) {
-      status('Clipboard paste requires HTTPS or localhost', 'warning')
+      status(window.__('Clipboard paste requires HTTPS or localhost'), 'warning')
       return
     }
 
@@ -76,7 +76,7 @@ export default class extends Controller {
       if (feature.type === "Feature") {
         feature.id = functions.featureId()
         addFeature(feature)
-        addUndoState(window.__('Feature added'), feature)
+        addUndoState('Feature added', feature)
         sendMessage('new_feature', feature)
       }
     } catch (err) {

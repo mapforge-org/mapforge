@@ -2,25 +2,25 @@
 
   .feature-edit-section{ 'data-edit-section': "geometry" }
     .geometry-hint.text-center.text-muted.pt-4.pb-4
-      %p#geometry-hint-point.edit-point Drag the point to move it
-      %p#geometry-hint-line.edit-line Drag vertices to reshape
-      %p#geometry-hint-polygon.edit-polygon Drag vertices to reshape
-      %p#geometry-hint-routed.hidden Drag or add waypoints to reroute
+      %p#geometry-hint-point.edit-point= _("Drag the point to move it")
+      %p#geometry-hint-line.edit-line= _("Drag vertices to reshape")
+      %p#geometry-hint-polygon.edit-polygon= _("Drag vertices to reshape")
+      %p#geometry-hint-routed.hidden= _("Drag or add waypoints to reroute")
 
   .feature-edit-section{ 'data-edit-section': "properties" }
     .feature-section-card.pt-2
       #feature-title-input.edit-ui.form-floating
         %input.form-control{ "name": "feature-title", data: { action: "input->feature--edit#addUndo input->feature--edit#updateTitle" } }
-        %label{ for: "feature-title"} Title
+        %label{ for: "feature-title"}= _("Title")
 
       #feature-show-title-ui.edit-ui.ms-2
         %input#feature-show-title-on-map{ type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateShowTitleOnMap change->feature--edit#saveFeature" } }
-        %label{ for: "feature-show-title-on-map"} Show title on map
+        %label{ for: "feature-show-title-on-map"}= _("Show title on map")
 
       .edit-ui
         %button#button-add-desc.mt-1.btn.btn-sm.btn-secondary{ type: "button", 'data-action': "click->feature--modal#show_add_desc" }
           %i.bi.bi-plus-square.me-1
-          Add description
+          = _("Add description")
 
     #feature-desc-section.feature-section-card.hidden
       #feature-desc
@@ -29,7 +29,7 @@
   .feature-edit-section.hidden{ 'data-edit-section': "style" }
     .feature-section-card.pt-2
       #point-size-ui.edit-ui.edit-point
-        %label.left-label{ for: "point-size"} Size:
+        %label.left-label{ for: "point-size"}= _("Size:")
         %input.slider#point-size{ type: "range", min: "1", max: "75", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updatePointSize  change->feature--edit#saveFeature" }
         %span#point-size-val.text-muted.small
         .stepper{ 'data-stepper-for': "point-size", 'data-stepper-step': "1" }
@@ -38,12 +38,12 @@
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #point-scaling-ui.edit-ui.edit-point
-        %label.left-label.edit-polygon.edit-line{ for: "point-scaling"} Point scaling:
+        %label.left-label.edit-polygon.edit-line{ for: "point-scaling"}= _("Point scaling:")
         %input#point-scaling{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updatePointScaling change->feature--edit#saveFeature"} }
-        %label{ for: "point-scaling"} Scaled with zoom
+        %label{ for: "point-scaling"}= _("Scaled with zoom")
 
       #line-width-ui.edit-ui.edit-line
-        %label.left-label{ for: "line-width"} Width:
+        %label.left-label{ for: "line-width"}= _("Width:")
         %input.slider#line-width{ type: "range", min: "1", max: "15", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateLineWidth change->feature--edit#saveFeature" }
         %span#line-width-val.text-muted.small
         .stepper{ 'data-stepper-for': "line-width", 'data-stepper-step': "1" }
@@ -52,7 +52,7 @@
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #outline-width-ui.edit-ui.edit-polygon
-        %label.left-label{ for: "outline-width"} Line width:
+        %label.left-label{ for: "outline-width"}= _("Line width:")
         %input.slider#outline-width{ type: "range", min: "0", max: "15", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateOutLineWidth change->feature--edit#saveFeature" }
         %span#outline-width-val.text-muted.small
         .stepper{ 'data-stepper-for': "outline-width", 'data-stepper-step': "1" }
@@ -61,24 +61,24 @@
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #stroke-color-ui.edit-ui.edit-line.edit-polygon.edit-point
-        %label.left-label.edit-polygon.edit-line{ for: "stroke-color"} Line color:
-        %label.left-label.edit-point{ for: "stroke-color"} Border color:
+        %label.left-label.edit-polygon.edit-line{ for: "stroke-color"}= _("Line color:")
+        %label.left-label.edit-point{ for: "stroke-color"}= _("Border color:")
         %select#stroke-color-mode.form-select.form-select-sm.hidden{ data: { action: "change->feature--edit#addUndo change->feature--edit#updateStrokeColorMode change->feature--edit#saveFeature" } }
-          %option{ value: "" } Color
+          %option{ value: "" }= _("Color")
         %input.form-control#stroke-color{ type: "color", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateStrokeColor change->feature--edit#saveFeature" }
         %div.edit-polygon.edit-point
           %input#stroke-color-transparent{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateStrokeColorTransparent change->feature--edit#saveFeature"} }
-          %label{ for: "stroke-color-transparent"}transparent
+          %label{ for: "stroke-color-transparent"}= _("transparent")
 
       #fill-color-ui.edit-ui.edit-polygon.edit-point
-        %label.left-label{ for: "fill-color"} Fill color:
+        %label.left-label{ for: "fill-color"}= _("Fill color:")
         %input.form-control#fill-color{ type: "color", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateFillColor change->feature--edit#saveFeature" }
         %div
           %input#fill-color-transparent{type: "checkbox", value: 'transparent', data: { action: "input->feature--edit#addUndo input->feature--edit#updateFillColorTransparent change->feature--edit#saveFeature"} }
-          %label{ for: "fill-color-transparent"}transparent
+          %label{ for: "fill-color-transparent"}= _("transparent")
 
       #opacity-ui.edit-ui.edit-polygon
-        %label.left-label{ for: "opacity"} Opacity:
+        %label.left-label{ for: "opacity"}= _("Opacity:")
         %input.slider#opacity{ type: "range", min: "1", max: "10", value: "9", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateOpacity change->feature--edit#saveFeature" }
         %span#opacity-val.text-muted.small
         .stepper{ 'data-stepper-for': "opacity", 'data-stepper-step': "1" }
@@ -87,25 +87,25 @@
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #marker-symbol-ui.edit-ui.edit-point
-        %label.left-label{ for: "marker-symbol"} Symbol:
+        %label.left-label{ for: "marker-symbol"}= _("Symbol:")
         %input.form-control#marker-symbol{ type: "hidden", inputmode: 'emoji' }
         #marker-symbol-select.btn.btn-secondary.ps-1.pe-2{ 'data-action': "click->feature--edit#openEmojiPicker" }
           %i.bi.bi-pencil-square.ms-1#no-emoji
         %span#emoji
 
       #marker-image-ui.edit-ui.edit-point
-        %label.left-label{ for: "marker-image"} Image:
+        %label.left-label{ for: "marker-image"}= _("Image:")
         - if @user
           %label.btn.btn-secondary.p-1.ps-2.pe-2{for: 'marker-image'}
             %i.bi.bi-upload
           %input.form-control#marker-image.hidden{ type: "file", 'data-action': "input->feature--edit#addUndo change->feature--edit#updateMarkerImage" }
         - else
           %i.bi.bi-info-circle
-            Please log in to upload images
+            = _("Please log in to upload images")
         .feature-image
 
       #fill-extrusion-height-ui.edit-ui.edit-line.edit-polygon
-        %label.left-label{ for: "fill-extrusion-height"} Height:
+        %label.left-label{ for: "fill-extrusion-height"}= _("Height:")
         %input.slider#fill-extrusion-height{ type: "range", min: "0", max: "500", value: "0", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateFillExtrusionHeight change->feature--edit#saveFeature" }
         %span#fill-extrusion-height-val.text-muted.small
         .stepper{ 'data-stepper-for': "fill-extrusion-height", 'data-stepper-step': "10" }
@@ -114,10 +114,7 @@
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #show-km-markers-ui.edit-ui.edit-line
-        %label.left-label.edit-line{ for: "show-km-markers"}
-          Distance
-          %br
-          markers:
+        %label.left-label.edit-line{ for: "show-km-markers"}= _("Distance markers:")
         %input#show-km-markers{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateShowKmMarkers change->feature--edit#saveFeature"} }
 
   .feature-edit-section.hidden{ 'data-edit-section': "advanced" }
@@ -125,27 +122,27 @@
       .feature-details-card-header#convert-to-route-header
         %h5
           %i.bi.bi-signpost-split-fill.me-2
-          Convert to routed track
+          = _("Convert to routed track")
         %i.bi.bi-chevron-down.extras-totals-chevron
       #convert-to-route-content.hidden.p-2
         %p.text-muted.mb-2
-          Copy and transform this line into a routed track with waypoints, elevation and surface info.
+          = _("Copy and transform this line into a routed track with waypoints, elevation and surface info.")
         .flex-center.gap-2
           %button.btn.btn-sm.btn-outline-secondary{'data-convert-profile': 'foot'}
             %i.bi.bi-person-walking
-            Foot
+            = _("Foot")
           %button.btn.btn-sm.btn-outline-secondary{'data-convert-profile': 'bike'}
             %i.bi.bi-bicycle
-            Bike
+            = _("Bike")
           %button.btn.btn-sm.btn-outline-secondary{'data-convert-profile': 'car'}
             %i.bi.bi-car-front
-            Car
+            = _("Car")
 
     .feature-section-card
       .feature-details-card-header#style-json-section-header
         %h5
           %i.bi.bi-code-slash.me-2
-          Style JSON
+          = _("Style JSON")
         %i.bi.bi-chevron-down.extras-totals-chevron
       #style-json-section-content.hidden.pt-2
         = render 'maps/modals/feature/edit_raw'
@@ -154,7 +151,7 @@
       .feature-details-card-header#geometry-json-section-header
         %h5
           %i.bi.bi-code-slash.me-2
-          Geometry JSON
+          = _("Geometry JSON")
         %i.bi.bi-chevron-down.extras-totals-chevron
       #geometry-json-section-content.hidden.pt-2
         = render 'maps/modals/feature/edit_raw_geometry'
@@ -162,4 +159,4 @@
     .feature-section-card.pt-2
       %button#edit-button-trash.feature-delete-btn{ type: "button", title: _("Delete feature"), data: { action: "click->feature--edit#delete_feature" } }
         %i.bi.bi-trash
-        Delete
+        = _("Delete")

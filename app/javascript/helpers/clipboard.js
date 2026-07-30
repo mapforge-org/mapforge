@@ -46,7 +46,7 @@ export function fallbackCopyToClipboard (text, successMessage, iconElement = nul
       showCopySuccess(iconElement)
     }
   } catch (err) {
-    status('Failed to copy')
+    status(window.__('Failed to copy'))
     console.error('Fallback copy failed:', err)
   }
 

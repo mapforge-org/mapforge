@@ -69,7 +69,7 @@ export async function orsFetch ({ method: _method, url, payload }) {
 
   const data = await response.json()
   if (!data.routes || data.routes.length === 0) {
-    throw new Error('No route found')
+    throw new Error(window.__('No route found'))
   }
 
   // Build waypoints from route geometry + way_points indices for maplibre-gl-directions
@@ -237,7 +237,7 @@ export async function getRouteUpdate (originalFeature, updatedFeature) {
     updatedFeature.properties.route.extras = routeResponse.routes[0].extras
   } catch (err) {
     console.error('An error occurred: ' + err)
-    status('Error building route', 'error')
+    status(window.__('Error building route'), 'error')
   }
   return updatedFeature
 }

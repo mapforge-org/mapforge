@@ -146,7 +146,7 @@ export class AnimatePolygonAnimation extends AnimationManager {
 }
 
 export function animateViewFromProperties () {
-  map.once('moveend', function () { status('Map view updated') })
+  map.once('moveend', function () { status(window.__('Map view updated')) })
   map.flyTo({
     center: mapProperties.center || mapProperties.default_center,
     zoom: mapProperties.zoom || mapProperties.default_zoom,

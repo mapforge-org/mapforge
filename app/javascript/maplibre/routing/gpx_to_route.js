@@ -97,16 +97,16 @@ function extractWaypoints(coordinates, targetCount = 35) {
  */
 export async function convertToRoute(originalFeature, profile) {
   if (originalFeature.geometry.type !== 'LineString') {
-    status('Only LineString tracks can be converted to routes', 'error')
+    status(window.__('Only LineString tracks can be converted to routes'), 'error')
     return
   }
 
   if (originalFeature.properties.route?.provider) {
-    status('This track is already a routed track', 'error')
+    status(window.__('This track is already a routed track'), 'error')
     return
   }
 
-  status(`Converting track to ${profile} route...`)
+  status(window.__('Converting track to %{profile} route...').replace('%{profile}', profile))
 
   try {
     // Extract waypoints
@@ -126,7 +126,7 @@ export async function convertToRoute(originalFeature, profile) {
     })
     const orsProfile = orsProfiles[profile]?.profile || profile
 
-    status('Snapping waypoints to road network...')
+    status(window.__('Snapping waypoints to road network...'))
     const snapResponse = await Snap.calculate({
       locations: waypoints,
       radius: 300,
@@ -152,7 +152,7 @@ export async function convertToRoute(originalFeature, profile) {
     // Route via ORS Directions API
     // Note: weightings (steepness_difficulty, green, quiet) are intentionally omitted
     // because they trigger ORS's 150km route length limit
-    status('Calculating route...')
+    status(window.__('Calculating route...'))
     const orsDirections = new Openrouteservice.Directions({
       api_key: window.gon.map_keys.openrouteservice,
       host: 'https://api.heigit.org/openrouteservice'
@@ -169,7 +169,7 @@ export async function convertToRoute(originalFeature, profile) {
 
     // Fetch elevation (skip for car routes)
     if (!orsProfile.includes('driving')) {
-      status('Fetching elevation data...')
+      status(window.__('Fetching elevation data...'))
       routeCoordinates = await getRouteElevation(routeCoordinates) || routeCoordinates
     }
 
@@ -180,7 +180,8 @@ export async function convertToRoute(originalFeature, profile) {
 
     if (lengthDiff > 0.3) {
       console.warn(`Route length differs by ${(lengthDiff * 100).toFixed(0)}% from original (${originalLength.toFixed(1)}km -> ${routedLength.toFixed(1)}km)`)
-      status(`Route differs significantly from original track (${originalLength.toFixed(1)}km -> ${routedLength.toFixed(1)}km)`, 'warning')
+      status(window.__('Route differs significantly from original track (%{original}km -> %{routed}km)')
+        .replace('%{original}', originalLength.toFixed(1)).replace('%{routed}', routedLength.toFixed(1)), 'warning')
     }
 
     // Create new routed feature with default route styling
@@ -219,18 +220,19 @@ export async function convertToRoute(originalFeature, profile) {
     }
 
     // Add to map and persist
-    addUndoState(window.__('Route created from GPX'), newFeature)
+    addUndoState('Route created from GPX', newFeature)
     upsert(newFeature)
     sendMessage('new_feature', newFeature)
 
-    status(`Route created successfully (${routedLength.toFixed(1)}km, ${snappedWaypoints.length} waypoints)`)
+    status(window.__('Route created successfully (%{length}km, %{count} waypoints)')
+      .replace('%{length}', routedLength.toFixed(1)).replace('%{count}', snappedWaypoints.length))
 
     // Show the new routed feature details
     showFeatureDetails(newFeature)
 
   } catch (err) {
     console.error('Error converting track to route:', err)
-    status(`Error converting track: ${err.message || err}`, 'error')
+    status(window.__('Error converting track: %{message}').replace('%{message}', err.message || err), 'error')
   }
 }
 
@@ -267,7 +269,8 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
   let allExtras = null
 
   for (const [index, segment] of segments.entries()) {
-    status(`Routing segment ${index + 1}/${segments.length}...`)
+    status(window.__('Routing segment %{index}/%{total}...')
+      .replace('%{index}', index + 1).replace('%{total}', segments.length))
 
     // Snap
     const snapResponse = await Snap.calculate({
@@ -313,7 +316,7 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
   // Fetch elevation for the entire merged route
   let finalCoordinates = allCoordinates
   if (!orsProfile.includes('driving')) {
-    status('Fetching elevation data...')
+    status(window.__('Fetching elevation data...'))
     finalCoordinates = await getRouteElevation(allCoordinates) || allCoordinates
   }
 
@@ -365,10 +368,11 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
     newFeature.properties.title = originalFeature.properties.title + ' (routed)'
   }
 
-  addUndoState(window.__('Route created from GPX'), newFeature)
+  addUndoState('Route created from GPX', newFeature)
   upsert(newFeature)
   sendMessage('new_feature', newFeature)
 
-  status(`Route created successfully (${routedLength.toFixed(1)}km, ${segments.length} segments)`)
+  status(window.__('Route created successfully (%{length}km, %{count} segments)')
+    .replace('%{length}', routedLength.toFixed(1)).replace('%{count}', segments.length))
   showFeatureDetails(newFeature)
 }

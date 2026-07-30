@@ -289,7 +289,7 @@ export class RasterLayer extends Layer {
         el.classList.remove('hidden')
         const copyButton = document.createElement('div')
         copyButton.classList.add('context-menu-item')
-        copyButton.innerHTML = '<i class="bi bi-copy me-1"></i>Copy to my layer'
+        copyButton.innerHTML = `<i class="bi bi-copy me-1"></i>${window.__('Copy to my layer')}`
         copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
         copyButton.dataset.featureId = feature.id
         copyButton.dataset.layerType = 'raster'

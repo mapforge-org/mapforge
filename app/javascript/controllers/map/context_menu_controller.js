@@ -17,12 +17,12 @@ export default class extends Controller {
     const feature = getFeature(target.dataset.featureId, 'geojson')
 
     const vertexIndex = target.dataset.index
-    addUndoState(window.__('Feature update'), feature)
+    addUndoState('Feature update', feature)
     if (feature.geometry.type === 'LineString') { feature.geometry.coordinates.splice(vertexIndex, 1) }
     if (feature.geometry.type === 'Polygon') { feature.geometry.coordinates[0].splice(vertexIndex, 1) }
     applyFeatureUpdate(feature, { resetDraw: true, refreshRouteExtras: true, refreshKmMarkers: true })
     sendMessage('update_feature', { ...feature })
-    status('Point deleted')
+    status(window.__('Point deleted'))
     hideContextMenu()
   }
 
@@ -36,7 +36,7 @@ export default class extends Controller {
     const secondCoords = coords.slice(vertexIndex)
 
     // Keep original feature, shorten it to the first segment
-    addUndoState(window.__('Feature update'), feature)
+    addUndoState('Feature update', feature)
     feature.geometry.coordinates = firstCoords
     if (feature.properties.name) { feature.properties.name = `${feature.properties.name}_1` }
     renderLayers('geojson', true)
@@ -48,11 +48,11 @@ export default class extends Controller {
       geometry: { type: 'LineString', coordinates: secondCoords },
       properties: JSON.parse(JSON.stringify(feature.properties || {}))
     }
-    addUndoState(window.__('Feature added'), secondFeature)
+    addUndoState('Feature added', secondFeature)
     addFeature(secondFeature)
     sendMessage('new_feature', secondFeature)
 
-    status('Line cut into 2 segments')
+    status(window.__('Line cut into 2 segments'))
     hideContextMenu()
   }
 
@@ -63,7 +63,7 @@ export default class extends Controller {
     const feature = getFeature(target.dataset.featureId, 'geojson')
 
     if (feature.geometry.type !== 'LineString') { return }
-    addUndoState(window.__('Feature update'), feature)
+    addUndoState('Feature update', feature)
 
     // Reverse coordinates
     feature.geometry.coordinates.reverse()
@@ -92,7 +92,7 @@ export default class extends Controller {
 
     applyFeatureUpdate(feature, { resetDraw: true, refreshRouteExtras: true, refreshKmMarkers: true })
     sendMessage('update_feature', { ...feature })
-    status('Track reversed')
+    status(window.__('Track reversed'))
     hideContextMenu()
   }
 
@@ -106,7 +106,7 @@ export default class extends Controller {
       return
     }
     addFeature(feature)
-    addUndoState(window.__('Feature added'), feature)
+    addUndoState('Feature added', feature)
     // Geometries might arrive without elevation; fetch it before save
     if (feature.geometry.type === 'LineString' ) {
       updateElevation(feature).finally(() => {
@@ -121,14 +121,14 @@ export default class extends Controller {
   copyFeature(event) {
     const feature = getFeature(event.currentTarget.dataset.featureId, 'geojson')
     if (feature) {
-      copyToClipboard(JSON.stringify(feature), 'Feature copied to clipboard')
+      copyToClipboard(JSON.stringify(feature), window.__('Feature copied to clipboard'))
     }
     hideContextMenu()
   }
 
   deleteFeature(event) {
     const feature = getFeature(event.currentTarget.dataset.featureId, 'geojson')
-    if (feature && confirm(`Really delete this ${getFeatureTypeName(feature)}?`)) {
+    if (feature && confirm(window.__('Really delete this %{type}?').replace('%{type}', getFeatureTypeName(feature)))) {
       handleDelete({ features: [feature] })
     }
     hideContextMenu()

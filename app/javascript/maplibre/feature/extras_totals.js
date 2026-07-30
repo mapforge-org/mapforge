@@ -46,7 +46,7 @@ function buildExtrasSection ({ config, totals, totalDistance }) {
   const titleIcon = document.createElement('i')
   titleIcon.className = 'bi ' + config.icon + ' me-2'
   title.appendChild(titleIcon)
-  title.appendChild(document.createTextNode(config.title + ' analysis'))
+  title.appendChild(document.createTextNode(window.__('%{type} analysis').replace('%{type}', config.title)))
   header.appendChild(title)
 
   const chevron = document.createElement('i')

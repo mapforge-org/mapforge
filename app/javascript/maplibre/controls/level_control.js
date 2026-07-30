@@ -3,14 +3,10 @@ import { initTooltips } from 'helpers/dom'
 function levelLabel(level) {
   const n = parseFloat(level)
   if (isNaN(n)) return level
-  if (!Number.isInteger(n)) return `Level ${level}`
-  if (n === 0) return 'Ground'
-  if (n < 0) return `Basement ${Math.abs(n)}`
-
-  const abs = Math.abs(n)
-  const mod100 = abs % 100
-  const suffix = (mod100 >= 11 && mod100 <= 13) ? 'th' : (['th', 'st', 'nd', 'rd'][abs % 10] || 'th')
-  return `${abs}${suffix} Floor`
+  if (!Number.isInteger(n)) return window.__('Level %{n}').replace('%{n}', level)
+  if (n === 0) return window.__('Ground')
+  if (n < 0) return window.__('Basement %{n}').replace('%{n}', Math.abs(n))
+  return window.__('Floor %{n}').replace('%{n}', n)
 }
 
 function levelIcon(level) {
@@ -44,7 +40,7 @@ export class LevelControl {
 
     const header = document.createElement('div')
     header.className = 'level-control-header'
-    header.textContent = 'Levels'
+    header.textContent = window.__('Levels')
     this.element.appendChild(header)
 
     const bottomRight = document.querySelector('.maplibregl-ctrl-bottom-right')
@@ -76,7 +72,7 @@ export class LevelControl {
     const button = document.createElement('button')
     button.className = 'level-control-btn'
     button.setAttribute('data-level', level)
-    button.setAttribute('aria-label', `Level ${level} – ${label}`)
+    button.setAttribute('aria-label', window.__('Level %{n}').replace('%{n}', level) + ' – ' + label)
 
     const iconEl = document.createElement('i')
     iconEl.className = `bi ${icon} level-control-icon`

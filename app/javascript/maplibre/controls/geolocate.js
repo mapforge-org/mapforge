@@ -45,7 +45,7 @@ export function initializeGeoLocateControl() {
 
   geolocate.on('error', e => {
     console.warn('Error detecting location', e)
-    status('Error detecting location: ' + e.message, 'warning')
+    status(window.__('Error detecting location: %{message}').replace('%{message}', e.message), 'warning')
   })
 
   geolocate.on('geolocate', (position) => {
@@ -55,7 +55,7 @@ export function initializeGeoLocateControl() {
       lastCenter = [coords.longitude, coords.latitude]
       if (!hasFoundFirstPosition && isInFollowMode) {
         hasFoundFirstPosition = true
-        status('Following position', 'info')
+        status(window.__('Following position'), 'info')
       }
       window.dispatchEvent(new CustomEvent('gps-position', {
         detail: { lng: coords.longitude, lat: coords.latitude }
@@ -67,7 +67,7 @@ export function initializeGeoLocateControl() {
   geolocate.on('trackuserlocationstart', () => {
     isInFollowMode = true
     hasFoundFirstPosition = false
-    status('Searching position', 'info')
+    status(window.__('Searching position'), 'info')
     requestWakeLock()
 
     cachedDot = document.querySelector('.maplibregl-user-location-dot')
@@ -78,7 +78,7 @@ export function initializeGeoLocateControl() {
       && typeof DeviceOrientationEvent.requestPermission === 'function'
 
     if (!isIOS && !('ondeviceorientationabsolute' in window)) {
-      status('Device Orientation not supported', 'info')
+      status(window.__('Device Orientation not supported'), 'info')
       return
     }
 
@@ -124,7 +124,7 @@ export function initializeGeoLocateControl() {
         orientationListener = null
         orientationEventName = null
       }
-      status('Tracking off', 'info')
+      status(window.__('Tracking off'), 'info')
       // reset geolocate button icon to default state
       const btn = document.querySelector('button.maplibregl-ctrl-geolocate')
       btn.classList.remove('maplibregl-ctrl-geolocate-compass')
@@ -134,7 +134,7 @@ export function initializeGeoLocateControl() {
       }
       window.dispatchEvent(new CustomEvent('gps-position', { detail: null }))
     } else {
-      status('Tracking position', 'info')
+      status(window.__('Tracking position'), 'info')
     }
   })
 
@@ -203,7 +203,7 @@ function lockUserZoom() {
 
 function activateCompassMode() {
   isInCompassMode = true
-  status('Compass mode', 'info')
+  status(window.__('Compass mode'), 'info')
 
   // Disable map dragging and rotation in compass mode — map orientation follows device heading
   map.dragPan.disable()

@@ -50,6 +50,23 @@ function addRedoState(type, state) {
   updateTooltips()
 }
 
+// Undo types are English keys: they index the handler maps below and are stored in the stack.
+// This map holds their translations, and keeps the msgids extractable for gettext.
+const typeLabels = {
+  'Feature update': window.__('Feature update'),
+  'Feature property update': window.__('Feature property update'),
+  'Feature added': window.__('Feature added'),
+  'Feature deleted': window.__('Feature deleted'),
+  'Track added': window.__('Track added'),
+  'Track update': window.__('Track update'),
+  'Layer added': window.__('Layer added'),
+  'Layer deleted': window.__('Layer deleted'),
+  'Layer updated': window.__('Layer updated'),
+  'Route created from GPX': window.__('Route created from GPX')
+}
+
+function typeLabel(type) { return typeLabels[type] || type }
+
 const undoHandlers = {
   'Feature update': undoFeatureUpdate,
   'Feature property update': undoFeatureUpdate,
@@ -82,7 +99,7 @@ export function undo() {
   const handler = undoHandlers[prevState.type]
   if (!handler) { console.warn('Cannot undo ', prevState); return }
   handler(prevState)
-  status('Undo: ' + prevState.type)
+  status(window.__('Undo: %{type}').replace('%{type}', typeLabel(prevState.type)))
   renderLayers('geojson', true)
   keepSelection()
   if (undoStack.length === 0) { hideUndoButton() }
@@ -97,7 +114,7 @@ export function redo() {
   const handler = redoHandlers[nextState.type]
   if (!handler) { console.warn('Cannot redo ', nextState); return }
   handler(nextState)
-  status('Redo: ' + nextState.type)
+  status(window.__('Redo: %{type}').replace('%{type}', typeLabel(nextState.type)))
   renderLayers('geojson', true)
   keepSelection()
   if (redoStack.length === 0) { hideRedoButton() }
@@ -298,14 +315,14 @@ function updateTooltips() {
 
   // Update undo button
   const undoTop = undoStack[undoStack.length - 1]
-  const undoTitle = undoTop ? window.__('Undo: %{type}').replace('%{type}', window.__(undoTop.type)) : window.__('Undo')
+  const undoTitle = undoTop ? window.__('Undo: %{type}').replace('%{type}', typeLabel(undoTop.type)) : window.__('Undo')
   undoBtn.setAttribute('title', undoTitle)
   undoBtn.setAttribute('aria-label', undoTitle)
   undoBtn.setAttribute('data-bs-original-title', undoTitle)
 
   // Update redo button
   const redoTop = redoStack[redoStack.length - 1]
-  const redoTitle = redoTop ? window.__('Redo: %{type}').replace('%{type}', window.__(redoTop.type)) : window.__('Redo')
+  const redoTitle = redoTop ? window.__('Redo: %{type}').replace('%{type}', typeLabel(redoTop.type)) : window.__('Redo')
   redoBtn.setAttribute('title', redoTitle)
   redoBtn.setAttribute('aria-label', redoTitle)
   redoBtn.setAttribute('data-bs-original-title', redoTitle)

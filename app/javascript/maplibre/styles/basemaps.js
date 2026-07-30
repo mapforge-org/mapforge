@@ -52,7 +52,7 @@ export function basemaps () {
   return {
     // Stadia maps
     stamenWatercolorTiles: {
-      description: 'Artistic, hand-painted watercolor style with soft, muted colors and texture.',
+      description: window.__('Artistic, hand-painted watercolor style with soft, muted colors and texture.'),
       style: {
         version: 8,
         sources: {
@@ -74,7 +74,7 @@ export function basemaps () {
       }
     },
     stamenTonerTiles: {
-      description: 'High-contrast black and white map, great for print or overlaying data.',
+      description: window.__('High-contrast black and white map, great for print or overlaying data.'),
       style: {
         version: 8,
         sources: {
@@ -96,7 +96,7 @@ export function basemaps () {
 
     // free maps
     openTopoTiles: {
-      description: 'Topographic map with contour lines, hillshading and terrain features.',
+      description: window.__('Topographic map with contour lines, hillshading and terrain features.'),
       style: {
         version: 8,
         sources: {
@@ -121,7 +121,7 @@ export function basemaps () {
     },
     // osm vector: https://community.openstreetmap.org/t/vector-tiles-on-osmf-hardware/121501
     osmRasterTiles: {
-      description: 'Classic OpenStreetMap raster tiles with roads, labels and points of interest.',
+      description: window.__('Classic OpenStreetMap raster tiles with roads, labels and points of interest.'),
       style: {
         version: 8,
         sources: {
@@ -140,7 +140,7 @@ export function basemaps () {
     },
     // other than OpenCycleMap, https://www.cyclosm.org is free and open source
     cyclosmTiles: {
-      description: 'Bicycle-focused map highlighting cycle routes, paths and bike infrastructure.',
+      description: window.__('Bicycle-focused map highlighting cycle routes, paths and bike infrastructure.'),
       style: {
         version: 8,
         sources: {
@@ -160,7 +160,7 @@ export function basemaps () {
     },
     // https://manage.thunderforest.com/dashboard
     openCycleMap: {
-      description: 'Thunderforest Cycle map with elevation contours and cycling infrastructure.',
+      description: window.__('Thunderforest Cycle map with elevation contours and cycling infrastructure.'),
       style: {
         version: 8,
         sources: {
@@ -178,7 +178,7 @@ export function basemaps () {
       }
     },
     thunderforestContrast: {
-      description: 'High-contrast Thunderforest style optimized for outdoor and mobile use.',
+      description: window.__('High-contrast Thunderforest style optimized for outdoor and mobile use.'),
       style: {
         version: 8,
         sources: {
@@ -195,44 +195,44 @@ export function basemaps () {
         glyphs: versatilesGlyphs
       }
     },
-    satelliteStreets: { description: 'High-resolution satellite imagery overlaid with streets and place labels.', style: host + '/layers/satellite_with_streets.json' },
+    satelliteStreets: { description: window.__('High-resolution satellite imagery overlaid with streets and place labels.'), style: host + '/layers/satellite_with_streets.json' },
 
     // basemap.de
     basemapWorld: {
-      description: 'Official German basemap.de style with detailed European cartography.',
+      description: window.__('Official German basemap.de style with detailed European cartography.'),
       style: 'https://sgx.geodatenzentrum.de/gdz_basemapworld_vektor/styles/bm_web_wld_col.json', font: 'Noto Sans Regular', sourceName: 'smarttiles_de' },
 
     // openfreemap.org
-    openfreemapPositron: { description: 'Light, minimal grayscale style ideal for data visualization overlays.', style: 'https://tiles.openfreemap.org/styles/positron', font: 'Noto Sans Regular' },
-    openfreemapBright: { description: 'Bright, colorful vector style with clear roads and readable labels.', style: 'https://tiles.openfreemap.org/styles/bright', font: 'Noto Sans Regular' },
-    openfreemapLiberty: { description: 'Detailed vector map with landmarks, buildings and points of interest.', style: 'https://tiles.openfreemap.org/styles/liberty', sourceName: 'openmaptiles', font: 'Noto Sans Regular' },
+    openfreemapPositron: { description: window.__('Light, minimal grayscale style ideal for data visualization overlays.'), style: 'https://tiles.openfreemap.org/styles/positron', font: 'Noto Sans Regular' },
+    openfreemapBright: { description: window.__('Bright, colorful vector style with clear roads and readable labels.'), style: 'https://tiles.openfreemap.org/styles/bright', font: 'Noto Sans Regular' },
+    openfreemapLiberty: { description: window.__('Detailed vector map with landmarks, buildings and points of interest.'), style: 'https://tiles.openfreemap.org/styles/liberty', sourceName: 'openmaptiles', font: 'Noto Sans Regular' },
 
     // https://github.com/versatiles-org/versatiles-style
     // fonts: https://github.com/versatiles-org/versatiles-fonts
-    versatilesColorful: { description: 'Colorful vector map with vivid colors and a clear road hierarchy.', style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
-    versatilesGraybeard: { description: 'Muted, monochrome vector style for a clean, distraction-free look.', style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
-    versatilesGraybeardSnow: { description: 'Muted Graybeard style with an added wintery, snow-covered terrain effect.', style: host + '/layers/graybeard_snow.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
-    versatilesNeutrino: { description: 'Minimalist, neutral vector style with subtle colors and light labels.', style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', font: 'noto_sans_regular' },
-    versatilesEclipse: { description: 'Dark mode vector map style, easy on the eyes for night-time viewing.', style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', font: 'noto_sans_regular' },
+    versatilesColorful: { description: window.__('Colorful vector map with vivid colors and a clear road hierarchy.'), style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
+    versatilesGraybeard: { description: window.__('Muted, monochrome vector style for a clean, distraction-free look.'), style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
+    versatilesGraybeardSnow: { description: window.__('Muted Graybeard style with an added wintery, snow-covered terrain effect.'), style: host + '/layers/graybeard_snow.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
+    versatilesNeutrino: { description: window.__('Minimalist, neutral vector style with subtle colors and light labels.'), style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', font: 'noto_sans_regular' },
+    versatilesEclipse: { description: window.__('Dark mode vector map style, easy on the eyes for night-time viewing.'), style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', font: 'noto_sans_regular' },
     // VersaTiles satellite imagery (alpha) composited with OpenFreeMap street/label overlay
-    versatilesSatelliteStreets: { description: 'VersaTiles satellite imagery combined with street and label overlays.', style: host + '/layers/versatiles_satellite_streets.json' },
+    versatilesSatelliteStreets: { description: window.__('VersaTiles satellite imagery combined with street and label overlays.'), style: host + '/layers/versatiles_satellite_streets.json' },
 
     // Custom local styles using OpenMapTiles schema
     // TODO: use 'suse' font when webfont loading works
-    artistic: { description: 'Custom artistic map style with a unique, hand-crafted color palette.', style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
+    artistic: { description: window.__('Custom artistic map style with a unique, hand-crafted color palette.'), style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
 
     // Maptiler maps: https://docs.maptiler.com/sdk-js/api/map-styles/#mapstylelist
     // 3D Houses
-    maptilerBasic: { description: 'Clean, minimal MapTiler style focused on readability and simplicity.', style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=' + window.gon.map_keys.maptiler },
-    maptilerOpenStreetmap: { description: "MapTiler's rendering of OpenStreetMap data in a familiar style.", style: 'https://api.maptiler.com/maps/openstreetmap/style.json?key=' + window.gon.map_keys.maptiler },
-    maptilerBuildings: { description: 'Streets map highlighting detailed building footprints and 3D shapes.', style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet' },
-    maptilerDataviz: { description: 'Neutral MapTiler style designed as a clean backdrop for data visualization.', style: 'https://api.maptiler.com/maps/dataviz/style.json?key=' + window.gon.map_keys.maptiler },
-    maptilerStreets: { description: 'Classic MapTiler street map with roads, labels and points of interest.', style: host + '/layers/streets.json?key=' + window.gon.map_keys.maptiler },
-    maptilerNoStreets: { description: 'MapTiler streets style with road labels removed for a cleaner look.', style: host + '/layers/nostreets.json?key=' + window.gon.map_keys.maptiler },
-    maptilerSatellite: { description: 'High-resolution satellite imagery without any labels or overlays.', style: 'https://api.maptiler.com/maps/satellite/style.json?key=' + window.gon.map_keys.maptiler },
-    maptilerWinter: { description: 'Winter-themed MapTiler style with snow-covered terrain and landscapes.', style: 'https://api.maptiler.com/maps/winter-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet' },
-    maptilerBike: { description: 'Cycling-focused MapTiler style highlighting bike routes and trails.', style: 'https://api.maptiler.com/maps/64d03850-97e0-4aaa-bd1d-8287a9792de1/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet' },
-    maptilerHybrid: { description: 'Satellite imagery combined with street names and road labels overlay.', style: 'https://api.maptiler.com/maps/hybrid/style.json?key=' + window.gon.map_keys.maptiler },
+    maptilerBasic: { description: window.__('Clean, minimal MapTiler style focused on readability and simplicity.'), style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=' + window.gon.map_keys.maptiler },
+    maptilerOpenStreetmap: { description: window.__("MapTiler's rendering of OpenStreetMap data in a familiar style."), style: 'https://api.maptiler.com/maps/openstreetmap/style.json?key=' + window.gon.map_keys.maptiler },
+    maptilerBuildings: { description: window.__('Streets map highlighting detailed building footprints and 3D shapes.'), style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet' },
+    maptilerDataviz: { description: window.__('Neutral MapTiler style designed as a clean backdrop for data visualization.'), style: 'https://api.maptiler.com/maps/dataviz/style.json?key=' + window.gon.map_keys.maptiler },
+    maptilerStreets: { description: window.__('Classic MapTiler street map with roads, labels and points of interest.'), style: host + '/layers/streets.json?key=' + window.gon.map_keys.maptiler },
+    maptilerNoStreets: { description: window.__('MapTiler streets style with road labels removed for a cleaner look.'), style: host + '/layers/nostreets.json?key=' + window.gon.map_keys.maptiler },
+    maptilerSatellite: { description: window.__('High-resolution satellite imagery without any labels or overlays.'), style: 'https://api.maptiler.com/maps/satellite/style.json?key=' + window.gon.map_keys.maptiler },
+    maptilerWinter: { description: window.__('Winter-themed MapTiler style with snow-covered terrain and landscapes.'), style: 'https://api.maptiler.com/maps/winter-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet' },
+    maptilerBike: { description: window.__('Cycling-focused MapTiler style highlighting bike routes and trails.'), style: 'https://api.maptiler.com/maps/64d03850-97e0-4aaa-bd1d-8287a9792de1/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet' },
+    maptilerHybrid: { description: window.__('Satellite imagery combined with street names and road labels overlay.'), style: 'https://api.maptiler.com/maps/hybrid/style.json?key=' + window.gon.map_keys.maptiler },
 
   // static test tile
     test: {

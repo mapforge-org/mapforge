@@ -44,7 +44,7 @@ export class OverpassLayer extends Layer {
           el.classList.remove('hidden')
           const copyButton = document.createElement('div')
           copyButton.classList.add('context-menu-item')
-          copyButton.innerHTML = '<i class="bi bi-copy me-1"></i>Copy to my layer'
+          copyButton.innerHTML = `<i class="bi bi-copy me-1"></i>${window.__('Copy to my layer')}`
           copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
           copyButton.dataset.featureId = feature.id
           copyButton.dataset.layerType = 'overpass'
@@ -111,7 +111,7 @@ export class OverpassLayer extends Layer {
       console.error('Failed to fetch overpass for ' + this.id, this.layer.query, error.message)
       // return if layer is gone (likely page change)
       if (!layers || !layers.includes(this)) { return }
-      status('Failed to load layer ' + this.layer.name, 'error')
+      status(window.__('Failed to load layer %{name}').replace('%{name}', this.layer.name), 'error')
       // Set empty geojson so layer can still render
       this.layer.geojson = { type: 'FeatureCollection', features: [] }
       this.render()

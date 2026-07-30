@@ -144,36 +144,36 @@ export async function initializeEditMode () {
     if (draw.getMode() === 'draw_paint_mode') {
       functions.e('.mapbox-gl-draw_paint', e => { e.classList.add('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
-      status('Paint Mode: Click on the map to start drawing, release to finish',
+      status(window.__('Paint Mode: Click on the map to start drawing, release to finish'),
         'info', 'medium', 8000)
     } else if (draw.getMode() === 'directions_car') {
       functions.e('.mapbox-gl-draw_road', e => { e.classList.add('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
-      status('Road Mode: Click on the map to set waypoints, double click to finish',
+      status(window.__('Road Mode: Click on the map to set waypoints, double click to finish'),
         'info', 'medium', 8000)
       initDirections('car')
     } else if (draw.getMode() === 'directions_bike') {
       functions.e('.mapbox-gl-draw_bicycle', e => { e.classList.add('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
-      status('Bicycle Mode: Click on the map to set waypoints, double click to finish',
+      status(window.__('Bicycle Mode: Click on the map to set waypoints, double click to finish'),
         'info', 'medium', 8000)
       initDirections('bike')
     } else if (draw.getMode() === 'directions_foot') {
       functions.e('.mapbox-gl-draw_foot', e => { e.classList.add('active') })
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
-      status('Walk Mode: Click on the map to set waypoints, double click to finish',
+      status(window.__('Walk Mode: Click on the map to set waypoints, double click to finish'),
         'info', 'medium', 8000)
       initDirections('foot')
     } else if (draw.getMode() === 'draw_point') {
       functions.e('.mapbox-gl-draw_point', e => { e.classList.add('active') })
-      status('Point Mode: Click on the map to place a marker', 'info', 'medium', 8000)
+      status(window.__('Point Mode: Click on the map to place a marker'), 'info', 'medium', 8000)
     } else if (draw.getMode() === 'draw_polygon') {
       functions.e('.mapbox-gl-draw_polygon', e => { e.classList.add('active') })
-      status('Polygon Mode: Click on the map to draw a polygon', 'info', 'medium', 8000)
+      status(window.__('Polygon Mode: Click on the map to draw a polygon'), 'info', 'medium', 8000)
     } else if (draw.getMode() === 'draw_line_string') {
       functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
       functions.e('.ctrl-line-menu .mapbox-gl-draw_line', e => { e.classList.add('active') })
-      status('Line Mode: Click on the map to draw a line', 'info', 'medium', 8000)
+      status(window.__('Line Mode: Click on the map to draw a line'), 'info', 'medium', 8000)
     }
   })
 
@@ -303,7 +303,7 @@ function handleCreate (e) {
 
   // status('Feature ' + feature.id + ' created')
   addFeature(feature)
-  addUndoState(window.__('Feature added'), feature)
+  addUndoState('Feature added', feature)
   // redraw if the painted feature was changed in this method
   if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') {
     renderLayers('geojson', false)
@@ -339,7 +339,7 @@ async function handleUpdate (e) {
     // console.log('Feature update event triggered without update')
     return
   }
-  addUndoState(window.__('Feature update'), geojsonFeature)
+  addUndoState('Feature update', geojsonFeature)
 
   // change route with openrouteservice
   if (selectedFeature?.properties?.route?.provider === 'ors') {
@@ -368,10 +368,10 @@ export function handleDelete (e) {
   selectedFeature = null
   const deletedFeature = e.features[0] // Assuming one feature is deleted at a time
   destroyFeature(deletedFeature.id)
-  addUndoState(window.__('Feature deleted'), deletedFeature)
+  addUndoState('Feature deleted', deletedFeature)
   resetDirections()
   resetControls()
-  status('Feature deleted')
+  status(window.__('Feature deleted'))
   sendMessage('delete_feature', { id: deletedFeature.id })
 }
 

@@ -284,7 +284,7 @@ export function initDirections (profile, feature) {
   })
 
   directions.on('addwaypoint', (e) => {
-    status('Waypoint added')
+    status(window.__('Waypoint added'))
     console.log('Waypoint added', e)
   })
 
@@ -297,11 +297,11 @@ function updateTrack(feature) {
   let geojsonFeature = getFeature(feature.id)
   if (geojsonFeature) {
     // store undo state from unchanged feature
-    addUndoState(window.__('Track update'), geojsonFeature)
+    addUndoState('Track update', geojsonFeature)
     upsert(feature)
     sendMessage('update_feature', feature)
   } else {
-    addUndoState(window.__('Track added'), feature)
+    addUndoState('Track added', feature)
     upsert(feature)
     sendMessage('new_feature', feature)
   }

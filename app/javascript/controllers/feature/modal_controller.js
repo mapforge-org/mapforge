@@ -303,7 +303,7 @@ export default class extends Controller {
     document.querySelector('#feature-desc-input').value = this.getSelectedFeature().properties.desc || ''
     easyMDE = new window.EasyMDE({
       element: document.getElementById('feature-desc-input'),
-      placeholder: 'Add a description text',
+      placeholder: window.__('Add a description text'),
       toolbar: ["bold", "italic", "heading", "code", "table", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
       minHeight: '4em',
       spellChecker: false,
@@ -324,13 +324,13 @@ export default class extends Controller {
       }
     } catch (error) {
       console.error('Error updating feature:', error.message)
-      status('Error updating feature', 'error')
+      status(window.__('Error updating feature'), 'error')
     }
   }
 
   saveFeature () {
     const feature = this.getSelectedFeature()
-    status('Saving feature ' + feature.id)
+    status(window.__('Saving feature %{id}').replace('%{id}', feature.id))
     // send shallow copy of feature to avoid changes during send
     sendMessage('update_feature', { ...feature })
   }
@@ -394,14 +394,14 @@ export default class extends Controller {
       event.preventDefault()
       event.stopPropagation()
       console.log("Copied feature to clipboard ", feature)
-      status('Feature copied to clipboard')
+      status(window.__('Feature copied to clipboard'))
     }
   }
 
   copyCoordinates(event) {
     event.preventDefault()
     const coords = event.currentTarget.dataset.coords
-    copyToClipboard(coords, "Coordinates copied to clipboard", event.currentTarget)
+    copyToClipboard(coords, window.__('Coordinates copied to clipboard'), event.currentTarget)
   }
 
   toggleCoordFormat(event) {

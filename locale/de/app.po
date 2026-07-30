@@ -23,6 +23,15 @@ msgstr "%{count} Objekte"
 msgid "%{count} views"
 msgstr "%{count} Aufrufe"
 
+msgid "%{type} analysis"
+msgstr "%{type}-Auswertung"
+
+msgid "(track / image)"
+msgstr "(Track / Bild)"
+
+msgid "3D Terrain:"
+msgstr "3D-Gelände:"
+
 msgid "3D Terrain: View your map with elevation"
 msgstr "3D-Gelände: Betrachte deine Karte mit Höhendaten"
 
@@ -35,6 +44,18 @@ msgstr "Über"
 msgid "Access control: Keep maps private or share with view-only or edit permissions"
 msgstr "Zugriffskontrolle: Speichere Karten privat oder teile sie mit Lese- oder Bearbeitungsrechten"
 
+msgid "Add"
+msgstr "Hinzufügen"
+
+msgid "Add a description text"
+msgstr "Beschreibungstext hinzufügen"
+
+msgid "Add description"
+msgstr "Beschreibung hinzufügen"
+
+msgid "Add layer"
+msgstr "Ebene hinzufügen"
+
 msgid "Add pictures, customize colors, symbols, labels"
 msgstr "Füge Bilder hinzu, passe Farben, Symbole und Beschriftungen an"
 
@@ -44,20 +65,68 @@ msgstr "Füge Bilder hinzu, passe Farben, Symbole, Beschriftungen, (3D-)Polygone
 msgid "Add your own data:"
 msgstr "Füge eigene Daten hinzu:"
 
+msgid "Added feature"
+msgstr "Objekt hinzugefügt"
+
+msgid "Added feature %{index}/%{total}"
+msgstr "Objekt %{index}/%{total} hinzugefügt"
+
+msgid "Added image"
+msgstr "Bild hinzugefügt"
+
 msgid "Admin"
 msgstr "Admin"
+
+msgid "Advanced"
+msgstr "Erweitert"
 
 msgid "Also available for self-hosting, giving you full control over your data."
 msgstr "Auch zum Self-Hosting verfügbar, mit voller Kontrolle über deine Daten."
 
+msgid "Are you sure you want to proceed?"
+msgstr "Möchtest du wirklich fortfahren?"
+
+msgid "Artistic, hand-painted watercolor style with soft, muted colors and texture."
+msgstr "Künstlerischer, handgemalter Aquarellstil mit weichen, gedeckten Farben und Textur."
+
 msgid "Ascending"
 msgstr "Aufsteigend"
+
+msgid "Asphalt"
+msgstr "Asphalt"
 
 msgid "Background"
 msgstr "Hintergrund"
 
+msgid "Background map"
+msgstr "Hintergrundkarte"
+
+msgid "Basemap Info (experimental)"
+msgstr "Basiskarten-Info (experimentell)"
+
+msgid "Basement %{n}"
+msgstr "Untergeschoss %{n}"
+
+msgid "Bicycle Mode: Click on the map to set waypoints, double click to finish"
+msgstr "Fahrrad-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklick zum Beenden"
+
 msgid "Bicycle Touring!"
 msgstr "Fahrradtouren!"
+
+msgid "Bicycle route"
+msgstr "Fahrradroute"
+
+msgid "Bicycle-focused map highlighting cycle routes, paths and bike infrastructure."
+msgstr "Fahrradkarte mit hervorgehobenen Radrouten, Wegen und Radinfrastruktur."
+
+msgid "Bike"
+msgstr "Fahrrad"
+
+msgid "Border color:"
+msgstr "Randfarbe:"
+
+msgid "Bright, colorful vector style with clear roads and readable labels."
+msgstr "Heller, farbenfroher Vektorstil mit klaren Straßen und gut lesbaren Beschriftungen."
 
 msgid "Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map."
 msgstr "Verwalte %{maps_link}, lerne mehr auf der %{tutorial_link} oder %{create_link} direkt eine neue Karte."
@@ -80,6 +149,18 @@ msgstr "Autoroute berechnen (r)"
 msgid "Calculate a walking route (w)"
 msgstr "Fußweg berechnen (w)"
 
+msgid "Calculating route..."
+msgstr "Route wird berechnet..."
+
+msgid "Can Edit"
+msgstr "Bearbeitbar"
+
+msgid "Car"
+msgstr "Auto"
+
+msgid "Car route"
+msgstr "Autoroute"
+
 msgid "Change colors and appearance"
 msgstr "Farben und Aussehen ändern"
 
@@ -92,26 +173,80 @@ msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad"
 msgid "Choose your base map: Streets, Satellite, Topographic, Biking, 3D houses etc."
 msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad, 3D-Gebäude usw."
 
+msgid "Classic MapTiler street map with roads, labels and points of interest."
+msgstr "Klassische MapTiler-Straßenkarte mit Straßen, Beschriftungen und interessanten Orten."
+
+msgid "Classic OpenStreetMap raster tiles with roads, labels and points of interest."
+msgstr "Klassische OpenStreetMap-Rasterkacheln mit Straßen, Beschriftungen und interessanten Orten."
+
+msgid "Clean, minimal MapTiler style focused on readability and simplicity."
+msgstr "Klarer, minimaler MapTiler-Stil mit Fokus auf Lesbarkeit und Einfachheit."
+
 msgid "Clear filter"
 msgstr "Filter entfernen"
+
+msgid "Click to copy html to embed in your website"
+msgstr "Klicken, um das HTML zum Einbetten in deine Website zu kopieren"
 
 msgid "Click to toggle format"
 msgstr "Format wechseln"
 
+msgid "Clipboard paste requires HTTPS or localhost"
+msgstr "Einfügen aus der Zwischenablage erfordert HTTPS oder localhost"
+
+msgid "Cobblestone"
+msgstr "Kopfsteinpflaster"
+
 msgid "Collaboration"
 msgstr "Zusammenarbeit"
+
+msgid "Color"
+msgstr "Farbe"
+
+msgid "Colorful vector map with vivid colors and a clear road hierarchy."
+msgstr "Farbenfrohe Vektorkarte mit kräftigen Farben und klarer Straßenhierarchie."
+
+msgid "Compacted gravel"
+msgstr "Verdichteter Schotter"
+
+msgid "Compass mode"
+msgstr "Kompass-Modus"
+
+msgid "Concrete"
+msgstr "Beton"
+
+msgid "Configure Map"
+msgstr "Karte einrichten"
 
 msgid "Connection error"
 msgstr "Verbindungsfehler"
 
+msgid "Contour lines added to map"
+msgstr "Höhenlinien zur Karte hinzugefügt"
+
+msgid "Contour lines:"
+msgstr "Höhenlinien:"
+
 msgid "Convert to route and edit JSON"
 msgstr "In Route umwandeln und JSON bearbeiten"
+
+msgid "Convert to routed track"
+msgstr "In berechnete Route umwandeln"
+
+msgid "Converting track to %{profile} route..."
+msgstr "Track wird in %{profile}-Route umgewandelt..."
+
+msgid "Coordinates copied to clipboard"
+msgstr "Koordinaten in die Zwischenablage kopiert"
 
 msgid "Copy"
 msgstr "Kopieren"
 
 msgid "Copy %{type}"
 msgstr "%{type} kopieren"
+
+msgid "Copy and transform this line into a routed track with waypoints, elevation and surface info."
+msgstr "Kopiert diese Linie und wandelt sie in eine berechnete Route mit Wegpunkten, Höhen- und Untergrunddaten um."
 
 msgid "Copy coordinates to clipboard"
 msgstr "Koordinaten in die Zwischenablage kopieren"
@@ -121,6 +256,9 @@ msgstr "Link in die Zwischenablage kopieren"
 
 msgid "Copy map"
 msgstr "Karte kopieren"
+
+msgid "Copy to my layer"
+msgstr "In meine Ebene kopieren"
 
 msgid "Create individual maps for your places, tracks and events. Share your maps in real-time."
 msgstr "Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen. Teile deine Karten in Echtzeit."
@@ -137,8 +275,26 @@ msgstr "Gestalte deine eigene Karte"
 msgid "Cross platform"
 msgstr "Plattformübergreifend"
 
+msgid "Current:"
+msgstr "Aktuell:"
+
+msgid "Custom Overpass query"
+msgstr "Eigene Overpass-Abfrage"
+
+msgid "Custom artistic map style with a unique, hand-crafted color palette."
+msgstr "Eigener künstlerischer Kartenstil mit einzigartiger, handgemachter Farbpalette."
+
+msgid "Custom raster layer"
+msgstr "Eigene Rasterebene"
+
 msgid "Customize your map"
 msgstr "Passe deine Karte an"
+
+msgid "Cycling-focused MapTiler style highlighting bike routes and trails."
+msgstr "MapTiler-Stil für Radfahrer mit hervorgehobenen Radrouten und Wegen."
+
+msgid "Dark mode vector map style, easy on the eyes for night-time viewing."
+msgstr "Dunkler Vektorstil, augenschonend für die Nutzung bei Nacht."
 
 msgid "Delete"
 msgstr "Löschen"
@@ -155,11 +311,29 @@ msgstr "Karte löschen"
 msgid "Delete midpoint"
 msgstr "Zwischenpunkt löschen"
 
+msgid "Deleting feature %{id}"
+msgstr "Objekt %{id} wird gelöscht"
+
 msgid "Descending"
 msgstr "Absteigend"
 
+msgid "Detailed vector map with landmarks, buildings and points of interest."
+msgstr "Detaillierte Vektorkarte mit Sehenswürdigkeiten, Gebäuden und interessanten Orten."
+
+msgid "Details"
+msgstr "Details"
+
+msgid "Device Orientation not supported"
+msgstr "Geräteausrichtung wird nicht unterstützt"
+
+msgid "Dirt"
+msgstr "Erde"
+
 msgid "Discuss"
 msgstr "Diskutieren"
+
+msgid "Distance markers:"
+msgstr "Distanzen:"
 
 msgid "Divide line here"
 msgstr "Linie hier teilen"
@@ -173,14 +347,32 @@ msgstr "Möchtest du diese Karte kopieren?"
 msgid "Docs"
 msgstr "Doku"
 
+msgid "Downhill"
+msgstr "Bergab"
+
+msgid "Downhill (12-15%)"
+msgstr "Gefälle (12-15 %)"
+
 msgid "Download as GPX"
 msgstr "Als GPX herunterladen"
 
 msgid "Download as geoJSON"
 msgstr "Als geoJSON herunterladen"
 
+msgid "Download map"
+msgstr "Karte herunterladen"
+
+msgid "Drag or add waypoints to reroute"
+msgstr "Wegpunkte ziehen oder hinzufügen, um die Route neu zu berechnen"
+
+msgid "Drag the point to move it"
+msgstr "Punkt ziehen, um ihn zu verschieben"
+
 msgid "Drag to rotate map, click to reset north"
 msgstr "Ziehen zum Drehen der Karte, klicken für Norden"
+
+msgid "Drag vertices to reshape"
+msgstr "Stützpunkte ziehen, um die Form zu ändern"
 
 msgid "Draw freehand (f)"
 msgstr "Freihand zeichnen (f)"
@@ -206,6 +398,9 @@ msgstr "Zeichne Objekte und gestalte sie:"
 msgid "Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data"
 msgstr "Dynamische Ebenen: Nutze %{overpass_link}, um Ebenen aus OpenStreetMap-Daten hinzuzufügen"
 
+msgid "Edit link copied"
+msgstr "Bearbeitungslink kopiert"
+
 msgid "Edit query"
 msgstr "Abfrage bearbeiten"
 
@@ -215,11 +410,50 @@ msgstr "Form auf der Karte bearbeiten"
 msgid "Edit title and description"
 msgstr "Titel und Beschreibung bearbeiten"
 
+msgid "Elevation profile"
+msgstr "Höhenprofil"
+
+msgid "Embed code copied"
+msgstr "Einbettungscode kopiert"
+
+msgid "Embed map"
+msgstr "Karte einbetten"
+
+msgid "Enter name / Search queries"
+msgstr "Name eingeben / Abfragen suchen"
+
+msgid "Error building route"
+msgstr "Fehler beim Berechnen der Route"
+
+msgid "Error converting track: %{message}"
+msgstr "Fehler beim Umwandeln des Tracks: %{message}"
+
+msgid "Error detecting location: %{message}"
+msgstr "Fehler beim Ermitteln des Standorts: %{message}"
+
+msgid "Error updating feature"
+msgstr "Fehler beim Aktualisieren des Objekts"
+
+msgid "Error updating feature geometry"
+msgstr "Fehler beim Aktualisieren der Objektgeometrie"
+
+msgid "Error uploading image"
+msgstr "Fehler beim Hochladen des Bildes"
+
+msgid "Failed to copy"
+msgstr "Kopieren fehlgeschlagen"
+
+msgid "Failed to load layer %{name}"
+msgstr "Ebene %{name} konnte nicht geladen werden"
+
 msgid "Feature Tour"
 msgstr "Feature Tour"
 
 msgid "Feature added"
 msgstr "Objekt hinzugefügt"
+
+msgid "Feature copied to clipboard"
+msgstr "Objekt in die Zwischenablage kopiert"
 
 msgid "Feature deleted"
 msgstr "Objekt gelöscht"
@@ -230,14 +464,107 @@ msgstr "Objekteigenschaft geändert"
 msgid "Feature update"
 msgstr "Objekt geändert"
 
+msgid "Fetching elevation data..."
+msgstr "Höhendaten werden geladen..."
+
+msgid "File exceeds 2.5MB. Please simplify it, for example with mapshaper.org"
+msgstr "Datei größer als 2,5 MB. Bitte vereinfache sie, zum Beispiel mit mapshaper.org"
+
+msgid "File imported"
+msgstr "Datei importiert"
+
+msgid "Fill color:"
+msgstr "Füllfarbe:"
+
 msgid "Find my location"
 msgstr "Meinen Standort finden"
+
+msgid "Fine gravel"
+msgstr "Feinschotter"
+
+msgid "Flat"
+msgstr "Eben"
+
+msgid "Flat (0%)"
+msgstr "Eben (0 %)"
+
+msgid "Floor %{n}"
+msgstr "Etage %{n}"
+
+msgid "Following position"
+msgstr "Position wird verfolgt"
+
+msgid "Foot"
+msgstr "Zu Fuß"
+
+msgid "Full track"
+msgstr "Gesamter Track"
+
+msgid "Gentle downhill (4-6%)"
+msgstr "Leichtes Gefälle (4-6 %)"
+
+msgid "Gentle uphill (4-6%)"
+msgstr "Leichte Steigung (4-6 %)"
+
+msgid "Geometry"
+msgstr "Geometrie"
+
+msgid "Geometry JSON"
+msgstr "Geometrie-JSON"
+
+msgid "Globe:"
+msgstr "Globus:"
+
+msgid "Grass"
+msgstr "Gras"
+
+msgid "Grass paver"
+msgstr "Rasengittersteine"
+
+msgid "Gravel"
+msgstr "Schotter"
+
+msgid "Ground"
+msgstr "Erdgeschoss"
 
 msgid "Happy mapping!"
 msgstr "Viel Spaß mit deiner Karte!"
 
+msgid "Height:"
+msgstr "Höhe:"
+
 msgid "Hide layer"
 msgstr "Ebene ausblenden"
+
+msgid "High-contrast Thunderforest style optimized for outdoor and mobile use."
+msgstr "Kontrastreicher Thunderforest-Stil, optimiert für Outdoor und mobile Nutzung."
+
+msgid "High-contrast black and white map, great for print or overlaying data."
+msgstr "Kontrastreiche Schwarzweißkarte, ideal für den Druck oder als Untergrund für eigene Daten."
+
+msgid "High-resolution satellite imagery overlaid with streets and place labels."
+msgstr "Hochauflösende Satellitenbilder mit Straßen und Ortsnamen."
+
+msgid "High-resolution satellite imagery without any labels or overlays."
+msgstr "Hochauflösende Satellitenbilder ohne Beschriftungen oder Überlagerungen."
+
+msgid "Hiking route"
+msgstr "Wanderroute"
+
+msgid "Hillshade added to map"
+msgstr "Schummerung zur Karte hinzugefügt"
+
+msgid "Hillshade:"
+msgstr "Schummerung:"
+
+msgid "Ice"
+msgstr "Eis"
+
+msgid "Image:"
+msgstr "Bild:"
+
+msgid "Import"
+msgstr "Importieren"
 
 msgid "Import from GeoJSON, GPX and KML"
 msgstr "Importiere GeoJSON, GPX und KML"
@@ -254,11 +581,56 @@ msgstr "Ebene hinzugefügt"
 msgid "Layer deleted"
 msgstr "Ebene gelöscht"
 
+msgid "Layer elements"
+msgstr "Ebenenelemente"
+
+msgid "Layer name"
+msgstr "Ebenenname"
+
 msgid "Layer updated"
 msgstr "Ebene geändert"
 
+msgid "Layers"
+msgstr "Ebenen"
+
+msgid "Level %{n}"
+msgstr "Ebene %{n}"
+
+msgid "Levels"
+msgstr "Ebenen"
+
+msgid "Light, minimal grayscale style ideal for data visualization overlays."
+msgstr "Heller, minimaler Graustufenstil, ideal als Untergrund für Datenvisualisierungen."
+
+msgid "Line Mode: Click on the map to draw a line"
+msgstr "Linien-Modus: Auf die Karte klicken, um eine Linie zu zeichnen"
+
+msgid "Line color:"
+msgstr "Linienfarbe:"
+
+msgid "Line cut into 2 segments"
+msgstr "Linie in 2 Abschnitte geteilt"
+
+msgid "Line width:"
+msgstr "Linienbreite:"
+
 msgid "Live updates: Map changes are synchronized via websockets"
 msgstr "Live-Updates: Kartenänderungen werden über WebSockets synchronisiert"
+
+msgid "Load for this area"
+msgstr "Für diesen Bereich laden"
+
+msgid "Loaded base map %{name}"
+msgstr "Basiskarte %{name} geladen"
+
+msgid "Loading description..."
+msgstr "Beschreibung wird geladen..."
+
+msgid "Loading live layer"
+msgstr "Live-Ebene wird geladen"
+
+msgid "Loading..."
+msgstr "Wird geladen..."
 
 msgid "Location (https only)"
 msgstr "Standort (nur mit https)"
@@ -284,11 +656,23 @@ msgstr "Karte '%{name}'"
 msgid "Map Gallery"
 msgstr "Kartengalerie"
 
+msgid "Map default:"
+msgstr "Kartenstandard:"
+
+msgid "Map export"
+msgstr "Karte"
+
 msgid "Map layers"
 msgstr "Kartenebenen"
 
 msgid "Map marker"
 msgstr "Kartenmarkierung"
+
+msgid "Map owners have this map listed in their account with full permissions."
+msgstr "Eigentümer sehen diese Karte in ihrem Konto und haben volle Rechte."
+
+msgid "Map properties updated"
+msgstr "Karteneigenschaften aktualisiert"
 
 msgid "Map settings"
 msgstr "Karteneinstellungen"
@@ -296,8 +680,17 @@ msgstr "Karteneinstellungen"
 msgid "Map tools"
 msgstr "Kartenwerkzeuge"
 
+msgid "Map view updated"
+msgstr "Kartenansicht aktualisiert"
+
 msgid "Map your track: Use %{ulogger_link} to visualize and share your tracks live"
 msgstr "Erfasse deinen Track: Nutze %{ulogger_link} zum Visualisieren und Teilen deiner Strecken in Echtzeit"
+
+msgid "MapTiler streets style with road labels removed for a cleaner look."
+msgstr "MapTiler-Straßenstil ohne Straßenbeschriftungen für ein ruhigeres Bild."
+
+msgid "MapTiler's rendering of OpenStreetMap data in a familiar style."
+msgstr "MapTilers Darstellung der OpenStreetMap-Daten in vertrautem Stil."
 
 msgid "Mapforge is ad-free and respects your privacy."
 msgstr "Mapforge ist werbefrei und respektiert deine Privatsphäre."
@@ -305,8 +698,38 @@ msgstr "Mapforge ist werbefrei und respektiert deine Privatsphäre."
 msgid "Mapforge: Create and share your own maps online"
 msgstr "Mapforge: Erstelle und teile deine eigenen Karten online"
 
+msgid "Maximum zoom level %{zoom} reached"
+msgstr "Maximale Zoomstufe %{zoom} erreicht"
+
+msgid "Metal"
+msgstr "Metall"
+
+msgid "Minimalist, neutral vector style with subtle colors and light labels."
+msgstr "Minimalistischer, neutraler Vektorstil mit zurückhaltenden Farben und leichten Beschriftungen."
+
+msgid "Minimum zoom level %{zoom} reached"
+msgstr "Minimale Zoomstufe %{zoom} erreicht"
+
+msgid "Moderate downhill (7-11%)"
+msgstr "Mittleres Gefälle (7-11 %)"
+
+msgid "Moderate uphill (7-11%)"
+msgstr "Mittlere Steigung (7-11 %)"
+
 msgid "Most viewed"
 msgstr "Meistgesehen"
+
+msgid "Muted Graybeard style with an added wintery, snow-covered terrain effect."
+msgstr "Gedeckter Graybeard-Stil mit winterlichem, schneebedecktem Gelände."
+
+msgid "Muted, monochrome vector style for a clean, distraction-free look."
+msgstr "Gedeckter, monochromer Vektorstil für ein klares, ablenkungsfreies Bild."
+
+msgid "Name:"
+msgstr "Name:"
+
+msgid "Neutral MapTiler style designed as a clean backdrop for data visualization."
+msgstr "Neutraler MapTiler-Stil als klarer Hintergrund für Datenvisualisierungen."
 
 msgid "Newest"
 msgstr "Neueste"
@@ -314,11 +737,71 @@ msgstr "Neueste"
 msgid "News"
 msgstr "Neuigkeiten"
 
+msgid "No"
+msgstr "Nein"
+
+msgid "No elements in this layer"
+msgstr "Keine Elemente in dieser Ebene"
+
+msgid "No route found"
+msgstr "Keine Route gefunden"
+
+msgid "Official German basemap.de style with detailed European cartography."
+msgstr "Offizieller deutscher basemap.de-Stil mit detaillierter europäischer Kartografie."
+
+msgid "Only LineString tracks can be converted to routes"
+msgstr "Nur LineString-Tracks können in Routen umgewandelt werden"
+
+msgid "Opacity:"
+msgstr "Deckkraft:"
+
 msgid "Open Source"
 msgstr "Open Source"
 
 msgid "Open map '%{name}'"
 msgstr "Karte '%{name}' öffnen"
+
+msgid "OpenStreetMap indoor"
+msgstr "OpenStreetMap Indoor"
+
+msgid "Overpass tutorial"
+msgstr "Overpass-Anleitung"
+
+msgid "Owner"
+msgstr "Eigentümer"
+
+msgid "Ownership link copied"
+msgstr "Eigentümerlink kopiert"
+
+msgid "Paint Mode: Click on the map to start drawing, release to finish"
+msgstr "Mal-Modus: Auf die Karte klicken zum Zeichnen, loslassen zum Beenden"
+
+msgid "Paved"
+msgstr "Befestigt"
+
+msgid "Paving stones"
+msgstr "Pflastersteine"
+
+msgid "Please confirm"
+msgstr "Bitte bestätigen"
+
+msgid "Please log in to upload images"
+msgstr "Melde dich an, um Bilder hochzuladen"
+
+msgid "Please log in to upload tracks"
+msgstr "Melde dich an, um Tracks hochzuladen"
+
+msgid "Point Mode: Click on the map to place a marker"
+msgstr "Punkt-Modus: Auf die Karte klicken, um einen Marker zu setzen"
+
+msgid "Point deleted"
+msgstr "Punkt gelöscht"
+
+msgid "Point scaling:"
+msgstr "Punktskalierung:"
+
+msgid "Polygon Mode: Click on the map to draw a polygon"
+msgstr "Polygon-Modus: Auf die Karte klicken, um ein Polygon zu zeichnen"
 
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
@@ -328,6 +811,24 @@ msgstr "Profil"
 
 msgid "Project"
 msgstr "Projekt"
+
+msgid "Properties"
+msgstr "Eigenschaften"
+
+msgid "Query"
+msgstr "Abfrage"
+
+msgid "Raster URL (https://<host>/{z}/{x}/{y}.png)"
+msgstr "Raster-URL (https://<host>/{z}/{x}/{y}.png)"
+
+msgid "Read Only"
+msgstr "Nur Lesen"
+
+msgid "Really delete this %{type}?"
+msgstr "%{type} wirklich löschen?"
+
+msgid "Really delete this layer?"
+msgstr "Diese Ebene wirklich löschen?"
 
 msgid "Recently updated"
 msgstr "Kürzlich aktualisiert"
@@ -344,11 +845,20 @@ msgstr "Letzte Änderung wiederherstellen"
 msgid "Redo: %{type}"
 msgstr "Wiederherstellen: %{type}"
 
+msgid "Refresh"
+msgstr "Aktualisieren"
+
 msgid "Refresh layer for current view"
 msgstr "Ebene für aktuellen Kartenausschnitt neu laden"
 
 msgid "Report issue"
 msgstr "Fehler melden"
+
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+msgid "Reset default view"
+msgstr "Standardansicht zurücksetzen"
 
 msgid "Responsive Design: Works well both on desktop and mobile"
 msgstr "Responsives Design: Funktioniert gut auf Desktop und Mobilgeräten"
@@ -356,17 +866,47 @@ msgstr "Responsives Design: Funktioniert gut auf Desktop und Mobilgeräten"
 msgid "Reverse track"
 msgstr "Track umkehren"
 
+msgid "Road Mode: Click on the map to set waypoints, double click to finish"
+msgstr "Straßen-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklick zum Beenden"
+
 msgid "Route created from GPX"
 msgstr "Route aus GPX erstellt"
 
+msgid "Route created successfully (%{length}km, %{count} segments)"
+msgstr "Route erfolgreich erstellt (%{length} km, %{count} Abschnitte)"
+
+msgid "Route created successfully (%{length}km, %{count} waypoints)"
+msgstr "Route erfolgreich erstellt (%{length} km, %{count} Wegpunkte)"
+
+msgid "Route differs significantly from original track (%{original}km -> %{routed}km)"
+msgstr "Route weicht deutlich vom ursprünglichen Track ab (%{original} km -> %{routed} km)"
+
+msgid "Routing segment %{index}/%{total}..."
+msgstr "Abschnitt %{index}/%{total} wird berechnet..."
+
 msgid "Run from your home screen as %{app_link}"
 msgstr "Starte vom Homescreen als %{app_link}"
+
+msgid "Sand"
+msgstr "Sand"
+
+msgid "Satellite imagery combined with street names and road labels overlay."
+msgstr "Satellitenbilder kombiniert mit Straßennamen und Beschriftungen."
+
+msgid "Saving feature %{id}"
+msgstr "Objekt %{id} wird gespeichert"
+
+msgid "Scaled with zoom"
+msgstr "Mit Zoom skalieren"
 
 msgid "Search location"
 msgstr "Ort suchen"
 
 msgid "Search maps"
 msgstr "Karten suchen"
+
+msgid "Searching position"
+msgstr "Position wird gesucht"
 
 msgid "See how it works"
 msgstr "So funktioniert's"
@@ -380,37 +920,124 @@ msgstr "Auswahlmodus"
 msgid "Self-Hosted Solution: You can use Mapforge either on %{mapforge_link}, or %{deploy_link} it in your own infrastructure"
 msgstr "Selbst gehostete Lösung: Du kannst Mapforge entweder unter %{mapforge_link} nutzen, oder %{deploy_link} es in deiner eigenen Infrastruktur"
 
+msgid "Set as default"
+msgstr "Als Standard"
+
+msgid "Set current view as default"
+msgstr "Aktuelle Ansicht als Standard setzen"
+
+msgid "Set the default view that is shown when opening this map. When 'center' is set to 'auto', the map will start centered on your content."
+msgstr "Lege die Standardansicht fest, die beim Öffnen dieser Karte gezeigt wird. Steht 'center' auf 'auto', startet die Karte zentriert auf deinen Inhalten."
+
+msgid "Share Map"
+msgstr "Karte teilen"
+
+msgid "Share edit link"
+msgstr "Bearbeitungslink teilen"
+
 msgid "Share map"
 msgstr "Karte teilen"
+
+msgid "Share ownership link"
+msgstr "Eigentümerlink teilen"
+
+msgid "Share view link"
+msgstr "Ansichtslink teilen"
+
+msgid "Show in public gallery"
+msgstr "In der Galerie zeigen"
 
 msgid "Show layer"
 msgstr "Ebene einblenden"
 
+msgid "Show map in public Mapforge gallery"
+msgstr "Karte in der öffentlichen Mapforge-Galerie zeigen"
+
 msgid "Show navigation"
 msgstr "Navigation anzeigen"
+
+msgid "Show title on map"
+msgstr "Titel auf der Karte anzeigen"
 
 msgid "Showing %{count} map"
 msgid_plural "Showing %{count} maps"
 msgstr[0] "Zeige %{count} Karte"
 msgstr[1] "Zeige %{count} Karten"
 
+msgid "Single tracks or points of the map can get exported from their details view."
+msgstr "Einzelne Tracks oder Punkte der Karte lassen sich in ihrer Detailansicht exportieren."
+
+msgid "Size:"
+msgstr "Größe:"
+
+msgid "Slight downhill (1-3%)"
+msgstr "Geringes Gefälle (1-3 %)"
+
+msgid "Slight uphill (1-3%)"
+msgstr "Geringe Steigung (1-3 %)"
+
+msgid "Snapping waypoints to road network..."
+msgstr "Wegpunkte werden auf das Straßennetz gesetzt..."
+
+msgid "Steep downhill (>16%)"
+msgstr "Starkes Gefälle (>16 %)"
+
+msgid "Steep uphill (>16%)"
+msgstr "Starke Steigung (>16 %)"
+
+msgid "Steepness"
+msgstr "Steigung"
+
 msgid "Storing only minimal data about you, no sharing of data with ad- or analytics companies."
 msgstr "Speichert nur minimale Daten über dich, keine Weitergabe von Daten an Werbe- oder Analyseunternehmen."
+
+msgid "Streets map highlighting detailed building footprints and 3D shapes."
+msgstr "Straßenkarte mit detaillierten Gebäudegrundrissen und 3D-Formen."
+
+msgid "Style"
+msgstr "Stil"
+
+msgid "Style Help"
+msgstr "Stil-Hilfe"
+
+msgid "Style JSON"
+msgstr "Stil-JSON"
+
+msgid "Surface"
+msgstr "Untergrund"
 
 msgid "Switch to edit mode"
 msgstr "Zum Bearbeitungsmodus wechseln"
 
+msgid "Symbol:"
+msgstr "Symbol:"
+
 msgid "Terms of Service"
 msgstr "Nutzungsbedingungen"
+
+msgid "Terrain added to map"
+msgstr "Gelände zur Karte hinzugefügt"
+
+msgid "The image contains GPS coordinates (<code>%{coordinates}</code>).<br/>Do you want to place the marker there?"
+msgstr "Das Bild enthält GPS-Koordinaten (<code>%{coordinates}</code>).<br/>Möchtest du den Marker dort platzieren?"
 
 msgid "This map is private and not linked from the public listing."
 msgstr "Diese Karte ist privat und nicht in der öffentlichen Liste verlinkt."
 
+msgid "This track is already a routed track"
+msgstr "Dieser Track ist bereits eine berechnete Route"
+
+msgid "Thunderforest Cycle map with elevation contours and cycling infrastructure."
+msgstr "Thunderforest-Fahrradkarte mit Höhenlinien und Radinfrastruktur."
+
+msgid "Title"
+msgstr "Titel"
+
 msgid "Toggle attribution"
 msgstr "Quellenangaben ein-/ausblenden"
 
-msgid "Toggle navigation"
-msgstr "Navigation umschalten"
+msgid "Topographic map with contour lines, hillshading and terrain features."
+msgstr "Topografische Karte mit Höhenlinien, Schummerung und Geländeformen."
 
 msgid "Tour planning with Mapforge:"
 msgstr "Tourenplanung mit Mapforge:"
@@ -418,8 +1045,20 @@ msgstr "Tourenplanung mit Mapforge:"
 msgid "Track added"
 msgstr "Track hinzugefügt"
 
+msgid "Track elevation chart"
+msgstr "Höhenprofil des Tracks"
+
+msgid "Track reversed"
+msgstr "Track umgekehrt"
+
 msgid "Track update"
 msgstr "Track geändert"
+
+msgid "Tracking off"
+msgstr "Verfolgung aus"
+
+msgid "Tracking position"
+msgstr "Position wird verfolgt"
 
 msgid "Tutorials"
 msgstr "Tutorials"
@@ -433,20 +1072,86 @@ msgstr "Letzte Änderung rückgängig machen"
 msgid "Undo: %{type}"
 msgstr "Rückgängig: %{type}"
 
+msgid "Unknown"
+msgstr "Unbekannt"
+
+msgid "Unpaved"
+msgstr "Unbefestigt"
+
+msgid "Update"
+msgstr "Aktualisieren"
+
+msgid "Update Layer"
+msgstr "Ebene aktualisieren"
+
+msgid "Updated feature '%{title}'"
+msgstr "Objekt '%{title}' aktualisiert"
+
+msgid "Uphill"
+msgstr "Bergauf"
+
+msgid "Uphill (12-15%)"
+msgstr "Steigung (12-15 %)"
+
 msgid "Use Mapforge with different clients + apps"
 msgstr "Nutze Mapforge mit verschiedenen Clients und Apps"
 
 msgid "Used open source projects: %{rails_link} for the backend, %{maplibre_link} and %{osm_link} for the frontend, %{draw_link}, %{turf_link}, %{ors_link} as helping libraries."
 msgstr "Verwendete Open-Source-Projekte: %{rails_link} für das Backend, %{maplibre_link} und %{osm_link} für das Frontend, %{draw_link}, %{turf_link}, %{ors_link} als Hilfsbibliotheken."
 
+msgid "Users can explore the map but cannot modify it."
+msgstr "Nutzer können die Karte ansehen, aber nicht ändern."
+
 msgid "Valid formats are gpx, kml, geojson and image files. WGS84 format, max. 2.5MB"
 msgstr "Gültige Formate sind gpx, kml, geojson und Bilddateien. WGS84-Format, max. 2,5 MB"
+
+msgid "VersaTiles satellite imagery combined with street and label overlays."
+msgstr "VersaTiles-Satellitenbilder kombiniert mit Straßen und Beschriftungen."
+
+msgid "View"
+msgstr "Ansicht"
 
 msgid "View feature information"
 msgstr "Objektinformationen anzeigen"
 
+msgid "View link copied"
+msgstr "Ansichtslink kopiert"
+
+msgid "Visible section"
+msgstr "Sichtbarer Abschnitt"
+
+msgid "Walk Mode: Click on the map to set waypoints, double click to finish"
+msgstr "Fußweg-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklick zum Beenden"
+
+msgid "Waypoint added"
+msgstr "Wegpunkt hinzugefügt"
+
+msgid "Waypoint:"
+msgstr "Wegpunkt:"
+
+msgid "Width:"
+msgstr "Breite:"
+
+msgid "Wikipedia articles"
+msgstr "Wikipedia-Artikel"
+
+msgid "Winter-themed MapTiler style with snow-covered terrain and landscapes."
+msgstr "Winterlicher MapTiler-Stil mit schneebedecktem Gelände und Landschaften."
+
+msgid "With this link, users can modify the map, add layers, and make changes."
+msgstr "Mit diesem Link können Nutzer die Karte bearbeiten, Ebenen hinzufügen und Änderungen vornehmen."
+
+msgid "Wood"
+msgstr "Holz"
+
+msgid "Woodchips"
+msgstr "Hackschnitzel"
+
 msgid "Work with others and stream map changes to all connected clients"
 msgstr "Arbeite mit anderen zusammen und übertrage Kartenänderungen live an alle verbundenen Geräte"
+
+msgid "Yes"
+msgstr "Ja"
 
 msgid "You can try out the %{tutorial_link} to learn how Mapforge works, or you can %{create_link} your first map right away."
 msgstr "Du kannst die %{tutorial_link} ausprobieren, um zu sehen, wie Mapforge funktioniert, oder %{create_link} direkt deine erste Karte."
@@ -493,8 +1198,50 @@ msgstr "Map erstellen, Karte erstellen, meine Karten, Karten teilen, meine Karte
 msgid "public id:"
 msgstr "öffentliche ID:"
 
+msgid "transparent"
+msgstr "transparent"
+
 msgid "tutorial map"
 msgstr "Tutorial-Karte"
 
 msgid "your maps"
 msgstr "deine Karten"
+
+msgid "🍻 Breweries"
+msgstr "🍻 Brauereien"
+
+msgid "🏊 Swimming pools"
+msgstr "🏊 Schwimmbäder"
+
+msgid "🏕️ Camping"
+msgstr "🏕️ Camping"
+
+msgid "🏪 Food Shops"
+msgstr "🏪 Lebensmittelläden"
+
+msgid "👨🏻‍🚒 Hydranten"
+msgstr "👨🏻‍🚒 Hydranten"
+
+msgid "🚆 Trains"
+msgstr "🚆 Züge"
+
+msgid "🚇 Subway"
+msgstr "🚇 U-Bahn"
+
+msgid "🚒 Feuerwehr"
+msgstr "🚒 Feuerwehr"
+
+msgid "🚰 Drinking water"
+msgstr "🚰 Trinkwasser"
+
+msgid "🚴 Bicycle routes"
+msgstr "🚴 Radwege"
+
+msgid "🚶🏾 Hiking routes"
+msgstr "🚶🏾 Wanderwege"
+
+msgid "🚻 Public toilets"
+msgstr "🚻 Öffentliche Toiletten"
+
+msgid "🛜 Wifi"
+msgstr "🛜 WLAN"

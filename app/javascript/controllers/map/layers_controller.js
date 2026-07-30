@@ -21,7 +21,7 @@ export default class extends Controller {
     const fileSize = (file.size / 1024).toFixed(2) // in KB
 
     if (fileSize > 2500 && !file.type.startsWith('image/')) {
-      status('File exceeds 2.5MB. Please simplify it, for example with mapshaper.org', 'error', 'medium', 8000)
+      status(window.__('File exceeds 2.5MB. Please simplify it, for example with mapshaper.org'), 'error', 'medium', 8000)
       return
     }
 
@@ -71,7 +71,8 @@ export default class extends Controller {
           } else {
             sendMessage('new_feature', feature)
           }
-          status('Added feature ' + i++ + '/' + geoJSON.features.length)
+          status(window.__('Added feature %{index}/%{total}')
+            .replace('%{index}', i++).replace('%{total}', geoJSON.features.length))
         })
 
         // Fly to the center of the imported features.
@@ -99,7 +100,7 @@ export default class extends Controller {
           }
         }
 
-        status('File imported')
+        status(window.__('File imported'))
         initLayersModal()
       }
 
@@ -134,7 +135,7 @@ export default class extends Controller {
       // redraw first geojson layer
       renderLayer(layers.find(l => l.type === 'geojson').id)
       sendMessage('new_feature', { ...feature })
-      status('Added image')
+      status(window.__('Added image'))
       flyToFeature(feature)
     })
   }
@@ -181,7 +182,7 @@ export default class extends Controller {
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
-    addUndoState(window.__('Layer updated'), { ...layer.toJSON(), geojson: layer.geojson })
+    addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
 
     layer.query = layerElement.querySelector('.overpass-query').value
     layer.name = layerElement.querySelector('.overpass-name').value
@@ -202,7 +203,7 @@ export default class extends Controller {
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
-    addUndoState(window.__('Layer updated'), { ...layer.toJSON(), geojson: layer.geojson })
+    addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
 
     layer.query = layerElement.querySelector('.raster-url').value
     layer.name = layerElement.querySelector('.raster-name').value
@@ -257,7 +258,7 @@ export default class extends Controller {
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(l => l.id === layerId)
     const wasVisible = layer.show !== false
-    if (window.gon.map_mode === "rw") { addUndoState(window.__('Layer updated'), { ...layer.toJSON(), geojson: layer.geojson }) }
+    if (window.gon.map_mode === "rw") { addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson }) }
 
     layer.show = !wasVisible
     setLayerVisibility(layer.sourceId, layer.show)
@@ -380,7 +381,7 @@ export default class extends Controller {
     let layer = createLayerInstance(layerData)
     layers.push(layer)
 
-    addUndoState(window.__('Layer added'), layerData)
+    addUndoState('Layer added', layerData)
     initLayersModal()
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)
@@ -390,12 +391,12 @@ export default class extends Controller {
 
   deleteLayer (event) {
     event.preventDefault()
-    if (!confirm('Really delete this layer?')) { return }
+    if (!confirm(window.__('Really delete this layer?'))) { return }
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
 
-    addUndoState(window.__('Layer deleted'), { ...layer.toJSON(), geojson: layer.geojson })
+    addUndoState('Layer deleted', { ...layer.toJSON(), geojson: layer.geojson })
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)
