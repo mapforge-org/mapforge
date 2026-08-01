@@ -500,27 +500,31 @@ export function addFeature (feature) {
   status(window.__('Added feature'))
 }
 
-function updateFeature (feature, updatedFeature) {
-  if (feature.geometry.type === 'Point') {
-    const newCoords = updatedFeature.geometry.coordinates
-    if (!equal(feature.geometry.coordinates, newCoords)) {
-      const animation = new AnimatePointAnimation()
+// feature id -> AnimatePointAnimation, so each marker keeps its own timing and a new
+// position cancels only that marker's in-flight animation
+const pointAnimations = new Map()
 
-      // Wait for data-geojson-loaded='true' before starting animation
-      const checkReady = () => {
-        if (map.getContainer().getAttribute('data-geojson-loaded') === 'true') {
-          animation.animatePoint(feature, newCoords)
-        } else {
-          // Check again on next frame
-          requestAnimationFrame(checkReady)
-        }
-      }
-      requestAnimationFrame(checkReady)
-    }
-  }
+function updateFeature (feature, updatedFeature) {
+  const newCoords = updatedFeature.geometry.coordinates
+  const animateFrom = feature.geometry.type === 'Point' && !equal(feature.geometry.coordinates, newCoords)
+    ? feature.geometry.coordinates
+    : null
 
   feature.geometry = updatedFeature.geometry
   feature.properties = updatedFeature.properties
+
+  if (animateFrom) {
+    // Hold the marker where it currently is and let the animation walk it to newCoords. Without
+    // this the render below slams it onto the target and the first animation frame pulls it back.
+    feature.geometry.coordinates = animateFrom
+    let animation = pointAnimations.get(feature.id)
+    if (!animation) {
+      animation = new AnimatePointAnimation()
+      pointAnimations.set(feature.id, animation)
+    }
+    animation.animateTo(feature, newCoords)
+  }
+
   status(window.__("Updated feature '%{title}'").replace('%{title}', feature.properties.title || feature.id))
   // Surgical single-feature update instead of a full re-render of every geojson layer.
   // A remote update may have changed geometry or toggled companions, so refresh them.

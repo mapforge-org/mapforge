@@ -189,10 +189,10 @@ app/javascript/maplibre/basemaps.js
   bin/rake db:mongoid:create_indexes
   ```
 
-- Animate a marker along a line:
+- Animate a marker along a line, at a constant speed in m/s (default 10):
 
   ```bash
-  bin/rake animation:path[<map_id>,<line_id>,<point_id>]
+  bin/rake animation:path[<map_id>,<line_id>,<point_id>,<speed>]
   ```
 - Update .pot/.po files with new translatable strings from the code: `bin/rake gettext:find`
 

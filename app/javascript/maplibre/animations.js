@@ -36,6 +36,17 @@ export class RotateCameraAnimation extends AnimationManager {
 }
 
 export class AnimatePointAnimation extends AnimationManager {
+  // Remote updates arrive at whatever rate the source sends (2s from animation:path, seconds
+  // apart from a GPS tracker), so interpolate over the observed gap rather than a fixed duration -
+  // otherwise the marker races ahead of the data and then waits.
+  animateTo = (feature, end) => {
+    const now = performance.now()
+    const duration = this.lastUpdate ? Math.min(Math.max(now - this.lastUpdate, 100), 5000) : 300
+    this.lastUpdate = now
+    this.stopAnimation()
+    this.animatePoint(feature, end, duration)
+  }
+
   animatePoint = (feature, end, duration = 300) => {
     const starttime = performance.now()
     const start = feature.geometry.coordinates
