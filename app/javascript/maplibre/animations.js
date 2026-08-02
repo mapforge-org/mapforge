@@ -35,13 +35,18 @@ export class RotateCameraAnimation extends AnimationManager {
   }
 }
 
+// A marker interpolating over seconds crawls a few pixels per frame, so drawing every frame of a
+// 60-144Hz display re-tiles the source for moves nobody can see. Progress is time-based, so
+// dropping frames only costs smoothness, and at this rate there is none to see.
+const POINT_ANIMATION_FPS = 30
+
 export class AnimatePointAnimation extends AnimationManager {
-  // Remote updates arrive at whatever rate the source sends (2s from animation:path, seconds
-  // apart from a GPS tracker), so interpolate over the observed gap rather than a fixed duration -
-  // otherwise the marker races ahead of the data and then waits.
+  // Remote updates arrive at whatever rate the source sends (2s from animation:path, 15s from
+  // trains:live, seconds apart from a GPS tracker), so interpolate over the observed gap rather
+  // than a fixed duration - otherwise the marker races ahead of the data and then waits.
   animateTo = (feature, end) => {
     const now = performance.now()
-    const duration = this.lastUpdate ? Math.min(Math.max(now - this.lastUpdate, 100), 5000) : 300
+    const duration = this.lastUpdate ? Math.min(Math.max(now - this.lastUpdate, 100), 15000) : 300
     this.lastUpdate = now
     this.stopAnimation()
     this.animatePoint(feature, end, duration)
@@ -52,11 +57,17 @@ export class AnimatePointAnimation extends AnimationManager {
     const start = feature.geometry.coordinates
     console.log('Animating point from: ' + start + ' to ' + end)
     let frameCounter = 0
+    let lastFrame = -Infinity
 
     const animate = (timestamp) => {
       let progress = (timestamp - starttime) / duration
       if (progress > 1) { progress = 1 }
       // console.log('progress: ' + progress)
+      if (progress < 1 && timestamp - lastFrame < 1000 / POINT_ANIMATION_FPS) {
+        this.animationId = requestAnimationFrame(animate)
+        return
+      }
+      lastFrame = timestamp
       const newCoordinates = [
         start[0] + (end[0] - start[0]) * progress,
         start[1] + (end[1] - start[1]) * progress
