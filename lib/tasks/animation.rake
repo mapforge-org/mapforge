@@ -7,14 +7,14 @@ namespace :animation do
     speed = (args[:speed] || 10).to_f # meters/second
     interval = 2 # seconds between updates, the browser interpolates in between
 
-    walker = Mapforge::PathWalker.new(line.coordinates(include_height: false))
-    abort "Line #{line.id} has zero length" if walker.length.zero?
-    puts "Line length: #{walker.length.round} m, speed: #{speed} m/s"
+    line_index = Mapforge::LineIndex.new(line.coordinates(include_height: false))
+    abort "Line #{line.id} has zero length" if line_index.length.zero?
+    puts "Line length: #{line_index.length.round} m, speed: #{speed} m/s"
 
     started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     tick = 0
     loop do
-      coordinates = walker.position_at(speed * interval * tick)
+      coordinates = line_index.position_at(speed * interval * tick)
       point.update(geometry: { "type" => "Point", "coordinates" => coordinates })
       tick += 1
       sleep [ started + tick * interval - Process.clock_gettime(Process::CLOCK_MONOTONIC), 0 ].max
