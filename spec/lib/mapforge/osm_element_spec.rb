@@ -67,10 +67,27 @@ RSpec.describe Mapforge::OsmElement do
   end
 
   describe ".fetch" do
+    def stub_get(path, elements)
+      allow(Net::HTTP).to receive(:get)
+        .with(URI("#{described_class::API_URL}/#{path}"), { "User-Agent" => "mapforge" })
+        .and_return({ "elements" => elements }.to_json)
+    end
+
     it "rejects an id without a known type prefix" do
       [ "banana/1", "2213233", "relation/", "relation/abc" ].each do |id|
         expect { described_class.fetch(id) }.to raise_error(ArgumentError, /expected an id like/)
       end
+    end
+
+    it "asks for the resolved members of a relation" do
+      stub_get("relation/99/full.json", elements)
+      expect(described_class.fetch("relation/99").name).to eq("RB 21: Nürnberg Nordost => Gräfenberg")
+    end
+
+    it "asks for the bare node, which has no /full" do
+      stub_get("node/1.json", elements)
+      expect(described_class.fetch("node/1").geometry)
+        .to eq("type" => "Point", "coordinates" => [ 11.0, 49.0 ])
     end
   end
 end

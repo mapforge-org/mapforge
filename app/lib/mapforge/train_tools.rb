@@ -31,7 +31,6 @@ module Mapforge
         progress = (now - a[:departure]) / (b[:arrival] - a[:departure])
         return a[:distance] + (b[:distance] - a[:distance]) * progress
       end
-      stops.last[:distance]
     end
 
     # The departure board of a single station: the next train towards each destination, earliest
