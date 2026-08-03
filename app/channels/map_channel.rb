@@ -11,6 +11,7 @@ class MapChannel < ApplicationCable::Channel
     end
 
     @public_id = map.public_id
+    @share_cursor = map.share_cursor
     stream_from "map_channel_#{@public_id}"
     transmit({ event: "connection", uuid: uuid })
     Rails.logger.info { "MapChannel subscribed '#{uuid}' for '#{params[:map_id]}'" }
@@ -19,7 +20,7 @@ class MapChannel < ApplicationCable::Channel
   def unsubscribed
     super
     payload = { event: "mouse_disconnect", uuid: uuid }
-    ActionCable.server.broadcast("map_channel_#{@public_id}", payload) if @public_id
+    ActionCable.server.broadcast("map_channel_#{@public_id}", payload) if @public_id && @share_cursor
     # Rails.logger.debug "MapChannel unsubscribed"
   end
 
