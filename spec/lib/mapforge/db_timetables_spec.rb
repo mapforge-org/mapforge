@@ -143,6 +143,35 @@ RSpec.describe Mapforge::DbTimetables do
     end
   end
 
+  describe "#get" do
+    let(:http) { instance_double(Net::HTTP) }
+
+    def response(klass, code)
+      klass.new("1.1", code, "OK").tap { |r| allow(r).to receive(:body).and_return(changes_xml) }
+    end
+
+    before do
+      allow(Net::HTTP).to receive(:start)
+        .with("apis.deutschebahn.com", 443, use_ssl: true, open_timeout: 5, read_timeout: 15).and_yield(http)
+    end
+
+    it "asks the timetables api over ssl with the credentials in the headers" do
+      allow(http).to receive(:get).and_return(response(Net::HTTPOK, "200"))
+
+      expect(client.changes("8001875")).to have_key(stop_id)
+      expect(http).to have_received(:get).with(
+        "/db-api-marketplace/apis/timetables/v1/fchg/8001875",
+        { "DB-Client-Id" => "id", "DB-Api-Key" => "key", "Accept" => "application/xml" }
+      )
+    end
+
+    it "raises rather than parse anything but a success" do
+      allow(http).to receive(:get).and_return(response(Net::HTTPNotFound, "404"))
+
+      expect { client.changes("8001875") }.to raise_error(described_class::Error, "GET fchg/8001875 returned 404")
+    end
+  end
+
   it "refuses to build without credentials" do
     expect { described_class.new(client_id: nil, api_key: "key") }.to raise_error(described_class::Error)
   end

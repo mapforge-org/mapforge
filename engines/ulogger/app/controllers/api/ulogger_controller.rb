@@ -164,7 +164,7 @@ module Ulogger
         :"fill-extrusion-base" => 3,
         :"fill-extrusion-width" => 1.5,
         :"stroke-opacity" => 0.75,
-        :"stroke-width" => 5,
+        :"stroke-width" => 3,
         :stroke => color
       }
     end
