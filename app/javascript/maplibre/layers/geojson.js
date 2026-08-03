@@ -323,11 +323,12 @@ export class GeoJSONLayer extends Layer {
     if (map.getContainer().getAttribute('data-geojson-loaded') === 'false') {
       return
     }
-    // Geometry moves every frame, so companions follow it: rebuild route-extras when the
-    // animating feature has them, and throttle the (pricier) km-marker rebuild to every 10th frame.
+    // Geometry moves every frame, so companions follow it, but only the ones this feature
+    // actually has - an animated marker cannot change the km markers of a route it is not on.
+    // The km rebuild is throttled on top of that because it is the pricier one.
     this.applyFeatureUpdate(feature, {
       refreshRouteExtras: hasRouteExtras(feature),
-      refreshKmMarkers: frameCount % 10 === 0
+      refreshKmMarkers: hasKmMarkers(feature) && frameCount % 10 === 0
     })
   }
 

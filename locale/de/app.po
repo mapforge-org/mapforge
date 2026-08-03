@@ -582,7 +582,7 @@ msgid "Layer deleted"
 msgstr "Ebene gelöscht"
 
 msgid "Layer elements"
-msgstr "Ebenenelemente"
+msgstr "Ebenenobjekte"
 
 msgid "Layer name"
 msgstr "Ebenenname"
