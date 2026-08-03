@@ -13,6 +13,10 @@ Yabeda.configure do
       comment: "Total number of WebSocket messages received",
       tags: %i[action channel]
 
+    counter :messages_sent,
+      comment: "Total number of WebSocket messages transmitted to a subscriber",
+      tags: %i[event channel]
+
     counter :messages_failed,
       comment: "Total number of WebSocket messages that raised an error while processing",
       tags: %i[action channel]
@@ -58,5 +62,16 @@ ActiveSupport::Notifications.subscribe("perform_action.action_cable") do |event|
   next unless event.payload[:exception]
   Yabeda.websocket.messages_failed.increment(
     { action: event.payload[:action], channel: event.payload[:channel_class] }
+  )
+end
+
+# Fires once per subscriber per message: stream fan-out goes through Channel#transmit, which is
+# instrumented. Tagged by the message event, not the broadcasting name, which contains the map
+# public_id and would explode metric cardinality.
+ActiveSupport::Notifications.subscribe("transmit.action_cable") do |event|
+  data = event.payload[:data]
+  name = data.is_a?(Hash) ? (data[:event] || data["event"]) : "turbo_stream"
+  Yabeda.websocket.messages_sent.increment(
+    { event: name || "unknown", channel: event.payload[:channel_class] }
   )
 end
