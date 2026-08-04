@@ -273,7 +273,7 @@ GEM
       activesupport
       i18n (>= 0.7)
       multi_json
-    haml (7.2.0)
+    haml (7.2.2)
       temple (>= 0.8.2)
       thor
       tilt
@@ -659,7 +659,7 @@ GEM
     thor (1.5.0)
     thread_safe (0.3.6)
     thruster (0.1.23-x86_64-linux)
-    tilt (2.7.0)
+    tilt (2.8.0)
     timeout (0.6.1)
     tsort (0.2.0)
     tty-which (0.5.0)
