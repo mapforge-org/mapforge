@@ -1,6 +1,10 @@
 module Mapforge
   module Trains
     module Tools
+      # The API publishes the moment the doors close, the train is still standing at the platform for
+      # a bit after that. Without this a train that is on time appears to roll off early.
+      DEPARTURE_DELAY = 20.seconds
+
       # The stop nodes of an OsmElement route relation, in travel order
       def self.stops(element)
         element.members.select { |m| m["type"] == "node" && m["role"].to_s.start_with?("stop") }
@@ -31,11 +35,13 @@ module Mapforge
         return nil if stops.size < 2 || now < stops.first[:departure] || now > stops.last[:arrival]
 
         stops.each_cons(2) do |a, b|
-          # The previous pair moved on only once now was past a's arrival, so anything before a's
-          # departure means standing at a. Equal times land here too and never reach the 0/0 below.
-          return a[:distance] if now <= a[:departure]
+          # We only get here with now past a's arrival, so now before a's departure means standing
+          # at a. That also catches every ride to b that is not longer than the departure delay,
+          # which is why the division below never gets a zero denominator.
+          departure = a[:departure] + DEPARTURE_DELAY
+          return a[:distance] if now <= departure
           next if now > b[:arrival]
-          progress = (now - a[:departure]) / (b[:arrival] - a[:departure])
+          progress = (now - departure) / (b[:arrival] - departure)
           return a[:distance] + (b[:distance] - a[:distance]) * progress
         end
       end

@@ -24,6 +24,13 @@ RSpec.describe Mapforge::Trains::Tools do
     expect(distance_at(start + 30.minutes)).to eq(3000)
   end
 
+  it "leaves 20 seconds after the departure the API reports" do
+    expect(distance_at(start + 20.seconds)).to eq(0)
+    expect(distance_at(start + 21.seconds)).to be > 0
+    expect(distance_at(start + 12.minutes + 20.seconds)).to eq(1000)
+    expect(distance_at(start + 12.minutes + 21.seconds)).to be > 1000
+  end
+
   it "keeps a train that arrived on time waiting for a late departure" do
     late = [ stops[0], stops[1].merge(departure: start + 25.minutes), stops[2] ]
 
@@ -31,8 +38,9 @@ RSpec.describe Mapforge::Trains::Tools do
   end
 
   it "interpolates linearly between two stations" do
-    expect(distance_at(start + 5.minutes)).to eq(500)
-    expect(distance_at(start + 21.minutes)).to eq(2000)
+    # half way through 12:00:20-12:10 and through 12:12:20-12:30
+    expect(distance_at(start + 5.minutes + 10.seconds)).to eq(500)
+    expect(distance_at(start + 21.minutes + 10.seconds)).to eq(2000)
   end
 
   it "returns nil without at least two timed stops" do

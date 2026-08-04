@@ -14,7 +14,7 @@ namespace :trains do
 
     map = Map.create
     lons, lats = coordinates.transpose
-    map.update!(name: route.name, zoom: "10", base_map: "versatilesGraybeard",
+    map.update!(name: route.name, zoom: "10", base_map: "versatilesGraybeard", type: "train",
       center: [ (lons.min + lons.max) / 2, (lats.min + lats.max) / 2 ])
     layer = map.layers.first
     layer.features.create!(

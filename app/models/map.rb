@@ -42,6 +42,7 @@ class Map
   field :public_id, type: String, default: -> { SecureRandom.hex(4) }
   field :viewed_at, type: DateTime
   field :view_count, type: Integer, default: 0
+  # tutorial, train
   field :type, type: String
   field :share_cursor, type: Boolean
   field :template, type: Boolean
