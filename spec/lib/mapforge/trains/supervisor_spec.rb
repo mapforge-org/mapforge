@@ -83,6 +83,30 @@ RSpec.describe Mapforge::Trains::Supervisor do
     expect(Mapforge::Trains::Live).to have_received(:new).once
   end
 
+  it "keeps syncing until it is interrupted, then stops what it started" do
+    watched(map.public_id)
+    # Kernel#sleep, standing in for the Ctrl-C the rake task turns into an Interrupt
+    allow(supervisor).to receive(:sleep).and_raise(Interrupt) # rubocop:disable RSpec/SubjectStub
+
+    expect { supervisor.run }.to raise_error(Interrupt)
+    expect(live).to have_received(:stop)
+  end
+
+  # The dead entry stays until the map goes unwatched, so a map that cannot run is not retried
+  # every poll
+  it "logs a route that fails to start rather than taking the supervisor down" do
+    watched(map.public_id)
+    allow(Mapforge::Trains::Live).to receive(:new)
+      .and_raise(Mapforge::Trains::RouteMap::Error, "No track on the map")
+    allow(Rails.logger).to receive(:error)
+
+    supervisor.sync(now)
+    watched
+    supervisor.sync(now + described_class::LINGER)
+
+    expect(Rails.logger).to have_received(:error).with(/RouteMap::Error No track on the map/)
+  end
+
   it "runs no more routes at a time than the DB API budget allows" do
     maps = [ map ] + Array.new(described_class::MAX) { create(:map, type: "train") }
     watched(*maps.map(&:public_id))
