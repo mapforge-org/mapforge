@@ -9,8 +9,6 @@ module Mapforge
     class RouteMap
       class Error < StandardError; end
 
-      BOARD_STYLE = { "label-size" => 11, "label-max-width" => 30 }.freeze
-
       # [{ eva:, name:, distance:, feature: }], nearest the start of the track first
       attr_reader :stations
 
@@ -51,7 +49,8 @@ module Mapforge
 
           properties = Tools.train_properties(trip, stops, now, line: @line)
           write_train(trip, meters, properties)
-          delay = properties["label"] ? ", #{properties['label']} min late" : ""
+          minutes = Tools.train_delay(stops, now)
+          delay = minutes.positive? ? ", +#{minutes} min late" : ""
           running[trip] = "#{properties['title']} at #{(meters / 1000).round(1)} km#{delay}"
         end
         (@trains.keys - running.keys).each do |trip|
@@ -61,15 +60,12 @@ module Mapforge
         running.values
       end
 
-      # Departure board on every station: the next departure towards each terminus
+      # Departure board on every station, below the station name that route_setup put there
       def show_boards(by_station, now)
         @stations.each do |station|
           label = Tools.board_label(by_station.fetch(station[:eva], []), now)
-          # Comparing the whole set, not just the label: a terminus has no arrival to put in brackets,
-          # so its board can read the same as the one an earlier run left while the size differs
-          properties = station[:feature].properties.merge(BOARD_STYLE).merge("label" => label)
-          next if station[:feature].properties == properties
-          station[:feature].update!(properties: properties)
+          next if station[:feature].properties["label"] == label
+          station[:feature].update!(properties: station[:feature].properties.merge("label" => label))
         end
       end
 
@@ -78,9 +74,8 @@ module Mapforge
         Rails.logger.info "Removing #{@trains.size} trains and clearing #{@stations.size} departure boards"
         @trains.each_value(&:destroy)
         @stations.each do |station|
-          properties = station[:feature].properties.except("label", *BOARD_STYLE.keys)
-          next if station[:feature].properties == properties
-          station[:feature].update!(properties: properties)
+          next unless station[:feature].properties.key?("label")
+          station[:feature].update!(properties: station[:feature].properties.except("label"))
         end
       end
 

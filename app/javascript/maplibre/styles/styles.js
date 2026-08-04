@@ -374,17 +374,23 @@ function textLayerStyles(mode) {
   const flatMode = mode === 'flat'
   const layerId = flatMode ? 'text-layer-flat' : 'text-layer'
 
+  const textFont = {
+    'text-font': ['coalesce',
+      ['get', 'label-font'],
+      ['literal', labelFont]
+    ]
+  }
+
   // Shared layout properties
   const sharedLayout = {
+    // 'label-title' is a heading above the label: its own format section, because one text layer
+    // has one text-size and only a section can scale off it. Empty section = no heading, no change.
     'text-field': [
       'format',
-      ['coalesce', ['get', 'label'], ['get', 'room']],
-      {
-        'text-font': ['coalesce',
-          ['get', 'label-font'],
-          ['literal', labelFont]
-        ]
-      }
+      ['case', ['has', 'label-title'], ['concat', ['get', 'label-title'], '\n'], ''],
+      { ...textFont, 'font-scale': 1.3 },
+      ['coalesce', ['get', 'label'], ['get', 'room'], ''],
+      textFont
     ],
     'text-size': labelSize,
     'text-font': labelFont,
@@ -431,7 +437,7 @@ function textLayerStyles(mode) {
       filter: ['all',
         ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
         ['!=', ['geometry-type'], 'MultiLineString'], // line labels are in 'line-labels'
-        ['has', 'label'],
+        ['any', ['has', 'label'], ['has', 'label-title']],
         flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
         minZoomFilter,
         maxZoomFilter

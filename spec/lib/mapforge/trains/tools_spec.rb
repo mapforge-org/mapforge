@@ -24,6 +24,12 @@ RSpec.describe Mapforge::Trains::Tools do
     expect(distance_at(start + 30.minutes)).to eq(3000)
   end
 
+  it "keeps a train that arrived on time waiting for a late departure" do
+    late = [ stops[0], stops[1].merge(departure: start + 25.minutes), stops[2] ]
+
+    expect(described_class.distance_at(late, start + 20.minutes)).to eq(1000)
+  end
+
   it "interpolates linearly between two stations" do
     expect(distance_at(start + 5.minutes)).to eq(500)
     expect(distance_at(start + 21.minutes)).to eq(2000)
@@ -115,9 +121,14 @@ RSpec.describe Mapforge::Trains::Tools do
       expect(properties(15)["marker-color"]).to eq("#e01b24")
     end
 
-    it "labels the delay only where there is one" do
-      expect(properties(7)["label"]).to eq("+7")
-      expect(properties(0)).not_to have_key("label")
+    it "haloes the label in a light version of the marker color" do
+      expect(properties(0)["label-shadow"]).to eq("#cdf1d7")
+      expect(properties(15)["label-shadow"]).to eq("#f6bbbd")
+    end
+
+    it "labels the train with where it is heading and the delay where there is one" do
+      expect(properties(7)["label"]).to eq("→ Gräfenberg (+7)")
+      expect(properties(0)["label"]).to eq("→ Gräfenberg")
     end
 
     it "counts a train past its last stop as on time" do
@@ -136,20 +147,20 @@ RSpec.describe Mapforge::Trains::Tools do
       stops = [ { destination: "Gräfenberg", planned_arrival: noon + 8.minutes,
                   planned: noon + 10.minutes, departure: noon + 12.minutes } ]
 
-      expect(described_class.board_label(stops, noon)).to eq("12:10 (12:08) Gräfenberg (+2)")
+      expect(described_class.board_label(stops, noon)).to eq("12:10 (12:08) → Gräfenberg (+2)")
     end
 
     it "leaves out the brackets where the train starts here, and the delay where there is none" do
       stops = [ { destination: "Gräfenberg", planned: noon + 10.minutes, departure: noon + 10.minutes } ]
 
-      expect(described_class.board_label(stops, noon)).to eq("12:10 Gräfenberg")
+      expect(described_class.board_label(stops, noon)).to eq("12:10 → Gräfenberg")
     end
 
     it "is one line per destination, earliest first, and empty once nothing is due" do
       stops = [ { destination: "Gräfenberg", planned: noon + 20.minutes, departure: noon + 20.minutes },
                 { destination: "Nürnberg", planned: noon + 5.minutes, departure: noon + 5.minutes } ]
 
-      expect(described_class.board_label(stops, noon)).to eq("12:05 Nürnberg\n12:20 Gräfenberg")
+      expect(described_class.board_label(stops, noon)).to eq("12:05 → Nürnberg\n12:20 → Gräfenberg")
       expect(described_class.board_label(stops, noon + 1.hour)).to eq("")
     end
   end

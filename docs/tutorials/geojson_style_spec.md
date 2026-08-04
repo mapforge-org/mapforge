@@ -10,6 +10,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 #### *All* geometries:
 
 * `label`: Label to show on the map (no emoji support)
+* `label-title`: heading line, drawn above `label` at 1.3 times `label-size` (works without a `label`, and takes the same color, font, anchor and offset as the label)
 * `label-size`: font size (default 16, max. 254)
 * `label-font`: label font array (default depends on base map, like `['noto_sans_regular']`)
 * `label-color`: font color in format "#000000" (default)

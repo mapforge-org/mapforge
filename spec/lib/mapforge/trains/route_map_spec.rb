@@ -18,9 +18,10 @@ RSpec.describe Mapforge::Trains::RouteMap do
   def build_route
     layer.features.create!(geometry: { "type" => "LineString", "coordinates" => track }, properties: {})
     # deliberately out of order, the class sorts by distance along the track
-    add_point(track.last, { "title" => "Gräfenberg", "eva" => "3" })
-    add_point(track.first, { "title" => "Eschenau", "eva" => "1" })
-    add_point(track[1], { "title" => "Lauf", "eva" => "2" })
+    # label-title is the station name route_setup leaves on the dot, the board goes below it
+    add_point(track.last, { "title" => "Gräfenberg", "eva" => "3", "label-title" => "Gräfenberg" })
+    add_point(track.first, { "title" => "Eschenau", "eva" => "1", "label-title" => "Eschenau" })
+    add_point(track[1], { "title" => "Lauf", "eva" => "2", "label-title" => "Lauf" })
   end
 
   # One train running Eschenau 12:00 -> Lauf 12:10/12:12 -> Gräfenberg 12:30, all of it on time
@@ -93,7 +94,7 @@ RSpec.describe Mapforge::Trains::RouteMap do
       descriptions = route.show_trains(trips(delay: 6), now + 11.minutes)
 
       train = layer.features.point.detect { |feature| feature.properties["trip_id"] == "trip-1" }
-      expect(train.properties).to include("label" => "+6", "marker-color" => "#ff7800")
+      expect(train.properties).to include("label" => "→ Gräfenberg (+6)", "marker-color" => "#ff7800")
       expect(descriptions.first).to end_with("+6 min late")
     end
 
@@ -113,12 +114,13 @@ RSpec.describe Mapforge::Trains::RouteMap do
   describe "#show_boards" do
     before { build_route }
 
-    it "writes the departure board and shrinks the label to fit it" do
+    it "writes the departure board below the station name" do
       route.show_boards(by_station, now)
 
       eschenau = route.stations.first[:feature]
-      expect(eschenau.properties).to include("label" => "14:00 Gräfenberg", # 12:00 UTC is 14:00 in Berlin
-                                             "label-size" => 11, "label-max-width" => 30)
+      # 12:00 UTC is 14:00 in Berlin
+      expect(eschenau.properties).to include("label" => "14:00 → Gräfenberg",
+                                             "label-title" => "Eschenau")
     end
 
     it "leaves a station whose board has not moved alone" do
@@ -140,7 +142,7 @@ RSpec.describe Mapforge::Trains::RouteMap do
   describe "#clear" do
     before { build_route }
 
-    it "takes the trains and the boards down" do
+    it "takes the trains and the boards down, leaving the station names" do
       route.show_trains(trips, now + 5.minutes)
       route.show_boards(by_station, now)
 
@@ -148,7 +150,8 @@ RSpec.describe Mapforge::Trains::RouteMap do
 
       expect(layer.features.point.count).to eq(3)
       expect(route.stations.map { |station| station[:feature].properties.keys }.flatten)
-        .not_to include("label", "label-size", "label-max-width")
+        .not_to include("label")
+      expect(route.stations.first[:feature].properties).to include("label-title" => "Eschenau")
     end
 
     it "does nothing to a station that never got a board" do

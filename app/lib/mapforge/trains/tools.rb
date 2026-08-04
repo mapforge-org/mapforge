@@ -63,30 +63,39 @@ module Mapforge
         (((stop[:arrival] || stop[:departure]) - planned) / 60).round
       end
 
-      # What one running train looks like on the map. The delay is the one at the stop it is heading
-      # for, which is what a passenger waiting there cares about.
-      def self.train_properties(trip, stops, now, line: nil)
+      # How late a running train is: the delay at the stop it is heading for, which is what a
+      # passenger waiting there cares about
+      def self.train_delay(stops, now)
         next_stop = stops.find { |stop| (stop[:arrival] || stop[:departure]) >= now }
-        minutes = next_stop ? delay(next_stop) : 0
-        { "trip_id" => trip, "title" => "#{line} → #{stops.filter_map { |s| s[:destination] }.first}".strip,
-          "marker-symbol" => "🚆", "marker-size" => 16, "sort-key" => 10,
-          "marker-color" => delay_color(minutes),
-          "label" => (minutes.positive? ? "+#{minutes}" : nil) }.compact
+        next_stop ? delay(next_stop) : 0
       end
 
-      def self.delay_color(minutes)
+      # What one running train looks like on the map
+      def self.train_properties(trip, stops, now, line: nil)
+        minutes = train_delay(stops, now)
+        destination = stops.filter_map { |stop| stop[:destination] }.first
+        color, shadow = delay_colors(minutes)
+        { "trip_id" => trip, "title" => "#{line} → #{destination}".strip,
+          "marker-symbol" => "🚆", "marker-size" => 16, "sort-key" => 10,
+          "marker-color" => color, "label-shadow" => shadow, "label-max-width" => 40,
+          "label" => "→ #{destination}#{" (+#{minutes})" if minutes.positive?}" }
+      end
+
+      # Marker color and the washed out version of it the label is haloed with
+      def self.delay_colors(minutes)
         case minutes
-        when ..4 then "#33d17a"    # green, on time
-        when 5..14 then "#ff7800"  # orange
-        else "#e01b24"             # red
+        when ..4 then [ "#33d17a", "#cdf1d7" ]    # green, on time
+        when 5..14 then [ "#ff7800", "#ffd7b3" ]  # orange
+        else [ "#e01b24", "#f6bbbd" ]             # red
         end
       end
-      private_class_method :delay_color
+      private_class_method :delay_colors
 
-      # The departure board of one station, one line per destination:
+      # The departure board of one station, one line per destination, below the station name that
+      # route_setup left in label-title:
       #
-      #   12:20 (12:18) Gräfenberg (+2)
-      #   12:35 Nürnberg Nordost
+      #   12:20 (12:18) → Gräfenberg (+2)
+      #   12:35 → Nürnberg Nordost
       #
       # Planned departure, planned arrival in brackets where the train does not start here, terminus,
       # and how late it currently is.
@@ -95,7 +104,7 @@ module Mapforge
           minutes = ((stop[:departure] - stop[:planned]) / 60).round
           arrival = stop[:planned_arrival]
           "#{hhmm(stop[:planned])}#{" (#{hhmm(arrival)})" if arrival} " \
-            "#{stop[:destination]}#{" (+#{minutes})" unless minutes.zero?}"
+            "→ #{stop[:destination]}#{" (+#{minutes})" unless minutes.zero?}"
         }.join("\n")
       end
 

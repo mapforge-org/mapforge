@@ -14,13 +14,13 @@ namespace :trains do
 
     map = Map.create
     lons, lats = coordinates.transpose
-    map.update!(name: route.name, zoom: "10",
+    map.update!(name: route.name, zoom: "10", base_map: "versatilesGraybeard",
       center: [ (lons.min + lons.max) / 2, (lats.min + lats.max) / 2 ])
     layer = map.layers.first
     layer.features.create!(
       geometry: geometry,
       properties: { "title" => route.name, "stroke" => "#5cc497",
-                    "stroke-width" => 4, "sort-key" => 1 })
+                    "stroke-width" => 2, "sort-key" => 1 })
 
     # The DB Timetables API is keyed on EVA numbers. uic_ref already is one, railway:ref holds a
     # DS100 code DB translates exactly, and the name is the last resort because DB only matches it
@@ -42,7 +42,11 @@ namespace :trains do
       layer.features.create!(
         geometry: { "type" => "Point", "coordinates" => node.values_at("lon", "lat") },
         properties: { "title" => node["tags"]["name"], "eva" => eva_of.call(node["tags"]),
-                      "marker-symbol" => "🚉", "sort-key" => 5, "marker-color": "#f6f5f4" })
+                      "sort-key" => 5, "marker-color" => "#000000", "marker-size" => 6,
+                      "marker-opacity" => 1, "stroke" => "#77767b",
+                      # The name stays on the map, the live task only fills the departures below it in
+                      "label-title" => node["tags"]["name"], "label-size" => 11,
+                      "label-max-width" => 30, "label-offset" => [ 0, 0.8 ] })
     end
 
     puts "Track: #{coordinates.size} points, #{stops.size} stations"
