@@ -13,8 +13,9 @@ module Mapforge
       CHANGES_INTERVAL = 60
 
       # names is { eva => station name }, the names being there so every log line says which station
-      # contributed what. line is the l attribute IRIS puts on every stop, eg "RB21". Without it every
-      # train calling at one of the stations is kept, whatever line it belongs to.
+      # contributed what. line is the IRIS line name, the l attribute IRIS puts on every stop event,
+      # eg "RB21" or "S1". Without it every train calling at one of the stations is kept, whatever
+      # line it belongs to.
       def initialize(names, line: nil, api: DbTimetables.new)
         @names = names
         @line = line

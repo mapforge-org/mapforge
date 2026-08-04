@@ -60,6 +60,15 @@ RSpec.describe Mapforge::Trains::RouteMap do
       expect(route.station_names).to eq({ "1" => "Eschenau", "2" => "Lauf", "3" => "Gräfenberg" })
     end
 
+    it "takes the IRIS line name off the track where the caller names none" do
+      layer.features.create!(geometry: { "type" => "LineString", "coordinates" => track },
+                             properties: { "line" => "S1" })
+      add_point(track.first, { "title" => "Eschenau", "eva" => "1" })
+
+      expect(described_class.new(map.private_id).line).to eq("S1")
+      expect(described_class.new(map.private_id, line: "RB21").line).to eq("RB21")
+    end
+
     it "sweeps up trains an earlier run left behind" do
       build_route
       leftover = add_point(track[1], { "trip_id" => "old-trip" })

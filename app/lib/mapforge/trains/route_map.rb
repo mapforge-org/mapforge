@@ -12,13 +12,17 @@ module Mapforge
       # [{ eva:, name:, distance:, feature: }], nearest the start of the track first
       attr_reader :stations
 
+      # The IRIS line name, the l attribute on every stop event, eg "RB21" or "S1"
+      attr_reader :line
+
       def initialize(private_id, line: nil)
         map = Map.find_by(private_id: private_id) ||
           raise(Error, "No map with private id #{private_id.inspect}, run 'rake trains:route_setup' first")
-        @line = line
         @layer = map.layers.first
         track = @layer.features.line_string.first ||
           raise(Error, "No track on the map, run 'rake trains:route_setup'")
+        # route_setup leaves the line on the track, so a run needs nothing but the map to start from
+        @line = line || track.properties["line"]
         @index = LineIndex.new(track.coordinates(include_height: false))
 
         points = @layer.features.point.to_a
