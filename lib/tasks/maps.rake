@@ -11,6 +11,10 @@ namespace :maps do
     # "No session with given id") straight to $stderr from background Async
     # fibers during page/browser close. They can't be caught or silenced via
     # config, so filter them out at the $stderr level for the task's duration.
+    # puppeteer-ruby's async fiber scheduler uses IO::Buffer, which Ruby 4.0
+    # warns about on first use
+    Warning[:experimental] = false
+
     ignore = /Protocol error \((?:Runtime\.runIfWaitingForDebugger|Target\.detachFromTarget)\)/
     real_stderr = $stderr
     filtered = Object.new.tap do |io|
