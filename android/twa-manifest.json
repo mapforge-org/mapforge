@@ -20,8 +20,8 @@
     "path": "/space/workspace/mapforge/android/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "19",
-  "appVersionCode": 19,
+  "appVersionName": "21",
+  "appVersionCode": 21,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://mapforge.org/manifest.json",
@@ -56,5 +56,5 @@
   "displayOverride": [
     "standalone"
   ],
-  "appVersion": "19"
+  "appVersion": "21"
 }
