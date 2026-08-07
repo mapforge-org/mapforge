@@ -1,11 +1,14 @@
 namespace :trains do
-  # Both live tasks write their own log, the default rake logger would swallow it
+  # Every task here writes its own log, the default rake logger would swallow it
   def train_logger!
     # Ruby writes a terminal through and a pipe in 8k blocks, so an interactive run logs fine while
     # `podman logs` on the same task stays empty for hours
     $stdout.sync = true
     Rails.logger = Logger.new($stdout, level: ENV.fetch("LOG_LEVEL", "info"))
     Rails.logger.formatter = ->(_severity, time, _progname, message) { "#{time.strftime('%H:%M:%S')} #{message}\n" }
+    # The query log of the driver and the broadcasts of Action Cable would bury the task's own lines
+    Mongo::Logger.logger.level = Logger::WARN
+    ActionCable.server.config.logger = Logger.new(nil)
   end
 
   desc "Create a map with the track and stations of an OpenStreetMap route relation"
@@ -15,8 +18,7 @@ namespace :trains do
     # 67672: RB30 Nürnberg Hauptbahnhof => Neuhaus
     # 8316681: RE87
     fail "Provide an OSM relation as parameter, eg #{2213233}" unless args[:relation]
-    Mongo::Logger.logger.level = Logger::WARN
-    ActionCable.server.config.logger = Logger.new(nil)
+    train_logger!
 
     route = Mapforge::OsmElement.fetch("relation/#{args[:relation]}")
     geometry = route.geometry
@@ -26,7 +28,7 @@ namespace :trains do
     # /a1b2c3d4. A rerun replaces that map, the track and the stations are rebuilt from OSM anyway.
     public_id = "train:#{args[:line]}" if args[:line]
     if public_id && (old = Map.where(public_id: public_id).first)
-      puts "Replacing map '#{old.name}' (#{public_id})"
+      Rails.logger.info "Replacing map '#{old.name}' (#{public_id})"
       old.destroy
     end
 
@@ -50,10 +52,11 @@ namespace :trains do
       next tags["uic_ref"] if tags["uic_ref"]
       api ||= Mapforge::DbTimetables.new
       eva = (tags["railway:ref"] && api.eva_by_ds100(tags["railway:ref"])) || api.eva(tags["name"])
-      puts "  #{tags['name']}: no uic_ref in OSM, DB #{eva ? "knows eva #{eva}" : 'knows no such station'}"
+      Rails.logger.info "  #{tags['name']}: no uic_ref in OSM, " \
+                        "DB #{eva ? "knows eva #{eva}" : 'knows no such station'}"
       eva
     rescue Mapforge::DbTimetables::Error => e
-      warn "  #{tags['name']}: eva lookup failed, #{e.message}"
+      Rails.logger.warn "  #{tags['name']}: eva lookup failed, #{e.message}"
       nil
     end
 
@@ -69,8 +72,8 @@ namespace :trains do
                       "label-max-width" => 30, "label-offset" => [ 0, 0.8 ] })
     end
 
-    puts "Track: #{coordinates.size} points, #{stops.size} stations"
-    puts "Map: #{map.name} (public_id: #{map.public_id}, private_id: #{map.private_id})"
+    Rails.logger.info "Track: #{coordinates.size} points, #{stops.size} stations"
+    Rails.logger.info "Map: #{map.name} (public_id: #{map.public_id}, private_id: #{map.private_id})"
   end
 
 
