@@ -1,6 +1,9 @@
 namespace :trains do
   # Both live tasks write their own log, the default rake logger would swallow it
   def train_logger!
+    # Ruby writes a terminal through and a pipe in 8k blocks, so an interactive run logs fine while
+    # `podman logs` on the same task stays empty for hours
+    $stdout.sync = true
     Rails.logger = Logger.new($stdout, level: ENV.fetch("LOG_LEVEL", "info"))
     Rails.logger.formatter = ->(_severity, time, _progname, message) { "#{time.strftime('%H:%M:%S')} #{message}\n" }
   end
