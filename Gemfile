@@ -39,7 +39,8 @@ gem "gettext", require: false # needed at build time by rake gettext:find / gett
 gem "rails-i18n" # core Rails i18n strings (date/time, number formatting, etc.) for non-English locales
 
 # Databases
-gem "redis", ">= 4.0.1"
+# Action Cable's redis adapter hard-caps redis < 6 (actioncable 8.1.x)
+gem "redis", ">= 4.0.1", "< 6"
 gem "mongoid"
 gem "mongoid_rails_migrations"
 gem "mongoid_includes"
