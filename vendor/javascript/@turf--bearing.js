@@ -1,2 +1,4 @@
-import{degreesToRadians as e,radiansToDegrees as t}from"@turf/helpers";import{getCoord as n}from"@turf/invariant";function r(r,a,o={}){if(o.final===!0)return i(r,a);let s=n(r),c=n(a),l=e(s[0]),u=e(c[0]),d=e(s[1]),f=e(c[1]),p=Math.sin(u-l)*Math.cos(f),m=Math.cos(d)*Math.sin(f)-Math.sin(d)*Math.cos(f)*Math.cos(u-l);return t(Math.atan2(p,m))}function i(e,t){let n=r(t,e);return n=(n+180)%360,n}var a=r;export{r as bearing,a as default};
+// @turf/bearing@7.4.0 downloaded from https://ga.jspm.io/npm:@turf/bearing@7.4.0/dist/esm/index.js
+
+import{degreesToRadians as e,radiansToDegrees as t}from"@turf/helpers";import{getCoord as n}from"@turf/invariant";function r(r,a,o={}){if(o.final===!0)return i(r,a);let s=n(r),c=n(a),l=e(s[0]),u=e(c[0]),d=e(s[1]),f=e(c[1]),p=Math.sin(u-l)*Math.cos(f),m=Math.cos(d)*Math.sin(f)-Math.sin(d)*Math.cos(f)*Math.cos(u-l);return t(Math.atan2(p,m))}function i(e,t){let n=r(t,e);return n=(n+180)%360,n>180?n-360:n}var a=r;export{r as bearing,a as default};
 
