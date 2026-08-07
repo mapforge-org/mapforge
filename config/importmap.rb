@@ -27,10 +27,10 @@ pin_all_from "vendor/javascript/mapbox-gl-draw-paint-mode",
   under: "mapbox-gl-draw-paint-mode", preload: false
 
 # https://github.com/maplibre/maplibre-gl-js
-# From https://cdn.jsdelivr.net/npm/maplibre-gl@6.1.0/dist/
+# From https://cdn.jsdelivr.net/npm/maplibre-gl@6.2.0/dist/
 # update all of maplibre-gl.js + maplibre-gl-shared.mjs + maplibre-gl-worker.mjs
 # preloaded so the browser fetches during head parse
-pin "maplibre-gl" # @6.1.0
+pin "maplibre-gl" # v6.2.0
 # https://github.com/maplibre/maplibre-gl-geocoder
 pin "@maplibre/maplibre-gl-geocoder", preload: false, to: "@maplibre--maplibre-gl-geocoder.js" # @1.9.4
 # https://github.com/GIScience/openrouteservice-js?tab=readme-ov-file
@@ -58,7 +58,7 @@ pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: false # @5.1.2
 pin "wgs84", preload: false # @0.0.0
 
 # https://github.com/Ionaru/easy-markdown-editor
-pin "easymde", preload: false # @2.20.0
+pin "easymde", preload: false # v2.20.0, manual update
 
 # https://github.com/mapbox/togeojson
 pin "togeojson", to: "togeojson.js", preload: false # @0.16.2
@@ -66,13 +66,13 @@ pin "togeojson", to: "togeojson.js", preload: false # @0.16.2
 # Animations for frontpage: https://github.com/michalsnik/aos
 pin "aos" # @2.3.4
 # https://swiperjs.com/, from https://esm.sh/swiper
-pin "swiper", to: "swiper-bundle.min.js", preload: false # @14.0.7
+pin "swiper", to: "swiper-bundle.min.js", preload: false # @11.2.10
 # From https://esm.sh/swiper/modules
 pin "swiper/modules", to: "swiper-modules.js", preload: false # @11.2.10
 # Emoji picker: https://github.com/missive/emoji-mart (alternative: https://www.npmjs.com/package/emoji-picker-element)
 pin "emoji-mart", preload: false # @5.6.0
 # Drag-and-drop reordering: https://github.com/SortableJS/Sortable
-pin "sortablejs", preload: false # @1.15.6
+pin "sortablejs", preload: false # @1.15.7
 # Extract coords from uploaded images
 pin "exif-reader", preload: false # @2.3.0
 pin "@kurkle/color", to: "@kurkle--color.js", preload: false # @0.4.0
@@ -101,6 +101,6 @@ pin "@turf/bbox", to: "@turf--bbox.js", preload: false # @7.3.5
 pin "@turf/center", to: "@turf--center.js", preload: false # @7.3.5
 pin "@turf/jsts", to: "@turf--jsts.js", preload: false # @2.7.2
 # dependencies of turf/buffer
-pin "d3-array", preload: false # @1.2.4
-pin "d3-geo", preload: false # @1.7.1
+pin "d3-array", preload: false # @3.2.4
+pin "d3-geo", preload: false # @3.1.1
 pin "internmap", preload: false # @2.0.3
