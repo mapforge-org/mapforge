@@ -31,6 +31,9 @@ pin_all_from "vendor/javascript/mapbox-gl-draw-paint-mode",
 # update all of maplibre-gl.js + maplibre-gl-shared.mjs + maplibre-gl-worker.mjs
 # preloaded so the browser fetches during head parse
 pin "maplibre-gl" # v6.2.0
+# https://github.com/mapbox/mapbox-gl-rtl-text
+# Not imported as a module, only resolved to a URL and handed to setRTLTextPlugin
+pin "mapbox-gl-rtl-text", preload: false # @0.2.3
 # https://github.com/maplibre/maplibre-gl-geocoder
 pin "@maplibre/maplibre-gl-geocoder", preload: false, to: "@maplibre--maplibre-gl-geocoder.js" # @1.9.4
 # https://github.com/GIScience/openrouteservice-js?tab=readme-ov-file
