@@ -549,6 +549,7 @@
   .layer-item {
     margin-top: 0;
     margin-bottom: 0.5rem;
+    padding: 0.5rem 0.3rem;
   }
 
   .permission-badge {
@@ -616,7 +617,7 @@
 @media (width < 380px) {
   .map-modal {
     margin: 0 0.5rem;
-    padding: 0.8rem 0.1rem 0.8rem 0.5rem;
+    padding: 0.8rem 0rem 0.8rem 0.3rem;
   }
 
   .map-modal-header {

@@ -8,7 +8,7 @@
 
       - if @map_mode == 'rw'
         .row.align-items-center
-          .col-6
+          .col-6.pe-0
             - if @user
               %label.no-wrap.form-control.btn.btn-blue#file-input-label{ for: "fileInput", title: _('Valid formats are gpx, kml, geojson and image files. WGS84 format, max. 2.5MB') }
                 %i.bi.bi-upload.me-1
@@ -20,7 +20,7 @@
               %i.bi.bi-info-circle
                 = _("Please log in to upload tracks")
 
-          .col-6
+          .col-6.ps-1
             %button#newLayerDropdown.no-wrap.form-control.btn.btn-blue.dropdown-toggle{
               type: "button",
               "data-bs-toggle": "dropdown",
