@@ -26,6 +26,7 @@ export const viewStyleNames = [
 ]
 
 export const defaultExtrusionOpacity = 0.9
+const extrusionCornerRadius = 0.5 // meters
 
 export function setStyleDefaultFont(font) { labelFont = [font] }
 
@@ -474,6 +475,9 @@ function extrusionBucketLayers () {
         ['==', opacityBucketSelector, bucket],
         minZoomFilter,
         maxZoomFilter],
+      layout: {
+        'fill-extrusion-rounded-corner-distance': extrusionCornerRadius
+      },
       paint: {
         'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], featureColor),
         'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
