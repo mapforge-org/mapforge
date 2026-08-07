@@ -1,11 +1,11 @@
 require "net/http"
 
 module Mapforge
-  # Client for the DB Timetables (IRIS) API. Credentials come from an application registered at
-  # developers.deutschebahn.com that is subscribed to the "Timetables" product.
+  # Client for the DB Timetables (IRIS) API. The credentials come from an application at
+  # developers.deutschebahn.com. That application needs a subscription to the "Timetables" product.
   class DbTimetables
     BASE_URL = "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1"
-    # Times are reported as YYMMDDHHmm in German local time, while the app runs in UTC.
+    # DB reports times as YYMMDDHHmm in German local time. The app runs in UTC.
     ZONE = ActiveSupport::TimeZone["Europe/Berlin"]
 
     class Error < StandardError; end
@@ -15,30 +15,26 @@ module Mapforge
       @headers = { "DB-Client-Id" => client_id, "DB-Api-Key" => api_key, "Accept" => "application/xml" }
     end
 
-    # Planned stops of one station within one hour slice, keyed by stop event id. Static, cacheable.
+    # Returns the planned stops of one station in one hour, keyed by stop event id. This data is
+    # static and cacheable.
     def plan(eva, time, line: nil)
       parse(get("plan/#{eva}/#{time.in_time_zone(ZONE).strftime('%y%m%d/%H')}"), line: line)
     end
 
-    # Deviations currently known at one station, keyed by stop event id. Upstream refresh is 30s.
-    # Unfiltered: the caller merges these onto the stop ids it already knows from the plan.
+    # Returns the deviations known at one station, keyed by stop event id. DB refreshes them every
+    # 30s. The result has no filter, so the caller merges it onto the stop ids from the plan.
     def changes(eva)
       parse(get("fchg/#{eva}"))
     end
 
-    # A station carries two kinds of id and DB uses both. An EVA number (7 digits, UIC country code
-    # plus five, "80" for Germany) names a tariff and passenger information point, and is what the
-    # rest of this API is keyed on. A DS100 code (2-5 letters, Regelwerk 100, first letter the old
-    # directorate region, N for Nürnberg) names an operating point instead, so codes exist for
-    # junctions and depots that sell no ticket. Neither implies the other: Berlin Hbf is one EVA
-    # across the three operating points BL, BLS and BHBF, while a bus stop has an EVA and no code.
-    #
-    # OSM tags them uic_ref and railway:ref. eva_of in lib/tasks/trains.rake takes uic_ref straight
-    # when a stop has one and asks the two lookups below for the rest, code first, name last.
+    # DB uses two ids. An EVA number (7 digits, "80" for Germany) names a tariff point, and the
+    # rest of this API uses it as the key. A DS100 code (2-5 letters, Regelwerk 100) names an
+    # operating point, so junctions and depots have one too. Neither id implies the other: Berlin
+    # Hbf is one EVA across BL, BLS and BHBF, and a bus stop has no code. OSM tags them uic_ref
+    # and railway:ref, and eva_of in lib/tasks/trains.rake asks the two lookups below, code first.
 
-    # The eva number of a station, or nil. The pattern is a literal prefix of the DB name, and DB
-    # writes no space before a bracket where OSM does, so the space is dropped to let
-    # "Lauf (rechts Pegnitz)" find "Lauf(rechts Pegnitz)".
+    # Returns the eva number of a station, or nil. DB matches the name as a literal prefix and
+    # writes no space before a bracket, so "Lauf (rechts Pegnitz)" needs "Lauf(rechts Pegnitz)".
     def eva(name)
       pattern = ERB::Util.url_encode(name.gsub(" (", "("))
       station = Nokogiri::XML(get("station/#{pattern}")).xpath("//station")
@@ -46,11 +42,9 @@ module Mapforge
       station["eva"] if station
     end
 
-    # The eva number behind a DS100/RL100 code, or nil. A code is matched exactly rather than by
-    # prefix, which is what makes it a better key than the name, but one that happens to prefix a
-    # station name answers with that station, so the code of the hit is checked. The answer is one
-    # station even where several codes share it, which is what we want: BL, BLS and BHBF all give
-    # the eva of Berlin Hbf.
+    # Returns the eva number behind a DS100/RL100 code, or nil. An exact code is a better key than
+    # a name, but a code can also prefix a name, so this method compares the code of the hit.
+    # Several codes give one station: BL, BLS and BHBF all give the eva of Berlin Hbf.
     def eva_by_ds100(code)
       station = Nokogiri::XML(get("station/#{ERB::Util.url_encode(code)}")).at_xpath("//station")
       station["eva"] if station && station["ds100"].to_s.casecmp?(code)
