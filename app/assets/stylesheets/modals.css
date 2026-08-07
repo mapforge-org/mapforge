@@ -617,7 +617,7 @@
 @media (width < 380px) {
   .map-modal {
     margin: 0 0.5rem;
-    padding: 0.8rem 0rem 0.8rem 0.3rem;
+    padding: 0.8rem 0 0.8rem 0.3rem;
   }
 
   .map-modal-header {
