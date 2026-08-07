@@ -54,7 +54,7 @@ pin "@mapbox/geojson-area", to: "@mapbox--geojson-area.js", preload: false # @0.
 pin "@mapbox/geojson-normalize", to: "@mapbox--geojson-normalize.js", preload: false # @0.0.1
 pin "@mapbox/point-geometry", to: "@mapbox--point-geometry.js", preload: false # @1.1.0
 pin "fast-deep-equal", preload: false # @3.1.3
-pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: false # @5.1.2
+pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: false # v5.1.2, manual download
 pin "wgs84", preload: false # @0.0.0
 
 # https://github.com/Ionaru/easy-markdown-editor
@@ -65,10 +65,10 @@ pin "togeojson", to: "togeojson.js", preload: false # @0.16.2
 
 # Animations for frontpage: https://github.com/michalsnik/aos
 pin "aos" # @2.3.4
-# https://swiperjs.com/, from https://esm.sh/swiper
-pin "swiper", to: "swiper-bundle.min.js", preload: false # @11.2.10
+# https://swiperjs.com/, from https://esm.sh/swiper, manual download
+pin "swiper", to: "swiper-bundle.min.js", preload: false # v11.2.10
 # From https://esm.sh/swiper/modules
-pin "swiper/modules", to: "swiper-modules.js", preload: false # @11.2.10
+pin "swiper/modules", to: "swiper-modules.js", preload: false # v11.2.10
 # Emoji picker: https://github.com/missive/emoji-mart (alternative: https://www.npmjs.com/package/emoji-picker-element)
 pin "emoji-mart", preload: false # @5.6.0
 # Drag-and-drop reordering: https://github.com/SortableJS/Sortable
