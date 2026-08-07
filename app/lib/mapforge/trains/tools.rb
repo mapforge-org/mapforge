@@ -62,6 +62,13 @@ module Mapforge
              .sort_by { |stop| stop[:departure] }
       end
 
+      # The next train that ends at a station. It has no departure, so #next_departures never sees
+      # it, and no destination either, because the station it is standing in is the destination.
+      def self.next_arrival(stops, now)
+        stops.select { |stop| stop[:departure].nil? && stop[:arrival] && stop[:arrival] >= now }
+             .min_by { |stop| stop[:arrival] }
+      end
+
       # How many minutes late a stop is. The live time and the planned one have to be the same event:
       # comparing an arrival against a planned departure would report the stop time as being early.
       def self.delay(stop)
@@ -101,17 +108,21 @@ module Mapforge
       # route_setup left in label-title:
       #
       #   12:20 (12:18) → Gräfenberg (+2)
-      #   12:35 → Nürnberg Nordost
+      #   12:35
       #
       # Planned departure, planned arrival in brackets where the train does not start here, terminus,
-      # and how late it currently is.
+      # and how late it currently is. A train that ends here has no departure and no destination but
+      # this station, whose name is above the board already, so its line is the planned arrival alone.
       def self.board_label(stops, now)
-        next_departures(stops, now).map { |stop|
-          minutes = ((stop[:departure] - stop[:planned]) / 60).round
+        lines = next_departures(stops, now).map { |stop|
           arrival = stop[:planned_arrival]
-          "#{hhmm(stop[:planned])}#{" (#{hhmm(arrival)})" if arrival} " \
-            "→ #{stop[:destination]}#{" (+#{minutes})" unless minutes.zero?}"
-        }.join("\n")
+          [ stop[:planned], "#{hhmm(stop[:planned])}#{" (#{hhmm(arrival)})" if arrival} → #{stop[:destination]}",
+            ((stop[:departure] - stop[:planned]) / 60).round ]
+        }
+        ends_here = next_arrival(stops, now)
+        lines << [ ends_here[:planned], hhmm(ends_here[:planned]), delay(ends_here) ] if ends_here
+        lines.sort_by(&:first).map { |_time, text, minutes| "#{text}#{" (+#{minutes})" unless minutes.zero?}" }
+             .join("\n")
       end
 
       # Every time here comes from the DB API and belongs to a German platform display, so it is shown

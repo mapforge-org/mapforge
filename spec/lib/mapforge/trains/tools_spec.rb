@@ -151,25 +151,34 @@ RSpec.describe Mapforge::Trains::Tools do
     # 10:00 UTC is 12:00 in Berlin.
     let(:noon) { Time.utc(2026, 8, 1, 10, 0) }
 
+    def board_label(stops, time) = described_class.board_label(stops, time)
+
     it "puts the planned arrival in brackets and the delay behind the destination" do
       stops = [ { destination: "Gräfenberg", planned_arrival: noon + 8.minutes,
                   planned: noon + 10.minutes, departure: noon + 12.minutes } ]
 
-      expect(described_class.board_label(stops, noon)).to eq("12:10 (12:08) → Gräfenberg (+2)")
+      expect(board_label(stops, noon)).to eq("12:10 (12:08) → Gräfenberg (+2)")
     end
 
     it "leaves out the brackets where the train starts here, and the delay where there is none" do
       stops = [ { destination: "Gräfenberg", planned: noon + 10.minutes, departure: noon + 10.minutes } ]
 
-      expect(described_class.board_label(stops, noon)).to eq("12:10 → Gräfenberg")
+      expect(board_label(stops, noon)).to eq("12:10 → Gräfenberg")
+    end
+
+    it "shows a train that ends here as its arrival alone, without a destination" do
+      stops = [ { planned_arrival: noon + 35.minutes, planned: noon + 35.minutes, arrival: noon + 37.minutes },
+                { destination: "Nürnberg", planned: noon + 40.minutes, departure: noon + 40.minutes } ]
+
+      expect(board_label(stops, noon)).to eq("12:35 (+2)\n12:40 → Nürnberg")
     end
 
     it "is one line per destination, earliest first, and empty once nothing is due" do
       stops = [ { destination: "Gräfenberg", planned: noon + 20.minutes, departure: noon + 20.minutes },
                 { destination: "Nürnberg", planned: noon + 5.minutes, departure: noon + 5.minutes } ]
 
-      expect(described_class.board_label(stops, noon)).to eq("12:05 → Nürnberg\n12:20 → Gräfenberg")
-      expect(described_class.board_label(stops, noon + 1.hour)).to eq("")
+      expect(board_label(stops, noon)).to eq("12:05 → Nürnberg\n12:20 → Gräfenberg")
+      expect(board_label(stops, noon + 1.hour)).to eq("")
     end
   end
 end
