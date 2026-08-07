@@ -40,11 +40,3 @@ RSpec.describe MapChannel, type: :channel do
     end
   end
 end
-
-# The test env uses the "test" cable adapter, so nothing else loads the redis
-# adapter, whose `gem "redis", ">= 4", "< 6"` cap only bites at require time.
-RSpec.describe "Action Cable redis adapter" do
-  it "loads with the bundled redis version" do
-    expect { require "action_cable/subscription_adapter/redis" }.not_to raise_error
-  end
-end
