@@ -44,6 +44,7 @@
 
 #description-modal .map-modal {
   padding-top: 0;
+  padding-right: 0.1rem;
 }
 
 .map-modal-header {
@@ -60,6 +61,7 @@
 #description-modal .map-modal-content {
   max-height: calc(100vh - 6rem);
 }
+
 
 .inline-scroll {
   overflow: hidden auto;
@@ -137,7 +139,7 @@
 .modal-close-button {
   position: absolute;
   top: 0.6rem;
-  right: 0.6rem;
+  right: 1rem;
   z-index: 1;
   width: 2rem;
   height: 2rem;
@@ -440,12 +442,21 @@
   font-size: 1rem;
 }
 
+#map-description table,
+#description-content table {
+  width: 100%;
+}
+
 #map-description table td,
 #map-description table th,
 #description-content table td,
 #description-content table th {
-  border: 1px solid #ddd;
   padding: 5px;
+}
+
+#map-description table td,
+#description-content table td {
+  border: 1px solid #ddd;
 }
 
 /* Media queries at end to ensure they override defaults */
