@@ -3,10 +3,10 @@ import * as dom from 'helpers/dom'
 import { animateElement, initTooltips } from 'helpers/dom'
 import * as f from 'helpers/functions'
 import * as functions from 'helpers/functions'
-import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { initializeGeoLocateControl } from 'maplibre/controls/geolocate'
+import { initializeSearchControl } from 'maplibre/controls/search'
 import { draw, unselect } from 'maplibre/edit'
 import { featureIcon, getFeatureTypeName, resetHighlightedFeature } from 'maplibre/feature'
 import { layers } from 'maplibre/layers/layers'
@@ -388,43 +388,6 @@ export function resetControls () {
 }
 
 
-// https://maplibre.org/maplibre-gl-geocoder/types/MaplibreGeocoderOptions.html
-export const geocoderConfig = {
-  forwardGeocode: async (config) => {
-    const features = []
-    try {
-      const request = `https://nominatim.openstreetmap.org/search?q=${config.query}&format=geojson&polygon_geojson=1&addressdetails=1`
-      const response = await fetch(request)
-      const geojson = await response.json()
-      for (const feature of geojson.features) {
-        const center = [feature.bbox[0] + (feature.bbox[2] - feature.bbox[0]) / 2,
-          feature.bbox[1] + (feature.bbox[3] - feature.bbox[1]) / 2
-        ]
-        const point = {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: center
-          },
-          place_name: feature.properties.display_name,
-          properties: feature.properties,
-          text: feature.properties.display_name,
-          place_type: ['place'],
-          bbox: feature.bbox,
-          center
-        }
-        features.push(point)
-      }
-    } catch (e) {
-      console.error(`Failed to forward Geocode with error: ${e}`)
-    }
-
-    return {
-      features
-    }
-  }
-}
-
 export function initCtrlTooltips () {
   functions.e('.maplibregl-ctrl, .maplibregl-ctrl button', e => {
     e.setAttribute('data-toggle', 'tooltip')
@@ -435,27 +398,7 @@ export function initCtrlTooltips () {
 
 export function initializeDefaultControls () {
 
-  // https://maplibre.org/maplibre-gl-geocoder/
-  map.addControl(
-    new MaplibreGeocoder(geocoderConfig, {
-      maplibregl,
-      zoom: 16,
-      flyTo: { maxZoom: 16 },
-      clearAndBlurOnEsc: true
-      // trackProximity defaults to true, which already biases results toward
-      // the current map center — no need to wire up proximity manually
-    }), 'top-right'
-  )
-  const geocoderButton = document.querySelector('.maplibregl-ctrl-geocoder')
-  geocoderButton.classList.add('hidden')
-  geocoderButton.title = window.__('Search location')
-  document.querySelector('.maplibregl-ctrl-geocoder--icon-search').addEventListener('click', (_e) => {
-    if (parseFloat(window.getComputedStyle(geocoderButton).width) > 100) {
-      geocoderButton.style.removeProperty('width')
-    } else {
-      geocoderButton.style.setProperty('width', '14rem', 'important')
-    }
-  })
+  initializeSearchControl()
 
   const nav = new maplibregl.NavigationControl({
     visualizePitch: true,
@@ -482,8 +425,6 @@ export function initializeDefaultControls () {
       document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('disabled', '1')
       document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('data-bs-original-title', window.__('Location (https only)'))
     }
-    // delayed via timeout, the geocoders !important transition overrides data-aos-delay
-    setTimeout(() => { animateElement('.maplibregl-ctrl-geocoder', 'fade-left') }, 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)

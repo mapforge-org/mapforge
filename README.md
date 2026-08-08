@@ -200,7 +200,7 @@ app/javascript/maplibre/basemaps.js
 
 ### Importmap updates
 
-* `bin/importmap outdated` shows outdated dependencies, `bin/importmap update` upadtes them
+* `bin/importmap outdated` shows outdated dependencies, `bin/importmap update` updates them
 * Updating a single package: `bin/importmap pin <pkg>`
 * Some dependencies in importmap.rb are marked with vX.Y so they don't get picked up automatically, they need a manual upgrade.
 

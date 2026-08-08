@@ -225,6 +225,17 @@
   transition: width 0.5s ease, opacity 0.5s ease, transform 0.5s ease !important;
 }
 
+.maplibregl-ctrl-geocoder.expanded {
+  width: 14rem !important;
+}
+
+/* wider where the screen has room for it */
+@media (width >= 640px) {
+  .maplibregl-ctrl-geocoder.expanded {
+    width: 22rem !important;
+  }
+}
+
 .maplibregl-ctrl-geocoder--input:focus { /* stylelint-disable-line */
   outline: none !important;
 }
@@ -248,13 +259,64 @@
   margin-right: 0;
 }
 
-.maplibregl-ctrl-geocoder--result svg { /* stylelint-disable-line */
-  height: 2rem;
-  margin-right: 0.5rem;
+/* Search results */
+.geocoder-result {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.maplibregl-ctrl-geocoder--result div { /* stylelint-disable-line */
-  width: 100%;
+.geocoder-result-icon {
+  font-size: 1rem;
+  color: var(--ctrl-button-color);
+  flex-shrink: 0;
+}
+
+.geocoder-result-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.geocoder-result-title, .geocoder-result-address {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.geocoder-result-address {
+  font-size: 0.8rem;
+  color: var(--ctrl-button-color);
+  opacity: 0.7;
+}
+
+/* Search result markers, dimmed until the result is hovered or picked */
+.search-marker {
+  pointer-events: none;
+}
+
+.search-marker-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
+  color: var(--ctrl-button-color);
+  opacity: 0.55;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.search-marker.active {
+  z-index: 1;
+}
+
+.search-marker.active .search-marker-pin {
+  box-shadow: 0 0 0 2px var(--color-ctrl-active);
+  color: var(--color-ctrl-active);
+  opacity: 1;
+  transform: scale(1.15);
 }
 
 /* fix for https://github.com/maplibre/maplibre-gl-js/issues/5284 */

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-08
+
+* Update to [Maplibre GL JS 6.1](https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.1.0)
+* German translations for Frontpage and Map interface
+* Search backend switched to https://photon.komoot.io/
+
 ## 2026-07
 
 * Update to [Maplibre GL JS 6.0](https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.0.0)
@@ -125,7 +131,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2025-01
 
-* Maplibre 7.5
+* Maplibre 5.0
 * MyMaps view
 * Frontpage feature tour
 
@@ -149,7 +155,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2024-09
 
-* Rails 7.2, Maplibre 7.4.0
+* Rails 7.2, Maplibre 4.7
 
 ## 2024-08
 
