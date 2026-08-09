@@ -129,9 +129,9 @@ RSpec.describe Mapforge::Trains::Tools do
       expect(properties(15)["marker-color"]).to eq("#e01b24")
     end
 
-    it "haloes the label in a light version of the marker color" do
-      expect(properties(0)["label-shadow"]).to eq("#cdf1d7")
-      expect(properties(15)["label-shadow"]).to eq("#f6bbbd")
+    it "haloes the black label in a light version of the marker color" do
+      expect(properties(0)).to include("label-color" => "#000", "label-shadow" => "#cdf1d7")
+      expect(properties(15)).to include("label-color" => "#000", "label-shadow" => "#f6bbbd")
     end
 
     it "labels the train with where it is heading and the delay where there is one" do

@@ -90,7 +90,10 @@ module Mapforge
         color, shadow = delay_colors(minutes)
         { "trip_id" => trip, "title" => "#{line} → #{destination}".strip,
           "marker-symbol" => "🚆", "marker-size" => 16, "sort-key" => 10,
-          "marker-color" => color, "label-shadow" => shadow, "label-max-width" => 40,
+          # The halo is a pale version of the marker color, so the font stays black on a dark basemap,
+          # where it would otherwise default to white and disappear into the halo
+          "marker-color" => color, "label-color" => "#000", "label-shadow" => shadow,
+          "label-max-width" => 40,
           "label" => "→ #{destination}#{" (+#{minutes})" if minutes.positive?}" }
       end
 
@@ -111,16 +114,16 @@ module Mapforge
       #   12:35 → Eschenau
       #
       # Planned departure, planned arrival in brackets where the train does not start here, terminus,
-      # and how late it currently is. A train that ends here has no departure, so its line carries the
-      # planned arrival and `here`, the name of this station, as the destination.
-      def self.board_label(stops, now, here)
+      # and how late it currently is. A train that ends here has no departure and no destination, so
+      # its line is the planned arrival alone.
+      def self.board_label(stops, now)
         lines = next_departures(stops, now).map { |stop|
           arrival = stop[:planned_arrival]
           [ stop[:planned], "#{hhmm(stop[:planned])}#{" (#{hhmm(arrival)})" if arrival} → #{stop[:destination]}",
             ((stop[:departure] - stop[:planned]) / 60).round ]
         }
         ends_here = next_arrival(stops, now)
-        lines << [ ends_here[:planned], "#{hhmm(ends_here[:planned])} → #{here}", delay(ends_here) ] if ends_here
+        lines << [ ends_here[:planned], hhmm(ends_here[:planned]), delay(ends_here) ] if ends_here
         lines.sort_by(&:first).map { |_time, text, minutes| "#{text}#{" (+#{minutes})" unless minutes.zero?}" }
              .join("\n")
       end
