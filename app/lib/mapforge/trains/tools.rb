@@ -108,19 +108,19 @@ module Mapforge
       # route_setup left in label-title:
       #
       #   12:20 (12:18) → Gräfenberg (+2)
-      #   12:35
+      #   12:35 → Eschenau
       #
       # Planned departure, planned arrival in brackets where the train does not start here, terminus,
-      # and how late it currently is. A train that ends here has no departure and no destination but
-      # this station, whose name is above the board already, so its line is the planned arrival alone.
-      def self.board_label(stops, now)
+      # and how late it currently is. A train that ends here has no departure, so its line carries the
+      # planned arrival and `here`, the name of this station, as the destination.
+      def self.board_label(stops, now, here)
         lines = next_departures(stops, now).map { |stop|
           arrival = stop[:planned_arrival]
           [ stop[:planned], "#{hhmm(stop[:planned])}#{" (#{hhmm(arrival)})" if arrival} → #{stop[:destination]}",
             ((stop[:departure] - stop[:planned]) / 60).round ]
         }
         ends_here = next_arrival(stops, now)
-        lines << [ ends_here[:planned], hhmm(ends_here[:planned]), delay(ends_here) ] if ends_here
+        lines << [ ends_here[:planned], "#{hhmm(ends_here[:planned])} → #{here}", delay(ends_here) ] if ends_here
         lines.sort_by(&:first).map { |_time, text, minutes| "#{text}#{" (+#{minutes})" unless minutes.zero?}" }
              .join("\n")
       end
