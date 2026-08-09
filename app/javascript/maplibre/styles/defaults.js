@@ -6,8 +6,10 @@
 // load time: applyBasemapDefaults mutates them on every basemap change.
 
 // fonts must be available via glyphs, see basemaps.js
+// fontBold is only used for the labels of the basemap itself
 const baseDefaults = {
   font: 'noto_sans_regular',
+  fontBold: 'noto_sans_bold',
 
   labelColor: '#000',
   labelShadow: '#fff',

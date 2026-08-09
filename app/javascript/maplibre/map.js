@@ -571,6 +571,21 @@ async function initializeStyles() {
   }
 }
 
+// Restyles the labels of the basemap itself with defaults.font and defaults.fontBold.
+// A basemap opts out with 'applyFont: false'.
+function basemapFontTransform (basemap) {
+  if (basemap.applyFont === false) { return undefined }
+  return (_previous, next) => {
+    if (!next?.layers) { return next }
+    return { ...next, layers: next.layers.map(layer => {
+      if (layer.type !== 'symbol' || !layer.layout?.['text-field']) { return layer }
+      const stack = layer.layout['text-font']
+      const bold = typeof stack?.[0] === 'string' && /bold/i.test(stack[0])
+      return { ...layer, layout: { ...layer.layout, 'text-font': [bold ? defaults.fontBold : defaults.font] } }
+    }) }
+  }
+}
+
 // Returns true if a basemap reload was triggered (caller can rely on the
 // style.load handler to re-initialize layer sources/styles), false otherwise.
 export function setBackgroundMapLayer (mapName = mapProperties.base_map, force = false) {
@@ -602,7 +617,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     map.fire('basemap.change')
     // Clear image cache so icons can be re-loaded after basemap change
     clearImageState()
-    map.setStyle(basemap.style, { diff: true, strictMode: true })
+    map.setStyle(basemap.style, { diff: true, strictMode: true, transformStyle: basemapFontTransform(basemap) })
     return true
   }
   return false
