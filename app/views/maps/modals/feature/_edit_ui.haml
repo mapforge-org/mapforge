@@ -114,7 +114,7 @@
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #show-km-markers-ui.edit-ui.edit-line
-        %label.left-label.edit-line{ for: "show-km-markers"}= _("Distance markers:")
+        %label.edit-line{ for: "show-km-markers"}= _("Distance markers:")
         %input#show-km-markers{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateShowKmMarkers change->feature--edit#saveFeature"} }
 
   .feature-edit-section.hidden{ 'data-edit-section': "advanced" }
