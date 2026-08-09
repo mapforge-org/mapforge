@@ -3,7 +3,9 @@ class DocsController < ApplicationController
   end
 
   def tutorial
-    tutorial = Tutorial.find(params[:id])
+    tutorial_id = params.permit(:id)[:id].to_s
+    raise ActionController::RoutingError, "Tutorial not found" unless tutorial_id.match?(/\A[\w-]+\z/)
+    tutorial = Tutorial.find(tutorial_id)
     respond_to do |format|
       format.html do
         @title = tutorial.title
