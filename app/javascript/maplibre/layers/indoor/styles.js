@@ -1,5 +1,5 @@
 import { map } from 'maplibre/map'
-import { labelFont } from 'maplibre/styles/styles'
+import { defaults } from 'maplibre/styles/defaults'
 
 export const indoorFillColor = [
   'match',
@@ -183,7 +183,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     layout: {
       'text-field': ['get', 'name'],
       'text-size': 13,
-      'text-font': labelFont,
+      'text-font': [defaults.font],
       'text-anchor': 'top',
       'text-offset': [0, 0.8],
       'text-optional': true
@@ -205,7 +205,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     layout: {
       'text-field': ['get', 'name'],
       'text-size': 15,
-      'text-font': labelFont,
+      'text-font': [defaults.font],
       'text-optional': true
     },
     paint: {

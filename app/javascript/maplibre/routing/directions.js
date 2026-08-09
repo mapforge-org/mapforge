@@ -6,11 +6,10 @@ import { status } from 'helpers/status'
 import { setSelectedFeature, unselect, updateElevation } from 'maplibre/edit'
 import { refreshFeatureMeta, showFeatureDetails } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
-import { map, mapProperties, upsert } from 'maplibre/map'
+import { map, upsert } from 'maplibre/map'
 import { ORS_EXTRA_INFO, orsBuildRequest, orsFetch, orsProfiles } from 'maplibre/routing/openrouteservice'
-import { basemaps, defaultFont } from 'maplibre/styles/basemaps'
-import { highlightColor } from 'maplibre/styles/edit_styles'
-import { featureColor, styles } from 'maplibre/styles/styles'
+import { defaults, editDefaults } from 'maplibre/styles/defaults'
+import { styles } from 'maplibre/styles/styles'
 import { addUndoState } from 'maplibre/undo'
 
 // https://github.com/maplibre/maplibre-gl-directions
@@ -323,7 +322,7 @@ export function getDirectionsLayers () {
     },
     paint: {
       "line-width": 5,
-      'line-color': highlightColor,
+      'line-color': editDefaults.highlightColor,
       'line-dasharray': [0.2, 2],
       "line-opacity": 0.8
     },
@@ -348,10 +347,10 @@ export function getDirectionsLayers () {
     id: "maplibre-gl-directions-routeline-direction" }) )
 
   let waypoints_layer = layers.find(layer => layer.id === "maplibre-gl-directions-waypoint")
-  waypoints_layer.paint["circle-color"] = featureColor
+  waypoints_layer.paint["circle-color"] = defaults.featureColor
 
   let waypoints_casing_layer = layers.find(layer => layer.id === "maplibre-gl-directions-waypoint-casing")
-  waypoints_casing_layer.paint["circle-color"] = highlightColor
+  waypoints_casing_layer.paint["circle-color"] = editDefaults.highlightColor
 
   layers.push({
     id: "maplibre-gl-directions-waypoint-label",
@@ -359,7 +358,7 @@ export function getDirectionsLayers () {
     source: "maplibre-gl-directions",
     layout: {
       "text-field": ["get", "label"],
-      "text-font": [basemaps()[mapProperties.base_map].font || defaultFont],
+      "text-font": [defaults.font],
       "text-size": 15,
       "text-offset": [0, 0.05]
     },

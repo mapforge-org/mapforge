@@ -3,7 +3,8 @@ import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { map, removeStyleLayers } from 'maplibre/map'
-import { featureColor, labelFont, setSource } from 'maplibre/styles/styles'
+import { defaults } from 'maplibre/styles/defaults'
+import { setSource } from 'maplibre/styles/styles'
 
 function createKmMarkerImage (color) {
   const imageName = `km-marker-circle-${color.replace('#', '')}`
@@ -51,7 +52,7 @@ export function renderKmMarkers (features, sourceId) {
 
     const line = lineString(f.geometry.coordinates)
     const distance = length(line, { units: 'kilometers' })
-    const markerColor = f.properties['stroke'] || featureColor
+    const markerColor = f.properties['stroke'] || defaults.featureColor
     const markerImageName = createKmMarkerImage(markerColor)
 
     let interval = 1
@@ -134,7 +135,7 @@ function kmMarkerStyles () {
         ['concat', '\n', ['get', 'km-unit']], { 'font-scale': 0.7 }
       ],
       'text-size': 12,
-      'text-font': labelFont,
+      'text-font': [defaults.font],
       'text-justify': 'center',
       'text-anchor': 'center',
       'text-line-height': 1.0,
@@ -166,7 +167,7 @@ function makeKmMarkerLayer (divisor, minzoom, maxzoom = 24) {
       'text-padding': 0,
       'text-field': ['get', 'km'],
       'text-size': 11,
-      'text-font': labelFont,
+      'text-font': [defaults.font],
       'text-justify': 'center',
       'text-anchor': 'center',
       // Negate feature-order so selected feature (higher index) gets lower sort-key and renders on top

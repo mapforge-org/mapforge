@@ -16,7 +16,8 @@ import {
 import { Layer } from 'maplibre/layers/layer'
 import { getFeature } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties, removeGeoJSONSource } from 'maplibre/map'
-import { clusterStyles, defaultLineWidth, initializeClusterStyles, initializeViewStyles, styles, viewStyleNames } from 'maplibre/styles/styles'
+import { defaults } from 'maplibre/styles/defaults'
+import { clusterStyles, initializeClusterStyles, initializeViewStyles, styles, viewStyleNames } from 'maplibre/styles/styles'
 
 // Buffer a single extrusion LineString into a polygon for MapLibre's fill-extrusion layer.
 // Returns null for geometry that can't be buffered (non-line, <2 coords, or degenerate).
@@ -25,7 +26,7 @@ function buildLineExtrusion(feature) {
   if (feature.geometry?.type !== 'LineString' || feature.geometry.coordinates.length < 2) {
     return null
   }
-  const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth
+  const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaults.lineWidth
   const extrusionLine = buffer(feature, width / 2, { units: 'meters' })
   if (!extrusionLine) { return null }
   extrusionLine.id = `${feature.id}-extrusion`

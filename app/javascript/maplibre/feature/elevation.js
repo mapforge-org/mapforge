@@ -3,7 +3,7 @@ import { point } from "@turf/helpers"
 import * as functions from 'helpers/functions'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { map } from 'maplibre/map'
-import { featureColor } from 'maplibre/styles/styles'
+import { defaults } from 'maplibre/styles/defaults'
 
 let marker
 let syncChartToViewport
@@ -46,7 +46,7 @@ export async function showElevationChart (feature) {
   const allValues = allCoords.map(c => c[2])
 
   const chartLineColor = (feature.properties['fill-extrusion-color'] ||
-    feature.properties['stroke'] || featureColor).substring(0, 7)
+    feature.properties['stroke'] || defaults.featureColor).substring(0, 7)
 
   const canvas = document.getElementById('route-elevation-chart')
   const existing = Chart.getChart(canvas)
@@ -469,7 +469,7 @@ function getMarker (feature) {
   if (marker) return marker
   const el = document.createElement('div')
   el.style.backgroundColor = feature.properties['fill-extrusion-color'] ||
-    feature.properties['stroke'] || featureColor
+    feature.properties['stroke'] || defaults.featureColor
   el.className = 'elevation-marker'
   return new window.maplibregl.Marker({
     element: el,

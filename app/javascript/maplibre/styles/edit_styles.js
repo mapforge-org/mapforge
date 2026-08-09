@@ -3,6 +3,7 @@ import { addCopyMenuItem, addDeleteMenuItem, addLineMenuItems, addLineVertexMenu
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
+import { editDefaults } from 'maplibre/styles/defaults'
 import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
 
 // started from https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
@@ -13,10 +14,6 @@ import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
 //
 // mapbox gl draw doesn't use 'feature-state', but switches between different
 // source layers 'mapbox-gl-draw-cold' + 'mapbox-gl-draw-hot'
-
-export const highlightColor = '#fbb03b'
-const midpointSize = 6
-const vertexSize = 6
 
 export function initializeEditStyles() {
   map.on('contextmenu', (e) => {
@@ -75,9 +72,9 @@ export function editStyles() {
         'line-join': 'round'
       },
       paint: {
-        'line-color': highlightColor,
-        'line-dasharray': [0.2, 2],
-        'line-width': 5
+        'line-color': editDefaults.highlightColor,
+        'line-dasharray': editDefaults.activeLineDashArray,
+        'line-width': editDefaults.activeLineWidth
       }
     },
     // active linestring
@@ -93,9 +90,9 @@ export function editStyles() {
         'line-join': 'round'
       },
       paint: {
-        'line-color': highlightColor,
-        'line-dasharray': [0.2, 2],
-        'line-width': 5
+        'line-color': editDefaults.highlightColor,
+        'line-dasharray': editDefaults.activeLineDashArray,
+        'line-width': editDefaults.activeLineWidth
       }
     },
     // midpoints to extend lines/polygons
@@ -111,11 +108,11 @@ export function editStyles() {
         ['!has', 'user_route']
       ],
       paint: {
-        'circle-radius': midpointSize,
-        'circle-color': 'grey',
-        'circle-opacity': 0.8,
-        'circle-stroke-color': '#ffffff',
-        'circle-stroke-width': 1
+        'circle-radius': editDefaults.midpointSize,
+        'circle-color': editDefaults.midpointColor,
+        'circle-opacity': editDefaults.midpointOpacity,
+        'circle-stroke-color': editDefaults.midpointOutlineColor,
+        'circle-stroke-width': editDefaults.midpointOutlineWidth
       }
     },
     // default point behind symbols and transparent points
@@ -129,10 +126,10 @@ export function editStyles() {
         ['!has', 'user_route']
       ],
       paint: {
-        'circle-radius': pointSize,
+        'circle-radius': pointSize(),
         'circle-opacity': [
-          'match', ['get', 'user_marker-color'], 'transparent', 0.2, 0],
-        'circle-color': '#c0c0c0'
+          'match', ['get', 'user_marker-color'], 'transparent', editDefaults.inactivePointOpacity, 0],
+        'circle-color': editDefaults.inactivePointColor
       }
     },
 
@@ -146,11 +143,11 @@ export function editStyles() {
         ['!=', 'meta', 'midpoint']
       ],
       paint: {
-        'circle-radius': ['*', pointSizeMax, 2],
-        'circle-color': '#ffffff',
-        'circle-opacity': 0.2,
-        'circle-stroke-color': highlightColor,
-        'circle-stroke-width': 4
+        'circle-radius': ['*', pointSizeMax(), editDefaults.activePointSizeFactor],
+        'circle-color': editDefaults.activePointColor,
+        'circle-opacity': editDefaults.activePointOpacity,
+        'circle-stroke-color': editDefaults.highlightColor,
+        'circle-stroke-width': editDefaults.activePointOutlineWidth
       }
     },
 
@@ -166,10 +163,10 @@ export function editStyles() {
         ['!has', 'user_route']
       ],
       paint: {
-        'circle-radius': vertexSize,
+        'circle-radius': editDefaults.vertexSize,
         'circle-opacity': 0,
-        'circle-stroke-color': '#444',
-        'circle-stroke-width': 2,
+        'circle-stroke-color': editDefaults.vertexOutlineColor,
+        'circle-stroke-width': editDefaults.vertexOutlineWidth,
         'circle-stroke-opacity': 1
       }
     },
@@ -184,8 +181,8 @@ export function editStyles() {
         ['!has', 'user_route']
       ],
       paint: {
-        'circle-radius': vertexSize,
-        'circle-color': highlightColor
+        'circle-radius': editDefaults.vertexSize,
+        'circle-color': editDefaults.highlightColor
       }
     },
     // Route point borders (rendered like midpoints in normal linestring)
@@ -199,11 +196,11 @@ export function editStyles() {
         ['has', 'user_route']
       ],
       paint: {
-        'circle-radius': 4,
+        'circle-radius': editDefaults.routeVertexSize,
         'circle-opacity': 0,
         'circle-stroke-opacity': 1,
-        'circle-stroke-color': '#ffffff',
-        'circle-stroke-width': 1,
+        'circle-stroke-color': editDefaults.routeVertexBorderColor,
+        'circle-stroke-width': editDefaults.routeVertexBorderWidth,
       }
     },
     // Route midpoints (rendered like midpoints in normal linestring)
@@ -217,9 +214,9 @@ export function editStyles() {
         ['has', 'user_route']
       ],
       paint: {
-        'circle-radius': 4,
-        'circle-color': 'grey',
-        'circle-opacity': 0.7
+        'circle-radius': editDefaults.routeVertexSize,
+        'circle-color': editDefaults.routeVertexColor,
+        'circle-opacity': editDefaults.routeVertexOpacity
       }
     },
     //

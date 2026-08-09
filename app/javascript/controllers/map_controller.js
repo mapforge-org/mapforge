@@ -10,7 +10,7 @@ import {
   initializeViewMode,
   setBackgroundMapLayer
 } from 'maplibre/map'
-import { clearImageState, resetLabelFont } from 'maplibre/styles/styles'
+import { clearImageState } from 'maplibre/styles/styles'
 import { addUndoState, clearUndoHistory } from 'maplibre/undo'
 
 export default class extends Controller {
@@ -19,7 +19,6 @@ export default class extends Controller {
     resetInitializationState()
     clearImageState()
     clearUndoHistory()
-    resetLabelFont()
 
     functions.e('#map-header nav', e => { e.style.display = 'none' })
     await initializeMap('maplibre-map')
@@ -46,7 +45,6 @@ export default class extends Controller {
     resetInitializationState()
     clearImageState()
     clearUndoHistory()
-    resetLabelFont()
 
     // Remove the map instance last
     if (window.map) {

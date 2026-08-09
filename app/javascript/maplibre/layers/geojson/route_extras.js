@@ -3,7 +3,7 @@ import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { map } from 'maplibre/map'
-import { labelFont } from 'maplibre/styles/styles'
+import { defaults } from 'maplibre/styles/defaults'
 
 const labelsBaseFilter = ['all', ['has', 'route-extras-label'], [">=", ["zoom"], 10]]
 
@@ -327,7 +327,7 @@ export function initializeExtrasLabelStyles (sourceId) {
     filter: withLevelFilter(labelsBaseFilter),
     layout: {
       'text-field': ['get', 'route-extras-label'],
-      'text-font': labelFont,
+      'text-font': [defaults.font],
       'text-size': 11,
       'text-allow-overlap': false,
       'text-ignore-placement': false,

@@ -12,7 +12,7 @@ import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { getFeature } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
-import { defaultExtrusionOpacity, defaultLineWidth, featureColor, featureOutlineColor } from 'maplibre/styles/styles'
+import { defaults } from 'maplibre/styles/defaults'
 
 let easyMDE
 
@@ -105,9 +105,9 @@ export default class extends Controller {
       document.querySelector('#stroke-color-transparent').checked = true
     } else {
       document.querySelector('#stroke-color').removeAttribute('disabled')
-      let default_stroke = featureOutlineColor
+      let default_stroke = defaults.featureOutlineColor
       if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
-        default_stroke = featureColor
+        default_stroke = defaults.featureColor
       }
       document.querySelector('#stroke-color').value = feature.properties.stroke || default_stroke
       document.querySelector('#stroke-color-transparent').checked = false
@@ -119,7 +119,7 @@ export default class extends Controller {
       document.querySelector('#fill-color-transparent').checked = true
     } else {
       document.querySelector('#fill-color').removeAttribute('disabled')
-      document.querySelector('#fill-color').value = feature.properties.fill || featureColor
+      document.querySelector('#fill-color').value = feature.properties.fill || defaults.featureColor
       document.querySelector('#fill-color-transparent').checked = false
     }
 
@@ -140,10 +140,10 @@ export default class extends Controller {
       document.querySelector('#point-size').value = size
       document.querySelector('#point-size-val').innerHTML = size
       document.querySelector('#point-scaling').checked = feature.properties['marker-scaling']
-      document.querySelector('#fill-color').value = feature.properties['marker-color'] || featureColor
+      document.querySelector('#fill-color').value = feature.properties['marker-color'] || defaults.featureColor
       functions.e('#marker-image', e => { e.value = '' })
     } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
-      const size = feature.properties['stroke-width'] || defaultLineWidth
+      const size = feature.properties['stroke-width'] || defaults.lineWidth
       document.querySelector('#line-width').value = size
       document.querySelector('#line-width-val').innerHTML = size
       document.querySelector('#show-km-markers').checked = feature.properties['show-km-markers']
@@ -170,13 +170,13 @@ export default class extends Controller {
       dom.showElements(['#feature-edit-ui .edit-line'])
     } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
       dom.showElements(['#feature-edit-ui .edit-polygon'])
-      document.querySelector('#fill-color').value = feature.properties.fill || featureColor
-      document.querySelector('#stroke-color').value = feature.properties.stroke || featureOutlineColor
-      const size = feature.properties['stroke-width'] || defaultLineWidth
+      document.querySelector('#fill-color').value = feature.properties.fill || defaults.featureColor
+      document.querySelector('#stroke-color').value = feature.properties.stroke || defaults.featureOutlineColor
+      const size = feature.properties['stroke-width'] || defaults.lineWidth
       document.querySelector('#outline-width').value = size
       document.querySelector('#outline-width-val').innerHTML = size
-      document.querySelector('#opacity').value = (feature.properties['fill-opacity'] || defaultExtrusionOpacity) * 10
-      document.querySelector('#opacity-val').textContent = (feature.properties['fill-opacity'] || defaultExtrusionOpacity) * 100 + '%'
+      document.querySelector('#opacity').value = (feature.properties['fill-opacity'] || defaults.extrusionOpacity) * 10
+      document.querySelector('#opacity-val').textContent = (feature.properties['fill-opacity'] || defaults.extrusionOpacity) * 100 + '%'
     }
 
     if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString' ||

@@ -14,8 +14,9 @@ import { initializeViewControls } from 'maplibre/controls/view';
 import { resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
 import { applyFeatureUpdate, getFeature, getLayer, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
-import { basemaps, defaultFont, demSource, elevationSource } from 'maplibre/styles/basemaps';
-import { clearImageState, loadImage, setStyleDefaultFont } from 'maplibre/styles/styles';
+import { basemaps, demSource, elevationSource } from 'maplibre/styles/basemaps';
+import { applyBasemapDefaults, defaults } from 'maplibre/styles/defaults';
+import { clearImageState, loadImage } from 'maplibre/styles/styles';
 
 // Lazy, only fetched on RTL glyphs.
 maplibregl.setRTLTextPlugin(import.meta.resolve('mapbox-gl-rtl-text'), true)
@@ -431,7 +432,7 @@ function addContours () {
         ["number-format", ["get", "ele"], {}],
         "m",
       ],
-      "text-font": [basemaps()[mapProperties.base_map].font || defaultFont]
+      "text-font": [defaults.font]
     }
   })
   status(window.__('Contour lines added to map'))
@@ -595,7 +596,10 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     backgroundHillshade = mapProperties.hillshade
     backgroundContours = mapProperties.contours
     backgroundGlobe = mapProperties.globe
-    setStyleDefaultFont(basemap.font || defaultFont)
+    applyBasemapDefaults(basemap)
+    // Edit styles are built once when MapboxDraw is created, so they need to get
+    // rebuilt from the new defaults before setStyle makes draw re-add its layers
+    map.fire('basemap.change')
     // Clear image cache so icons can be re-loaded after basemap change
     clearImageState()
     map.setStyle(basemap.style, { diff: true, strictMode: true })

@@ -8,7 +8,7 @@ import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
 import { confirmImageLocation, featureIcon, featureImage, getFeatureTypeName, uploadImageToFeature } from 'maplibre/feature'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
-import { featureColor, featureOutlineColor } from 'maplibre/styles/styles'
+import { defaults } from 'maplibre/styles/defaults'
 import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
@@ -166,7 +166,7 @@ export default class extends Controller {
       color = 'transparent'
       document.querySelector('#stroke-color').setAttribute('disabled', 'true')
     } else {
-      color = featureOutlineColor
+      color = defaults.featureOutlineColor
       document.querySelector('#stroke-color').value = color
       document.querySelector('#stroke-color').removeAttribute('disabled')
     }
@@ -189,7 +189,7 @@ export default class extends Controller {
       color = 'transparent'
       document.querySelector('#fill-color').setAttribute('disabled', 'true')
     } else {
-      color = featureColor
+      color = defaults.featureColor
       document.querySelector('#fill-color').value = color
       document.querySelector('#fill-color').removeAttribute('disabled')
     }

@@ -1,6 +1,6 @@
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { map, removeStyleLayers } from 'maplibre/map'
-import { defaultFont } from 'maplibre/styles/basemaps'
+import { defaults } from 'maplibre/styles/defaults'
 
 // fill-extrusion-opacity is not data-driven in MapLibre, so per-feature opacity
 // is emulated by stacking one fill-extrusion layer per bucket (0.1 … 1.0)
@@ -25,20 +25,16 @@ export const viewStyleNames = [
   ...extrusionOpacityBuckets.map((_, i) => `polygon-layer-extrusion-${i + 1}`)
 ]
 
-export const defaultExtrusionOpacity = 0.9
-const extrusionCornerRadius = 0.5 // meters
-
-export function setStyleDefaultFont(font) { labelFont = [font] }
-
 export function initializeViewStyles (sourceName, heatmap=false) {
   // console.log('Initializing view styles for source ' + sourceName)
   removeStyleLayers(sourceName)
+  const styleDefs = styles()
   viewStyleNames.forEach(styleName => {
-    const style = styles()[styleName]
+    const style = styleDefs[styleName]
     map.addLayer(setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceName))
   })
   if (heatmap) {
-    const heatmapStyle = styles()['heatmap-layer']
+    const heatmapStyle = styleDefs['heatmap-layer']
     map.addLayer(setSource({ ...heatmapStyle, filter: withLevelFilter(heatmapStyle.filter) }, sourceName))
   }
   // console.log('View styles added for source ' + sourceName)
@@ -67,9 +63,6 @@ const imageState = {} // 'loading' | 'loaded' | 'error'
 export function clearImageState() {
   Object.keys(imageState).forEach(key => delete imageState[key])
 }
-
-// Reset labelFont to default when clearing state
-export function resetLabelFont() { labelFont = [defaultFont] }
 
 export async function loadImage (id) {
   // Skip if already loading, loaded, or failed
@@ -113,150 +106,146 @@ export async function loadImage (id) {
 
 // shared styles
 // Mapbox.Draw layers prefix user properties with 'user_'
-
-export const featureColor = '#0A870A' // green
-export const featureOutlineColor = '#444444'
-export const featureOutlineColorActive = '#000'
+//
+// Everything reading 'defaults' is a function, not a constant: a basemap can override
+// the defaults (see defaults.js), so the expressions must be rebuilt on each styles() call.
 
 // Shorthand for MapLibre coalesce expressions: styleProp(['a', 'b'], x) → ['coalesce', ['get', 'a'], ['get', 'b'], x]
 const styleProp = (keys, defaultVal) => {
   const gets = keys.map(k => ['get', k])
   return defaultVal !== undefined ? ['coalesce', ...gets, defaultVal] : ['coalesce', ...gets]
 }
-const sortKey = ['to-number', styleProp(['user_sort-key', 'sort-key'], 1)]
-const labelColor = styleProp(['user_label-color', 'label-color'], '#000')
-const labelShadow = styleProp(['user_label-shadow', 'label-shadow'], '#fff')
-const labelShadowWidth = styleProp(['user_label-shadow-width', 'label-shadow-width'], 2)
+const sortKey = () => ['to-number', styleProp(['user_sort-key', 'sort-key'], defaults.sortKey)]
+const labelColor = () => styleProp(['user_label-color', 'label-color'], defaults.labelColor)
+const labelShadow = () => styleProp(['user_label-shadow', 'label-shadow'], defaults.labelShadow)
+const labelShadowWidth = () => styleProp(['user_label-shadow-width', 'label-shadow-width'], defaults.labelShadowWidth)
 
-const fillColor = styleProp(['fill', 'user_fill'], featureColor)
-const fillOpacity = ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaultExtrusionOpacity)]
+const fillColor = () => styleProp(['fill', 'user_fill'], defaults.featureColor)
+const fillOpacity = () => ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaults.extrusionOpacity)]
 
-const lineColor = styleProp(['stroke', 'user_stroke'], featureColor)
-const polygonOutlineColor = styleProp(['stroke', 'user_stroke'], featureOutlineColor)
-const lineOutlineColor = featureOutlineColor
+const lineColor = () => styleProp(['stroke', 'user_stroke'], defaults.featureColor)
+const polygonOutlineColor = () => styleProp(['stroke', 'user_stroke'], defaults.featureOutlineColor)
 
-export const defaultLineWidth = 3
-const strokeWidth = styleProp(['user_stroke-width', 'stroke-width'], defaultLineWidth)
-const lineWidthMin = ['ceil', ['/', ['to-number', strokeWidth], 2]]
-const lineWidthMax = ['*', ['to-number', strokeWidth], 2]
-const outlineWidthPolygon = ['to-number', styleProp(['user_stroke-width', 'stroke-width'], 2)]
-const lineWidth = [
+const strokeWidth = () => styleProp(['user_stroke-width', 'stroke-width'], defaults.lineWidth)
+const lineWidthMin = () => ['ceil', ['/', ['to-number', strokeWidth()], 2]]
+const lineWidthMax = () => ['*', ['to-number', strokeWidth()], 2]
+const outlineWidthPolygon = () => ['to-number', styleProp(['user_stroke-width', 'stroke-width'], defaults.polygonOutlineWidth)]
+const lineWidth = () => [
   'interpolate',
   ['linear'],
   ['zoom'],
   8, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
-    ['+', 1, lineWidthMin],
-    lineWidthMin
+    ['+', 1, lineWidthMin()],
+    lineWidthMin()
   ], // At zoom level 8, the line width is min
   17, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
-    ['+', 1, lineWidthMax],
-    lineWidthMax
+    ['+', 1, lineWidthMax()],
+    lineWidthMax()
   ] // At zoom level 13, the line width is max
 ]
 
-const lineOpacity = ['to-number', styleProp(['stroke-opacity', 'user_stroke-opacity'], 0.8)]
-const lineOpacityActive = 1
+const lineOpacity = () => ['to-number', styleProp(['stroke-opacity', 'user_stroke-opacity'], defaults.lineOpacity)]
 
-const outlineWidthMin = ['+', 2, lineWidthMin]
-const outlineWidthMax = ['+', 4, lineWidthMax]
-const outlineWidth = [
+const outlineWidthMin = () => ['+', 2, lineWidthMin()]
+const outlineWidthMax = () => ['+', 4, lineWidthMax()]
+const outlineWidth = () => [
   'interpolate',
   ['linear'],
   ['zoom'],
   5, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
-    ['+', 2, outlineWidthMin],
-    outlineWidthMin
+    ['+', 2, outlineWidthMin()],
+    outlineWidthMin()
   ], // At zoom level 8, the outline width is min
   17, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
-    ['+', 3, outlineWidthMax],
-    outlineWidthMax
+    ['+', 3, outlineWidthMax()],
+    outlineWidthMax()
   ] // At zoom level 13, the outline width is max
 ]
 
 const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
-const pointColor = styleProp(['user_marker-color', 'marker-color'], featureColor)
+const pointColor = () => styleProp(['user_marker-color', 'marker-color'], defaults.featureColor)
 const markerSize = styleProp(['user_marker-size', 'marker-size'])
-const minZoomFilter = [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], 0]]]
-const maxZoomFilter = ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], 24]]]
+const minZoomFilter = () => [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], defaults.minZoom]]]
+const maxZoomFilter = () => ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], defaults.maxZoom]]]
 
-const pointSizeMin = ['to-number', ['coalesce',
-  ...markerSize.slice(1), 3]]
+const pointSizeMin = () => ['to-number', ['coalesce',
+  ...markerSize.slice(1), defaults.pointSize]]
 
-export const pointSizeMax = ['to-number', ['coalesce',
+export const pointSizeMax = () => ['to-number', ['coalesce',
   ...markerSize.slice(1),
   // set default size of point depending on if there is an emoji or marker image
   [
     'case',
     ['has', 'marker-symbol'],
-    18,
+    defaults.pointSizeEmoji,
     ['has', 'marker-image-url'],
-    20,
-    5
+    defaults.pointSizeImage,
+    defaults.pointSizePlain
   ]]]
 
-export const pointSize = [
+export const pointSize = () => [
   'interpolate',
   ['linear'],
   ['zoom'],
   5, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
-    ['+', 1, pointSizeMin],
-    pointSizeMin
+    ['+', 1, pointSizeMin()],
+    pointSizeMin()
   ],
   17, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
-    ['+', 1, pointSizeMax],
-    pointSizeMax
+    ['+', 1, pointSizeMax()],
+    pointSizeMax()
   ]
 ]
 
-export const pointOutlineSize = ['to-number', styleProp(['user_stroke-width', 'stroke-width'], 2)]
-export const pointOutlineSizeActive = ['+', 1, pointOutlineSize]
-const pointOutlineColor = styleProp(['user_stroke', 'stroke'], featureOutlineColor)
-const defaultPointOpacity = ['case',
+export const pointOutlineSize = () => ['to-number', styleProp(['user_stroke-width', 'stroke-width'], defaults.pointOutlineSize)]
+export const pointOutlineSizeActive = () => ['+', 1, pointOutlineSize()]
+const pointOutlineColor = () => styleProp(['user_stroke', 'stroke'], defaults.featureOutlineColor)
+const defaultPointOpacity = () => ['case',
   ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
-  1,
-  0.9
+  defaults.pointOpacitySymbol,
+  defaults.pointOpacity
 ]
-const pointOpacity = ['to-number', ['coalesce', ['get', 'marker-opacity'], defaultPointOpacity]]
-const pointOpacityActive = ['to-number',
-  ['min', ['+', ['coalesce', ['get', 'marker-opacity'], defaultPointOpacity], 0.2], 1]
+const pointOpacity = () => ['to-number', ['coalesce', ['get', 'marker-opacity'], defaultPointOpacity()]]
+const pointOpacityActive = () => ['to-number',
+  ['min', ['+', ['coalesce', ['get', 'marker-opacity'], defaultPointOpacity()], 0.2], 1]
 ]
 
 // factor of the original icon size (200x200)
 // in case of external icon url, we don't know the size
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
-export const iconSizeDefault = ['*', 1 / 60, ['to-number', styleProp(['user_marker-size', 'marker-size'], 20)]]
-export const iconSizeMin = ['case', shouldScale,
-  0, iconSizeDefault]
-export const iconSizeMax = ['case', shouldScale,
-  ['*', 32, iconSizeDefault], iconSizeDefault]
+export const iconSizeDefault = () => ['*', 1 / 60, ['to-number', styleProp(['user_marker-size', 'marker-size'], defaults.markerSize)]]
+export const iconSizeMin = () => ['case', shouldScale,
+  0, iconSizeDefault()]
+export const iconSizeMax = () => ['case', shouldScale,
+  ['*', 32, iconSizeDefault()], iconSizeDefault()]
 
-const iconSize = [
+const iconSize = () => [
       'interpolate',
       ["exponential", 2],
       ['zoom'],
-      0, iconSizeMin,
-      21, iconSizeMax
+      0, iconSizeMin(),
+      21, iconSizeMax()
     ]
 
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
 const userLabelSize = styleProp(['user_label-size', 'label-size'])
-const scaledLabelSize = ['coalesce', ...userLabelSize.slice(1), ['*', 2, pointSizeMax]] // fallback to 2*pointSizeMax
-const staticLabelSize = ['coalesce', ...userLabelSize.slice(1), 16] // fallback to 16
+const scaledLabelSize = () => ['coalesce', ...userLabelSize.slice(1), ['*', 2, pointSizeMax()]] // fallback to 2*pointSizeMax
+const staticLabelSize = () => ['coalesce', ...userLabelSize.slice(1), defaults.labelSize]
 // Label offset based on marker size, with geometry-aware handling
-const labelOffsetBySize = [
+const labelOffsetBySize = () => [
   'case',
   ['any',
     ['==', ['geometry-type'], 'Polygon'],
@@ -266,47 +255,44 @@ const labelOffsetBySize = [
   // For points with marker-image-url: steeper offset curve
   ['has', 'marker-image-url'],
   ['interpolate', ['linear'],
-    ['to-number', pointSizeMax],
+    ['to-number', pointSizeMax()],
     0, ['literal', [0, 0]],
     10, ['literal', [0, 1]],
     300, ['literal', [0, 26]]
   ],
   // For other points (emoji, plain): original offset curve
   ['interpolate', ['linear'],
-    ['to-number', pointSizeMax],
+    ['to-number', pointSizeMax()],
     0, ['literal', [0, 0]],
     10, ['literal', [0, 0.4]],
     300, ['literal', [0, 18]]
   ]
 ]
 
-export const labelFontSize = [
+export const labelFontSize = () => [
   'case', shouldScale,
-  ['to-number', scaledLabelSize],
-  ['to-number', staticLabelSize]]
+  ['to-number', scaledLabelSize()],
+  ['to-number', staticLabelSize()]]
 
-export const labelFontSizeMin = [
+export const labelFontSizeMin = () => [
   'case', shouldScale,
-  0, labelFontSize ]
+  0, labelFontSize() ]
 
-export const labelFontSizeMax = [
+export const labelFontSizeMax = () => [
   "min",
   ['case', shouldScale,
-    ['*', 32, labelFontSize], labelFontSize],
+    ['*', 32, labelFontSize()], labelFontSize()],
   254 // max map font size
 ]
 
 // Cannot move 'shouldScale' condition above 'interpolate' due to maplibre style restriction
-const labelSize = [
+const labelSize = () => [
   'interpolate',
   ["exponential", 2],
   ['zoom'],
-  0, labelFontSizeMin, // At zoom 0
-  19, labelFontSizeMax
+  0, labelFontSizeMin(), // At zoom 0
+  19, labelFontSizeMax()
 ]
-
-// default font is set in basemap def basemaps[backgroundMapLayer]['font']
-export let labelFont = [defaultFont] // array - initialize with default to prevent null errors
 
 // Shared configuration for symbols layers
 function symbolsLayerStyles(mode) {
@@ -315,7 +301,7 @@ function symbolsLayerStyles(mode) {
 
   // Shared layout properties
   const sharedLayout = {
-    'symbol-sort-key': sortKey,
+    'symbol-sort-key': sortKey(),
     'icon-image': ['coalesce',
       ['get', 'marker-image-url'],
       // replacing marker-symbol value with path to emoji png
@@ -324,7 +310,7 @@ function symbolsLayerStyles(mode) {
         ['concat', '/emojis/noto/', ['get', 'marker-symbol'], '.png'],
         '']
     ],
-    'icon-size': iconSize,
+    'icon-size': iconSize(),
     'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
     'icon-rotate': ['coalesce', ['get', 'marker-rotate'], 0],
     'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
@@ -346,8 +332,8 @@ function symbolsLayerStyles(mode) {
   const sharedPaint = {
     'icon-opacity': ['case',
       ['boolean', ['feature-state', 'active'], false],
-      pointOpacityActive,
-      pointOpacity
+      pointOpacityActive(),
+      pointOpacity()
     ]
   }
 
@@ -358,8 +344,8 @@ function symbolsLayerStyles(mode) {
       filter: ['all',
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
         flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
-        minZoomFilter,
-        maxZoomFilter
+        minZoomFilter(),
+        maxZoomFilter()
       ],
       layout: {
         ...sharedLayout,
@@ -378,7 +364,7 @@ function textLayerStyles(mode) {
   const textFont = {
     'text-font': ['coalesce',
       ['get', 'label-font'],
-      ['literal', labelFont]
+      ['literal', [defaults.font]]
     ]
   }
 
@@ -389,27 +375,27 @@ function textLayerStyles(mode) {
     'text-field': [
       'format',
       ['case', ['has', 'label-title'], ['concat', ['get', 'label-title'], '\n'], ''],
-      { ...textFont, 'font-scale': 1.3 },
+      { ...textFont, 'font-scale': defaults.labelTitleScale },
       ['coalesce', ['get', 'label'], ['get', 'room'], ''],
       textFont
     ],
-    'text-size': labelSize,
-    'text-font': labelFont,
-    'text-letter-spacing': ['coalesce', ['get', 'label-letter-spacing'], 0],
-    'text-anchor': styleProp(['user_label-anchor', 'label-anchor'], 'top'), // top: text under point
+    'text-size': labelSize(),
+    'text-font': [defaults.font],
+    'text-letter-spacing': ['coalesce', ['get', 'label-letter-spacing'], defaults.labelLetterSpacing],
+    'text-anchor': styleProp(['user_label-anchor', 'label-anchor'], defaults.labelAnchor),
     // labelOffset is now geometry-aware: 0 for polygons, scaled for points
     // default to dynamic labelOffset if not set
     'text-offset': [
       'case',
       ['has', 'label-offset'], ['get', 'label-offset'],
-      ['==', styleProp(['user_label-anchor', 'label-anchor'], 'top'), 'top'], labelOffsetBySize,
+      ['==', styleProp(['user_label-anchor', 'label-anchor'], defaults.labelAnchor), 'top'], labelOffsetBySize(),
       ['literal', [0, 0]]
     ],
     'text-justify': ['coalesce', ['get', 'label-justify'], 'auto'],
-    'text-max-width': ['coalesce', ['get', 'label-max-width'], 10],
-    'text-line-height': 1.6, // no dynamic value possible
+    'text-max-width': ['coalesce', ['get', 'label-max-width'], defaults.labelMaxWidth],
+    'text-line-height': defaults.labelLineHeight, // no dynamic value possible
     // TODO: sort keys on text are ascending, on symbols descending???
-    'symbol-sort-key': ['-', 1000, sortKey]
+    'symbol-sort-key': ['-', 1000, sortKey()]
   }
 
   // Mode-specific layout properties
@@ -426,9 +412,9 @@ function textLayerStyles(mode) {
 
   // Shared paint properties
   const sharedPaint = {
-    'text-color': labelColor,
-    'text-halo-color': labelShadow,
-    'text-halo-width': labelShadowWidth
+    'text-color': labelColor(),
+    'text-halo-color': labelShadow(),
+    'text-halo-width': labelShadowWidth()
   }
 
   return {
@@ -440,8 +426,8 @@ function textLayerStyles(mode) {
         ['!=', ['geometry-type'], 'MultiLineString'], // line labels are in 'line-labels'
         ['any', ['has', 'label'], ['has', 'label-title']],
         flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
-        minZoomFilter,
-        maxZoomFilter
+        minZoomFilter(),
+        maxZoomFilter()
       ],
       layout: {
         ...sharedLayout,
@@ -454,12 +440,12 @@ function textLayerStyles(mode) {
 
 // Routes each polygon to one of the 10 fill-extrusion buckets by rounding its
 // fill-extrusion-opacity (falling back to fill-opacity so the polygon opacity
-// slider keeps working; default = defaultExtrusionOpacity) to the nearest tenth
+// slider keeps working; default = defaults.extrusionOpacity) to the nearest tenth
 // and clamping to [1, 10].
-const opacityBucketSelector = [
+const opacityBucketSelector = () => [
   'max', 1, ['min', 10,
     ['round', ['*', 10,
-      ['to-number', styleProp(['fill-extrusion-opacity', 'user_fill-extrusion-opacity', 'fill-opacity', 'user_fill-opacity'], defaultExtrusionOpacity)]]]]
+      ['to-number', styleProp(['fill-extrusion-opacity', 'user_fill-extrusion-opacity', 'fill-opacity', 'user_fill-opacity'], defaults.extrusionOpacity)]]]]
 ]
 
 function extrusionBucketLayers () {
@@ -472,14 +458,14 @@ function extrusionBucketLayers () {
       filter: ['all',
         ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
         ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
-        ['==', opacityBucketSelector, bucket],
-        minZoomFilter,
-        maxZoomFilter],
+        ['==', opacityBucketSelector(), bucket],
+        minZoomFilter(),
+        maxZoomFilter()],
       layout: {
-        'fill-extrusion-rounded-corner-distance': extrusionCornerRadius
+        'fill-extrusion-rounded-corner-distance': defaults.extrusionCornerRadius
       },
       paint: {
-        'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], featureColor),
+        'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], defaults.featureColor),
         'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
         'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)],
         'fill-extrusion-opacity': opacity
@@ -497,13 +483,15 @@ export function styles () {
           filter: ['all',
             ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
             ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
-            minZoomFilter,
-            maxZoomFilter],
+            minZoomFilter(),
+            maxZoomFilter()],
             paint: {
-              'fill-color': 'gray',
+              'fill-color': defaults.extrudedShadowColor,
               'fill-opacity': [
                 "case",
-                ['boolean', ['feature-state', 'active'], false], 0.4, 0.7]
+                ['boolean', ['feature-state', 'active'], false],
+                defaults.extrudedShadowOpacityActive,
+                defaults.extrudedShadowOpacity]
       }
     },
     'polygon-layer': {
@@ -512,11 +500,11 @@ export function styles () {
       filter: ['all',
         ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
         ['==', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
-        minZoomFilter,
-        maxZoomFilter],
+        minZoomFilter(),
+        maxZoomFilter()],
       paint: {
-        'fill-color': fillColor,
-        'fill-opacity': fillOpacity
+        'fill-color': fillColor(),
+        'fill-opacity': fillOpacity()
       }
     },
     // fill-extrusion-opacity is not data-driven, so we stack 10 layers, one per
@@ -528,8 +516,8 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
-        minZoomFilter,
-        maxZoomFilter],
+        minZoomFilter(),
+        maxZoomFilter()],
       layout: {
         'line-join': 'round',
         'line-cap': 'round'
@@ -537,13 +525,13 @@ export function styles () {
       paint: {
         'line-color': [
           'case', ['boolean', ['feature-state', 'active'], false],
-          featureOutlineColorActive, polygonOutlineColor
+          defaults.featureOutlineColorActive, polygonOutlineColor()
         ],
         'line-width': [
           'case', ['boolean', ['feature-state', 'active'], false],
-          ['+', outlineWidthPolygon, 1], outlineWidthPolygon
+          ['+', outlineWidthPolygon(), 1], outlineWidthPolygon()
         ],
-        'line-opacity': lineOpacity
+        'line-opacity': lineOpacity()
       }
     },
     // line outlines
@@ -552,8 +540,8 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
-        minZoomFilter,
-        maxZoomFilter],
+        minZoomFilter(),
+        maxZoomFilter()],
       layout: {
         'line-join': 'round',
         'line-cap': 'round'
@@ -561,10 +549,10 @@ export function styles () {
       paint: {
         'line-color': [
           'case', ['boolean', ['feature-state', 'active'], false],
-          featureOutlineColorActive, lineOutlineColor
+          defaults.featureOutlineColorActive, defaults.featureOutlineColor
         ],
-        'line-width': outlineWidth,
-        'line-opacity': lineOpacity
+        'line-width': outlineWidth(),
+        'line-opacity': lineOpacity()
       }
     },
     // lines
@@ -573,23 +561,23 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
-        minZoomFilter,
-        maxZoomFilter],
+        minZoomFilter(),
+        maxZoomFilter()],
       layout: {
         'line-join': 'round',
         'line-cap': 'round',
-        'line-sort-key': sortKey
+        'line-sort-key': sortKey()
       },
       paint: {
-        'line-color': lineColor,
-        'line-width': lineWidth,
+        'line-color': lineColor(),
+        'line-width': lineWidth(),
         'line-opacity': [
           'case', ['boolean', ['feature-state', 'active'], false],
-          lineOpacityActive, lineOpacity
+          defaults.lineOpacityActive, lineOpacity()
         ],
         'line-dasharray': [
           "case",
-          ["==", ["get", "stroke-dasharray"], true], ["literal", [1, 1.5]],
+          ["==", ["get", "stroke-dasharray"], true], ["literal", defaults.lineDashArray],
           ["literal", [1 , 0]]
         ]
       }
@@ -599,10 +587,10 @@ export function styles () {
       type: 'line',
       filter: ['all',
         ['==', ['geometry-type'], 'LineString'],
-        minZoomFilter,
-        maxZoomFilter],
+        minZoomFilter(),
+        maxZoomFilter()],
       paint: {
-        'line-width': ['+', 10, outlineWidthMax],
+        'line-width': ['+', defaults.lineHitPadding, outlineWidthMax()],
         'line-opacity': 0 // cannot use visibility:none here
       }
     },
@@ -618,20 +606,20 @@ export function styles () {
         ["!", ["has", "point_count"]],
         ["!", ["has", "marker-image-url"]],
         ["!", ["has", "route-extras-label"]],
-        minZoomFilter,
-        maxZoomFilter],
+        minZoomFilter(),
+        maxZoomFilter()],
       paint: {
         "circle-pitch-alignment": "map",
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
-        'circle-radius': pointSize,
+        'circle-radius': pointSize(),
         // force white background for selected point with transparent background
         'circle-color': ["case",
           ["all",
             ['boolean', ['feature-state', 'active'], false],
-            ["==", pointColor, "transparent"]
+            ["==", pointColor(), "transparent"]
           ],
           "white",
-          pointColor
+          pointColor()
         ],
         // force visibility for selected point with transparent background
         'circle-opacity': ["case",
@@ -642,22 +630,22 @@ export function styles () {
           1,
           ['case',
             ['boolean', ['feature-state', 'active'], false],
-            pointOpacityActive,
-            pointOpacity
+            pointOpacityActive(),
+            pointOpacity()
           ]
         ],
-        'circle-blur': 0.05,
-        'circle-stroke-color': pointOutlineColor,
+        'circle-blur': defaults.pointBlur,
+        'circle-stroke-color': pointOutlineColor(),
         'circle-stroke-width': [
           'case',
           ['boolean', ['feature-state', 'active'], false],
-          pointOutlineSizeActive,
-          pointOutlineSize
+          pointOutlineSizeActive(),
+          pointOutlineSize()
         ],
-        'circle-stroke-opacity': ['to-number', ["min", 1, ['+', pointOpacity, 0.2]]]
+        'circle-stroke-opacity': ['to-number', ["min", 1, ['+', pointOpacity(), 0.2]]]
       },
       layout: {
-        'circle-sort-key': sortKey
+        'circle-sort-key': sortKey()
       }
     },
     'points-layer': {
@@ -672,20 +660,20 @@ export function styles () {
         ["!", ["has", "point_count"]],
         ["!", ["has", "marker-image-url"]],
         ["!", ["has", "route-extras-label"]],
-        minZoomFilter,
-        maxZoomFilter
+        minZoomFilter(),
+        maxZoomFilter()
       ],
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
-        'circle-radius': pointSize,
+        'circle-radius': pointSize(),
         // force white background for selected point with transparent background
         'circle-color': ["case",
           ["all",
             ['boolean', ['feature-state', 'active'], false],
-            ["==", pointColor, "transparent"]
+            ["==", pointColor(), "transparent"]
           ],
           "white",
-          pointColor
+          pointColor()
         ],
         // force visibility for selected point with transparent background
         'circle-opacity': ["case",
@@ -696,23 +684,23 @@ export function styles () {
           0.7,
           ['case',
             ['boolean', ['feature-state', 'active'], false],
-            pointOpacityActive,
-            pointOpacity
+            pointOpacityActive(),
+            pointOpacity()
           ]
         ],
-        'circle-blur': 0.05,
-        'circle-stroke-color': pointOutlineColor,
+        'circle-blur': defaults.pointBlur,
+        'circle-stroke-color': pointOutlineColor(),
         'circle-stroke-width': [
           'case',
           ['boolean', ['feature-state', 'active'], false],
-          pointOutlineSizeActive,
-          pointOutlineSize
+          pointOutlineSizeActive(),
+          pointOutlineSize()
         ],
-        'circle-stroke-opacity': ["min", 1, ['+', pointOpacity, 0.2]]
+        'circle-stroke-opacity': ["min", 1, ['+', pointOpacity(), 0.2]]
       },
       layout: {
         // sort-key is only effective within same layer
-        'circle-sort-key': sortKey
+        'circle-sort-key': sortKey()
       }
     },
     'points-hit-layer': {
@@ -722,17 +710,17 @@ export function styles () {
         "all",
         ["==", ["geometry-type"], "Point"],
         ["!", ["has", "route-extras-label"]],
-        minZoomFilter,
-        maxZoomFilter
+        minZoomFilter(),
+        maxZoomFilter()
       ],
       paint: {
-        'circle-radius': ['+', 5, pointSizeMax],
+        'circle-radius': ['+', defaults.pointHitPadding, pointSizeMax()],
         // 'circle-opacity': 0.3 // debug click area
         'circle-opacity': 0
       },
       layout: {
         // sort-key is only effective within same layer
-        'circle-sort-key': sortKey
+        'circle-sort-key': sortKey()
       }
     },
     'heatmap-layer': {
@@ -741,13 +729,13 @@ export function styles () {
       filter: [
         "all",
         ["==", ["geometry-type"], "Point"],
-        minZoomFilter,
-        maxZoomFilter
+        minZoomFilter(),
+        maxZoomFilter()
       ],
       paint: {
-        'heatmap-opacity': 0.7,
-        'heatmap-intensity': 1.3,
-        'heatmap-radius': 17
+        'heatmap-opacity': defaults.heatmapOpacity,
+        'heatmap-intensity': defaults.heatmapIntensity,
+        'heatmap-radius': defaults.heatmapRadius
       }
     },
     // support symbols on all feature types (projected on map surface or viewport)
@@ -763,22 +751,22 @@ export function styles () {
           ['==', ['geometry-type'], 'MultiLineString']
         ],
         ['has', 'label'],
-        minZoomFilter,
-        maxZoomFilter],
+        minZoomFilter(),
+        maxZoomFilter()],
       layout: {
         'symbol-placement': 'line',
         'text-field': styleProp(['user_label', 'label']),
-        'text-font': labelFont,
-        'text-size': 14,
-        'text-max-angle': 30,
+        'text-font': [defaults.font],
+        'text-size': defaults.lineLabelSize,
+        'text-max-angle': defaults.lineLabelMaxAngle,
         'text-keep-upright': true,
         'text-rotation-alignment': 'map',
-        'symbol-spacing': 200
+        'symbol-spacing': defaults.lineLabelSpacing
       },
       paint: {
-        'text-color': labelColor,
-        'text-halo-color': labelShadow,
-        'text-halo-width': labelShadowWidth
+        'text-color': labelColor(),
+        'text-halo-color': labelShadow(),
+        'text-halo-width': labelShadowWidth()
       }
     },
     'line-label-symbol': {
@@ -795,8 +783,8 @@ export function styles () {
           ["has", "stroke-image-url"],
           ["has", "stroke-symbol"]
         ],
-        minZoomFilter,
-        maxZoomFilter],
+        minZoomFilter(),
+        maxZoomFilter()],
       layout: {
         "symbol-placement": "line",
         "symbol-spacing": 100, // distance in pixels, only works with 'line'
@@ -835,12 +823,12 @@ export function clusterStyles(icon, color=null) {
       filter: ['has', 'point_count'],
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
-        'circle-radius': 12,
-        'circle-color': color || pointColor,
-        'circle-blur': 0.05,
-        'circle-stroke-color': pointOutlineColor,
-        'circle-stroke-width': pointOutlineSize,
-        'circle-stroke-opacity': ["min", 1, ['+', pointOpacity, 0.2]]
+        'circle-radius': defaults.clusterRadius,
+        'circle-color': color || pointColor(),
+        'circle-blur': defaults.pointBlur,
+        'circle-stroke-color': pointOutlineColor(),
+        'circle-stroke-width': pointOutlineSize(),
+        'circle-stroke-opacity': ["min", 1, ['+', pointOpacity(), 0.2]]
       }
     }
 
@@ -861,13 +849,13 @@ export function clusterStyles(icon, color=null) {
       filter: ['has', 'point_count'],
       layout: {
         'text-field': '{point_count_abbreviated}',
-        'text-font': labelFont,
-        'text-size': 15
+        'text-font': [defaults.font],
+        'text-size': defaults.clusterLabelSize
       },
       paint: {
-        'text-color': '#000',
-        'text-halo-color': '#fff',
-        'text-halo-width': 2
+        'text-color': defaults.clusterLabelColor,
+        'text-halo-color': defaults.clusterLabelShadow,
+        'text-halo-width': defaults.clusterLabelShadowWidth
       }
     }
 

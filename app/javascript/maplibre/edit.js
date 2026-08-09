@@ -91,6 +91,17 @@ export async function initializeEditMode () {
   // Expose draw for testing
   window.draw = draw
 
+  // draw re-adds its layers from options.styles on every style change, so swapping the
+  // array here is enough to pick up the defaults of the new basemap. draw stores the
+  // styles already split per source bucket, so rebuild them the same way it does.
+  map.on('basemap.change', () => {
+    const editLayers = editStyles()
+    const bucketed = bucket => editLayers.map(style => style.source
+      ? style
+      : { ...style, id: `${style.id}.${bucket}`, source: `mapbox-gl-draw-${bucket}` })
+    draw.options.styles = [...bucketed('cold'), ...bucketed('hot')]
+  })
+
   initializeEditStyles()
   initializeEditControls()
   initializeDefaultControls()

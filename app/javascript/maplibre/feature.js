@@ -10,7 +10,7 @@ import { showExtrasTotals } from 'maplibre/feature/extras_totals'
 import { getFeature, getFeatureSource, getLayer, layers } from "maplibre/layers/layers"
 import { wikipediaFeatureDescription } from 'maplibre/layers/wikipedia'
 import { map } from 'maplibre/map'
-import { featureColor } from 'maplibre/styles/styles'
+import { defaults } from 'maplibre/styles/defaults'
 import { marked } from 'marked'
 
 window.marked = marked
@@ -204,7 +204,7 @@ async function featureDescription (feature) {
 // set title image according to feature type
 export function featureIcon (feature) {
   let image = ''
-  let iconColor = feature.properties['marker-color'] || feature.properties['fill'] || feature.properties['stroke'] || featureColor
+  let iconColor = feature.properties['marker-color'] || feature.properties['fill'] || feature.properties['stroke'] || defaults.featureColor
   if (iconColor === 'transparent') { iconColor = '#c0c0c0' }
   let iconColorStyle = `style='color: ${iconColor};'`
   if (feature.properties['marker-image-url']) {

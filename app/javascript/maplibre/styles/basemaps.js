@@ -12,7 +12,7 @@ const testGlyphs = '/fonts/test/{fontstack}/{range}.pbf'
 // maptiler: https://docs.maptiler.com/gl-style-specification/glyphs/
 // versatiles: https://github.com/versatiles-org/versatiles-fonts/tree/main/fonts
 // Emojis are not in the character range: https://github.com/maplibre/maplibre-gl-js/issues/2307
-export const defaultFont = 'noto_sans_regular'
+// The default font is defaults.font in styles/defaults.js
 const defaultRasterLayer = [
   {
     id: 'simple-tiles',
@@ -48,6 +48,8 @@ export let elevationSource = {
   attribution: '© <a href="https://mapterhorn.com" target="_blank">Mapterhorn</a>'
 }
 
+// A basemap can override any feature style default via 'defaults' (styles.js) and
+// 'editDefaults' (edit_styles.js). See styles/defaults.js for the available keys.
 export function basemaps () {
   return {
     // Stadia maps
@@ -195,31 +197,31 @@ export function basemaps () {
         glyphs: versatilesGlyphs
       }
     },
-    satelliteStreets: { description: window.__('High-resolution satellite imagery overlaid with streets and place labels.'), style: host + '/layers/satellite_with_streets.json' },
+    satelliteStreets: { description: window.__('High-resolution satellite imagery overlaid with streets and place labels.'), style: host + '/layers/satellite_with_streets.json', defaults: { labelColor: '#fff', labelShadow: '#000' } },
 
     // basemap.de
     basemapWorld: {
       description: window.__('Official German basemap.de style with detailed European cartography.'),
-      style: 'https://sgx.geodatenzentrum.de/gdz_basemapworld_vektor/styles/bm_web_wld_col.json', font: 'Noto Sans Regular', sourceName: 'smarttiles_de' },
+      style: 'https://sgx.geodatenzentrum.de/gdz_basemapworld_vektor/styles/bm_web_wld_col.json', defaults: { font: 'Noto Sans Regular' }, sourceName: 'smarttiles_de' },
 
     // openfreemap.org
-    openfreemapPositron: { description: window.__('Light, minimal grayscale style ideal for data visualization overlays.'), style: 'https://tiles.openfreemap.org/styles/positron', font: 'Noto Sans Regular' },
-    openfreemapBright: { description: window.__('Bright, colorful vector style with clear roads and readable labels.'), style: 'https://tiles.openfreemap.org/styles/bright', font: 'Noto Sans Regular' },
-    openfreemapLiberty: { description: window.__('Detailed vector map with landmarks, buildings and points of interest.'), style: 'https://tiles.openfreemap.org/styles/liberty', sourceName: 'openmaptiles', font: 'Noto Sans Regular' },
+    openfreemapPositron: { description: window.__('Light, minimal grayscale style ideal for data visualization overlays.'), style: 'https://tiles.openfreemap.org/styles/positron', defaults: { font: 'Noto Sans Regular' } },
+    openfreemapBright: { description: window.__('Bright, colorful vector style with clear roads and readable labels.'), style: 'https://tiles.openfreemap.org/styles/bright', defaults: { font: 'Noto Sans Regular' } },
+    openfreemapLiberty: { description: window.__('Detailed vector map with landmarks, buildings and points of interest.'), style: 'https://tiles.openfreemap.org/styles/liberty', sourceName: 'openmaptiles', defaults: { font: 'Noto Sans Regular' } },
 
     // https://github.com/versatiles-org/versatiles-style
     // fonts: https://github.com/versatiles-org/versatiles-fonts
-    versatilesColorful: { description: window.__('Colorful vector map with vivid colors and a clear road hierarchy.'), style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
-    versatilesGraybeard: { description: window.__('Muted, monochrome vector style for a clean, distraction-free look.'), style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
-    versatilesGraybeardSnow: { description: window.__('Muted Graybeard style with an added wintery, snow-covered terrain effect.'), style: host + '/layers/graybeard_snow.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
-    versatilesNeutrino: { description: window.__('Minimalist, neutral vector style with subtle colors and light labels.'), style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', font: 'noto_sans_regular' },
-    versatilesEclipse: { description: window.__('Dark mode vector map style, easy on the eyes for night-time viewing.'), style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', font: 'noto_sans_regular' },
+    versatilesColorful: { description: window.__('Colorful vector map with vivid colors and a clear road hierarchy.'), style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', sourceName: 'versatiles-shortbread' },
+    versatilesGraybeard: { description: window.__('Muted, monochrome vector style for a clean, distraction-free look.'), style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', sourceName: 'versatiles-shortbread' },
+    versatilesGraybeardSnow: { description: window.__('Muted Graybeard style with an added wintery, snow-covered terrain effect.'), style: host + '/layers/graybeard_snow.json', sourceName: 'versatiles-shortbread' },
+    versatilesNeutrino: { description: window.__('Minimalist, neutral vector style with subtle colors and light labels.'), style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json' },
+    versatilesEclipse: { description: window.__('Dark mode vector map style, easy on the eyes for night-time viewing.'), style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', defaults: { labelColor: '#fff', labelShadow: '#000' } },
     // VersaTiles satellite imagery (alpha) composited with OpenFreeMap street/label overlay
     versatilesSatelliteStreets: { description: window.__('VersaTiles satellite imagery combined with street and label overlays.'), style: host + '/layers/versatiles_satellite_streets.json' },
 
     // Custom local styles using OpenMapTiles schema
-    // TODO: use 'suse' font when webfont loading works
-    artistic: { description: window.__('Custom artistic map style with a unique, hand-crafted color palette.'), style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread', font: 'noto_sans_regular' },
+    artistic: { description: window.__('Custom artistic map style with a unique, hand-crafted color palette.'), style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread',
+      defaults: { labelColor: '#fff', labelShadow: '#6c9681', featureColor: '#6c9681', font: 'SUSE' } },
 
     // Maptiler maps: https://docs.maptiler.com/sdk-js/api/map-styles/#mapstylelist
     // 3D Houses
