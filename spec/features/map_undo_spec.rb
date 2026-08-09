@@ -39,7 +39,9 @@ describe "Map Undo/Redo" do
     wait_for { Feature.count }.to eq(0)
 
     find("button.maplibregl-ctrl-redo").click
-    expect(page).to have_text("Redo")
+    # the 'Redo' status text is transient: a pending flyTo can overwrite it within
+    # milliseconds, so assert the redo button state instead
+    expect(page).to have_css("button.maplibregl-ctrl-redo.hidden", visible: :all)
 
     wait_for { Feature.count }.to eq(1)
   end
