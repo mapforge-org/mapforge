@@ -192,7 +192,7 @@ class MapsController < ApplicationController
   end
 
   def set_map
-    @map = Map.unscoped.where(:$or => [ { public_id: params[:id] }, { private_id: params[:id] } ]).first
+    @map = Map.by_any_id(params[:id])
     render_not_found unless @map
   end
 

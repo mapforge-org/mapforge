@@ -114,6 +114,20 @@ class Map
     format: { without: /\//, message: "private_id cannot contain a '/'" },
     if: :will_save_change_to_private_id?
 
+  # Map ids arrive from URLs, websocket payloads and form params, so they are not
+  # always strings. A Hash reaches Mongo as an operator: { "$ne" => nil } matches any map.
+  def self.by_private_id(id)
+    unscoped.find_by(private_id: id.to_s)
+  end
+
+  # A ulogger private_id is numeric and can collide with an all-digit public_id,
+  # so resolve the private_id match first instead of taking an arbitrary $or hit.
+  def self.by_any_id(id)
+    id = id.to_s
+    maps = unscoped.or({ private_id: id }, { public_id: id }).to_a
+    maps.find { |map| map.private_id == id } || maps.first
+  end
+
   # Check if a user is an owner
   def owned_by?(user)
     return false unless user

@@ -1,7 +1,7 @@
 class TracksController < ApplicationController
   def redirect
     if params[:id].present?
-      map = Map.find_by(private_id: params[:id])
+      map = Map.by_private_id(params[:id])
       if map
         # link to highlighted track when there is only one
         track = map.features.line_string.count == 1 ? map.features.line_string.first : nil

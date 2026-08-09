@@ -14,6 +14,12 @@ RSpec.describe MapChannel, type: :channel do
 
       expect(subscription).to be_rejected
     end
+
+    it "rejects a map id that is a mongo operator" do
+      subscribe(map_id: { "$ne" => nil })
+
+      expect(subscription).to be_rejected
+    end
   end
 
   describe "#update_layer with feature_order" do
@@ -28,6 +34,15 @@ RSpec.describe MapChannel, type: :channel do
       expect(layer.reload.feature_order).to eq order
       expect(ActionCable.server).to have_received(:broadcast)
         .with("map_channel_#{map.public_id}", hash_including(:map_updated_at, event: "update_layer")).once
+    end
+
+    it "rejects writes made with a mongo operator as map id" do
+      subscribe(map_id: map.private_id)
+
+      expect {
+        perform :update_layer, id: layer.id.to_s, map_id: { "$ne" => nil }, feature_order: order
+      }.to raise_error(/public/)
+      expect(layer.reload.feature_order).to eq []
     end
 
     it "rejects writes made with the public id" do

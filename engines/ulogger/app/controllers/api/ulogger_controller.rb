@@ -27,7 +27,7 @@ module Ulogger
       @user = User.find_by(email: session["email"])
       if params[:track] =~ /^(\d+)#(\S+)/
         session["track_name"] = $2
-        @map = Map.find_by(private_id: $1)
+        @map = Map.by_private_id($1)
       else
         session["track_name"] = params[:track]
         @map = Map.new(private_id: random_map_id, name: params[:track],
@@ -114,7 +114,7 @@ module Ulogger
     private
 
     def set_map
-      @map = Map.find_by(private_id: params[:trackid])
+      @map = Map.by_private_id(params[:trackid])
       render json: { error: true, message: "Invalid trackid" } unless @map
     end
 

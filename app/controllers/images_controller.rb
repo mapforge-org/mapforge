@@ -72,6 +72,7 @@ class ImagesController < ApplicationController
   end
 
   def require_map
-    @map = Map.find_by!(private_id: params[:map_id])
+    @map = Map.by_private_id(params[:map_id])
+    head :not_found unless @map
   end
 end

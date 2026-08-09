@@ -3,7 +3,7 @@ class MapChannel < ApplicationCable::Channel
   # are authorized by requiring the private_id in the message payload.
   def subscribed
     super
-    map = Map.find_by(private_id: params[:map_id]) || Map.find_by(public_id: params[:map_id])
+    map = Map.by_any_id(params[:map_id])
     unless map
       Rails.logger.warn "Invalid map id #{params[:map_id]} for subscribing to channel"
       reject
@@ -115,7 +115,7 @@ class MapChannel < ApplicationCable::Channel
 
   # load map with write access
   def get_map_rw!(id)
-    map = Map.find_by(private_id: id)
+    map = Map.by_private_id(id)
     raise "Cannot open map for writing with (public?) id '#{id}'" unless map
     map
   end
