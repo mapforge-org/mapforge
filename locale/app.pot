@@ -102,6 +102,10 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
+#: ../app/views/docs/tutorials.haml:29
+msgid "Advanced feature styling"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:42
 msgid "Also available for self-hosting, giving you full control over your data."
 msgstr ""
@@ -140,6 +144,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/edit.js:158
 msgid "Bicycle Mode: Click on the map to set waypoints, double click to finish"
+msgstr ""
+
+#: ../app/views/docs/tutorials.haml:19
+msgid "Bicycle Touring with Mapforge"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:11
@@ -214,7 +222,7 @@ msgstr ""
 msgid "Change colors and appearance"
 msgstr ""
 
-#: ../app/views/shared/_footer.html.haml:18
+#: ../app/views/shared/_footer.html.haml:18 ../app/views/docs/tutorials.haml:7
 msgid "Changelog"
 msgstr ""
 
@@ -738,6 +746,18 @@ msgstr ""
 msgid "Hillshade:"
 msgstr ""
 
+#: ../app/views/docs/tutorials.haml:15
+msgid "How to add a custom data layer with OpenStreetMap data."
+msgstr ""
+
+#: ../app/views/docs/tutorials.haml:35
+msgid "How to use keyboard shortcuts for common actions."
+msgstr ""
+
+#: ../app/views/docs/tutorials.haml:40
+msgid "How to use the µlogger app to log your tracks from your phone."
+msgstr ""
+
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:50
 msgid "Ice"
 msgstr ""
@@ -762,6 +782,14 @@ msgstr ""
 msgid "In this gallery, your personal maps will be shown."
 msgstr ""
 
+#: ../app/views/docs/tutorials.haml:24
+msgid "Install the Mapforge App"
+msgstr ""
+
+#: ../app/views/docs/tutorials.haml:34
+msgid "Keyboard Shortcuts"
+msgstr ""
+
 #: ../app/javascript/maplibre/undo.js:62
 msgid "Layer added"
 msgstr ""
@@ -784,6 +812,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:5
 msgid "Layers"
+msgstr ""
+
+#: ../app/views/docs/tutorials.haml:30
+msgid "Learn how to style your map features with extended GeoJSON properties."
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/level_control.js:6 ../app/javascript/maplibre/controls/level_control.js:75
@@ -1010,6 +1042,10 @@ msgstr ""
 msgid "Open map '%{name}'"
 msgstr ""
 
+#: ../app/views/docs/tutorials.haml:14
+msgid "OpenStreetMap data layers (Overpass)"
+msgstr ""
+
 #: ../app/views/maps/modals/_layers.haml:103
 msgid "OpenStreetMap indoor"
 msgstr ""
@@ -1036,6 +1072,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:50
 msgid "Paving stones"
+msgstr ""
+
+#: ../app/views/docs/tutorials.haml:20
+msgid "Plan your ride and navigate with compass mode and elevation profile."
 msgstr ""
 
 #: ../app/views/maps/modals/_confirmation.haml:5
@@ -1092,6 +1132,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:50
 msgid "Read Only"
+msgstr ""
+
+#: ../app/views/docs/tutorials.haml:8
+msgid "Read about the latest changes and improvements on Mapforge."
 msgstr ""
 
 #: ../app/javascript/controllers/feature/edit_controller.js:37 ../app/javascript/controllers/map/context_menu_controller.js:131
@@ -1352,6 +1396,10 @@ msgstr ""
 msgid "Terrain added to map"
 msgstr ""
 
+#: ../app/views/docs/tutorials.haml:25
+msgid "The app can get installed from the browser or from the app store."
+msgstr ""
+
 #: ../app/javascript/maplibre/feature.js:385
 msgid "The image contains GPS coordinates (<code>%{coordinates}</code>).<br/>Do you want to place the marker there?"
 msgstr ""
@@ -1406,6 +1454,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/controls/geolocate.js:137
 msgid "Tracking position"
+msgstr ""
+
+#: ../app/views/docs/tutorials.haml:39
+msgid "Tracking with µlogger"
 msgstr ""
 
 #: ../app/views/shared/_footer.html.haml:14 ../app/views/shared/_header.html.haml:20 ../app/views/shared/_header.html.haml:39

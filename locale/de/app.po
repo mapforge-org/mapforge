@@ -80,6 +80,9 @@ msgstr "Admin"
 msgid "Advanced"
 msgstr "Erweitert"
 
+msgid "Advanced feature styling"
+msgstr "Erweiterte Objektgestaltung"
+
 msgid "Also available for self-hosting, giving you full control over your data."
 msgstr "Auch zum Self-Hosting verfügbar, mit voller Kontrolle über deine Daten."
 
@@ -109,6 +112,9 @@ msgstr "Untergeschoss %{n}"
 
 msgid "Bicycle Mode: Click on the map to set waypoints, double click to finish"
 msgstr "Fahrrad-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklick zum Beenden"
+
+msgid "Bicycle Touring with Mapforge"
+msgstr "Fahrradtouren mit Mapforge"
 
 msgid "Bicycle Touring!"
 msgstr "Fahrradtouren!"
@@ -557,6 +563,15 @@ msgstr "Schummerung zur Karte hinzugefügt"
 msgid "Hillshade:"
 msgstr "Schummerung:"
 
+msgid "How to add a custom data layer with OpenStreetMap data."
+msgstr "So fügst du eine Ebene mit OpenStreetMap-Daten hinzu."
+
+msgid "How to use keyboard shortcuts for common actions."
+msgstr "So nutzt du Tastenkürzel für häufige Aktionen."
+
+msgid "How to use the µlogger app to log your tracks from your phone."
+msgstr "So zeichnest du mit der µlogger-App deine Tracks mit dem Handy auf."
+
 msgid "Ice"
 msgstr "Eis"
 
@@ -575,6 +590,12 @@ msgstr "Importiere deine Daten aus GeoJSON, GPX und KML"
 msgid "In this gallery, your personal maps will be shown."
 msgstr "In dieser Galerie werden deine persönlichen Karten angezeigt."
 
+msgid "Install the Mapforge App"
+msgstr "Die Mapforge-App installieren"
+
+msgid "Keyboard Shortcuts"
+msgstr "Tastenkürzel"
+
 msgid "Layer added"
 msgstr "Ebene hinzugefügt"
 
@@ -592,6 +613,9 @@ msgstr "Ebene geändert"
 
 msgid "Layers"
 msgstr "Ebenen"
+
+msgid "Learn how to style your map features with extended GeoJSON properties."
+msgstr "Lerne, wie du deine Kartenobjekte mit erweiterten GeoJSON-Eigenschaften gestaltest."
 
 msgid "Level %{n}"
 msgstr "Ebene %{n}"
@@ -761,6 +785,9 @@ msgstr "Open Source"
 msgid "Open map '%{name}'"
 msgstr "Karte '%{name}' öffnen"
 
+msgid "OpenStreetMap data layers (Overpass)"
+msgstr "OpenStreetMap-Ebenen (Overpass)"
+
 msgid "OpenStreetMap indoor"
 msgstr "OpenStreetMap Indoor"
 
@@ -781,6 +808,9 @@ msgstr "Befestigt"
 
 msgid "Paving stones"
 msgstr "Pflastersteine"
+
+msgid "Plan your ride and navigate with compass mode and elevation profile."
+msgstr "Plane deine Tour und navigiere mit Kompassmodus und Höhenprofil."
 
 msgid "Please confirm"
 msgstr "Bitte bestätigen"
@@ -823,6 +853,9 @@ msgstr "Raster-URL (https://<host>/{z}/{x}/{y}.png)"
 
 msgid "Read Only"
 msgstr "Nur Lesen"
+
+msgid "Read about the latest changes and improvements on Mapforge."
+msgstr "Lies mehr über die neuesten Änderungen und Verbesserungen bei Mapforge."
 
 msgid "Really delete this %{type}?"
 msgstr "%{type} wirklich löschen?"
@@ -1018,6 +1051,9 @@ msgstr "Nutzungsbedingungen"
 msgid "Terrain added to map"
 msgstr "Gelände zur Karte hinzugefügt"
 
+msgid "The app can get installed from the browser or from the app store."
+msgstr "Die App kannst du aus dem Browser oder aus dem App Store installieren."
+
 msgid "The image contains GPS coordinates (<code>%{coordinates}</code>).<br/>Do you want to place the marker there?"
 msgstr "Das Bild enthält GPS-Koordinaten (<code>%{coordinates}</code>).<br/>Möchtest du den Marker dort platzieren?"
 
@@ -1059,6 +1095,9 @@ msgstr "Verfolgung aus"
 
 msgid "Tracking position"
 msgstr "Position wird verfolgt"
+
+msgid "Tracking with µlogger"
+msgstr "Aufzeichnen mit µlogger"
 
 msgid "Tutorials"
 msgstr "Tutorials"
