@@ -267,8 +267,8 @@
 }
 
 .geocoder-result-icon {
-  font-size: 1rem;
-  color: var(--ctrl-button-color);
+  width: 1.2rem;
+  height: 1.2rem;
   flex-shrink: 0;
 }
 

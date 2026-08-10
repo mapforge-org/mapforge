@@ -6,39 +6,35 @@ import { map } from 'maplibre/map'
 
 const PHOTON_LANGS = ['de', 'en', 'fr', 'it']
 
-// Bootstrap icon (result list) and noto emoji (map marker) per photon category. The map
-// styles draw a symbol from an emoji png, they cannot draw a bootstrap icon glyph.
+// Noto emoji per photon category, drawn both on the map marker and in the result list.
 // Places and boundaries are told apart by their type, everything else by its osm key.
 const CATEGORIES = {
-  aeroway: ['bi-airplane', '✈'],
-  amenity: ['bi-cup-hot', '☕'],
-  building: ['bi-house-door', '🏠'],
-  city: ['bi-building', '🏙'],
-  country: ['bi-globe-americas', '🌍'],
-  county: ['bi-map', '🗺'],
-  district: ['bi-buildings', '🏘'],
-  highway: ['bi-signpost-2', '🛣'],
-  historic: ['bi-bank', '🏛'],
-  house: ['bi-house-door', '🏠'],
-  leisure: ['bi-tree', '🌳'],
-  locality: ['bi-houses', '🏘'],
-  natural: ['bi-tree', '🌳'],
-  railway: ['bi-train-front', '🚆'],
-  shop: ['bi-shop', '🛍'],
-  state: ['bi-map', '🗺'],
-  street: ['bi-signpost-2', '🛣'],
-  tourism: ['bi-camera', '📷'],
-  waterway: ['bi-water', '💧']
+  aeroway: '✈',
+  amenity: '☕',
+  building: '🏠',
+  city: '🏙',
+  country: '🌍',
+  county: '🗺',
+  district: '🏘',
+  highway: '🛣',
+  historic: '🏛',
+  house: '🏠',
+  leisure: '🌳',
+  locality: '🏘',
+  natural: '🌳',
+  railway: '🚆',
+  shop: '🛍',
+  state: '🗺',
+  street: '🛣',
+  tourism: '📷',
+  waterway: '💧'
 }
-const DEFAULT_CATEGORY = ['bi-geo-alt', '📍']
+const DEFAULT_CATEGORY = '📍'
 
-function category (p) {
+function categorySymbol (p) {
   const key = (p.osm_key === 'place' || p.osm_key === 'boundary') ? p.type : p.osm_key
   return CATEGORIES[key] || CATEGORIES[p.type] || DEFAULT_CATEGORY
 }
-
-function categoryIcon (p) { return category(p)[0] }
-function categorySymbol (p) { return category(p)[1] }
 
 // Place names come from OSM, so they can carry markup
 function escapeHtml (text) {
@@ -57,7 +53,7 @@ function placeName (p) {
 function renderResult (item) {
   const [title, ...address] = item.place_name.split(',')
   return `<div class="geocoder-result">` +
-    `<i class="bi ${categoryIcon(item.properties)} geocoder-result-icon"></i>` +
+    `<img class="geocoder-result-icon" src="/emojis/noto/${categorySymbol(item.properties)}.png" alt="">` +
     `<div class="geocoder-result-text">` +
     `<div class="geocoder-result-title">${escapeHtml(title)}</div>` +
     `<div class="geocoder-result-address">${escapeHtml(address.join(',').trim())}</div>` +

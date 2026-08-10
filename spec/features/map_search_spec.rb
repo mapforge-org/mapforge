@@ -37,8 +37,8 @@ describe "Map places search" do
   it "prefixes every result with a category icon" do
     find(".maplibregl-ctrl-geocoder--input").set("Berlin")
 
-    expect(page).to have_css("li:nth-child(1) .geocoder-result-icon.bi-building")
-    expect(page).to have_css("li:nth-child(2) .geocoder-result-icon.bi-house-door")
+    expect(page).to have_css("li:nth-child(1) img.geocoder-result-icon[src$='/🏙.png']")
+    expect(page).to have_css("li:nth-child(2) img.geocoder-result-icon[src$='/🏠.png']")
   end
 
   it "prefers results around the current view" do
