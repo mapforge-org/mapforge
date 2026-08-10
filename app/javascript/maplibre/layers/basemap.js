@@ -100,7 +100,7 @@ export class BasemapLayer extends Layer {
       const geojsonFeature = {
         type: 'Feature',
         geometry: feature.geometry,
-        properties: feature.properties
+        properties: { ...feature.properties }
       }
       geojsonFeature.id = geojsonFeature.properties.id = functions.featureId()
       geojsonFeature.properties.desc = overpassDescription(geojsonFeature.properties)
@@ -109,8 +109,8 @@ export class BasemapLayer extends Layer {
         geojsonFeature.properties['fill-extrusion-height'] = height
       }
 
-      this.layer.geojson.features = [geojsonFeature]
-      map.getSource(this.sourceId).setData(this.layer.geojson, false)
+      this.geojson.features = [geojsonFeature]
+      map.getSource(this.sourceId).setData(this.geojson, false)
     }
   }
 

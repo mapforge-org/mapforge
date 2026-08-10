@@ -243,6 +243,7 @@ export function basemaps () {
   // static test tile
     test: {
       description: 'Static placeholder tile used for automated tests.',
+      sourceName: 'raster-tiles',
       style: {
         version: 8,
         sources: {
