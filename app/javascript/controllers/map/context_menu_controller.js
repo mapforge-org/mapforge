@@ -97,11 +97,10 @@ export default class extends Controller {
   }
 
   addToGeojsonLayer(event) {
-    const target = event.currentTarget
-    const layerType = target.dataset.layerType || 'basemap'
-    const feature = getFeature(target.dataset.featureId, layerType)
+    // the feature comes from the layer that built the menu item, see Layer.addCopyMenuItem
+    const feature = event.currentTarget.mapFeature
     if (!feature) {
-      console.error('Feature not found:', target.dataset.featureId, layerType)
+      console.error('Copy menu item without a feature')
       hideContextMenu()
       return
     }

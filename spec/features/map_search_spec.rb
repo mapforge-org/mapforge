@@ -2,6 +2,7 @@ require "rails_helper"
 
 describe "Map places search" do
   let(:map) { create(:map, name: "Search test") }
+  let(:map_path) { map.public_map_path }
   let(:last_query) { {} }
   let(:control_js) { "document.querySelector('.maplibregl-ctrl-geocoder')" }
 
@@ -14,7 +15,7 @@ describe "Map places search" do
         photon_file ]
     end
 
-    visit map.public_map_path
+    visit map_path
     expect_map_loaded
     # the control fades in, a click during the animation misses the icon
     wait_for { page.evaluate_script("getComputedStyle(#{control_js}).opacity") }.to eq("1")
@@ -71,30 +72,71 @@ describe "Map places search" do
 
   context "with the results in view" do
     let(:map) { create(:map, name: "Search test", center: [ 13.4, 52.5 ], zoom: 10) }
+    # results render into their own source, so they are visible to the map, not to the DOM
+    let(:source) { "search-source-results" }
+
+    # the style layer only exists once the first results arrive, and querying it before
+    # that logs a console error, which rails_helper turns into a failure
+    def result_features
+      page.evaluate_script(
+        "map.getLayer('points-layer_#{source}')" \
+        " ? map.queryRenderedFeatures({ layers: ['points-layer_#{source}'] }).map(f => [" \
+        "     f.properties['marker-symbol']," \
+        "     map.getFeatureState({ source: '#{source}', id: f.id }).active === true])" \
+        " : []"
+      )
+    end
+
+    def result_symbols
+      result_features.map(&:first)
+    end
+
+    def active_symbols
+      result_features.select(&:last).map(&:first)
+    end
 
     it "marks every result on the map" do
       find(".maplibregl-ctrl-geocoder--input").set("Berlin")
 
-      expect(page).to have_css(".search-marker", count: 2)
-      expect(page).to have_no_css(".search-marker.active")
-      expect(page).to have_css(".search-marker .bi-building")
-      expect(page).to have_css(".search-marker .bi-house-door")
+      wait_for { result_symbols }.to contain_exactly("🏙", "🏠")
+      expect(active_symbols).to eq([])
     end
 
     it "highlights the marker of the hovered result" do
       find(".maplibregl-ctrl-geocoder--input").set("Berlin")
       find(".geocoder-result-title", text: "Friedrichstrasse 43").hover
 
-      expect(page).to have_css(".search-marker.active", count: 1)
-      expect(page).to have_css(".search-marker.active .bi-house-door")
+      wait_for { active_symbols }.to eq([ "🏠" ])
     end
 
     it "keeps only the picked result on the map" do
       find(".maplibregl-ctrl-geocoder--input").set("Berlin")
       find(".geocoder-result-title", text: "Berlin").click
 
-      expect(page).to have_css(".search-marker.active", count: 1)
-      expect(page).to have_css(".search-marker.active .bi-building")
+      wait_for { result_symbols }.to eq([ "🏙" ])
+      expect(active_symbols).to eq([ "🏙" ])
+    end
+  end
+
+  context "copy to my layer context menu" do
+    # center matches the first result in spec/fixtures/files/photon.json
+    let(:map) { create(:map, name: "Search test", center: [ 13.3888599, 52.5170365 ], zoom: 15) }
+    let(:map_path) { map.private_map_path }
+
+    it "copies a result into the geojson layer of the map" do
+      expect(Feature.count).to eq(0)
+      find(".maplibregl-ctrl-geocoder--input").set("Berlin")
+      expect(page).to have_css(".geocoder-result-title", text: "Berlin")
+
+      center = center_of_screen
+      click_coord("#maplibre-map", center[:x], center[:y], button: :right)
+      find(".context-menu-item", text: "Copy to my layer").click
+
+      wait_for { Feature.count }.to eq(1)
+      copied_feature = Feature.first
+      expect(copied_feature.properties["title"]).to eq("Berlin")
+      expect(copied_feature.properties["marker-symbol"]).to eq("🏙")
+      expect(copied_feature.geometry["coordinates"]).to eq([ 13.3888599, 52.5170365 ])
     end
   end
 end

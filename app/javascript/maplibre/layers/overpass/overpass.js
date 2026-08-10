@@ -1,5 +1,6 @@
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
+import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { Layer } from 'maplibre/layers/layer'
 import { layers } from 'maplibre/layers/layers'
 import { applyOverpassQueryStyle } from 'maplibre/layers/overpass/queries'
@@ -37,19 +38,9 @@ export class OverpassLayer extends Layer {
       const queryLayerIds = this.getStyleLayerIds()
       const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds })
 
-      const feature = features.find(f => !f.properties?.cluster)
-      if (feature && window.gon.map_mode === 'rw') {
-        functions.e('#map-context-menu', el => {
-          if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
-          el.classList.remove('hidden')
-          const copyButton = document.createElement('div')
-          copyButton.classList.add('context-menu-item')
-          copyButton.innerHTML = `<i class="bi bi-copy me-1"></i>${window.__('Copy to my layer')}`
-          copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
-          copyButton.dataset.featureId = feature.id
-          copyButton.dataset.layerType = 'overpass'
-          el.appendChild(copyButton)
-        })
+      const rendered = features.find(f => !f.properties?.cluster)
+      if (rendered) {
+        addCopyToLayerMenuItem(this.geojson.features.find(f => f.id === rendered.id))
       }
     }
     map.on('contextmenu', this.contextMenuHandler)

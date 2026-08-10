@@ -1,4 +1,4 @@
-import * as functions from 'helpers/functions'
+import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { Layer } from 'maplibre/layers/layer'
@@ -281,20 +281,7 @@ export class RasterLayer extends Layer {
 
       if (!this.show || !this.highlightedFeatureId) return
 
-      const feature = this.layer.geojson?.features.find(f => f.id === this.highlightedFeatureId)
-      if (!feature || window.gon.map_mode !== 'rw') return
-
-      functions.e('#map-context-menu', el => {
-        if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
-        el.classList.remove('hidden')
-        const copyButton = document.createElement('div')
-        copyButton.classList.add('context-menu-item')
-        copyButton.innerHTML = `<i class="bi bi-copy me-1"></i>${window.__('Copy to my layer')}`
-        copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
-        copyButton.dataset.featureId = feature.id
-        copyButton.dataset.layerType = 'raster'
-        el.appendChild(copyButton)
-      })
+      addCopyToLayerMenuItem(this.layer.geojson?.features.find(f => f.id === this.highlightedFeatureId))
     }
 
     map.on('contextmenu', this.mapContextMenuHandler)

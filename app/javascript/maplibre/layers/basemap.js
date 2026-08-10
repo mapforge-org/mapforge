@@ -1,5 +1,5 @@
 import * as functions from 'helpers/functions'
-import { hideContextMenu } from 'maplibre/controls/context_menu'
+import { addCopyToLayerMenuItem, hideContextMenu } from 'maplibre/controls/context_menu'
 import {
   highlightedFeatureId,
   stickyFeatureHighlight
@@ -51,19 +51,9 @@ export class BasemapLayer extends Layer {
       const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
       const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds })
 
-      if (features.length && window.gon.map_mode === 'rw') {
-        functions.e('#map-context-menu', el => {
-          if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
-          el.classList.remove('hidden')
-
-          const copyButton = document.createElement('div')
-          copyButton.classList.add('context-menu-item')
-          copyButton.innerHTML = `<i class="bi bi-copy me-1"></i>${window.__('Copy to my layer')}`
-          copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
-          copyButton.dataset.featureId = features[0].id
-          copyButton.dataset.layerType = 'basemap'
-          el.appendChild(copyButton)
-        })
+      // the hovered feature was stored by highlightFeatureAtPoint, with an id of its own
+      if (features.length) {
+        addCopyToLayerMenuItem(this.geojson.features.find(f => f.id === features[0].id))
       }
     }
 

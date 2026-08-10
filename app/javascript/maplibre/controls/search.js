@@ -1,39 +1,44 @@
 import { animateElement } from 'helpers/dom'
+import * as functions from 'helpers/functions'
 import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder'
+import { resetSearchLayer, searchLayer } from 'maplibre/layers/search'
 import { map } from 'maplibre/map'
 
 const PHOTON_LANGS = ['de', 'en', 'fr', 'it']
 
-// Bootstrap icon per photon category. Places and boundaries are told apart by their type,
-// everything else by its osm key.
-const CATEGORY_ICONS = {
-  aeroway: 'bi-airplane',
-  amenity: 'bi-cup-hot',
-  building: 'bi-house-door',
-  city: 'bi-building',
-  country: 'bi-globe-americas',
-  county: 'bi-map',
-  district: 'bi-buildings',
-  highway: 'bi-signpost-2',
-  historic: 'bi-bank',
-  house: 'bi-house-door',
-  leisure: 'bi-tree',
-  locality: 'bi-houses',
-  natural: 'bi-tree',
-  railway: 'bi-train-front',
-  shop: 'bi-shop',
-  state: 'bi-map',
-  street: 'bi-signpost-2',
-  tourism: 'bi-camera',
-  waterway: 'bi-water'
+// Bootstrap icon (result list) and noto emoji (map marker) per photon category. The map
+// styles draw a symbol from an emoji png, they cannot draw a bootstrap icon glyph.
+// Places and boundaries are told apart by their type, everything else by its osm key.
+const CATEGORIES = {
+  aeroway: ['bi-airplane', '✈'],
+  amenity: ['bi-cup-hot', '☕'],
+  building: ['bi-house-door', '🏠'],
+  city: ['bi-building', '🏙'],
+  country: ['bi-globe-americas', '🌍'],
+  county: ['bi-map', '🗺'],
+  district: ['bi-buildings', '🏘'],
+  highway: ['bi-signpost-2', '🛣'],
+  historic: ['bi-bank', '🏛'],
+  house: ['bi-house-door', '🏠'],
+  leisure: ['bi-tree', '🌳'],
+  locality: ['bi-houses', '🏘'],
+  natural: ['bi-tree', '🌳'],
+  railway: ['bi-train-front', '🚆'],
+  shop: ['bi-shop', '🛍'],
+  state: ['bi-map', '🗺'],
+  street: ['bi-signpost-2', '🛣'],
+  tourism: ['bi-camera', '📷'],
+  waterway: ['bi-water', '💧']
+}
+const DEFAULT_CATEGORY = ['bi-geo-alt', '📍']
+
+function category (p) {
+  const key = (p.osm_key === 'place' || p.osm_key === 'boundary') ? p.type : p.osm_key
+  return CATEGORIES[key] || CATEGORIES[p.type] || DEFAULT_CATEGORY
 }
 
-let resultMarkers = []
-
-function categoryIcon (p) {
-  const category = (p.osm_key === 'place' || p.osm_key === 'boundary') ? p.type : p.osm_key
-  return CATEGORY_ICONS[category] || CATEGORY_ICONS[p.type] || 'bi-geo-alt'
-}
+function categoryIcon (p) { return category(p)[0] }
+function categorySymbol (p) { return category(p)[1] }
 
 // Place names come from OSM, so they can carry markup
 function escapeHtml (text) {
@@ -59,26 +64,34 @@ function renderResult (item) {
     `</div></div>`
 }
 
-function showResultMarkers (features) {
-  removeResultMarkers()
-  resultMarkers = features.map(feature => {
-    const element = document.createElement('div')
-    element.className = 'search-marker'
-    element.innerHTML = `<i class="bi ${categoryIcon(feature.properties)} search-marker-pin"></i>`
-    return new maplibregl.Marker({ element }).setLngLat(feature.center).addTo(map)
-  })
+// transparent marker-color and stroke leave only the emoji visible, and let the
+// style pick the white halo of the active state (see points-layer in styles.js)
+function toMapFeature (item) {
+  const [title] = item.place_name.split(',')
+  return {
+    type: 'Feature',
+    id: functions.featureId(),
+    geometry: item.geometry,
+    properties: {
+      ...item.properties,
+      title: title,
+      label: title,
+      desc: item.place_name,
+      'marker-symbol': categorySymbol(item.properties),
+      'marker-size': '30',
+      'marker-color': 'transparent',
+      stroke: 'transparent'
+    }
+  }
 }
 
-function removeResultMarkers () {
-  resultMarkers.forEach(marker => marker.remove())
-  resultMarkers = []
-}
+// kept here as well as on the layer, so the source only gets built once there is
+// something to show, and so it survives the basemap change that drops it
+let results = []
 
-// -1 dims all of them again
-function highlightResultMarker (index) {
-  resultMarkers.forEach((marker, i) => {
-    marker.getElement().classList.toggle('active', i === index)
-  })
+function showResults (items) {
+  results = items.map(toMapFeature)
+  searchLayer().setResults(results)
 }
 
 // https://maplibre.org/maplibre-gl-geocoder/types/MaplibreGeocoderOptions.html
@@ -122,6 +135,10 @@ export const geocoderConfig = {
 }
 
 export function initializeSearchControl () {
+  // runs once per map, so this is also where the results of the previous map are dropped
+  resetSearchLayer()
+  results = []
+
   // https://maplibre.org/maplibre-gl-geocoder/
   const geocoder = new MaplibreGeocoder(geocoderConfig, {
     maplibregl,
@@ -141,16 +158,22 @@ export function initializeSearchControl () {
   let picked = false
   geocoder.on('results', e => {
     picked = false
-    showResultMarkers(e.features)
+    showResults(e.features)
   })
   geocoder.on('result', e => {
     picked = true
-    showResultMarkers([e.result])
-    highlightResultMarker(0)
+    showResults([e.result])
+    searchLayer().setActive(0)
   })
   geocoder.on('clear', () => {
     picked = false
-    removeResultMarkers()
+    results = []
+    searchLayer().clearResults()
+  })
+
+  // a basemap change drops every source, so the visible results need a re-render
+  map.on('style.load', () => {
+    if (results.length) { searchLayer().setResults(results) }
   })
 
   const geocoderButton = document.querySelector('.maplibregl-ctrl-geocoder')
@@ -168,9 +191,9 @@ export function initializeSearchControl () {
   // the result list keeps the order of the markers
   geocoderButton.addEventListener('mouseover', (e) => {
     const item = e.target.closest('.suggestions > li')
-    if (item) { highlightResultMarker([...item.parentNode.children].indexOf(item)) }
+    if (item) { searchLayer().setActive([...item.parentNode.children].indexOf(item)) }
   })
-  geocoderButton.addEventListener('mouseleave', (_e) => { highlightResultMarker(picked ? 0 : -1) })
+  geocoderButton.addEventListener('mouseleave', (_e) => { searchLayer().setActive(picked ? 0 : -1) })
 
   map.once('load', function (_e) {
     // delayed via timeout, the geocoders !important transition overrides data-aos-delay

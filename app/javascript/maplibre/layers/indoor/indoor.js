@@ -1,4 +1,5 @@
-import { debounce, e, featureId } from 'helpers/functions'
+import { debounce, featureId } from 'helpers/functions'
+import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { detectLevels, getActiveLevel } from 'maplibre/controls/levels'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { addIndoorLayers, getIndoorLayerIds, indoorFillColor } from 'maplibre/layers/indoor/styles'
@@ -116,32 +117,19 @@ export class IndoorLayer extends Layer {
       const queryLayerIds = this.getStyleLayerIds()
       const features = map.queryRenderedFeatures(e_event.point, { layers: queryLayerIds })
 
-      if (features.length && window.gon.map_mode === 'rw') {
-        const feature = features[0]
-        const geojsonFeature = {
-          type: 'Feature',
-          geometry: feature.geometry,
-          properties: { ...feature.properties }
-        }
-        geojsonFeature.id = geojsonFeature.properties.id = featureId()
-        delete geojsonFeature.properties.label
-        delete geojsonFeature.properties.desc
+      if (!features.length) { return }
 
-        // Store in this layer's geojson so getFeature(id, 'indoor') can find it
-        this.geojson.features = [geojsonFeature]
-
-        e('#map-context-menu', el => {
-          if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
-          el.classList.remove('hidden')
-          const copyButton = document.createElement('div')
-          copyButton.classList.add('context-menu-item')
-          copyButton.innerHTML = `<i class="bi bi-copy me-1"></i>${window.__('Copy to my layer')}`
-          copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
-          copyButton.dataset.featureId = geojsonFeature.id
-          copyButton.dataset.layerType = 'indoor'
-          el.appendChild(copyButton)
-        })
+      const feature = features[0]
+      const geojsonFeature = {
+        type: 'Feature',
+        geometry: feature.geometry,
+        properties: { ...feature.properties }
       }
+      geojsonFeature.id = geojsonFeature.properties.id = featureId()
+      delete geojsonFeature.properties.label
+      delete geojsonFeature.properties.desc
+
+      addCopyToLayerMenuItem(geojsonFeature)
     }
 
     map.on('contextmenu', this.contextMenuHandler)

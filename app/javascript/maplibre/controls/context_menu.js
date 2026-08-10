@@ -90,6 +90,27 @@ export function addCopyMenuItem(featureId, geometryType = null) {
 }
 
 /**
+ * Add 'Copy to my layer' option for a feature of a non-geojson layer.
+ * Takes the feature, not an id: every caller already holds it, and an id plus a layer type
+ * would force the controller to look the same feature up a second time. That lookup cannot
+ * reach layers outside the 'layers' array, like the search results.
+ */
+export function addCopyToLayerMenuItem(feature) {
+  if (!feature || window.gon.map_mode !== 'rw') { return }
+  functions.e('#map-context-menu', el => {
+    if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
+    el.classList.remove('hidden')
+
+    const copyButton = document.createElement('div')
+    copyButton.classList.add('context-menu-item')
+    copyButton.innerHTML = `<i class="bi bi-copy me-1"></i>${window.__('Copy to my layer')}`
+    copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
+    copyButton.mapFeature = feature
+    el.appendChild(copyButton)
+  })
+}
+
+/**
  * Add 'Delete' option for any geojson feature
  */
 export function addDeleteMenuItem(featureId) {

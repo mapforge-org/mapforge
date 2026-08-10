@@ -14,7 +14,8 @@ import { addGeoJSONSource, frontFeature, map } from 'maplibre/map'
 
 // Source prefixes whose features are selectable via click. Excludes basemap
 // vector features and raster layers (which handle their own clicks).
-const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overpass-source-', 'wikipedia-source-']
+const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overpass-source-', 'wikipedia-source-',
+  'search-source-']
 
 /**
  * Base class for map layers. Subclass to create new layer types.
