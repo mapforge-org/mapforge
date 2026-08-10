@@ -571,17 +571,25 @@ async function initializeStyles() {
   }
 }
 
-// Restyles the labels of the basemap itself with defaults.font and defaults.fontBold.
-// A basemap opts out with 'applyFont: false'.
+// Restyles the labels of the basemap itself with defaults.font, defaults.fontBold
+// and defaults.fontItalic. Off by default, a basemap opts in with 'applyFont: true'.
 function basemapFontTransform (basemap) {
-  if (basemap.applyFont === false) { return undefined }
+  if (basemap.applyFont !== true) { return undefined }
   return (_previous, next) => {
     if (!next?.layers) { return next }
     return { ...next, layers: next.layers.map(layer => {
       if (layer.type !== 'symbol' || !layer.layout?.['text-field']) { return layer }
       const stack = layer.layout['text-font']
-      const bold = typeof stack?.[0] === 'string' && /bold/i.test(stack[0])
-      return { ...layer, layout: { ...layer.layout, 'text-font': [bold ? defaults.fontBold : defaults.font] } }
+      const name = typeof stack?.[0] === 'string' ? stack[0] : ''
+      let font = defaults.font
+      if (/bold/i.test(name)) {
+        font = defaults.fontBold
+      } else if (/italic|oblique/i.test(name)) {
+        font = defaults.fontItalic || defaults.font
+      }
+      if (stack?.length === 1 && stack[0] === font) { return layer }
+      // console.log(`Replacing ${name} with ${font} in ${layer.id}`)
+      return { ...layer, layout: { ...layer.layout, 'text-font': [font] } }
     }) }
   }
 }

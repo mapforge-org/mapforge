@@ -6,10 +6,13 @@
 // load time: applyBasemapDefaults mutates them on every basemap change.
 
 // fonts must be available via glyphs, see basemaps.js
-// fontBold is only used for the labels of the basemap itself
+// fontBold and fontItalic are only used for the labels of a basemap that opts
+// into the font transform with 'applyFont: true'. versatiles glyphs have no italic
+// variant, so fontItalic is null here and the transform falls back to font.
 const baseDefaults = {
   font: 'noto_sans_regular',
   fontBold: 'noto_sans_bold',
+  fontItalic: null,
 
   labelColor: '#000',
   labelShadow: '#fff',

@@ -5,6 +5,7 @@ import { Layer } from 'maplibre/layers/layer'
 import { layers } from 'maplibre/layers/layers'
 import { extractTheme, fetchNearestRoute, fetchRouteDetails } from 'maplibre/layers/raster/waymarkedtrails'
 import { addGeoJSONSource, map, removeStyleLayers } from 'maplibre/map'
+import { defaults } from 'maplibre/styles/defaults'
 
 export class RasterLayer extends Layer {
   constructor(layer) {
@@ -150,7 +151,7 @@ export class RasterLayer extends Layer {
         layout: {
           'symbol-placement': 'line',
           'text-field': ['get', 'label'],
-          'text-font': ['Noto Sans Regular'],
+          'text-font': [defaults.font],
           'text-size': 14,
           'text-max-angle': 30,
           'text-keep-upright': true,

@@ -797,7 +797,7 @@
           ]
         ],
         "text-font": [
-          "noto_sans_italic"
+          "noto_sans_regular"
         ],
         "text-letter-spacing": 0.05,
         "text-max-width": 10,

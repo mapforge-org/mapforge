@@ -48,12 +48,15 @@ export let elevationSource = {
   attribution: '© <a href="https://mapterhorn.com" target="_blank">Mapterhorn</a>'
 }
 
+// Regular font of the openmaptiles/maptiler glyph endpoints
+const notoFont = 'Noto Sans Regular'
+
 // A basemap can override any feature style default via 'defaults' (styles.js) and
 // 'editDefaults' (edit_styles.js). See styles/defaults.js for the available keys.
 //
-// The labels of the basemap itself are restyled with defaults.font and defaults.fontBold.
-// A basemap whose glyph endpoint does not serve those two fonts must either declare its
-// own 'font' + 'fontBold', or opt out with 'applyFont: false'.
+// 'font' styles the label layers of mapforge, so it must be served by the glyph endpoint
+// of the basemap. The labels of the basemap itself keep their own fonts. A basemap that
+// wants them restyled sets 'applyFont: true' and declares 'font' + 'fontBold' + 'fontItalic'.
 export function basemaps () {
   return {
     // Stadia maps
@@ -206,12 +209,12 @@ export function basemaps () {
     // basemap.de
     basemapWorld: {
       description: window.__('Official German basemap.de style with detailed European cartography.'),
-      style: 'https://sgx.geodatenzentrum.de/gdz_basemapworld_vektor/styles/bm_web_wld_col.json', defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' }, sourceName: 'smarttiles_de' },
+      style: 'https://sgx.geodatenzentrum.de/gdz_basemapworld_vektor/styles/bm_web_wld_col.json', defaults: { font: notoFont }, sourceName: 'smarttiles_de' },
 
     // openfreemap.org
-    openfreemapPositron: { description: window.__('Light, minimal grayscale style ideal for data visualization overlays.'), style: 'https://tiles.openfreemap.org/styles/positron', defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    openfreemapBright: { description: window.__('Bright, colorful vector style with clear roads and readable labels.'), style: 'https://tiles.openfreemap.org/styles/bright', defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    openfreemapLiberty: { description: window.__('Detailed vector map with landmarks, buildings and points of interest.'), style: 'https://tiles.openfreemap.org/styles/liberty', sourceName: 'openmaptiles', defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
+    openfreemapPositron: { description: window.__('Light, minimal grayscale style ideal for data visualization overlays.'), style: 'https://tiles.openfreemap.org/styles/positron', defaults: { font: notoFont } },
+    openfreemapBright: { description: window.__('Bright, colorful vector style with clear roads and readable labels.'), style: 'https://tiles.openfreemap.org/styles/bright', defaults: { font: notoFont } },
+    openfreemapLiberty: { description: window.__('Detailed vector map with landmarks, buildings and points of interest.'), style: 'https://tiles.openfreemap.org/styles/liberty', sourceName: 'openmaptiles', defaults: { font: notoFont } },
 
     // https://github.com/versatiles-org/versatiles-style
     // fonts: https://github.com/versatiles-org/versatiles-fonts
@@ -224,21 +227,21 @@ export function basemaps () {
     versatilesSatelliteStreets: { description: window.__('VersaTiles satellite imagery combined with street and label overlays.'), style: host + '/layers/versatiles_satellite_streets.json' },
 
     // Custom local styles using OpenMapTiles schema
-    artistic: { description: window.__('Custom artistic map style with a unique, hand-crafted color palette.'), style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread',
-      defaults: { labelColor: '#fff', labelShadow: '#6c9681', featureColor: '#6c9681', font: 'SUSE', fontBold: 'SUSE' } },
+    artistic: { description: window.__('Custom artistic map style with a unique, hand-crafted color palette.'), style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread', applyFont: true,
+      defaults: { labelColor: '#fff', labelShadow: '#6c9681', featureColor: '#6c9681', font: 'SUSE', fontBold: 'SUSE', fontItalic: 'SUSE' } },
 
     // Maptiler maps: https://docs.maptiler.com/sdk-js/api/map-styles/#mapstylelist
     // 3D Houses
-    maptilerBasic: { description: window.__('Clean, minimal MapTiler style focused on readability and simplicity.'), style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    maptilerOpenStreetmap: { description: window.__("MapTiler's rendering of OpenStreetMap data in a familiar style."), style: 'https://api.maptiler.com/maps/openstreetmap/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    maptilerBuildings: { description: window.__('Streets map highlighting detailed building footprints and 3D shapes.'), style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    maptilerDataviz: { description: window.__('Neutral MapTiler style designed as a clean backdrop for data visualization.'), style: 'https://api.maptiler.com/maps/dataviz/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    maptilerStreets: { description: window.__('Classic MapTiler street map with roads, labels and points of interest.'), style: host + '/layers/streets.json?key=' + window.gon.map_keys.maptiler, defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    maptilerNoStreets: { description: window.__('MapTiler streets style with road labels removed for a cleaner look.'), style: host + '/layers/nostreets.json?key=' + window.gon.map_keys.maptiler, defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    maptilerSatellite: { description: window.__('High-resolution satellite imagery without any labels or overlays.'), style: 'https://api.maptiler.com/maps/satellite/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    maptilerWinter: { description: window.__('Winter-themed MapTiler style with snow-covered terrain and landscapes.'), style: 'https://api.maptiler.com/maps/winter-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    maptilerBike: { description: window.__('Cycling-focused MapTiler style highlighting bike routes and trails.'), style: 'https://api.maptiler.com/maps/64d03850-97e0-4aaa-bd1d-8287a9792de1/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
-    maptilerHybrid: { description: window.__('Satellite imagery combined with street names and road labels overlay.'), style: 'https://api.maptiler.com/maps/hybrid/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: 'Noto Sans Regular', fontBold: 'Noto Sans Bold' } },
+    maptilerBasic: { description: window.__('Clean, minimal MapTiler style focused on readability and simplicity.'), style: 'https://api.maptiler.com/maps/basic-v2/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
+    maptilerOpenStreetmap: { description: window.__("MapTiler's rendering of OpenStreetMap data in a familiar style."), style: 'https://api.maptiler.com/maps/openstreetmap/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
+    maptilerBuildings: { description: window.__('Streets map highlighting detailed building footprints and 3D shapes.'), style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: notoFont } },
+    maptilerDataviz: { description: window.__('Neutral MapTiler style designed as a clean backdrop for data visualization.'), style: 'https://api.maptiler.com/maps/dataviz/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
+    maptilerStreets: { description: window.__('Classic MapTiler street map with roads, labels and points of interest.'), style: host + '/layers/streets.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
+    maptilerNoStreets: { description: window.__('MapTiler streets style with road labels removed for a cleaner look.'), style: host + '/layers/nostreets.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
+    maptilerSatellite: { description: window.__('High-resolution satellite imagery without any labels or overlays.'), style: 'https://api.maptiler.com/maps/satellite/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
+    maptilerWinter: { description: window.__('Winter-themed MapTiler style with snow-covered terrain and landscapes.'), style: 'https://api.maptiler.com/maps/winter-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: notoFont } },
+    maptilerBike: { description: window.__('Cycling-focused MapTiler style highlighting bike routes and trails.'), style: 'https://api.maptiler.com/maps/64d03850-97e0-4aaa-bd1d-8287a9792de1/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: notoFont } },
+    maptilerHybrid: { description: window.__('Satellite imagery combined with street names and road labels overlay.'), style: 'https://api.maptiler.com/maps/hybrid/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
 
   // static test tile
     test: {
