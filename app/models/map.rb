@@ -14,9 +14,9 @@ class Map
   # implicit_order_column is not supported by mongoid
   default_scope { sorted(:created_at, :asc) }
   scope :listed, -> { where(view_permission: "listed") }
-  scope :ulogger, -> { where(:_id.lt => BSON::ObjectId("000000000000002147483647")) }
-  scope :demo, -> { where(demo: true) }
   scope :tutorial, -> { where(type: "tutorial") }
+  scope :ulogger, -> { where(type: "ulogger") }
+  scope :trains, -> { where(type: "trains") }
   scope :search, ->(term) {
     regex = /#{Regexp.escape(term)}/i
     where(:$or => [ { name: regex }, { description: regex } ])
