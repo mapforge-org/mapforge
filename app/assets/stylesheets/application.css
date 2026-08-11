@@ -66,7 +66,6 @@ body {
   overflow-x: hidden;
   width: 100%;
 
-  /* Maps use Noto Sans for labels */
   font-family: SUSE, system-ui, sans-serif;
 
   --bs-body-font-family: suse, system-ui, sans-serif;

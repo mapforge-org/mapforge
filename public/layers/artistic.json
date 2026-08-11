@@ -31,7 +31,6 @@
       "url": "https://tiles.versatiles.org/assets/sprites/basics/sprites"
     }
   ],
-  "glyphs": "https://tiles.versatiles.org/assets/glyphs/{fontstack}/{range}.pbf",
   "layers": [
     {
       "id": "background",

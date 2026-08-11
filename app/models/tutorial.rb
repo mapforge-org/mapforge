@@ -25,9 +25,10 @@ class Tutorial
   def to_html
     renderer = Redcarpet::Render::HTML.new(
       filter_html: false,
-      hard_wrap: true
+      hard_wrap: true,
+      with_toc_data: true # adds slug ids to headlines, for in-page links
     )
-    markdown_parser = Redcarpet::Markdown.new(renderer, tables: true)
+    markdown_parser = Redcarpet::Markdown.new(renderer, tables: true, fenced_code_blocks: true)
     markdown_parser.render(markdown).html_safe
   end
 end

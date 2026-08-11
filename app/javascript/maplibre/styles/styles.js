@@ -119,6 +119,7 @@ const sortKey = () => ['to-number', styleProp(['user_sort-key', 'sort-key'], def
 const labelColor = () => styleProp(['user_label-color', 'label-color'], defaults.labelColor)
 const labelShadow = () => styleProp(['user_label-shadow', 'label-shadow'], defaults.labelShadow)
 const labelShadowWidth = () => styleProp(['user_label-shadow-width', 'label-shadow-width'], defaults.labelShadowWidth)
+const labelFont = () => ['coalesce', ['get', 'label-font'], ['literal', [defaults.font]]]
 
 const fillColor = () => styleProp(['fill', 'user_fill'], defaults.featureColor)
 const fillOpacity = () => ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaults.extrusionOpacity)]
@@ -361,12 +362,7 @@ function textLayerStyles(mode) {
   const flatMode = mode === 'flat'
   const layerId = flatMode ? 'text-layer-flat' : 'text-layer'
 
-  const textFont = {
-    'text-font': ['coalesce',
-      ['get', 'label-font'],
-      ['literal', [defaults.font]]
-    ]
-  }
+  const textFont = { 'text-font': labelFont() }
 
   // Shared layout properties
   const sharedLayout = {
@@ -755,7 +751,9 @@ export function styles () {
         maxZoomFilter()],
       layout: {
         'symbol-placement': 'line',
-        'text-field': styleProp(['user_label', 'label']),
+        // font goes in a 'format' section: the layout property itself rejects
+        // data-driven expressions ('output values must be literals')
+        'text-field': ['format', styleProp(['user_label', 'label']), { 'text-font': labelFont() }],
         'text-font': [defaults.font],
         'text-size': defaults.lineLabelSize,
         'text-max-angle': defaults.lineLabelMaxAngle,

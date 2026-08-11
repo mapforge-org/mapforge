@@ -12,7 +12,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `label`: Label to show on the map (no emoji support)
 * `label-title`: heading line, drawn above `label` at 1.3 times `label-size` (works without a `label`, and takes the same color, font, anchor and offset as the label)
 * `label-size`: font size (default 16, max. 254)
-* `label-font`: label font array (default depends on base map, like `['noto_sans_regular']`)
+* `label-font`: label font array (default depends on base map, like `["noto_sans_regular"]`), see *[Label fonts](#label-fonts)* below
 * `label-color`: font color in format "#000000" (default)
 * `label-justify`: alignment: auto (default), left, center, right
 * `label-max-width`: line width (default 10)
@@ -70,3 +70,20 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-base`: ground distance in m (default: 0)
 * `fill-extrusion-opacity`: opacity of the extrusion, rounded to nearest 0.1 (defaults to `fill-opacity`, else 0.9)
+
+### Label fonts
+
+`label-font` takes an array of font names. Names are looked up in two places:
+
+1. **The glyph server of the base map.** Every base map ships a fixed set of fonts, so the valid names differ per map: `noto_sans_regular` / `noto_sans_bold` and 16 other families on the VersaTiles based maps ([full list](https://github.com/versatiles-org/versatiles-fonts/tree/main/fonts)), `Noto Sans Regular` and friends on the MapTiler and OpenFreeMap based maps.
+2. **Web fonts and device fonts.** If the name is not on the glyph server, the label is rendered in the browser instead, from any font the browser can resolve by CSS name. That covers the web fonts Mapforge loads on every page — `SUSE`, `Bree Serif`, `Lobster Two` — and the fonts installed on the device of the viewer.
+
+#### Weight and style
+
+There is no separate weight property. The **first** entry of the array decides weight and style, the entries after it are the family the browser actually resolves:
+
+```json
+{ "label": "Hello", "label-font": ["SUSE Bold", "SUSE"] }
+```
+
+Recognized keywords in that first entry: `thin` 100, `extra light` 200, `light` 300, `regular` 400, `medium` 500, `semibold` 600, `bold` 700, `extra bold` 800, `heavy` 900, plus `italic` and `oblique`. `"SUSE Light Italic", "SUSE"` renders SUSE at weight 300, italic.
