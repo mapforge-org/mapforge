@@ -65,7 +65,6 @@ body {
   overscroll-behavior: none; */
   overflow-x: hidden;
   width: 100%;
-
   font-family: SUSE, system-ui, sans-serif;
 
   --bs-body-font-family: suse, system-ui, sans-serif;
