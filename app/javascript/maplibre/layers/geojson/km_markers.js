@@ -6,8 +6,20 @@ import { map, removeStyleLayers } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
 import { setSource } from 'maplibre/styles/styles'
 
-function createKmMarkerImage (color) {
-  const imageName = `km-marker-circle-${color.replace('#', '')}`
+// The source id is part of the image name so that one layer's render never evicts another's
+const imagePrefix = (sourceId) => `km-marker-circle-${sourceId}-`
+
+// Label color with contrast to the line color
+function kmMarkerTextColor (color) {
+  const hex = /^#(\w\w)(\w\w)(\w\w)$/.exec(color)
+  if (!hex) { return '#ffffff' }
+  const [ r, g, b ] = hex.slice(1).map(c => parseInt(c, 16))
+  return r * 0.299 + g * 0.587 + b * 0.114 > 128 ? '#000000' : '#ffffff'
+}
+
+// Create image instead of background circle + number, so that it overlays cleanly with other markers
+function createKmMarkerImage (color, sourceId) {
+  const imageName = `${imagePrefix(sourceId)}${color.replace('#', '')}`
 
   if (!map.hasImage(imageName)) {
     const size = 32
@@ -39,6 +51,19 @@ function createKmMarkerImage (color) {
   return imageName
 }
 
+// Every distinct line color adds a sprite image, and one drag on the color picker walks through
+// dozens of them, so the images this source stopped using are dropped after a render.
+function pruneMarkerImages (sourceId, keep) {
+  map.listImages().forEach(name => {
+    if (name.startsWith(imagePrefix(sourceId)) && !keep.has(name)) { map.removeImage(name) }
+  })
+}
+
+// A removed layer renders no km markers again, so its images go with it.
+export function cleanupKmMarkerImages (sourceId) {
+  pruneMarkerImages(sourceId, new Set())
+}
+
 // Whether a feature currently contributes km markers, i.e. needs renderKmMarkers to run.
 export function hasKmMarkers (feature) {
   return feature.geometry.type === 'LineString' &&
@@ -48,18 +73,21 @@ export function hasKmMarkers (feature) {
 
 export function renderKmMarkers (features, sourceId) {
   let kmMarkerFeatures = []
+  const imageNames = new Set()
   features.filter(hasKmMarkers).forEach((f, index) => {
 
     const line = lineString(f.geometry.coordinates)
     const distance = length(line, { units: 'kilometers' })
     const markerColor = f.properties['stroke'] || defaults.featureColor
-    const markerImageName = createKmMarkerImage(markerColor)
+    const markerImageName = createKmMarkerImage(markerColor, sourceId)
+    imageNames.add(markerImageName)
 
     let interval = 1
     for (let i = 0; i < Math.ceil(distance) + interval; i += interval) {
       const point = along(line, i, { units: 'kilometers' })
       point.properties['marker-color'] = markerColor
       point.properties['marker-image'] = markerImageName
+      point.properties['km-text-color'] = kmMarkerTextColor(markerColor)
       point.properties['marker-size'] = 11
       point.properties['marker-opacity'] = 1
       point.properties['km'] = i
@@ -86,6 +114,7 @@ export function renderKmMarkers (features, sourceId) {
 
   const markerFeatures = { type: 'FeatureCollection', features: kmMarkerFeatures }
   map.getSource(sourceId).setData(markerFeatures)
+  pruneMarkerImages(sourceId, imageNames)
 }
 
 export function initializeKmMarkerStyles (sourceId) {
@@ -144,7 +173,7 @@ function kmMarkerStyles () {
       'symbol-sort-key': ['-', 0, ['*', ['get', 'feature-order'], 100]]
     },
     paint: {
-      'text-color': '#ffffff'
+      'text-color': ['coalesce', ['get', 'km-text-color'], '#ffffff']
     }
   })
 
@@ -174,7 +203,7 @@ function makeKmMarkerLayer (divisor, minzoom, maxzoom = 24) {
       'symbol-sort-key': ['-', 10, ['*', ['get', 'feature-order'], 100]]
     },
     paint: {
-      'text-color': '#ffffff'
+      'text-color': ['coalesce', ['get', 'km-text-color'], '#ffffff']
     }
   }
 }

@@ -2,6 +2,7 @@ import { buffer } from "@turf/buffer"
 import { draw, select } from 'maplibre/edit'
 import {
   applyLevelFilter as applyKmMarkerLevelFilter,
+  cleanupKmMarkerImages,
   hasKmMarkers,
   initializeKmMarkerStyles,
   renderKmMarkers
@@ -85,6 +86,7 @@ export class GeoJSONLayer extends Layer {
 
   cleanup() {
     super.cleanup()
+    cleanupKmMarkerImages(this.kmMarkerSourceId)
     removeGeoJSONSource(this.kmMarkerSourceId)
     removeGeoJSONSource(this.routeExtrasSourceId)
     removeGeoJSONSource(this.extrusionSourceId)
@@ -230,9 +232,9 @@ export class GeoJSONLayer extends Layer {
   // Surgically update a single existing feature (and, when asked, its companion geometry)
   // without a full render(). The route-extras and km-marker companion sources are rebuilt
   // from ALL features and run turf ops, so they are ONLY refreshed when the caller opts in.
-  // A plain property edit (color, height, title, …) doesn't affect those companions, so it
-  // skips them and stays instant. Callers that change geometry or toggle a companion on/off
-  // pass the matching flag.
+  // Most property edits (height, title, …) don't affect those companions, so they skip them
+  // and stay instant. Callers that change geometry, toggle a companion on/off, or change the
+  // stroke color (km markers are drawn in it) pass the matching flag.
   // Options:
   // - resetDraw: re-sync the MapboxDraw overlay (geometry edits in draw); no-op otherwise.
   // - refreshRouteExtras: rebuild the route-extras companion source (geometry change / toggle).

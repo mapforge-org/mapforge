@@ -7,6 +7,7 @@ import { syncStepperValues } from 'helpers/stepper'
 import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
 import { confirmImageLocation, featureIcon, featureImage, getFeatureTypeName, uploadImageToFeature } from 'maplibre/feature'
+import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
 import { defaults } from 'maplibre/styles/defaults'
 import { addUndoState } from 'maplibre/undo'
@@ -93,7 +94,7 @@ export default class extends Controller {
   }
 
   // Generic helper: read input, set feature property + draw property, re-render
-  updateDrawProperty (inputSelector, propertyName, { displaySelector, displayFormat, valueTransform, useChecked } = {}) {
+  updateDrawProperty (inputSelector, propertyName, { displaySelector, displayFormat, valueTransform, useChecked, renderOptions } = {}) {
     const feature = this.getEditFeature()
     let value = useChecked
       ? document.querySelector(inputSelector).checked
@@ -108,7 +109,7 @@ export default class extends Controller {
     if (draw && draw.get(this.featureIdValue)) {
       draw.setFeatureProperty(this.featureIdValue, propertyName, value)
     }
-    this.renderFeature()
+    this.renderFeature(renderOptions)
     syncStepperValues()
   }
 
@@ -141,8 +142,12 @@ export default class extends Controller {
     })
   }
 
+  // km markers are drawn in the line's stroke color, so they have to be rebuilt with it
   updateStrokeColor () {
-    this.updateDrawProperty('#stroke-color', 'stroke')
+    const feature = this.getEditFeature()
+    this.updateDrawProperty('#stroke-color', 'stroke', {
+      renderOptions: { refreshKmMarkers: hasKmMarkers(feature) }
+    })
   }
 
   updateStrokeColorMode () {
@@ -171,7 +176,7 @@ export default class extends Controller {
       document.querySelector('#stroke-color').removeAttribute('disabled')
     }
     feature.properties.stroke = color
-    this.renderFeature()
+    this.renderFeature({ refreshKmMarkers: hasKmMarkers(feature) })
   }
 
   updateFillColor () {
@@ -317,8 +322,9 @@ export default class extends Controller {
   }
 
   // Apply the edited feature to the map with a fast surgical single-feature update (no full
-  // re-render). Plain property edits pass no options and skip the (expensive) companion
-  // rebuilds; toggles pass { refreshRouteExtras } / { refreshKmMarkers }. See applyFeatureUpdate.
+  // re-render). Most property edits pass no options and skip the (expensive) companion
+  // rebuilds; toggles and stroke color pass { refreshRouteExtras } / { refreshKmMarkers }.
+  // See applyFeatureUpdate.
   renderFeature (options = {}) {
     applyFeatureUpdate(this.getEditFeature(), options)
   }
