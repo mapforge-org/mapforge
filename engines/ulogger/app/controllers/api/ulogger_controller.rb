@@ -31,8 +31,7 @@ module Ulogger
       else
         session["track_name"] = params[:track]
         @map = Map.new(private_id: random_map_id, name: params[:track],
-          view_permission: "link",
-          edit_permission: "link")
+          type: 'ulogger', view_permission: "link", edit_permission: "link")
         @map.add_owner(@user) if @user
         @map.save!
       end
@@ -174,9 +173,9 @@ module Ulogger
       SecureRandom.rand(1..JAVA_MAXINT)
     end
 
+    # random color, but dark enough to have white text on it
     def string_to_color(str)
-      hex = Digest::MD5.hexdigest(str)
-      "##{hex[0, 6]}"
+      "#%02x%02x%02x" % Digest::MD5.hexdigest(str).scan(/\h\h/).first(3).map { |c| c.to_i(16) * 0x70 / 255 }
     end
   end
 end
