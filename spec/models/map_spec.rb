@@ -126,6 +126,18 @@ describe Map do
         map.update(base_map: Map::MAPTILER_MAPS.first)
         expect(map.properties[:base_map]).to eq "test"
       end
+
+      it "returns default_base_map when protomaps key is not set" do
+        map.update(base_map: Map::PROTOMAPS_MAPS.first)
+        expect(map.properties[:base_map]).to eq "test"
+      end
+
+      it "returns the protomaps map when protomaps key is set" do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("PROTOMAPS_KEY").and_return("secret")
+        map.update(base_map: Map::PROTOMAPS_MAPS.first)
+        expect(map.properties[:base_map]).to eq Map::PROTOMAPS_MAPS.first
+      end
     end
   end
 

@@ -115,6 +115,7 @@ podman run ... -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb 
 - `OPENROUTESERVICE_KEY` — API key for routing features with [openrouteservice.org](https://openrouteservice.org/)
 - `INDOOREQUAL_KEY` — API key for [Indoorequal](https://indoorequal.com/)
 - `THUNDERFOREST_KEY` — API key for [Thunderforest](https://www.thunderforest.com/) maps
+- `PROTOMAPS_KEY` — API key for [Protomaps](https://protomaps.com/api) maps
 - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — GitHub OAuth credentials
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth credentials
 - `OSM_CLIENT_ID`, `OSM_CLIENT_SECRET` — OSM OAuth credentials

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 * Update to [Maplibre GL JS 6.1](https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.1.0)
 * German translations for Frontpage and Map interface
 * Search backend switched to [photon.komoot.io](https://photon.komoot.io/)
+* Added [protomaps](https://protomaps.com/) base map
 
 ## 2026-07
 
