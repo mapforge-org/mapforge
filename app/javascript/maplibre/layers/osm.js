@@ -6,6 +6,8 @@ import { overpassDescription } from 'maplibre/layers/overpass/overpass'
 import { map } from 'maplibre/map'
 
 const OSM_ELEMENT_TYPES = { 1: 'node', 2: 'way', 3: 'relation' }
+// Layer classes in protomaps/basemaps that call FeatureMerge in postProcess
+const MERGING_SOURCE_LAYERS = ['roads', 'water', 'earth', 'landuse', 'buildings', 'landcover', 'boundaries']
 const elementCache = new Map()
 
 /**
@@ -14,7 +16,18 @@ const elementCache = new Map()
  * vector tile feature id: (type << 44) | osm_id. See protomaps/basemaps FeatureId.java.
  */
 export class OsmLayer extends BasemapLayer {
+  /**
+   * True for tile features that planetiler built from several OSM elements, for example all
+   * streets of an area. FeatureMerge.makeMergedId clears the last decimal digit of the tile
+   * feature id to mark them, see https://github.com/onthegomap/planetiler/pull/1397
+   */
+  merged(feature) {
+    return feature.id % 10 === 0 && MERGING_SOURCE_LAYERS.includes(feature.sourceLayer)
+  }
+
   osmId(feature) {
+    if (this.merged(feature)) { return }
+
     const type = OSM_ELEMENT_TYPES[Math.floor(feature.id / 2 ** 44)]
     if (!type) { return }
 
