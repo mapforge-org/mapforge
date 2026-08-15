@@ -49,7 +49,8 @@ export let elevationSource = {
 }
 
 // Regular font of the openmaptiles/maptiler glyph endpoints
-const notoFont = 'Noto Sans Regular'
+const notoFont = 'Noto Sans Bold'
+const versatilesFont = 'noto_sans_bold'
 
 // A basemap can override any feature style default via 'defaults' (styles.js) and
 // 'editDefaults' (edit_styles.js). See styles/defaults.js for the available keys.
@@ -221,13 +222,13 @@ export function basemaps () {
 
     // https://github.com/versatiles-org/versatiles-style
     // fonts: https://github.com/versatiles-org/versatiles-fonts
-    versatilesColorful: { description: window.__('Colorful vector map with vivid colors and a clear road hierarchy.'), style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', sourceName: 'versatiles-shortbread' },
-    versatilesGraybeard: { description: window.__('Muted, monochrome vector style for a clean, distraction-free look.'), style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', sourceName: 'versatiles-shortbread' },
-    versatilesGraybeardSnow: { description: window.__('Muted Graybeard style with an added wintery, snow-covered terrain effect.'), style: host + '/layers/graybeard_snow.json', sourceName: 'versatiles-shortbread' },
-    versatilesNeutrino: { description: window.__('Minimalist, neutral vector style with subtle colors and light labels.'), style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json' },
-    versatilesEclipse: { description: window.__('Dark mode vector map style, easy on the eyes for night-time viewing.'), style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', defaults: { labelColor: '#fff', labelShadow: '#000' } },
+    versatilesColorful: { description: window.__('Colorful vector map with vivid colors and a clear road hierarchy.'), style: 'https://tiles.versatiles.org/assets/styles/colorful/style.json', sourceName: 'versatiles-shortbread', defaults: { font: versatilesFont } },
+    versatilesGraybeard: { description: window.__('Muted, monochrome vector style for a clean, distraction-free look.'), style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', sourceName: 'versatiles-shortbread', defaults: { font: versatilesFont } },
+    versatilesGraybeardSnow: { description: window.__('Muted Graybeard style with an added wintery, snow-covered terrain effect.'), style: host + '/layers/graybeard_snow.json', sourceName: 'versatiles-shortbread', defaults: { font: versatilesFont } },
+    versatilesNeutrino: { description: window.__('Minimalist, neutral vector style with subtle colors and light labels.'), style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', defaults: { font: versatilesFont } },
+    versatilesEclipse: { description: window.__('Dark mode vector map style, easy on the eyes for night-time viewing.'), style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', defaults: { labelColor: '#fff', labelShadow: '#000', font: versatilesFont } },
     // VersaTiles satellite imagery (alpha) composited with OpenFreeMap street/label overlay
-    versatilesSatelliteStreets: { description: window.__('VersaTiles satellite imagery combined with street and label overlays.'), style: host + '/layers/versatiles_satellite_streets.json' },
+    versatilesSatelliteStreets: { description: window.__('VersaTiles satellite imagery combined with street and label overlays.'), style: host + '/layers/versatiles_satellite_streets.json', defaults: { font: versatilesFont } },
 
     // Custom local styles using OpenMapTiles schema
     artistic: { description: window.__('Custom artistic map style with a unique, hand-crafted color palette.'), style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread', applyFont: true,
