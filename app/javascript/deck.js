@@ -1,5 +1,6 @@
 import { hexToRgb } from 'helpers/functions'
 import { mapProperties, initializeMaplibreProperties } from 'maplibre/map'
+import { basemaps } from 'maplibre/styles/basemaps'
 import * as maplibregl from 'maplibre-gl'
 
 // eslint expects variables to get imported, but we load the full lib in header
@@ -21,7 +22,7 @@ async function init () {
     container: 'deck-map', // container ID
     // style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
     // style: '/layers/nostreets.json?key=' + window.gon.map_keys.maptiler,
-    style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json',
+    style: (basemaps()[mapProperties.base_map] || basemaps().versatilesGraybeard).style,
     // center: [8.271366455078127, 50.013330503465454],
     center: mapProperties.center || mapProperties.default_center,
     zoom: mapProperties.zoom,

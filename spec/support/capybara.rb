@@ -76,7 +76,11 @@ Capybara.register_driver(:cuprite) do |app|
     process_timeout: 30,
     js_errors: true,
     logger: StringIO.new,
+    # Specs must not depend on the network. Chrome resolves no host but the Capybara server,
+    # so a slow CDN cannot time out a spec. CapybaraMock intercepts before name resolution,
+    # so stub_request still answers external urls. See spec/features/network_isolation_spec.rb
     browser_options: { "no-sandbox": nil,
+                      "host-resolver-rules": "MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1",
                       "download.default_directory": Capybara.save_path })
 end
 
