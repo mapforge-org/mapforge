@@ -56,10 +56,10 @@ class Map
 
   # Only BASE_MAPS are available in the UI
   BASE_MAPS = [ "versatilesColorful", "satelliteStreets", "openTopoTiles",
-    "openfreemapLiberty", "versatilesGraybeard", "versatilesEclipse",
-    "stamenWatercolorTiles", "cyclosmTiles", "basemapWorld" ]
+    "openfreemapLiberty", "protomapsLight", "versatilesGraybeard", "versatilesEclipse",
+    "stamenWatercolorTiles", "cyclosmTiles", "basemapWorld", "artistic" ]
   # App admins can also select from these maps
-  EXPERIMENTAL_MAPS = [ "stamenTonerTiles", "openCycleMap", "versatilesGraybeardSnow", "thunderforestContrast", "artistic", "versatilesSatelliteStreets" ]
+  EXPERIMENTAL_MAPS = [ "stamenTonerTiles", "thunderforestCycle", "versatilesGraybeardSnow", "thunderforestContrast", "versatilesSatelliteStreets" ]
 
   STADIA_MAPS = [ "stamenTonerTiles", "stamenWatercolorTiles" ]
   OPENFREE_MAPS = [ "openfreemapPositron", "openfreemapBright", "openfreemapLiberty" ]
@@ -67,8 +67,9 @@ class Map
   MAPTILER_MAPS = [ "maptilerBuildings", "maptilerHybrid", "maptilerDataviz",
     "maptilerStreets", "maptilerNoStreets", "maptilerWinter",
     "maptilerBike", "maptilerBasic" ]
+  PROTOMAPS_MAPS = [ "protomapsLight" ]
   OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets", "osmRasterTiles",
-    "openCycleMap", "thunderforestContrast" ]
+    "thunderforestCycle", "thunderforestContrast" ]
 
   DEFAULT_CENTER = [ 11.077, 49.447 ].freeze
   DEFAULT_ZOOM = 10
@@ -174,6 +175,7 @@ class Map
      maptiler: ENV["MAPTILER_KEY"],
      openrouteservice: ENV["OPENROUTESERVICE_KEY"],
      thunderforest: ENV["THUNDERFOREST_KEY"],
+     protomaps: ENV["PROTOMAPS_KEY"],
      indoorequal: ENV["INDOOREQUAL_KEY"] }
   end
 
@@ -328,6 +330,10 @@ class Map
     if MAPTILER_MAPS.include?(base_map)
       return base_map if ENV["MAPTILER_KEY"].present?
       logger.warn("Cannot use maptiler map #{base_map} without MAPTILER_KEY. Falling back to: #{default_base_map}")
+      return default_base_map
+    elsif PROTOMAPS_MAPS.include?(base_map)
+      return base_map if ENV["PROTOMAPS_KEY"].present?
+      logger.warn("Cannot use protomaps map #{base_map} without PROTOMAPS_KEY. Falling back to: #{default_base_map}")
       return default_base_map
     elsif (BASE_MAPS + OPENFREE_MAPS + VERSATILES_MAPS + STADIA_MAPS + OTHER_MAPS).include?(base_map) || base_map == "test"
       return base_map

@@ -168,7 +168,7 @@ export function basemaps () {
       }
     },
     // https://manage.thunderforest.com/dashboard
-    openCycleMap: {
+    thunderforestCycle: {
       description: window.__('Thunderforest Cycle map with elevation contours and cycling infrastructure.'),
       style: {
         version: 8,
@@ -215,6 +215,9 @@ export function basemaps () {
     openfreemapPositron: { description: window.__('Light, minimal grayscale style ideal for data visualization overlays.'), style: 'https://tiles.openfreemap.org/styles/positron', defaults: { font: notoFont } },
     openfreemapBright: { description: window.__('Bright, colorful vector style with clear roads and readable labels.'), style: 'https://tiles.openfreemap.org/styles/bright', defaults: { font: notoFont } },
     openfreemapLiberty: { description: window.__('Detailed vector map with landmarks, buildings and points of interest.'), style: 'https://tiles.openfreemap.org/styles/liberty', sourceName: 'openmaptiles', defaults: { font: notoFont } },
+
+    // https://protomaps.com/api, themes: light, dark, white, grayscale, black
+    protomapsLight: { description: window.__('Light Protomaps vector style with soft colors and clear labels.'), style: 'https://api.protomaps.com/styles/v5/light/en.json?key=' + window.gon.map_keys.protomaps, sourceName: 'protomaps', defaults: { font: notoFont } },
 
     // https://github.com/versatiles-org/versatiles-style
     // fonts: https://github.com/versatiles-org/versatiles-fonts
