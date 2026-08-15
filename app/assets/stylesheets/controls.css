@@ -240,6 +240,11 @@
   outline: none !important;
 }
 
+/* the geocoder input is type=search, the geocoder brings its own clear button */
+.maplibregl-ctrl-geocoder--input::-webkit-search-cancel-button { /* stylelint-disable-line */
+  appearance: none;
+}
+
 .maplibregl-ctrl-geocoder .maplibregl-ctrl-geocoder--pin-right { /* stylelint-disable-line */
   top: 0.4rem !important;
   padding: 0.5rem 2rem !important;
