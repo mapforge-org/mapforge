@@ -205,7 +205,7 @@ export function basemaps () {
         glyphs: versatilesGlyphs
       }
     },
-    satelliteStreets: { description: window.__('High-resolution satellite imagery overlaid with streets and place labels.'), style: host + '/layers/satellite_with_streets.json', defaults: { labelColor: '#fff', labelShadow: '#000' } },
+    satelliteStreets: { description: window.__('High-resolution satellite imagery overlaid with streets and place labels.'), style: host + '/layers/satellite_with_streets.json', defaults: { labelColor: '#fff', labelShadow: '#000', font: versatilesFont } },
 
     // basemap.de
     basemapWorld: {
