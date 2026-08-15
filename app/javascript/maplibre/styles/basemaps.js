@@ -234,7 +234,7 @@ export function basemaps () {
     artistic: { description: window.__('Custom artistic map style with a unique, hand-crafted color palette.'), style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread', applyFont: true,
       // SUSE is not served by any glyph endpoint, maplibre renders it locally from the @font-face in fonts.css
       // Weight/style come from the first name of the stack ('bold' -> 700, 'italic'), second name is the family
-      defaults: { labelColor: '#fff', labelShadow: '#6c9681', featureColor: '#6c9681', font: 'SUSE', fontBold: 'SUSE Bold, SUSE', fontItalic: 'SUSE Italic, SUSE' } },
+      defaults: { labelColor: '#fff', labelShadow: '#6c9681', featureColor: '#6c9681', font: 'SUSE Bold, SUSE', fontBold: 'SUSE Bold, SUSE', fontItalic: 'SUSE Italic, SUSE' } },
 
     // Maptiler maps: https://docs.maptiler.com/sdk-js/api/map-styles/#mapstylelist
     // 3D Houses

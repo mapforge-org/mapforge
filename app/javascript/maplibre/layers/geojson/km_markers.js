@@ -14,7 +14,7 @@ function kmMarkerTextColor (color) {
   const hex = /^#(\w\w)(\w\w)(\w\w)$/.exec(color)
   if (!hex) { return '#ffffff' }
   const [ r, g, b ] = hex.slice(1).map(c => parseInt(c, 16))
-  return r * 0.299 + g * 0.587 + b * 0.114 > 128 ? '#000000' : '#ffffff'
+  return r * 0.299 + g * 0.587 + b * 0.114 > 140 ? '#000000' : '#ffffff'
 }
 
 // Create image instead of background circle + number, so that it overlays cleanly with other markers

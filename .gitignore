@@ -36,6 +36,10 @@
 # npm
 /node_modules/
 
+# local AI agent instructions and config
+/CLAUDE.local.md
+/.claude/
+
 # test artifacts
 capybara-*
 coverage/
