@@ -14,7 +14,7 @@ import { addGeoJSONSource, frontFeature, map } from 'maplibre/map'
 
 // Source prefixes whose features are selectable via click. Excludes basemap
 // vector features and raster layers (which handle their own clicks).
-const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overpass-source-', 'wikipedia-source-',
+export const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overpass-source-', 'wikipedia-source-',
   'search-source-']
 
 /**
@@ -30,6 +30,8 @@ const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overpass-sou
  * - get sourceId(): string - Override for custom source naming convention
  * - setupEventHandlers(): void - Override to customize click/mousemove behavior or disable handlers
  * - cleanup(): void - Override to add custom cleanup, but call super.cleanup()
+ * - description(feature): Promise<string> - Implement to load the details modal description on
+ *   demand. The modal shows a loading message until the promise resolves.
  */
 export class Layer {
   constructor(layer) {

@@ -196,7 +196,10 @@ async function featureDescription (feature) {
   } else if (feature?.properties?.wikipediaId) {
     desc = wikipediaFeatureDescription(feature)
   } else {
-    desc = f.sanitizeMarkdown(marked(feature?.properties?.desc || ''))
+    // layers can load their description on demand, the modal shows a loading message meanwhile
+    const layer = getLayer(feature.id)
+    const markdown = layer?.description ? await layer.description(feature) : feature?.properties?.desc
+    desc = f.sanitizeMarkdown(marked(markdown || ''))
   }
   return desc
 }

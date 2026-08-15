@@ -360,6 +360,10 @@ export default class extends Controller {
     this.createLayer('basemap', 'Basemap layer')
   }
 
+  createOsmLayer(_event) {
+    this.createLayer('osm', 'OSM layer')
+  }
+
   createIndoorLayer(_event) {
     this.createLayer('indoor', 'Indoor map')
   }

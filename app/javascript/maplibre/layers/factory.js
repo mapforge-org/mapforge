@@ -2,6 +2,7 @@ import { BasemapLayer } from 'maplibre/layers/basemap'
 import { GeoJSONLayer } from 'maplibre/layers/geojson'
 import { IndoorLayer } from 'maplibre/layers/indoor/indoor'
 import { Layer } from 'maplibre/layers/layer'
+import { OsmLayer } from 'maplibre/layers/osm'
 import { OverpassLayer } from 'maplibre/layers/overpass/overpass'
 import { RasterLayer } from 'maplibre/layers/raster/raster'
 import { WikipediaLayer } from 'maplibre/layers/wikipedia'
@@ -11,6 +12,7 @@ const layerTypes = {
   overpass: OverpassLayer,
   wikipedia: WikipediaLayer,
   basemap: BasemapLayer,
+  osm: OsmLayer,
   raster: RasterLayer,
   indoor: IndoorLayer
 }

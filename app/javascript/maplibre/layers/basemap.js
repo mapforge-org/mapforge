@@ -76,42 +76,68 @@ export class BasemapLayer extends Layer {
   }
 
   /**
+   * Subclasses can restrict which features are highlighted.
+   */
+  highlightable(_feature) { return true }
+
+  /**
+   * Returns the highlightable basemap vector tile features at a point, top-most first.
+   */
+  basemapFeaturesAtPoint(point) {
+    const basemapSource = basemaps()[mapProperties.base_map].sourceName
+    const mapLayers = map.getStyle().layers
+    const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
+    return map.queryRenderedFeatures(point, { layers: queryLayerIds })
+      .filter(feature => this.highlightable(feature))
+  }
+
+  /**
+   * Converts a vector tile feature into a geojson feature for this layer's own source.
+   * Subclasses can override to add properties.
+   */
+  toGeoJSON(feature) {
+    const geojsonFeature = {
+      type: 'Feature',
+      geometry: feature.geometry,
+      properties: { ...feature.properties }
+    }
+    geojsonFeature.id = geojsonFeature.properties.id = functions.featureId()
+    geojsonFeature.properties.desc = overpassDescription(geojsonFeature.properties)
+    const height = geojsonFeature.properties['hoehe'] || geojsonFeature.properties['render_height']
+    if (height) {
+      geojsonFeature.properties['fill-extrusion-height'] = height
+    }
+    return geojsonFeature
+  }
+
+  /**
+   * Renders a single vector tile feature into this layer's source.
+   * @returns {object} the rendered geojson feature
+   */
+  renderHighlight(feature) {
+    const geojsonFeature = this.toGeoJSON(feature)
+    this.geojson.features = [geojsonFeature]
+    map.getSource(this.sourceId).setData(this.geojson, false)
+    return geojsonFeature
+  }
+
+  /**
    * Handles feature highlighting at a given point (used by both mouse and touch).
    */
   highlightFeatureAtPoint(point) {
     if (stickyFeatureHighlight && highlightedFeatureId) { return }
     if (document.querySelector('.show > .map-modal')) { return }
 
-    const basemapSource = basemaps()[mapProperties.base_map].sourceName
-    const mapLayers = map.getStyle().layers
-    const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
-    const features = map.queryRenderedFeatures(point, { layers: queryLayerIds})
+    const features = this.basemapFeaturesAtPoint(point)
+    if (!features.length) { return }
 
-    if (features.length) {
-      const feature = features[0]
+    const feature = features[0]
+    // exit early when moving over same feature
+    if (JSON.stringify(feature.geometry) === JSON.stringify(this?.selectedFeature?.geometry)) { return }
+    this.selectedFeature = feature
+    hideContextMenu()
 
-      // exit early when moving over same feature
-      if (JSON.stringify(feature.geometry) === JSON.stringify(this?.selectedFeature?.geometry)) { return }
-      this.selectedFeature = feature
-      hideContextMenu()
-
-      // console.log('Hovering features: ', features)
-
-      const geojsonFeature = {
-        type: 'Feature',
-        geometry: feature.geometry,
-        properties: { ...feature.properties }
-      }
-      geojsonFeature.id = geojsonFeature.properties.id = functions.featureId()
-      geojsonFeature.properties.desc = overpassDescription(geojsonFeature.properties)
-      const height = geojsonFeature.properties['hoehe'] || geojsonFeature.properties['render_height']
-      if (height) {
-        geojsonFeature.properties['fill-extrusion-height'] = height
-      }
-
-      this.geojson.features = [geojsonFeature]
-      map.getSource(this.sourceId).setData(this.geojson, false)
-    }
+    this.renderHighlight(feature)
   }
 
   /**

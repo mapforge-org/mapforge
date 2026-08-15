@@ -109,6 +109,12 @@
                   data: { action: "click->map--layers#createBaseMapLayer" }
                 }
                   = _("Basemap Info (experimental)")
+              %li
+                %button.dropdown-item{
+                  type: "button",
+                  data: { action: "click->map--layers#createOsmLayer" }
+                }
+                  = _("OSM Info (experimental)")
 
       - # used by controls/shared.js
       .hidden
