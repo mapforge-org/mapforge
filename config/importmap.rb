@@ -27,10 +27,10 @@ pin_all_from "vendor/javascript/mapbox-gl-draw-paint-mode",
   under: "mapbox-gl-draw-paint-mode", preload: false
 
 # https://github.com/maplibre/maplibre-gl-js
-# From https://cdn.jsdelivr.net/npm/maplibre-gl@6.3.0/dist/
+# From https://cdn.jsdelivr.net/npm/maplibre-gl@6.4.0/dist/
 # update all of maplibre-gl.mjs (renamed to maplibre-gl.js) + maplibre-gl-shared.mjs + maplibre-gl-worker.mjs
 # preloaded so the browser fetches during head parse
-pin "maplibre-gl" # v6.3.0
+pin "maplibre-gl" # v6.4.0
 # https://github.com/mapbox/mapbox-gl-rtl-text
 # Not imported as a module, only resolved to a URL and handed to setRTLTextPlugin
 pin "mapbox-gl-rtl-text", preload: false # @0.2.3
