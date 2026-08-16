@@ -71,6 +71,11 @@ export async function showElevationChart (feature) {
   filterToViewport(active, allLabels, allValues, allCoords, allSteepness)
   showElevationStats(active.values)
 
+  // Distance axis can be flipped to count down to the destination (click the x axis)
+  const totalDistance = allLabels[allLabels.length - 1]
+  let countdown = false
+  const displayDistance = (d) => toDisplayUnit(countdown ? totalDistance - d : d)
+
   // GPS position indicator plugin
   const gpsPlugin = {
     id: 'gpsPosition',
@@ -146,7 +151,7 @@ export async function showElevationChart (feature) {
             font: { size: 12 },
             padding: 10,
             maxTicksLimit: 10,
-            callback: (_value, index) => toDisplayUnit(active.labels[index])
+            callback: (_value, index) => displayDistance(active.labels[index])
           }
         },
         y: {
@@ -227,7 +232,7 @@ export async function showElevationChart (feature) {
     }
 
     const i = points[0].index
-    const distance = toDisplayUnit(active.labels[i])
+    const distance = displayDistance(active.labels[i])
     const elevation = active.values[i].toFixed(0)
     const grade = i === 0 ? 0 : computeGrade(active.values, active.labels, i)
 
@@ -263,6 +268,12 @@ export async function showElevationChart (feature) {
   // destroy this chart mid-handler)
   chart.canvas.addEventListener('click', (event) => {
     event.stopPropagation()
+    // Click on the x axis flips the distance labels to a countdown to the destination
+    if (event.offsetY > chart.scales.x.top) {
+      countdown = !countdown
+      chart.update('none')
+      return
+    }
     const points = chart.getElementsAtEventForMode(event, 'index', { intersect: false }, true)
     if (points.length === 0) return
     const coord = active.coords[points[0].index]
