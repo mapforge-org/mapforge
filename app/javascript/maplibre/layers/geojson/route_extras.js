@@ -1,11 +1,16 @@
-import { buffer } from "@turf/buffer"
 import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import { withLevelFilter } from 'maplibre/controls/levels'
+import { buildLineExtrusion } from 'maplibre/layers/geojson/extrusion'
 import { map } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
 
 const labelsBaseFilter = ['all', ['has', 'route-extras-label'], [">=", ["zoom"], 10]]
+
+// Copied from the parent route onto each coloured segment. 'stroke' is per segment, and
+// 'fill-extrusion-color' is left out on purpose: the colour of the segment must win.
+const inheritedProps = ['stroke-width', 'fill-extrusion-height', 'fill-extrusion-base',
+  'fill-extrusion-width', 'fill-extrusion-opacity', 'fill-opacity', 'min-zoom', 'max-zoom', 'level']
 
 // Steepness value to percentage range mapping for labels
 const STEEPNESS_RANGES = {
@@ -257,12 +262,11 @@ export function renderRouteExtras (features, sourceId) {
         type: 'Feature',
         geometry: { type: 'LineString', coordinates: segment },
         properties: {
+          ...Object.fromEntries(inheritedProps
+            .filter(key => key in feature.properties)
+            .map(key => [key, feature.properties[key]])),
           'stroke': resolveExtrasColor(extrasType, value),
-          'stroke-width': feature.properties['stroke-width'] || 5,
-          'fill-extrusion-height': feature.properties['fill-extrusion-height'],
-          'fill-extrusion-base': feature.properties['fill-extrusion-base'],
-          "fill-extrusion-width": feature.properties['fill-extrusion-width'],
-          ...('level' in feature.properties ? { level: feature.properties.level } : {})
+          'stroke-width': feature.properties['stroke-width'] || 5
         }
       })
     })
@@ -300,15 +304,8 @@ export function renderRouteExtras (features, sourceId) {
   // Buffer LineString segments into polygons for 3D extrusion
   const extrusionFeatures = extrasFeatures
     .filter(f => f.properties['fill-extrusion-height'])
-    .map(feature => {
-      const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || 5
-      const extrusionLine = buffer(feature, width / 2, { units: 'meters' })
-      extrusionLine.properties = { ...feature.properties }
-      extrusionLine.properties['fill-extrusion-color'] = feature.properties['stroke']
-      extrusionLine.properties['stroke-width'] = 0
-      extrusionLine.properties['stroke-opacity'] = 0
-      return extrusionLine
-    })
+    .map(buildLineExtrusion)
+    .filter(Boolean)
 
   map.getSource(sourceId).setData({
     type: 'FeatureCollection',

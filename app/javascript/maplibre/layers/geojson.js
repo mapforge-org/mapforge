@@ -1,5 +1,5 @@
-import { buffer } from "@turf/buffer"
 import { draw, select } from 'maplibre/edit'
+import { buildLineExtrusion } from 'maplibre/layers/geojson/extrusion'
 import {
   applyLevelFilter as applyKmMarkerLevelFilter,
   cleanupKmMarkerImages,
@@ -17,32 +17,7 @@ import {
 import { Layer } from 'maplibre/layers/layer'
 import { getFeature } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties, removeGeoJSONSource } from 'maplibre/map'
-import { defaults } from 'maplibre/styles/defaults'
 import { clusterStyles, initializeClusterStyles, initializeViewStyles, styles, viewStyleNames } from 'maplibre/styles/styles'
-
-// Buffer a single extrusion LineString into a polygon for MapLibre's fill-extrusion layer.
-// Returns null for geometry that can't be buffered (non-line, <2 coords, or degenerate).
-// @turf/buffer (JSTS) is expensive, so callers should only invoke this for features that changed.
-function buildLineExtrusion(feature) {
-  if (feature.geometry?.type !== 'LineString' || feature.geometry.coordinates.length < 2) {
-    return null
-  }
-  const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaults.lineWidth
-  const extrusionLine = buffer(feature, width / 2, { units: 'meters' })
-  if (!extrusionLine) { return null }
-  extrusionLine.id = `${feature.id}-extrusion`
-  extrusionLine.properties = { ...feature.properties, id: extrusionLine.id }
-  if (!extrusionLine.properties['fill-extrusion-color'] && feature.properties.stroke) {
-    extrusionLine.properties['fill-extrusion-color'] = feature.properties.stroke
-  }
-  extrusionLine.properties['stroke-width'] = 0
-  extrusionLine.properties['stroke-opacity'] = 0
-  // The label stays on the line ('line-labels'). On the buffered polygon the point-placed
-  // 'text-layer' would draw a horizontal duplicate beside the line.
-  delete extrusionLine.properties.label
-  delete extrusionLine.properties['label-title']
-  return extrusionLine
-}
 
 // Whether a feature needs a buffered extrusion polygon: a LineString with a height set, not
 // already rendered as a route-extras segment (which builds its own extrusion), and not hidden by 3D terrain.
@@ -234,14 +209,15 @@ export class GeoJSONLayer extends Layer {
   }
 
   // Surgically update a single existing feature (and, when asked, its companion geometry)
-  // without a full render(). The route-extras and km-marker companion sources are rebuilt
-  // from ALL features and run turf ops, so they are ONLY refreshed when the caller opts in.
-  // Most property edits (height, title, …) don't affect those companions, so they skip them
-  // and stay instant. Callers that change geometry, toggle a companion on/off, or change the
-  // stroke color (km markers are drawn in it) pass the matching flag.
+  // without a full render(). The km-marker companion source is rebuilt from ALL features and
+  // runs turf ops, so it is ONLY refreshed when the caller opts in. Most property edits
+  // (height, title, …) don't affect it, so they skip it and stay instant. Callers that change
+  // geometry, toggle it on/off, or change the stroke color (km markers are drawn in it) pass
+  // the matching flag.
   // Options:
   // - resetDraw: re-sync the MapboxDraw overlay (geometry edits in draw); no-op otherwise.
-  // - refreshRouteExtras: rebuild the route-extras companion source (geometry change / toggle).
+  // - refreshRouteExtras: rebuild the route-extras companion source even when the feature has
+  //   no route extras itself (needed when the toggle just removed them).
   // - refreshKmMarkers: rebuild the km-marker companion source (geometry change / toggle).
   applyFeatureUpdate(feature, { resetDraw = false, refreshRouteExtras = false, refreshKmMarkers = false } = {}) {
     feature.properties = feature.properties || {}
@@ -252,7 +228,9 @@ export class GeoJSONLayer extends Layer {
     if (!source) { return }
     source.updateData({ remove: [feature.id], add: [feature] })
 
-    if (refreshRouteExtras) {
+    // Route-extras segments copy the parent's style properties (see inheritedProps) and build
+    // their own extrusion, so ANY property edit on a route feature leaves them stale.
+    if (refreshRouteExtras || hasRouteExtras(feature)) {
       renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
     }
 

@@ -34,6 +34,7 @@ const baseDefaults = {
 
   extrusionOpacity: 0.9,
   extrusionCornerRadius: 0.5, // meters
+  extrusionPixelZoom: 16.8, // zoom where a 1 m line extrusion is one pixel tall, a 10 m one at 13.5
   extrudedShadowColor: 'gray',
   extrudedShadowOpacity: 0.7,
   extrudedShadowOpacityActive: 0.4,
