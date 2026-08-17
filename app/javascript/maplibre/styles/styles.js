@@ -9,7 +9,7 @@ export const extrusionOpacityBuckets = Array.from({ length: 10 }, (_, i) => (i +
 export const viewStyleNames = [
   'polygon-layer',
   'polygon-layer-outline',
-  'line-layer-outline', // line outline below line, because it's a wider line
+  'line-layer-outline', // casing beside the line, drawn below it
   'line-layer',
   'line-label-symbol',
   'line-labels',
@@ -149,24 +149,14 @@ const lineWidth = () => [
 
 const lineOpacity = () => ['to-number', styleProp(['stroke-opacity', 'user_stroke-opacity'], defaults.lineOpacity)]
 
-const outlineWidthMin = () => ['+', 2, lineWidthMin()]
-const outlineWidthMax = () => ['+', 4, lineWidthMax()]
+// Thickness of one casing (edge line) side.
+// 'line-gap-width' keeps the line's own width free.
 const outlineWidth = () => [
   'interpolate',
   ['linear'],
   ['zoom'],
-  5, [
-    'case',
-    ['boolean', ['feature-state', 'active'], false],
-    ['+', 2, outlineWidthMin()],
-    outlineWidthMin()
-  ], // At zoom level 8, the outline width is min
-  17, [
-    'case',
-    ['boolean', ['feature-state', 'active'], false],
-    ['+', 3, outlineWidthMax()],
-    outlineWidthMax()
-  ] // At zoom level 13, the outline width is max
+  8, ['case', ['boolean', ['feature-state', 'active'], false], 1.5, 1],
+  17, ['case', ['boolean', ['feature-state', 'active'], false], 3, 2]
 ]
 
 const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
@@ -545,6 +535,8 @@ export function styles () {
           'case', ['boolean', ['feature-state', 'active'], false],
           defaults.featureOutlineColorActive, defaults.featureOutlineColor
         ],
+        // casing: only the two strips beside the line are drawn, the line itself covers the gap
+        'line-gap-width': lineWidth(),
         'line-width': outlineWidth(),
         'line-opacity': lineOpacity()
       }
