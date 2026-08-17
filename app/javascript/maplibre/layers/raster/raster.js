@@ -1,7 +1,7 @@
 import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
-import { Layer } from 'maplibre/layers/layer'
+import { Layer, queryFeaturesNear } from 'maplibre/layers/layer'
 import { layers } from 'maplibre/layers/layers'
 import { extractTheme, fetchNearestRoute, fetchRouteDetails } from 'maplibre/layers/raster/waymarkedtrails'
 import { addGeoJSONSource, map, removeStyleLayers } from 'maplibre/map'
@@ -248,7 +248,7 @@ export class RasterLayer extends Layer {
       const geojsonLayers = layers?.filter(l => l.type === 'geojson' && l.show) || []
       if (geojsonLayers.length > 0) {
         const geojsonLayerIds = geojsonLayers.flatMap(l => l.getStyleLayerIds())
-        const geojsonFeatures = map.queryRenderedFeatures(e.point, { layers: geojsonLayerIds })
+        const geojsonFeatures = queryFeaturesNear(e.point, { layers: geojsonLayerIds })
         const geojsonFeature = geojsonFeatures.find(f => !f.properties?.cluster)
         if (geojsonFeature) {
           // User's geojson feature takes priority - don't select waymarkedtrails

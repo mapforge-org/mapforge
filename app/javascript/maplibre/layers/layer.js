@@ -17,6 +17,20 @@ import { addGeoJSONSource, frontFeature, map } from 'maplibre/map'
 export const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overpass-source-', 'wikipedia-source-',
   'search-source-']
 
+// MapLibre queries a single pixel. A line drawn 2px wide at low zoom is almost unhittable,
+// so retry with a small box when the exact pixel misses. The exact hit still wins, which
+// keeps the top-most-feature rule intact.
+const CLICK_TOLERANCE = 12
+const CLICK_TOLERANCE_TOUCH = 20
+
+export function queryFeaturesNear (point, options) {
+  const exact = map.queryRenderedFeatures(point, options)
+  if (exact.length) { return exact }
+  const r = functions.isTouchDevice() ? CLICK_TOLERANCE_TOUCH : CLICK_TOLERANCE
+  const box = [[point.x - r, point.y - r], [point.x + r, point.y + r]]
+  return map.queryRenderedFeatures(box, options)
+}
+
 /**
  * Base class for map layers. Subclass to create new layer types.
  *
@@ -190,7 +204,7 @@ export class Layer {
       if (e.defaultPrevented) { return }
 
       // Query all features at click point across all layers (not just registered layers)
-      const allFeatures = map.queryRenderedFeatures(e.point, {
+      const allFeatures = queryFeaturesNear(e.point, {
         filter: ['!', ['has', 'cluster']]
       })
 
@@ -246,15 +260,21 @@ export class Layer {
       e.preventDefault()
     }
 
-    map.on('click', this.getStyleLayerIds(), this.clickHandler)
+    // Registered map-wide, not per style layer: the delegated form only fires on an exact
+    // pixel hit, which would bypass the tolerance in queryFeaturesNear. The handler already
+    // queries every selectable source and picks the global top feature, and layers that run
+    // later exit on e.defaultPrevented.
+    map.on('click', this.clickHandler)
 
     // Double-click opens geometry edit mode directly
     this.dblClickHandler = (e) => {
       if (window.gon.map_mode !== 'rw') { return }
       if (this.type !== 'geojson') { return }
       if (draw && draw.getMode() !== 'simple_select') { return }
+      if (e.defaultPrevented) { return }
 
-      let feature = e.features.find(f => !f.properties?.cluster)
+      const feature = queryFeaturesNear(e.point, { layers: this.getStyleLayerIds() })
+        .find(f => !f.properties?.cluster)
       if (!feature) { return }
 
       console.log('Double-click on feature:', feature.id)
@@ -272,7 +292,7 @@ export class Layer {
       e.originalEvent.stopPropagation()
     }
 
-    map.on('dblclick', this.getStyleLayerIds(), this.dblClickHandler)
+    map.on('dblclick', this.dblClickHandler)
   }
 
   /**
@@ -286,8 +306,8 @@ export class Layer {
         if (document.querySelector('.show > .map-modal')) { return }
         if (!map.getSource(this.sourceId)) { return }
 
-        const features = map.queryRenderedFeatures(e.point, { layers: this.getStyleLayerIds() })
-        let feature = features.find(f => !f.properties?.cluster && f.properties?.onclick !== false)
+        const features = queryFeaturesNear(e.point, { layers: this.getStyleLayerIds() })
+        const feature = features.find(f => !f.properties?.cluster && f.properties?.onclick !== false)
 
         if (feature?.id) {
           if (feature.id === highlightedFeatureId) { return }
@@ -321,11 +341,11 @@ export class Layer {
   removeEventHandlers() {
     if (!map || !map.getStyle()) { return }
     if (this.clickHandler) {
-      map.off('click', this.getStyleLayerIds(), this.clickHandler)
+      map.off('click', this.clickHandler)
       this.clickHandler = null
     }
     if (this.dblClickHandler) {
-      map.off('dblclick', this.getStyleLayerIds(), this.dblClickHandler)
+      map.off('dblclick', this.dblClickHandler)
       this.dblClickHandler = null
     }
     if (this.mouseMoveHandler) {

@@ -683,9 +683,7 @@ export function sortLayers () {
     styleLayers.filter(e => e.id.startsWith('route-extras-labels')),
     styleLayers.filter(e => e.id.startsWith('km-marker-end')),
     styleLayers.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),
-    styleLayers.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
-    styleLayers.filter(e => e.id.startsWith('line-layer-hit_geojson-source')),
-    styleLayers.filter(e => e.id.startsWith('points-hit-layer_geojson-source'))
+    styleLayers.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
   ]
 
   // moveLayer(id) with no second arg moves the layer to the top. Iterating

@@ -136,6 +136,12 @@ export class IndoorLayer extends Layer {
   }
 
   removeEventHandlers() {
+    // this layer registers its click handler delegated to style layer ids, which
+    // map.off('click', handler) in the base class cannot remove
+    if (this.clickHandler) {
+      map.off('click', this.getStyleLayerIds(), this.clickHandler)
+      this.clickHandler = null
+    }
     super.removeEventHandlers()
     if (this.contextMenuHandler) {
       map.off('contextmenu', this.contextMenuHandler)

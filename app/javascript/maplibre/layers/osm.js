@@ -1,7 +1,7 @@
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
 import { BasemapLayer } from 'maplibre/layers/basemap'
-import { SELECTABLE_SOURCE_PREFIXES } from 'maplibre/layers/layer'
+import { SELECTABLE_SOURCE_PREFIXES, queryFeaturesNear } from 'maplibre/layers/layer'
 import { overpassDescription } from 'maplibre/layers/overpass/overpass'
 import { map } from 'maplibre/map'
 
@@ -96,7 +96,7 @@ export class OsmLayer extends BasemapLayer {
       if (e.defaultPrevented) { return }
 
       // user layers win over basemap elements
-      const covering = map.queryRenderedFeatures(e.point)
+      const covering = queryFeaturesNear(e.point)
         .filter(f => !f.properties?.cluster && SELECTABLE_SOURCE_PREFIXES.some(p => f.source.startsWith(p)))
       if (covering.length) { return }
 

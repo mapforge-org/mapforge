@@ -2,6 +2,7 @@
 import { addCopyMenuItem, addDeleteMenuItem, addLineMenuItems, addLineVertexMenuItems } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
+import { queryFeaturesNear } from 'maplibre/layers/layer'
 import { getFeature } from 'maplibre/layers/layers'
 import { editDefaults } from 'maplibre/styles/defaults'
 import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
@@ -18,7 +19,7 @@ import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
 export function initializeEditStyles() {
   map.on('contextmenu', (e) => {
     e.preventDefault()
-    const features = map.queryRenderedFeatures(e.point)
+    const features = queryFeaturesNear(e.point)
 
     if (draw.getMode() !== 'simple_select') {
       // console.log(features)
@@ -33,7 +34,10 @@ export function initializeEditStyles() {
           addLineVertexMenuItems(f)
           vertexHandled = true
         }
-        if (!lineHandled && f.layer.id.startsWith('line-layer-hit_geojson')){
+        // the outline match also covers route extras tracks, which mainLineFilter keeps out
+        // of line-layer_
+        if (!lineHandled && (f.layer.id.startsWith('line-layer_geojson') ||
+          f.layer.id.startsWith('line-layer-outline_geojson'))){
           addLineMenuItems(f)
           lineHandled = true
         }

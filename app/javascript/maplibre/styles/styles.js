@@ -12,11 +12,9 @@ export const viewStyleNames = [
   'line-layer-outline', // line outline below line, because it's a wider line
   'line-layer',
   'line-label-symbol',
-  'line-layer-hit',
   'line-labels',
   'points-layer-flat',
   'points-layer',
-  'points-hit-layer',
   'symbols-layer-flat',
   'symbols-layer',
   'text-layer-flat',
@@ -578,18 +576,6 @@ export function styles () {
         ]
       }
     },
-    'line-layer-hit': {
-      id: 'line-layer-hit',
-      type: 'line',
-      filter: ['all',
-        ['==', ['geometry-type'], 'LineString'],
-        minZoomFilter(),
-        maxZoomFilter()],
-      paint: {
-        'line-width': ['+', defaults.lineHitPadding, outlineWidthMax()],
-        'line-opacity': 0 // cannot use visibility:none here
-      }
-    },
     'points-layer-flat': {
       id: 'points-layer-flat',
       type: 'circle',
@@ -693,26 +679,6 @@ export function styles () {
           pointOutlineSize()
         ],
         'circle-stroke-opacity': ["min", 1, ['+', pointOpacity(), 0.2]]
-      },
-      layout: {
-        // sort-key is only effective within same layer
-        'circle-sort-key': sortKey()
-      }
-    },
-    'points-hit-layer': {
-      id: 'points-hit-layer',
-      type: 'circle',
-      filter: [
-        "all",
-        ["==", ["geometry-type"], "Point"],
-        ["!", ["has", "route-extras-label"]],
-        minZoomFilter(),
-        maxZoomFilter()
-      ],
-      paint: {
-        'circle-radius': ['+', defaults.pointHitPadding, pointSizeMax()],
-        // 'circle-opacity': 0.3 // debug click area
-        'circle-opacity': 0
       },
       layout: {
         // sort-key is only effective within same layer

@@ -43,7 +43,6 @@ const baseDefaults = {
   lineOpacityActive: 1,
   polygonOutlineWidth: 2,
   lineDashArray: [1, 1.5],
-  lineHitPadding: 10,
 
   pointSize: 3,
   pointSizeEmoji: 18,
@@ -53,7 +52,6 @@ const baseDefaults = {
   pointOpacity: 0.9,
   pointOpacitySymbol: 1,
   pointBlur: 0.05,
-  pointHitPadding: 5,
   markerSize: 20,
 
   minZoom: 0,

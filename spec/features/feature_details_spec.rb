@@ -26,6 +26,29 @@ describe "Feature details" do
     end
   end
 
+  context "click tolerance on a thin line" do
+    # horizontal line, so a vertical offset is the perpendicular distance in pixels.
+    # At zoom 5 the line renders 4px wide, and the click tolerance adds 12px on each side.
+    let(:feature) do
+      create(:feature, title: "Thin Track",
+        geometry: { "type" => "LineString", "coordinates" => [ [ 10.0, 49.47 ], [ 12.0, 49.47 ] ] })
+    end
+    let(:map) { create(:map, features: [ feature ], center: [ 11.0, 49.47 ], zoom: 5) }
+
+    it "selects the line when the click misses it by 12 pixels" do
+      point = viewport_xy_for_lat_lng(49.47, 11.0)
+      click_coord("#maplibre-map", point[:x], point[:y] + 12)
+      expect(page).to have_css("#feature-details-modal")
+      expect(find("#feature-title").text).to eq("Thin Track")
+    end
+
+    it "selects nothing when the click misses it by 40 pixels" do
+      point = viewport_xy_for_lat_lng(49.47, 11.0)
+      click_coord("#maplibre-map", point[:x], point[:y] + 40)
+      expect(page).not_to have_css("#feature-details-modal")
+    end
+  end
+
   context "cycling through overlapping features" do
     let(:polygon) { create(:feature, :polygon_middle, title: "Poly") }
     let(:point1) { create(:feature, :point_middle, title: "Point 1") }
