@@ -155,8 +155,8 @@ const outlineWidth = () => [
   'interpolate',
   ['linear'],
   ['zoom'],
-  8, ['case', ['boolean', ['feature-state', 'active'], false], 1.5, 1],
-  17, ['case', ['boolean', ['feature-state', 'active'], false], 3, 2]
+  8, ['case', ['boolean', ['feature-state', 'active'], false], 2, 1.5],
+  17, ['case', ['boolean', ['feature-state', 'active'], false], 4, 3]
 ]
 
 const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
