@@ -37,6 +37,10 @@ function buildLineExtrusion(feature) {
   }
   extrusionLine.properties['stroke-width'] = 0
   extrusionLine.properties['stroke-opacity'] = 0
+  // The label stays on the line ('line-labels'). On the buffered polygon the point-placed
+  // 'text-layer' would draw a horizontal duplicate beside the line.
+  delete extrusionLine.properties.label
+  delete extrusionLine.properties['label-title']
   return extrusionLine
 }
 
