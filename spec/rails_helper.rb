@@ -68,42 +68,40 @@ RSpec.configure do |config|
 
   RSpec.configure do |config|
     config.after(:each, type: :feature) do |spec|
-      unless spec.metadata[:skip_console_errors]
+      # https://danielabaron.me/blog/capture-browser-console-logs-capybara-cuprite/
+      logger = page.driver.browser.options.logger
+      browser_logs = logger.string
+      console_logs = browser_logs.lines.select { |line| line.include?("Runtime.consoleAPICalled") }
+      # puts console_logs.join("\n\n")
+      error_logs = console_logs.select { |line| line.include?('"type":"error"') }
 
-        # https://danielabaron.me/blog/capture-browser-console-logs-capybara-cuprite/
-        logger = page.driver.browser.options.logger
-        browser_logs = logger.string
-        console_logs = browser_logs.lines.select { |line| line.include?("Runtime.consoleAPICalled") }
-        # puts console_logs.join("\n\n")
-        error_logs = console_logs.select { |line| line.include?('"type":"error"') }
+      # Clear the logger buffer to prevent errors from carrying over to subsequent tests,
+      # also for :skip_console_errors specs
+      logger.truncate(0)
+      logger.rewind
 
-        # Clear the logger buffer to prevent errors from carrying over to subsequent tests
-        logger.truncate(0)
-        logger.rewind
-
-        # Raise after clearing to ensure isolation even when test fails
-        if error_logs.present?
-          raise JavaScriptError, error_logs.join("\n\n")
-        end
-
-        #       levels = [ "SEVERE" ]
-        #       # "maplibre-gl.js TypeError: Failed to fetch" seems to be caused by
-        #       # the js file being cached already
-        #       exclude = [ /TypeError: Failed to fetch/,
-        #                   /The user aborted a request/,
-        #                   /Failed to load resource/ ]
-        #       errors = page.driver.browser.logs.get(:browser).to_a
-        #                  .select { |e| levels.include?(e.level) && e.message.present? }
-        #                  .reject { |e| exclude.any? { |ex| e.message =~ ex } }
-        #                  .map(&:message)
-        #       if errors.present?
-        #         raise JavaScriptError, errors.join("\n\n")
-        #       end
-        #     end
-        #     if spec.metadata[:print_console_logs]
-        #       logs = page.driver.browser.logs.get(:browser).to_a.map(&:message)
-        #       puts logs.join("\n\n")
+      # Raise after clearing to ensure isolation even when test fails
+      if error_logs.present? && !spec.metadata[:skip_console_errors]
+        raise JavaScriptError, error_logs.join("\n\n")
       end
+
+      #       levels = [ "SEVERE" ]
+      #       # "maplibre-gl.js TypeError: Failed to fetch" seems to be caused by
+      #       # the js file being cached already
+      #       exclude = [ /TypeError: Failed to fetch/,
+      #                   /The user aborted a request/,
+      #                   /Failed to load resource/ ]
+      #       errors = page.driver.browser.logs.get(:browser).to_a
+      #                  .select { |e| levels.include?(e.level) && e.message.present? }
+      #                  .reject { |e| exclude.any? { |ex| e.message =~ ex } }
+      #                  .map(&:message)
+      #       if errors.present?
+      #         raise JavaScriptError, errors.join("\n\n")
+      #       end
+      #     end
+      #     if spec.metadata[:print_console_logs]
+      #       logs = page.driver.browser.logs.get(:browser).to_a.map(&:message)
+      #       puts logs.join("\n\n")
     end
   end
 

@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-08
 
+* Show an explanation when the browser has no WebGL2 support
 * Update to [Maplibre GL JS 6.1](https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.1.0)
 * German translations for Frontpage and Map interface
 * Search backend switched to [photon.komoot.io](https://photon.komoot.io/)

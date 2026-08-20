@@ -740,6 +740,9 @@ msgstr "Mittleres Gefälle (7-11 %)"
 msgid "Moderate uphill (7-11%)"
 msgstr "Mittlere Steigung (7-11 %)"
 
+msgid "More about WebGL"
+msgstr "Mehr über WebGL"
+
 msgid "Most viewed"
 msgstr "Meistgesehen"
 
@@ -1060,6 +1063,9 @@ msgstr "Das Bild enthält GPS-Koordinaten (<code>%{coordinates}</code>).<br/>Mö
 msgid "This map is private and not linked from the public listing."
 msgstr "Diese Karte ist privat und nicht in der öffentlichen Liste verlinkt."
 
+msgid "This map needs WebGL2"
+msgstr "Diese Karte braucht WebGL2"
+
 msgid "This track is already a routed track"
 msgstr "Dieser Track ist bereits eine berechnete Route"
 
@@ -1197,6 +1203,9 @@ msgstr "Du kannst die %{tutorial_link} ausprobieren, um zu sehen, wie Mapforge f
 
 msgid "Your Maps"
 msgstr "Deine Karten"
+
+msgid "Your browser cannot render 3D graphics on the web. Update your browser, or turn on hardware acceleration in the browser settings."
+msgstr "Dein Browser kann keine 3D-Grafik im Web darstellen. Aktualisiere deinen Browser, oder schalte die Hardwarebeschleunigung in den Browser-Einstellungen ein."
 
 msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
 msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - passe sie an, arbeite gemeinsam daran und teile sie in Echtzeit."

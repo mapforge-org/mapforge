@@ -982,6 +982,10 @@ msgstr ""
 msgid "Moderate uphill (7-11%)"
 msgstr ""
 
+#: ../app/views/maps/maplibre.haml:27
+msgid "More about WebGL"
+msgstr ""
+
 #: ../app/views/maps/_list_filter.haml:1
 msgid "Most viewed"
 msgstr ""
@@ -1408,6 +1412,10 @@ msgstr ""
 msgid "This map is private and not linked from the public listing."
 msgstr ""
 
+#: ../app/views/maps/maplibre.haml:25
+msgid "This map needs WebGL2"
+msgstr ""
+
 #: ../app/javascript/maplibre/routing/gpx_to_route.js:105
 msgid "This track is already a routed track"
 msgstr ""
@@ -1590,6 +1598,10 @@ msgstr ""
 
 #: ../app/views/maps/my.haml:13
 msgid "Your Maps"
+msgstr ""
+
+#: ../app/views/maps/maplibre.haml:26
+msgid "Your browser cannot render 3D graphics on the web. Update your browser, or turn on hardware acceleration in the browser settings."
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:27

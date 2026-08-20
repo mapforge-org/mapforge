@@ -21,6 +21,11 @@
 #preloader
   %img.preloader-logo{ src: "/icons/preloader.svg", alt: "Loading" }
 
+#map-error.hidden.background-dark
+  %h2= _("This map needs WebGL2")
+  %p= _("Your browser cannot render 3D graphics on the web. Update your browser, or turn on hardware acceleration in the browser settings.")
+  %p= link_to _("More about WebGL"), "https://wiki.openstreetmap.org/wiki/This_map_requires_WebGL", target: "_blank", rel: "noopener"
+
 - unless params['static'] == 'true'
   -# map header and title
   %nav.mapforge-font#map-head.dark-shadow{ data: { 'controller': "header" } }

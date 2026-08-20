@@ -106,6 +106,15 @@ export async function initializeMap (divId = 'maplibre-map') {
     // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
   })
 
+  // No painter means no WebGL2: no 'load' event, no boxZoom. Dropping the .map
+  // element also un-hides the header nav (html:has(.map) in map.css).
+  if (!map.painter) {
+    dom.deleteElements(['#preloader', '#maplibre-map', '#map-head', '#status-container'])
+    functions.e('#map-header nav', e => { e.style.removeProperty('display') })
+    dom.showElements('#map-error')
+    return false
+  }
+
   if (!functions.isTestEnvironment()) { map.setZoom(map.getZoom() - 1) } // will zoom in on map:load
 
   // for console debugging
@@ -239,6 +248,8 @@ export async function initializeMap (divId = 'maplibre-map') {
   // map.on('error', (err) => {
   //   console.log('map error >>> ', err)
   // })
+
+  return true
 }
 
 function limitZoom() {

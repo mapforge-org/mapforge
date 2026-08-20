@@ -21,7 +21,7 @@ export default class extends Controller {
     clearUndoHistory()
 
     functions.e('#map-header nav', e => { e.style.display = 'none' })
-    await initializeMap('maplibre-map')
+    if (!await initializeMap('maplibre-map')) { return }
     // static mode is used for screenshots
     if (window.gon.map_mode === 'static') {
       initializeStaticMode()
