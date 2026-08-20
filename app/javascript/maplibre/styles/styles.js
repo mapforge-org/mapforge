@@ -432,6 +432,19 @@ const opacityBucketSelector = () => [
       ['to-number', styleProp(['fill-extrusion-opacity', 'user_fill-extrusion-opacity', 'fill-opacity', 'user_fill-opacity'], defaults.extrusionOpacity)]]]]
 ]
 
+// A transparent 'fill' or 'stroke' makes the extrusion invisible. Use the default color.
+const extrusionColor = () => {
+  const color = styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], defaults.featureColor)
+  return ['case', ['==', color, 'transparent'], defaults.featureColor, color]
+}
+
+// Draws the ground below the extrusion. Without the attribute, only a based
+// extrusion gets one. On the ground the extrusion covers its own shadow.
+const extrusionShadow = () => ['boolean',
+  styleProp(['fill-extrusion-shadow', 'user_fill-extrusion-shadow']),
+  ['>', ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)], 0]
+]
+
 function extrusionBucketLayers () {
   return Object.fromEntries(extrusionOpacityBuckets.map((opacity, i) => {
     const bucket = i + 1 // 1..10
@@ -449,7 +462,7 @@ function extrusionBucketLayers () {
         'fill-extrusion-rounded-corner-distance': defaults.extrusionCornerRadius
       },
       paint: {
-        'fill-extrusion-color': styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], defaults.featureColor),
+        'fill-extrusion-color': extrusionColor(),
         'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
         'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)],
         'fill-extrusion-opacity': opacity
@@ -460,13 +473,14 @@ function extrusionBucketLayers () {
 
 export function styles () {
   return {
-    // make ground of extruded polygon darker when selected
+    // ground below an extruded polygon, darker when selected
     'polygon-layer-extruded-shadow': {
       id: 'polygon-layer-extruded-shadow',
         type: 'fill',
           filter: ['all',
             ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
             ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
+            extrusionShadow(),
             minZoomFilter(),
             maxZoomFilter()],
             paint: {

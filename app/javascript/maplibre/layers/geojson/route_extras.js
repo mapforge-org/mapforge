@@ -10,7 +10,8 @@ const labelsBaseFilter = ['all', ['has', 'route-extras-label'], [">=", ["zoom"],
 // Copied from the parent route onto each coloured segment. 'stroke' is per segment, and
 // 'fill-extrusion-color' is left out on purpose: the colour of the segment must win.
 const inheritedProps = ['stroke-width', 'fill-extrusion-height', 'fill-extrusion-base',
-  'fill-extrusion-width', 'fill-extrusion-opacity', 'fill-opacity', 'min-zoom', 'max-zoom', 'level']
+  'fill-extrusion-width', 'fill-extrusion-opacity', 'fill-extrusion-shadow', 'fill-opacity',
+  'min-zoom', 'max-zoom', 'level']
 
 // Steepness value to percentage range mapping for labels
 const STEEPNESS_RANGES = {

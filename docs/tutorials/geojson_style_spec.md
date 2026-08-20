@@ -52,11 +52,12 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `stroke-image-url`: URL pointing to icon image that will get repeated along the line. Can point to a Mapforge hosted image like /icons/direction-arrow.png
 * `stroke-symbol`: taken as text/emoji, emoji list: https://emojipedia.org/google/16
 * `stroke-dasharray`: true/false for making the stroke line dashed (default: false)
-* `fill-extrusion-color`: color of the extrusion (default: green)
+* `fill-extrusion-color`: color of the extrusion (default: green, a 'transparent' `stroke` is ignored here)
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-width`: width in m
 * `fill-extrusion-base`: ground distance in m (default: 0)
 * `fill-extrusion-opacity`: opacity of the extrusion, rounded to nearest 0.1 (default: 0.9)
+* `fill-extrusion-shadow`: true/false for the ground below the extrusion (default: true with a base, else false)
 * `show-km-markers`: show markers at each kilometer (default: false)
 
 #### *Polygon* geometry:
@@ -66,10 +67,11 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `stroke-opacity`: opacity of the line (default: 1.0)
 * `fill`: fill color (default: "#0A870A", green, 'transparent' for none)
 * `fill-opacity`: opacity of the fill color (default: 0.9)
-* `fill-extrusion-color`: color of the extrusion (default: green)
+* `fill-extrusion-color`: color of the extrusion (default: green, a 'transparent' `fill` is ignored here)
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-base`: ground distance in m (default: 0)
 * `fill-extrusion-opacity`: opacity of the extrusion, rounded to nearest 0.1 (defaults to `fill-opacity`, else 0.9)
+* `fill-extrusion-shadow`: true/false for the ground below the extrusion (default: true with a base, else false)
 
 ### Label fonts
 
