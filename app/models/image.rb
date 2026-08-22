@@ -26,6 +26,7 @@ class Image
   # Shared by ImagesController#upload and the migrations:dragonfly_to_webp task.
   def self.compress_to_webp!(path)
     # https://github.com/mtgrosser/rszr
+    # Do not set Rszr.autorotate: imlib2 >= 1.7.5 already does this
     image = Rszr::Image.load(path)
     image.resize!(1024, 1024, crop: false) if image.width > 1024 || image.height > 1024
     image.save(path, format: "webp", quality: 75)

@@ -12,5 +12,3 @@ MiniMagick.configure do |config|
   } # environment variables to set for IM commands
   config.restricted_env = true # when true, block IM commands from accessing system environment variables other than those in cli_env
 end
-
-Rszr.autorotate = true
