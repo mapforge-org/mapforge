@@ -566,6 +566,10 @@
   .permission-badge {
     display: none;
   }
+
+  #confirmation-content {
+    text-align: center;
+  }
 }
 
 @media (height < 410px) {
