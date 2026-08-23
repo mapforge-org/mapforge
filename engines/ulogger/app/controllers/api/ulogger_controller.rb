@@ -25,7 +25,7 @@ module Ulogger
     # you can log into an existing map/track
     def addtrack
       @user = User.find_by(email: session["email"])
-      if params[:track] =~ /^(\d+)#(\S+)/
+      if params[:track] =~ /^(\S+)#(\S+)/
         session["track_name"] = $2
         @map = Map.by_private_id($1)
       else
