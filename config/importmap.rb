@@ -48,7 +48,7 @@ pin "maplibre-contour", preload: false # @0.1.0
 pin "chart.js", to: "chart-js.js", preload: false # @4.5.1
 
 # render markdown
-pin "marked", preload: false # @18.0.9
+pin "marked", preload: false # @18.0.10
 
 # https://github.com/mapbox/mapbox-gl-draw
 # Unminified + patched version to style midpoints & vertexes (https://github.com/mapbox/mapbox-gl-draw/pull/964)
