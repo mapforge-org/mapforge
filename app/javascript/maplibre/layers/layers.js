@@ -76,9 +76,8 @@ export async function initializeLayers() {
  * request is needed. On reconnect, pass { refetch: true } to pull fresh state from the server.
  */
 export function loadLayerDefinitions({ refetch = false } = {}) {
-  // The MapLibre sources of the replaced instances stay on the map (initializeLayerSources
-  // re-uses them), so hand their features to the new instances. Without this the layer list
-  // counts 0 while the map still draws the features, whenever a reload fails (flaky network).
+  // The old sources keep drawing their features, so the new instances inherit them.
+  // Otherwise a failed reload leaves the list at 0 while the map still shows them.
   const previousGeojson = new Map((layers || []).map(l => [l.id, l.layer.geojson]))
   layers = null
 

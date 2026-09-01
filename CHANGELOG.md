@@ -5,15 +5,21 @@ All notable changes to this project will be documented in this file.
 ## 2026-09
 
 * Add local geojson results to search results
+* Image viewer for feature images
+* Color picker offers the site and map default colors
 
 
 ## 2026-08
 
 * Show an explanation when the browser has no WebGL2 support
-* Update to [Maplibre GL JS 6.1](https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.1.0)
+* Update to [Maplibre GL JS 6.4](https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.4.0)
 * German translations for Frontpage and Map interface
 * Search backend switched to [photon.komoot.io](https://photon.komoot.io/)
+* Copy search results to your map
 * Added [protomaps](https://protomaps.com/) base map
+* New [styling properties](/doc/geojson_style_spec): label-title, fill-extrusion-shadow
+* Live train maps with departure times from the Deutsche Bahn timetable API
+* Support for right-to-left text
 
 ## 2026-07
 

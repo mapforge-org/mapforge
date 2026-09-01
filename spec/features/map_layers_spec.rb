@@ -409,8 +409,8 @@ describe "Map" do
     end
   end
 
-  # A failed reload keeps the features of the previous source on the map, because MapLibre
-  # only drops them when a new load succeeds. The layer list must keep them too.
+  # MapLibre drops features only when a new load succeeds, so a failed reload leaves them
+  # on the map. The list must show the same.
   context "when the layer reload fails after a reconnect" do
     let(:feature) { create(:feature, :point, title: "Kept Feature", layer: map.layers.first) }
 
