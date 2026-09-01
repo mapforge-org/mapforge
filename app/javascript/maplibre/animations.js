@@ -15,10 +15,23 @@ export class AnimationManager {
     this.animationId = null
   }
 
+  // Escape runs the same cleanup as a completed animation.
+  cancelOnEscape (cleanup) {
+    this.escapeHandler = (event) => {
+      if (event.key !== 'Escape' || functions.isFormFieldFocused()) { return }
+      cleanup()
+    }
+    document.addEventListener('keydown', this.escapeHandler)
+  }
+
   stopAnimation () {
     if (this.animationId !== null) {
       cancelAnimationFrame(this.animationId)
       this.animationId = null
+    }
+    if (this.escapeHandler) {
+      document.removeEventListener('keydown', this.escapeHandler)
+      this.escapeHandler = null
     }
   }
 }
@@ -107,12 +120,18 @@ export class AnimateLineAnimation extends AnimationManager {
       along(line, i * stepLength, { units: "kilometers" })
     )
 
-    const self = this // for setting animationId
     let step = 0 // iterating coordinates along track
     const lineCoords = line.geometry.coordinates
     line.geometry.coordinates = []
 
-    function animate (_frame) {
+    const finish = () => {
+      this.stopAnimation()
+      // reset coords, else line will stay with extrapolated coordinates
+      line.geometry.coordinates = lineCoords
+      renderLayers('geojson', false)
+    }
+
+    const animate = (_frame) => {
       const coordinate = stepCoords[step].geometry.coordinates
       // console.log("Frame #" + _frame + ", distance: " + distance + ", coord: " + coordinate)
 
@@ -124,15 +143,13 @@ export class AnimateLineAnimation extends AnimationManager {
       step++
 
       if (step < steps) {
-        self.animationId = requestAnimationFrame(animate)
+        this.animationId = requestAnimationFrame(animate)
       } else {
-        self.animationId = null
-        // reset coords, else line will stay with extrapolated coordinates
-        line.geometry.coordinates = lineCoords
-        renderLayers('geojson', false)
+        finish()
       }
     }
 
+    this.cancelOnEscape(finish)
     this.animationId = requestAnimationFrame(animate)
   }
 }
@@ -142,10 +159,16 @@ export class AnimatePolygonAnimation extends AnimationManager {
     const height = polygon.properties['fill-extrusion-height']
     console.log('Polygon height: ' + height + 'm')
     const steps = 100
-    const self = this
     let counter = 0
 
-    function animate (_timestamp) {
+    const finish = () => {
+      this.stopAnimation()
+      // Escape leaves the polygon part-grown, so restore the full height
+      polygon.properties['fill-extrusion-height'] = height
+      renderLayers('geojson', false)
+    }
+
+    const animate = (_timestamp) => {
       const progress = counter / steps
       polygon.properties['fill-extrusion-height'] = progress * height
       // console.log('New height: ' + polygon.properties['fill-extrusion-height'])
@@ -154,15 +177,15 @@ export class AnimatePolygonAnimation extends AnimationManager {
       counter++
 
       if (counter <= steps) {
-        self.animationId = requestAnimationFrame(animate)
+        this.animationId = requestAnimationFrame(animate)
       } else {
-        self.animationId = null
-        renderLayers('geojson', false)
+        finish()
       }
     }
 
     polygon.properties['fill-extrusion-height'] = 0
     renderLayers('geojson', true)
+    this.cancelOnEscape(finish)
     this.animationId = requestAnimationFrame(animate)
   }
 }

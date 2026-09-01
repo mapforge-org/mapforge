@@ -172,6 +172,21 @@ describe "Map public view" do
     end
   end
 
+  context "with an animated line from the URL" do
+    let(:line) { create(:feature, :line_string) }
+    let(:map) { create(:map, features: [ line ]) }
+    let(:path) { "#{map.public_map_path}?a=#{line.id}" }
+
+    it "stops the animation on Escape" do
+      start = page.evaluate_script("map.getCenter().lng")
+      wait_for { page.evaluate_script("map.getCenter().lng") }.not_to eq(start)
+      page.driver.browser.keyboard.type(:Escape)
+      center = page.evaluate_script("map.getCenter().lng")
+      sleep 0.5
+      expect(page.evaluate_script("map.getCenter().lng")).to eq(center)
+    end
+  end
+
   context "as map owner / admin" do
     let(:map) { create(:map, owners: [ user ]) }
     let(:user) { create(:user) }
