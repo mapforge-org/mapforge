@@ -305,13 +305,9 @@
   mask-image: none;
 }
 
-/* let the per-layer mobile action dropdown expand past the modal, like #query-dropdown above */
-.map-modal:has(.layer-actions-dropdown .dropdown-menu.show) { /* stylelint-disable-line no-descending-specificity */
-  overflow-y: visible;
-}
-
+/* The per-layer mobile action dropdown is positioned fixed, so the overflow of the modal body does not
+   clip it. Its mask does, and a mask on the scroll container cannot stay while the menu is open. */
 .inline-scroll:has(.layer-actions-dropdown .dropdown-menu.show) { /* stylelint-disable-line no-descending-specificity */
-  overflow: visible;
   mask-image: none;
 }
 
