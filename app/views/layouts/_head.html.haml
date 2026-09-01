@@ -14,7 +14,7 @@
   %meta{ name: 'apple-mobile-web-app-capable', content: 'yes' }
   %meta{ name: 'apple-mobile-web-app-title', content: "#{title}" }
 
-  %meta{ name: 'description', content: (content_for?(:title) ? yield(:title) : '') + " - " + _("Create individual maps for your places, tracks and events. Share your maps in real-time.") }
+  %meta{ name: 'description', content: (content_for?(:title) ? yield(:title) : _("Create individual maps for your places, tracks and events. Share your maps in real-time.")) }
   %meta{ name: 'keywords', content: _('map maker, create map, my maps, share maps, my maps, custom map, travel maps, map editor, indoor, geojson, maplibre, openstreetmap, privacy, open source, free to use') }
 
   - # Open Graph protocol https://ogp.me/

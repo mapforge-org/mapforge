@@ -4,7 +4,7 @@
   - # https://github.com/Ionaru/easy-markdown-editor
   = stylesheet_link_tag "easymde.min.css" # v2.20.0, manual update
 
-- content_for :title, "Mapforge map: #{(@map.name.presence || 'Unnamed map')}"
+- content_for :title, "Mapforge map: #{@map.name.presence}" if @map.name.presence
 - content_for :head do
   - # Speed up default basemap tile fetches (versatilesColorful uses tiles.versatiles.org)
   %link{ rel: "preconnect", href: "https://tiles.versatiles.org", crossorigin: true }
