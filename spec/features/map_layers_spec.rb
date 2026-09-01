@@ -73,7 +73,8 @@ describe "Map" do
       # expect(map.reload.center).to eq [ 11.07338990801668, 49.44765470337188 ]
       expect(map.zoom).to eq "14.6"
       expect(map.bearing).to eq "50.4"
-      expect(page).to have_text("TestMap")
+      # an existing map name is kept, the imported one is ignored
+      expect(map.name).to eq "Layers test"
     end
 
     it "import image" do
