@@ -21,6 +21,10 @@ nav.fixed-top~#maps {
     display: flex;
     justify-content: center;
   }
+
+  #search-filters-container {
+    margin-inline: auto;
+  }
 }
 
 .maps-list .flex-container {
