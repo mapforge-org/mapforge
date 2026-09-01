@@ -16,6 +16,14 @@ describe "Feature details" do
         expect(page).to have_css("#feature-details-modal")
       end
 
+      it "opens at the height of its content" do
+        viewport = page.evaluate_script("window.innerHeight")
+        # a feature without a description used to open at the 25% of modal-pull-down
+        wait_for { element_offset_height("#feature-details-modal") }.to be > (viewport * 0.25)
+        # the map of the feature stays visible above the sheet
+        expect(element_offset_height("#feature-details-modal")).to be < (viewport * 0.8)
+      end
+
       it "can enlarge modal with pull-up button" do
         initial_height = element_offset_height("#feature-details-modal")
         find(".modal-pull-button").click

@@ -1,6 +1,9 @@
+import { bbox } from '@turf/bbox'
 import { animateElement } from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder'
+import { featureIcon, featureTitle, getFeatureTypeName, highlightFeature, highlightedFeatureId } from 'maplibre/feature'
+import { getFeature, getFeatureSource, getLayer, layers } from 'maplibre/layers/layers'
 import { resetSearchLayer, searchLayer } from 'maplibre/layers/search'
 import { map } from 'maplibre/map'
 
@@ -51,6 +54,7 @@ function placeName (p) {
 }
 
 function renderResult (item) {
+  if (item.mapFeatureId) { return renderFeatureResult(item) }
   const [title, ...address] = item.place_name.split(',')
   return `<div class="geocoder-result">` +
     `<img class="geocoder-result-icon" src="/emojis/noto/${categorySymbol(item.properties)}.png" alt="">` +
@@ -58,6 +62,59 @@ function renderResult (item) {
     `<div class="geocoder-result-title">${escapeHtml(title)}</div>` +
     `<div class="geocoder-result-address">${escapeHtml(address.join(',').trim())}</div>` +
     `</div></div>`
+}
+
+// Features of the open map, the icon is the one the layers modal shows for them
+function renderFeatureResult (item) {
+  const feature = getFeature(item.mapFeatureId)
+  return `<div class="geocoder-result">` +
+    `<span class="geocoder-result-icon flex-center">${feature ? featureIcon(feature, { link: false }) : ''}</span>` +
+    `<div class="geocoder-result-text">` +
+    `<div class="geocoder-result-title">${escapeHtml(item.place_name)}</div>` +
+    `<div class="geocoder-result-address">${escapeHtml(featureSubtitle(item.mapFeatureId, feature))}</div>` +
+    `</div></div>`
+}
+
+// the default layer of a map carries no name, then the type of the feature says more
+function featureSubtitle (id, feature) {
+  return getLayer(id)?.name || (feature ? getFeatureTypeName(feature) : '')
+}
+
+const MAX_FEATURE_RESULTS = 3
+
+// Hit list of the open map, the geocoder puts it in front of the photon results.
+// Hidden layers are left out, a hit there would not be drawn after the fly to it.
+function mapFeatures (query) {
+  const term = query.trim().toLowerCase()
+  if (!term) { return [] }
+  const items = []
+  for (const layer of (layers || []).filter(l => l.show !== false)) {
+    for (const feature of (layer.geojson?.features || [])) {
+      const title = featureTitle(feature)
+      if (!title.toLowerCase().includes(term)) { continue }
+      items.push(toResultItem(feature, title))
+      if (items.length === MAX_FEATURE_RESULTS) { return items }
+    }
+  }
+  return items
+}
+
+// The geocoder needs a geometry, and takes the camera from bbox and center. A point
+// geometry keeps the item small, the feature itself stays behind its id.
+function toResultItem (feature, title) {
+  const box = bbox(feature)
+  const center = [(box[0] + box[2]) / 2, (box[1] + box[3]) / 2]
+  return {
+    type: 'Feature',
+    geometry: { type: 'Point', coordinates: center },
+    properties: feature.properties,
+    place_name: title,
+    text: title,
+    place_type: ['feature'],
+    bbox: box,
+    center: center,
+    mapFeatureId: feature.id
+  }
 }
 
 // transparent marker-color and stroke leave only the emoji visible, and let the
@@ -84,17 +141,43 @@ function toMapFeature (item) {
 // kept here as well as on the layer, so the source only gets built once there is
 // something to show, and so it survives the basemap change that drops it
 let results = []
+// features of the open map, they keep the first rows of the list
+let featureResults = []
+let activeFeature = null
 
 function showResults (items) {
-  results = items.map(toMapFeature)
+  setActiveFeature(null)
+  featureResults = items.filter(i => i.mapFeatureId).map(i => getFeature(i.mapFeatureId)).filter(Boolean)
+  // a feature of the map is drawn by its own layer already, a copy would double the marker
+  results = items.filter(i => !i.mapFeatureId).map(toMapFeature)
   searchLayer().setResults(results)
+}
+
+function setFeatureState (feature, active) {
+  const source = getFeatureSource(feature.id)
+  if (source) { map.setFeatureState({ source: source, id: feature.id }, { active: active }) }
+}
+
+function setActiveFeature (feature) {
+  // a picked feature keeps the sticky highlight of showFeatureDetails
+  if (activeFeature && activeFeature.id !== highlightedFeatureId) { setFeatureState(activeFeature, false) }
+  activeFeature = feature
+  if (feature) { setFeatureState(feature, true) }
+}
+
+// the row index counts the features of the map first, the search layer holds the rest
+function setActiveResult (index) {
+  const feature = index < 0 ? null : featureResults[index]
+  setActiveFeature(feature)
+  searchLayer().setActive(feature ? -1 : index - featureResults.length)
 }
 
 // https://maplibre.org/maplibre-gl-geocoder/types/MaplibreGeocoderOptions.html
 // https://photon.komoot.io/
 export const geocoderConfig = {
   forwardGeocode: async (config) => {
-    const params = new URLSearchParams({ q: config.query, limit: config.limit || 5 })
+    // fixed, the geocoder limit also counts the rows that the features of the map take
+    const params = new URLSearchParams({ q: config.query, limit: 5 })
     const lang = document.documentElement.lang.split('-')[0]
     if (PHOTON_LANGS.includes(lang)) { params.set('lang', lang) }
     // photon prefers results around this point and scales that preference with the zoom.
@@ -134,6 +217,8 @@ export function initializeSearchControl () {
   // runs once per map, so this is also where the results of the previous map are dropped
   resetSearchLayer()
   results = []
+  featureResults = []
+  activeFeature = null
 
   // https://maplibre.org/maplibre-gl-geocoder/
   const geocoder = new MaplibreGeocoder(geocoderConfig, {
@@ -146,6 +231,10 @@ export function initializeSearchControl () {
     // the built-in markers only appear together with a fit of the map bounds
     marker: false,
     showResultMarkers: false,
+    // the features of the open map, the geocoder puts them in front of the photon results
+    localGeocoder: mapFeatures,
+    // 5 photon results plus the features of the map, the list cuts off at this number
+    limit: 5 + MAX_FEATURE_RESULTS,
     render: renderResult
   })
   map.addControl(geocoder, 'top-right')
@@ -159,11 +248,19 @@ export function initializeSearchControl () {
   geocoder.on('result', e => {
     picked = true
     showResults([e.result])
+    // the geocoder fits the map to the bbox of the feature, the details open after that
+    const feature = featureResults[0]
+    if (feature) {
+      map.once('moveend', () => { highlightFeature(feature, true, getFeatureSource(feature.id)) })
+      return
+    }
     searchLayer().setActive(0)
   })
   geocoder.on('clear', () => {
     picked = false
     results = []
+    setActiveFeature(null)
+    featureResults = []
     searchLayer().clearResults()
   })
 
@@ -180,9 +277,9 @@ export function initializeSearchControl () {
   // the result list keeps the order of the markers
   geocoderButton.addEventListener('mouseover', (e) => {
     const item = e.target.closest('.suggestions > li')
-    if (item) { searchLayer().setActive([...item.parentNode.children].indexOf(item)) }
+    if (item) { setActiveResult([...item.parentNode.children].indexOf(item)) }
   })
-  geocoderButton.addEventListener('mouseleave', (_e) => { searchLayer().setActive(picked ? 0 : -1) })
+  geocoderButton.addEventListener('mouseleave', (_e) => { setActiveResult(picked ? 0 : -1) })
 
   map.once('load', function (_e) {
     // delayed via timeout, the geocoders !important transition overrides data-aos-delay

@@ -277,6 +277,16 @@
   flex-shrink: 0;
 }
 
+/* features of the map bring the icon of the layer list, which is built for a taller row */
+.geocoder-result-icon i,
+.geocoder-result-icon img {
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+  max-width: 1.2rem;
+  max-height: 1.2rem;
+  margin: 0;
+}
+
 .geocoder-result-text {
   flex: 1;
   min-width: 0;

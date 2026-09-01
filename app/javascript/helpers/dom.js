@@ -79,6 +79,18 @@ export function loadStylesheet (href) {
   document.head.appendChild(link)
 }
 
+// Grows a mobile sheet to its content, up to 75% of the viewport. Full height hides the
+// map that the modal belongs to. A sheet that shrinks moves out from under the finger,
+// so this only ever makes the sheet taller.
+export function fitModalToContent (modal) {
+  if (!modal || window.innerWidth > 640 || modal.dataset.userSized) { return }
+  const wanted = Math.min(modal.scrollHeight, window.innerHeight * 0.75)
+  if (modal.offsetHeight >= wanted) { return }
+  modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-up')
+  modal.classList.add('modal-pull-transition')
+  modal.style.height = wanted + 'px'
+}
+
 export function isInputElement(target) {
   return target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable
 }

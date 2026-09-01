@@ -344,16 +344,8 @@ export default class extends Controller {
     e.preventDefault()
   }
 
-  // Full height on a tab switch hides the map that the feature belongs to.
-  // A sheet that shrinks moves out from under the finger.
   fitModalToContent () {
-    const modal = this.element
-    if (window.innerWidth > 640 || modal.dataset.userSized) { return }
-    const wanted = Math.min(modal.scrollHeight, window.innerHeight * 0.75)
-    if (modal.offsetHeight >= wanted) { return }
-    modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-up')
-    modal.classList.add('modal-pull-transition')
-    modal.style.height = wanted + 'px'
+    dom.fitModalToContent(this.element)
   }
 
   pullDownModal (modal) {

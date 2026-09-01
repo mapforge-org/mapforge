@@ -118,6 +118,60 @@ describe "Map places search" do
     end
   end
 
+  context "with a matching feature on the map" do
+    let(:feature) { create(:feature, :point, title: "Berlin office") }
+    let(:map) { create(:map, name: "Search test", features: [ feature ]) }
+
+    def feature_active?
+      source = "geojson-source-#{map.layers.first.id}"
+      page.evaluate_script(
+        "map.getFeatureState({ source: '#{source}', id: '#{feature.id}' }).active === true"
+      )
+    end
+
+    it "lists the feature of the map above the places" do
+      find(".maplibregl-ctrl-geocoder--input").set("Berlin")
+
+      expect(page).to have_css("li:nth-child(1) .geocoder-result-title", text: "Berlin office")
+      # the layer of the map carries no name, so the row shows the type of the feature
+      expect(page).to have_css("li:nth-child(1) .geocoder-result-address", text: "Point")
+      expect(page).to have_css("li:nth-child(1) .geocoder-result-icon i.bi-record-circle")
+      expect(page).to have_css("li:nth-child(2) .geocoder-result-title", text: "Berlin")
+    end
+
+    context "with a line feature" do
+      let(:feature) { create(:feature, :line_string, title: "Berlin route") }
+
+      it "keeps the icon inside its own column" do
+        find(".maplibregl-ctrl-geocoder--input").set("Berlin")
+
+        expect(page).to have_css("li:nth-child(1) .geocoder-result-icon i.bi-signpost")
+        # an unclosed icon tag reopens around the text and colors the whole row
+        expect(page).to have_no_css(".geocoder-result-text i")
+        expect(page).to have_css("i.bi-signpost", count: 1)
+      end
+    end
+
+    it "highlights the feature while the pointer is on its row" do
+      find(".maplibregl-ctrl-geocoder--input").set("Berlin")
+      find(".geocoder-result-title", text: "Berlin office").hover
+
+      wait_for { feature_active? }.to be true
+      # the feature is drawn by its own layer, the search layer must not copy it
+      expect(page).to have_css("li", count: 3)
+    end
+
+    it "moves to the feature and opens its details" do
+      find(".maplibregl-ctrl-geocoder--input").set("Berlin")
+      find(".geocoder-result-title", text: "Berlin office").click
+
+      expect(page).to have_css("#feature-details-modal.show", text: "Berlin office")
+      expect(page.evaluate_script("map.getCenter().lng")).to be_within(0.01).of(11.0557)
+      expect(page.evaluate_script("map.getCenter().lat")).to be_within(0.01).of(49.4732)
+      expect(feature_active?).to be true
+    end
+  end
+
   context "copy to my layer context menu" do
     # center matches the first result in spec/fixtures/files/photon.json
     let(:map) { create(:map, name: "Search test", center: [ 13.3888599, 52.5170365 ], zoom: 15) }
