@@ -98,6 +98,7 @@ export default class extends Controller {
 
     // Hide stroke color mode dropdown by default (only shown for LineStrings with route extras)
     document.querySelector('#stroke-color-mode')?.classList.add('hidden')
+    document.querySelector('#stroke-color')?.classList.remove('hidden')
 
     // transparent stroke
     if (feature.properties.stroke === 'transparent') {
@@ -159,7 +160,7 @@ export default class extends Controller {
           colorModeSelect.classList.remove('hidden')
         }
         if (feature.properties['show-route-extras']) {
-          document.querySelector('#stroke-color').setAttribute('disabled', 'true')
+          document.querySelector('#stroke-color').classList.add('hidden')
         }
       } else {
         // Clear any extra options from previously selected routed features

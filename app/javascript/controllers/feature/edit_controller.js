@@ -155,11 +155,10 @@ export default class extends Controller {
     const mode = document.querySelector('#stroke-color-mode').value
     if (mode) {
       feature.properties['show-route-extras'] = mode
-      document.querySelector('#stroke-color').setAttribute('disabled', 'true')
     } else {
       delete feature.properties['show-route-extras']
-      document.querySelector('#stroke-color').removeAttribute('disabled')
     }
+    document.querySelector('#stroke-color').classList.toggle('hidden', !!mode)
     // Toggling route-extras on/off adds/removes its companion segments.
     this.renderFeature({ refreshRouteExtras: true })
   }

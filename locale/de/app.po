@@ -531,7 +531,7 @@ msgid "Gravel"
 msgstr "Schotter"
 
 msgid "Ground"
-msgstr "Erdgeschoss"
+msgstr "Erde"
 
 msgid "Happy mapping!"
 msgstr "Viel Spaß mit deiner Karte!"

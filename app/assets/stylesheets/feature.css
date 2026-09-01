@@ -397,7 +397,9 @@
 
 #stroke-color-mode {
   max-width: 8.5rem;
-  min-width: 7rem;
+
+  /* shrinkable, otherwise the row overflows on narrow screens and clips the color swatch */
+  min-width: 0;
   padding: 0.3rem 1.8rem 0.3rem 0.5rem;
   font-size: 0.85rem;
   background-position: right 0.3rem center;

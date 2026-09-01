@@ -231,6 +231,20 @@ describe "Feature edit" do
       expect(extras["steepness"]["values"]).to eq([ [ 0, 1, -2 ], [ 1, 3, 3 ], [ 3, 5, 1 ] ])
       expect(extras["surface"]["values"]).to eq([ [ 0, 2, 10 ], [ 2, 5, 3 ] ])
     end
+
+    it "hides the color picker while the line is colored by a route extra" do
+      xy = viewport_xy_for_lat_lng(line.geometry['coordinates'][2][1], line.geometry['coordinates'][2][0])
+      click_coord("#maplibre-map", xy[:x], xy[:y])
+      find("#edit-button-style").click
+
+      expect(page).to have_selector("#stroke-color", visible: true)
+
+      find("#stroke-color-mode").select("Surface")
+      expect(page).to have_selector("#stroke-color", visible: false)
+
+      find("#stroke-color-mode").select("Color")
+      expect(page).to have_selector("#stroke-color", visible: true)
+    end
   end
 
   context "with point on map" do
