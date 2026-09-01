@@ -123,7 +123,7 @@
   padding: 0.2rem 0.8rem;
 }
 
-@media (width <= 640px) {
+@media (width <= 640px), (height < 410px) {
   #feature-details-modal {
     bottom: 0;
     left: calc(50% - 1rem);
@@ -177,7 +177,7 @@
   }
 }
 
-@media (width > 640px) {
+@media (width > 640px) and (height >= 410px) {
   #feature-details-modal {
     left: 2.2rem;
     top: 4.2rem;

@@ -68,6 +68,11 @@ export function isTouchDevice () {
          (!!window.DocumentTouch && document instanceof window.DocumentTouch)
 }
 
+// Keep in sync with the bottom sheet media queries in feature.css and modals.css
+export function isBottomSheet () {
+  return window.matchMedia('(width <= 640px), (height < 410px)').matches
+}
+
 export function isApp () {
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 }

@@ -488,7 +488,7 @@ function initializeFeatureTouchScroll() {
     if (event.target.tagName.toLowerCase() === 'em-emoji-picker') return
 
     // only enable bottom sheet behavior on small screens
-    if (window.innerWidth > 640) return
+    if (!f.isBottomSheet()) return
 
     // Allow form elements to work normally
     if (dom.isInputElement(event.target)) return

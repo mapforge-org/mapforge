@@ -465,7 +465,7 @@
   }
 }
 
-@media (width <= 640px) {
+@media (width <= 640px), (height < 410px) {
   .modal-pull-button {
     top: 0.7rem;
     position: relative;

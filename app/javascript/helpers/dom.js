@@ -83,7 +83,7 @@ export function loadStylesheet (href) {
 // map that the modal belongs to. A sheet that shrinks moves out from under the finger,
 // so this only ever makes the sheet taller.
 export function fitModalToContent (modal) {
-  if (!modal || window.innerWidth > 640 || modal.dataset.userSized) { return }
+  if (!modal || !functions.isBottomSheet() || modal.dataset.userSized) { return }
   const wanted = Math.min(modal.scrollHeight, window.innerHeight * 0.75)
   if (modal.offsetHeight >= wanted) { return }
   modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-up')
