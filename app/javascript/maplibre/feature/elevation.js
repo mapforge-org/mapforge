@@ -70,6 +70,7 @@ export async function showElevationChart (feature) {
   const active = { labels: allLabels, values: allValues, coords: allCoords, steepness: allSteepness }
   filterToViewport(active, allLabels, allValues, allCoords, allSteepness)
   showElevationStats(active.values)
+  updateScopeLabel(active)
 
   // Distance axis can be flipped to count down to the destination (click the x axis)
   const totalDistance = allLabels[allLabels.length - 1]
@@ -190,18 +191,12 @@ export async function showElevationChart (feature) {
   if (scopeToggle) {
     const freshScope = scopeToggle.cloneNode(true)
     scopeToggle.parentNode.replaceChild(freshScope, scopeToggle)
-    const freshLabel = freshScope.querySelector('#elevation-scope-label')
-    const freshIcon = freshScope.querySelector('i')
     freshScope.addEventListener('click', (e) => {
       e.stopPropagation()
       viewportSyncEnabled = !viewportSyncEnabled
       if (viewportSyncEnabled) {
-        freshLabel.textContent = window.__('Visible section')
-        freshIcon.className = 'bi bi-map me-1'
         filterToViewport(active, allLabels, allValues, allCoords, allSteepness)
       } else {
-        freshLabel.textContent = window.__('Full track')
-        freshIcon.className = 'bi bi-signpost-split me-1'
         active.labels = allLabels
         active.values = allValues
         active.coords = allCoords
@@ -212,6 +207,7 @@ export async function showElevationChart (feature) {
       chart.data.labels = active.labels
       chart.data.datasets[0].data = active.values
       showElevationStats(active.values)
+      updateScopeLabel(active)
       updateGpsIndex(chart, active, allCoords)
       chart.update('none')
     })
@@ -320,6 +316,7 @@ export async function showElevationChart (feature) {
     chart.data.labels = active.labels
     chart.data.datasets[0].data = active.values
     showElevationStats(active.values)
+    updateScopeLabel(active)
     updateGpsIndex(chart, active, allCoords)
     chart.update('none')
   }
@@ -329,6 +326,17 @@ export async function showElevationChart (feature) {
   map.on('moveend', debouncedSync)
 
   return chart
+}
+
+// Label and icon of the scope toggle, including the distance of the shown section
+function updateScopeLabel (active) {
+  const label = document.getElementById('elevation-scope-label')
+  if (!label) return
+  const dist = toDisplayUnit(active.labels[active.labels.length - 1] - active.labels[0])
+  label.textContent = (viewportSyncEnabled ? window.__('Visible section') : window.__('Full track')) +
+    (dist ? ` (${dist})` : '')
+  const icon = document.querySelector('#elevation-scope-toggle i')
+  if (icon) icon.className = viewportSyncEnabled ? 'bi bi-map me-1' : 'bi bi-signpost-split me-1'
 }
 
 function updateGpsIndex (chart, active, allCoords) {
