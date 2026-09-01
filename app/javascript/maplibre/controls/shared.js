@@ -388,6 +388,8 @@ export function resetControls () {
     e => { e.classList.remove('active') })
   // reset line submenu
   functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
+  // a manual height must not outlive the open modal
+  functions.e('#feature-details-modal', e => { delete e.dataset.userSized })
 
   hideModals()
   // reset context menu
@@ -474,7 +476,7 @@ let isDragging = false
 let dragStartY, dragStartModalHeight
 // Velocity tracking
 let dragHistory = [] // stores { y, time } entries for velocity calculation
-const SNAP_POINTS = [0, 25, 45, 100] // close, down, middle, full (percent of viewport)
+const SNAP_POINTS = [0, 25, 45, 75, 100] // close, down, middle, high, full (percent of viewport)
 const VELOCITY_THRESHOLD = 0.4 // px/ms — above this, momentum takes over
 const RUBBER_BAND_FACTOR = 0.3 // resistance when dragging past bounds
 
@@ -536,6 +538,8 @@ function initializeFeatureTouchScroll() {
     if (y < 0 || modal.scrollTop === 0) {
       modal.classList.remove('modal-pull-transition')
       modal.style.height = newHeight + 'px'
+      // a tap also starts a drag, so only a real move counts as a manual resize
+      if (Math.abs(newHeight - dragStartModalHeight) > 10) { modal.dataset.userSized = 'true' }
     } else {
       dragStartY = dragY
       dragStartModalHeight = modal.offsetHeight

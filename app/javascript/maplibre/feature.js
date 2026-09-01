@@ -129,13 +129,11 @@ export async function showFeatureDetails (feature) {
   }
   dom.showElements('#feature-details-body')
   const modal = document.querySelector('#feature-details-modal')
-  modal.classList.remove('modal-pull-down')
-  modal.classList.remove('modal-pull-up')
-  modal.classList.remove('modal-pull-fade')
+  modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-up', 'modal-pull-fade')
   modal.classList.add(featureHasDescription(feature) ? 'modal-pull-middle' : 'modal-pull-down')
   modal.classList.add('modal-pull-transition')
-  // keep custom modal height on selection change
-  // modal.style.removeProperty('height')
+  // without this, the details height depends on the tab you came from
+  if (!modal.dataset.userSized) { modal.style.removeProperty('height') }
   modal.classList.add('show')
   modal.scrollTo(0, 0)
   modal.setAttribute('data-feature--modal-feature-id-value', feature.id)

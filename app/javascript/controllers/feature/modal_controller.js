@@ -76,9 +76,6 @@ export default class extends Controller {
   }
 
   show_feature_edit_ui (tab = 'properties') {
-    if (this.element.classList.contains('modal-pull-down')) {
-      this.pullUpModal(this.element)
-    }
     const feature = this.getSelectedFeature()
     dom.showElements(['#feature-edit-ui'])
 
@@ -196,6 +193,13 @@ export default class extends Controller {
 
     syncStepperValues()
     initSteppers()
+
+    // scrollHeight is only correct after the sections of this tab are visible
+    if (tab === 'geometry' && !this.element.dataset.userSized) {
+      this.pullDownModal(this.element)
+    } else {
+      this.fitModalToContent()
+    }
   }
 
   // colors already on the map first, then the mapforge palette (read from CSS so it stays in sync)
@@ -263,55 +267,21 @@ export default class extends Controller {
   }
 
   initAdvancedTabToggles () {
-    // Convert to route section
-    const convertHeader = document.querySelector('#convert-to-route-header')
-    const convertContent = document.querySelector('#convert-to-route-content')
-    const convertChevron = convertHeader?.querySelector('.extras-totals-chevron')
+    for (const id of ['convert-to-route', 'style-json-section', 'geometry-json-section']) {
+      const header = document.querySelector(`#${id}-header`)
+      const content = document.querySelector(`#${id}-content`)
+      if (!header || !content) { continue }
 
-    if (convertHeader && convertContent && convertChevron) {
       // Remove existing listeners by replacing the element
-      const freshConvertHeader = convertHeader.cloneNode(true)
-      convertHeader.parentNode.replaceChild(freshConvertHeader, convertHeader)
-      const freshConvertChevron = freshConvertHeader.querySelector('.extras-totals-chevron')
+      const fresh = header.cloneNode(true)
+      header.parentNode.replaceChild(fresh, header)
+      const chevron = fresh.querySelector('.extras-totals-chevron')
 
-      freshConvertHeader.addEventListener('click', () => {
-        convertContent.classList.toggle('hidden')
-        freshConvertChevron.classList.toggle('bi-chevron-down')
-        freshConvertChevron.classList.toggle('bi-chevron-up')
-      })
-    }
-
-    // Style JSON section
-    const styleJsonHeader = document.querySelector('#style-json-section-header')
-    const styleJsonContent = document.querySelector('#style-json-section-content')
-    const styleJsonChevron = styleJsonHeader?.querySelector('.extras-totals-chevron')
-
-    if (styleJsonHeader && styleJsonContent && styleJsonChevron) {
-      const freshStyleJsonHeader = styleJsonHeader.cloneNode(true)
-      styleJsonHeader.parentNode.replaceChild(freshStyleJsonHeader, styleJsonHeader)
-      const freshStyleJsonChevron = freshStyleJsonHeader.querySelector('.extras-totals-chevron')
-
-      freshStyleJsonHeader.addEventListener('click', () => {
-        styleJsonContent.classList.toggle('hidden')
-        freshStyleJsonChevron.classList.toggle('bi-chevron-down')
-        freshStyleJsonChevron.classList.toggle('bi-chevron-up')
-      })
-    }
-
-    // Geometry JSON section
-    const geometryJsonHeader = document.querySelector('#geometry-json-section-header')
-    const geometryJsonContent = document.querySelector('#geometry-json-section-content')
-    const geometryJsonChevron = geometryJsonHeader?.querySelector('.extras-totals-chevron')
-
-    if (geometryJsonHeader && geometryJsonContent && geometryJsonChevron) {
-      const freshGeometryJsonHeader = geometryJsonHeader.cloneNode(true)
-      geometryJsonHeader.parentNode.replaceChild(freshGeometryJsonHeader, geometryJsonHeader)
-      const freshGeometryJsonChevron = freshGeometryJsonHeader.querySelector('.extras-totals-chevron')
-
-      freshGeometryJsonHeader.addEventListener('click', () => {
-        geometryJsonContent.classList.toggle('hidden')
-        freshGeometryJsonChevron.classList.toggle('bi-chevron-down')
-        freshGeometryJsonChevron.classList.toggle('bi-chevron-up')
+      fresh.addEventListener('click', () => {
+        content.classList.toggle('hidden')
+        chevron?.classList.toggle('bi-chevron-down')
+        chevron?.classList.toggle('bi-chevron-up')
+        this.fitModalToContent()
       })
     }
   }
@@ -339,6 +309,7 @@ export default class extends Controller {
         onUpdate: () => { this.updateDesc() }
       }]
     })
+    this.fitModalToContent()
   }
 
   updateDesc () {
@@ -369,7 +340,20 @@ export default class extends Controller {
     } else {
       this.pullUpModal(modal)
     }
+    modal.dataset.userSized = 'true'
     e.preventDefault()
+  }
+
+  // Full height on a tab switch hides the map that the feature belongs to.
+  // A sheet that shrinks moves out from under the finger.
+  fitModalToContent () {
+    const modal = this.element
+    if (window.innerWidth > 640 || modal.dataset.userSized) { return }
+    const wanted = Math.min(modal.scrollHeight, window.innerHeight * 0.75)
+    if (modal.offsetHeight >= wanted) { return }
+    modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-up')
+    modal.classList.add('modal-pull-transition')
+    modal.style.height = wanted + 'px'
   }
 
   pullDownModal (modal) {
