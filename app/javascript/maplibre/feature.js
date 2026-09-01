@@ -213,12 +213,12 @@ export function featureIcon (feature, { link = true } = {}) {
   if (feature.properties['marker-image-url']) {
     const markerImageUrl = feature.properties['marker-image-url']
     const imageHref = markerImageUrl.startsWith('/icon') ? markerImageUrl.replace('/icon', '/image') : markerImageUrl
-    const img = `<img class='feature-details-icon' src='${markerImageUrl}'>`
+    const img = `<img loading='lazy' class='feature-details-icon' src='${markerImageUrl}'>`
     image = link ? `<a target='_blank' href='${imageHref}'>${img}</a>` : img
   } else if (feature.properties['marker-symbol']) {
-    image = "<img class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
+    image = "<img loading='lazy' class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
   } else if (feature.properties['stroke-image-url']) {
-    image = "<img class='feature-details-icon' src='" + feature.properties['stroke-image-url'] + "'>"
+    image = "<img loading='lazy' class='feature-details-icon' src='" + feature.properties['stroke-image-url'] + "'>"
   } else if (feature.properties?.route?.profile?.startsWith("cycling-") || feature.properties?.route?.profile === "bike") {
     image = `<i class='bi bi-bicycle fs-3' ${iconColorStyle}>`
   } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "car") {
