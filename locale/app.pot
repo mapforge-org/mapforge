@@ -762,6 +762,10 @@ msgstr ""
 msgid "Ice"
 msgstr ""
 
+#: ../app/views/maps/modals/_image_viewer.haml:2
+msgid "Image"
+msgstr ""
+
 #: ../app/views/maps/modals/feature/_edit_ui.haml:97
 msgid "Image:"
 msgstr ""

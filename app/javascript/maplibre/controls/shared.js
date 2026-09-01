@@ -303,7 +303,7 @@ export function initLayersModal () {
         const icon = document.createElement('span')
         icon.classList.add('feature-icon')
         icon.classList.add('flex-center')
-        icon.innerHTML = featureIcon(feature)
+        icon.innerHTML = featureIcon(feature, { link: false })
         listItem.appendChild(icon)
         const name = document.createElement('span')
         name.classList.add('feature-name')

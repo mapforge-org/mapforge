@@ -575,6 +575,9 @@ msgstr "So zeichnest du mit der µlogger-App deine Tracks mit dem Handy auf."
 msgid "Ice"
 msgstr "Eis"
 
+msgid "Image"
+msgstr "Bild"
+
 msgid "Image:"
 msgstr "Bild:"
 

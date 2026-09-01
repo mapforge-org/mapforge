@@ -114,6 +114,37 @@ describe "Feature details" do
     end
   end
 
+  context "image marker" do
+    let(:feature) do
+      create(:feature, :point_middle, properties: { "marker-size" => "150", "marker-image-url" => "/icon/none.webp" })
+    end
+    let(:map) { create(:map, features: [ feature ]) }
+
+    before do
+      click_center_of_screen
+      expect(page).to have_css("#feature-details-modal")
+    end
+
+    it "opens the image in a new window" do
+      expect(page).to have_css(".feature-symbol a[target='_blank'][href='/image/none.webp']")
+      find(".feature-symbol a").click
+      expect(page).to have_no_css("#image-viewer[open]")
+    end
+
+    it "opens the image inside the map when the app runs standalone" do
+      # headless Chrome cannot emulate display-mode, so fake it for isApp()
+      page.execute_script(<<~JS)
+        const original = window.matchMedia.bind(window)
+        window.matchMedia = query => query.includes('display-mode: standalone') ? { matches: true } : original(query)
+      JS
+      find(".feature-symbol a").click
+
+      expect(page).to have_css("#image-viewer[open] img[src='/image/none.webp']", visible: :all)
+      expect(page).to have_css("#feature-details-modal.show")
+      expect(page).to have_current_path(map.private_map_path, ignore_query: true)
+    end
+  end
+
   context "elevation profile" do
     let(:feature) { create(:feature, :line_string_with_elevation, title: "Elevation Track") }
     let(:map) { create(:map, features: [ feature ]) }

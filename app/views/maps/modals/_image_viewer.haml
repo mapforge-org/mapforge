@@ -1,0 +1,8 @@
+- # shown in the installed app only, a click anywhere closes it
+%dialog#image-viewer{ 'aria-label': _("Image"),
+  data: { controller: "map--image-viewer",
+    action: "click@document->map--image-viewer#open \
+      keydown.esc@document:capture->map--image-viewer#stopEsc \
+      click->map--image-viewer#close" } }
+  %button.modal-close-button{ type: "button" } &times;
+  %img{ alt: "", data: { "map--image-viewer-target": "image" } }
