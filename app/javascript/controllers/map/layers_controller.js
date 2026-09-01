@@ -95,7 +95,8 @@ export default class extends Controller {
             mapProperties.zoom = props.zoom
             mapProperties.pitch = props.pitch
             mapProperties.bearing = props.bearing
-            updateMapName(props.name)
+            if (!mapProperties.name) { updateMapName(props.name) }
+            if (!mapProperties.description) { mapProperties.description = props.description }
             sendMessage('update_map', mapProperties)
           }
         }
