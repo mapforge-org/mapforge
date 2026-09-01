@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-09
+
+* Add local geojson results to search results
+
+
 ## 2026-08
 
 * Show an explanation when the browser has no WebGL2 support

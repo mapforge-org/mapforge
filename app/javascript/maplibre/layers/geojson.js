@@ -137,12 +137,17 @@ export class GeoJSONLayer extends Layer {
       const onData = (e) => {
         // make sure to only act on the completed load of this source
         if (e.sourceId !== sourceId || e.sourceDataType === 'metadata' || !map.isSourceLoaded(sourceId)) { return }
-        cleanup()
+        map.off('sourcedata', onData)
+        // The error listener stays until getData() settles. A stale event of the empty initial
+        // source can land here while the URL load is still running; getData() then waits for
+        // that load, and without the listener a failing fetch would leave this promise hanging.
         source.getData()
-          .then(geojson => { this.layer.geojson = geojson; this.render(true, { sourceLoaded: true }); resolve(geojson) })
-          .catch(error => { console.error(`Failed to read data for ${sourceId}`, error); resolve() })
+          .then(geojson => { cleanup(); this.layer.geojson = geojson; this.render(true, { sourceLoaded: true }); resolve(geojson) })
+          .catch(error => { cleanup(); console.error(`Failed to read data for ${sourceId}`, error); resolve() })
       }
-      // A failed URL fetch fires an 'error' event (not a completed 'sourcedata'). Resolve rather
+      // A failed URL fetch fires an 'error' event (not a completed 'sourcedata'). MapLibre keeps
+      // the previously loaded tiles on screen, so keep this.layer.geojson too: an empty model
+      // next to a drawn map shows wrong feature counts and breaks feature lookups. Resolve rather
       // than reject so a single failing layer doesn't hang initializeLayerStyles' Promise.all.
       const onError = (e) => {
         if (e.sourceId !== sourceId) { return }

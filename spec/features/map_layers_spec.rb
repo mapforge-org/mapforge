@@ -409,6 +409,32 @@ describe "Map" do
     end
   end
 
+  # A failed reload keeps the features of the previous source on the map, because MapLibre
+  # only drops them when a new load succeeds. The layer list must keep them too.
+  context "when the layer reload fails after a reconnect" do
+    let(:feature) { create(:feature, :point, title: "Kept Feature", layer: map.layers.first) }
+
+    before do
+      feature
+      visit map.private_map_path
+      expect_map_loaded
+    end
+
+    it "keeps the features in the layer list", :skip_console_errors do
+      go_offline
+      expect(page).to have_css("#maplibre-map[data-online='false']")
+
+      map.update!(name: "changed while offline") # forces the reload path on reconnect
+      allow_any_instance_of(MapsController).to receive(:layer) { |c| c.head(:internal_server_error) }
+      go_online
+      expect(page).to have_css("#maplibre-map[data-online='true']")
+
+      find(".maplibregl-ctrl-layers").click
+      expect(page).to have_text("Kept Feature")
+      expect(page).to have_no_text("No elements in this layer")
+    end
+  end
+
   context "reordering features" do
     let!(:f1) { create(:feature, :point, title: "Reorder A", layer: map.layers.first) }
     let!(:f2) { create(:feature, :point_middle, title: "Reorder B", layer: map.layers.first) }

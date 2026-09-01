@@ -76,6 +76,10 @@ export async function initializeLayers() {
  * request is needed. On reconnect, pass { refetch: true } to pull fresh state from the server.
  */
 export function loadLayerDefinitions({ refetch = false } = {}) {
+  // The MapLibre sources of the replaced instances stay on the map (initializeLayerSources
+  // re-uses them), so hand their features to the new instances. Without this the layer list
+  // counts 0 while the map still draws the features, whenever a reload fails (flaky network).
+  const previousGeojson = new Map((layers || []).map(l => [l.id, l.layer.geojson]))
   layers = null
 
   const createLayers = (data) => {
@@ -83,6 +87,10 @@ export function loadLayerDefinitions({ refetch = false } = {}) {
     // make sure we're still showing the map the definitions came from
     if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
     layers = data.layers.map(l => createLayerInstance(l))
+    layers.forEach(l => {
+      const previous = previousGeojson.get(l.id)
+      if (previous && !l.layer.geojson) { l.geojson = previous }
+    })
     // Track the loaded map version so the channel reconnect handler can skip the heavy
     // reload when nothing changed while we were disconnected (see map_channel.js).
     setLoadedMapUpdatedAt(data.updated_at)
