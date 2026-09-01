@@ -60,19 +60,22 @@
           %span.stepper-val
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
+      -# filled by feature--modal#updateColorPresets, shown as swatches by the native color picker
+      %datalist#color-presets
+
       #stroke-color-ui.edit-ui.edit-line.edit-polygon.edit-point
         %label.left-label.edit-polygon.edit-line{ for: "stroke-color"}= _("Line color:")
         %label.left-label.edit-point{ for: "stroke-color"}= _("Border color:")
         %select#stroke-color-mode.form-select.form-select-sm.hidden{ data: { action: "change->feature--edit#addUndo change->feature--edit#updateStrokeColorMode change->feature--edit#saveFeature" } }
           %option{ value: "" }= _("Color")
-        %input.form-control#stroke-color{ type: "color", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateStrokeColor change->feature--edit#saveFeature" }
+        %input.form-control#stroke-color{ type: "color", list: "color-presets", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateStrokeColor change->feature--edit#saveFeature" }
         %div.edit-polygon.edit-point
           %input#stroke-color-transparent{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateStrokeColorTransparent change->feature--edit#saveFeature"} }
           %label{ for: "stroke-color-transparent"}= _("transparent")
 
       #fill-color-ui.edit-ui.edit-polygon.edit-point
         %label.left-label{ for: "fill-color"}= _("Fill color:")
-        %input.form-control#fill-color{ type: "color", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateFillColor change->feature--edit#saveFeature" }
+        %input.form-control#fill-color{ type: "color", list: "color-presets", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateFillColor change->feature--edit#saveFeature" }
         %div
           %input#fill-color-transparent{type: "checkbox", value: 'transparent', data: { action: "input->feature--edit#addUndo input->feature--edit#updateFillColorTransparent change->feature--edit#saveFeature"} }
           %label{ for: "fill-color-transparent"}= _("transparent")

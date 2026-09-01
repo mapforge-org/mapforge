@@ -10,11 +10,16 @@ import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromPropertie
 import { draw, select, unselect } from 'maplibre/edit'
 import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
-import { getFeature } from 'maplibre/layers/layers'
+import { getFeature, layers } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
 import { defaults } from 'maplibre/styles/defaults'
 
 let easyMDE
+
+const paletteVars = ['--color-light-sand', '--color-light-beige', '--color-light-teagreen',
+  '--color-light-steel-blue', '--color-mid-ecru', '--color-mid-fawn', '--color-orange',
+  '--color-mid-rust', '--color-mid-brown', '--color-mid-chili', '--color-mid-steel-blue',
+  '--color-dark-charcoal', '--color-dark-moss-green', '--color-dark-smoky-black']
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
@@ -89,6 +94,8 @@ export default class extends Controller {
     if (tab === 'style') { document.querySelector('#edit-button-style')?.classList.add('active') }
     if (tab === 'advanced') { document.querySelector('#edit-button-advanced')?.classList.add('active') }
     functions.e('em-emoji-picker', e => { e.remove() })
+
+    this.updateColorPresets()
 
     // init ui input elements
     document.querySelector('#feature-title-input input').value = feature.properties.title || null
@@ -189,6 +196,24 @@ export default class extends Controller {
 
     syncStepperValues()
     initSteppers()
+  }
+
+  // colors already on the map first, then the mapforge palette (read from CSS so it stays in sync)
+  updateColorPresets () {
+    const used = []
+    for (const layer of layers || []) {
+      for (const feature of layer?.geojson?.features || []) {
+        for (const key of ['stroke', 'fill', 'marker-color']) {
+          const color = feature.properties?.[key]
+          // datalist options must be 6 digit hex, anything else is ignored by the picker
+          if (/^#[0-9a-f]{6}$/i.test(color)) { used.push(color.toLowerCase()) }
+        }
+      }
+    }
+    const style = getComputedStyle(document.documentElement)
+    const palette = paletteVars.map(v => style.getPropertyValue(v).trim().toLowerCase())
+    const colors = [...new Set([...new Set(used)].slice(0, 8).concat(palette))]
+    document.querySelector('#color-presets').innerHTML = colors.map(c => `<option value="${c}">`).join('')
   }
 
   show_ui_tab (tab) {

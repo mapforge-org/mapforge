@@ -373,6 +373,23 @@ describe "Feature edit" do
     end
   end
 
+  context "with two points on map" do
+    let(:point) { create(:feature, :point_middle, title: "Point Title") }
+    let(:colored_point) { create(:feature, :point, properties: { "marker-color" => "#123456" }) }
+    let(:map) { create(:map, features: [ point, colored_point ]) }
+
+    it "offers colors of other features and the palette as picker presets" do
+      click_coord("#maplibre-map", 512, 430)
+      find("#edit-button-edit").click
+      find("#edit-button-style").click
+      presets = page.evaluate_script(
+        "Array.from(document.querySelectorAll('#color-presets option')).map(o => o.value)")
+
+      expect(presets).to include("#123456") # used by the other point
+      expect(presets).to include("#ca3c25") # --color-mid-chili
+    end
+  end
+
   context "cycling through overlapping features" do
     let(:polygon) { create(:feature, :polygon_middle, title: "Poly") }
     let(:point1) { create(:feature, :point_middle, title: "Point 1") }
