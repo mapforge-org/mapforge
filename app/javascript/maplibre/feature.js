@@ -334,6 +334,7 @@ export async function uploadImage(image) {
   const formData = new FormData() // send using multipart/form-data
   formData.append('image', image)
   formData.append('map_id', window.gon.map_id)
+  dom.showElements('#preloader')
   return fetch('/images', {
     method: 'POST',
     body: formData,
@@ -350,6 +351,7 @@ export async function uploadImage(image) {
       return Promise.reject(response.statusText)
     }
   })
+  .finally(() => { dom.hideElements('#preloader') })
 }
 
 
@@ -371,9 +373,17 @@ export async function uploadImageToFeature(image, feature) {
 }
 
 export async function confirmImageLocation(file) {
-  // Dynamically import ExifReader (https://github.com/mattiasw/ExifReader)
-  const ExifReader = (await import('exif-reader'))
-  const tags = await ExifReader.load(file || url, { expanded: true, async: true })
+  let tags
+  try {
+    // Dynamically import ExifReader (https://github.com/mattiasw/ExifReader)
+    const ExifReader = (await import('exif-reader'))
+    tags = await ExifReader.load(file, { expanded: true, async: true })
+  } catch (error) {
+    // ExifReader throws on images without metadata and on containers it cannot parse.
+    // Mobile uploads hit this often, iOS strips EXIF when a photo comes from the photo picker.
+    console.log('No usable EXIF data: ' + error)
+    return false
+  }
   const gpsLng = tags?.gps?.Longitude, gpsLat = tags?.gps?.Latitude
 
   if (gpsLng && gpsLat) {
