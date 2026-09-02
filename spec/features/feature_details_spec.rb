@@ -157,6 +157,14 @@ describe "Feature details" do
     let(:feature) { create(:feature, :line_string_with_elevation, title: "Elevation Track") }
     let(:map) { create(:map, features: [ feature ]) }
 
+    def gps_chart_index
+      page.evaluate_async_script(<<~JS)
+        const done = arguments[0]
+        import('chart.js').then(m => done(
+          m.Chart.getChart(document.getElementById('route-elevation-chart'))?._gpsChartIndex ?? null))
+      JS
+    end
+
     before do
       click_center_of_screen
       expect(page).to have_css("#feature-details-modal")
@@ -180,6 +188,19 @@ describe "Feature details" do
       expect(scope).to have_text("Full track")
       scope.click
       expect(scope).to have_text("Visible section")
+    end
+
+    it "keeps the gps position marker when the chart is rebuilt" do
+      # 11.08, 49.45 is the third vertex of the :line_string_with_elevation track
+      page.execute_script(
+        "window.dispatchEvent(new CustomEvent('gps-position', " \
+        "{ detail: { lng: 11.08, lat: 49.45 } }))"
+      )
+      wait_for { gps_chart_index }.not_to be_nil
+
+      # returning to the details tab destroys the chart and builds a new one
+      find("#edit-button-details").click
+      wait_for { gps_chart_index }.not_to be_nil
     end
 
     it "can collapse and expand elevation profile" do

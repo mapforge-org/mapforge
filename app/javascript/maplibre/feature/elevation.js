@@ -166,6 +166,11 @@ export async function showElevationChart (feature) {
     }
   })
 
+  // A rebuilt chart loses _gpsChartIndex. Seed it from the last fix, because on
+  // desktop trackUserLocation is off and no further gps-position event arrives.
+  updateGpsIndex(chart, active, allCoords)
+  chart.update('none')
+
   // Set up collapsible elevation toggle (expanded by default, except for car routes)
   const elevToggle = document.getElementById('elevation-toggle')
   const elevContent = document.getElementById('elevation-content')
@@ -278,9 +283,10 @@ export async function showElevationChart (feature) {
 
   // Update GPS position indicator on the chart
   window.addEventListener('gps-position', (event) => {
+    // Store even while the card is hidden, so a later chart build can seed from it
+    lastGpsPosition = event.detail
     if (elevationContainer.offsetParent === null) return
     if (!event.detail) {
-      lastGpsPosition = null
       chart._gpsChartIndex = null
       chart.update('none')
       return
@@ -288,7 +294,6 @@ export async function showElevationChart (feature) {
 
     // Throttle to 1 Hz — chart position indicator doesn't need sub-second updates
     functions.throttle(() => {
-      lastGpsPosition = event.detail
       updateGpsIndex(chart, active, allCoords)
       chart.update('none')
     }, 'gps-elevation', 1000)
