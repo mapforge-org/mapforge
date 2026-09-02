@@ -80,35 +80,36 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   initializeMaplibreProperties()
   resetEditMode()
-  map = new maplibregl.Map({
-    container: divId,
-    center: (mapProperties.center || mapProperties.default_center),
-    zoom: (mapProperties.zoom || mapProperties.default_zoom), // will zoom in on map:load
-    pitch: mapProperties.pitch,
-    bearing: mapProperties.bearing || 0,
-    maxPitch: 72,
-    maxZoom: 24, // hard limit of maplibre
-    maplibreLogo: true,
-    hash: true, // enable hash in URL for map center/zoom
-    fadeDuration: 200, // shorter fade
-    interactive: (window.gon.map_mode !== 'static'), // can move/zoom map
-    // merged over maplibres defaultLocale, only listed keys get overridden
-    locale: {
-      'AttributionControl.ToggleAttribution': window.__('Toggle attribution'),
-      'GeolocateControl.FindMyLocation': window.__('Find my location'),
-      'GeolocateControl.LocationNotAvailable': window.__('Location not available'),
-      'Map.Title': window.__('Map'),
-      'Marker.Title': window.__('Map marker'),
-      'NavigationControl.ResetBearing': window.__('Drag to rotate map, click to reset north'),
-      'NavigationControl.ZoomIn': window.__('Zoom in'),
-      'NavigationControl.ZoomOut': window.__('Zoom out')
-    }
-    // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
-  })
-
-  // No painter means no WebGL2: no 'load' event, no boxZoom. Dropping the .map
-  // element also un-hides the header nav (html:has(.map) in map.css).
-  if (!map.painter) {
+  try {
+    map = new maplibregl.Map({
+      container: divId,
+      center: (mapProperties.center || mapProperties.default_center),
+      zoom: (mapProperties.zoom || mapProperties.default_zoom), // will zoom in on map:load
+      pitch: mapProperties.pitch,
+      bearing: mapProperties.bearing || 0,
+      maxPitch: 72,
+      maxZoom: 24, // hard limit of maplibre
+      maplibreLogo: true,
+      hash: true, // enable hash in URL for map center/zoom
+      fadeDuration: 200, // shorter fade
+      interactive: (window.gon.map_mode !== 'static'), // can move/zoom map
+      // merged over maplibres defaultLocale, only listed keys get overridden
+      locale: {
+        'AttributionControl.ToggleAttribution': window.__('Toggle attribution'),
+        'GeolocateControl.FindMyLocation': window.__('Find my location'),
+        'GeolocateControl.LocationNotAvailable': window.__('Location not available'),
+        'Map.Title': window.__('Map'),
+        'Marker.Title': window.__('Map marker'),
+        'NavigationControl.ResetBearing': window.__('Drag to rotate map, click to reset north'),
+        'NavigationControl.ZoomIn': window.__('Zoom in'),
+        'NavigationControl.ZoomOut': window.__('Zoom out')
+      }
+      // style: {} // style/map is getting loaded by 'setBackgroundMapLayer'
+    })
+  } catch (error) {
+    // Since 6.7 the constructor throws GPUInitializationError without WebGL2.
+    // Dropping the .map element also un-hides the header nav (html:has(.map) in map.css).
+    console.error(error)
     dom.deleteElements(['#preloader', '#maplibre-map', '#map-head', '#status-container'])
     functions.e('#map-header nav', e => { e.style.removeProperty('display') })
     dom.showElements('#map-error')

@@ -385,8 +385,9 @@ describe "Feature edit" do
       presets = page.evaluate_script(
         "Array.from(document.querySelectorAll('#color-presets option')).map(o => o.value)")
 
-      expect(presets).to include("#123456") # used by the other point
-      expect(presets).to include("#ca3c25") # --color-mid-chili
+      expect(presets.first).to eq("#123456") # used by the other point
+      expect(presets).to include("#e5e5d7") # --color-light-sand
+      expect(presets.size).to eq(8) # list is capped
     end
   end
 
