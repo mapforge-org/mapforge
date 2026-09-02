@@ -9,24 +9,91 @@ import { map } from 'maplibre/map'
 
 const PHOTON_LANGS = ['de', 'en', 'fr', 'it']
 
-// Noto emoji per photon category, drawn both on the map marker and in the result list.
-// Places and boundaries are told apart by their type, everything else by its osm key.
+// Noto emoji per photon osm_value, the most specific hint photon gives.
+// A value that two osm keys share with a different meaning stays out of here, for
+// example 'residential', a district under landuse but a street under highway.
+const VALUES = {
+  restaurant: '🍽', fast_food: '🍔', cafe: '☕', bar: '🍸', pub: '🍺',
+  biergarten: '🍺', ice_cream: '🍦', food_court: '🍽',
+
+  supermarket: '🛒', convenience: '🛒', bakery: '🥖', deli: '🥖', butcher: '🥩',
+  greengrocer: '🥬', confectionery: '🍫', alcohol: '🍷', wine: '🍷', kiosk: '🏪',
+
+  mall: '🏬', department_store: '🏬', clothes: '👕', shoes: '👟', jewelry: '💍',
+  optician: '👓', beauty: '💄', hairdresser: '💇', florist: '💐', books: '📚',
+  toys: '🧸', furniture: '🪑', doityourself: '🛠', hardware: '🛠',
+  electronics: '📱', mobile_phone: '📱', computer: '💻', gift: '🎁',
+  laundry: '🧺', pet: '🐕', sports: '⚽', car: '🚗', car_repair: '🔧', bicycle: '🚲',
+
+  hotel: '🏨', motel: '🏨', apartment: '🏨', guest_house: '🛏', hostel: '🛏',
+  camp_site: '🏕', caravan_site: '🚐',
+
+  hospital: '🏥', clinic: '🏥', doctors: '🩺', dentist: '🦷', pharmacy: '💊',
+  chemist: '💊', veterinary: '🐕',
+
+  bank: '🏦', atm: '🏧', post_office: '📮', police: '🚓', fire_station: '🚒',
+  townhall: '🏛', community_centre: '🏛', library: '📚', toilets: '🚻',
+  drinking_water: '🚰',
+
+  school: '🏫', kindergarten: '🧸', university: '🎓', college: '🎓',
+
+  fuel: '⛽', charging_station: '⚡', parking: '🅿', car_wash: '🚿',
+  car_rental: '🚗', bicycle_rental: '🚲', taxi: '🚕', bus_station: '🚌',
+  bus_stop: '🚏', tram_stop: '🚊', subway_entrance: '🚇', station: '🚉',
+  train_station: '🚉', railway: '🚆', ferry_terminal: '⛴', aerodrome: '✈',
+  terminal: '✈', marina: '⛵',
+
+  park: '🌳', garden: '🌳', dog_park: '🐕', playground: '🛝', pitch: '⚽',
+  sports_centre: '🏋', fitness_centre: '🏋', swimming_pool: '🏊', water_park: '🏊',
+  stadium: '🏟', golf_course: '⛳', bowling_alley: '🎳', climbing: '🧗',
+  casino: '🎰', nature_reserve: '🏞',
+
+  museum: '🏛', gallery: '🖼', artwork: '🗿', theatre: '🎭', cinema: '🎬',
+  zoo: '🦁', theme_park: '🎡', attraction: '🎡', viewpoint: '🌄',
+  picnic_site: '🧺', castle: '🏰', ruins: '🏚', monument: '🗿', memorial: '🗿',
+  archaeological_site: '⛏',
+
+  place_of_worship: '⛪', church: '⛪', mosque: '🕌', synagogue: '🕍',
+  temple: '🛕', cemetery: '🪦',
+
+  peak: '⛰', volcano: '🌋', glacier: '🏔', cave_entrance: '🕳', spring: '💧',
+  water: '💧', waterfall: '💧', wood: '🌲', forest: '🌲', beach: '🏖',
+  beach_resort: '🏖', island: '🏝', farmland: '🌾',
+
+  retail: '🏬', industrial: '🏭', commercial: '💼', tower: '🗼', bridge: '🌉',
+
+  town: '🏙', village: '🏘', suburb: '🏘'
+}
+
+// Fallback for a value that VALUES does not list. Places and boundaries are told
+// apart by their type, everything else by its osm key.
 const CATEGORIES = {
   aeroway: '✈',
   amenity: '☕',
+  barrier: '🚧',
   building: '🏠',
   city: '🏙',
   country: '🌍',
   county: '🗺',
+  craft: '🔧',
   district: '🏘',
+  emergency: '🚑',
+  healthcare: '🏥',
   highway: '🛣',
   historic: '🏛',
   house: '🏠',
+  landuse: '🏞',
   leisure: '🌳',
   locality: '🏘',
+  man_made: '🏗',
+  military: '🪖',
   natural: '🌳',
+  office: '💼',
+  power: '⚡',
+  public_transport: '🚉',
   railway: '🚆',
   shop: '🛍',
+  sport: '⚽',
   state: '🗺',
   street: '🛣',
   tourism: '📷',
@@ -36,7 +103,7 @@ const DEFAULT_CATEGORY = '📍'
 
 function categorySymbol (p) {
   const key = (p.osm_key === 'place' || p.osm_key === 'boundary') ? p.type : p.osm_key
-  return CATEGORIES[key] || CATEGORIES[p.type] || DEFAULT_CATEGORY
+  return VALUES[p.osm_value] || CATEGORIES[key] || CATEGORIES[p.type] || DEFAULT_CATEGORY
 }
 
 // Place names come from OSM, so they can carry markup

@@ -277,11 +277,15 @@
   flex-shrink: 0;
 }
 
-/* features of the map bring the icon of the layer list, which is built for a taller row */
-.geocoder-result-icon i,
-.geocoder-result-icon img {
-  font-size: 1.2rem;
+/* features of the map bring the icon of the layer list, which is built for a taller row.
+   featureIcon sizes it with the bootstrap utility fs-3, so this needs the same weight */
+.geocoder-result-icon i {
+  font-size: 1.2rem !important;
   line-height: 1.2rem;
+  margin: 0;
+}
+
+.geocoder-result-icon img {
   max-width: 1.2rem;
   max-height: 1.2rem;
   margin: 0;
