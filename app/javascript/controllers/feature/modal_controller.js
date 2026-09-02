@@ -216,7 +216,7 @@ export default class extends Controller {
     }
     const style = getComputedStyle(document.documentElement)
     const palette = paletteVars.map(v => style.getPropertyValue(v).trim().toLowerCase())
-    const colors = [...new Set([...new Set(used)].slice(0, 8).concat(palette))]
+    const colors = [...new Set([...new Set(used)].concat(palette).slice(0, 8))]
     document.querySelector('#color-presets').innerHTML = colors.map(c => `<option value="${c}">`).join('')
   }
 

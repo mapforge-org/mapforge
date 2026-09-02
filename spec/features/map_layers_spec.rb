@@ -70,6 +70,7 @@ describe "Map" do
       expect(map.reload.layers.count).to eq 4 # 1 default + 3 imported
       expect(map.reload.features.count).to eq 6
       expect(map.layers.overpass.count).to eq 1
+      expect(map.layers.find_by(name: "TestLayer 2").show).to be false
       # expect(map.reload.center).to eq [ 11.07338990801668, 49.44765470337188 ]
       expect(map.zoom).to eq "14.6"
       expect(map.bearing).to eq "50.4"

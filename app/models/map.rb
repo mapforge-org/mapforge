@@ -225,9 +225,8 @@ class Map
     map.layers.delete_all
     map_hash["layers"].each do |layer|
       features = Feature.from_collection(layer["geojson"], collection_format: collection_format)
-      layer = Layer.create!(name: layer["name"], type: layer["type"], query: layer["query"],
-        features: features)
-      map.layers << layer
+      attributes = layer.slice("name", "type", "query", "heatmap", "cluster", "show")
+      map.layers << Layer.create!(attributes.merge(features: features))
     end
 
     Rails.logger.info "Created map with #{map.features_count} features from #{path}"

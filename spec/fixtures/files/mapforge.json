@@ -20,6 +20,7 @@
     {
       "name": "TestLayer 2",
       "type": "geojson",
+      "show": false,
       "geojson": {
         "type": "FeatureCollection",
         "features": [

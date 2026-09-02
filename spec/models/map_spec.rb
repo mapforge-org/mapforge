@@ -28,6 +28,20 @@ describe Map do
     end
   end
 
+  describe ".create_from_file" do
+    it "restores the layer flags of an export" do
+      map.layers.first.update!(show: false, heatmap: true, cluster: true)
+      file = Tempfile.new([ "export", ".json" ])
+      file.write(map.to_json(include_features: true))
+      file.close
+
+      layer = described_class.create_from_file(file.path).layers.first
+      expect(layer.show).to be false
+      expect(layer.heatmap).to be true
+      expect(layer.cluster).to be true
+    end
+  end
+
   describe "#features_count" do
     it "sums up feature count of all layers" do
       expect(map.features_count).to eq(6)

@@ -51,7 +51,7 @@ export default class extends Controller {
               if (layer.geojson?.features) {
                 layer.geojson.features.forEach(f => { f.id = functions.featureId() })
               }
-              this.createLayer(layer.type, layer.name, layer.query, layer.geojson)
+              this.createLayer(layer)
             })
           } else {
             // standard geojson file
@@ -317,30 +317,34 @@ export default class extends Controller {
   }
 
   createWikipediaLayer() {
-    this.createLayer('wikipedia', 'Wikipedia')
+    this.createLayer({ type: 'wikipedia', name: 'Wikipedia' })
   }
 
   createRasterLayer() {
-    const layerId = this.createLayer('raster', 'Raster layer', '')
+    const layerId = this.createLayer({ type: 'raster', name: 'Raster layer', query: '' })
     new Promise(resolve => setTimeout(resolve, 50)).then(() => {
       document.querySelector('#layer-list-' + layerId + ' button.layer-edit').click()
     })
   }
 
   createHikingWaymarkedtrailsLayer() {
-    this.createLayer('raster', 'waymarkedtrails.org: hiking', 'https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png')
+    this.createLayer({ type: 'raster', name: 'waymarkedtrails.org: hiking',
+      query: 'https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png' })
   }
 
   createCyclingWaymarkedtrailsLayer() {
-    this.createLayer('raster', 'waymarkedtrails.org: cycling', 'https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png')
+    this.createLayer({ type: 'raster', name: 'waymarkedtrails.org: cycling',
+      query: 'https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png' })
   }
 
   createMtbWaymarkedtrailsLayer() {
-    this.createLayer('raster', 'waymarkedtrails.org: mtb', 'https://tile.waymarkedtrails.org/mtb/{z}/{x}/{y}.png')
+    this.createLayer({ type: 'raster', name: 'waymarkedtrails.org: mtb',
+      query: 'https://tile.waymarkedtrails.org/mtb/{z}/{x}/{y}.png' })
   }
 
   createSlopesWaymarkedtrailsLayer() {
-    this.createLayer('raster', 'waymarkedtrails.org: slopes', 'https://tile.waymarkedtrails.org/slopes/{z}/{x}/{y}.png')
+    this.createLayer({ type: 'raster', name: 'waymarkedtrails.org: slopes',
+      query: 'https://tile.waymarkedtrails.org/slopes/{z}/{x}/{y}.png' })
   }
 
   createSelectedOverpassLayer(event) {
@@ -348,7 +352,7 @@ export default class extends Controller {
     let queryName = event.target.dataset.queryName
     // empty query for custom
     let query = queries.find(q => q.name === queryName)?.query || ''
-    let layerId = this.createLayer('overpass', queryName, query)
+    let layerId = this.createLayer({ type: 'overpass', name: queryName, query: query })
     // open edit form for new custom queries
     if (query === '') {
       new Promise(resolve => setTimeout(resolve, 50)).then(() => {
@@ -358,24 +362,26 @@ export default class extends Controller {
   }
 
   createBaseMapLayer(_event) {
-    this.createLayer('basemap', 'Basemap layer')
+    this.createLayer({ type: 'basemap', name: 'Basemap layer' })
   }
 
   createOsmLayer(_event) {
-    this.createLayer('osm', 'OSM layer')
+    this.createLayer({ type: 'osm', name: 'OSM layer' })
   }
 
   createIndoorLayer(_event) {
-    this.createLayer('indoor', 'Indoor map')
+    this.createLayer({ type: 'indoor', name: 'Indoor map' })
   }
 
-  createLayer(type, name, query=null, geojson=null) {
+  // 'layer' is a layer definition: { type, name, query, geojson, heatmap, cluster, show }
+  createLayer(layer) {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
-    let layerData = { "id": layerId, "type": type, "name": name,
-      "heatmap": false, "cluster": false, "show": true, "geojson": geojson}
-    if (query !== null) { layerData.query = query }
-    if (type == 'overpass') {
+    let layerData = { "id": layerId, "type": layer.type, "name": layer.name,
+      "heatmap": layer.heatmap ?? false, "cluster": layer.cluster ?? false,
+      "show": layer.show ?? true, "geojson": layer.geojson ?? null }
+    if (layer.query != null) { layerData.query = layer.query }
+    if (layer.type == 'overpass') {
       // TODO: move cluster + heatmap to layer checkboxes
       const clustered = !layerData.query.includes("heatmap=true") &&
         !layerData.query.includes("cluster=false") &&
@@ -383,8 +389,7 @@ export default class extends Controller {
       layerData["cluster"] = clustered
       layerData["heatmap"] = layerData.query.includes("heatmap=true")
     }
-    let layer = createLayerInstance(layerData)
-    layers.push(layer)
+    layers.push(createLayerInstance(layerData))
 
     addUndoState('Layer added', layerData)
     initLayersModal()
