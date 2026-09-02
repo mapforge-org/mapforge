@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-09
 
+* Open shared and tapped map links in the Android app
 * Add local geojson results to search results
 * Image viewer for feature images
 * Color picker offers the site and map default colors

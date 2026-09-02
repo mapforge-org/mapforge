@@ -62,42 +62,21 @@ export default class extends Controller {
     copyToClipboard(viewLink, window.__('View link copied'), e.currentTarget)
   }
 
-  nativeShareOwnershipLink (e) {
-    if (navigator.share) {
-      e.preventDefault()
-      navigator.share({
-        title: document.querySelector('title').textContent,
-        url: window.location.origin + e.target.getAttribute('href'),
-      })
-    .catch((error) => console.log('Error sharing', error))
-    }
-  }
+  // A tap lands on the icon or the badge inside the link, so only
+  // currentTarget carries the href.
+  nativeShare (e) {
+    if (!navigator.share) { return }
 
-  nativeShareEditLink (e) {
-    if (navigator.share) {
-      e.preventDefault()
-      navigator.share({
-        title: document.querySelector('title').textContent,
-        url: window.location.origin + e.target.getAttribute('href'),
-      })
-    .catch((error) => console.log('Error sharing', error))
-    }
-  }
-
-  nativeShareViewLink (e) {
-    if (navigator.share) {
-      e.preventDefault()
-      navigator.share({
-        title: document.querySelector('title').textContent,
-        url: window.location.origin + e.target.getAttribute('href'),
-      })
-    .catch((error) => console.log('Error sharing', error))
-    }
+    e.preventDefault()
+    navigator.share({
+      title: document.title,
+      url: window.location.origin + e.currentTarget.getAttribute('href')
+    }).catch((error) => console.log('Error sharing', error))
   }
 
   copyEmbedCode (e) {
     e.preventDefault()
-    const embedCode = document.querySelector('#embed-code').value
+    const embedCode = this.element.querySelector('.embed-code').value.trim()
     copyToClipboard(embedCode, window.__('Embed code copied'), e.currentTarget)
   }
 }

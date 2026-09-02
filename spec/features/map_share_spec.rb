@@ -33,6 +33,12 @@ describe "Map" do
     it "has share map export link" do
       expect(page).to have_link("Map export", href: "/m/" + subject.public_id + ".json?export=true")
     end
+
+    it "native shares the view link when the icon inside it is clicked" do
+      page.execute_script("navigator.share = (data) => { window.shared = data; return Promise.resolve() }")
+      find("#share-view-link i").click
+      expect(page.evaluate_script("window.shared.url")).to end_with("/m/" + subject.public_id)
+    end
   end
 
   context "export" do
