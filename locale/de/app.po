@@ -197,9 +197,6 @@ msgstr "Klicken, um das HTML zum Einbetten in deine Website zu kopieren"
 msgid "Click to toggle format"
 msgstr "Format wechseln"
 
-msgid "Clipboard paste requires HTTPS or localhost"
-msgstr "Einfügen aus der Zwischenablage erfordert HTTPS oder localhost"
-
 msgid "Cobblestone"
 msgstr "Kopfsteinpflaster"
 
@@ -632,8 +629,14 @@ msgstr "Ebene %{n}"
 msgid "Levels"
 msgstr "Ebenen"
 
+msgid "Light Protomaps vector style with soft colors and clear labels."
+msgstr "Heller Protomaps-Vektorstil mit sanften Farben und klaren Beschriftungen."
+
 msgid "Light, minimal grayscale style ideal for data visualization overlays."
 msgstr "Heller, minimaler Graustufenstil, ideal als Untergrund für Datenvisualisierungen."
+
+msgid "Line"
+msgstr "Linie"
 
 msgid "Line Mode: Click on the map to draw a line"
 msgstr "Linien-Modus: Auf die Karte klicken, um eine Linie zu zeichnen"
@@ -782,6 +785,9 @@ msgstr "Keine Elemente in dieser Ebene"
 msgid "No route found"
 msgstr "Keine Route gefunden"
 
+msgid "OSM Info (experimental)"
+msgstr "OSM-Info (experimentell)"
+
 msgid "Official German basemap.de style with detailed European cartography."
 msgstr "Offizieller deutscher basemap.de-Stil mit detaillierter europäischer Kartografie."
 
@@ -815,6 +821,9 @@ msgstr "Eigentümerlink kopiert"
 msgid "Paint Mode: Click on the map to start drawing, release to finish"
 msgstr "Mal-Modus: Auf die Karte klicken zum Zeichnen, loslassen zum Beenden"
 
+msgid "Paste %{type}"
+msgstr "%{type} einfügen"
+
 msgid "Paved"
 msgstr "Befestigt"
 
@@ -833,6 +842,9 @@ msgstr "Melde dich an, um Bilder hochzuladen"
 msgid "Please log in to upload tracks"
 msgstr "Melde dich an, um Tracks hochzuladen"
 
+msgid "Point"
+msgstr "Punkt"
+
 msgid "Point Mode: Click on the map to place a marker"
 msgstr "Punkt-Modus: Auf die Karte klicken, um einen Marker zu setzen"
 
@@ -841,6 +853,9 @@ msgstr "Punkt gelöscht"
 
 msgid "Point scaling:"
 msgstr "Punktskalierung:"
+
+msgid "Polygon"
+msgstr "Polygon"
 
 msgid "Polygon Mode: Click on the map to draw a polygon"
 msgstr "Polygon-Modus: Auf die Karte klicken, um ein Polygon zu zeichnen"
@@ -1050,9 +1065,6 @@ msgstr "Stil-JSON"
 
 msgid "Surface"
 msgstr "Untergrund"
-
-msgid "Switch to edit mode"
-msgstr "Zum Bearbeitungsmodus wechseln"
 
 msgid "Symbol:"
 msgstr "Symbol:"

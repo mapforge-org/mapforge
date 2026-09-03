@@ -1,13 +1,16 @@
 import { Controller } from '@hotwired/stimulus'
 import { initializeSocket, sendMessage } from 'channels/map_channel'
+import { parseClipboardFeature, setCopiedFeature } from 'helpers/clipboard'
 import * as functions from 'helpers/functions'
-import { status } from 'helpers/status'
+import { moveFeatureTo } from 'maplibre/feature'
 import { resetInitializationState } from 'maplibre/layers/layers'
 import {
   addFeature,
   initializeMap,
   initializeStaticMode,
   initializeViewMode,
+  lastMousePosition,
+  map,
   setBackgroundMapLayer
 } from 'maplibre/map'
 import { clearImageState } from 'maplibre/styles/styles'
@@ -58,27 +61,19 @@ export default class extends Controller {
   }
 
   // paste feature from clipboard
-  async paste(_event) {
-
+  paste(event) {
     if (functions.isFormFieldFocused()) { return }
     if (window.gon.map_mode !== 'rw') { return }
 
-    if (!navigator.clipboard || !navigator.clipboard.readText) {
-      status(window.__('Clipboard paste requires HTTPS or localhost'), 'warning')
-      return
-    }
+    // the paste event carries the data, the clipboard API would ask the user for permission
+    const feature = parseClipboardFeature(event.clipboardData?.getData('text'))
+    if (!feature) { return }
 
-    try {
-      const text = await navigator.clipboard.readText()
-      const feature = JSON.parse(text)  // just to verify it's valid JSON
-      if (feature.type === "Feature") {
-        feature.id = functions.featureId()
-        addFeature(feature)
-        addUndoState('Feature added', feature)
-        sendMessage('new_feature', feature)
-      }
-    } catch (err) {
-      console.warn("Failed to read clipboard:", err)
-    }
+    setCopiedFeature(feature)
+    feature.id = functions.featureId()
+    moveFeatureTo(feature, lastMousePosition || map.getCenter())
+    addFeature(feature)
+    addUndoState('Feature added', feature)
+    sendMessage('new_feature', feature)
   }
 }

@@ -23,6 +23,30 @@ export function copyToClipboard (text, successMessage, iconElement = null) {
   }
 }
 
+// Firefox asks the user to confirm every clipboard read. A read on right click therefore
+// opens a native paste prompt over the context menu, so the menu uses this copy instead.
+let copiedFeature = null
+
+export function setCopiedFeature (feature) {
+  copiedFeature = structuredClone(feature)
+}
+
+export function getCopiedFeature () {
+  return copiedFeature ? structuredClone(copiedFeature) : null
+}
+
+/**
+ * Parse clipboard text into a GeoJSON feature. Returns null for anything else.
+ */
+export function parseClipboardFeature (text) {
+  try {
+    const feature = JSON.parse(text)
+    return (feature?.type === 'Feature' && feature.geometry) ? feature : null
+  } catch {
+    return null
+  }
+}
+
 /**
  * Fallback copy method using execCommand (for non-secure contexts)
  * @param {string} text - Text to copy

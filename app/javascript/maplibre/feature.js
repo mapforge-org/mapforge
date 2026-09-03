@@ -1,6 +1,8 @@
 import { area } from "@turf/area"
+import { center } from "@turf/center"
 import { lineString, multiLineString, multiPolygon, polygon } from "@turf/helpers"
 import { length } from "@turf/length"
+import { coordEach } from "@turf/meta"
 import * as dom from 'helpers/dom'
 import * as f from 'helpers/functions'
 import { status } from 'helpers/status'
@@ -253,7 +255,21 @@ export function getFeatureTypeName(feature) {
       return window.__('Hiking route')
     }
   }
-  return feature.geometry.type
+  switch (feature.geometry.type) {
+    case 'Point': return window.__('Point')
+    case 'LineString': return window.__('Line')
+    case 'Polygon': return window.__('Polygon')
+    default: return feature.geometry.type
+  }
+}
+
+// move a feature so that its center sits on the given position
+export function moveFeatureTo(feature, lngLat) {
+  const [ lng, lat ] = center(feature).geometry.coordinates
+  coordEach(feature, coord => {
+    coord[0] += lngLat.lng - lng
+    coord[1] += lngLat.lat - lat
+  })
 }
 
 export function featureImage(feature) {

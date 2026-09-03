@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 * Add local geojson results to search results
 * Image viewer for feature images
 * Color picker offers the site and map default colors
-
+* Improved View-Edit mode switch
 
 ## 2026-08
 

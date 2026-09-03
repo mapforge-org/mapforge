@@ -1,9 +1,8 @@
 
-import { addCopyMenuItem, addDeleteMenuItem, addLineMenuItems, addLineVertexMenuItems } from 'maplibre/controls/context_menu'
+import { addCopyMenuItem, addDeleteMenuItem, addLineMenuItems, addLineVertexMenuItems, addPasteMenuItem } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
-import { queryFeaturesNear } from 'maplibre/layers/layer'
-import { getFeature } from 'maplibre/layers/layers'
+import { SELECTABLE_SOURCE_PREFIXES, queryFeaturesNear } from 'maplibre/layers/layer'
 import { editDefaults } from 'maplibre/styles/defaults'
 import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
 
@@ -46,13 +45,16 @@ export function initializeEditStyles() {
 
     for (const f of features) {
       if (f.properties.id && f.layer.id.includes('_geojson-source-')) {
-        // f.geometry.type is from the tiled render and can wrongly report MultiLineString
-        const geometryType = getFeature(f.properties.id, 'geojson')?.geometry.type
-        addCopyMenuItem(f.properties.id, geometryType)
+        addCopyMenuItem(f.properties.id)
         addDeleteMenuItem(f.properties.id)
         highlightFeature(f)
         break
       }
+    }
+
+    // layers add their own menu items later, so check the features instead of the open menu
+    if (!features.some(f => SELECTABLE_SOURCE_PREFIXES.some(p => f.source.startsWith(p)))) {
+      addPasteMenuItem(e)
     }
   })
 }

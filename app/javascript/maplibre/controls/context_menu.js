@@ -1,4 +1,6 @@
+import { getCopiedFeature } from 'helpers/clipboard'
 import * as functions from 'helpers/functions'
+import { getFeatureTypeName, moveFeatureTo } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
 
 export function initContextMenu(e) {
@@ -76,16 +78,48 @@ export function addLineMenuItems(f) {
 /**
  * Add 'Copy' option for any geojson feature
  */
-export function addCopyMenuItem(featureId, geometryType = null) {
+export function addCopyMenuItem(featureId) {
+  // the tiled render can report the wrong geometry type, so the name comes from the source
+  const feature = getFeature(featureId, 'geojson')
+  const label = feature
+    ? window.__('Copy %{type}').replace('%{type}', getFeatureTypeName(feature))
+    : window.__('Copy')
+
   functions.e('#map-context-menu', el => {
     el.classList.remove('hidden')
 
     const copyButton = document.createElement('div')
     copyButton.classList.add('context-menu-item')
-    copyButton.innerHTML = `<i class="bi bi-clipboard me-1"></i>${geometryType ? window.__('Copy %{type}').replace('%{type}', geometryType) : window.__('Copy')}`
+    copyButton.innerHTML = `<i class="bi bi-clipboard me-1"></i>${label}`
     copyButton.dataset.action = 'click->map--context-menu#copyFeature'
     copyButton.dataset.featureId = featureId
     el.appendChild(copyButton)
+  })
+}
+
+/**
+ * Add 'Paste <type>' for the last copied feature, moved to the clicked position
+ */
+export function addPasteMenuItem(e) {
+  if (window.gon.map_mode !== 'rw') { return }
+  const feature = getCopiedFeature()
+  if (!feature) { return }
+
+  feature.id = functions.featureId()
+  moveFeatureTo(feature, e.lngLat)
+
+  functions.e('#map-context-menu', el => {
+    // paste targets empty space, a feature under the cursor brings its own menu items
+    if (el.children.length) { return }
+    el.classList.remove('hidden')
+
+    const pasteButton = document.createElement('div')
+    pasteButton.classList.add('context-menu-item')
+    pasteButton.innerHTML = `<i class="bi bi-clipboard-plus me-1"></i>` +
+      window.__('Paste %{type}').replace('%{type}', getFeatureTypeName(feature))
+    pasteButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
+    pasteButton.mapFeature = feature
+    el.appendChild(pasteButton)
   })
 }
 
@@ -98,11 +132,11 @@ export function addCopyMenuItem(featureId, geometryType = null) {
 export function addCopyToLayerMenuItem(feature) {
   if (!feature || window.gon.map_mode !== 'rw') { return }
   functions.e('#map-context-menu', el => {
-    if (el.querySelector('[data-action*="addToGeojsonLayer"]')) { return }
+    if (el.querySelector('.copy-to-layer-item')) { return }
     el.classList.remove('hidden')
 
     const copyButton = document.createElement('div')
-    copyButton.classList.add('context-menu-item')
+    copyButton.classList.add('context-menu-item', 'copy-to-layer-item')
     copyButton.innerHTML = `<i class="bi bi-copy me-1"></i>${window.__('Copy to my layer')}`
     copyButton.dataset.action = 'click->map--context-menu#addToGeojsonLayer'
     copyButton.mapFeature = feature

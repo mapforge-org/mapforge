@@ -361,6 +361,60 @@ describe "Feature edit" do
       expect(page).to have_text("Details")
     end
 
+    it "pastes a copied feature at the clicked position" do
+      click_coord("#maplibre-map", 512, 430, button: :right)
+      find(".context-menu-item", text: "Copy").click
+      expect(page).to have_text("Feature copied to clipboard")
+
+      # a feature under the cursor gets its own menu items, without the paste option
+      click_coord("#maplibre-map", 512, 430, button: :right)
+      expect(page).to have_css(".context-menu-item", text: "Copy")
+      expect(page).to have_no_css(".context-menu-item", text: "Paste")
+
+      target = page.evaluate_script("[window.map.unproject([300, 300]).lng, window.map.unproject([300, 300]).lat]")
+      click_coord("#maplibre-map", 300, 300, button: :right)
+      find(".context-menu-item", text: "Paste Point").click
+      wait_for { Feature.point.count }.to eq(2)
+
+      coordinates = Feature.point.last.geometry["coordinates"]
+      expect(coordinates[0]).to be_within(0.001).of(target[0])
+      expect(coordinates[1]).to be_within(0.001).of(target[1])
+    end
+
+    it "pastes with ctrl+v at the cursor position" do
+      hover_coord(300, 300)
+      target = page.evaluate_script("[window.map.unproject([300, 300]).lng, window.map.unproject([300, 300]).lat]")
+
+      # headless Chrome denies clipboard writes, so the paste event carries the data
+      page.execute_script(<<~JS)
+        const data = new DataTransfer()
+        data.setData('text', JSON.stringify({
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [ 1, 1 ] },
+          properties: { title: 'Pasted' }
+        }))
+        window.dispatchEvent(new ClipboardEvent('paste', { clipboardData: data, bubbles: true }))
+      JS
+      wait_for { Feature.point.count }.to eq(2)
+
+      coordinates = Feature.point.last.geometry["coordinates"]
+      expect(coordinates[0]).to be_within(0.001).of(target[0])
+      expect(coordinates[1]).to be_within(0.001).of(target[1])
+    end
+
+    it "does not read the clipboard on right click" do
+      page.execute_script("window.clipboardReads = 0")
+      page.execute_script(<<~JS)
+        Object.defineProperty(navigator, 'clipboard', { configurable: true, value: {
+          readText: async () => { window.clipboardReads += 1; return '' }
+        }})
+      JS
+
+      click_coord("#maplibre-map", 300, 300, button: :right)
+      expect(page).to have_no_css(".context-menu-item")
+      expect(page.evaluate_script("window.clipboardReads")).to eq(0)
+    end
+
     it "can delete feature via context menu" do
       click_coord("#maplibre-map", 512, 430, button: :right)
       expect(page).to have_text("Delete")

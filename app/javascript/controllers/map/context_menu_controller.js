@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { sendMessage } from 'channels/map_channel'
-import { copyToClipboard } from 'helpers/clipboard'
+import { copyToClipboard, setCopiedFeature } from 'helpers/clipboard'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
@@ -120,6 +120,7 @@ export default class extends Controller {
   copyFeature(event) {
     const feature = getFeature(event.currentTarget.dataset.featureId, 'geojson')
     if (feature) {
+      setCopiedFeature(feature)
       copyToClipboard(JSON.stringify(feature), window.__('Feature copied to clipboard'))
     }
     hideContextMenu()
