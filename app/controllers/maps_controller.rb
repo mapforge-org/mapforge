@@ -171,13 +171,15 @@ class MapsController < ApplicationController
     return [] if ids.blank?
     by_private = Map.unscoped.in(private_id: ids).includes(:owners).index_by(&:private_id)
     by_public = Map.unscoped.in(public_id: ids).includes(:owners).index_by(&:public_id)
-    ids.filter_map do |id|
+    recent = ids.filter_map do |id|
       if (map = by_private[id])
         [ map, true ]
       elsif (map = by_public[id])
         [ map, false ]
       end
     end
+    # A map viewed in both modes is stored twice (public_id and private_id), show only the rw entry
+    recent.group_by { |map, _rw| map.id }.values.map { |dupes| dupes.find { |_map, rw| rw } || dupes.first }
   end
 
   def require_map_owner

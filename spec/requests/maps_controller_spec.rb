@@ -129,11 +129,14 @@ describe MapsController do
       expect(result[2]).to eq [ map3, false ]
     end
 
-    it "prioritizes private_id match over public_id for same map" do
+    it "lists a map viewed in both modes once, in rw mode" do
       result = controller.send(:load_recent_maps, [ map1.private_id, map1.public_id ])
-      expect(result.count).to eq 2
-      expect(result[0]).to eq [ map1, true ]
-      expect(result[1]).to eq [ map1, false ]
+      expect(result).to eq [ [ map1, true ] ]
+    end
+
+    it "lists a map in rw mode even if the public_id was viewed last" do
+      result = controller.send(:load_recent_maps, [ map1.public_id, map2.public_id, map1.private_id ])
+      expect(result).to eq [ [ map1, true ], [ map2, false ] ]
     end
 
     it "skips missing IDs while preserving order of found maps" do
