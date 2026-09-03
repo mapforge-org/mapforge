@@ -340,6 +340,10 @@ export function initializeSearchControl () {
   geocoderButton.classList.add('hidden')
   const searchIcon = document.querySelector('.maplibregl-ctrl-geocoder--icon-search')
   searchIcon.addEventListener('click', (_e) => { geocoderButton.classList.toggle('expanded') })
+  // the tooltip sits on the icon, initCtrlTooltips only reaches the container and its buttons
+  searchIcon.setAttribute('title', window.__('Search location'))
+  searchIcon.setAttribute('data-toggle', 'tooltip')
+  searchIcon.setAttribute('data-bs-trigger', 'hover')
 
   // the result list keeps the order of the markers
   geocoderButton.addEventListener('mouseover', (e) => {

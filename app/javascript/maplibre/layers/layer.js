@@ -300,8 +300,10 @@ export class Layer {
    * Override to customize hover behavior.
    */
   setupMouseMoveHandler() {
-    if (window.gon.map_mode === 'ro' && !functions.isTouchDevice()) {
+    if (!functions.isTouchDevice()) {
       this.mouseMoveHandler = (e) => {
+        // switchMapMode() keeps the layers and their handlers, so the mode is read per event
+        if (window.gon.map_mode !== 'ro') { return }
         if (stickyFeatureHighlight && highlightedFeatureId) { return }
         if (document.querySelector('.show > .map-modal')) { return }
         if (!map.getSource(this.sourceId)) { return }

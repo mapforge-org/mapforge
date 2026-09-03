@@ -36,7 +36,8 @@
   #feature-details-body.selectable.ms-1
     #feature-details-description
 
-    #feature-details-elevation.feature-section-card.hidden
+    -# data-fit-ignore: the chart must not push the mobile sheet open, see fitModalToContent
+    #feature-details-elevation.feature-section-card.hidden{ 'data-fit-ignore': true }
       .feature-details-card-header#elevation-toggle
         %h5
           %i.bi.bi-graph-up.me-2

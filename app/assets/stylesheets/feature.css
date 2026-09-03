@@ -54,13 +54,13 @@
 
 @media (hover: hover) {
   .feature-tab-btn:hover {
-    color: var(--color-mid-steel-blue);
+    color: var(--ctrl-button-color);
   }
 }
 
 .feature-tab-btn.active {
-  color: var(--color-ctrl-active);
-  border-bottom-color: var(--color-ctrl-active);
+  color: var(--ctrl-button-color);
+  border-bottom-color: var(--ctrl-button-color);
 }
 
 .feature-tab-btn i {
@@ -180,17 +180,10 @@
 @media (width > 640px) and (height >= 410px) {
   #feature-details-modal {
     left: 2.2rem;
-    top: 4.2rem;
+    top: 0.2rem;
     width: 25rem;
-    max-height: calc(100% - 5rem);
+    max-height: calc(100% - 1.5rem);
     margin: 0.4rem 1rem 1.5rem;
-  }
-
-  @media (width >=1024px) {
-    #feature-details-modal {
-      top: 0.2rem;
-      max-height: calc(100% - 1.5rem);
-    }
   }
 }
 

@@ -84,7 +84,20 @@ export function loadStylesheet (href) {
 // so this only ever makes the sheet taller.
 export function fitModalToContent (modal) {
   if (!modal || !functions.isBottomSheet() || modal.dataset.userSized) { return }
-  const wanted = Math.min(modal.scrollHeight, window.innerHeight * 0.75)
+
+  // While the open animation runs, both heights below still report the previous size,
+  // which made repeated clicks on one feature alternate between the two snap points.
+  const running = modal.getAnimations().filter(a => a.transitionProperty === 'height')
+  if (running.length) {
+    Promise.all(running.map(a => a.finished))
+      .then(() => fitModalToContent(modal), () => {})
+    return
+  }
+
+  // sections that the reader can scroll to, they must not open the sheet on their own
+  const ignored = [...modal.querySelectorAll('[data-fit-ignore]')]
+    .reduce((sum, e) => sum + e.offsetHeight, 0)
+  const wanted = Math.min(modal.scrollHeight - ignored, window.innerHeight * 0.75)
   if (modal.offsetHeight >= wanted) { return }
   modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-up')
   modal.classList.add('modal-pull-transition')

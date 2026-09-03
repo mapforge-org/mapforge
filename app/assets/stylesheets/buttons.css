@@ -122,9 +122,13 @@
   }
 }
 
+/* same blue as .btn-download in the share modal */
 .btn-layer-actions {
   border-radius: 0.3rem;
 
   --bs-btn-padding-x: 0.4rem;
   --bs-btn-padding-y: 0.2rem;
+  --bs-btn-bg: var(--color-mid-steel-blue);
+  --bs-btn-hover-bg: var(--color-mid-blue-slate);
+  --bs-btn-active-bg: var(--color-mid-blue-slate);
 }

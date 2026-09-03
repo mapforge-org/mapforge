@@ -10,11 +10,18 @@
     bottom 0.7s ease-in-out;
   background-color: rgb(255 255 255 / 85%);
   box-shadow: 0 0 0 1.5px #BBB;
-  border-radius: 3px;
+  border-radius: 0.4rem;
   padding: 0 0.5rem;
-  font-size: 14px;
-  color: rgb(0 0 0 / 75%);
+  font-size: 0.7rem;
+  color: var(--ctrl-button-color);
   min-width: calc(min(90vw, 30rem));
+}
+
+/* same step as .layer-popover, #map-mode-badge and the attribution */
+@media (width >= 640px) {
+  #status-container {
+    font-size: 0.9rem;
+  }
 }
 
 .status-error {
@@ -30,9 +37,9 @@
 }
 
 #status-message.small {
-  font-size: 14px;
+  font-size: 1em;
 }
 
 #status-message.medium {
-  font-size: 18px;
+  font-size: 1.25em;
 }

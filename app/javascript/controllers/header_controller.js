@@ -38,6 +38,8 @@ export default class extends Controller {
   // Toggle Navbar + Dropdown on map page, only dropdown on other pages
   toggleNav (event) {
     if (!document.querySelector('#navbar-dropdown.show')) {
+      // the select control owns the reset, and it only exists in edit mode
+      document.querySelector('.maplibregl-ctrl-select')?.click()
       this.showNavBar(event)
       this.showNavDropdown(event)
     } else {

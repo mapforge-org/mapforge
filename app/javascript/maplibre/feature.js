@@ -131,9 +131,13 @@ export async function showFeatureDetails (feature) {
   const modal = document.querySelector('#feature-details-modal')
   modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-up', 'modal-pull-fade')
   modal.classList.add(featureHasDescription(feature) ? 'modal-pull-middle' : 'modal-pull-down')
-  modal.classList.add('modal-pull-transition')
   // without this, the details height depends on the tab you came from
   if (!modal.dataset.userSized) { modal.style.removeProperty('height') }
+  // the sheet must appear at its class height, not slide down from the height of the
+  // feature before it. The flush commits that height while the transition is off.
+  modal.classList.remove('modal-pull-transition')
+  modal.getBoundingClientRect()
+  modal.classList.add('modal-pull-transition')
   modal.classList.add('show')
   modal.scrollTo(0, 0)
   modal.setAttribute('data-feature--modal-feature-id-value', feature.id)

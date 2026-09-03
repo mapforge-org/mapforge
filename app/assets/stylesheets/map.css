@@ -22,10 +22,14 @@ html:has(.map), body:has(.map) {
   border-radius: 0.7rem;
   box-shadow: 0 0 0 1.5px #BBB;
   margin-top: 0.5rem;
-  max-height: 2.5rem;
+
+  /* fixed, not max-height: the badge below is positioned by a hard top and the title
+     line box is font metric dependent, so a shrink-to-fit head would close the gap */
+  height: 2.5rem;
   padding: 0.7rem;
 
-  --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='4' d='M4 7h22M4 15h22M4 23h22'/%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  /* a data URI cannot read a CSS variable, the stroke repeats --ctrl-button-color */
+  --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='4' d='M4 7h22M4 15h22M4 23h22'/%3e%3cpath stroke='%233D607B' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 #map-title {
@@ -48,30 +52,51 @@ html:has(.map), body:has(.map) {
     padding: 0;
 }
 
-/* Sits below #map-head, which is 2.5rem high plus a 0.3-0.5rem top margin. */
+.maplibregl-ctrl-attrib-inner {
+  font-size: 0.7rem;
+}
+
+.maplibregl-ctrl-attrib-inner a {
+  text-decoration: underline;
+}
+
+/* Sits 0.4rem below #map-head, which ends at margin-top plus height. Every top below
+   keeps that gap, 0.3rem on small screens, and .layer-popover repeats the step below
+   the badge. */
 #map-mode-badge {
   position: fixed;
   z-index: 1;
-  top: 3.5rem;
+  top: 3.4rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   overflow: hidden;
   padding: 0;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   background: #fffe;
   box-shadow: 0 0 0 1.5px #BBB;
 }
 
 #map-mode-badge a {
   padding: 0.15rem 0.5rem;
-  color: var(--color-mid-steel-blue);
+  color: var(--ctrl-button-color);
   text-decoration: none;
 }
 
 #map-mode-badge .active {
-  background: var(--color-mid-steel-blue);
+  background: var(--ctrl-button-color);
   color: #FFF;
+}
+
+@media (hover: hover) {
+  #map-mode-badge a:not(.active):hover {
+    background: var(--ctrl-hover-color);
+  }
+}
+
+/* the toggle can only switch a map that finished loading, see map.once('load') */
+body:has(.map:not([data-map-loaded])) #map-mode-badge {
+  display: none;
 }
 
 #map-nav-toggle {
@@ -80,34 +105,36 @@ html:has(.map), body:has(.map) {
   min-width: 1.3rem;
 }
 
+/* Same metrics as #map-mode-badge, both are small pills below #map-head. */
 .layer-popover {
   position: fixed;
-  top: 3.7rem;
+  top: 3.4rem;
   z-index: 1;
   left: 50%;
   transform: translateX(-50%) !important;
-  color: gray;
-  background: #fffd;
-  opacity: 0.9;
-  border-radius: 3px;
+  color: var(--ctrl-button-color);
+  background: #fffe;
+  border-radius: 0.4rem;
   box-shadow: 0 0 0 1.5px #BBB;
-  padding: 0.1rem 0.4rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
   white-space: nowrap;
 }
 
-/* Keep the popover clear of the mode toggle. Shifts every breakpoint at once. */
+/* Keep the popover clear of the mode toggle: badge height plus the same gap. */
 body:has(#map-mode-badge) .layer-popover {
-  margin-top: 1.7rem;
+  margin-top: 2.15rem;
 }
 
+/* the id beats the `.link` color, which application.css appends after this file */
 #layer-reload {
-  color: #000;
+  color: var(--ctrl-button-color);
   font-weight: 400;
 }
 
 @media (hover: hover) {
   #layer-reload:hover {
-    box-shadow: 0 0 0 3px #BBB;
+    background: var(--ctrl-hover-color);
   }
 }
 
@@ -115,6 +142,29 @@ body:has(#map-mode-badge) .layer-popover {
 @media (width >= 640px) {
   #map-head {
     max-width: calc(100% - 4rem);
+  }
+
+  #map-mode-badge {
+    font-size: 0.9rem;
+  }
+
+  #map-mode-badge a {
+    padding: 0.2rem 0.7rem;
+  }
+
+  .layer-popover {
+    font-size: 0.9rem;
+    padding: 0.2rem 0.7rem;
+  }
+
+  .maplibregl-ctrl-attrib-inner {
+    font-size: 0.9rem;
+    padding: 0.25rem;
+  }
+
+  /* the vendor box is 0 5px, too tight for the larger font */
+  .maplibregl-ctrl-attrib {
+    padding: 0.15rem 0.6rem;
   }
 }
 
@@ -130,20 +180,49 @@ body:has(#map-mode-badge) .layer-popover {
   }
 
   #map-mode-badge {
-    top: 3.3rem;
+    top: 3.2rem;
   }
 
   .layer-popover {
-    top: 3rem;
+    top: 3.2rem;
+  }
+
+  body:has(#map-mode-badge) .layer-popover {
+    margin-top: 1.65rem;
   }
 
   #map-nav-toggle {
     font-size: 1rem;
     min-width: 1rem;
   }
+}
 
-  .maplibregl-ctrl-attrib-inner {
-    font-size: 0.7rem;
+/* A short viewport shrinks #map-head but keeps the desktop font size, so the gap stays
+   0.4rem. The narrow-width block below repeats the tops with the 0.3rem gap and wins
+   when both queries match. */
+@media (height < 410px) {
+  #map-title {
+    font-size: 1.2rem;
+    white-space: nowrap;
+  }
+
+  #map-head {
+    padding: 0.2rem;
+    margin-top: 0.3rem;
+    height: 2.1rem;
+  }
+
+  #map-mode-badge {
+    top: 2.8rem;
+  }
+
+  #map-nav-toggle {
+    font-size: 0.9rem;
+    min-width: 0.9rem;
+  }
+
+  .layer-popover {
+    top: 2.8rem;
   }
 }
 
@@ -156,10 +235,11 @@ body:has(#map-mode-badge) .layer-popover {
   #map-head {
     padding: 0.2rem;
     margin-top: 0.3rem;
+    height: 2.1rem;
   }
 
   #map-mode-badge {
-    top: 2.85rem;
+    top: 2.7rem;
   }
 
   #map-nav-toggle {
@@ -168,40 +248,7 @@ body:has(#map-mode-badge) .layer-popover {
   }
 
   .layer-popover {
-    top: 3rem;
-  }
-
-  .maplibregl-ctrl-attrib-inner {
-    font-size: 0.6rem;
-  }
-}
-
-@media (height < 410px) {
-  #map-title {
-    font-size: 1.2rem;
-    white-space: nowrap;
-  }
-
-  #map-head {
-    padding: 0.2rem;
-    margin-top: 0.3rem;
-  }
-
-  #map-mode-badge {
-    top: 2.85rem;
-  }
-
-  #map-nav-toggle {
-    font-size: 0.9rem;
-    min-width: 0.9rem;
-  }
-
-  .layer-popover {
-    top: 3rem;
-  }
-
-  .maplibregl-ctrl-attrib-inner {
-    font-size: 0.6rem;
+    top: 2.7rem;
   }
 }
 
@@ -449,15 +496,18 @@ body:has(#map-mode-badge) .layer-popover {
   top: -0.3rem;
 }
 
+/* Same metrics as .dropdown-menu, the items are plain divs and get no bootstrap styling. */
 #map-context-menu {
   position: fixed;
   background: #fffd;
-  border-radius: 3px;
-  box-shadow: 0 0 0 1.5px #BBB;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0;
+  box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 20%);
+  overflow: hidden;
 }
 
 #map-context-menu .context-menu-item {
-  padding: 0.2rem 0.5rem;
+  padding: 0.25rem 1rem;
   cursor: pointer;
 }
 

@@ -2,9 +2,8 @@
   .map-modal{'data-controller': "map--modal", 'data-action': "keydown.esc@window->map--modal#close"}
     %button.modal-close-button{ data: { action: "click->map--modal#close" } } &times;
 
-    .map-modal-content#description-content.inline-scroll
+    .map-modal-content#description-content.inline-scroll.mt-0
 
       - renderer = Redcarpet::Render::HTML.new(filter_html: false, hard_wrap: true)
       - markdown_parser = Redcarpet::Markdown.new(renderer, tables: true)
       %p= markdown_parser.render(@map.description || '').html_safe
-      

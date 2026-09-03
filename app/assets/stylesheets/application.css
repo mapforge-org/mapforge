@@ -49,12 +49,12 @@
   --color-dark-smoky-black: #1D1A05;
   --color-dark-charcoal: #354A51;
   --color-dark-moss-green: #354620;
-  --color-ctrl-active: #2091b0;
   --text-color: var(--color-dark-smoky-black);
   --hover-color: var(--color-dark-charcoal);
   --accent-color: var(--color-mid-chili);
   --default-color: var(--color-light-sand);
-  --ctrl-button-color: rgb(68 73 82);
+  --ctrl-button-color: var(--color-mid-blue-slate);
+  --ctrl-hover-color: color-mix(in srgb, var(--color-mid-blue-slate) 20%, #FFF);
 }
 
 html,
@@ -163,6 +163,13 @@ a:active, .link:active {
 .fade.show {
   visibility: visible;
   opacity: 1;
+}
+
+/* Same corner radius as the pills below the map header. */
+.tooltip {
+  --bs-tooltip-bg: var(--ctrl-button-color);
+  --bs-tooltip-border-radius: 0.4rem;
+  --bs-tooltip-opacity: 0.9;
 }
 
 .small {

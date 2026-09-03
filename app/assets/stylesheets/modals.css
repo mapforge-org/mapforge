@@ -14,11 +14,6 @@
   z-index: 1000;
 }
 
-#description-modal {
-  align-items: flex-start;
-  padding-top: 4rem;
-}
-
 .map-modal {
   position: relative;
   pointer-events: auto;
@@ -301,7 +296,7 @@ body.map-mode-rw .ro-only {
 }
 
 #query-dropdown {
-  background-color: var(--color-light-alabaster);
+  background-color: var(--ctrl-hover-color);
   overflow-y: auto;
   max-height: 50vh;
   width: 100%;
@@ -327,7 +322,7 @@ body.map-mode-rw .ro-only {
 }
 
 .layer-actions-dropdown .dropdown-menu {
-  background-color: var(--color-light-alabaster);
+  background-color: var(--ctrl-hover-color);
   box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 20%);
   z-index: 1050;
 }
@@ -620,24 +615,6 @@ body.map-mode-rw .ro-only {
   .map-modal-header {
     padding: 0 0.4rem;
   }
-
-  #description-modal {
-    padding-top: 3rem;
-  }
-
-  #description-modal .map-modal {
-    padding-top: 0;
-  }
-}
-
-@media (width < 640px) {
-  #description-modal {
-    padding-top: 3rem;
-  }
-
-  #description-modal .map-modal {
-    padding-top: 0;
-  }
 }
 
 @media (width < 380px) {
@@ -648,14 +625,6 @@ body.map-mode-rw .ro-only {
 
   .map-modal-header {
     padding: 0 0.4rem;
-  }
-
-  #description-modal {
-    padding-top: 3rem;
-  }
-
-  #description-modal .map-modal {
-    padding-top: 0;
   }
 }
 
