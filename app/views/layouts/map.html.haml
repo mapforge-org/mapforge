@@ -2,7 +2,7 @@
 %html{ lang: I18n.locale }
   = render 'layouts/head'
 
-  %body{ontouchstart: ""}
+  %body{ontouchstart: "", class: ("map-mode-rw" if @map_mode == "rw")}
 
     = javascript_import_module_tag "maplibre-gl"
     = javascript_import_module_tag "controllers"

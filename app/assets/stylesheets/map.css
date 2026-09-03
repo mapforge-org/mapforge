@@ -48,6 +48,32 @@ html:has(.map), body:has(.map) {
     padding: 0;
 }
 
+/* Sits below #map-head, which is 2.5rem high plus a 0.3-0.5rem top margin. */
+#map-mode-badge {
+  position: fixed;
+  z-index: 1;
+  top: 3.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  overflow: hidden;
+  padding: 0;
+  font-size: 0.6rem;
+  background: #fffe;
+  box-shadow: 0 0 0 1.5px #BBB;
+}
+
+#map-mode-badge a {
+  padding: 0.15rem 0.5rem;
+  color: var(--color-mid-steel-blue);
+  text-decoration: none;
+}
+
+#map-mode-badge .active {
+  background: var(--color-mid-steel-blue);
+  color: #FFF;
+}
+
 #map-nav-toggle {
   font-size: 1.2rem;
   cursor: pointer;
@@ -67,6 +93,11 @@ html:has(.map), body:has(.map) {
   box-shadow: 0 0 0 1.5px #BBB;
   padding: 0.1rem 0.4rem;
   white-space: nowrap;
+}
+
+/* Keep the popover clear of the mode toggle. Shifts every breakpoint at once. */
+body:has(#map-mode-badge) .layer-popover {
+  margin-top: 1.7rem;
 }
 
 #layer-reload {
@@ -98,6 +129,10 @@ html:has(.map), body:has(.map) {
     font-size: 1.35rem;
   }
 
+  #map-mode-badge {
+    top: 3.3rem;
+  }
+
   .layer-popover {
     top: 3rem;
   }
@@ -123,6 +158,10 @@ html:has(.map), body:has(.map) {
     margin-top: 0.3rem;
   }
 
+  #map-mode-badge {
+    top: 2.85rem;
+  }
+
   #map-nav-toggle {
     font-size: 0.9rem;
     min-width: 0.9rem;
@@ -146,6 +185,10 @@ html:has(.map), body:has(.map) {
   #map-head {
     padding: 0.2rem;
     margin-top: 0.3rem;
+  }
+
+  #map-mode-badge {
+    top: 2.85rem;
   }
 
   #map-nav-toggle {

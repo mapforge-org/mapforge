@@ -338,6 +338,12 @@
   margin-bottom: 0.8rem;
 }
 
+/* An empty description hides its card, but only in view mode. In edit mode the same
+   card holds the name input. */
+body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
+  display: none;
+}
+
 .feature-section-title {
   color: #97a0ae;
   font-weight: 700;

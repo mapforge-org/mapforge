@@ -70,12 +70,10 @@ export default class extends Controller {
 
   mapDescriptionValueChanged (value, _previousValue) {
     // console.log('mapDescriptionValueChanged(): ' + value)
-    if (window.gon.map_mode === 'rw') {
-      functions.e('#map-description-input', e => { e.value = value || '' })
-      if (value && value !== '') { this.showDescriptionEditor() }
-    } else {
-      this.renderDescription()
-    }
+    // Render in both modes, so that a switch to view mode finds the markdown ready
+    this.renderDescription()
+    functions.e('#map-description-input', e => { e.value = value || '' })
+    if (value && window.gon.map_mode === 'rw') { this.showDescriptionEditor() }
   }
 
   setChecked (selector, value) { document.querySelector(selector).checked = value }
@@ -191,12 +189,9 @@ export default class extends Controller {
 
   renderDescription() {
     marked.use({ gfm: true, breaks: true })
-    let desc = marked(this.mapDescriptionValue || '')
-    desc = functions.sanitizeMarkdown(desc)
-    const el = document.querySelector('#map-description')
-    el.innerHTML = desc
-    const card = el.closest('.feature-section-card')
-    if (card) { card.style.display = desc.trim() ? '' : 'none' }
+    const desc = functions.sanitizeMarkdown(marked(this.mapDescriptionValue || ''))
+    // an empty element lets CSS hide the whole card in view mode
+    functions.e('#map-description-view', e => { e.innerHTML = desc.trim() })
   }
 
   async showDescriptionEditor (event) {

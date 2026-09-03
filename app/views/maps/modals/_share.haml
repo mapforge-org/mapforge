@@ -7,8 +7,8 @@
     .map-modal-content.inline-scroll
 
       .feature-section-card.pt-3
-        - if @map_mode == 'rw'
-          - if @user && (@map.owners.include?(@user) || @user.admin?)
+        - if @map_mode == 'rw' || map_owner?
+          - if map_owner?
             .row.mb-3
               .col-12
                 .d-flex.gap-2.align-items-center
@@ -53,8 +53,8 @@
             %small.text-muted.mt-2.flex-center.center
               = _("Users can explore the map but cannot modify it.")
 
-        - if @map_mode == 'rw'
-          .row.mb-2
+        - if map_editable?
+          .row.mb-2.rw-only
             .col-md-12
               .form-check.form-switch.flex-center
                 %input.form-check-input.me-2#map-gallery-toggle{ type: "checkbox", data: { action: "change->map--share#updateGalleryVisibility" }}

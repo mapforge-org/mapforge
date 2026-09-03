@@ -9,9 +9,10 @@ import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, a
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
 import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
 import { initLevelFromURL } from 'maplibre/controls/levels';
+import { removeEditControls } from 'maplibre/controls/edit';
 import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
-import { initializeViewControls } from 'maplibre/controls/view';
-import { resetEditMode } from 'maplibre/edit';
+import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
+import { initializeEditMode, resetEditMode } from 'maplibre/edit';
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
 import { applyFeatureUpdate, getFeature, getLayer, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
 import { basemaps, demSource, elevationSource } from 'maplibre/styles/basemaps';
@@ -26,6 +27,11 @@ export let map
 export let mapProperties
 export let lastMousePosition
 export let backgroundMapLayer
+
+// View mode changes these locally and never saves them. Keep the server state, so
+// that a switch to edit mode can drop the unsaved changes.
+const localOnlyProperties = [ 'base_map', 'terrain', 'hillshade', 'contours', 'globe' ]
+let serverProperties = {}
 
 // Server `updated_at` of the map data currently held in memory. Compared on socket
 // reconnect (against the freshly fetched value) to decide whether a full, main-thread
@@ -57,6 +63,10 @@ let backgroundContours
 export function initializeMaplibreProperties () {
   const lastProperties = JSON.parse(JSON.stringify(mapProperties || {}))
   mapProperties = window.gon.map_properties
+  if (mapProperties) {
+    serverProperties = Object.fromEntries(
+      localOnlyProperties.map(key => [ key, mapProperties[key] ]))
+  }
   if (mapProperties && !equal(lastProperties, mapProperties)) {
     console.log('Update map properties:', mapProperties)
     updateMapName(mapProperties.name)
@@ -474,6 +484,56 @@ export function initializeViewMode () {
     initializeDefaultControls()
   })
   onMapClickAfterLayers(() => { resetControls() })
+}
+
+// Swaps the control set of the running map, so that the mode toggle needs no page load.
+// The map channel needs no re-subscription: it always streams by public id, and every
+// write is authorized by the private id in the message payload.
+export async function switchMapMode (mode, mapId, url, pushHistory = true) {
+  // an open modal or a selected feature must not outlive the mode it belongs to
+  resetControls()
+
+  window.gon.map_mode = mode
+  window.gon.map_id = mapId
+  document.body.classList.toggle('map-mode-rw', mode === 'rw')
+  functions.e('#map-mode-badge a', e => {
+    e.classList.toggle('active', e.dataset.mode === mode)
+  })
+  bindModeHistory()
+
+  if (mode === 'rw') {
+    Object.assign(mapProperties, serverProperties)
+    setBackgroundMapLayer()
+    removeViewControls()
+    await initializeEditMode()
+  } else {
+    removeEditControls()
+    initializeViewControls()
+  }
+  initCtrlTooltips()
+
+  initSettingsModal()
+  // a page loaded in edit mode opens the editor for an existing description, so match it
+  if (mode === 'rw' && mapProperties.description) {
+    functions.e('#map-description-toggle', e => { e.click() })
+  }
+
+  if (pushHistory) { window.history.pushState({}, '', url + window.location.hash) }
+}
+
+let modeHistoryBound = false
+
+// The back button changes the URL only. Switch the running map to match it.
+function bindModeHistory () {
+  if (modeHistoryBound) { return }
+  modeHistoryBound = true
+
+  window.addEventListener('popstate', () => {
+    const path = window.location.pathname
+    const link = document.querySelector(`#map-mode-badge a[href="${path}"]`)
+    if (!link || link.classList.contains('active')) { return }
+    switchMapMode(link.dataset.mode, path.split('/').pop(), path, false)
+  })
 }
 
 // Registers a click handler that runs AFTER all synchronous layer-specific

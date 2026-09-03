@@ -1,43 +1,19 @@
 import { map } from 'maplibre/map'
-import { ControlGroup, MapSettingsControl, MapLayersControl, MapShareControl } from 'maplibre/controls/shared'
-import { animateElement } from 'helpers/dom'
+import { ControlGroup, MapSettingsControl, MapLayersControl, MapShareControl, revealControls } from 'maplibre/controls/shared'
 
-export class MapEditControl {
-  constructor (_options) {
-    this._container = document.createElement('div')
-    this._container.innerHTML = `<a href="/m/${window.gon.edit_id}"><button class="maplibregl-ctrl-btn maplibregl-ctrl-edit" type="button" title="${window.__('Switch to edit mode')}" aria-label="${window.__('Switch to edit mode')}" aria-pressed="false"><b><i class="bi bi-pencil-square"></i></b></button></a>`
-    this._container.onclick = function (e) {
-      const url = '/m/' + window.gon.edit_id + location.hash
-      window.location.href = url
-      e.preventDefault()
-    }
-  }
-
-  onAdd (map) {
-    map.getCanvas().appendChild(this._container)
-    return this._container
-  }
-
-  onRemove () {
-    if (this._container.parentNode) {
-      this._container.parentNode.removeChild(this._container)
-    }
-  }
-}
+let viewControlGroup
 
 export function initializeViewControls () {
-  if (window.gon.edit_id) {
-    const controlGroup = new ControlGroup([new MapEditControl()])
-    map.addControl(controlGroup, 'top-left')
-    document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)').classList.add('hidden') // hide for aos animation
-  }
-
-  const controlGroup = new ControlGroup(
+  viewControlGroup = new ControlGroup(
     [new MapSettingsControl(), new MapLayersControl(), new MapShareControl()])
-  map.addControl(controlGroup, 'top-left')
+  map.addControl(viewControlGroup, 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-layers)').classList.add('hidden') // hide for aos animation
 
-  map.once('load', function (_e) {
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-layers)', 'fade-right', 500)
-  })
+  revealControls(['.maplibregl-ctrl:has(button.maplibregl-ctrl-layers)'])
+}
+
+export function removeViewControls () {
+  if (!viewControlGroup) { return }
+  map.removeControl(viewControlGroup)
+  viewControlGroup = undefined
 }

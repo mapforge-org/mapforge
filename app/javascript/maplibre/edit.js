@@ -19,8 +19,17 @@ export let draw
 export let selectedFeature
 let currentMode
 
+// Every handler that initializeEditMode() registers stays alive after a switch to
+// view mode, so the edit-only ones must check the current mode when they fire.
+const inEditMode = () => window.gon.map_mode === 'rw'
+
 // https://github.com/mapbox/mapbox-gl-draw
 export async function initializeEditMode () {
+  // A mode switch back into edit mode only needs the controls again. draw and every
+  // map.on() handler below must stay registered exactly once. resetEditMode() clears
+  // draw for each new map, so a fresh page still runs the full setup.
+  if (draw) { initializeEditControls(); return }
+
   // console.log('Initializing MapboxDraw')
   // async load mapbox-gl-draw
   const MapboxDrawModule = await import('@mapbox/mapbox-gl-draw')
@@ -202,6 +211,7 @@ export async function initializeEditMode () {
     touchStartPosition = e.point
   })
   map.on('touchend', (e) => {
+    if (!inEditMode()) { return }
     touchEndPosition = e.point
     if (Math.abs(touchStartPosition.x - touchEndPosition.x) < 3  &&
       Math.abs(touchStartPosition.y - touchEndPosition.y) < 3 &&
@@ -236,13 +246,15 @@ export async function initializeEditMode () {
     if (draw.getMode() == 'direct_select' || draw.getMode() == 'simple_select') {
       selectedFeature = null
       resetControls()
-      document.querySelector('#edit-buttons').classList.add('hidden')
-      document.querySelector('.maplibregl-ctrl-select').classList.add('active')
+      // the edit controls are gone after a switch to view mode
+      functions.e('#edit-buttons', e => { e.classList.add('hidden') })
+      functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
     }
   })
 
   document.addEventListener('keydown', function (event) {
     // console.log('key', event)
+    if (!inEditMode()) { return }
     if (functions.isFormFieldFocused()) { return }
     if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
       event.preventDefault()

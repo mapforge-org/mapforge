@@ -1,6 +1,6 @@
 = javascript_include_tag "osmtogeojson.js", async: true
 
-- if @map_mode == 'rw'
+- if map_editable?
   - # https://github.com/Ionaru/easy-markdown-editor
   = stylesheet_link_tag "easymde.min.css" # v2.20.0, manual update
 
@@ -32,6 +32,15 @@
     - unless params['nomenu'] == 'true'
       #map-nav-toggle.navbar-toggler-icon.ms-2.me-2{ title: _("Show navigation"), data: { 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom" } }
     %h1#map-title{ title: _("Map settings"), data: { 'action': "click->header#openMapSettings", 'toggle': "tooltip", 'bs-placement': "bottom" } }= @map.name
+
+  - if map_owner? && @map_mode != 'static' && params['nomenu'] != 'true'
+    #map-mode-badge.permission-badge{ data: { controller: "header" } }
+      = link_to map_path(@map.public_id), class: ("active" if @map_mode == 'ro'), data: { turbo: false, mode: "ro", action: "click->header#switchMode" } do
+        %span.d-none.d-sm-inline= _("View mode")
+        %span.d-sm-none= _("View")
+      = link_to map_path(@map.private_id), class: ("active" if @map_mode == 'rw'), data: { turbo: false, mode: "rw", action: "click->header#switchMode" } do
+        %span.d-none.d-sm-inline= _("Edit mode")
+        %span.d-sm-none= _("Edit")
 
 - if params['nomenu'] == 'true'
   = link_to root_url, { '_target': 'blank' } do

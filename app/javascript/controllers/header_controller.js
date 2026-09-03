@@ -50,6 +50,16 @@ export default class extends Controller {
     this.hideNavDropdown(event)
   }
 
+  // Switches the running map instead of loading the page again.
+  async switchMode (event) {
+    event.preventDefault()
+    const link = event.currentTarget
+    if (link.classList.contains('active')) { return }
+    const url = link.getAttribute('href')
+    const { switchMapMode } = await import('maplibre/map')
+    await switchMapMode(link.dataset.mode, url.split('/').pop(), url)
+  }
+
   openMapSettings (event) {
     const mapElement = document.querySelector('.map')
     if (mapElement && mapElement.getAttribute('data-map-loaded') === 'true') {

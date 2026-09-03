@@ -534,8 +534,16 @@ msgstr ""
 msgid "Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data"
 msgstr ""
 
+#: ../app/views/maps/maplibre.haml:44
+msgid "Edit"
+msgstr ""
+
 #: ../app/javascript/controllers/map/share_controller.js:56
 msgid "Edit link copied"
+msgstr ""
+
+#: ../app/views/maps/maplibre.haml:43 ../app/views/maps/maplibre.haml:45
+msgid "Edit mode"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:126 ../app/views/maps/modals/_layers.haml:146
@@ -1546,6 +1554,10 @@ msgstr ""
 
 #: ../app/javascript/controllers/map/share_controller.js:62
 msgid "View link copied"
+msgstr ""
+
+#: ../app/views/maps/maplibre.haml:39 ../app/views/maps/maplibre.haml:41
+msgid "View mode"
 msgstr ""
 
 #: ../app/javascript/maplibre/feature/elevation.js:194 ../app/views/maps/modals/_feature.haml:54

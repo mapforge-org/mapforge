@@ -16,6 +16,15 @@ module ApplicationHelper
     @owned_maps_count ||= @user&.owned_maps&.count || 0
   end
 
+  def map_owner?
+    @map&.owned_by?(@user) || @user&.admin? || false
+  end
+
+  # An owner also gets the edit UI in view mode, hidden by CSS until they switch modes
+  def map_editable?
+    @map_mode == "rw" || map_owner?
+  end
+
   def avatar_url(base_url, size)
     uri = URI(base_url)
     params = URI.decode_www_form(uri.query.to_s)

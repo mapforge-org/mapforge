@@ -407,7 +407,24 @@ export function initCtrlTooltips () {
   initTooltips()
 }
 
+// Controls are added hidden and faded in on map load. A mode switch adds them after
+// load, where AOS never animates again, so they are revealed right away instead.
+export function revealControls (selectors) {
+  // map.loaded() goes false again while the edit styles load, so use the page marker
+  if (document.querySelector('.map')?.getAttribute('data-map-loaded') === 'true') {
+    selectors.forEach(selector => functions.e(selector, e => { e.classList.remove('hidden') }))
+    return
+  }
+  map.once('load', () => {
+    selectors.forEach(selector => animateElement(selector, 'fade-right', 500))
+  })
+}
+
 export function initializeDefaultControls () {
+  // Both mode paths call this, so a mode switch would add the controls a second time.
+  // The flag lives on the map, so a new map starts over.
+  if (map.mapforgeDefaultControls) { return }
+  map.mapforgeDefaultControls = true
 
   initializeSearchControl()
 
@@ -438,7 +455,6 @@ export function initializeDefaultControls () {
     }
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)', 'fade-left', 500)
     animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-edit)', 'fade-right', 500)
   })
 
   map.on('online', (_e) => {

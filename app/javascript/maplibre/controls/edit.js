@@ -1,14 +1,15 @@
-import { animateElement } from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { LineMenuControl, addLineMenu } from 'maplibre/controls/buttons/lines'
 import { PointControl } from 'maplibre/controls/buttons/point'
 import { PolygonControl } from 'maplibre/controls/buttons/polygon'
 import { MapSelectControl } from 'maplibre/controls/buttons/select'
 import { MapRedoControl, MapUndoControl } from 'maplibre/controls/buttons/undo'
-import { ControlGroup, MapLayersControl, MapSettingsControl, MapShareControl } from 'maplibre/controls/shared'
+import { ControlGroup, MapLayersControl, MapSettingsControl, MapShareControl, revealControls } from 'maplibre/controls/shared'
 import { draw } from 'maplibre/edit'
 import { map } from 'maplibre/map'
 import { resetDirections } from 'maplibre/routing/directions'
+
+let editControls = []
 
 export function resetEditControls () {
   resetDirections()
@@ -18,11 +19,12 @@ export function resetEditControls () {
 
 export function initializeEditControls () {
 
-  map.addControl(new ControlGroup([new MapSelectControl()]), 'top-left')
+  const selectGroup = new ControlGroup([new MapSelectControl()])
+  map.addControl(selectGroup, 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-select)').classList.add('hidden')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-select) button').classList.add('active')
 
-  map.addControl(draw, 'top-left')
+  if (!map.hasControl(draw)) { map.addControl(draw, 'top-left') }
   const editGroup = new ControlGroup(
     [new PointControl(), new LineMenuControl(), new PolygonControl()])
   map.addControl(editGroup, 'top-left')
@@ -40,17 +42,27 @@ export function initializeEditControls () {
   map.addControl(controlGroup, 'top-left')
   document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)').classList.add('hidden') // hide for aos animation
 
+  // draw stays on the map in view mode. Removing it nulls its store, and every
+  // `if (draw)` guard in the code base would then call into a dead control.
+  // It draws no buttons of its own, so an attached draw is invisible.
+  editControls = [selectGroup, editGroup, undoGroup, controlGroup]
+
   functions.e('#settings-modal', e => {
     e.setAttribute('data-map--settings-current-pitch-value', map.getPitch().toFixed(0))
     e.setAttribute('data-map--settings-current-zoom-value', map.getZoom().toFixed(2))
     e.setAttribute('data-map--settings-current-bearing-value', map.getBearing().toFixed(0))
   })
 
-  map.once('load', function (_e) {
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-select)', 'fade-right', 500)
-    animateElement('.maplibregl-ctrl:has(.mapbox-gl-draw_point)', 'fade-right', 500)
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)', 'fade-right', 500)
-  })
+  revealControls([
+    '.maplibregl-ctrl:has(button.maplibregl-ctrl-select)',
+    '.maplibregl-ctrl:has(.mapbox-gl-draw_point)',
+    '.maplibregl-ctrl:has(button.maplibregl-ctrl-map)'
+  ])
+}
+
+export function removeEditControls () {
+  editControls.forEach(control => { map.removeControl(control) })
+  editControls = []
 }
 
 export function disableEditControls () {

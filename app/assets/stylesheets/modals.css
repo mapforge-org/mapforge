@@ -7,6 +7,11 @@
   position: absolute;
   top: 0;
   pointer-events: none; /* This makes the div transparent to mouse events */
+
+  /* The fade holds opacity below 1, which makes this a stacking context and traps
+     the z-index of .map-modal inside it. Without a z-index here, the modal fades in
+     behind the map title and the mode toggle. */
+  z-index: 1000;
 }
 
 #description-modal {
@@ -180,6 +185,16 @@
   justify-content: center;
   width: 100%;
   height: 100%;
+}
+
+/* The map page renders the edit UI for owners in both modes, so that the mode
+   toggle can switch without a page load. */
+body:not(.map-mode-rw) .rw-only {
+  display: none;
+}
+
+body.map-mode-rw .ro-only {
+  display: none;
 }
 
 /* Permission badges */
@@ -559,7 +574,7 @@
     padding: 0.5rem 0.3rem;
   }
 
-  .permission-badge {
+  #share-modal .permission-badge {
     display: none;
   }
 

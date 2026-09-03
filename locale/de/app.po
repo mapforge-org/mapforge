@@ -404,8 +404,14 @@ msgstr "Zeichne Objekte und gestalte sie:"
 msgid "Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data"
 msgstr "Dynamische Ebenen: Nutze %{overpass_link}, um Ebenen aus OpenStreetMap-Daten hinzuzufügen"
 
+msgid "Edit"
+msgstr "Bearbeiten"
+
 msgid "Edit link copied"
 msgstr "Bearbeitungslink kopiert"
+
+msgid "Edit mode"
+msgstr "Bearbeitungsmodus"
 
 msgid "Edit query"
 msgstr "Abfrage bearbeiten"
@@ -1164,6 +1170,9 @@ msgstr "Objektinformationen anzeigen"
 
 msgid "View link copied"
 msgstr "Ansichtslink kopiert"
+
+msgid "View mode"
+msgstr "Ansichtsmodus"
 
 msgid "Visible section"
 msgstr "Sichtbarer Abschnitt"
