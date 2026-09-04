@@ -10,6 +10,18 @@ describe "Map places search" do
     queries.last || {}
   end
 
+  # the marker of a result draws only after its circle image is built, and a click on the
+  # map before that misses the marker. the result row appears earlier than the marker.
+  def wait_for_result_markers
+    layer = "symbols-layer_search-source-results"
+    wait_for {
+      page.evaluate_script(
+        "map.getLayer('#{layer}')" \
+        " ? map.queryRenderedFeatures({ layers: ['#{layer}'] }).length : 0"
+      )
+    }.to be > 0
+  end
+
   before do
     photon_file = File.read(Rails.root.join("spec", "fixtures", "files", "photon.json"))
     # photon has no url parameter, so the endpoint can ride along in the recorded query
@@ -248,6 +260,7 @@ describe "Map places search" do
     it "shows the osm tags of the result" do
       find(".maplibregl-ctrl-geocoder--input").set("Berlin")
       expect(page).to have_css(".geocoder-result-title", text: "Berlin")
+      wait_for_result_markers
 
       center = center_of_screen
       click_coord("#maplibre-map", center[:x], center[:y])
@@ -267,6 +280,7 @@ describe "Map places search" do
       expect(Feature.count).to eq(0)
       find(".maplibregl-ctrl-geocoder--input").set("Berlin")
       expect(page).to have_css(".geocoder-result-title", text: "Berlin")
+      wait_for_result_markers
 
       center = center_of_screen
       click_coord("#maplibre-map", center[:x], center[:y], button: :right)
