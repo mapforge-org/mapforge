@@ -24,8 +24,10 @@
   }
 }
 
-.status-error {
-  background-color: rgb(255 147 94 / 85%) !important;
+/* the id carries the default color, so the override needs the id too */
+#status-container.status-error {
+  background-color: rgb(255 147 94 / 85%);
+  color: #000;
 }
 
 .status-warning {

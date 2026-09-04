@@ -47,7 +47,10 @@ export default class extends Controller {
     }
   }
 
+  // Control clicks that this controller fires itself (toggleNav, openMapSettings) bubble
+  // up to the map element, which is bound to hideNav. Only a real gesture closes the nav.
   hideNav (event) {
+    if (event && !event.isTrusted) { return }
     if (document.querySelector('.map')) { let controller = this; setTimeout(function () { controller.hideNavBar(event) }, 300) }
     this.hideNavDropdown(event)
   }
