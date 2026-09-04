@@ -257,6 +257,9 @@ msgstr "Koordinaten in die Zwischenablage kopiert"
 msgid "Copy"
 msgstr "Kopieren"
 
+msgid "Edit in OSM"
+msgstr "In OSM bearbeiten"
+
 msgid "Copy %{type}"
 msgstr "%{type} kopieren"
 
@@ -673,6 +676,9 @@ msgstr "Wird geladen..."
 
 msgid "Location (https only)"
 msgstr "Standort (nur mit https)"
+
+msgid "Location"
+msgstr "Ort"
 
 msgid "Location not available"
 msgstr "Standort nicht verfügbar"

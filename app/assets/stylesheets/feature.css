@@ -344,16 +344,17 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
   margin-bottom: 0.2rem;
 }
 
-#feature-edit-ui .btn-secondary {
+#feature-edit-ui .btn-secondary, .osm-action {
   background-color: #fff;
   border-color: #d6dbe4;
   color: #475569;
 }
 
 @media (hover: hover) {
-  #feature-edit-ui .btn-secondary:hover {
+  #feature-edit-ui .btn-secondary:hover, .osm-action:hover {
     background-color: #f8fafc;
     border-color: #cdd5e1;
+    color: #475569;
   }
 }
 
@@ -522,4 +523,109 @@ input {
   opacity: 0.65;
   font-size: 0.75rem;
   white-space: nowrap;
+}
+
+/* Details modal for an element of OpenStreetMap, see overpassDescription */
+.osm-subtitle {
+  color: #97a0ae;
+  font-size: 0.9rem;
+  margin: -0.2rem 0 0.7rem;
+}
+
+.osm-card {
+  padding: 0.6rem 0.8rem;
+}
+
+.osm-card .feature-section-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.osm-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.35rem 0;
+  font-size: 0.9rem;
+}
+
+.osm-row + .osm-row {
+  border-top: 1px solid #dfe4eb;
+}
+
+.osm-key {
+  font-weight: 600;
+  color: var(--color-dark-charcoal);
+}
+
+/* the key is a link to taginfo, but it reads as the label of the row */
+.osm-key-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .osm-key-link:hover {
+    color: inherit;
+    text-decoration: underline dotted;
+  }
+}
+
+.osm-value {
+  text-align: right;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.osm-row-address .osm-value {
+  line-height: 1.4;
+}
+
+/* a schedule needs the full width, so its value drops below the key */
+.osm-row-block {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.3rem;
+}
+
+.osm-row-block .osm-value {
+  text-align: center;
+}
+
+.osm-chip {
+  background: #dde5ee;
+  border-radius: 0.4rem;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.osm-code {
+  display: block;
+  background: #fff;
+  border: 1px solid #dfe4eb;
+  border-radius: 0.4rem;
+  padding: 0.35rem 0.5rem;
+  color: var(--color-dark-charcoal);
+  font-size: 0.85rem;
+}
+
+.osm-yes {
+  color: #3fa34d;
+}
+
+.osm-no {
+  color: #97a0ae;
+}
+
+.osm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.osm-action {
+  font-size: 0.9rem;
 }

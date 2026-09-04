@@ -129,7 +129,8 @@ export class OsmLayer extends BasemapLayer {
     const element = await fetchOsmElement(osmId)
     if (!element) { return feature.properties.desc }
 
-    return overpassDescription({ ...element.tags, id: osmId })
+    feature.properties.osm = { ...element.tags, id: osmId }
+    return overpassDescription(feature.properties.osm)
   }
 
   removeEventHandlers() {

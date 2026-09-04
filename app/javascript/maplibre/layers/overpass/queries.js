@@ -22,16 +22,16 @@ export const queries = [
            '// cluster-symbol=🍻\n' +
            '(nwr["craft"~"brewery",i];nwr["microbrewery"="yes"];nwr["industrial"="brewery"];);out center 250;',
     style: (f) => {
-      if (f.properties?.microbrewery === 'yes') {
+      if (f.properties.osm?.microbrewery === 'yes') {
         f.properties["marker-symbol"] = "🍻"
         f.properties["stroke"] = "#ffffff"
         f.properties["marker-color"] = "transparent"
-      } else if (f.properties?.craft?.includes('brewery')) {
+      } else if (f.properties.osm?.craft?.includes('brewery')) {
         f.properties["marker-image-url"] = "/icons/barrel-48.png"
         f.properties["marker-size"] = "20"
         f.properties["marker-color"] = "transparent"
         f.properties["stroke"] = "transparent"
-      } else if (f.properties?.industrial?.includes('brewery')) {
+      } else if (f.properties.osm?.industrial?.includes('brewery')) {
         f.properties["marker-image-url"] = "/emojis/noto/🏭.png"
         f.properties["marker-size"] = "20"
         f.properties["marker-color"] = "transparent"
@@ -46,17 +46,17 @@ export const queries = [
            'node["railway"="station"]["station"="subway"];\n' +
            'out center 250;',
     style: (f) => {
-      if (f.properties?.subway === 'yes') {
+      if (f.properties.osm?.subway === 'yes') {
         f.properties["marker-color"] = "transparent"
         f.properties["stroke"] = "transparent"
         f.properties["marker-symbol"] = "🚇"
       }
-      if (f.properties?.train === 'yes') {
+      if (f.properties.osm?.train === 'yes') {
         f.properties["marker-color"] = "transparent"
         f.properties["stroke"] = "transparent"
         f.properties["marker-symbol"] = "🚆"
       }
-      if (f.properties?.railway === 'subway') {
+      if (f.properties.osm?.railway === 'subway') {
         f.properties["stroke"] = "red"
       }
   }},
@@ -101,13 +101,15 @@ export const queries = [
            ');\n' +
            'out geom 250;\n',
     style: (f) => {
-      f.properties.desc = "[Abfahrten](https://bahn.expert/" +
-        encodeURIComponent(f.properties.name) + ")\n" + f.properties.desc
-      if (f.properties.route === "tracks") {
+      if (f.properties.osm.name) {
+        f.properties.desc = "[Abfahrten](https://bahn.expert/" +
+          encodeURIComponent(f.properties.osm.name) + ")"
+      }
+      if (f.properties.osm.route === "tracks") {
          f.properties["stroke"] = "black"
          f.properties["stroke-width"] = "2"
       }
-      if (["halt", "station"].includes(f.properties.railway)) {
+      if (["halt", "station"].includes(f.properties.osm.railway)) {
         f.properties["marker-size"] = "5"
         f.properties["marker-color"] = "#000"
         f.properties["stroke"] = "transparent"
@@ -131,17 +133,17 @@ export const queries = [
       // 'nwr[shop=butcher];\n' +
       ');out center 250;',
     style: (f) => {
-      if (['supermarket'].includes(f.properties['shop'])) {
+      if (['supermarket'].includes(f.properties.osm['shop'])) {
         f.properties["marker-symbol"] = "🛒"
         f.properties["marker-color"] = "#000"
       }
-      if (['fuel'].includes(f.properties['amenity'])) {
+      if (['fuel'].includes(f.properties.osm['amenity'])) {
         f.properties["marker-symbol"] = "⛽"
       }
-      if (['bakery'].includes(f.properties['shop'])) {
+      if (['bakery'].includes(f.properties.osm['shop'])) {
         f.properties["marker-symbol"] = "🥨"
       }
-      if (['butcher'].includes(f.properties['shop'])) {
+      if (['butcher'].includes(f.properties.osm['shop'])) {
         f.properties["marker-symbol"] = "🥩"
       }
     }

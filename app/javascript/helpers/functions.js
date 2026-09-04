@@ -134,6 +134,14 @@ export function isCrawler() {
   )
 }
 
+// Text from OSM and from other outside sources can carry markup. The quotes are escaped
+// too, so the result is also safe inside a quoted html attribute.
+export function escapeHtml (text) {
+  const div = document.createElement('div')
+  div.textContent = text
+  return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+}
+
 export function sanitizeMarkdown (desc) {
   // open external and image links in new tab
   desc = desc.replace(/<a(\s+)(href=['"]https?:\/\/|href=['"]\/image)/gi, '<a$1target="_blank" $2')

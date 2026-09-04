@@ -388,8 +388,10 @@ describe "Map" do
 
         copied_feature = Feature.first
         expect(copied_feature.layer).to eq(map.layers.first)
-        expect(copied_feature.properties["name"]).to eq("Agriturismo Caprissio")
-        expect(copied_feature.properties["tourism"]).to eq("camp_site")
+        expect(copied_feature.properties["label"]).to eq("Agriturismo Caprissio")
+        # the tags of the element live under 'osm', the top level holds the style keys
+        expect(copied_feature.properties["osm"]["name"]).to eq("Agriturismo Caprissio")
+        expect(copied_feature.properties["osm"]["tourism"]).to eq("camp_site")
         expect(copied_feature.geometry["type"]).to eq("Point")
         expect(copied_feature.geometry["coordinates"]).to eq([ 12.3651437, 44.9165141 ])
       end

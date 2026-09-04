@@ -259,6 +259,11 @@
   pointer-events: none;
 }
 
+/* the clear button of a non-empty query, else it stays above the collapsed search icon */
+.maplibregl-ctrl-geocoder:not(.expanded) .maplibregl-ctrl-geocoder--pin-right { /* stylelint-disable-line */
+  display: none;
+}
+
 .maplibregl-ctrl-geocoder--input:focus { /* stylelint-disable-line */
   outline: none !important;
 }

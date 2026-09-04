@@ -101,7 +101,8 @@ export class SearchLayer extends Layer {
     const tags = await fetchOverpassTags(type, feature.properties.osm_id)
     if (!tags) { return feature.properties.desc }
 
-    return overpassDescription({ ...tags, id: `${type}/${feature.properties.osm_id}` })
+    feature.properties.osm = { ...tags, id: `${type}/${feature.properties.osm_id}` }
+    return overpassDescription(feature.properties.osm)
   }
 
   // -1 deactivates all of them again

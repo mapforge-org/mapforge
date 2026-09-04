@@ -118,12 +118,7 @@ function categoryValue (query) {
   return VALUES[singular] ? singular : null
 }
 
-// Place names come from OSM, so they can carry markup
-function escapeHtml (text) {
-  const div = document.createElement('div')
-  div.textContent = text
-  return div.innerHTML
-}
+const escapeHtml = functions.escapeHtml
 
 // Photon returns the address in parts, nominatim returned one preformatted display_name
 function placeName (p) {
@@ -423,7 +418,13 @@ export function initializeSearchControl () {
     geocoderButton.classList.toggle('expanded', expanded)
     // focus inside the click handler, mobile only opens the keyboard on a user gesture
     const input = geocoderButton.querySelector('.maplibregl-ctrl-geocoder--input')
-    if (expanded) { input.focus() } else { input.blur() }
+    if (expanded) {
+      input.focus()
+    } else {
+      input.blur()
+      // blur alone races the collapse transition, close the dropdown right away
+      geocoder._typeahead.list.hide()
+    }
     // the tooltip belongs to the collapsed button, expanded it would cover the result list
     const tooltip = window.bootstrap?.Tooltip.getInstance(geocoderButton)
     if (!tooltip) { return }

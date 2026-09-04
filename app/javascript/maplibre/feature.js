@@ -118,6 +118,8 @@ export function featureHasDescription (feature) {
   const p = feature?.properties
   if (!p) return false
   if (p.wikipediaId) return true
+  // the tags of an osm element become the body of the modal, see overpassDescription
+  if (p.osm) return true
   return !!p.desc
 }
 
@@ -125,10 +127,10 @@ export async function showFeatureDetails (feature) {
   dom.hideElements(['#feature-edit-ui'])
   f.e('#edit-buttons button', (e) => { e.classList.remove('active') })
   document.querySelector('#edit-button-details')?.classList.add('active')
-  // allow edit in rw mode for geojson features only
-  if (window.gon.map_mode === 'rw' && getFeature(feature.id, 'geojson')) {
-    document.querySelector('#edit-buttons').classList.remove('hidden')
-  }
+  // allow edit in rw mode for geojson features only. an osm element of a search result, of
+  // an overpass layer or of the basemap belongs to no geojson layer, so it keeps the tabs off
+  const editable = window.gon.map_mode === 'rw' && Boolean(getFeature(feature.id, 'geojson'))
+  document.querySelector('#edit-buttons').classList.toggle('hidden', !editable)
   dom.showElements('#feature-details-body')
   const modal = document.querySelector('#feature-details-modal')
   modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-up', 'modal-pull-fade')

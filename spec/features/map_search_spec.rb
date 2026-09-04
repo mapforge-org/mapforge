@@ -252,7 +252,7 @@ describe "Map places search" do
       center = center_of_screen
       click_coord("#maplibre-map", center[:x], center[:y])
 
-      expect(page).to have_css("#feature-details-modal.show", text: "opening_hours")
+      expect(page).to have_css("#feature-details-modal.show", text: "Opening Hours")
       expect(page).to have_css("#feature-details-modal", text: "Mo-Fr 08:00-18:00")
       expect(last_body).to include("node(240109189);out tags;")
     end
