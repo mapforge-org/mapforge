@@ -243,6 +243,7 @@ export function featureIcon (feature, { link = true } = {}) {
 }
 
 export function getFeatureTypeName(feature) {
+  if (!feature?.geometry?.type) { return window.__('Feature') }
   if (feature.geometry.type === 'LineString' && feature.properties?.route?.profile) {
     const profile = feature.properties.route.profile
     if (profile === 'bike' || profile.includes('cycling')) {

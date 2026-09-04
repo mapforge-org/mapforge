@@ -26,8 +26,28 @@ msgstr ""
 msgid "%{count} views"
 msgstr ""
 
+#: ../app/javascript/maplibre/map.js:582 ../app/javascript/maplibre/undo.js:58
+msgid "%{type} added"
+msgstr ""
+
 #: ../app/javascript/maplibre/feature/extras_totals.js:49
 msgid "%{type} analysis"
+msgstr ""
+
+#: ../app/javascript/controllers/feature/modal_controller.js:397 ../app/javascript/controllers/map/context_menu_controller.js:125
+msgid "%{type} copied to clipboard"
+msgstr ""
+
+#: ../app/javascript/maplibre/edit.js:397 ../app/javascript/maplibre/undo.js:59
+msgid "%{type} deleted"
+msgstr ""
+
+#: ../app/javascript/maplibre/undo.js:57
+msgid "%{type} property update"
+msgstr ""
+
+#: ../app/javascript/maplibre/undo.js:56
+msgid "%{type} update"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:17
@@ -80,10 +100,6 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:77
 msgid "Add your own data:"
-msgstr ""
-
-#: ../app/javascript/maplibre/map.js:575
-msgid "Added feature"
 msgstr ""
 
 #: ../app/javascript/controllers/map/layers_controller.js:74
@@ -414,8 +430,8 @@ msgstr ""
 msgid "Delete midpoint"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:613
-msgid "Deleting feature %{id}"
+#: ../app/javascript/maplibre/map.js:622
+msgid "Deleting %{type}"
 msgstr ""
 
 #: ../app/views/maps/_list_filter.haml:43
@@ -586,12 +602,12 @@ msgstr ""
 msgid "Error detecting location: %{message}"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/edit_controller.js:52 ../app/javascript/controllers/feature/modal_controller.js:324
-msgid "Error updating feature"
+#: ../app/javascript/controllers/feature/edit_controller.js:52 ../app/javascript/controllers/feature/modal_controller.js:322
+msgid "Error updating %{type}"
 msgstr ""
 
 #: ../app/javascript/controllers/feature/edit_controller.js:67
-msgid "Error updating feature geometry"
+msgid "Error updating %{type} geometry"
 msgstr ""
 
 #: ../app/javascript/maplibre/feature.js:372
@@ -606,28 +622,12 @@ msgstr ""
 msgid "Failed to load layer %{name}"
 msgstr ""
 
+#: ../app/javascript/maplibre/feature.js:246
+msgid "Feature"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:52
 msgid "Feature Tour"
-msgstr ""
-
-#: ../app/javascript/maplibre/undo.js:58
-msgid "Feature added"
-msgstr ""
-
-#: ../app/javascript/controllers/feature/modal_controller.js:399 ../app/javascript/controllers/map/context_menu_controller.js:124
-msgid "Feature copied to clipboard"
-msgstr ""
-
-#: ../app/javascript/maplibre/edit.js:397 ../app/javascript/maplibre/undo.js:59
-msgid "Feature deleted"
-msgstr ""
-
-#: ../app/javascript/maplibre/undo.js:57
-msgid "Feature property update"
-msgstr ""
-
-#: ../app/javascript/maplibre/undo.js:56
-msgid "Feature update"
 msgstr ""
 
 #: ../app/javascript/maplibre/routing/gpx_to_route.js:172 ../app/javascript/maplibre/routing/gpx_to_route.js:319
@@ -986,6 +986,10 @@ msgstr ""
 msgid "Metal"
 msgstr ""
 
+#: ../app/javascript/controllers/map/context_menu_controller.js:25
+msgid "Midpoint deleted"
+msgstr ""
+
 #: ../app/javascript/maplibre/styles/basemaps.js:228
 msgid "Minimalist, neutral vector style with subtle colors and light labels."
 msgstr ""
@@ -1130,10 +1134,6 @@ msgstr ""
 msgid "Point Mode: Click on the map to place a marker"
 msgstr ""
 
-#: ../app/javascript/controllers/map/context_menu_controller.js:25
-msgid "Point deleted"
-msgstr ""
-
 #: ../app/views/maps/modals/feature/_edit_ui.haml:41
 msgid "Point scaling:"
 msgstr ""
@@ -1202,8 +1202,12 @@ msgstr ""
 msgid "Redo last change"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:117 ../app/javascript/maplibre/undo.js:325
+#: ../app/javascript/maplibre/undo.js:336
 msgid "Redo: %{type}"
+msgstr ""
+
+#: ../app/javascript/maplibre/undo.js:120
+msgid "Redone: %{type}"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:149
@@ -1270,8 +1274,8 @@ msgstr ""
 msgid "Satellite imagery combined with street names and road labels overlay."
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:330
-msgid "Saving feature %{id}"
+#: ../app/javascript/controllers/feature/modal_controller.js:328
+msgid "Saving %{type}"
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:43
@@ -1512,8 +1516,12 @@ msgstr ""
 msgid "Undo last change"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:102 ../app/javascript/maplibre/undo.js:318
+#: ../app/javascript/maplibre/undo.js:329
 msgid "Undo: %{type}"
+msgstr ""
+
+#: ../app/javascript/maplibre/undo.js:105
+msgid "Undone: %{type}"
 msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:53 ../app/javascript/maplibre/layers/geojson/route_extras.js:139
@@ -1532,8 +1540,8 @@ msgstr ""
 msgid "Update Layer"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:603
-msgid "Updated feature '%{title}'"
+#: ../app/javascript/maplibre/map.js:610
+msgid "Updated %{type} '%{title}'"
 msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:41
@@ -1755,3 +1763,4 @@ msgstr ""
 #: ../app/views/maps/modals/_layers.haml:79
 msgid "🛜 Wifi"
 msgstr ""
+

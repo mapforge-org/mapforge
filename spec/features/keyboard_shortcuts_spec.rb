@@ -23,7 +23,7 @@ describe "Keyboard Shortcuts" do
       it "can copy & paste point" do
         page.driver.browser.keyboard.type([ :Control, "c" ])
 
-        expect(page).to have_text("Feature copied to clipboard")
+        expect(page).to have_text("Point copied to clipboard")
 
         # Clipboard read is disallowed in headless mode
         # find('body').send_keys(:control, 'v')

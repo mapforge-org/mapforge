@@ -30,7 +30,7 @@ describe "Map" do
   context "feature listing" do
     before do
       feature
-      expect(page).to have_text("Added feature")
+      expect(page).to have_text("Point added")
       find(".maplibregl-ctrl-layers").click
     end
 

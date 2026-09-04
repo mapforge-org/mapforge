@@ -22,7 +22,7 @@ export default class extends Controller {
     if (feature.geometry.type === 'Polygon') { feature.geometry.coordinates[0].splice(vertexIndex, 1) }
     applyFeatureUpdate(feature, { resetDraw: true, refreshRouteExtras: true, refreshKmMarkers: true })
     sendMessage('update_feature', { ...feature })
-    status(window.__('Point deleted'))
+    status(window.__('Midpoint deleted'))
     hideContextMenu()
   }
 
@@ -121,7 +121,8 @@ export default class extends Controller {
     const feature = getFeature(event.currentTarget.dataset.featureId, 'geojson')
     if (feature) {
       setCopiedFeature(feature)
-      copyToClipboard(JSON.stringify(feature), window.__('Feature copied to clipboard'))
+      copyToClipboard(JSON.stringify(feature),
+        window.__('%{type} copied to clipboard').replace('%{type}', getFeatureTypeName(feature)))
     }
     hideContextMenu()
   }

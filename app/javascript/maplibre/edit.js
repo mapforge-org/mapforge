@@ -7,7 +7,7 @@ import { hideContextMenu } from 'maplibre/controls/context_menu';
 import { disableEditControls, enableEditControls, initializeEditControls } from 'maplibre/controls/edit';
 import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
-import { highlightFeature, refreshFeatureMeta } from 'maplibre/feature';
+import { getFeatureTypeName, highlightFeature, refreshFeatureMeta } from 'maplibre/feature';
 import { applyFeatureUpdate, getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
 import { addFeature, destroyFeature, map, mapProperties, onMapClickAfterLayers } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
@@ -394,7 +394,7 @@ export function handleDelete (e) {
   addUndoState('Feature deleted', deletedFeature)
   resetDirections()
   resetControls()
-  status(window.__('Feature deleted'))
+  status(window.__('%{type} deleted').replace('%{type}', getFeatureTypeName(deletedFeature)))
   sendMessage('delete_feature', { id: deletedFeature.id })
 }
 

@@ -23,8 +23,23 @@ msgstr "%{count} Objekte"
 msgid "%{count} views"
 msgstr "%{count} Aufrufe"
 
+msgid "%{type} added"
+msgstr "%{type} hinzugefügt"
+
 msgid "%{type} analysis"
 msgstr "%{type}-Auswertung"
+
+msgid "%{type} copied to clipboard"
+msgstr "%{type} in die Zwischenablage kopiert"
+
+msgid "%{type} deleted"
+msgstr "%{type} gelöscht"
+
+msgid "%{type} property update"
+msgstr "%{type}-Eigenschaft geändert"
+
+msgid "%{type} update"
+msgstr "%{type} geändert"
 
 msgid "(track / image)"
 msgstr "(Track / Bild)"
@@ -64,9 +79,6 @@ msgstr "Füge Bilder hinzu, passe Farben, Symbole, Beschriftungen, (3D-)Polygone
 
 msgid "Add your own data:"
 msgstr "Füge eigene Daten hinzu:"
-
-msgid "Added feature"
-msgstr "Objekt hinzugefügt"
 
 msgid "Added feature %{index}/%{total}"
 msgstr "Objekt %{index}/%{total} hinzugefügt"
@@ -314,8 +326,8 @@ msgstr "Karte löschen"
 msgid "Delete midpoint"
 msgstr "Zwischenpunkt löschen"
 
-msgid "Deleting feature %{id}"
-msgstr "Objekt %{id} wird gelöscht"
+msgid "Deleting %{type}"
+msgstr "%{type} wird gelöscht"
 
 msgid "Descending"
 msgstr "Absteigend"
@@ -443,11 +455,11 @@ msgstr "Fehler beim Umwandeln des Tracks: %{message}"
 msgid "Error detecting location: %{message}"
 msgstr "Fehler beim Ermitteln des Standorts: %{message}"
 
-msgid "Error updating feature"
-msgstr "Fehler beim Aktualisieren des Objekts"
+msgid "Error updating %{type}"
+msgstr "Fehler beim Aktualisieren von %{type}"
 
-msgid "Error updating feature geometry"
-msgstr "Fehler beim Aktualisieren der Objektgeometrie"
+msgid "Error updating %{type} geometry"
+msgstr "Fehler beim Aktualisieren der Geometrie von %{type}"
 
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
@@ -458,23 +470,11 @@ msgstr "Kopieren fehlgeschlagen"
 msgid "Failed to load layer %{name}"
 msgstr "Ebene %{name} konnte nicht geladen werden"
 
+msgid "Feature"
+msgstr "Objekt"
+
 msgid "Feature Tour"
 msgstr "Feature Tour"
-
-msgid "Feature added"
-msgstr "Objekt hinzugefügt"
-
-msgid "Feature copied to clipboard"
-msgstr "Objekt in die Zwischenablage kopiert"
-
-msgid "Feature deleted"
-msgstr "Objekt gelöscht"
-
-msgid "Feature property update"
-msgstr "Objekteigenschaft geändert"
-
-msgid "Feature update"
-msgstr "Objekt geändert"
 
 msgid "Fetching elevation data..."
 msgstr "Höhendaten werden geladen..."
@@ -743,6 +743,9 @@ msgstr "Maximale Zoomstufe %{zoom} erreicht"
 msgid "Metal"
 msgstr "Metall"
 
+msgid "Midpoint deleted"
+msgstr "Zwischenpunkt gelöscht"
+
 msgid "Minimalist, neutral vector style with subtle colors and light labels."
 msgstr "Minimalistischer, neutraler Vektorstil mit zurückhaltenden Farben und leichten Beschriftungen."
 
@@ -851,9 +854,6 @@ msgstr "Punkt"
 msgid "Point Mode: Click on the map to place a marker"
 msgstr "Punkt-Modus: Auf die Karte klicken, um einen Marker zu setzen"
 
-msgid "Point deleted"
-msgstr "Punkt gelöscht"
-
 msgid "Point scaling:"
 msgstr "Punktskalierung:"
 
@@ -908,6 +908,9 @@ msgstr "Letzte Änderung wiederherstellen"
 msgid "Redo: %{type}"
 msgstr "Wiederherstellen: %{type}"
 
+msgid "Redone: %{type}"
+msgstr "Wiederhergestellt: %{type}"
+
 msgid "Refresh"
 msgstr "Aktualisieren"
 
@@ -956,8 +959,8 @@ msgstr "Sand"
 msgid "Satellite imagery combined with street names and road labels overlay."
 msgstr "Satellitenbilder kombiniert mit Straßennamen und Beschriftungen."
 
-msgid "Saving feature %{id}"
-msgstr "Objekt %{id} wird gespeichert"
+msgid "Saving %{type}"
+msgstr "%{type} wird gespeichert"
 
 msgid "Scaled with zoom"
 msgstr "Mit Zoom skalieren"
@@ -1141,6 +1144,9 @@ msgstr "Letzte Änderung rückgängig machen"
 msgid "Undo: %{type}"
 msgstr "Rückgängig: %{type}"
 
+msgid "Undone: %{type}"
+msgstr "Rückgängig gemacht: %{type}"
+
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -1153,8 +1159,8 @@ msgstr "Aktualisieren"
 msgid "Update Layer"
 msgstr "Ebene aktualisieren"
 
-msgid "Updated feature '%{title}'"
-msgstr "Objekt '%{title}' aktualisiert"
+msgid "Updated %{type} '%{title}'"
+msgstr "%{type} '%{title}' aktualisiert"
 
 msgid "Uphill"
 msgstr "Bergauf"
@@ -1320,3 +1326,4 @@ msgstr "🚻 Öffentliche Toiletten"
 
 msgid "🛜 Wifi"
 msgstr "🛜 WLAN"
+

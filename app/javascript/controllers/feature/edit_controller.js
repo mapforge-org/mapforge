@@ -49,7 +49,7 @@ export default class extends Controller {
       sendMessage('update_feature', feature)
     } catch (error) {
       console.error('Error updating feature:', error.message)
-      status(window.__('Error updating feature'), 'error')
+      status(window.__('Error updating %{type}').replace('%{type}', getFeatureTypeName(feature)), 'error')
       document.querySelector('#feature-edit-raw .error').innerHTML = error.message
     }
   }
@@ -64,7 +64,7 @@ export default class extends Controller {
       sendMessage('update_feature', feature)
     } catch (error) {
       console.error('Error updating feature geometry:', error.message)
-      status(window.__('Error updating feature geometry'), 'error')
+      status(window.__('Error updating %{type} geometry').replace('%{type}', getFeatureTypeName(feature)), 'error')
       document.querySelector('#feature-edit-raw-geometry .error').innerHTML = error.message
     }
   }

@@ -8,7 +8,7 @@ import { status } from 'helpers/status'
 import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { draw, select, unselect } from 'maplibre/edit'
-import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
+import { getFeatureTypeName, highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { getFeature, layers } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
@@ -319,13 +319,13 @@ export default class extends Controller {
       }
     } catch (error) {
       console.error('Error updating feature:', error.message)
-      status(window.__('Error updating feature'), 'error')
+      status(window.__('Error updating %{type}').replace('%{type}', getFeatureTypeName(feature)), 'error')
     }
   }
 
   saveFeature () {
     const feature = this.getSelectedFeature()
-    status(window.__('Saving feature %{id}').replace('%{id}', feature.id))
+    status(window.__('Saving %{type}').replace('%{type}', getFeatureTypeName(feature)))
     // send shallow copy of feature to avoid changes during send
     sendMessage('update_feature', { ...feature })
   }
@@ -394,7 +394,7 @@ export default class extends Controller {
       event.preventDefault()
       event.stopPropagation()
       console.log("Copied feature to clipboard ", feature)
-      status(window.__('Feature copied to clipboard'))
+      status(window.__('%{type} copied to clipboard').replace('%{type}', getFeatureTypeName(feature)))
     }
   }
 

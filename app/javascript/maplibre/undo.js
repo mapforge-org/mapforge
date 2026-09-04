@@ -1,7 +1,7 @@
 import { sendMessage } from 'channels/map_channel'
 import { status } from 'helpers/status'
 import { select, selectedFeature } from 'maplibre/edit'
-import { showFeatureDetails } from 'maplibre/feature'
+import { getFeatureTypeName, showFeatureDetails } from 'maplibre/feature'
 import { getFeature, renderLayers, layers } from 'maplibre/layers/layers'
 import { addFeature, destroyFeature, removeGeoJSONSource, setLayerVisibility } from 'maplibre/map'
 import { resetDirections } from 'maplibre/routing/directions'
@@ -53,10 +53,10 @@ function addRedoState(type, state) {
 // Undo types are English keys: they index the handler maps below and are stored in the stack.
 // This map holds their translations, and keeps the msgids extractable for gettext.
 const typeLabels = {
-  'Feature update': window.__('Feature update'),
-  'Feature property update': window.__('Feature property update'),
-  'Feature added': window.__('Feature added'),
-  'Feature deleted': window.__('Feature deleted'),
+  'Feature update': window.__('%{type} update'),
+  'Feature property update': window.__('%{type} property update'),
+  'Feature added': window.__('%{type} added'),
+  'Feature deleted': window.__('%{type} deleted'),
   'Track added': window.__('Track added'),
   'Track update': window.__('Track update'),
   'Layer added': window.__('Layer added'),
@@ -65,7 +65,10 @@ const typeLabels = {
   'Route created from GPX': window.__('Route created from GPX')
 }
 
-function typeLabel(type) { return typeLabels[type] || type }
+function typeLabel(entry) {
+  const label = typeLabels[entry.type] || entry.type
+  return label.replace('%{type}', getFeatureTypeName(entry.state))
+}
 
 const undoHandlers = {
   'Feature update': undoFeatureUpdate,
@@ -99,7 +102,7 @@ export function undo() {
   const handler = undoHandlers[prevState.type]
   if (!handler) { console.warn('Cannot undo ', prevState); return }
   handler(prevState)
-  status(window.__('Undo: %{type}').replace('%{type}', typeLabel(prevState.type)))
+  status(window.__('Undone: %{type}').replace('%{type}', typeLabel(prevState)))
   renderLayers('geojson', true)
   keepSelection()
   if (undoStack.length === 0) { hideUndoButton() }
@@ -114,7 +117,7 @@ export function redo() {
   const handler = redoHandlers[nextState.type]
   if (!handler) { console.warn('Cannot redo ', nextState); return }
   handler(nextState)
-  status(window.__('Redo: %{type}').replace('%{type}', typeLabel(nextState.type)))
+  status(window.__('Redone: %{type}').replace('%{type}', typeLabel(nextState)))
   renderLayers('geojson', true)
   keepSelection()
   if (redoStack.length === 0) { hideRedoButton() }
@@ -323,14 +326,14 @@ function updateTooltips() {
 
   // Update undo button
   const undoTop = undoStack[undoStack.length - 1]
-  const undoTitle = undoTop ? window.__('Undo: %{type}').replace('%{type}', typeLabel(undoTop.type)) : window.__('Undo')
+  const undoTitle = undoTop ? window.__('Undo: %{type}').replace('%{type}', typeLabel(undoTop)) : window.__('Undo')
   undoBtn.setAttribute('title', undoTitle)
   undoBtn.setAttribute('aria-label', undoTitle)
   undoBtn.setAttribute('data-bs-original-title', undoTitle)
 
   // Update redo button
   const redoTop = redoStack[redoStack.length - 1]
-  const redoTitle = redoTop ? window.__('Redo: %{type}').replace('%{type}', typeLabel(redoTop.type)) : window.__('Redo')
+  const redoTitle = redoTop ? window.__('Redo: %{type}').replace('%{type}', typeLabel(redoTop)) : window.__('Redo')
   redoBtn.setAttribute('title', redoTitle)
   redoBtn.setAttribute('aria-label', redoTitle)
   redoBtn.setAttribute('data-bs-original-title', redoTitle)

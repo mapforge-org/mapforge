@@ -124,7 +124,7 @@ describe "Feature edit" do
           find("#edit-button-advanced").click
           find("#edit-button-trash").click
         end
-        expect(page).to have_text("Feature deleted")
+        expect(page).to have_text("Polygon deleted")
         # need to wait until feature is saved server side
         wait_for { Feature.count }.to eq(0)
       end
@@ -357,14 +357,14 @@ describe "Feature edit" do
       click_coord("#maplibre-map", 512, 430, button: :right)
       expect(page).to have_text("Copy")
       find(".context-menu-item", text: "Copy").click
-      expect(page).to have_text("Feature copied to clipboard")
+      expect(page).to have_text("Point copied to clipboard")
       expect(page).to have_text("Details")
     end
 
     it "pastes a copied feature at the clicked position" do
       click_coord("#maplibre-map", 512, 430, button: :right)
       find(".context-menu-item", text: "Copy").click
-      expect(page).to have_text("Feature copied to clipboard")
+      expect(page).to have_text("Point copied to clipboard")
 
       # a feature under the cursor gets its own menu items, without the paste option
       click_coord("#maplibre-map", 512, 430, button: :right)
@@ -421,7 +421,7 @@ describe "Feature edit" do
       accept_alert do
         find(".context-menu-item", text: "Delete").click
       end
-      expect(page).to have_text("Feature deleted")
+      expect(page).to have_text("Point deleted")
       # need to wait until feature is saved server side
       wait_for { Feature.count }.to eq(0)
     end

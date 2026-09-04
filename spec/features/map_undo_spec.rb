@@ -82,7 +82,7 @@ describe "Map Undo/Redo" do
 
       # Undo the layer addition
       find("button.maplibregl-ctrl-undo").click
-      expect(page).to have_text("Undo: Layer added")
+      expect(page).to have_text("Undone: Layer added")
       wait_for { map.reload.layers.count }.to eq(initial_layer_count)
       expect(page).not_to have_text("🚰 Drinking water")
     end
@@ -105,7 +105,7 @@ describe "Map Undo/Redo" do
       # Redo adding the layer
       expect(page).to have_css("button.maplibregl-ctrl-redo")
       find("button.maplibregl-ctrl-redo").click
-      expect(page).to have_text("Redo: Layer added")
+      expect(page).to have_text("Redone: Layer added")
       wait_for { map.reload.layers.count }.to eq(initial_layer_count + 1)
       find(".maplibregl-ctrl-layers").click
       expect(page).to have_text("🍻 Breweries")

@@ -13,7 +13,7 @@ import { removeEditControls } from 'maplibre/controls/edit';
 import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
-import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
+import { getFeatureTypeName, highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
 import { applyFeatureUpdate, getFeature, getLayer, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
 import { basemaps, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { applyBasemapDefaults, defaults } from 'maplibre/styles/defaults';
@@ -579,7 +579,7 @@ export function addFeature (feature) {
   layer.geojson.features.push(feature)
   // Surgical single-feature add instead of a full re-render of every geojson layer.
   layer.applyFeatureAdd(feature)
-  status(window.__('Added feature'))
+  status(window.__('%{type} added').replace('%{type}', getFeatureTypeName(feature)))
 }
 
 // feature id -> AnimatePointAnimation, so each marker keeps its own timing and a new
@@ -607,7 +607,9 @@ function updateFeature (feature, updatedFeature) {
     animation.animateTo(feature, newCoords)
   }
 
-  status(window.__("Updated feature '%{title}'").replace('%{title}', feature.properties.title || feature.id))
+  status(window.__("Updated %{type} '%{title}'")
+    .replace('%{type}', getFeatureTypeName(feature))
+    .replace('%{title}', feature.properties.title || feature.id))
   // Surgical single-feature update instead of a full re-render of every geojson layer.
   // A remote update may have changed geometry or toggled companions, so refresh them.
   // (A remote change to a feature's level won't re-filter here — that needs a full render.)
@@ -617,7 +619,7 @@ function updateFeature (feature, updatedFeature) {
 export function destroyFeature (featureId) {
   const feature = getFeature(featureId)
   if (feature) {
-    status(window.__('Deleting feature %{id}').replace('%{id}', featureId))
+    status(window.__('Deleting %{type}').replace('%{type}', getFeatureTypeName(feature)))
     const layer = getLayer(featureId)
     layer.geojson.features = layer.geojson.features.filter(f => f.id !== featureId)
     // Surgical single-feature remove instead of a full re-render of every geojson layer.
