@@ -184,22 +184,28 @@ const pointSizeMin = () => ['to-number', ['coalesce',
 export const pointSizeMax = () => ['to-number', ['coalesce',
   ...markerSize.slice(1), pointSizeDefault(defaults.pointSizePlain)]]
 
+// the emoji covers the middle of the circle, at the full marker size the ring around it
+// gets too wide. only the radius shrinks, pointSizeMax stays the marker size, so the
+// label keeps its distance. a zoom expression must stay at the top of the property,
+// so the factor goes into the stops
+const emojiCircle = size => ['*', ['case', hasProp('marker-symbol'), 0.8, 1], size]
+
 export const pointSize = () => [
   'interpolate',
   ['linear'],
   ['zoom'],
-  5, [
+  5, emojiCircle([
     'case',
     ['boolean', ['feature-state', 'active'], false],
     ['+', 1, pointSizeMin()],
     pointSizeMin()
-  ],
-  17, [
+  ]),
+  17, emojiCircle([
     'case',
     ['boolean', ['feature-state', 'active'], false],
     ['+', 1, pointSizeMax()],
     pointSizeMax()
-  ]
+  ])
 ]
 
 export const pointOutlineSize = () => ['to-number', styleProp(['user_stroke-width', 'stroke-width'], defaults.pointOutlineSize)]

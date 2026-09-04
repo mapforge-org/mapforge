@@ -113,6 +113,34 @@ export class OverpassLayer extends Layer {
 
 // Standalone utility exports
 
+const tagCache = new Map()
+
+/**
+ * Tags of one osm element, for example ('node', 240109189). 'out tags' leaves the geometry
+ * out, the caller has it already.
+ * @returns {Promise<object|null>} the tags, or null when the request fails
+ */
+export async function fetchOverpassTags(type, id) {
+  const key = `${type}/${id}`
+  if (tagCache.has(key)) { return tagCache.get(key) }
+
+  try {
+    const response = await fetch("https://overpass-api.de/api/interpreter", {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: `[out:json][timeout:25];${type}(${id});out tags;`
+    })
+    if (!response.ok) { throw new Error(`HTTP status: ${response.status}`) }
+
+    const tags = (await response.json()).elements?.[0]?.tags || null
+    tagCache.set(key, tags)
+    return tags
+  } catch (error) {
+    console.warn(`Failed to fetch overpass tags for ${key}: ${error.message}`)
+    return null
+  }
+}
+
 export function overpassDescription(props) {
   let desc = ''
   if (props["description"]) { desc += props["description"] + '\n\n' }

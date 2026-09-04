@@ -3,13 +3,18 @@ require "rails_helper"
 describe "Map places search" do
   let(:map) { create(:map, name: "Search test") }
   let(:map_path) { map.public_map_path }
-  let(:last_query) { {} }
+  let(:queries) { [] }
   let(:control_js) { "document.querySelector('.maplibregl-ctrl-geocoder')" }
+
+  def last_query
+    queries.last || {}
+  end
 
   before do
     photon_file = File.read(Rails.root.join("spec", "fixtures", "files", "photon.json"))
-    CapybaraMock.stub_request(:get, /photon\.komoot\.io/).to_return do |query:, **|
-      last_query.replace(query)
+    # photon has no url parameter, so the endpoint can ride along in the recorded query
+    CapybaraMock.stub_request(:get, /photon\.komoot\.io/).to_return do |query:, url:, **|
+      queries << query.merge("url" => url)
       [ 200,
         { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
         photon_file ]
@@ -19,7 +24,8 @@ describe "Map places search" do
     expect_map_loaded
     # the control fades in, a click during the animation misses the icon
     wait_for { page.evaluate_script("getComputedStyle(#{control_js}).opacity") }.to eq("1")
-    find(".maplibregl-ctrl-geocoder--icon-search").click
+    # the collapsed control takes the click itself, its children have no pointer events
+    find(".maplibregl-ctrl-geocoder").click
     # the control expands with a transition, a click during it lands next to the result row
     wait_for { page.evaluate_script("#{control_js}.clientWidth") }.to be > 100
   end
@@ -58,8 +64,35 @@ describe "Map places search" do
 
     expect(last_query["q"]).to eq("Berlin")
     expect(last_query["lang"]).to eq("en")
+    expect(last_query["limit"]).to eq("12")
     expect(last_query["lon"].to_f).to be_within(0.1).of(11.08)
     expect(last_query["lat"].to_f).to be_within(0.1).of(49.45)
+  end
+
+  # a plural query still reaches the osm_value, which is singular
+  it "asks the reverse endpoint for a category query" do
+    find(".maplibregl-ctrl-geocoder--input").set("cafes")
+    expect(page).to have_css(".geocoder-result-title", text: "Berlin")
+
+    expect(last_query["url"]).to include("/reverse")
+    expect(last_query["osm_tag"]).to eq(":cafe")
+    expect(last_query["q"]).to be_nil
+    expect(last_query["radius"].to_i).to be >= 10
+  end
+
+  it "runs the query again on return, but only after a move" do
+    find(".maplibregl-ctrl-geocoder--input").set("Berlin")
+    expect(page).to have_css(".geocoder-result-title", text: "Berlin")
+    typed = queries.size
+
+    # the view did not move, so this return repeats the answer of the typing
+    find(".maplibregl-ctrl-geocoder--input").send_keys(:enter)
+    page.execute_script("map.jumpTo({ center: [13.4, 52.5], zoom: 5 })")
+    find(".maplibregl-ctrl-geocoder--input").send_keys(:enter)
+
+    wait_for { last_query["lon"].to_f }.to be_within(0.1).of(13.4)
+    expect(last_query["q"]).to eq("Berlin")
+    expect(queries.size).to eq(typed + 1)
   end
 
   it "moves the map to the selected result" do
@@ -68,6 +101,25 @@ describe "Map places search" do
 
     wait_for { page.evaluate_script("map.getCenter().lng") }.to be_within(0.2).of(13.42)
     wait_for { page.evaluate_script("map.getCenter().lat") }.to be_within(0.3).of(52.51)
+    # the picked result must not replace the query, "Berlin, Germany" is the name of it
+    expect(find(".maplibregl-ctrl-geocoder--input").value).to eq("Berlin")
+  end
+
+  # the map factory starts at zoom 12, and this result carries no extent
+  it "zooms in to the selected result" do
+    find(".maplibregl-ctrl-geocoder--input").set("Berlin")
+    find(".geocoder-result-title", text: "Friedrichstrasse 43").click
+
+    wait_for { page.evaluate_script("map.getZoom()") }.to be_within(0.1).of(14)
+  end
+
+  it "keeps a closer zoom on the selected result" do
+    page.execute_script("map.jumpTo({ center: [13.4, 52.5], zoom: 17 })")
+    find(".maplibregl-ctrl-geocoder--input").set("Berlin")
+    find(".geocoder-result-title", text: "Friedrichstrasse 43").click
+
+    wait_for { page.evaluate_script("map.getCenter().lng") }.to be_within(0.01).of(13.3903)
+    expect(page.evaluate_script("map.getZoom()")).to be_within(0.1).of(17)
   end
 
   context "with the results in view" do
@@ -109,12 +161,14 @@ describe "Map places search" do
       wait_for { active_symbols }.to eq([ "🏠" ])
     end
 
-    it "keeps only the picked result on the map" do
+    # overpass is not stubbed here, the details fall back to the address of the result
+    it "highlights the picked result and keeps the other ones" do
       find(".maplibregl-ctrl-geocoder--input").set("Berlin")
-      find(".geocoder-result-title", text: "Berlin").click
+      find(".geocoder-result-title", text: "Friedrichstrasse 43").click
 
-      wait_for { result_symbols }.to eq([ "🏙" ])
-      expect(active_symbols).to eq([ "🏙" ])
+      wait_for { active_symbols }.to eq([ "🏠" ])
+      expect(result_symbols).to contain_exactly("🏙", "🏠")
+      expect(page).to have_css("#feature-details-modal.show", text: "Friedrichstrasse 43")
     end
   end
 
@@ -169,6 +223,35 @@ describe "Map places search" do
       expect(page.evaluate_script("map.getCenter().lng")).to be_within(0.01).of(11.0557)
       expect(page.evaluate_script("map.getCenter().lat")).to be_within(0.01).of(49.4732)
       expect(feature_active?).to be true
+    end
+  end
+
+  context "details of a result" do
+    # center matches the first result in spec/fixtures/files/photon.json
+    let(:map) { create(:map, name: "Search test", center: [ 13.3888599, 52.5170365 ], zoom: 15) }
+
+    let(:last_body) { String.new }
+
+    before do
+      CapybaraMock.stub_request(:post, %r{overpass-api\.de/api/interpreter}).to_return do |body:, **|
+        last_body.replace(body)
+        [ 200,
+          { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
+          { elements: [ { tags: { "opening_hours" => "Mo-Fr 08:00-18:00" } } ] }.to_json ]
+      end
+    end
+
+    # photon knows the address fields only, the tags come from overpass on demand
+    it "shows the osm tags of the result" do
+      find(".maplibregl-ctrl-geocoder--input").set("Berlin")
+      expect(page).to have_css(".geocoder-result-title", text: "Berlin")
+
+      center = center_of_screen
+      click_coord("#maplibre-map", center[:x], center[:y])
+
+      expect(page).to have_css("#feature-details-modal.show", text: "opening_hours")
+      expect(page).to have_css("#feature-details-modal", text: "Mo-Fr 08:00-18:00")
+      expect(last_body).to include("node(240109189);out tags;")
     end
   end
 

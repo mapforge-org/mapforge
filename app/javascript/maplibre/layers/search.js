@@ -1,7 +1,10 @@
 import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { Layer } from 'maplibre/layers/layer'
+import { fetchOverpassTags, overpassDescription } from 'maplibre/layers/overpass/overpass'
 import { map } from 'maplibre/map'
 import { initializeViewStyles } from 'maplibre/styles/styles'
+
+const OSM_TYPES = { N: 'node', W: 'way', R: 'relation' }
 
 // Geocoder results live in their own source so they get the same click, hover and
 // context menu handling as the other layers. The instance stays out of the global
@@ -51,6 +54,20 @@ export class SearchLayer extends Layer {
     this.setResults([])
   }
 
+  /**
+   * Photon answers with a fixed set of address fields. The osm id of the result buys the
+   * rest of the tags from overpass, on demand, so a click pays for one result only.
+   */
+  async description(feature) {
+    const type = OSM_TYPES[feature.properties.osm_type]
+    if (!type) { return feature.properties.desc }
+
+    const tags = await fetchOverpassTags(type, feature.properties.osm_id)
+    if (!tags) { return feature.properties.desc }
+
+    return overpassDescription({ ...tags, id: `${type}/${feature.properties.osm_id}` })
+  }
+
   // -1 deactivates all of them again
   setActive(index) {
     this.geojson.features.forEach((feature, i) => {
@@ -68,6 +85,11 @@ export function searchLayer() {
   if (!instance) { instance = new SearchLayer() }
   if (!map.getSource(instance.sourceId)) { instance.initialize() }
   return instance
+}
+
+// The instance stays out of the global layers array, so getLayer cannot find it.
+export function searchLayerOf(featureId) {
+  return instance?.geojson?.features.some(f => f.id === featureId) ? instance : null
 }
 
 // Drops the results and the handlers of the previous map on navigation.

@@ -203,8 +203,10 @@ async function featureDescription (feature) {
   } else if (feature?.properties?.wikipediaId) {
     desc = wikipediaFeatureDescription(feature)
   } else {
-    // layers can load their description on demand, the modal shows a loading message meanwhile
-    const layer = getLayer(feature.id)
+    // layers can load their description on demand, the modal shows a loading message meanwhile.
+    // the search layer is imported here, a static import of it breaks the module init order
+    const { searchLayerOf } = await import('maplibre/layers/search')
+    const layer = getLayer(feature.id) || searchLayerOf(feature.id)
     const markdown = layer?.description ? await layer.description(feature) : feature?.properties?.desc
     desc = f.sanitizeMarkdown(marked(markdown || ''))
   }

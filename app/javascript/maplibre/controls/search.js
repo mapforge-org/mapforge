@@ -1,13 +1,15 @@
+import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder'
 import { bbox } from '@turf/bbox'
 import { animateElement } from 'helpers/dom'
 import * as functions from 'helpers/functions'
-import MaplibreGeocoder from '@maplibre/maplibre-gl-geocoder'
 import { featureIcon, featureTitle, getFeatureTypeName, highlightFeature, highlightedFeatureId } from 'maplibre/feature'
 import { getFeature, getFeatureSource, getLayer, layers } from 'maplibre/layers/layers'
 import { resetSearchLayer, searchLayer } from 'maplibre/layers/search'
 import { map } from 'maplibre/map'
 
 const PHOTON_LANGS = ['de', 'en', 'fr', 'it']
+const PHOTON_LIMIT = 12
+const RESULT_ZOOM = 14
 
 // Noto emoji per photon osm_value, the most specific hint photon gives.
 // A value that two osm keys share with a different meaning stays out of here, for
@@ -106,6 +108,16 @@ function categorySymbol (p) {
   return VALUES[p.osm_value] || CATEGORIES[key] || CATEGORIES[p.type] || DEFAULT_CATEGORY
 }
 
+// photon matches the query against the name, so 'cafe' only finds places that carry
+// the word in their name. The osm_values of VALUES are the vocabulary of categories,
+// a query out of it goes to the reverse endpoint instead, which filters by osm_tag.
+function categoryValue (query) {
+  const term = query.trim().toLowerCase().replace(/\s+/g, '_')
+  if (VALUES[term]) { return term }
+  const singular = term.replace(/s$/, '')
+  return VALUES[singular] ? singular : null
+}
+
 // Place names come from OSM, so they can carry markup
 function escapeHtml (text) {
   const div = document.createElement('div')
@@ -184,8 +196,13 @@ function toResultItem (feature, title) {
   }
 }
 
-// transparent marker-color and stroke leave only the emoji visible, and let the
-// style pick the white halo of the active state (see points-layer in styles.js)
+// a paint expression of maplibre cannot read a css variable, so it is resolved here
+function ctrlButtonColor () {
+  return getComputedStyle(document.documentElement).getPropertyValue('--ctrl-button-color').trim()
+}
+
+// the emoji sits on a circle in the color of the map controls, which tells a result of the
+// search apart from a feature of the map (see points-layer in styles.js)
 function toMapFeature (item) {
   const [title] = item.place_name.split(',')
   return {
@@ -198,9 +215,9 @@ function toMapFeature (item) {
       label: title,
       desc: item.place_name,
       'marker-symbol': categorySymbol(item.properties),
-      'marker-size': '30',
-      'marker-color': 'transparent',
-      stroke: 'transparent'
+      'marker-size': '25',
+      'marker-color': ctrlButtonColor(),
+      stroke: '#ffffff'
     }
   }
 }
@@ -210,10 +227,13 @@ function toMapFeature (item) {
 let results = []
 // features of the open map, they keep the first rows of the list
 let featureResults = []
+// the items of the geocoder, in the order of the rows, a picked one arrives as the same object
+let resultItems = []
 let activeFeature = null
 
 function showResults (items) {
   setActiveFeature(null)
+  resultItems = items
   featureResults = items.filter(i => i.mapFeatureId).map(i => getFeature(i.mapFeatureId)).filter(Boolean)
   // a feature of the map is drawn by its own layer already, a copy would double the marker
   results = items.filter(i => !i.mapFeatureId).map(toMapFeature)
@@ -239,44 +259,84 @@ function setActiveResult (index) {
   searchLayer().setActive(feature ? -1 : index - featureResults.length)
 }
 
-// https://maplibre.org/maplibre-gl-geocoder/types/MaplibreGeocoderOptions.html
+// the newest request and its url, the older requests answer with its result
+let latest = null
+let latestUrl = null
+
 // https://photon.komoot.io/
+function photonUrl (query) {
+  // fixed, the geocoder limit also counts the rows that the features of the map take
+  const params = new URLSearchParams({ limit: PHOTON_LIMIT })
+  const lang = document.documentElement.lang.split('-')[0]
+  if (PHOTON_LANGS.includes(lang)) { params.set('lang', lang) }
+  // photon prefers results around this point and scales that preference with the zoom.
+  // taken from the map, the geocoder drops its own proximity below zoom 9.
+  const center = map.getCenter()
+  params.set('lon', center.lng.toFixed(5))
+  params.set('lat', center.lat.toFixed(5))
+  const category = categoryValue(query)
+  if (category) {
+    params.set('osm_tag', `:${category}`)
+    // reverse sorts by distance, so a wide radius only appends the far away places.
+    // the view sets it, with a floor, so that a deep zoom still fills the list.
+    const km = center.distanceTo(map.getBounds().getNorthEast()) / 1000
+    params.set('radius', Math.max(10, km).toFixed(0))
+  } else {
+    params.set('q', query)
+    params.set('zoom', Math.round(map.getZoom()))
+  }
+  return `https://photon.komoot.io/${category ? 'reverse' : 'api/'}?${params}`
+}
+
+async function photonFeatures (url) {
+  try {
+    const response = await fetch(url)
+    const geojson = await response.json()
+    return {
+      features: geojson.features.map(feature => {
+        const name = placeName(feature.properties)
+        const extent = feature.properties.extent
+        return {
+          type: 'Feature',
+          geometry: feature.geometry,
+          properties: feature.properties,
+          place_name: name,
+          text: name,
+          place_type: ['place'],
+          // photon extent is [west, north, east, south], a geojson bbox is [west, south, east, north]
+          bbox: extent && [extent[0], extent[3], extent[2], extent[1]],
+          center: feature.geometry.coordinates
+        }
+      })
+    }
+  } catch (e) {
+    console.error(`Failed to forward Geocode with error: ${e}`)
+    // the empty answer must not become the cached one, a return has to retry the url
+    latestUrl = null
+    return { features: [] }
+  }
+}
+
+// https://maplibre.org/maplibre-gl-geocoder/types/MaplibreGeocoderOptions.html
 export const geocoderConfig = {
   forwardGeocode: async (config) => {
-    // fixed, the geocoder limit also counts the rows that the features of the map take
-    const params = new URLSearchParams({ q: config.query, limit: 5 })
-    const lang = document.documentElement.lang.split('-')[0]
-    if (PHOTON_LANGS.includes(lang)) { params.set('lang', lang) }
-    // photon prefers results around this point and scales that preference with the zoom.
-    // taken from the map, the geocoder drops its own proximity below zoom 9.
-    const center = map.getCenter()
-    params.set('lon', center.lng.toFixed(5))
-    params.set('lat', center.lat.toFixed(5))
-    params.set('zoom', Math.round(map.getZoom()))
-    try {
-      const response = await fetch(`https://photon.komoot.io/api/?${params}`)
-      const geojson = await response.json()
-      return {
-        features: geojson.features.map(feature => {
-          const name = placeName(feature.properties)
-          const extent = feature.properties.extent
-          return {
-            type: 'Feature',
-            geometry: feature.geometry,
-            properties: feature.properties,
-            place_name: name,
-            text: name,
-            place_type: ['place'],
-            // photon extent is [west, north, east, south], a geojson bbox is [west, south, east, north]
-            bbox: extent && [extent[0], extent[3], extent[2], extent[1]],
-            center: feature.geometry.coordinates
-          }
-        })
-      }
-    } catch (e) {
-      console.error(`Failed to forward Geocode with error: ${e}`)
-      return { features: [] }
+    const url = photonUrl(config.query)
+    // the same url means that neither the query nor the view changed, for example a
+    // return right after typing. the answer of the request before it still holds.
+    if (url !== latestUrl) {
+      latestUrl = url
+      latest = photonFeatures(url)
     }
+    let request = latest
+    let result = await request
+    // the geocoder renders every answer, and the two endpoints of photon do not answer
+    // at the same speed, so an older request can arrive last. it repeats the newest
+    // result instead of putting a stale list in front of the user.
+    while (latest !== request) {
+      request = latest
+      result = await request
+    }
+    return result
   }
 }
 
@@ -285,49 +345,64 @@ export function initializeSearchControl () {
   resetSearchLayer()
   results = []
   featureResults = []
+  resultItems = []
   activeFeature = null
+  latestUrl = null
 
   // https://maplibre.org/maplibre-gl-geocoder/
   const geocoder = new MaplibreGeocoder(geocoderConfig, {
     maplibregl,
-    zoom: 16,
-    flyTo: { maxZoom: 16 },
+    zoom: RESULT_ZOOM,
+    flyTo: { maxZoom: RESULT_ZOOM },
     clearAndBlurOnEsc: true,
-    // photon is built for typeahead, the control debounces the requests by 200ms
+    // photon is built for typeahead, and the control debounces the requests
     showResultsWhileTyping: true,
+    debounceSearch: 400,
     // the built-in markers only appear together with a fit of the map bounds
     marker: false,
     showResultMarkers: false,
     // the features of the open map, the geocoder puts them in front of the photon results
     localGeocoder: mapFeatures,
-    // 5 photon results plus the features of the map, the list cuts off at this number
-    limit: 5 + MAX_FEATURE_RESULTS,
-    render: renderResult
+    // the photon results plus the features of the map, the list cuts off at this number
+    limit: PHOTON_LIMIT + MAX_FEATURE_RESULTS,
+    render: renderResult,
+    // the default writes the name of the picked result into the field, keep the typed text
+    getItemValue: () => document.querySelector('.maplibregl-ctrl-geocoder--input').value
   })
   map.addControl(geocoder, 'top-right')
 
-  // a picked result stays highlighted, a listed one only while the pointer is on its row
-  let picked = false
+  // a pick zooms in to RESULT_ZOOM, a view that is closer already keeps its zoom. the
+  // geocoder reads both options at the moment it flies, so they follow the map.
+  function followZoom () {
+    geocoder.options.zoom = Math.max(RESULT_ZOOM, map.getZoom())
+    geocoder.options.flyTo.maxZoom = geocoder.options.zoom
+  }
+  followZoom()
+  map.on('zoomend', followZoom)
+
+  // row of the picked result, it stays highlighted, a listed one only while the pointer is on it
+  let picked = -1
   geocoder.on('results', e => {
-    picked = false
+    picked = -1
     showResults(e.features)
   })
   geocoder.on('result', e => {
-    picked = true
-    showResults([e.result])
+    // the other results stay on the map, only the picked one gets the highlight
+    picked = resultItems.indexOf(e.result)
+    setActiveResult(picked)
+    const feature = featureResults[picked] || results[picked - featureResults.length]
+    if (!feature) { return }
+    // the search layer is no member of layers, so getFeatureSource does not know it
+    const source = getFeatureSource(feature.id) || searchLayer().sourceId
     // the geocoder fits the map to the bbox of the feature, the details open after that
-    const feature = featureResults[0]
-    if (feature) {
-      map.once('moveend', () => { highlightFeature(feature, true, getFeatureSource(feature.id)) })
-      return
-    }
-    searchLayer().setActive(0)
+    map.once('moveend', () => { highlightFeature(feature, true, source) })
   })
   geocoder.on('clear', () => {
-    picked = false
+    picked = -1
     results = []
     setActiveFeature(null)
     featureResults = []
+    resultItems = []
     searchLayer().clearResults()
   })
 
@@ -362,12 +437,18 @@ export function initializeSearchControl () {
     setExpanded(!expanded)
   })
 
+  // photon ranks by the map view, so return runs the same query again after a move.
+  // the typeahead stops the event when return picks a row of the list, that one is no search.
+  geocoderButton.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') { geocoder.setInput(e.target.value) }
+  })
+
   // the result list keeps the order of the markers
   geocoderButton.addEventListener('mouseover', (e) => {
     const item = e.target.closest('.suggestions > li')
     if (item) { setActiveResult([...item.parentNode.children].indexOf(item)) }
   })
-  geocoderButton.addEventListener('mouseleave', (_e) => { setActiveResult(picked ? 0 : -1) })
+  geocoderButton.addEventListener('mouseleave', (_e) => { setActiveResult(picked) })
 
   map.once('load', function (_e) {
     // delayed via timeout, the geocoders !important transition overrides data-aos-delay
