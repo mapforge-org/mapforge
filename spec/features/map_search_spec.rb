@@ -118,7 +118,9 @@ describe "Map places search" do
     find(".maplibregl-ctrl-geocoder--input").set("Berlin")
     find(".geocoder-result-title", text: "Friedrichstrasse 43").click
 
-    wait_for { page.evaluate_script("map.getCenter().lng") }.to be_within(0.01).of(13.3903)
+    # the fly starts after the debounce, and it zooms out and back in on the way. the
+    # details open on its moveend, so the modal is the signal that the camera settled.
+    expect(page).to have_css("#feature-details-modal.show", text: "Friedrichstrasse 43")
     expect(page.evaluate_script("map.getZoom()")).to be_within(0.1).of(17)
   end
 
@@ -127,12 +129,13 @@ describe "Map places search" do
     # results render into their own source, so they are visible to the map, not to the DOM
     let(:source) { "search-source-results" }
 
+    # the circle and the emoji of a result are one icon, so the symbols layer draws it.
     # the style layer only exists once the first results arrive, and querying it before
     # that logs a console error, which rails_helper turns into a failure
     def result_features
       page.evaluate_script(
-        "map.getLayer('points-layer_#{source}')" \
-        " ? map.queryRenderedFeatures({ layers: ['points-layer_#{source}'] }).map(f => [" \
+        "map.getLayer('symbols-layer_#{source}')" \
+        " ? map.queryRenderedFeatures({ layers: ['symbols-layer_#{source}'] }).map(f => [" \
         "     f.properties['marker-symbol']," \
         "     map.getFeatureState({ source: '#{source}', id: f.id }).active === true])" \
         " : []"

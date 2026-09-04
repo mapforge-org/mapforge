@@ -2,9 +2,35 @@ import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { Layer } from 'maplibre/layers/layer'
 import { fetchOverpassTags, overpassDescription } from 'maplibre/layers/overpass/overpass'
 import { map } from 'maplibre/map'
+import { circleImage, pruneCircleImages } from 'maplibre/styles/circle_image'
 import { initializeViewStyles } from 'maplibre/styles/styles'
 
 const OSM_TYPES = { N: 'node', W: 'way', R: 'relation' }
+
+const MARKER_PREFIX = 'search-marker'
+// the symbols layer scales an icon by marker-size / 60, so with an image of 60 css pixels the
+// marker-size is the width of the marker on the screen
+const MARKER_IMAGE_SIZE = 60
+export const MARKER_SIZE = 50
+// the active result goes up to 1, see pointOpacityActive in styles.js
+export const MARKER_OPACITY = 0.8
+// keeps the label at the distance that it has below an emoji point of the map
+export const MARKER_LABEL_OFFSET = [0, 1.3]
+// the marker image belongs to the current map style, and the other three values fit that
+// image only. a copy to a layer of the map drops them and renders as a plain emoji point.
+export const TRANSIENT_PROPERTIES = ['marker-image-url', 'marker-size', 'marker-opacity', 'label-offset']
+
+// a paint expression of maplibre cannot read a css variable, so it is resolved here
+function ctrlButtonColor () {
+  return getComputedStyle(document.documentElement).getPropertyValue('--ctrl-button-color').trim()
+}
+
+// The emoji sits on a circle in the color of the map controls, which tells a result of the
+// search apart from a feature of the map.
+export function resultMarkerImage (symbol) {
+  return circleImage(MARKER_PREFIX, ctrlButtonColor(),
+    { size: MARKER_IMAGE_SIZE, symbol: symbol, border: '#ffffff' })
+}
 
 // Geocoder results live in their own source so they get the same click, hover and
 // context menu handling as the other layers. The instance stays out of the global
@@ -32,9 +58,18 @@ export class SearchLayer extends Layer {
       const features = map.queryRenderedFeatures(e.point, { layers: this.getStyleLayerIds() })
       if (!features.length) { return }
 
-      addCopyToLayerMenuItem(this.geojson.features.find(f => f.id === features[0].id))
+      addCopyToLayerMenuItem(this.copyableFeature(features[0].id))
     }
     map.on('contextmenu', this.contextMenuHandler)
+  }
+
+  // a copy gets saved, so it must not keep the properties of the search marker
+  copyableFeature(id) {
+    const feature = this.geojson.features.find(f => f.id === id)
+    if (!feature) { return null }
+    const properties = { ...feature.properties }
+    TRANSIENT_PROPERTIES.forEach(key => delete properties[key])
+    return { ...feature, properties: properties }
   }
 
   removeEventHandlers() {
@@ -47,6 +82,7 @@ export class SearchLayer extends Layer {
 
   setResults(features) {
     this.layer.geojson = { type: 'FeatureCollection', features: features }
+    pruneCircleImages(MARKER_PREFIX, new Set(features.map(f => f.properties['marker-image-url'])))
     this.render()
   }
 

@@ -3,11 +3,12 @@ import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { map, removeStyleLayers } from 'maplibre/map'
+import { circleImage, pruneCircleImages } from 'maplibre/styles/circle_image'
 import { defaults } from 'maplibre/styles/defaults'
 import { setSource } from 'maplibre/styles/styles'
 
 // The source id is part of the image name so that one layer's render never evicts another's
-const imagePrefix = (sourceId) => `km-marker-circle-${sourceId}-`
+const imagePrefix = (sourceId) => `km-marker-circle-${sourceId}`
 
 // Label color with contrast to the line color
 function kmMarkerTextColor (color) {
@@ -17,51 +18,9 @@ function kmMarkerTextColor (color) {
   return r * 0.299 + g * 0.587 + b * 0.114 > 140 ? '#000000' : '#ffffff'
 }
 
-// Create image instead of background circle + number, so that it overlays cleanly with other markers
-function createKmMarkerImage (color, sourceId) {
-  const imageName = `${imagePrefix(sourceId)}${color.replace('#', '')}`
-
-  if (!map.hasImage(imageName)) {
-    const size = 36
-    const canvas = document.createElement('canvas')
-    canvas.width = size
-    canvas.height = size
-    const ctx = canvas.getContext('2d')
-
-    const centerX = size / 2
-    const centerY = size / 2
-    const radius = size / 2 - 3
-
-    // Draw gray border
-    ctx.strokeStyle = '#CCC'
-    ctx.lineWidth = 2
-    ctx.beginPath()
-    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
-    ctx.stroke()
-
-    // Draw filled circle
-    ctx.fillStyle = color
-    ctx.beginPath()
-    ctx.arc(centerX, centerY, radius - 1, 0, Math.PI * 2)
-    ctx.fill()
-
-    map.addImage(imageName, ctx.getImageData(0, 0, size, size))
-  }
-
-  return imageName
-}
-
-// Every distinct line color adds a sprite image, and one drag on the color picker walks through
-// dozens of them, so the images this source stopped using are dropped after a render.
-function pruneMarkerImages (sourceId, keep) {
-  map.listImages().forEach(name => {
-    if (name.startsWith(imagePrefix(sourceId)) && !keep.has(name)) { map.removeImage(name) }
-  })
-}
-
 // A removed layer renders no km markers again, so its images go with it.
 export function cleanupKmMarkerImages (sourceId) {
-  pruneMarkerImages(sourceId, new Set())
+  pruneCircleImages(imagePrefix(sourceId))
 }
 
 // Whether a feature currently contributes km markers, i.e. needs renderKmMarkers to run.
@@ -79,7 +38,7 @@ export function renderKmMarkers (features, sourceId) {
     const line = lineString(f.geometry.coordinates)
     const distance = length(line, { units: 'kilometers' })
     const markerColor = f.properties['stroke'] || defaults.featureColor
-    const markerImageName = createKmMarkerImage(markerColor, sourceId)
+    const markerImageName = circleImage(imagePrefix(sourceId), markerColor)
     imageNames.add(markerImageName)
 
     let interval = 1
@@ -114,7 +73,7 @@ export function renderKmMarkers (features, sourceId) {
 
   const markerFeatures = { type: 'FeatureCollection', features: kmMarkerFeatures }
   map.getSource(sourceId).setData(markerFeatures)
-  pruneMarkerImages(sourceId, imageNames)
+  pruneCircleImages(imagePrefix(sourceId), imageNames)
 }
 
 export function initializeKmMarkerStyles (sourceId) {

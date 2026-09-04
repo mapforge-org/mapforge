@@ -213,13 +213,17 @@ async function featureDescription (feature) {
   return desc
 }
 
+// A marker image that is drawn on the fly is a name of a map image, not a url, and an
+// img tag cannot show it. See maplibre/styles/circle_image.js
+const isImageUrl = url => !!url && (url.startsWith('/') || url.startsWith('http'))
+
 // set title image according to feature type
 export function featureIcon (feature, { link = true } = {}) {
   let image = ''
   let iconColor = feature.properties['marker-color'] || feature.properties['fill'] || feature.properties['stroke'] || defaults.featureColor
   if (iconColor === 'transparent') { iconColor = '#c0c0c0' }
   let iconColorStyle = `style='color: ${iconColor};'`
-  if (feature.properties['marker-image-url']) {
+  if (isImageUrl(feature.properties['marker-image-url'])) {
     const markerImageUrl = feature.properties['marker-image-url']
     const imageHref = markerImageUrl.startsWith('/icon') ? markerImageUrl.replace('/icon', '/image') : markerImageUrl
     const img = `<img loading='lazy' class='feature-details-icon' src='${markerImageUrl}'>`
@@ -277,7 +281,7 @@ export function moveFeatureTo(feature, lngLat) {
 
 export function featureImage(feature) {
   let image = ''
-  if (feature.properties['marker-image-url']) {
+  if (isImageUrl(feature.properties['marker-image-url'])) {
     const imageUrl = feature.properties['marker-image-url'].replace('/icon/', '/image/')
     image = "<a href='" + imageUrl + "' target='_blank'>" +
       "<img class='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'></a>"
