@@ -252,6 +252,13 @@
   }
 }
 
+/* The children stick out of the collapsed 2rem button: the input is 2.25rem tall and
+   full width, and the pin-right block adds its padding below that. They put a text cursor
+   on the button, and they lit the hover background while the pointer was still below it. */
+.maplibregl-ctrl-geocoder:not(.expanded) > * { /* stylelint-disable-line */
+  pointer-events: none;
+}
+
 .maplibregl-ctrl-geocoder--input:focus { /* stylelint-disable-line */
   outline: none !important;
 }

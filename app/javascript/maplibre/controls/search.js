@@ -338,12 +338,29 @@ export function initializeSearchControl () {
 
   const geocoderButton = document.querySelector('.maplibregl-ctrl-geocoder')
   geocoderButton.classList.add('hidden')
-  const searchIcon = document.querySelector('.maplibregl-ctrl-geocoder--icon-search')
-  searchIcon.addEventListener('click', (_e) => { geocoderButton.classList.toggle('expanded') })
-  // the tooltip sits on the icon, initCtrlTooltips only reaches the container and its buttons
-  searchIcon.setAttribute('title', window.__('Search location'))
-  searchIcon.setAttribute('data-toggle', 'tooltip')
-  searchIcon.setAttribute('data-bs-trigger', 'hover')
+  geocoderButton.setAttribute('title', window.__('Search location'))
+  geocoderButton.setAttribute('data-toggle', 'tooltip')
+  geocoderButton.setAttribute('data-bs-trigger', 'hover')
+
+  function setExpanded (expanded) {
+    geocoderButton.classList.toggle('expanded', expanded)
+    // the tooltip belongs to the collapsed button, expanded it would cover the result list
+    const tooltip = window.bootstrap?.Tooltip.getInstance(geocoderButton)
+    if (!tooltip) { return }
+    if (expanded) {
+      tooltip.hide()
+      tooltip.disable()
+    } else {
+      tooltip.enable()
+    }
+  }
+
+  // the whole button opens the field, inside the open field only the icon closes it again
+  geocoderButton.addEventListener('click', (e) => {
+    const expanded = geocoderButton.classList.contains('expanded')
+    if (expanded && !e.target.closest('.maplibregl-ctrl-geocoder--icon-search')) { return }
+    setExpanded(!expanded)
+  })
 
   // the result list keeps the order of the markers
   geocoderButton.addEventListener('mouseover', (e) => {
