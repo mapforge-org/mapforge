@@ -1,8 +1,17 @@
 import { Controller } from '@hotwired/stimulus'
 import { resetControls } from 'maplibre/controls/shared'
 import { draw } from 'maplibre/edit'
+import { descriptionHiddenKey } from 'maplibre/map'
 
 export default class extends Controller {
+  hideDescription(event) {
+    if (event.target.checked) {
+      localStorage.setItem(descriptionHiddenKey(), '1')
+    } else {
+      localStorage.removeItem(descriptionHiddenKey())
+    }
+  }
+
   close() {
     resetControls()
     if (draw) {

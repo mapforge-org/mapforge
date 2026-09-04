@@ -71,6 +71,19 @@ describe "Map public view" do
     end
   end
 
+  context "description popup" do
+    let(:map) { create(:map, description: "Map Description") }
+
+    it "hides the popup on later visits when 'Don't show again' is checked" do
+      expect(page).to have_css("#description-modal.show")
+      check "description-hide", allow_label_click: true
+
+      visit path
+      expect_map_loaded
+      expect(page).not_to have_css("#description-modal.show")
+    end
+  end
+
   context "settings modal" do
     let(:map) { create(:map, description: "Map Description") }
 

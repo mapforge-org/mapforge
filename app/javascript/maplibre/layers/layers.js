@@ -168,7 +168,9 @@ export async function initializeLayerStyles(id = null) {
   // rather than reloadAfterMapMove(), which is false for overpass layers with a hardcoded
   // bbox even though they still fetch live data on initial load.
   const hasLiveLayers = initLayers.some(l => l.type === 'overpass' || l.type === 'wikipedia')
-  if (hasLiveLayers) {
+  // On the initial load the preloader covers the map, so the badge would only flicker there.
+  const mapLoaded = document.querySelector('.map')?.getAttribute('data-map-loaded') === 'true'
+  if (hasLiveLayers && mapLoaded) {
     functions.e('#layer-reload', e => { e.classList.add('hidden') })
     functions.e('#layer-loading', e => { e.classList.remove('hidden') })
   }

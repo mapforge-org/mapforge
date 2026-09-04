@@ -7,3 +7,7 @@
       - renderer = Redcarpet::Render::HTML.new(filter_html: false, hard_wrap: true)
       - markdown_parser = Redcarpet::Markdown.new(renderer, tables: true)
       %p= markdown_parser.render(@map.description || '').html_safe
+
+    %label.small.mt-1{ for: "description-hide" }
+      %input.form-check-input.me-2#description-hide{ type: "checkbox", data: { action: "change->map--modal#hideDescription" } }
+      = _("Don't show again for this map")

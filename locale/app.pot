@@ -462,6 +462,10 @@ msgstr ""
 msgid "Docs"
 msgstr ""
 
+#: ../app/views/maps/modals/_description.haml:13
+msgid "Don't show again for this map"
+msgstr ""
+
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:41
 msgid "Downhill"
 msgstr ""

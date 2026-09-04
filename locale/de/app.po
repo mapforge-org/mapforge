@@ -350,6 +350,9 @@ msgstr "Möchtest du diese Karte kopieren?"
 msgid "Docs"
 msgstr "Doku"
 
+msgid "Don't show again for this map"
+msgstr "Für diese Karte nicht mehr anzeigen"
+
 msgid "Downhill"
 msgstr "Bergab"
 

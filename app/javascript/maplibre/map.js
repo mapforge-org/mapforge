@@ -28,6 +28,11 @@ export let mapProperties
 export let lastMousePosition
 export let backgroundMapLayer
 
+// Per map, so that hiding one maps description popup keeps it for other maps.
+export function descriptionHiddenKey () {
+  return `hide-description-${window.gon.map_properties.public_id}`
+}
+
 // View mode changes these locally and never saves them. Keep the server state, so
 // that a switch to edit mode can drop the unsaved changes.
 const localOnlyProperties = [ 'base_map', 'terrain', 'hillshade', 'contours', 'globe' ]
@@ -132,7 +137,9 @@ export async function initializeMap (divId = 'maplibre-map') {
   window.map = map
   window.maplibregl = maplibregl
 
-  if (!!mapProperties.description?.trim()) { dom.showElements('#description-modal') }
+  if (!!mapProperties.description?.trim() && !localStorage.getItem(descriptionHiddenKey())) {
+    dom.showElements('#description-modal')
+  }
 
   map.setMissingStyleImageResolver(loadImage)
 
