@@ -1,3 +1,4 @@
+import { bbox } from "@turf/bbox"
 import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import { withLevelFilter } from 'maplibre/controls/levels'
@@ -159,11 +160,36 @@ function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulative
   return labelFeatures
 }
 
+// Bounding box of the routes the legend describes, [w, s, e, n], or null when there are none
+function mergeBboxes (features) {
+  return features.reduce((acc, feature) => {
+    const b = bbox(feature)
+    if (!acc) return b
+    return [Math.min(acc[0], b[0]), Math.min(acc[1], b[1]), Math.max(acc[2], b[2]), Math.max(acc[3], b[3])]
+  }, null)
+}
+
+let legendBbox = null
+let legendMoveHandler = false
+
+function legendInView () {
+  if (!legendBbox) return true
+  const view = map.getBounds()
+  return legendBbox[0] <= view.getEast() && legendBbox[2] >= view.getWest() &&
+    legendBbox[1] <= view.getNorth() && legendBbox[3] >= view.getSouth()
+}
+
+function updateLegendVisibility () {
+  const container = document.getElementById('route-extras-legend')
+  if (container) container.classList.toggle('hidden', !legendInView())
+}
+
 // Show/hide the map legend for route extras
-export function showExtrasLegend (extrasType, activeValues) {
+export function showExtrasLegend (extrasType, activeValues, extrasBbox = null) {
   if (window.gon.map_mode === 'static') { return }
 
   let container = document.getElementById('route-extras-legend')
+  legendBbox = extrasBbox
 
   if (!extrasType) {
     if (container) container.classList.add('hidden')
@@ -179,9 +205,13 @@ export function showExtrasLegend (extrasType, activeValues) {
     container.className = 'route-extras-legend'
     map.getContainer().appendChild(container)
   }
+  if (!legendMoveHandler) {
+    map.on('moveend', updateLegendVisibility)
+    legendMoveHandler = true
+  }
 
   container.innerHTML = ''
-  container.classList.remove('hidden')
+  container.classList.toggle('hidden', !legendInView())
 
   const title = document.createElement('div')
   title.className = 'route-extras-legend-title'
@@ -279,12 +309,16 @@ export function renderRouteExtras (features, sourceId) {
     }
   })
 
+  const legendFeatures = activeExtrasType
+    ? features.filter(f => hasRouteExtras(f) && f.properties['show-route-extras'] === activeExtrasType)
+    : []
+
   // Filter activeValues for discrete legends: remove values < 0.5% of total distance
   const config = EXTRAS_COLOR_CONFIGS[activeExtrasType]
   if (config && !config.gradient && activeValues.size > 0) {
     const mergedTotals = {}
     let mergedTotal = 0
-    features.filter(f => hasRouteExtras(f) && f.properties['show-route-extras'] === activeExtrasType).forEach(f => {
+    legendFeatures.forEach(f => {
       const result = computeExtrasTotals(f, activeExtrasType)
       if (!result) return
       for (const [v, d] of Object.entries(result.totals)) {
@@ -300,7 +334,7 @@ export function renderRouteExtras (features, sourceId) {
     }
   }
 
-  showExtrasLegend(activeExtrasType, activeValues)
+  showExtrasLegend(activeExtrasType, activeValues, mergeBboxes(legendFeatures))
 
   // Buffer LineString segments into polygons for 3D extrusion
   const extrusionFeatures = extrasFeatures
