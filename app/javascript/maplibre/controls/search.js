@@ -421,6 +421,9 @@ export function initializeSearchControl () {
 
   function setExpanded (expanded) {
     geocoderButton.classList.toggle('expanded', expanded)
+    // focus inside the click handler, mobile only opens the keyboard on a user gesture
+    const input = geocoderButton.querySelector('.maplibregl-ctrl-geocoder--input')
+    if (expanded) { input.focus() } else { input.blur() }
     // the tooltip belongs to the collapsed button, expanded it would cover the result list
     const tooltip = window.bootstrap?.Tooltip.getInstance(geocoderButton)
     if (!tooltip) { return }
@@ -451,6 +454,10 @@ export function initializeSearchControl () {
     if (item) { setActiveResult([...item.parentNode.children].indexOf(item)) }
   })
   geocoderButton.addEventListener('mouseleave', (_e) => { setActiveResult(picked) })
+
+  // a click on the map blurs the input, and the typeahead hides the list on blur. a touch
+  // on the canvas keeps the focus, so the list needs the blur from here.
+  map.on('touchstart', () => { geocoderButton.querySelector('.maplibregl-ctrl-geocoder--input').blur() })
 
   map.once('load', function (_e) {
     // delayed via timeout, the geocoders !important transition overrides data-aos-delay

@@ -242,7 +242,7 @@
 }
 
 .maplibregl-ctrl-geocoder.expanded {
-  width: 14rem !important;
+  width: 12rem !important;
 }
 
 /* wider where the screen has room for it */
@@ -289,6 +289,12 @@
   height: 1rem;
   margin-top: 0;
   margin-right: 0;
+}
+
+/* the list grows with the number of results, cap it at the space below the control */
+.maplibregl-ctrl-geocoder .suggestions { /* stylelint-disable-line */
+  max-height: calc(100dvh - 8rem);
+  overflow-y: auto;
 }
 
 /* Search results */
