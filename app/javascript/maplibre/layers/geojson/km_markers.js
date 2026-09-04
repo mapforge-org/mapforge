@@ -22,7 +22,7 @@ function createKmMarkerImage (color, sourceId) {
   const imageName = `${imagePrefix(sourceId)}${color.replace('#', '')}`
 
   if (!map.hasImage(imageName)) {
-    const size = 32
+    const size = 36
     const canvas = document.createElement('canvas')
     canvas.width = size
     canvas.height = size
