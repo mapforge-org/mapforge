@@ -121,11 +121,19 @@ export function redo() {
   updateTooltips()
 }
 
+// Restore in place, so the render below already shows the old state. Without this the map only
+// changes when the server echo arrives, and that path interpolates a moved point over the idle
+// time since its last update (see AnimatePointAnimation), which crawls for a one-off edit.
+function applyState(feature, state) {
+  feature.geometry = state.geometry
+  feature.properties = state.properties
+}
+
 function undoFeatureUpdate(prevState) {
-  let feature = getFeature(prevState.state.id, 'geojson')
+  const feature = getFeature(prevState.state.id, 'geojson')
   if (feature) {
     addRedoState(prevState.type, feature)
-    feature = prevState.state
+    applyState(feature, prevState.state)
     resetDirections()
     sendMessage('update_feature', prevState.state)
   } else {
@@ -134,10 +142,10 @@ function undoFeatureUpdate(prevState) {
 }
 
 function redoFeatureUpdate(nextState) {
-  let feature = getFeature(nextState.state.id, 'geojson')
+  const feature = getFeature(nextState.state.id, 'geojson')
   if (feature) {
     addUndoState(nextState.type, feature, false)
-    feature = nextState.state
+    applyState(feature, nextState.state)
     resetDirections()
     sendMessage('update_feature', nextState.state)
   } else {

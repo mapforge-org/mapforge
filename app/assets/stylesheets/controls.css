@@ -15,6 +15,11 @@
   border-top: 1px solid #0000001c;
 }
 
+/* A hidden button leaves its wrapper behind, and the wrapper still paints the divider above */
+.maplibregl-ctrl-group div:has(> button.hidden) {
+  display: none;
+}
+
 /* Same corner-to-height ratio as the view/edit toggle, both hold 2rem high cells */
 .maplibregl-ctrl-group,
 .maplibregl-ctrl-geocoder { /* stylelint-disable-line */
@@ -26,9 +31,10 @@
   overflow: hidden;
 }
 
-/* mapbox-gl-draw keeps an empty group in both modes. It is invisible, but its top margin
-   still moves every group below it, so the menu sat 10px lower in view mode. */
-.maplibregl-ctrl-top-left .maplibregl-ctrl-group:not(:has(button)) {
+/* mapbox-gl-draw keeps an empty group in both modes, and the undo group starts with both
+   buttons hidden. Such a group is 0x0, but it still paints the white background and the
+   2px ring, and its top margin moves every group below it. */
+.maplibregl-ctrl-top-left .maplibregl-ctrl-group:not(:has(button:not(.hidden))) {
   display: none;
 }
 

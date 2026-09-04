@@ -12,7 +12,7 @@ import { highlightedFeatureId, showFeatureDetails } from 'maplibre/feature'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { getFeature, layers } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
-import { defaults } from 'maplibre/styles/defaults'
+import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
 
 let easyMDE
 
@@ -138,9 +138,7 @@ export default class extends Controller {
         document.querySelector('#emoji').textContent = ''
       }
 
-      let defaultSize = feature.properties['marker-symbol'] ? 18 : 6
-      defaultSize = feature.properties['marker-image-url'] ? 20 : defaultSize
-      const size = feature.properties['marker-size'] || defaultSize
+      const size = feature.properties['marker-size'] || defaultPointSize(feature)
 
       document.querySelector('#point-size').value = size
       document.querySelector('#point-size-val').innerHTML = size

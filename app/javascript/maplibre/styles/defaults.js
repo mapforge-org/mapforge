@@ -103,6 +103,14 @@ const baseEditDefaults = {
 export const defaults = { ...baseDefaults }
 export const editDefaults = { ...baseEditDefaults }
 
+// Size a point falls back to when it has no explicit 'marker-size'.
+// Keep the branch order in sync with pointSizeMax() in styles.js, which is what the map renders.
+export function defaultPointSize (feature) {
+  if (feature.properties['marker-symbol']) { return defaults.pointSizeEmoji }
+  if (feature.properties['marker-image-url']) { return defaults.pointSizeImage }
+  return defaults.pointSizePlain
+}
+
 // Re-applies the base values first, so keys overridden by the previous basemap
 // get reset instead of leaking into the new one.
 export function applyBasemapDefaults (basemap) {

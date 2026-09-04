@@ -9,7 +9,7 @@ import { draw, handleDelete } from 'maplibre/edit'
 import { confirmImageLocation, featureIcon, featureImage, getFeatureTypeName, uploadImageToFeature } from 'maplibre/feature'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
-import { defaults } from 'maplibre/styles/defaults'
+import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
 import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
@@ -228,7 +228,27 @@ export default class extends Controller {
       draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
     }
     functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
+    this.syncPointSizeDefault()
+    // An emoji reads better without the default circle behind it, but only while the user
+    // has picked no colors of their own.
+    if (symbol && !feature.properties['marker-color'] && !feature.properties.stroke) {
+      document.querySelector('#fill-color-transparent').checked = true
+      document.querySelector('#stroke-color-transparent').checked = true
+      this.updateFillColorTransparent()
+      this.updateStrokeColorTransparent()
+    }
     this.renderFeature()
+  }
+
+  // A point without an explicit marker-size renders at the default for its symbol or image,
+  // so the slider must follow when the symbol or the image changes.
+  syncPointSizeDefault () {
+    const feature = this.getEditFeature()
+    if (feature.properties['marker-size']) { return }
+    const size = defaultPointSize(feature)
+    document.querySelector('#point-size').value = size
+    document.querySelector('#point-size-val').textContent = size
+    syncStepperValues()
   }
 
   async updateMarkerImage () {
@@ -249,6 +269,7 @@ export default class extends Controller {
 
         functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
         functions.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
+        this.syncPointSizeDefault()
         if (imageLocation) {
           feature.geometry.coordinates = imageLocation
           flyToFeature(feature)

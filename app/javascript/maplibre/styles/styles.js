@@ -113,6 +113,7 @@ const styleProp = (keys, defaultVal) => {
   const gets = keys.map(k => ['get', k])
   return defaultVal !== undefined ? ['coalesce', ...gets, defaultVal] : ['coalesce', ...gets]
 }
+const hasProp = key => ['any', ['has', key], ['has', 'user_' + key]]
 const sortKey = () => ['to-number', styleProp(['user_sort-key', 'sort-key'], defaults.sortKey)]
 const labelColor = () => styleProp(['user_label-color', 'label-color'], defaults.labelColor)
 const labelShadow = () => styleProp(['user_label-shadow', 'label-shadow'], defaults.labelShadow)
@@ -165,20 +166,23 @@ const markerSize = styleProp(['user_marker-size', 'marker-size'])
 const minZoomFilter = () => [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], defaults.minZoom]]]
 const maxZoomFilter = () => ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], defaults.maxZoom]]]
 
+// set default size of point depending on if there is an emoji or marker image.
+// Only a plain point gets a smaller value at low zoom: an emoji or image does not scale with
+// zoom, so its background circle must not scale either.
+const pointSizeDefault = plain => [
+  'case',
+  hasProp('marker-symbol'),
+  defaults.pointSizeEmoji,
+  hasProp('marker-image-url'),
+  defaults.pointSizeImage,
+  plain
+]
+
 const pointSizeMin = () => ['to-number', ['coalesce',
-  ...markerSize.slice(1), defaults.pointSize]]
+  ...markerSize.slice(1), pointSizeDefault(defaults.pointSize)]]
 
 export const pointSizeMax = () => ['to-number', ['coalesce',
-  ...markerSize.slice(1),
-  // set default size of point depending on if there is an emoji or marker image
-  [
-    'case',
-    ['has', 'marker-symbol'],
-    defaults.pointSizeEmoji,
-    ['has', 'marker-image-url'],
-    defaults.pointSizeImage,
-    defaults.pointSizePlain
-  ]]]
+  ...markerSize.slice(1), pointSizeDefault(defaults.pointSizePlain)]]
 
 export const pointSize = () => [
   'interpolate',
