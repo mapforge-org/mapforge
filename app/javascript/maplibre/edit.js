@@ -211,7 +211,7 @@ export async function initializeEditMode () {
     touchStartPosition = e.point
   })
   map.on('touchend', (e) => {
-    if (!inEditMode()) { return }
+    // No mode check: draw stays attached in view mode and keeps killing the click there
     touchEndPosition = e.point
     if (Math.abs(touchStartPosition.x - touchEndPosition.x) < 3  &&
       Math.abs(touchStartPosition.y - touchEndPosition.y) < 3 &&
