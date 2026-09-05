@@ -929,6 +929,12 @@ msgstr "Aktualisieren"
 msgid "Refresh layer for current view"
 msgstr "Ebene für aktuellen Kartenausschnitt neu laden"
 
+msgid "Remove image"
+msgstr "Bild entfernen"
+
+msgid "Remove symbol"
+msgstr "Symbol entfernen"
+
 msgid "Report issue"
 msgstr "Fehler melden"
 

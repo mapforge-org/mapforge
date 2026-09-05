@@ -231,7 +231,10 @@ export function featureIcon (feature, { link = true } = {}) {
     const img = `<img loading='lazy' class='feature-details-icon' src='${markerImageUrl}'>`
     image = link ? `<a target='_blank' href='${imageHref}'>${img}</a>` : img
   } else if (feature.properties['marker-symbol']) {
-    image = "<img loading='lazy' class='feature-details-icon' src='/emojis/noto/" + feature.properties['marker-symbol'] + ".png'>"
+    const outlineColor = feature.properties['stroke'] || defaults.featureOutlineColor
+    image = "<img loading='lazy' class='feature-details-icon marker-circle' " +
+      `style='background-color: ${iconColor}; border-color: ${outlineColor};' ` +
+      "src='" + f.symbolUrl(feature.properties['marker-symbol']) + "'>"
   } else if (feature.properties['stroke-image-url']) {
     image = "<img loading='lazy' class='feature-details-icon' src='" + feature.properties['stroke-image-url'] + "'>"
   } else if (feature.properties?.route?.profile?.startsWith("cycling-") || feature.properties?.route?.profile === "bike") {

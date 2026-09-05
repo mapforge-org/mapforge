@@ -351,6 +351,65 @@ describe "Feature edit" do
 
         wait_for { point.reload.properties["marker-symbol"] }.to match("👍")
       end
+
+      it "can select an icon of an icon set" do
+        find("#edit-button-style").click
+        find("#marker-symbol-select").click
+        expect(page).to have_selector("em-emoji-picker")
+
+        # An icon of a set is only rendered once its row is visible, so it gets searched for
+        page.execute_script(<<~JS)
+          const shadow = document.querySelector('em-emoji-picker').shadowRoot;
+          const input = shadow.querySelector('input[type="search"]');
+          input.value = 'cafe';
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        JS
+
+        icon = 'img[src="/icon-sets/maki/cafe.png"]'
+        wait_for {
+          page.evaluate_script("!!document.querySelector('em-emoji-picker').shadowRoot.querySelector('#{icon}')")
+        }.to be true
+
+        page.execute_script("document.querySelector('em-emoji-picker').shadowRoot.querySelector('#{icon}').click()")
+
+        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/maki/cafe.png")
+      end
+
+      it "can select an icon of the openmoji set" do
+        find("#edit-button-style").click
+        find("#marker-symbol-select").click
+        expect(page).to have_selector("em-emoji-picker")
+
+        page.execute_script(<<~JS)
+          const shadow = document.querySelector('em-emoji-picker').shadowRoot;
+          const input = shadow.querySelector('input[type="search"]');
+          input.value = 'grinning';
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        JS
+
+        icon = 'img[src="/icon-sets/openmoji/😀.png"]'
+        wait_for {
+          page.evaluate_script("!!document.querySelector('em-emoji-picker').shadowRoot.querySelector('#{icon}')")
+        }.to be true
+
+        page.execute_script("document.querySelector('em-emoji-picker').shadowRoot.querySelector('#{icon}').click()")
+
+        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/openmoji/😀.png")
+      end
+
+      it "can remove the symbol" do
+        find("#edit-button-style").click
+        find("#marker-symbol-select").click
+        shadow_host = find("em-emoji-picker")
+        page.execute_script(<<~JS, shadow_host)
+          arguments[0].shadowRoot.querySelector('span.emoji-mart-emoji').click();
+        JS
+        wait_for { point.reload.properties["marker-symbol"] }.to be_present
+
+        find("#marker-symbol-ui .marker-remove").click
+
+        wait_for { point.reload.properties["marker-symbol"] }.to be_nil
+      end
     end
 
     it "can copy feature via context menu" do

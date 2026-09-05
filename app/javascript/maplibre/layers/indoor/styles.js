@@ -156,8 +156,8 @@ export function addIndoorLayers(sourceId, levelFilter) {
     layout: {
       'icon-image': [
         'case',
-        ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets']]], '/emojis/noto/🚻.png',
-        ['==', ['get', 'subclass'], 'elevator'], '/emojis/noto/🛗.png',
+        ['in', ['get', 'subclass'], ['literal', ['toilet', 'toilets']]], '/icon-sets/noto/🚻.png',
+        ['==', ['get', 'subclass'], 'elevator'], '/icon-sets/noto/🛗.png',
         ''
       ],
       'icon-size': 0.3,

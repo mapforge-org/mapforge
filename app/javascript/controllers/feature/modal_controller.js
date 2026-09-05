@@ -132,11 +132,7 @@ export default class extends Controller {
       dom.showElements(['#feature-edit-ui .edit-point'])
 
       document.querySelector('#marker-symbol').value = feature.properties['marker-symbol'] || ''
-      if (feature.properties['marker-symbol']) {
-        document.querySelector('#emoji').textContent = feature.properties['marker-symbol']
-      } else {
-        document.querySelector('#emoji').textContent = ''
-      }
+      functions.showSymbol(document.querySelector('#emoji'), feature.properties['marker-symbol'])
 
       const size = feature.properties['marker-size'] || defaultPointSize(feature)
 

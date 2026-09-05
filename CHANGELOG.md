@@ -8,7 +8,9 @@ All notable changes to this project will be documented in this file.
 * Color picker offers the site and map default colors
 * Improved View-Edit mode switch
 * Option for users to skip map description on load
-* Improved KML/KMZ import from Google Maps
+* Improved [KML](https://developers.google.com/kml/documentation/kmlreference)/KMZ import from Google Maps
+* Support [Maki](https://github.com/mapbox/maki) + [Temaki](https://github.com/rapideditor/temaki) icon sets with mapping relevant icons
+* Option to remove the symbol or the image of a point
 
 ## 2026-08
 

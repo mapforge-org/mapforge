@@ -43,7 +43,7 @@ module Mapforge
 
     private
 
-    # ponytail: every closed way is treated as an area, which is wrong for roundabouts and
+    # Every closed way is treated as an area, which is wrong for roundabouts and
     # racetracks. The real test is the area tag table, https://wiki.openstreetmap.org/wiki/Key:area
     def way_geometry
       ring = @element["nodes"].first == @element["nodes"].last

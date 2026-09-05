@@ -219,6 +219,65 @@
   max-height: 2rem; /* same size as .fs-2 */
 }
 
+/* A symbol sits on a circle in the feature color, the same as on the map. The padding
+ * keeps the icon at about 65% of the circle, see markerSize and pointSizeEmoji. */
+.feature-details-icon.marker-circle {
+  border: 2px solid;
+  border-radius: 50%;
+  padding: 0.22rem;
+  box-sizing: border-box;
+}
+
+/* a box of a fixed size, so that the symbol, the image and both remove buttons line up */
+#marker-symbol-ui #emoji,
+#marker-image-ui .feature-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 1.8rem;
+  font-size: 1.3rem;
+}
+
+#marker-image-ui .feature-details-icon {
+  margin: 0;
+  max-height: 1.8rem;
+}
+
+.marker-remove {
+  border: none;
+  background: none;
+  color: var(--color-dark-charcoal);
+  font-size: 0.75rem;
+  opacity: 0.6;
+  margin-left: -0.6rem;
+}
+
+/* the button has nothing to remove while the symbol span or the image container is empty */
+#marker-image-ui:has(.feature-image:empty) .marker-remove,
+#marker-symbol-ui:has(#emoji:empty) .marker-remove {
+  display: none;
+}
+
+/* The icons of these sets are white, a marker draws them on a circle in its own color. On the
+ * page they get a circle of their own, see whiteIconSets in feature/edit_controller.js.
+ */
+img[src*="/icon-sets/maki/"],
+img[src*="/icon-sets/temaki/"] {
+  background-color: var(--color-dark-charcoal);
+  border-radius: 50%;
+}
+
+/* an icon of a set, where an emoji would be a text character */
+.symbol-preview {
+  height: 1.4rem;
+  vertical-align: text-bottom;
+}
+
+#marker-symbol-ui .symbol-preview {
+  height: 1.8rem;
+}
+
 #elevation-info-line {
   font-size: 0.75rem;
   color: var(--color-dark-charcoal);

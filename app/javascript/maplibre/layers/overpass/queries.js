@@ -32,7 +32,7 @@ export const queries = [
         f.properties["marker-color"] = "transparent"
         f.properties["stroke"] = "transparent"
       } else if (f.properties.osm?.industrial?.includes('brewery')) {
-        f.properties["marker-image-url"] = "/emojis/noto/🏭.png"
+        f.properties["marker-image-url"] = "/icon-sets/noto/🏭.png"
         f.properties["marker-size"] = "20"
         f.properties["marker-color"] = "transparent"
         f.properties["stroke"] = "transparent"

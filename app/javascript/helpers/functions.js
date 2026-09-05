@@ -142,6 +142,22 @@ export function escapeHtml (text) {
   return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 }
 
+// A 'marker-symbol' is either a native emoji, or a path into an icon set (see public/icon-sets).
+// The same rule as a maplibre expression sits in maplibre/styles/styles.js, a layout property
+// cannot call a function.
+export function symbolUrl (symbol) {
+  return symbol.includes('/') ? symbol : '/icon-sets/noto/' + symbol + '.png'
+}
+
+// An emoji shows as a character, an icon of a set as its image
+export function showSymbol (element, symbol) {
+  if (symbol && symbol.includes('/')) {
+    element.innerHTML = "<img class='symbol-preview' src='" + escapeHtml(symbol) + "'>"
+  } else {
+    element.textContent = symbol || ''
+  }
+}
+
 export function sanitizeMarkdown (desc) {
   // open external and image links in new tab
   desc = desc.replace(/<a(\s+)(href=['"]https?:\/\/|href=['"]\/image)/gi, '<a$1target="_blank" $2')

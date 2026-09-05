@@ -13,7 +13,7 @@ module Mapforge
       # costs an hour of plan per station. Idling for a while is cheaper than rebuilding.
       LINGER = 120
 
-      # ponytail: hard cap on concurrent routes, the DB free plan allows 60 requests/min shared
+      # Hard cap on concurrent routes, the DB free plan allows 60 requests/min shared
       # across all of them (~11/min to keep a route running, ~44 to start one). A token bucket
       # around DbTimetables if more routes ever have to run at once.
       MAX = ENV.fetch("TRAIN_MAX_LIVE", 3).to_i

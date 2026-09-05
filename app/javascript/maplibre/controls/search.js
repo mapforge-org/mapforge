@@ -203,7 +203,7 @@ function renderResult (item) {
   if (item.mapFeatureId) { return renderFeatureResult(item) }
   const [title, ...address] = item.place_name.split(',')
   return `<div class="geocoder-result">` +
-    `<img class="geocoder-result-icon" src="/emojis/noto/${categorySymbol(item.properties)}.png" alt="">` +
+    `<img class="geocoder-result-icon" src="${functions.symbolUrl(categorySymbol(item.properties))}" alt="">` +
     `<div class="geocoder-result-text">` +
     `<div class="geocoder-result-title">${escapeHtml(title)}</div>` +
     `<div class="geocoder-result-address">${escapeHtml(address.join(',').trim())}</div>` +

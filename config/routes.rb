@@ -6,6 +6,10 @@ Rails.application.routes.draw do
 
   get "/favicon.png", to: redirect("/icon.png")
 
+  # legacy route: the emoji sets moved to public/icon-sets, a saved 'marker-image-url' can
+  # still point at the old location
+  get "/emojis/*path", to: redirect("/icon-sets/%{path}"), format: false
+
   # login routes
   get "auth/:provider/callback", to: "sessions#create"
   get "auth/developer/login", to: "sessions#new"

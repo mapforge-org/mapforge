@@ -12,6 +12,13 @@ import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/
 import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
 import { addUndoState } from 'maplibre/undo'
 
+// one directory with an index.json per set, see public/icon-sets/README
+const iconSets = [ 'maki', 'temaki' ]
+// The icons of these sets are white, so that they read well on the circle of a marker. On a
+// page they need a background of their own, see the img rule in feature.css.
+const whiteIconSets = [ 'maki', 'temaki' ]
+const isWhiteSymbol = symbol => whiteIconSets.some(set => symbol.includes(`/icon-sets/${set}/`))
+
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
   static values = {
@@ -232,9 +239,10 @@ export default class extends Controller {
   updateMarkerSymbol () {
     const feature = this.getEditFeature()
     let symbol = document.querySelector('#marker-symbol').value
-    document.querySelector('#emoji').textContent = symbol
-    // strip variation selector (emoji) U+FE0F to match icon file names
-    symbol = symbol.replace(/\uFE0F/g, '')
+    functions.showSymbol(document.querySelector('#emoji'), symbol)
+    // strip variation selector (emoji) U+FE0F to match icon file names. The path of an icon
+    // set keeps it, the index of the set already names the file that exists.
+    if (!symbol.includes('/')) { symbol = symbol.replace(/\uFE0F/g, '') }
     feature.properties['marker-symbol'] = symbol
     // draw layer feature properties aren't getting updated by draw.set()
     // Only update draw if feature is in draw (i.e., geometry editing is active)
@@ -245,11 +253,15 @@ export default class extends Controller {
     this.syncPointSizeDefault()
     // An emoji reads better without the default circle behind it, but only while the user
     // has picked no colors of their own.
-    if (symbol && !feature.properties['marker-color'] && !feature.properties.stroke) {
+    if (symbol && !isWhiteSymbol(symbol) && !feature.properties['marker-color'] && !feature.properties.stroke) {
       document.querySelector('#fill-color-transparent').checked = true
       document.querySelector('#stroke-color-transparent').checked = true
       this.updateFillColorTransparent()
       this.updateStrokeColorTransparent()
+    } else if (symbol && isWhiteSymbol(symbol) && feature.properties['marker-color'] === 'transparent') {
+      // a white icon is invisible without the circle, an emoji before it can have removed it
+      document.querySelector('#fill-color-transparent').checked = false
+      this.updateFillColorTransparent()
     }
     this.renderFeature()
   }
@@ -293,19 +305,56 @@ export default class extends Controller {
       })
   }
 
+  removeMarkerSymbol () {
+    this.removeMarkerProperty('marker-symbol')
+  }
+
+  removeMarkerImage () {
+    this.removeMarkerProperty('marker-image-url')
+  }
+
+  removeMarkerProperty (property) {
+    this.addUndo()
+    const feature = this.getEditFeature()
+    delete feature.properties[property]
+    // Picking a symbol or an image turns the colors transparent. Without either of them the
+    // point would render as nothing, so it gets its colors back.
+    if (!feature.properties['marker-symbol'] && !feature.properties['marker-image-url']) {
+      document.querySelector('#fill-color-transparent').checked = false
+      document.querySelector('#stroke-color-transparent').checked = false
+      this.updateFillColorTransparent()
+      this.updateStrokeColorTransparent()
+    }
+    document.querySelector('#marker-symbol').value = feature.properties['marker-symbol'] || ''
+    functions.showSymbol(document.querySelector('#emoji'), feature.properties['marker-symbol'])
+    functions.e('#marker-image', e => { e.value = '' })
+    functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
+    functions.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
+    this.syncPointSizeDefault()
+    // the draw overlay keeps its own copy of the properties, a delete does not reach it
+    this.renderFeature({ resetDraw: true })
+    this.saveFeature()
+  }
+
   // https://github.com/missive/emoji-mart
   async openEmojiPicker() {
     // Dynamically import emoji-mart + its data
     const { Picker } = await import('emoji-mart')
     const data = async () => {
       const response = await fetch(
-        '/emojis/emoji-mart-data.json',
+        '/icon-sets/noto/emoji-mart-data.json',
       )
       return response.json()
     }
+    // Each icon set is one more category tab, see public/icon-sets
+    const custom = await Promise.all(iconSets.map(async set => {
+      const response = await fetch(`/icon-sets/${set}/index.json`)
+      return response.json()
+    }))
     const onEmojiSelect = (emoji) => {
       // console.log('Emoji selected:', emoji)
-      document.querySelector('#marker-symbol').value = emoji.native
+      // an icon of a set has no native character, it carries the path of its image
+      document.querySelector('#marker-symbol').value = emoji.native || emoji.src
       this.updateMarkerSymbol()
       this.addUndo()
       this.saveFeature()
@@ -319,6 +368,7 @@ export default class extends Controller {
 
     const pickerOptions = {
       data: data,
+      custom: custom,
       onEmojiSelect: onEmojiSelect,
       onClickOutside: onClickOutside,
       dynamicWidth: true,
@@ -336,6 +386,43 @@ export default class extends Controller {
     }
     // adding <em-emoji-picker> element
     document.querySelector('#feature-edit-ui').prepend(this.picker)
+    this.stylePicker()
+    this.lazyLoadIcons()
+  }
+
+  // A white icon is invisible on the white background of the picker. The picker keeps its
+  // markup in a shadow root, so the rule cannot come from the stylesheet of the page.
+  stylePicker () {
+    const root = this.picker.shadowRoot
+    if (!root || root.querySelector('#white-icons')) { return }
+    const style = document.createElement('style')
+    style.id = 'white-icons'
+    style.textContent = whiteIconSets.map(set =>
+      `img[src*="/icon-sets/${set}/"] { background-color: var(--color-dark-charcoal, #354A51); border-radius: 50%; padding: 3px; margin: -3px; }`
+    ).join('\n')
+    root.appendChild(style)
+  }
+
+  // The picker renders the rows of all its categories at once, so every icon of every set
+  // would load on open, thousands of requests. An icon keeps its url in a data attribute
+  // until it scrolls into view.
+  lazyLoadIcons () {
+    const root = this.picker.shadowRoot
+    if (!root || this.iconObserver) { return }
+    const load = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (!entry.isIntersecting) { return }
+      entry.target.src = entry.target.dataset.src
+      load.unobserve(entry.target)
+    }), { rootMargin: '300px' })
+
+    const defer = () => root.querySelectorAll('img:not([data-src])').forEach(img => {
+      img.dataset.src = img.getAttribute('src')
+      img.removeAttribute('src')
+      load.observe(img)
+    })
+    this.iconObserver = new MutationObserver(defer)
+    this.iconObserver.observe(root, { subtree: true, childList: true })
+    defer()
   }
 
   saveFeature () {

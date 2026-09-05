@@ -1,3 +1,4 @@
+import { symbolUrl } from 'helpers/functions'
 import { map } from 'maplibre/map'
 
 // A marker that maplibre draws as one icon: the circle, and the emoji on it, go to a canvas,
@@ -20,7 +21,7 @@ function drawSymbol (name, ctx, size, symbol, imageData) {
     // a prune between the two can have dropped the image again
     if (map.hasImage(name)) { map.updateImage(name, imageData()) }
   }
-  image.src = `/emojis/noto/${symbol}.png`
+  image.src = symbolUrl(symbol)
 }
 
 // Draws a circle in the given color, with a border and an optional emoji in the middle, and

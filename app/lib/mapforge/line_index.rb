@@ -45,7 +45,7 @@ module Mapforge
     # is measured against it, which is affordable because this runs once per station at setup,
     # unlike position_at, which runs once per train per tick.
     #
-    # ponytail: snaps to the nearest line vertex, not the nearest point on the segment. Fine for
+    # Snaps to the nearest line vertex, not the nearest point on the segment. Fine for
     # dense geometry (OSM rail is metres apart); project onto the segment if that ever gets coarse.
     def distance_at(coordinate)
       point = FACTORY.point(*coordinate)

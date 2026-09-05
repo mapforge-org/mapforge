@@ -1,3 +1,4 @@
+import { symbolUrl } from 'helpers/functions'
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { map, removeStyleLayers } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
@@ -114,6 +115,11 @@ const styleProp = (keys, defaultVal) => {
   return defaultVal !== undefined ? ['coalesce', ...gets, defaultVal] : ['coalesce', ...gets]
 }
 const hasProp = key => ['any', ['has', key], ['has', 'user_' + key]]
+// The url of a symbol property: an icon of a set carries its path, an emoji its character.
+// Same rule as symbolUrl in helpers/functions.js.
+const symbolUrlExpression = key => ['case',
+  ['in', '/', ['get', key]], ['get', key],
+  ['concat', '/icon-sets/noto/', ['get', key], '.png']]
 const sortKey = () => ['to-number', styleProp(['user_sort-key', 'sort-key'], defaults.sortKey)]
 const labelColor = () => styleProp(['user_label-color', 'label-color'], defaults.labelColor)
 const labelShadow = () => styleProp(['user_label-shadow', 'label-shadow'], defaults.labelShadow)
@@ -306,7 +312,7 @@ function symbolsLayerStyles(mode) {
       // replacing marker-symbol value with path to emoji png
       ['case',
         ['!=', ['get', 'marker-symbol'], ''],
-        ['concat', '/emojis/noto/', ['get', 'marker-symbol'], '.png'],
+        symbolUrlExpression('marker-symbol'),
         '']
     ],
     'icon-size': iconSize(),
@@ -773,7 +779,7 @@ export function styles () {
           // replacing stroke-symbol value with path to emoji png
           ['case',
             ['has', 'stroke-symbol'],
-            ['concat', '/emojis/noto/', ['get', 'stroke-symbol'], '.png'],
+            symbolUrlExpression('stroke-symbol'),
             '']],
         "icon-rotation-alignment": "viewport",
         // interpolate must be top-level for "zoom" — case is per stop instead.
@@ -793,8 +799,7 @@ export function styles () {
 }
 
 export function clusterStyles(icon, color=null) {
-  let icon_image = '/emojis/noto/' + icon + '.png'
-  if (icon?.includes('/')) { icon_image = icon } // full url / path
+  const icon_image = icon ? symbolUrl(icon) : ''
 
   // background when no cluster icon is provided
   const clusterPoints = {
@@ -817,7 +822,7 @@ export function clusterStyles(icon, color=null) {
       type: 'symbol',
       filter: ['has', 'point_count'],
       layout: {
-        'icon-image': (icon ? icon_image : ''),
+        'icon-image': icon_image,
         'icon-size': ['min', ['+', 0.5, ['*', 0.01, ['get', 'point_count']]], 0.75],
         'icon-overlap': 'always'
       }
