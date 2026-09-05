@@ -47,9 +47,12 @@
     %img.mapforge-embed-logo{ src: "/logo/mapforge-logo-icon.png", alt: "Logo" }
 
 #maplibre-map.map{ data: { 'controller': "map header", 'action': "click->header#hideNav touchstart->header#hideNav paste@window->map#paste" } }
+  - # the popovers live inside the map, because .map is position:fixed and opens a stacking
+  - # context. Outside of it they would paint above the expanded search control.
+  - unless @map_mode == 'static'
+    = render 'layer_loading'
 
 - unless @map_mode == 'static'
-  = render 'layer_loading'
   = render 'status'
   = render 'maps/modals/settings'
   = render 'maps/modals/layers'
