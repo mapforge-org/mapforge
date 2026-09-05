@@ -69,6 +69,20 @@ export default class extends Controller {
     }
   }
 
+  // mobile only, the json textarea of the advanced tab is too small to edit comfortably otherwise
+  toggleFullscreen (e) {
+    const container = e.target.closest('.raw-json-editor')
+    const icon = e.target.closest('button').querySelector('i')
+    const fullscreen = container.classList.toggle('fullscreen')
+    icon.classList.toggle('bi-fullscreen', !fullscreen)
+    icon.classList.toggle('bi-fullscreen-exit', fullscreen)
+    // the editor covers the modal, a half-pulled bottom sheet would still cut it off
+    if (fullscreen) {
+      const modal = this.element
+      this.application.getControllerForElementAndIdentifier(modal, 'feature--modal')?.pullUpModal(modal)
+    }
+  }
+
   updateTitle () {
     const feature = this.getEditFeature()
     const title = document.querySelector('#feature-title-input input').value

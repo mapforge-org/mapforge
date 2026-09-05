@@ -242,11 +242,11 @@ msgstr "Höhenlinien zur Karte hinzugefügt"
 msgid "Contour lines:"
 msgstr "Höhenlinien:"
 
+msgid "Convert to route"
+msgstr "In Route umwandeln"
+
 msgid "Convert to route and edit JSON"
 msgstr "In Route umwandeln und JSON bearbeiten"
-
-msgid "Convert to routed track"
-msgstr "In berechnete Route umwandeln"
 
 msgid "Converting track to %{profile} route..."
 msgstr "Track wird in %{profile}-Route umgewandelt..."
@@ -879,7 +879,7 @@ msgid "Project"
 msgstr "Projekt"
 
 msgid "Properties"
-msgstr "Eigenschaften"
+msgstr "Titel"
 
 msgid "Query"
 msgstr "Abfrage"
@@ -1110,6 +1110,9 @@ msgstr "Titel"
 
 msgid "Toggle attribution"
 msgstr "Quellenangaben ein-/ausblenden"
+
+msgid "Toggle fullscreen"
+msgstr "Vollbild ein-/ausschalten"
 
 msgid "Topographic map with contour lines, hillshading and terrain features."
 msgstr "Topografische Karte mit Höhenlinien, Schummerung und Geländeformen."
@@ -1467,4 +1470,3 @@ msgstr "🚻 Öffentliche Toiletten"
 
 msgid "🛜 Wifi"
 msgstr "🛜 WLAN"
-

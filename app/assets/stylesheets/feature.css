@@ -81,6 +81,11 @@
   display: inline;
 }
 
+/* one size for every button of the advanced tab, the bootstrap .btn sizes are overruled */
+[data-edit-section="advanced"] button, [data-edit-section="advanced"] .btn {
+  font-size: 0.9rem;
+}
+
 .feature-delete-btn {
   margin-left: 0;
   width: 100%;
@@ -121,6 +126,10 @@
 
 #feature-details-body td {
   padding: 0.2rem 0.8rem;
+}
+
+.style-help-icon-mobile {
+  display: none;
 }
 
 @media (width <= 640px), (height < 410px) {
@@ -174,6 +183,14 @@
 
   #feature-details-modal textarea {
     touch-action: pan-y;
+  }
+
+  .style-help-icon, .style-help-label {
+    display: none;
+  }
+
+  .style-help-icon-mobile {
+    display: inline;
   }
 }
 
@@ -262,6 +279,25 @@
 
 #feature-details-body .icon {
   max-height: 1rem;
+}
+
+/* covers the rest of the modal, #feature-details-modal stays the nearest positioned
+   ancestor so this needs no viewport-fixed position, and no fight with its mobile transform */
+.raw-json-editor.fullscreen {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 0.7rem;
+}
+
+.raw-json-editor.fullscreen textarea {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #feature-edit-raw textarea {
@@ -455,7 +491,7 @@ input {
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.2rem;
   user-select: none;
 }
 
@@ -470,6 +506,10 @@ input {
   .feature-details-card-header {
     justify-content: center;
     gap: 0.5rem;
+  }
+
+  .feature-details-card-header h5 {
+    font-size: 0.9rem;
   }
 }
 

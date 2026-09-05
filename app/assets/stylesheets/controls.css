@@ -346,6 +346,34 @@
   opacity: 0.7;
 }
 
+/* the small screen has no room for the tall rows, more results fit above the fold */
+@media (width < 640px) {
+  .maplibregl-ctrl-geocoder .suggestions > li > a { /* stylelint-disable-line */
+    padding: 0.25rem 0.6rem;
+    line-height: 1.25;
+  }
+
+  .geocoder-result {
+    gap: 0.4rem;
+  }
+
+  .geocoder-result-icon, .geocoder-result-icon img {
+    width: 1.1rem;
+    max-width: 1.1rem;
+    height: 1.1rem;
+    max-height: 1.1rem;
+  }
+
+  .geocoder-result-icon i {
+    font-size: 1.1rem !important;
+    line-height: 1.1rem;
+  }
+
+  .geocoder-result-address {
+    font-size: 0.75rem;
+  }
+}
+
 /* fix for https://github.com/maplibre/maplibre-gl-js/issues/5284 */
 @media (hover: none) {
   /* stylelint-disable-next-line defensive-css/no-accidental-hover -- intentional touch-device hover reset */
