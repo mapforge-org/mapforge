@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   # Rails Bug: Actions that define their own rate limit
   # (see ImagesController) must be excluded from the global one.
-  RATE_LIMITED_ACTIONS = %w[icon image osmc_symbol upload].freeze
+  RATE_LIMITED_ACTIONS = %w[icon image osmc_symbol upload addtrack].freeze
 
   rate_limit to: 120, within: 1.minute, name: "global",
     unless: -> { RATE_LIMITED_ACTIONS.include?(action_name) }

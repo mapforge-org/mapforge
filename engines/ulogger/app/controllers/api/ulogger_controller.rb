@@ -2,6 +2,8 @@ module Ulogger
   class Api::UloggerController < ApplicationController
     before_action :set_map, only: %i[addpos]
 
+    rate_limit to: 2, within: 1.minute, only: :addtrack, name: "addtrack"
+
     JAVA_MAXINT = 2147483647
 
     METADATA_FORMAT = [
