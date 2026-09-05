@@ -20,6 +20,8 @@ describe "Translations" do
     it "translates JavaScript strings" do
       expect(page.evaluate_script("document.documentElement.lang")).to eq("de")
       expect(page.evaluate_script("window.__('Delete')")).to eq("Löschen")
+      # the search synonyms of one category are one string
+      expect(page.evaluate_script("window.__('toilet|wc|restroom|lavatory')")).to include("Toilette")
     end
   end
 

@@ -1668,24 +1668,132 @@ msgstr ""
 msgid "Zoom out"
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/search.js:119
+msgid "accommodation|lodging"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:111
 msgid "app on your phone"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:150
+msgid "barber|hair_salon"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:131
+msgid "bike_rental|bike_share|bike_hire"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:132
+msgid "bike|bike_shop"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:113
+msgid "bread|baker"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:135
+msgid "bus"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:134
+msgid "cab"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:142
+msgid "camping|campground|campsite"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:116
+msgid "car_park|parking_lot"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:123
+msgid "cash|cash_machine|cashpoint"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:130
+msgid "charger|ev_charger|charging_point"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:118
+msgid "coffee|coffee_shop"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:33 ../app/views/maps/my.haml:25
 msgid "create"
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/search.js:122
+msgid "dental"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:133
 msgid "deploy"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:117
+msgid "dining|eat|food"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:121
+msgid "doctor|physician|surgery"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:114
+msgid "drugstore|apothecary"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:120
+msgid "emergency_room"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:143
+msgid "exhibition"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:155
+msgid "falls|cascade"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:36
 msgid "gallery"
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/search.js:133
+msgid "garage|mechanic|car_workshop"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:115
+msgid "gas|gas_station|petrol|petrol_station|filling_station"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:148
+msgid "graveyard|burial_ground"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:127
+msgid "green_space|recreation_ground"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:112
+msgid "grocery|groceries|food_shop"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:129
+msgid "gym|fitness|workout"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:153
+msgid "harbour|harbor|port"
+msgstr ""
+
 #: ../app/views/maps/_map.haml:40
 msgid "last change %{time} ago"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:151
+msgid "launderette|laundromat"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:37
@@ -1696,8 +1804,64 @@ msgstr ""
 msgid "map maker, create map, my maps, share maps, my maps, custom map, travel maps, map editor, indoor, geojson, maplibre, openstreetmap, privacy, open source, free to use"
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/search.js:144
+msgid "movies|movie_theater"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:146
+msgid "nursery|daycare|creche"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:141
+msgid "picnic|picnic_table"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:126
+msgid "play_area"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:124
+msgid "police_station"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:128
+msgid "pool|swimming|lido"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:125
+msgid "post|mail"
+msgstr ""
+
 #: ../app/views/maps/_map.haml:46
 msgid "public id:"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:145
+msgid "public_library"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:152
+msgid "shopping_centre|shopping_center|shopping"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:137
+msgid "subway|metro|underground"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:154
+msgid "summit|mountain|mountain_top"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:111
+msgid "toilet|wc|restroom|lavatory"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:136
+msgid "train|railway_station"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:138
+msgid "tram|streetcar"
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:74 ../app/views/maps/modals/feature/_edit_ui.haml:81
@@ -1706,6 +1870,22 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:30 ../app/views/maps/my.haml:24
 msgid "tutorial map"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:149
+msgid "vet|animal_doctor"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:140
+msgid "view|lookout|panorama"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:139
+msgid "water_tap|water_fountain|drinking_fountain"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/search.js:147
+msgid "worship|prayer_room"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:32

@@ -103,6 +103,76 @@ const CATEGORIES = {
 }
 const DEFAULT_CATEGORY = '📍'
 
+// Words that lead to an osm value of VALUES. The osm value stays out of the msgid, so a
+// translation only holds words, and a new locale needs a po entry and no code change.
+// A word that is an osm value itself belongs nowhere here, categoryValue finds it first.
+function aliasGroups () {
+  return [
+    ['toilets', window.__('toilet|wc|restroom|lavatory')],
+    ['supermarket', window.__('grocery|groceries|food_shop')],
+    ['bakery', window.__('bread|baker')],
+    ['pharmacy', window.__('drugstore|apothecary')],
+    ['fuel', window.__('gas|gas_station|petrol|petrol_station|filling_station')],
+    ['parking', window.__('car_park|parking_lot')],
+    ['restaurant', window.__('dining|eat|food')],
+    ['cafe', window.__('coffee|coffee_shop')],
+    ['hotel', window.__('accommodation|lodging')],
+    ['hospital', window.__('emergency_room')],
+    ['doctors', window.__('doctor|physician|surgery')],
+    ['dentist', window.__('dental')],
+    ['atm', window.__('cash|cash_machine|cashpoint')],
+    ['police', window.__('police_station')],
+    ['post_office', window.__('post|mail')],
+    ['playground', window.__('play_area')],
+    ['park', window.__('green_space|recreation_ground')],
+    ['swimming_pool', window.__('pool|swimming|lido')],
+    ['fitness_centre', window.__('gym|fitness|workout')],
+    ['charging_station', window.__('charger|ev_charger|charging_point')],
+    ['bicycle_rental', window.__('bike_rental|bike_share|bike_hire')],
+    ['bicycle', window.__('bike|bike_shop')],
+    ['car_repair', window.__('garage|mechanic|car_workshop')],
+    ['taxi', window.__('cab')],
+    ['bus_stop', window.__('bus')],
+    ['train_station', window.__('train|railway_station')],
+    ['subway_entrance', window.__('subway|metro|underground')],
+    ['tram_stop', window.__('tram|streetcar')],
+    ['drinking_water', window.__('water_tap|water_fountain|drinking_fountain')],
+    ['viewpoint', window.__('view|lookout|panorama')],
+    ['picnic_site', window.__('picnic|picnic_table')],
+    ['camp_site', window.__('camping|campground|campsite')],
+    ['museum', window.__('exhibition')],
+    ['cinema', window.__('movies|movie_theater')],
+    ['library', window.__('public_library')],
+    ['kindergarten', window.__('nursery|daycare|creche')],
+    ['place_of_worship', window.__('worship|prayer_room')],
+    ['cemetery', window.__('graveyard|burial_ground')],
+    ['veterinary', window.__('vet|animal_doctor')],
+    ['hairdresser', window.__('barber|hair_salon')],
+    ['laundry', window.__('launderette|laundromat')],
+    ['mall', window.__('shopping_centre|shopping_center|shopping')],
+    ['marina', window.__('harbour|harbor|port')],
+    ['peak', window.__('summit|mountain|mountain_top')],
+    ['waterfall', window.__('falls|cascade')]
+  ]
+}
+
+// built on the first search, window.__ arrives after the modules of the importmap
+let aliases = null
+
+function aliasMap () {
+  if (!aliases) {
+    aliases = new Map()
+    for (const [value, words] of aliasGroups()) {
+      for (const word of words.split('|')) { aliases.set(normalizeTerm(word), value) }
+    }
+  }
+  return aliases
+}
+
+function normalizeTerm (query) {
+  return query.trim().toLowerCase().replace(/\s+/g, '_')
+}
+
 function categorySymbol (p) {
   const key = (p.osm_key === 'place' || p.osm_key === 'boundary') ? p.type : p.osm_key
   return VALUES[p.osm_value] || CATEGORIES[key] || CATEGORIES[p.type] || DEFAULT_CATEGORY
@@ -112,10 +182,12 @@ function categorySymbol (p) {
 // the word in their name. The osm_values of VALUES are the vocabulary of categories,
 // a query out of it goes to the reverse endpoint instead, which filters by osm_tag.
 function categoryValue (query) {
-  const term = query.trim().toLowerCase().replace(/\s+/g, '_')
+  const term = normalizeTerm(query)
   if (VALUES[term]) { return term }
+  if (aliasMap().has(term)) { return aliasMap().get(term) }
   const singular = term.replace(/s$/, '')
-  return VALUES[singular] ? singular : null
+  if (VALUES[singular]) { return singular }
+  return aliasMap().get(singular) || null
 }
 
 const escapeHtml = functions.escapeHtml

@@ -1261,20 +1261,101 @@ msgstr "Vergrößern"
 msgid "Zoom out"
 msgstr "Verkleinern"
 
+msgid "accommodation|lodging"
+msgstr "Hotel|Unterkunft|Uebernachtung|Übernachtung|Pension"
+
 msgid "app on your phone"
 msgstr "App auf deinem Handy"
+
+msgid "barber|hair_salon"
+msgstr "Friseur|Frisoer|Frisör|Haarsalon"
+
+msgid "bike_rental|bike_share|bike_hire"
+msgstr "Fahrradverleih|Leihrad|Radverleih"
+
+msgid "bike|bike_shop"
+msgstr "Fahrrad|Fahrradladen|Radladen|Velo"
+
+msgid "bread|baker"
+msgstr "Baeckerei|Bäckerei|Backshop|Brot"
+
+msgid "bus"
+msgstr "Bus|Bushaltestelle|Haltestelle"
+
+msgid "cab"
+msgstr "Taxi|Taxistand"
+
+msgid "camping|campground|campsite"
+msgstr "Campingplatz|Camping|Zeltplatz"
+
+msgid "car_park|parking_lot"
+msgstr "Parkplatz|Parkhaus|Parken"
+
+msgid "cash|cash_machine|cashpoint"
+msgstr "Geldautomat|Bankautomat|Bargeld|Geld"
+
+msgid "charger|ev_charger|charging_point"
+msgstr "Ladesaeule|Ladesäule|Ladestation|Strom"
+
+msgid "coffee|coffee_shop"
+msgstr "Kaffee|Cafe|Café|Kaffeehaus"
 
 msgid "create"
 msgstr "erstelle"
 
+msgid "dental"
+msgstr "Zahnarzt|Zahnaerztin|Zahnärztin"
+
 msgid "deploy"
 msgstr "installiere"
+
+msgid "dining|eat|food"
+msgstr "Essen|Restaurant|Gaststaette|Gaststätte|Lokal"
+
+msgid "doctor|physician|surgery"
+msgstr "Arzt|Aerzte|Ärzte|Arztpraxis|Praxis"
+
+msgid "drugstore|apothecary"
+msgstr "Apotheke|Drogerie"
+
+msgid "emergency_room"
+msgstr "Krankenhaus|Klinik|Notaufnahme"
+
+msgid "exhibition"
+msgstr "Museum|Ausstellung"
+
+msgid "falls|cascade"
+msgstr "Wasserfall|Wasserfaelle|Wasserfälle"
 
 msgid "gallery"
 msgstr "Galerie"
 
+msgid "garage|mechanic|car_workshop"
+msgstr "Werkstatt|Autowerkstatt|Kfz|Mechaniker"
+
+msgid "gas|gas_station|petrol|petrol_station|filling_station"
+msgstr "Tankstelle|Benzin|Sprit|Tanken|Diesel"
+
+msgid "graveyard|burial_ground"
+msgstr "Friedhof|Grabstaette|Grabstätte"
+
+msgid "green_space|recreation_ground"
+msgstr "Park|Gruenanlage|Grünanlage|Parkanlage"
+
+msgid "grocery|groceries|food_shop"
+msgstr "Supermarkt|Lebensmittel|Lebensmittelgeschaeft|Lebensmittelgeschäft|Einkaufen"
+
+msgid "gym|fitness|workout"
+msgstr "Fitness|Fitnessstudio|Sportstudio|Gym"
+
+msgid "harbour|harbor|port"
+msgstr "Hafen|Jachthafen|Yachthafen|Marina"
+
 msgid "last change %{time} ago"
 msgstr "letzte Änderung vor %{time}"
+
+msgid "launderette|laundromat"
+msgstr "Waescherei|Wäscherei|Waschsalon|Waschen"
 
 msgid "log in"
 msgstr "melde dich an"
@@ -1282,14 +1363,68 @@ msgstr "melde dich an"
 msgid "map maker, create map, my maps, share maps, my maps, custom map, travel maps, map editor, indoor, geojson, maplibre, openstreetmap, privacy, open source, free to use"
 msgstr "Map erstellen, Karte erstellen, meine Karten, Karten teilen, meine Karten, individuelle Karte, Reisekarten, Karteneditor, Indoor, geojson, maplibre, openstreetmap, Datenschutz, open source, kostenlos nutzbar"
 
+msgid "movies|movie_theater"
+msgstr "Kino|Filmtheater"
+
+msgid "nursery|daycare|creche"
+msgstr "Kindergarten|Kita|Kindertagesstaette|Kindertagesstätte"
+
+msgid "picnic|picnic_table"
+msgstr "Picknick|Picknickplatz|Rastplatz"
+
+msgid "play_area"
+msgstr "Spielplatz|Spielplaetze|Spielplätze"
+
+msgid "police_station"
+msgstr "Polizei|Polizeiwache|Revier"
+
+msgid "pool|swimming|lido"
+msgstr "Schwimmbad|Freibad|Hallenbad|Schwimmen"
+
+msgid "post|mail"
+msgstr "Post|Postamt|Postfiliale"
+
 msgid "public id:"
 msgstr "öffentliche ID:"
+
+msgid "public_library"
+msgstr "Bibliothek|Buecherei|Bücherei|Stadtbibliothek"
+
+msgid "shopping_centre|shopping_center|shopping"
+msgstr "Einkaufszentrum|Shoppingcenter|Einkaufen|Kaufhaus"
+
+msgid "subway|metro|underground"
+msgstr "U-Bahn|Ubahn|Metro|U-Bahnhof"
+
+msgid "summit|mountain|mountain_top"
+msgstr "Gipfel|Berg|Bergspitze"
+
+msgid "toilet|wc|restroom|lavatory"
+msgstr "Toilette|Toiletten|WC|Klo"
+
+msgid "train|railway_station"
+msgstr "Bahnhof|Zug|Bahn|Hauptbahnhof"
+
+msgid "tram|streetcar"
+msgstr "Strassenbahn|Straßenbahn|Tram"
 
 msgid "transparent"
 msgstr "transparent"
 
 msgid "tutorial map"
 msgstr "Tutorial-Karte"
+
+msgid "vet|animal_doctor"
+msgstr "Tierarzt|Tieraerztin|Tierärztin|Tierklinik"
+
+msgid "view|lookout|panorama"
+msgstr "Aussicht|Aussichtspunkt|Panorama|Ausblick"
+
+msgid "water_tap|water_fountain|drinking_fountain"
+msgstr "Trinkwasser|Wasserhahn|Brunnen|Wasser"
+
+msgid "worship|prayer_room"
+msgstr "Kirche|Gotteshaus|Andacht|Gebetsraum"
 
 msgid "your maps"
 msgstr "deine Karten"

@@ -92,6 +92,16 @@ describe "Map places search" do
     expect(last_query["radius"].to_i).to be >= 10
   end
 
+  # a synonym of the osm value reaches the category too
+  it "maps a synonym to the category of the osm value" do
+    find(".maplibregl-ctrl-geocoder--input").set("toilet")
+    expect(page).to have_css(".geocoder-result-title", text: "Berlin")
+
+    expect(last_query["url"]).to include("/reverse")
+    expect(last_query["osm_tag"]).to eq(":toilets")
+    expect(last_query["q"]).to be_nil
+  end
+
   it "runs the query again on return, but only after a move" do
     find(".maplibregl-ctrl-geocoder--input").set("Berlin")
     expect(page).to have_css(".geocoder-result-title", text: "Berlin")
