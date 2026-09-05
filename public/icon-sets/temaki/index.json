@@ -1,0 +1,7351 @@
+{
+  "id": "temaki",
+  "name": "Temaki",
+  "icon": {
+    "src": "/icon-sets/temaki/temaki.png"
+  },
+  "emojis": [
+    {
+      "id": "temaki-abseiling",
+      "name": "Abseiling",
+      "keywords": [
+        "abseiling",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/abseiling.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-accessible_space",
+      "name": "Accessible space",
+      "keywords": [
+        "accessible",
+        "space",
+        "accessibility",
+        "highways",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/accessible_space.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-accounting",
+      "name": "Accounting",
+      "keywords": [
+        "accounting",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/accounting.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-adit_profile",
+      "name": "Adit profile",
+      "keywords": [
+        "adit",
+        "profile",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/adit_profile.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-aerialway_pole",
+      "name": "Aerialway pole",
+      "keywords": [
+        "aerialway",
+        "pole",
+        "aerialways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/aerialway_pole.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-airport",
+      "name": "Airport",
+      "keywords": [
+        "airport",
+        "aeroways",
+        "buildings",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/airport.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-amusement_park",
+      "name": "Amusement park",
+      "keywords": [
+        "amusement",
+        "park",
+        "animals"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/amusement_park.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-anchor_medal",
+      "name": "Anchor medal",
+      "keywords": [
+        "anchor",
+        "medal",
+        "military",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/anchor_medal.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-antenna",
+      "name": "Antenna",
+      "keywords": [
+        "antenna",
+        "telecom",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/antenna.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-anvil",
+      "name": "Anvil",
+      "keywords": [
+        "anvil",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/anvil.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-anvil_and_hammer",
+      "name": "Anvil and hammer",
+      "keywords": [
+        "anvil",
+        "and",
+        "hammer",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/anvil_and_hammer.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-app_terminal",
+      "name": "App terminal",
+      "keywords": [
+        "app",
+        "terminal",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/app_terminal.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-archery",
+      "name": "Archery",
+      "keywords": [
+        "archery",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/archery.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-army_tent",
+      "name": "Army tent",
+      "keywords": [
+        "army",
+        "tent",
+        "buildings",
+        "camping",
+        "military"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/army_tent.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-asterisk",
+      "name": "Asterisk",
+      "keywords": [
+        "asterisk",
+        "healthcare",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/asterisk.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-atm",
+      "name": "Atm",
+      "keywords": [
+        "atm",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/atm.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-atm2",
+      "name": "Atm2",
+      "keywords": [
+        "atm2"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/atm2.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-balance_beam",
+      "name": "Balance beam",
+      "keywords": [
+        "balance",
+        "beam",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/balance_beam.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-balloon",
+      "name": "Balloon",
+      "keywords": [
+        "balloon",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/balloon.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-barn",
+      "name": "Barn",
+      "keywords": [
+        "barn",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/barn.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-beach",
+      "name": "Beach",
+      "keywords": [
+        "beach",
+        "landforms",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/beach.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-beauty_salon",
+      "name": "Beauty salon",
+      "keywords": [
+        "beauty",
+        "salon",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/beauty_salon.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bench",
+      "name": "Bench",
+      "keywords": [
+        "bench",
+        "seating"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bench.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-benchmark_disk",
+      "name": "Benchmark disk",
+      "keywords": [
+        "benchmark",
+        "disk",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/benchmark_disk.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bicycle_box",
+      "name": "Bicycle box",
+      "keywords": [
+        "bicycle",
+        "box",
+        "cycling",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bicycle_box.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bicycle_locker",
+      "name": "Bicycle locker",
+      "keywords": [
+        "bicycle",
+        "locker",
+        "cycling",
+        "security",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bicycle_locker.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bicycle_parked",
+      "name": "Bicycle parked",
+      "keywords": [
+        "bicycle",
+        "parked",
+        "cycling",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bicycle_parked.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bicycle_rental",
+      "name": "Bicycle rental",
+      "keywords": [
+        "bicycle",
+        "rental",
+        "cycling",
+        "security",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bicycle_rental.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bicycle_repair",
+      "name": "Bicycle repair",
+      "keywords": [
+        "bicycle",
+        "repair",
+        "cycling",
+        "tools",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bicycle_repair.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bicycle_shed",
+      "name": "Bicycle shed",
+      "keywords": [
+        "bicycle",
+        "shed",
+        "buildings",
+        "cycling",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bicycle_shed.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bicycle_structure",
+      "name": "Bicycle structure",
+      "keywords": [
+        "bicycle",
+        "structure",
+        "cycling",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bicycle_structure.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bikini",
+      "name": "Bikini",
+      "keywords": [
+        "bikini",
+        "clothes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bikini.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-billboard",
+      "name": "Billboard",
+      "keywords": [
+        "billboard",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/billboard.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-binoculars",
+      "name": "Binoculars",
+      "keywords": [
+        "binoculars",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/binoculars.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bleachers",
+      "name": "Bleachers",
+      "keywords": [
+        "bleachers",
+        "seating",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bleachers.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-blind",
+      "name": "Blind",
+      "keywords": [
+        "blind",
+        "accessibility",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/blind.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_bus",
+      "name": "Board bus",
+      "keywords": [
+        "board",
+        "bus",
+        "highways",
+        "people",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_bus.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_ferry",
+      "name": "Board ferry",
+      "keywords": [
+        "board",
+        "ferry",
+        "people",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_ferry.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_gondola_lift",
+      "name": "Board gondola lift",
+      "keywords": [
+        "board",
+        "gondola",
+        "lift",
+        "aerialways",
+        "people",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_gondola_lift.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_hanging_rail",
+      "name": "Board hanging rail",
+      "keywords": [
+        "board",
+        "hanging",
+        "rail",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_hanging_rail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_heavy_rail",
+      "name": "Board heavy rail",
+      "keywords": [
+        "board",
+        "heavy",
+        "rail",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_heavy_rail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_light_rail",
+      "name": "Board light rail",
+      "keywords": [
+        "board",
+        "light",
+        "rail",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_light_rail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_monorail",
+      "name": "Board monorail",
+      "keywords": [
+        "board",
+        "monorail",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_monorail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_school_bus",
+      "name": "Board school bus",
+      "keywords": [
+        "board",
+        "school",
+        "bus",
+        "highways",
+        "people",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_school_bus.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_subway",
+      "name": "Board subway",
+      "keywords": [
+        "board",
+        "subway",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_subway.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_train",
+      "name": "Board train",
+      "keywords": [
+        "board",
+        "train",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_train.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_train_bullet",
+      "name": "Board train bullet",
+      "keywords": [
+        "board",
+        "train",
+        "bullet",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_train_bullet.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_train_diesel",
+      "name": "Board train diesel",
+      "keywords": [
+        "board",
+        "train",
+        "diesel",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_train_diesel.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_train_kids",
+      "name": "Board train kids",
+      "keywords": [
+        "board",
+        "train",
+        "kids",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_train_kids.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_train_steam",
+      "name": "Board train steam",
+      "keywords": [
+        "board",
+        "train",
+        "steam",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_train_steam.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_tram",
+      "name": "Board tram",
+      "keywords": [
+        "board",
+        "tram",
+        "people",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_tram.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_transit",
+      "name": "Board transit",
+      "keywords": [
+        "board",
+        "transit",
+        "people",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_transit.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-board_trolleybus",
+      "name": "Board trolleybus",
+      "keywords": [
+        "board",
+        "trolleybus",
+        "highways",
+        "people",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/board_trolleybus.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boat",
+      "name": "Boat",
+      "keywords": [
+        "boat",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boat.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boat_dry_dock",
+      "name": "Boat dry dock",
+      "keywords": [
+        "boat",
+        "dry",
+        "dock",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boat_dry_dock.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boat_floating",
+      "name": "Boat floating",
+      "keywords": [
+        "boat",
+        "floating",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boat_floating.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boat_ramp",
+      "name": "Boat ramp",
+      "keywords": [
+        "boat",
+        "ramp",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boat_ramp.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boat_rental",
+      "name": "Boat rental",
+      "keywords": [
+        "boat",
+        "rental",
+        "security",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boat_rental.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boat_repair",
+      "name": "Boat repair",
+      "keywords": [
+        "boat",
+        "repair",
+        "tools",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boat_repair.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boat_tour",
+      "name": "Boat tour",
+      "keywords": [
+        "boat",
+        "tour",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boat_tour.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boating",
+      "name": "Boating",
+      "keywords": [
+        "boating",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boating.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bollard",
+      "name": "Bollard",
+      "keywords": [
+        "bollard",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bollard.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bollard_row",
+      "name": "Bollard row",
+      "keywords": [
+        "bollard",
+        "row",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bollard_row.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-book_store",
+      "name": "Book store",
+      "keywords": [
+        "book",
+        "store",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/book_store.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bottles",
+      "name": "Bottles",
+      "keywords": [
+        "bottles",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bottles.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boulder1",
+      "name": "Boulder1",
+      "keywords": [
+        "boulder1",
+        "landforms"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boulder1.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boulder2",
+      "name": "Boulder2",
+      "keywords": [
+        "boulder2",
+        "landforms"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boulder2.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-boulder3",
+      "name": "Boulder3",
+      "keywords": [
+        "boulder3",
+        "landforms"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/boulder3.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bow_and_arrow",
+      "name": "Bow and arrow",
+      "keywords": [
+        "bow",
+        "and",
+        "arrow",
+        "sports",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bow_and_arrow.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bowling",
+      "name": "Bowling",
+      "keywords": [
+        "bowling",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bowling.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bowling_alt1",
+      "name": "Bowling alt1",
+      "keywords": [
+        "bowling",
+        "alt1",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bowling_alt1.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bread",
+      "name": "Bread",
+      "keywords": [
+        "bread",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bread.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-brick_trowel",
+      "name": "Brick trowel",
+      "keywords": [
+        "brick",
+        "trowel",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/brick_trowel.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bridge",
+      "name": "Bridge",
+      "keywords": [
+        "bridge",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bridge.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-briefcase",
+      "name": "Briefcase",
+      "keywords": [
+        "briefcase",
+        "bags"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/briefcase.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-briefcase_asterisk",
+      "name": "Briefcase asterisk",
+      "keywords": [
+        "briefcase",
+        "asterisk",
+        "bags",
+        "healthcare"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/briefcase_asterisk.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-briefcase_bolt",
+      "name": "Briefcase bolt",
+      "keywords": [
+        "briefcase",
+        "bolt",
+        "bags",
+        "power"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/briefcase_bolt.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-briefcase_cross",
+      "name": "Briefcase cross",
+      "keywords": [
+        "briefcase",
+        "cross",
+        "bags",
+        "healthcare"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/briefcase_cross.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-briefcase_info",
+      "name": "Briefcase info",
+      "keywords": [
+        "briefcase",
+        "info",
+        "bags",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/briefcase_info.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-briefcase_shield",
+      "name": "Briefcase shield",
+      "keywords": [
+        "briefcase",
+        "shield",
+        "bags",
+        "security"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/briefcase_shield.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bubble_tea",
+      "name": "Bubble tea",
+      "keywords": [
+        "bubble",
+        "tea",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bubble_tea.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-buffer_stop",
+      "name": "Buffer stop",
+      "keywords": [
+        "buffer",
+        "stop",
+        "barriers",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/buffer_stop.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bulb",
+      "name": "Bulb",
+      "keywords": [
+        "bulb",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bulb.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bulb2",
+      "name": "Bulb2",
+      "keywords": [
+        "bulb2",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bulb2.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bulb3",
+      "name": "Bulb3",
+      "keywords": [
+        "bulb3",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bulb3.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bulldozer",
+      "name": "Bulldozer",
+      "keywords": [
+        "bulldozer",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bulldozer.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bulletin_board",
+      "name": "Bulletin board",
+      "keywords": [
+        "bulletin",
+        "board",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bulletin_board.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bunk_beds",
+      "name": "Bunk beds",
+      "keywords": [
+        "bunk",
+        "beds",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bunk_beds.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bunker",
+      "name": "Bunker",
+      "keywords": [
+        "bunker",
+        "buildings",
+        "military"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bunker.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bunker_silo",
+      "name": "Bunker silo",
+      "keywords": [
+        "bunker",
+        "silo",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bunker_silo.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-buoy",
+      "name": "Buoy",
+      "keywords": [
+        "buoy",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/buoy.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bus",
+      "name": "Bus",
+      "keywords": [
+        "bus",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bus.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-bus_guided",
+      "name": "Bus guided",
+      "keywords": [
+        "bus",
+        "guided",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/bus_guided.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cabin",
+      "name": "Cabin",
+      "keywords": [
+        "cabin",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cabin.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cable",
+      "name": "Cable",
+      "keywords": [
+        "cable",
+        "telecom",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cable.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cable_device",
+      "name": "Cable device",
+      "keywords": [
+        "cable",
+        "device",
+        "telecom",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cable_device.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cable_manhole",
+      "name": "Cable manhole",
+      "keywords": [
+        "cable",
+        "manhole",
+        "telecom",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cable_manhole.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cable_meter",
+      "name": "Cable meter",
+      "keywords": [
+        "cable",
+        "meter",
+        "telecom",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cable_meter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cable_shutoff",
+      "name": "Cable shutoff",
+      "keywords": [
+        "cable",
+        "shutoff",
+        "telecom",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cable_shutoff.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cairn",
+      "name": "Cairn",
+      "keywords": [
+        "cairn",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cairn.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-camper_trailer",
+      "name": "Camper trailer",
+      "keywords": [
+        "camper",
+        "trailer",
+        "camping",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/camper_trailer.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-camper_trailer_dump",
+      "name": "Camper trailer dump",
+      "keywords": [
+        "camper",
+        "trailer",
+        "dump",
+        "camping",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/camper_trailer_dump.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-campfire",
+      "name": "Campfire",
+      "keywords": [
+        "campfire",
+        "camping"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/campfire.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-can",
+      "name": "Can",
+      "keywords": [
+        "can",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/can.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-canoe",
+      "name": "Canoe",
+      "keywords": [
+        "canoe",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/canoe.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cape_landform",
+      "name": "Cape landform",
+      "keywords": [
+        "cape",
+        "landform",
+        "landforms"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cape_landform.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-capitol",
+      "name": "Capitol",
+      "keywords": [
+        "capitol",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/capitol.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-car_dealer",
+      "name": "Car dealer",
+      "keywords": [
+        "car",
+        "dealer",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/car_dealer.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-car_parked",
+      "name": "Car parked",
+      "keywords": [
+        "car",
+        "parked",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/car_parked.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-car_pool",
+      "name": "Car pool",
+      "keywords": [
+        "car",
+        "pool",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/car_pool.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-car_structure",
+      "name": "Car structure",
+      "keywords": [
+        "car",
+        "structure",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/car_structure.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-car_wash",
+      "name": "Car wash",
+      "keywords": [
+        "car",
+        "wash",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/car_wash.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-carport",
+      "name": "Carport",
+      "keywords": [
+        "carport",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/carport.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-casino",
+      "name": "Casino",
+      "keywords": [
+        "casino",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/casino.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-catering",
+      "name": "Catering",
+      "keywords": [
+        "catering",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/catering.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cattle_grid",
+      "name": "Cattle grid",
+      "keywords": [
+        "cattle",
+        "grid",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cattle_grid.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-chairlift",
+      "name": "Chairlift",
+      "keywords": [
+        "chairlift",
+        "aerialways",
+        "people",
+        "snow"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/chairlift.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-checkpoint",
+      "name": "Checkpoint",
+      "keywords": [
+        "checkpoint",
+        "barriers",
+        "people",
+        "security"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/checkpoint.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-chefs_knife",
+      "name": "Chefs knife",
+      "keywords": [
+        "chefs",
+        "knife",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/chefs_knife.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-chicane_arrow",
+      "name": "Chicane arrow",
+      "keywords": [
+        "chicane",
+        "arrow",
+        "barriers",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/chicane_arrow.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-chimney",
+      "name": "Chimney",
+      "keywords": [
+        "chimney",
+        "buildings",
+        "power"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/chimney.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-chocolate",
+      "name": "Chocolate",
+      "keywords": [
+        "chocolate",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/chocolate.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cleaver",
+      "name": "Cleaver",
+      "keywords": [
+        "cleaver",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cleaver.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cliff_falling_rocks",
+      "name": "Cliff falling rocks",
+      "keywords": [
+        "cliff",
+        "falling",
+        "rocks",
+        "landforms"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cliff_falling_rocks.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-climbing",
+      "name": "Climbing",
+      "keywords": [
+        "climbing",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/climbing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-clock",
+      "name": "Clock",
+      "keywords": [
+        "clock",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/clock.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cloth",
+      "name": "Cloth",
+      "keywords": [
+        "cloth",
+        "clothes",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cloth.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-clothes_hanger",
+      "name": "Clothes hanger",
+      "keywords": [
+        "clothes",
+        "hanger"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/clothes_hanger.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-coffee",
+      "name": "Coffee",
+      "keywords": [
+        "coffee",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/coffee.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-compass",
+      "name": "Compass",
+      "keywords": [
+        "compass",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/compass.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-conveyor",
+      "name": "Conveyor",
+      "keywords": [
+        "conveyor",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/conveyor.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cooling_tower",
+      "name": "Cooling tower",
+      "keywords": [
+        "cooling",
+        "tower",
+        "buildings",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cooling_tower.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cooling_tower_radiation",
+      "name": "Cooling tower radiation",
+      "keywords": [
+        "cooling",
+        "tower",
+        "radiation",
+        "buildings",
+        "infrastructure",
+        "power"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cooling_tower_radiation.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-coral_reef",
+      "name": "Coral reef",
+      "keywords": [
+        "coral",
+        "reef",
+        "animals",
+        "landforms",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/coral_reef.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-courthouse",
+      "name": "Courthouse",
+      "keywords": [
+        "courthouse",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/courthouse.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-crane",
+      "name": "Crane",
+      "keywords": [
+        "crane",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/crane.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cross_country_skiing",
+      "name": "Cross country skiing",
+      "keywords": [
+        "cross",
+        "country",
+        "skiing",
+        "snow",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cross_country_skiing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-crossing_rail_rail",
+      "name": "Crossing rail rail",
+      "keywords": [
+        "crossing",
+        "rail",
+        "crossings",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/crossing_rail_rail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-crossing_rail_road",
+      "name": "Crossing rail road",
+      "keywords": [
+        "crossing",
+        "rail",
+        "road",
+        "crossings",
+        "highways",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/crossing_rail_road.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-crossing_rail_solid",
+      "name": "Crossing rail solid",
+      "keywords": [
+        "crossing",
+        "rail",
+        "solid",
+        "crossings",
+        "highways",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/crossing_rail_solid.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-crossing_rail_striped",
+      "name": "Crossing rail striped",
+      "keywords": [
+        "crossing",
+        "rail",
+        "striped",
+        "crossings",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/crossing_rail_striped.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-crossing_tram_road",
+      "name": "Crossing tram road",
+      "keywords": [
+        "crossing",
+        "tram",
+        "road",
+        "crossings",
+        "highways",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/crossing_tram_road.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-crossing_tram_solid",
+      "name": "Crossing tram solid",
+      "keywords": [
+        "crossing",
+        "tram",
+        "solid",
+        "crossings",
+        "highways",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/crossing_tram_solid.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-crossing_tram_striped",
+      "name": "Crossing tram striped",
+      "keywords": [
+        "crossing",
+        "tram",
+        "striped",
+        "crossings",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/crossing_tram_striped.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-curtains",
+      "name": "Curtains",
+      "keywords": [
+        "curtains",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/curtains.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cycle_barrier",
+      "name": "Cycle barrier",
+      "keywords": [
+        "cycle",
+        "barrier",
+        "barriers",
+        "cycling"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cycle_barrier.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-cyclist_crosswalk",
+      "name": "Cyclist crosswalk",
+      "keywords": [
+        "cyclist",
+        "crosswalk",
+        "crossings",
+        "cycling",
+        "people",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/cyclist_crosswalk.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-dagger",
+      "name": "Dagger",
+      "keywords": [
+        "dagger",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/dagger.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-desk_lamp",
+      "name": "Desk lamp",
+      "keywords": [
+        "desk",
+        "lamp",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/desk_lamp.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-detergent_bottle",
+      "name": "Detergent bottle",
+      "keywords": [
+        "detergent",
+        "bottle",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/detergent_bottle.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-diamond",
+      "name": "Diamond",
+      "keywords": [
+        "diamond",
+        "highways",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/diamond.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-dice",
+      "name": "Dice",
+      "keywords": [
+        "dice",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/dice.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-disc_golf_basket",
+      "name": "Disc golf basket",
+      "keywords": [
+        "disc",
+        "golf",
+        "basket",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/disc_golf_basket.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-diving",
+      "name": "Diving",
+      "keywords": [
+        "diving",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/diving.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-dog_shelter",
+      "name": "Dog shelter",
+      "keywords": [
+        "dog",
+        "shelter",
+        "animals",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/dog_shelter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-domed_tower",
+      "name": "Domed tower",
+      "keywords": [
+        "domed",
+        "tower",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/domed_tower.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-donut",
+      "name": "Donut",
+      "keywords": [
+        "donut",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/donut.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-drag_lift",
+      "name": "Drag lift",
+      "keywords": [
+        "drag",
+        "lift",
+        "aerialways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/drag_lift.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-dress",
+      "name": "Dress",
+      "keywords": [
+        "dress",
+        "clothes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/dress.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-drink_cup",
+      "name": "Drink cup",
+      "keywords": [
+        "drink",
+        "cup",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/drink_cup.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-ear",
+      "name": "Ear",
+      "keywords": [
+        "ear",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/ear.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-egg",
+      "name": "Egg",
+      "keywords": [
+        "egg",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/egg.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-electronic",
+      "name": "Electronic",
+      "keywords": [
+        "electronic",
+        "power"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/electronic.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-elevator",
+      "name": "Elevator",
+      "keywords": [
+        "elevator",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/elevator.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-embassy",
+      "name": "Embassy",
+      "keywords": [
+        "embassy",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/embassy.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-fashion_accessories",
+      "name": "Fashion accessories",
+      "keywords": [
+        "fashion",
+        "accessories",
+        "bags",
+        "clothes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/fashion_accessories.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-ferry",
+      "name": "Ferry",
+      "keywords": [
+        "ferry",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/ferry.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-field_hockey",
+      "name": "Field hockey",
+      "keywords": [
+        "field",
+        "hockey",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/field_hockey.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-fighter_jet",
+      "name": "Fighter jet",
+      "keywords": [
+        "fighter",
+        "jet",
+        "aeroways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/fighter_jet.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-fire_hydrant",
+      "name": "Fire hydrant",
+      "keywords": [
+        "fire",
+        "hydrant",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/fire_hydrant.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-fireplace",
+      "name": "Fireplace",
+      "keywords": [
+        "fireplace",
+        "camping"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/fireplace.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-fish_cleaning",
+      "name": "Fish cleaning",
+      "keywords": [
+        "fish",
+        "cleaning",
+        "animals",
+        "food",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/fish_cleaning.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-fish_ladder",
+      "name": "Fish ladder",
+      "keywords": [
+        "fish",
+        "ladder",
+        "animals",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/fish_ladder.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-fishing_pier",
+      "name": "Fishing pier",
+      "keywords": [
+        "fishing",
+        "pier",
+        "people",
+        "sports",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/fishing_pier.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-florist",
+      "name": "Florist",
+      "keywords": [
+        "florist",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/florist.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-food",
+      "name": "Food",
+      "keywords": [
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/food.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-fountain",
+      "name": "Fountain",
+      "keywords": [
+        "fountain",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/fountain.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-freight_car",
+      "name": "Freight car",
+      "keywords": [
+        "freight",
+        "car",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/freight_car.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-furniture",
+      "name": "Furniture",
+      "keywords": [
+        "furniture",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/furniture.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-garden_bed",
+      "name": "Garden bed",
+      "keywords": [
+        "garden",
+        "bed",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/garden_bed.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-gas",
+      "name": "Gas",
+      "keywords": [
+        "gas",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/gas.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-gas_device",
+      "name": "Gas device",
+      "keywords": [
+        "gas",
+        "device",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/gas_device.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-gas_manhole",
+      "name": "Gas manhole",
+      "keywords": [
+        "gas",
+        "manhole",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/gas_manhole.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-gas_meter",
+      "name": "Gas meter",
+      "keywords": [
+        "gas",
+        "meter",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/gas_meter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-gas_shutoff",
+      "name": "Gas shutoff",
+      "keywords": [
+        "gas",
+        "shutoff",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/gas_shutoff.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-gate",
+      "name": "Gate",
+      "keywords": [
+        "gate",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/gate.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-golf_cart",
+      "name": "Golf cart",
+      "keywords": [
+        "golf",
+        "cart",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/golf_cart.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-golf_green",
+      "name": "Golf green",
+      "keywords": [
+        "golf",
+        "green",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/golf_green.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-gondola_lift",
+      "name": "Gondola lift",
+      "keywords": [
+        "gondola",
+        "lift",
+        "aerialways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/gondola_lift.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-goods_lift",
+      "name": "Goods lift",
+      "keywords": [
+        "goods",
+        "lift",
+        "aerialways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/goods_lift.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-gown",
+      "name": "Gown",
+      "keywords": [
+        "gown",
+        "clothes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/gown.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-grapes",
+      "name": "Grapes",
+      "keywords": [
+        "grapes",
+        "food",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/grapes.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-grass",
+      "name": "Grass",
+      "keywords": [
+        "grass",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/grass.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-guard_rail",
+      "name": "Guard rail",
+      "keywords": [
+        "guard",
+        "rail",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/guard_rail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-gym",
+      "name": "Gym",
+      "keywords": [
+        "gym",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/gym.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hair_care",
+      "name": "Hair care",
+      "keywords": [
+        "hair",
+        "care",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hair_care.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hammer_shoe",
+      "name": "Hammer shoe",
+      "keywords": [
+        "hammer",
+        "shoe",
+        "clothes",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hammer_shoe.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hand",
+      "name": "Hand",
+      "keywords": [
+        "hand",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hand.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-handbag",
+      "name": "Handbag",
+      "keywords": [
+        "handbag",
+        "bags",
+        "clothes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/handbag.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hang_gliding",
+      "name": "Hang gliding",
+      "keywords": [
+        "hang",
+        "gliding",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hang_gliding.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hangar",
+      "name": "Hangar",
+      "keywords": [
+        "hangar",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hangar.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hanging_rail",
+      "name": "Hanging rail",
+      "keywords": [
+        "hanging",
+        "rail",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hanging_rail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hearing_aid",
+      "name": "Hearing aid",
+      "keywords": [
+        "hearing",
+        "aid",
+        "accessibility",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hearing_aid.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-heart",
+      "name": "Heart",
+      "keywords": [
+        "heart",
+        "healthcare",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/heart.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-heavy_rail",
+      "name": "Heavy rail",
+      "keywords": [
+        "heavy",
+        "rail",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/heavy_rail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hedge",
+      "name": "Hedge",
+      "keywords": [
+        "hedge",
+        "barriers",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hedge.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-height_restrictor",
+      "name": "Height restrictor",
+      "keywords": [
+        "height",
+        "restrictor",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/height_restrictor.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hinduism",
+      "name": "Hinduism",
+      "keywords": [
+        "hinduism",
+        "religion"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hinduism.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-horizontal_bar",
+      "name": "Horizontal bar",
+      "keywords": [
+        "horizontal",
+        "bar",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/horizontal_bar.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-horn_cleat",
+      "name": "Horn cleat",
+      "keywords": [
+        "horn",
+        "cleat",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/horn_cleat.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-horse_shelter",
+      "name": "Horse shelter",
+      "keywords": [
+        "horse",
+        "shelter",
+        "animals",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/horse_shelter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-horseshoe",
+      "name": "Horseshoe",
+      "keywords": [
+        "horseshoe",
+        "animals",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/horseshoe.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-horseshoes",
+      "name": "Horseshoes",
+      "keywords": [
+        "horseshoes",
+        "animals",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/horseshoes.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hot_drink_cup",
+      "name": "Hot drink cup",
+      "keywords": [
+        "hot",
+        "drink",
+        "cup",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hot_drink_cup.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-houseboat",
+      "name": "Houseboat",
+      "keywords": [
+        "houseboat",
+        "buildings",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/houseboat.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hunting_blind",
+      "name": "Hunting blind",
+      "keywords": [
+        "hunting",
+        "blind",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hunting_blind.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-hut",
+      "name": "Hut",
+      "keywords": [
+        "hut",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/hut.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-ice_fishing",
+      "name": "Ice fishing",
+      "keywords": [
+        "ice",
+        "fishing",
+        "animals",
+        "snow",
+        "sports",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/ice_fishing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-ice_skating",
+      "name": "Ice skating",
+      "keywords": [
+        "ice",
+        "skating",
+        "people",
+        "snow",
+        "sports",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/ice_skating.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-info_board",
+      "name": "Info board",
+      "keywords": [
+        "info",
+        "board",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/info_board.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-inline_skating",
+      "name": "Inline skating",
+      "keywords": [
+        "inline",
+        "skating",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/inline_skating.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-island_trees_building",
+      "name": "Island trees building",
+      "keywords": [
+        "island",
+        "trees",
+        "building",
+        "buildings",
+        "landforms",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/island_trees_building.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-islet_tree",
+      "name": "Islet tree",
+      "keywords": [
+        "islet",
+        "tree",
+        "landforms",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/islet_tree.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-j_bar_lift",
+      "name": "J bar lift",
+      "keywords": [
+        "j",
+        "bar",
+        "lift",
+        "aerialways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/j_bar_lift.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-jet_skiing",
+      "name": "Jet skiing",
+      "keywords": [
+        "jet",
+        "skiing",
+        "people",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/jet_skiing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-jetplane_front",
+      "name": "Jetplane front",
+      "keywords": [
+        "jetplane",
+        "front",
+        "aeroways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/jetplane_front.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-jewelry_store",
+      "name": "Jewelry store",
+      "keywords": [
+        "jewelry",
+        "store",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/jewelry_store.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-junction",
+      "name": "Junction",
+      "keywords": [
+        "junction",
+        "highways",
+        "railways",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/junction.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-junk_car",
+      "name": "Junk car",
+      "keywords": [
+        "junk",
+        "car",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/junk_car.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-kayaking",
+      "name": "Kayaking",
+      "keywords": [
+        "kayaking",
+        "people",
+        "sports",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/kayaking.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-kerb-flush",
+      "name": "Kerb flush",
+      "keywords": [
+        "kerb",
+        "flush",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/kerb-flush.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-kerb-lowered",
+      "name": "Kerb lowered",
+      "keywords": [
+        "kerb",
+        "lowered",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/kerb-lowered.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-kerb-raised",
+      "name": "Kerb raised",
+      "keywords": [
+        "kerb",
+        "raised",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/kerb-raised.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-kerb-rolled",
+      "name": "Kerb rolled",
+      "keywords": [
+        "kerb",
+        "rolled",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/kerb-rolled.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-kitchen_sink",
+      "name": "Kitchen sink",
+      "keywords": [
+        "kitchen",
+        "sink",
+        "home",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/kitchen_sink.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-latrine",
+      "name": "Latrine",
+      "keywords": [
+        "latrine",
+        "buildings",
+        "camping"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/latrine.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-laundry",
+      "name": "Laundry",
+      "keywords": [
+        "laundry",
+        "home",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/laundry.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-lawn",
+      "name": "Lawn",
+      "keywords": [
+        "lawn",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/lawn.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-lawyer",
+      "name": "Lawyer",
+      "keywords": [
+        "lawyer",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/lawyer.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-letter_box",
+      "name": "Letter box",
+      "keywords": [
+        "letter",
+        "box",
+        "mail"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/letter_box.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-library",
+      "name": "Library",
+      "keywords": [
+        "library",
+        "information",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/library.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-lift_gate",
+      "name": "Lift gate",
+      "keywords": [
+        "lift",
+        "gate",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/lift_gate.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-light_rail",
+      "name": "Light rail",
+      "keywords": [
+        "light",
+        "rail",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/light_rail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-lipstick",
+      "name": "Lipstick",
+      "keywords": [
+        "lipstick",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/lipstick.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-lock",
+      "name": "Lock",
+      "keywords": [
+        "lock",
+        "security"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/lock.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-lounger",
+      "name": "Lounger",
+      "keywords": [
+        "lounger",
+        "seating"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/lounger.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-lounging",
+      "name": "Lounging",
+      "keywords": [
+        "lounging",
+        "people",
+        "seating"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/lounging.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-manhole",
+      "name": "Manhole",
+      "keywords": [
+        "manhole",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/manhole.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-manufactured_home",
+      "name": "Manufactured home",
+      "keywords": [
+        "manufactured",
+        "home",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/manufactured_home.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-mast",
+      "name": "Mast",
+      "keywords": [
+        "mast",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/mast.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-mast_communication",
+      "name": "Mast communication",
+      "keywords": [
+        "mast",
+        "communication",
+        "infrastructure",
+        "telecom",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/mast_communication.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-mast_lighting",
+      "name": "Mast lighting",
+      "keywords": [
+        "mast",
+        "lighting",
+        "infrastructure",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/mast_lighting.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-maze",
+      "name": "Maze",
+      "keywords": [
+        "maze",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/maze.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-meat",
+      "name": "Meat",
+      "keywords": [
+        "meat",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/meat.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-milestone",
+      "name": "Milestone",
+      "keywords": [
+        "milestone",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/milestone.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-military",
+      "name": "Military",
+      "keywords": [
+        "military"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/military.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-military_checkpoint",
+      "name": "Military checkpoint",
+      "keywords": [
+        "military",
+        "checkpoint",
+        "barriers",
+        "people",
+        "security"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/military_checkpoint.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-mineshaft_cage",
+      "name": "Mineshaft cage",
+      "keywords": [
+        "mineshaft",
+        "cage",
+        "infrastructure",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/mineshaft_cage.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-mineshaft_profile",
+      "name": "Mineshaft profile",
+      "keywords": [
+        "mineshaft",
+        "profile",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/mineshaft_profile.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-money_hand",
+      "name": "Money hand",
+      "keywords": [
+        "money",
+        "hand",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/money_hand.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-monorail",
+      "name": "Monorail",
+      "keywords": [
+        "monorail",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/monorail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-motorcycle",
+      "name": "Motorcycle",
+      "keywords": [
+        "motorcycle",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/motorcycle.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-motorcycle_rental",
+      "name": "Motorcycle rental",
+      "keywords": [
+        "motorcycle",
+        "rental",
+        "security",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/motorcycle_rental.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-motorcycle_repair",
+      "name": "Motorcycle repair",
+      "keywords": [
+        "motorcycle",
+        "repair",
+        "tools",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/motorcycle_repair.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-mountain_asterisk",
+      "name": "Mountain asterisk",
+      "keywords": [
+        "mountain",
+        "asterisk",
+        "healthcare",
+        "landforms"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/mountain_asterisk.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-mountain_cross",
+      "name": "Mountain cross",
+      "keywords": [
+        "mountain",
+        "cross",
+        "healthcare",
+        "landforms"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/mountain_cross.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-mountain_range",
+      "name": "Mountain range",
+      "keywords": [
+        "mountain",
+        "range",
+        "landforms",
+        "snow"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/mountain_range.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-movie_rental",
+      "name": "Movie rental",
+      "keywords": [
+        "movie",
+        "rental",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/movie_rental.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-museum",
+      "name": "Museum",
+      "keywords": [
+        "museum",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/museum.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-needle_and_spool",
+      "name": "Needle and spool",
+      "keywords": [
+        "needle",
+        "and",
+        "spool",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/needle_and_spool.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-obelisk",
+      "name": "Obelisk",
+      "keywords": [
+        "obelisk",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/obelisk.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-oil_well",
+      "name": "Oil well",
+      "keywords": [
+        "oil",
+        "well",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/oil_well.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-os_benchmark",
+      "name": "Os benchmark",
+      "keywords": [
+        "os",
+        "benchmark",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/os_benchmark.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-parking_space",
+      "name": "Parking space",
+      "keywords": [
+        "parking",
+        "space",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/parking_space.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-passport_checkpoint",
+      "name": "Passport checkpoint",
+      "keywords": [
+        "passport",
+        "checkpoint",
+        "barriers",
+        "people",
+        "security"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/passport_checkpoint.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-ped_cyclist_crosswalk",
+      "name": "Ped cyclist crosswalk",
+      "keywords": [
+        "ped",
+        "cyclist",
+        "crosswalk",
+        "crossings",
+        "cycling",
+        "people",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/ped_cyclist_crosswalk.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pedestrian",
+      "name": "Pedestrian",
+      "keywords": [
+        "pedestrian",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pedestrian.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pedestrian_and_cyclist",
+      "name": "Pedestrian and cyclist",
+      "keywords": [
+        "pedestrian",
+        "and",
+        "cyclist",
+        "cycling",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pedestrian_and_cyclist.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pedestrian_crosswalk",
+      "name": "Pedestrian crosswalk",
+      "keywords": [
+        "pedestrian",
+        "crosswalk",
+        "crossings",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pedestrian_crosswalk.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pedestrian_walled",
+      "name": "Pedestrian walled",
+      "keywords": [
+        "pedestrian",
+        "walled",
+        "barriers",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pedestrian_walled.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-perfume",
+      "name": "Perfume",
+      "keywords": [
+        "perfume",
+        "clothes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/perfume.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pet_grooming",
+      "name": "Pet grooming",
+      "keywords": [
+        "pet",
+        "grooming",
+        "animals",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pet_grooming.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pet_store",
+      "name": "Pet store",
+      "keywords": [
+        "pet",
+        "store",
+        "animals"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pet_store.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pharmacy",
+      "name": "Pharmacy",
+      "keywords": [
+        "pharmacy",
+        "healthcare"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pharmacy.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-physiotherapist",
+      "name": "Physiotherapist",
+      "keywords": [
+        "physiotherapist",
+        "healthcare",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/physiotherapist.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pick_hammer",
+      "name": "Pick hammer",
+      "keywords": [
+        "pick",
+        "hammer",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pick_hammer.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-picnic_shelter",
+      "name": "Picnic shelter",
+      "keywords": [
+        "picnic",
+        "shelter",
+        "buildings",
+        "camping",
+        "seating"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/picnic_shelter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pier_fixed",
+      "name": "Pier fixed",
+      "keywords": [
+        "pier",
+        "fixed",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pier_fixed.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pier_floating",
+      "name": "Pier floating",
+      "keywords": [
+        "pier",
+        "floating",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pier_floating.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pin",
+      "name": "Pin",
+      "keywords": [
+        "pin",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pin.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-pipe",
+      "name": "Pipe",
+      "keywords": [
+        "pipe",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/pipe.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-plane_taxiing",
+      "name": "Plane taxiing",
+      "keywords": [
+        "plane",
+        "taxiing",
+        "aeroways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/plane_taxiing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-planes",
+      "name": "Planes",
+      "keywords": [
+        "planes",
+        "aeroways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/planes.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-planes_bidirectional",
+      "name": "Planes bidirectional",
+      "keywords": [
+        "planes",
+        "bidirectional",
+        "aeroways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/planes_bidirectional.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-plant",
+      "name": "Plant",
+      "keywords": [
+        "plant",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/plant.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-plaque",
+      "name": "Plaque",
+      "keywords": [
+        "plaque",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/plaque.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-platter_lift",
+      "name": "Platter lift",
+      "keywords": [
+        "platter",
+        "lift",
+        "aerialways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/platter_lift.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-play_structure",
+      "name": "Play structure",
+      "keywords": [
+        "play",
+        "structure",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/play_structure.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-plumber",
+      "name": "Plumber",
+      "keywords": [
+        "plumber",
+        "utilities",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/plumber.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-police_checkpoint",
+      "name": "Police checkpoint",
+      "keywords": [
+        "police",
+        "checkpoint",
+        "barriers",
+        "people",
+        "security"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/police_checkpoint.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-police_officer",
+      "name": "Police officer",
+      "keywords": [
+        "police",
+        "officer",
+        "people",
+        "security"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/police_officer.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-polished_nail",
+      "name": "Polished nail",
+      "keywords": [
+        "polished",
+        "nail",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/polished_nail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-portrait",
+      "name": "Portrait",
+      "keywords": [
+        "portrait",
+        "arts",
+        "clothes",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/portrait.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-portrait_framed",
+      "name": "Portrait framed",
+      "keywords": [
+        "portrait",
+        "framed",
+        "arts",
+        "clothes",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/portrait_framed.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-post_box",
+      "name": "Post box",
+      "keywords": [
+        "post",
+        "box",
+        "mail"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/post_box.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-poster_box",
+      "name": "Poster box",
+      "keywords": [
+        "poster",
+        "box",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/poster_box.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power",
+      "name": "Power",
+      "keywords": [
+        "power",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_cb",
+      "name": "Power cb",
+      "keywords": [
+        "power",
+        "cb",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_cb.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_cb2",
+      "name": "Power cb2",
+      "keywords": [
+        "power",
+        "cb2",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_cb2.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_circuit",
+      "name": "Power circuit",
+      "keywords": [
+        "power",
+        "circuit",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_circuit.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_ct",
+      "name": "Power ct",
+      "keywords": [
+        "power",
+        "ct",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_ct.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_device",
+      "name": "Power device",
+      "keywords": [
+        "power",
+        "device",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_device.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_isolator",
+      "name": "Power isolator",
+      "keywords": [
+        "power",
+        "isolator",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_isolator.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_la",
+      "name": "Power la",
+      "keywords": [
+        "power",
+        "la",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_la.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_manhole",
+      "name": "Power manhole",
+      "keywords": [
+        "power",
+        "manhole",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_manhole.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_meter",
+      "name": "Power meter",
+      "keywords": [
+        "power",
+        "meter",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_meter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_pole",
+      "name": "Power pole",
+      "keywords": [
+        "power",
+        "pole",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_pole.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_shutoff",
+      "name": "Power shutoff",
+      "keywords": [
+        "power",
+        "shutoff",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_shutoff.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_switch",
+      "name": "Power switch",
+      "keywords": [
+        "power",
+        "switch",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_switch.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_tower",
+      "name": "Power tower",
+      "keywords": [
+        "power",
+        "tower",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_tower.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-power_transformer",
+      "name": "Power transformer",
+      "keywords": [
+        "power",
+        "transformer",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/power_transformer.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-powered_pump",
+      "name": "Powered pump",
+      "keywords": [
+        "powered",
+        "pump",
+        "power",
+        "utilities",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/powered_pump.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-propane_tank",
+      "name": "Propane tank",
+      "keywords": [
+        "propane",
+        "tank",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/propane_tank.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-psychic",
+      "name": "Psychic",
+      "keywords": [
+        "psychic",
+        "people",
+        "religion"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/psychic.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-quakerism",
+      "name": "Quakerism",
+      "keywords": [
+        "quakerism",
+        "religion"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/quakerism.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-racetrack_oval",
+      "name": "Racetrack oval",
+      "keywords": [
+        "racetrack",
+        "oval",
+        "highways",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/racetrack_oval.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-radiation",
+      "name": "Radiation",
+      "keywords": [
+        "radiation",
+        "power"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/radiation.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-radio",
+      "name": "Radio",
+      "keywords": [
+        "radio",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/radio.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-rafting",
+      "name": "Rafting",
+      "keywords": [
+        "rafting",
+        "people",
+        "sports",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/rafting.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-rail_flag",
+      "name": "Rail flag",
+      "keywords": [
+        "rail",
+        "flag",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/rail_flag.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-rail_profile",
+      "name": "Rail profile",
+      "keywords": [
+        "rail",
+        "profile",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/rail_profile.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-railing",
+      "name": "Railing",
+      "keywords": [
+        "railing",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/railing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-railway_cable_track",
+      "name": "Railway cable track",
+      "keywords": [
+        "railway",
+        "cable",
+        "track",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/railway_cable_track.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-railway_signals",
+      "name": "Railway signals",
+      "keywords": [
+        "railway",
+        "signals",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/railway_signals.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-railway_track",
+      "name": "Railway track",
+      "keywords": [
+        "railway",
+        "track",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/railway_track.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-railway_track_askew",
+      "name": "Railway track askew",
+      "keywords": [
+        "railway",
+        "track",
+        "askew",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/railway_track_askew.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-railway_track_mini",
+      "name": "Railway track mini",
+      "keywords": [
+        "railway",
+        "track",
+        "mini",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/railway_track_mini.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-railway_track_narrow",
+      "name": "Railway track narrow",
+      "keywords": [
+        "railway",
+        "track",
+        "narrow",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/railway_track_narrow.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-railway_track_partial",
+      "name": "Railway track partial",
+      "keywords": [
+        "railway",
+        "track",
+        "partial",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/railway_track_partial.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-real_estate_agency",
+      "name": "Real estate agency",
+      "keywords": [
+        "real",
+        "estate",
+        "agency",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/real_estate_agency.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-rigging",
+      "name": "Rigging",
+      "keywords": [
+        "rigging",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/rigging.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-rocket_firework",
+      "name": "Rocket firework",
+      "keywords": [
+        "rocket",
+        "firework",
+        "military"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/rocket_firework.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-roller_coaster",
+      "name": "Roller coaster",
+      "keywords": [
+        "roller",
+        "coaster",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/roller_coaster.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-room",
+      "name": "Room",
+      "keywords": [
+        "room",
+        "buildings",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/room.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-rope_fence",
+      "name": "Rope fence",
+      "keywords": [
+        "rope",
+        "fence",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/rope_fence.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-row_houses",
+      "name": "Row houses",
+      "keywords": [
+        "row",
+        "houses",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/row_houses.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-ruins",
+      "name": "Ruins",
+      "keywords": [
+        "ruins",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/ruins.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-rumble_strip",
+      "name": "Rumble strip",
+      "keywords": [
+        "rumble",
+        "strip",
+        "barriers",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/rumble_strip.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-saddle",
+      "name": "Saddle",
+      "keywords": [
+        "saddle",
+        "landforms",
+        "snow"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/saddle.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sail",
+      "name": "Sail",
+      "keywords": [
+        "sail",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sail.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sailboat",
+      "name": "Sailboat",
+      "keywords": [
+        "sailboat",
+        "vehicles",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sailboat.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sailing",
+      "name": "Sailing",
+      "keywords": [
+        "sailing",
+        "sports",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sailing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sandbox",
+      "name": "Sandbox",
+      "keywords": [
+        "sandbox",
+        "sports",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sandbox.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sandwich",
+      "name": "Sandwich",
+      "keywords": [
+        "sandwich",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sandwich.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-scaffold",
+      "name": "Scaffold",
+      "keywords": [
+        "scaffold",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/scaffold.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-school",
+      "name": "School",
+      "keywords": [
+        "school",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/school.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-school_bus",
+      "name": "School bus",
+      "keywords": [
+        "school",
+        "bus",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/school_bus.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-scuba_diving",
+      "name": "Scuba diving",
+      "keywords": [
+        "scuba",
+        "diving",
+        "people",
+        "sports",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/scuba_diving.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sculpture",
+      "name": "Sculpture",
+      "keywords": [
+        "sculpture",
+        "arts"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sculpture.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-security_camera",
+      "name": "Security camera",
+      "keywords": [
+        "security",
+        "camera"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/security_camera.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-seesaw",
+      "name": "Seesaw",
+      "keywords": [
+        "seesaw",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/seesaw.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-shield",
+      "name": "Shield",
+      "keywords": [
+        "shield",
+        "security"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/shield.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-shinto",
+      "name": "Shinto",
+      "keywords": [
+        "shinto",
+        "religion"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/shinto.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-shopping_mall",
+      "name": "Shopping mall",
+      "keywords": [
+        "shopping",
+        "mall",
+        "bags",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/shopping_mall.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-shower",
+      "name": "Shower",
+      "keywords": [
+        "shower",
+        "home",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/shower.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-shrub",
+      "name": "Shrub",
+      "keywords": [
+        "shrub",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/shrub.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-shrub_low",
+      "name": "Shrub low",
+      "keywords": [
+        "shrub",
+        "low",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/shrub_low.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-shuffleboard",
+      "name": "Shuffleboard",
+      "keywords": [
+        "shuffleboard",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/shuffleboard.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sign_and_bench",
+      "name": "Sign and bench",
+      "keywords": [
+        "sign",
+        "and",
+        "bench",
+        "seating"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sign_and_bench.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sign_and_car",
+      "name": "Sign and car",
+      "keywords": [
+        "sign",
+        "and",
+        "car",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sign_and_car.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sign_and_pedestrian",
+      "name": "Sign and pedestrian",
+      "keywords": [
+        "sign",
+        "and",
+        "pedestrian",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sign_and_pedestrian.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sikhism",
+      "name": "Sikhism",
+      "keywords": [
+        "sikhism",
+        "religion"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sikhism.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-silo",
+      "name": "Silo",
+      "keywords": [
+        "silo",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/silo.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-skateboarding",
+      "name": "Skateboarding",
+      "keywords": [
+        "skateboarding",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/skateboarding.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-ski_jumping",
+      "name": "Ski jumping",
+      "keywords": [
+        "ski",
+        "jumping",
+        "people",
+        "snow",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/ski_jumping.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-skiing",
+      "name": "Skiing",
+      "keywords": [
+        "skiing",
+        "people",
+        "snow",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/skiing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sledding",
+      "name": "Sledding",
+      "keywords": [
+        "sledding",
+        "people",
+        "snow",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sledding.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-sleep_shelter",
+      "name": "Sleep shelter",
+      "keywords": [
+        "sleep",
+        "shelter",
+        "buildings",
+        "camping",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/sleep_shelter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-slide",
+      "name": "Slide",
+      "keywords": [
+        "slide",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/slide.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-snow",
+      "name": "Snow",
+      "keywords": [
+        "snow"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/snow.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-snow_shoeing",
+      "name": "Snow shoeing",
+      "keywords": [
+        "snow",
+        "shoeing",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/snow_shoeing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-snowboarding",
+      "name": "Snowboarding",
+      "keywords": [
+        "snowboarding",
+        "people",
+        "snow",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/snowboarding.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-snowmobile",
+      "name": "Snowmobile",
+      "keywords": [
+        "snowmobile",
+        "people",
+        "snow",
+        "sports",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/snowmobile.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-social_facility",
+      "name": "Social facility",
+      "keywords": [
+        "social",
+        "facility",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/social_facility.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-spa",
+      "name": "Spa",
+      "keywords": [
+        "spa",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/spa.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-speaker",
+      "name": "Speaker",
+      "keywords": [
+        "speaker",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/speaker.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-speed_bump",
+      "name": "Speed bump",
+      "keywords": [
+        "speed",
+        "bump",
+        "barriers",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/speed_bump.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-speed_dip",
+      "name": "Speed dip",
+      "keywords": [
+        "speed",
+        "dip",
+        "barriers",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/speed_dip.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-speed_dip_double",
+      "name": "Speed dip double",
+      "keywords": [
+        "speed",
+        "dip",
+        "double",
+        "barriers",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/speed_dip_double.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-speed_hump",
+      "name": "Speed hump",
+      "keywords": [
+        "speed",
+        "hump",
+        "barriers",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/speed_hump.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-speed_table",
+      "name": "Speed table",
+      "keywords": [
+        "speed",
+        "table",
+        "barriers",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/speed_table.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-speedway_8",
+      "name": "Speedway 8",
+      "keywords": [
+        "speedway",
+        "8",
+        "highways",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/speedway_8.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-speedway_oval",
+      "name": "Speedway oval",
+      "keywords": [
+        "speedway",
+        "oval",
+        "highways",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/speedway_oval.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-spice_bottle",
+      "name": "Spice bottle",
+      "keywords": [
+        "spice",
+        "bottle",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/spice_bottle.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-spike_strip",
+      "name": "Spike strip",
+      "keywords": [
+        "spike",
+        "strip",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/spike_strip.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-spotting_scope",
+      "name": "Spotting scope",
+      "keywords": [
+        "spotting",
+        "scope",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/spotting_scope.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-spring_rider",
+      "name": "Spring rider",
+      "keywords": [
+        "spring",
+        "rider",
+        "animals",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/spring_rider.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-stamp",
+      "name": "Stamp",
+      "keywords": [
+        "stamp",
+        "mail"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/stamp.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-statue",
+      "name": "Statue",
+      "keywords": [
+        "statue",
+        "arts",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/statue.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-stile_squeezer",
+      "name": "Stile squeezer",
+      "keywords": [
+        "stile",
+        "squeezer",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/stile_squeezer.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-stop",
+      "name": "Stop",
+      "keywords": [
+        "stop",
+        "highways",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/stop.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-storage",
+      "name": "Storage",
+      "keywords": [
+        "storage",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/storage.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-storage_drum",
+      "name": "Storage drum",
+      "keywords": [
+        "storage",
+        "drum",
+        "power",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/storage_drum.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-storage_fermenter",
+      "name": "Storage fermenter",
+      "keywords": [
+        "storage",
+        "fermenter",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/storage_fermenter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-storage_rental",
+      "name": "Storage rental",
+      "keywords": [
+        "storage",
+        "rental",
+        "buildings",
+        "security"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/storage_rental.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-storage_tank",
+      "name": "Storage tank",
+      "keywords": [
+        "storage",
+        "tank",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/storage_tank.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-street_lamp_arm",
+      "name": "Street lamp arm",
+      "keywords": [
+        "street",
+        "lamp",
+        "arm",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/street_lamp_arm.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-striped_way",
+      "name": "Striped way",
+      "keywords": [
+        "striped",
+        "way",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/striped_way.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-striped_zone",
+      "name": "Striped zone",
+      "keywords": [
+        "striped",
+        "zone",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/striped_zone.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-subway",
+      "name": "Subway",
+      "keywords": [
+        "subway",
+        "railways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/subway.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-suitcase",
+      "name": "Suitcase",
+      "keywords": [
+        "suitcase",
+        "bags"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/suitcase.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-suitcase_key",
+      "name": "Suitcase key",
+      "keywords": [
+        "suitcase",
+        "key",
+        "bags",
+        "security"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/suitcase_key.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-suitcase_xray",
+      "name": "Suitcase xray",
+      "keywords": [
+        "suitcase",
+        "xray",
+        "aeroways",
+        "bags"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/suitcase_xray.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-surfing",
+      "name": "Surfing",
+      "keywords": [
+        "surfing",
+        "people",
+        "sports",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/surfing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-swamp",
+      "name": "Swamp",
+      "keywords": [
+        "swamp",
+        "landforms",
+        "plants",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/swamp.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-t_bar_lift",
+      "name": "T bar lift",
+      "keywords": [
+        "t",
+        "bar",
+        "lift",
+        "aerialways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/t_bar_lift.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tall_gate",
+      "name": "Tall gate",
+      "keywords": [
+        "tall",
+        "gate",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tall_gate.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tanning",
+      "name": "Tanning",
+      "keywords": [
+        "tanning",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tanning.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tanning2",
+      "name": "Tanning2",
+      "keywords": [
+        "tanning2",
+        "clothes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tanning2.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-taoism",
+      "name": "Taoism",
+      "keywords": [
+        "taoism",
+        "religion"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/taoism.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tattoo_machine",
+      "name": "Tattoo machine",
+      "keywords": [
+        "tattoo",
+        "machine",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tattoo_machine.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-taxi_stand",
+      "name": "Taxi stand",
+      "keywords": [
+        "taxi",
+        "stand",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/taxi_stand.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-telephone",
+      "name": "Telephone",
+      "keywords": [
+        "telephone",
+        "telecom",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/telephone.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-telescope",
+      "name": "Telescope",
+      "keywords": [
+        "telescope",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/telescope.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-temaki",
+      "name": "Temaki",
+      "keywords": [
+        "temaki",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/temaki.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tennis",
+      "name": "Tennis",
+      "keywords": [
+        "tennis",
+        "people",
+        "sports"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tennis.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tents",
+      "name": "Tents",
+      "keywords": [
+        "tents",
+        "buildings",
+        "camping"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tents.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-ticket",
+      "name": "Ticket",
+      "keywords": [
+        "ticket",
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/ticket.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tiling",
+      "name": "Tiling",
+      "keywords": [
+        "tiling",
+        "arts",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tiling.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tire",
+      "name": "Tire",
+      "keywords": [
+        "tire",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tire.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tire_course",
+      "name": "Tire course",
+      "keywords": [
+        "tire",
+        "course",
+        "military"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tire_course.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-toll_gantry",
+      "name": "Toll gantry",
+      "keywords": [
+        "toll",
+        "gantry",
+        "barriers",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/toll_gantry.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-toolbox",
+      "name": "Toolbox",
+      "keywords": [
+        "toolbox",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/toolbox.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tools",
+      "name": "Tools",
+      "keywords": [
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tools.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tower",
+      "name": "Tower",
+      "keywords": [
+        "tower",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tower.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tower_communication",
+      "name": "Tower communication",
+      "keywords": [
+        "tower",
+        "communication",
+        "infrastructure",
+        "telecom",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tower_communication.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-town_hall",
+      "name": "Town hall",
+      "keywords": [
+        "town",
+        "hall",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/town_hall.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-traffic_signals",
+      "name": "Traffic signals",
+      "keywords": [
+        "traffic",
+        "signals",
+        "highways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/traffic_signals.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-train",
+      "name": "Train",
+      "keywords": [
+        "train",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/train.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-train_bullet",
+      "name": "Train bullet",
+      "keywords": [
+        "train",
+        "bullet",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/train_bullet.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-train_diesel",
+      "name": "Train diesel",
+      "keywords": [
+        "train",
+        "diesel",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/train_diesel.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-train_kids",
+      "name": "Train kids",
+      "keywords": [
+        "train",
+        "kids",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/train_kids.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-train_steam",
+      "name": "Train steam",
+      "keywords": [
+        "train",
+        "steam",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/train_steam.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-train_wash",
+      "name": "Train wash",
+      "keywords": [
+        "train",
+        "wash",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/train_wash.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tram",
+      "name": "Tram",
+      "keywords": [
+        "tram",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tram.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tram_side",
+      "name": "Tram side",
+      "keywords": [
+        "tram",
+        "side",
+        "railways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tram_side.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-transit",
+      "name": "Transit",
+      "keywords": [
+        "transit",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/transit.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-transit_shelter",
+      "name": "Transit shelter",
+      "keywords": [
+        "transit",
+        "shelter",
+        "buildings",
+        "seating"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/transit_shelter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tree_and_bench",
+      "name": "Tree and bench",
+      "keywords": [
+        "tree",
+        "and",
+        "bench",
+        "plants",
+        "seating"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tree_and_bench.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tree_row",
+      "name": "Tree row",
+      "keywords": [
+        "tree",
+        "row",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tree_row.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tree_stump",
+      "name": "Tree stump",
+      "keywords": [
+        "tree",
+        "stump",
+        "plants"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tree_stump.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-trench",
+      "name": "Trench",
+      "keywords": [
+        "trench",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/trench.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-trolleybus",
+      "name": "Trolleybus",
+      "keywords": [
+        "trolleybus",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/trolleybus.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-truck",
+      "name": "Truck",
+      "keywords": [
+        "truck",
+        "highways",
+        "vehicles"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/truck.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-tunnel",
+      "name": "Tunnel",
+      "keywords": [
+        "tunnel",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/tunnel.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-turnstile",
+      "name": "Turnstile",
+      "keywords": [
+        "turnstile",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/turnstile.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-utility_pole",
+      "name": "Utility pole",
+      "keywords": [
+        "utility",
+        "pole",
+        "telecom",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/utility_pole.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vacuum",
+      "name": "Vacuum",
+      "keywords": [
+        "vacuum",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vacuum.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vacuum_station",
+      "name": "Vacuum station",
+      "keywords": [
+        "vacuum",
+        "station",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vacuum_station.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-valley",
+      "name": "Valley",
+      "keywords": [
+        "valley",
+        "landforms",
+        "snow"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/valley.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vase",
+      "name": "Vase",
+      "keywords": [
+        "vase",
+        "arts",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vase.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_bread",
+      "name": "Vending bread",
+      "keywords": [
+        "vending",
+        "bread",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_bread.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_cigarettes",
+      "name": "Vending cigarettes",
+      "keywords": [
+        "vending",
+        "cigarettes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_cigarettes.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_cold_drink",
+      "name": "Vending cold drink",
+      "keywords": [
+        "vending",
+        "cold",
+        "drink",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_cold_drink.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_cold_drink2",
+      "name": "Vending cold drink2",
+      "keywords": [
+        "vending",
+        "cold",
+        "drink2",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_cold_drink2.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_eggs",
+      "name": "Vending eggs",
+      "keywords": [
+        "vending",
+        "eggs",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_eggs.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_flat_coin",
+      "name": "Vending flat coin",
+      "keywords": [
+        "vending",
+        "flat",
+        "coin"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_flat_coin.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_hot_drink",
+      "name": "Vending hot drink",
+      "keywords": [
+        "vending",
+        "hot",
+        "drink",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_hot_drink.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_hot_drink2",
+      "name": "Vending hot drink2",
+      "keywords": [
+        "vending",
+        "hot",
+        "drink2",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_hot_drink2.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_ice",
+      "name": "Vending ice",
+      "keywords": [
+        "vending",
+        "ice",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_ice.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_ice_cream",
+      "name": "Vending ice cream",
+      "keywords": [
+        "vending",
+        "ice",
+        "cream",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_ice_cream.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_ice_cream2",
+      "name": "Vending ice cream2",
+      "keywords": [
+        "vending",
+        "ice",
+        "cream2",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_ice_cream2.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_lockers",
+      "name": "Vending lockers",
+      "keywords": [
+        "vending",
+        "lockers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_lockers.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_love",
+      "name": "Vending love",
+      "keywords": [
+        "vending",
+        "love",
+        "healthcare"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_love.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_machine",
+      "name": "Vending machine",
+      "keywords": [
+        "vending",
+        "machine"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_machine.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_medicine",
+      "name": "Vending medicine",
+      "keywords": [
+        "vending",
+        "medicine",
+        "healthcare"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_medicine.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_newspaper",
+      "name": "Vending newspaper",
+      "keywords": [
+        "vending",
+        "newspaper"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_newspaper.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_pet_waste",
+      "name": "Vending pet waste",
+      "keywords": [
+        "vending",
+        "pet",
+        "waste",
+        "animals"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_pet_waste.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_stamps",
+      "name": "Vending stamps",
+      "keywords": [
+        "vending",
+        "stamps",
+        "mail"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_stamps.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_tickets",
+      "name": "Vending tickets",
+      "keywords": [
+        "vending",
+        "tickets"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_tickets.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vending_venus",
+      "name": "Vending venus",
+      "keywords": [
+        "vending",
+        "venus",
+        "healthcare"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vending_venus.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vertex",
+      "name": "Vertex",
+      "keywords": [
+        "vertex",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vertex.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-vertical_rotisserie",
+      "name": "Vertical rotisserie",
+      "keywords": [
+        "vertical",
+        "rotisserie",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/vertical_rotisserie.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-veterinary_care",
+      "name": "Veterinary care",
+      "keywords": [
+        "veterinary",
+        "care",
+        "animals",
+        "healthcare"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/veterinary_care.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-wall",
+      "name": "Wall",
+      "keywords": [
+        "wall",
+        "barriers"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/wall.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-waste",
+      "name": "Waste",
+      "keywords": [
+        "waste",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/waste.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-waste_device",
+      "name": "Waste device",
+      "keywords": [
+        "waste",
+        "device",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/waste_device.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-waste_manhole",
+      "name": "Waste manhole",
+      "keywords": [
+        "waste",
+        "manhole",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/waste_manhole.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-waste_meter",
+      "name": "Waste meter",
+      "keywords": [
+        "waste",
+        "meter",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/waste_meter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-waste_shutoff",
+      "name": "Waste shutoff",
+      "keywords": [
+        "waste",
+        "shutoff",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/waste_shutoff.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-water",
+      "name": "Water",
+      "keywords": [
+        "water",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/water.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-water_bottle",
+      "name": "Water bottle",
+      "keywords": [
+        "water",
+        "bottle",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/water_bottle.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-water_device",
+      "name": "Water device",
+      "keywords": [
+        "water",
+        "device",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/water_device.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-water_manhole",
+      "name": "Water manhole",
+      "keywords": [
+        "water",
+        "manhole",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/water_manhole.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-water_meter",
+      "name": "Water meter",
+      "keywords": [
+        "water",
+        "meter",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/water_meter.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-water_shutoff",
+      "name": "Water shutoff",
+      "keywords": [
+        "water",
+        "shutoff",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/water_shutoff.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-water_tap",
+      "name": "Water tap",
+      "keywords": [
+        "water",
+        "tap",
+        "camping",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/water_tap.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-water_tap_drinkable",
+      "name": "Water tap drinkable",
+      "keywords": [
+        "water",
+        "tap",
+        "drinkable",
+        "camping",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/water_tap_drinkable.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-water_tower",
+      "name": "Water tower",
+      "keywords": [
+        "water",
+        "tower",
+        "infrastructure",
+        "utilities"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/water_tower.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-waterskiing",
+      "name": "Waterskiing",
+      "keywords": [
+        "waterskiing",
+        "people",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/waterskiing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-well_pump_manual",
+      "name": "Well pump manual",
+      "keywords": [
+        "well",
+        "pump",
+        "manual",
+        "camping",
+        "utilities",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/well_pump_manual.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-well_pump_powered",
+      "name": "Well pump powered",
+      "keywords": [
+        "well",
+        "pump",
+        "powered",
+        "power",
+        "utilities",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/well_pump_powered.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-whale_watching",
+      "name": "Whale watching",
+      "keywords": [
+        "whale",
+        "watching",
+        "animals",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/whale_watching.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-wheel",
+      "name": "Wheel",
+      "keywords": [
+        "wheel",
+        "tools"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/wheel.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-wheelchair",
+      "name": "Wheelchair",
+      "keywords": [
+        "wheelchair",
+        "accessibility",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/wheelchair.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-wheelchair_active",
+      "name": "Wheelchair active",
+      "keywords": [
+        "wheelchair",
+        "active",
+        "accessibility",
+        "people"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/wheelchair_active.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-wind_surfing",
+      "name": "Wind surfing",
+      "keywords": [
+        "wind",
+        "surfing",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/wind_surfing.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-wind_turbine",
+      "name": "Wind turbine",
+      "keywords": [
+        "wind",
+        "turbine",
+        "infrastructure",
+        "power"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/wind_turbine.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-windmill",
+      "name": "Windmill",
+      "keywords": [
+        "windmill",
+        "buildings"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/windmill.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-window",
+      "name": "Window",
+      "keywords": [
+        "window",
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/window.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-windpump",
+      "name": "Windpump",
+      "keywords": [
+        "windpump",
+        "infrastructure"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/windpump.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-windsock",
+      "name": "Windsock",
+      "keywords": [
+        "windsock",
+        "aeroways"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/windsock.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-x_oblique",
+      "name": "X oblique",
+      "keywords": [
+        "x",
+        "oblique",
+        "crossings",
+        "highways",
+        "railways",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/x_oblique.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-yield",
+      "name": "Yield",
+      "keywords": [
+        "yield",
+        "highways",
+        "shapes"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/yield.png"
+        }
+      ]
+    },
+    {
+      "id": "temaki-zoo",
+      "name": "Zoo",
+      "keywords": [
+        "zoo",
+        "animals"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/temaki/zoo.png"
+        }
+      ]
+    }
+  ]
+}

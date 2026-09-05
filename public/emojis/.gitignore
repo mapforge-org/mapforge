@@ -1,6 +1,0 @@
-# ignore the original filenames
-
-openmoji/emoji_*.png
-openmoji/[0-9]*.png
-openmoji/[A-F]*.png
-src

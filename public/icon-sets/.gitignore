@@ -1,0 +1,8 @@
+# ignore the original filenames, they carry four or more hex digits of the code points.
+# A keycap like 0️⃣.png starts with a digit too, so a single digit is not enough to match.
+
+openmoji/emoji_*.png
+openmoji/[0-9A-F][0-9A-F][0-9A-F][0-9A-F]*.png
+src
+noto_orig
+test

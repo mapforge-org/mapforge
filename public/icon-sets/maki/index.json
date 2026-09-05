@@ -1,0 +1,2666 @@
+{
+  "id": "maki",
+  "name": "Maki",
+  "icon": {
+    "src": "/icon-sets/maki/marker.png"
+  },
+  "emojis": [
+    {
+      "id": "maki-aerialway",
+      "name": "Aerialway",
+      "keywords": [
+        "aerialway"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/aerialway.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-airfield",
+      "name": "Airfield",
+      "keywords": [
+        "airfield"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/airfield.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-airport",
+      "name": "Airport",
+      "keywords": [
+        "airport"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/airport.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-alcohol-shop",
+      "name": "Alcohol shop",
+      "keywords": [
+        "alcohol",
+        "shop"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/alcohol-shop.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-american-football",
+      "name": "American football",
+      "keywords": [
+        "american",
+        "football"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/american-football.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-amusement-park",
+      "name": "Amusement park",
+      "keywords": [
+        "amusement",
+        "park"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/amusement-park.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-animal-shelter",
+      "name": "Animal shelter",
+      "keywords": [
+        "animal",
+        "shelter"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/animal-shelter.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-aquarium",
+      "name": "Aquarium",
+      "keywords": [
+        "aquarium"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/aquarium.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-arrow",
+      "name": "Arrow",
+      "keywords": [
+        "arrow"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/arrow.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-art-gallery",
+      "name": "Art gallery",
+      "keywords": [
+        "art",
+        "gallery"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/art-gallery.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-attraction",
+      "name": "Attraction",
+      "keywords": [
+        "attraction"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/attraction.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-bakery",
+      "name": "Bakery",
+      "keywords": [
+        "bakery"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/bakery.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-bank",
+      "name": "Bank",
+      "keywords": [
+        "bank"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/bank.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-bank-JP",
+      "name": "Bank jp",
+      "keywords": [
+        "bank",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/bank-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-bar",
+      "name": "Bar",
+      "keywords": [
+        "bar"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/bar.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-barrier",
+      "name": "Barrier",
+      "keywords": [
+        "barrier"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/barrier.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-baseball",
+      "name": "Baseball",
+      "keywords": [
+        "baseball"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/baseball.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-basketball",
+      "name": "Basketball",
+      "keywords": [
+        "basketball"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/basketball.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-bbq",
+      "name": "Bbq",
+      "keywords": [
+        "bbq"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/bbq.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-beach",
+      "name": "Beach",
+      "keywords": [
+        "beach"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/beach.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-beer",
+      "name": "Beer",
+      "keywords": [
+        "beer"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/beer.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-bicycle",
+      "name": "Bicycle",
+      "keywords": [
+        "bicycle"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/bicycle.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-bicycle-share",
+      "name": "Bicycle share",
+      "keywords": [
+        "bicycle",
+        "share"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/bicycle-share.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-blood-bank",
+      "name": "Blood bank",
+      "keywords": [
+        "blood",
+        "bank"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/blood-bank.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-bowling-alley",
+      "name": "Bowling alley",
+      "keywords": [
+        "bowling",
+        "alley"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/bowling-alley.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-bridge",
+      "name": "Bridge",
+      "keywords": [
+        "bridge"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/bridge.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-building",
+      "name": "Building",
+      "keywords": [
+        "building"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/building.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-building-alt1",
+      "name": "Building alt1",
+      "keywords": [
+        "building",
+        "alt1"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/building-alt1.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-bus",
+      "name": "Bus",
+      "keywords": [
+        "bus"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/bus.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-cafe",
+      "name": "Cafe",
+      "keywords": [
+        "cafe"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/cafe.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-campsite",
+      "name": "Campsite",
+      "keywords": [
+        "campsite"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/campsite.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-car",
+      "name": "Car",
+      "keywords": [
+        "car"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/car.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-car-rental",
+      "name": "Car rental",
+      "keywords": [
+        "car",
+        "rental"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/car-rental.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-car-repair",
+      "name": "Car repair",
+      "keywords": [
+        "car",
+        "repair"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/car-repair.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-casino",
+      "name": "Casino",
+      "keywords": [
+        "casino"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/casino.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-castle",
+      "name": "Castle",
+      "keywords": [
+        "castle"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/castle.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-castle-JP",
+      "name": "Castle jp",
+      "keywords": [
+        "castle",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/castle-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-caution",
+      "name": "Caution",
+      "keywords": [
+        "caution"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/caution.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-cemetery",
+      "name": "Cemetery",
+      "keywords": [
+        "cemetery"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/cemetery.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-cemetery-JP",
+      "name": "Cemetery jp",
+      "keywords": [
+        "cemetery",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/cemetery-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-charging-station",
+      "name": "Charging station",
+      "keywords": [
+        "charging",
+        "station"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/charging-station.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-cinema",
+      "name": "Cinema",
+      "keywords": [
+        "cinema"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/cinema.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-circle",
+      "name": "Circle",
+      "keywords": [
+        "circle"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/circle.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-circle-stroked",
+      "name": "Circle stroked",
+      "keywords": [
+        "circle",
+        "stroked"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/circle-stroked.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-city",
+      "name": "City",
+      "keywords": [
+        "city"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/city.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-clothing-store",
+      "name": "Clothing store",
+      "keywords": [
+        "clothing",
+        "store"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/clothing-store.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-college",
+      "name": "College",
+      "keywords": [
+        "college"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/college.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-college-JP",
+      "name": "College jp",
+      "keywords": [
+        "college",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/college-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-commercial",
+      "name": "Commercial",
+      "keywords": [
+        "commercial"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/commercial.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-communications-tower",
+      "name": "Communications tower",
+      "keywords": [
+        "communications",
+        "tower"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/communications-tower.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-confectionery",
+      "name": "Confectionery",
+      "keywords": [
+        "confectionery"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/confectionery.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-construction",
+      "name": "Construction",
+      "keywords": [
+        "construction"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/construction.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-convenience",
+      "name": "Convenience",
+      "keywords": [
+        "convenience"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/convenience.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-cricket",
+      "name": "Cricket",
+      "keywords": [
+        "cricket"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/cricket.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-cross",
+      "name": "Cross",
+      "keywords": [
+        "cross"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/cross.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-dam",
+      "name": "Dam",
+      "keywords": [
+        "dam"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/dam.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-danger",
+      "name": "Danger",
+      "keywords": [
+        "danger"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/danger.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-defibrillator",
+      "name": "Defibrillator",
+      "keywords": [
+        "defibrillator"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/defibrillator.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-dentist",
+      "name": "Dentist",
+      "keywords": [
+        "dentist"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/dentist.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-diamond",
+      "name": "Diamond",
+      "keywords": [
+        "diamond"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/diamond.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-doctor",
+      "name": "Doctor",
+      "keywords": [
+        "doctor"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/doctor.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-dog-park",
+      "name": "Dog park",
+      "keywords": [
+        "dog",
+        "park"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/dog-park.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-drinking-water",
+      "name": "Drinking water",
+      "keywords": [
+        "drinking",
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/drinking-water.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-elevator",
+      "name": "Elevator",
+      "keywords": [
+        "elevator"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/elevator.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-embassy",
+      "name": "Embassy",
+      "keywords": [
+        "embassy"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/embassy.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-emergency-phone",
+      "name": "Emergency phone",
+      "keywords": [
+        "emergency",
+        "phone"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/emergency-phone.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-entrance",
+      "name": "Entrance",
+      "keywords": [
+        "entrance"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/entrance.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-entrance-alt1",
+      "name": "Entrance alt1",
+      "keywords": [
+        "entrance",
+        "alt1"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/entrance-alt1.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-farm",
+      "name": "Farm",
+      "keywords": [
+        "farm"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/farm.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-fast-food",
+      "name": "Fast food",
+      "keywords": [
+        "fast",
+        "food"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/fast-food.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-fence",
+      "name": "Fence",
+      "keywords": [
+        "fence"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/fence.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-ferry",
+      "name": "Ferry",
+      "keywords": [
+        "ferry"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/ferry.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-ferry-JP",
+      "name": "Ferry jp",
+      "keywords": [
+        "ferry",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/ferry-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-fire-station",
+      "name": "Fire station",
+      "keywords": [
+        "fire",
+        "station"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/fire-station.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-fire-station-JP",
+      "name": "Fire station jp",
+      "keywords": [
+        "fire",
+        "station",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/fire-station-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-fitness-centre",
+      "name": "Fitness centre",
+      "keywords": [
+        "fitness",
+        "centre"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/fitness-centre.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-florist",
+      "name": "Florist",
+      "keywords": [
+        "florist"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/florist.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-fuel",
+      "name": "Fuel",
+      "keywords": [
+        "fuel"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/fuel.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-furniture",
+      "name": "Furniture",
+      "keywords": [
+        "furniture"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/furniture.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-gaming",
+      "name": "Gaming",
+      "keywords": [
+        "gaming"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/gaming.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-garden",
+      "name": "Garden",
+      "keywords": [
+        "garden"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/garden.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-garden-centre",
+      "name": "Garden centre",
+      "keywords": [
+        "garden",
+        "centre"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/garden-centre.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-gate",
+      "name": "Gate",
+      "keywords": [
+        "gate"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/gate.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-gift",
+      "name": "Gift",
+      "keywords": [
+        "gift"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/gift.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-globe",
+      "name": "Globe",
+      "keywords": [
+        "globe"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/globe.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-golf",
+      "name": "Golf",
+      "keywords": [
+        "golf"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/golf.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-grocery",
+      "name": "Grocery",
+      "keywords": [
+        "grocery"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/grocery.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-hairdresser",
+      "name": "Hairdresser",
+      "keywords": [
+        "hairdresser"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/hairdresser.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-harbor",
+      "name": "Harbor",
+      "keywords": [
+        "harbor"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/harbor.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-hardware",
+      "name": "Hardware",
+      "keywords": [
+        "hardware"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/hardware.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-heart",
+      "name": "Heart",
+      "keywords": [
+        "heart"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/heart.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-heliport",
+      "name": "Heliport",
+      "keywords": [
+        "heliport"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/heliport.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-highway-rest-area",
+      "name": "Highway rest area",
+      "keywords": [
+        "highway",
+        "rest",
+        "area"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/highway-rest-area.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-historic",
+      "name": "Historic",
+      "keywords": [
+        "historic"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/historic.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-home",
+      "name": "Home",
+      "keywords": [
+        "home"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/home.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-horse-riding",
+      "name": "Horse riding",
+      "keywords": [
+        "horse",
+        "riding"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/horse-riding.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-hospital",
+      "name": "Hospital",
+      "keywords": [
+        "hospital"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/hospital.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-hospital-JP",
+      "name": "Hospital jp",
+      "keywords": [
+        "hospital",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/hospital-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-hot-spring",
+      "name": "Hot spring",
+      "keywords": [
+        "hot",
+        "spring"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/hot-spring.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-ice-cream",
+      "name": "Ice cream",
+      "keywords": [
+        "ice",
+        "cream"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/ice-cream.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-industry",
+      "name": "Industry",
+      "keywords": [
+        "industry"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/industry.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-information",
+      "name": "Information",
+      "keywords": [
+        "information"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/information.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-jewelry-store",
+      "name": "Jewelry store",
+      "keywords": [
+        "jewelry",
+        "store"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/jewelry-store.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-karaoke",
+      "name": "Karaoke",
+      "keywords": [
+        "karaoke"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/karaoke.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-landmark",
+      "name": "Landmark",
+      "keywords": [
+        "landmark"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/landmark.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-landmark-JP",
+      "name": "Landmark jp",
+      "keywords": [
+        "landmark",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/landmark-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-landuse",
+      "name": "Landuse",
+      "keywords": [
+        "landuse"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/landuse.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-laundry",
+      "name": "Laundry",
+      "keywords": [
+        "laundry"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/laundry.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-library",
+      "name": "Library",
+      "keywords": [
+        "library"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/library.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-lift-gate",
+      "name": "Lift gate",
+      "keywords": [
+        "lift",
+        "gate"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/lift-gate.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-lighthouse",
+      "name": "Lighthouse",
+      "keywords": [
+        "lighthouse"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/lighthouse.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-lighthouse-JP",
+      "name": "Lighthouse jp",
+      "keywords": [
+        "lighthouse",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/lighthouse-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-lodging",
+      "name": "Lodging",
+      "keywords": [
+        "lodging"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/lodging.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-logging",
+      "name": "Logging",
+      "keywords": [
+        "logging"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/logging.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-marae",
+      "name": "Marae",
+      "keywords": [
+        "marae"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/marae.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-marker",
+      "name": "Marker",
+      "keywords": [
+        "marker"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/marker.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-marker-stroked",
+      "name": "Marker stroked",
+      "keywords": [
+        "marker",
+        "stroked"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/marker-stroked.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-mobile-phone",
+      "name": "Mobile phone",
+      "keywords": [
+        "mobile",
+        "phone"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/mobile-phone.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-monument",
+      "name": "Monument",
+      "keywords": [
+        "monument"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/monument.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-monument-JP",
+      "name": "Monument jp",
+      "keywords": [
+        "monument",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/monument-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-mountain",
+      "name": "Mountain",
+      "keywords": [
+        "mountain"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/mountain.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-museum",
+      "name": "Museum",
+      "keywords": [
+        "museum"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/museum.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-music",
+      "name": "Music",
+      "keywords": [
+        "music"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/music.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-natural",
+      "name": "Natural",
+      "keywords": [
+        "natural"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/natural.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-nightclub",
+      "name": "Nightclub",
+      "keywords": [
+        "nightclub"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/nightclub.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-observation-tower",
+      "name": "Observation tower",
+      "keywords": [
+        "observation",
+        "tower"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/observation-tower.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-optician",
+      "name": "Optician",
+      "keywords": [
+        "optician"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/optician.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-paint",
+      "name": "Paint",
+      "keywords": [
+        "paint"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/paint.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-park",
+      "name": "Park",
+      "keywords": [
+        "park"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/park.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-park-alt1",
+      "name": "Park alt1",
+      "keywords": [
+        "park",
+        "alt1"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/park-alt1.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-parking",
+      "name": "Parking",
+      "keywords": [
+        "parking"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/parking.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-parking-garage",
+      "name": "Parking garage",
+      "keywords": [
+        "parking",
+        "garage"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/parking-garage.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-parking-paid",
+      "name": "Parking paid",
+      "keywords": [
+        "parking",
+        "paid"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/parking-paid.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-pharmacy",
+      "name": "Pharmacy",
+      "keywords": [
+        "pharmacy"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/pharmacy.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-picnic-site",
+      "name": "Picnic site",
+      "keywords": [
+        "picnic",
+        "site"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/picnic-site.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-pitch",
+      "name": "Pitch",
+      "keywords": [
+        "pitch"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/pitch.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-place-of-worship",
+      "name": "Place of worship",
+      "keywords": [
+        "place",
+        "of",
+        "worship"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/place-of-worship.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-playground",
+      "name": "Playground",
+      "keywords": [
+        "playground"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/playground.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-police",
+      "name": "Police",
+      "keywords": [
+        "police"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/police.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-police-JP",
+      "name": "Police jp",
+      "keywords": [
+        "police",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/police-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-post",
+      "name": "Post",
+      "keywords": [
+        "post"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/post.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-post-JP",
+      "name": "Post jp",
+      "keywords": [
+        "post",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/post-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-prison",
+      "name": "Prison",
+      "keywords": [
+        "prison"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/prison.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-racetrack",
+      "name": "Racetrack",
+      "keywords": [
+        "racetrack"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/racetrack.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-racetrack-boat",
+      "name": "Racetrack boat",
+      "keywords": [
+        "racetrack",
+        "boat"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/racetrack-boat.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-racetrack-cycling",
+      "name": "Racetrack cycling",
+      "keywords": [
+        "racetrack",
+        "cycling"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/racetrack-cycling.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-racetrack-horse",
+      "name": "Racetrack horse",
+      "keywords": [
+        "racetrack",
+        "horse"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/racetrack-horse.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-rail",
+      "name": "Rail",
+      "keywords": [
+        "rail"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/rail.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-rail-light",
+      "name": "Rail light",
+      "keywords": [
+        "rail",
+        "light"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/rail-light.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-rail-metro",
+      "name": "Rail metro",
+      "keywords": [
+        "rail",
+        "metro"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/rail-metro.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-ranger-station",
+      "name": "Ranger station",
+      "keywords": [
+        "ranger",
+        "station"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/ranger-station.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-recycling",
+      "name": "Recycling",
+      "keywords": [
+        "recycling"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/recycling.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-religious-buddhist",
+      "name": "Religious buddhist",
+      "keywords": [
+        "religious",
+        "buddhist"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/religious-buddhist.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-religious-christian",
+      "name": "Religious christian",
+      "keywords": [
+        "religious",
+        "christian"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/religious-christian.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-religious-jewish",
+      "name": "Religious jewish",
+      "keywords": [
+        "religious",
+        "jewish"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/religious-jewish.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-religious-muslim",
+      "name": "Religious muslim",
+      "keywords": [
+        "religious",
+        "muslim"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/religious-muslim.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-religious-shinto",
+      "name": "Religious shinto",
+      "keywords": [
+        "religious",
+        "shinto"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/religious-shinto.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-residential-community",
+      "name": "Residential community",
+      "keywords": [
+        "residential",
+        "community"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/residential-community.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-restaurant",
+      "name": "Restaurant",
+      "keywords": [
+        "restaurant"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/restaurant.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-restaurant-bbq",
+      "name": "Restaurant bbq",
+      "keywords": [
+        "restaurant",
+        "bbq"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/restaurant-bbq.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-restaurant-noodle",
+      "name": "Restaurant noodle",
+      "keywords": [
+        "restaurant",
+        "noodle"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/restaurant-noodle.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-restaurant-pizza",
+      "name": "Restaurant pizza",
+      "keywords": [
+        "restaurant",
+        "pizza"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/restaurant-pizza.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-restaurant-seafood",
+      "name": "Restaurant seafood",
+      "keywords": [
+        "restaurant",
+        "seafood"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/restaurant-seafood.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-restaurant-sushi",
+      "name": "Restaurant sushi",
+      "keywords": [
+        "restaurant",
+        "sushi"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/restaurant-sushi.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-road-accident",
+      "name": "Road accident",
+      "keywords": [
+        "road",
+        "accident"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/road-accident.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-roadblock",
+      "name": "Roadblock",
+      "keywords": [
+        "roadblock"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/roadblock.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-rocket",
+      "name": "Rocket",
+      "keywords": [
+        "rocket"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/rocket.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-school",
+      "name": "School",
+      "keywords": [
+        "school"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/school.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-school-JP",
+      "name": "School jp",
+      "keywords": [
+        "school",
+        "JP"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/school-JP.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-scooter",
+      "name": "Scooter",
+      "keywords": [
+        "scooter"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/scooter.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-shelter",
+      "name": "Shelter",
+      "keywords": [
+        "shelter"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/shelter.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-shoe",
+      "name": "Shoe",
+      "keywords": [
+        "shoe"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/shoe.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-shop",
+      "name": "Shop",
+      "keywords": [
+        "shop"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/shop.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-skateboard",
+      "name": "Skateboard",
+      "keywords": [
+        "skateboard"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/skateboard.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-skiing",
+      "name": "Skiing",
+      "keywords": [
+        "skiing"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/skiing.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-slaughterhouse",
+      "name": "Slaughterhouse",
+      "keywords": [
+        "slaughterhouse"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/slaughterhouse.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-slipway",
+      "name": "Slipway",
+      "keywords": [
+        "slipway"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/slipway.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-snowmobile",
+      "name": "Snowmobile",
+      "keywords": [
+        "snowmobile"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/snowmobile.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-soccer",
+      "name": "Soccer",
+      "keywords": [
+        "soccer"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/soccer.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-square",
+      "name": "Square",
+      "keywords": [
+        "square"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/square.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-square-stroked",
+      "name": "Square stroked",
+      "keywords": [
+        "square",
+        "stroked"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/square-stroked.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-stadium",
+      "name": "Stadium",
+      "keywords": [
+        "stadium"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/stadium.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-star",
+      "name": "Star",
+      "keywords": [
+        "star"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/star.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-star-stroked",
+      "name": "Star stroked",
+      "keywords": [
+        "star",
+        "stroked"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/star-stroked.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-suitcase",
+      "name": "Suitcase",
+      "keywords": [
+        "suitcase"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/suitcase.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-swimming",
+      "name": "Swimming",
+      "keywords": [
+        "swimming"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/swimming.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-table-tennis",
+      "name": "Table tennis",
+      "keywords": [
+        "table",
+        "tennis"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/table-tennis.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-taxi",
+      "name": "Taxi",
+      "keywords": [
+        "taxi"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/taxi.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-teahouse",
+      "name": "Teahouse",
+      "keywords": [
+        "teahouse"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/teahouse.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-telephone",
+      "name": "Telephone",
+      "keywords": [
+        "telephone"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/telephone.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-tennis",
+      "name": "Tennis",
+      "keywords": [
+        "tennis"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/tennis.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-terminal",
+      "name": "Terminal",
+      "keywords": [
+        "terminal"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/terminal.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-theatre",
+      "name": "Theatre",
+      "keywords": [
+        "theatre"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/theatre.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-toilet",
+      "name": "Toilet",
+      "keywords": [
+        "toilet"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/toilet.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-toll",
+      "name": "Toll",
+      "keywords": [
+        "toll"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/toll.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-town",
+      "name": "Town",
+      "keywords": [
+        "town"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/town.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-town-hall",
+      "name": "Town hall",
+      "keywords": [
+        "town",
+        "hall"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/town-hall.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-triangle",
+      "name": "Triangle",
+      "keywords": [
+        "triangle"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/triangle.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-triangle-stroked",
+      "name": "Triangle stroked",
+      "keywords": [
+        "triangle",
+        "stroked"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/triangle-stroked.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-tunnel",
+      "name": "Tunnel",
+      "keywords": [
+        "tunnel"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/tunnel.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-veterinary",
+      "name": "Veterinary",
+      "keywords": [
+        "veterinary"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/veterinary.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-viewpoint",
+      "name": "Viewpoint",
+      "keywords": [
+        "viewpoint"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/viewpoint.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-village",
+      "name": "Village",
+      "keywords": [
+        "village"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/village.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-volcano",
+      "name": "Volcano",
+      "keywords": [
+        "volcano"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/volcano.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-volleyball",
+      "name": "Volleyball",
+      "keywords": [
+        "volleyball"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/volleyball.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-warehouse",
+      "name": "Warehouse",
+      "keywords": [
+        "warehouse"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/warehouse.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-waste-basket",
+      "name": "Waste basket",
+      "keywords": [
+        "waste",
+        "basket"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/waste-basket.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-watch",
+      "name": "Watch",
+      "keywords": [
+        "watch"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/watch.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-water",
+      "name": "Water",
+      "keywords": [
+        "water"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/water.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-waterfall",
+      "name": "Waterfall",
+      "keywords": [
+        "waterfall"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/waterfall.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-watermill",
+      "name": "Watermill",
+      "keywords": [
+        "watermill"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/watermill.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-wetland",
+      "name": "Wetland",
+      "keywords": [
+        "wetland"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/wetland.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-wheelchair",
+      "name": "Wheelchair",
+      "keywords": [
+        "wheelchair"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/wheelchair.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-windmill",
+      "name": "Windmill",
+      "keywords": [
+        "windmill"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/windmill.png"
+        }
+      ]
+    },
+    {
+      "id": "maki-zoo",
+      "name": "Zoo",
+      "keywords": [
+        "zoo"
+      ],
+      "skins": [
+        {
+          "src": "/icon-sets/maki/zoo.png"
+        }
+      ]
+    }
+  ]
+}
