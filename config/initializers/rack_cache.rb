@@ -13,6 +13,8 @@ class ConditionalRackCache
 
   def initialize(app)
     @app = app
+    # Disk#write writes its temp file into the store root without creating it
+    FileUtils.mkdir_p [ "tmp/cache/rack/meta", "tmp/cache/rack/body" ]
     @cache = Rack::Cache.new(app,
       verbose: true,
       etag: true,

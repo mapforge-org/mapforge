@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 * Color picker offers the site and map default colors
 * Improved View-Edit mode switch
 * Option for users to skip map description on load
+* Improved KML/KMZ import from Google Maps
 
 ## 2026-08
 

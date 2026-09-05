@@ -8,7 +8,7 @@ class ImagesController < ApplicationController
   rate_limit to: 600, within: 3.minute, only: :icon, name: "icon"
   rate_limit to: 600, within: 3.minute, only: :osmc_symbol, name: "osmc_symbol"
   rate_limit to: 600, within: 3.minute, only: :image, name: "image"
-  rate_limit to: 20, within: 1.minute, only: :upload, name: "upload"
+  rate_limit to: 60, within: 2.minute, only: :upload, name: "upload"
 
   IMAGE_CACHE_TIME = 1.week
 

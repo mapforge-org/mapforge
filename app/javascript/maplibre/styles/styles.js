@@ -188,7 +188,7 @@ export const pointSizeMax = () => ['to-number', ['coalesce',
 // gets too wide. only the radius shrinks, pointSizeMax stays the marker size, so the
 // label keeps its distance. a zoom expression must stay at the top of the property,
 // so the factor goes into the stops
-const emojiCircle = size => ['*', ['case', hasProp('marker-symbol'), 0.8, 1], size]
+const emojiCircle = size => ['*', ['case', hasProp('marker-symbol'), 0.82, 1], size]
 
 export const pointSize = () => [
   'interpolate',

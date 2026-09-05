@@ -240,6 +240,7 @@ function redoLayerAdded(nextState) {
   if (!layer) {
     addUndoState(nextState.type, nextState.state, false)
     const newLayer = createLayerInstance(nextState.state)
+    newLayer.localData = true // renders from memory, see GeoJSONLayer.loadData
     layers.push(newLayer)
     initLayersModal()
     initializeLayerSources(newLayer.id)
@@ -255,6 +256,7 @@ function undoLayerDeleted(prevState) {
   if (!layer) {
     addRedoState(prevState.type, prevState.state)
     const newLayer = createLayerInstance(prevState.state)
+    newLayer.localData = true // renders from memory, see GeoJSONLayer.loadData
     layers.push(newLayer)
     initLayersModal()
     initializeLayerSources(newLayer.id)

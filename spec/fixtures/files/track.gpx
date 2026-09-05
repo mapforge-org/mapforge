@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="mapforge" xmlns="http://www.topografix.com/GPX/1/1">
+  <wpt lat="32.6425" lon="-16.9089">
+    <name>Funchal</name>
+    <desc>Start of the track</desc>
+  </wpt>
+  <trk>
+    <name>Levada walk</name>
+    <trkseg>
+      <trkpt lat="32.7791" lon="-16.8842"><ele>950</ele></trkpt>
+      <trkpt lat="32.7834" lon="-16.8721"><ele>960</ele></trkpt>
+      <trkpt lat="32.7902" lon="-16.8603"><ele>980</ele></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

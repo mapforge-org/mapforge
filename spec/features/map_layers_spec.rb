@@ -78,6 +78,68 @@ describe "Map" do
       expect(map.name).to eq "Layers test"
     end
 
+    it "import kml" do
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "madeira.kml"))
+      expect(page).to have_text("Unbenannte Ebene(2)")
+      expect(map.reload.layers.count).to eq 2 # 1 default + 1 folder
+      expect(map.features.count).to eq 2
+
+      point = map.features.find { |f| f.geometry["type"] == "Point" }
+      expect(point.properties["title"]).to eq "Cristiano Ronaldo Statue"
+      # the KML color ff589d0f is aabbggrr, and it sits in the "normal" pair of a StyleMap
+      expect(point.properties["marker-color"]).to eq "#0f9d58"
+      # <LabelStyle><scale>0</scale> hides the label
+      expect(point.properties["label"]).to be_nil
+      expect(point.properties["desc"]).to include("Statue am Hafen von Funchal")
+      expect(point.properties["Kategorie"]).to eq "Sehenswürdigkeit"
+
+      line = map.features.find { |f| f.geometry["type"] == "LineString" }
+      expect(line.properties["stroke"]).to eq "#000000"
+      expect(line.properties["stroke-width"]).to eq 1.2
+    end
+
+    it "import kml document data" do
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "madeira.kml"))
+      expect(page).to have_text("Unbenannte Ebene(2)")
+      # an existing map name is kept, the imported one is ignored
+      expect(map.reload.name).to eq "Layers test"
+      expect(map.description).to eq "Reisekarte Madeira\nStand 2024"
+      # from <LookAt>
+      expect(map.bearing).to eq "20"
+      expect(map.pitch).to eq "30"
+    end
+
+    it "import kmz" do
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "madeira.kmz"))
+      expect(page).to have_text("Unbenannte Ebene(2)")
+      expect(map.reload.layers.count).to eq 2
+      expect(map.features.count).to eq 2
+      expect(map.features.map { |f| f.properties["title"] })
+        .to contain_exactly("Cristiano Ronaldo Statue", "Levada do Caldeirão Verde")
+    end
+
+    it "import kml without folder" do
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "point.kml"))
+      wait_for { map.reload.features.count }.to eq 1
+      # placemarks outside a folder land in the default layer
+      expect(map.layers.count).to eq 1
+      expect(map.features.first.properties["title"]).to eq "KML Point"
+    end
+
+    it "import gpx" do
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "track.gpx"))
+      wait_for { map.reload.features.count }.to eq 2
+      expect(map.layers.count).to eq 1
+      expect(map.features.map { |f| f.properties["title"] }).to contain_exactly("Funchal", "Levada walk")
+      expect(map.features.find { |f| f.geometry["type"] == "Point" }.properties["desc"])
+        .to eq "Start of the track"
+    end
+
     it "import image" do
       page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
       attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "image_with_exif.jpg"))

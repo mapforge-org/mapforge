@@ -7,115 +7,151 @@ import { flyToFeature } from 'maplibre/animations'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { updateElevation } from 'maplibre/edit'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature'
+import { importFile } from 'maplibre/import/kml'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/overpass/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName, upsert } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
-import toGeoJSON from 'togeojson'
+
+// Browsers report an empty file.type for these when the platform mime database
+// does not know them, so the extension decides as well.
+function fileFormat (file) {
+  const name = file.name.toLowerCase()
+  if (file.type === 'application/gpx+xml' || name.endsWith('.gpx')) { return 'xml' }
+  if (file.type === 'application/vnd.google-earth.kml+xml' || name.endsWith('.kml')) { return 'xml' }
+  if (file.type === 'application/vnd.google-earth.kmz' || name.endsWith('.kmz')) { return 'kmz' }
+  if (file.type === 'application/geo+json' || name.endsWith('.geojson')) { return 'geojson' }
+  if (file.type === 'application/json' || name.endsWith('.json')) { return 'json' }
+  if (file.type.startsWith('image/')) { return 'image' }
+  return null
+}
+
+function readFile (file, format) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (event) => resolve(event.target.result)
+    reader.onerror = () => reject(reader.error)
+    if (format === 'kmz') { reader.readAsArrayBuffer(file) } else { reader.readAsText(file) }
+  })
+}
 
 export default class extends Controller {
-  upload () {
+  async upload () {
     const fileInput = document.getElementById('fileInput')
     const file = fileInput.files[0]
+    if (!file) { return }
     const fileSize = (file.size / 1024).toFixed(2) // in KB
+    const format = fileFormat(file)
 
-    if (fileSize > 2500 && !file.type.startsWith('image/')) {
+    // a KMZ is a zip of a KML plus its icons, so its payload is much smaller than the limit
+    if (fileSize > 2500 && format !== 'image' && format !== 'kmz') {
       status(window.__('File exceeds 2.5MB. Please simplify it, for example with mapshaper.org'), 'error', 'medium', 8000)
       return
     }
 
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const content = event.target.result
-        const parser = new DOMParser()
-        let geoJSON
+    if (format === 'image') { this.addImageMarker(file); return }
+    if (!format) { console.log('Unsupported file type: ' + file.type); return }
 
-        // https://github.com/mapbox/togeojson?tab=readme-ov-file#api
-        // console.log('Reading from file type ' + file.type)
-        if (file.type === 'application/gpx+xml') {
-          const xmlDoc = parser.parseFromString(content, 'application/xml')
-          geoJSON = toGeoJSON.gpx(xmlDoc)
-        } else if (file.type === 'application/vnd.google-earth.kml+xml') {
-          const xmlDoc = parser.parseFromString(content, 'application/xml')
-          geoJSON = toGeoJSON.kml(xmlDoc)
-        } else if (file.type === 'application/geo+json') {
-          geoJSON = JSON.parse(content)
-        } else if (file.type === 'application/json') {
-          const mapforgeJSON = JSON.parse(content)
-          if (mapforgeJSON.layers) {
-            // mapforge export file
-            mapforgeJSON.layers.forEach(layer => {
-              // reset feature ids
-              if (layer.geojson?.features) {
-                layer.geojson.features.forEach(f => { f.id = functions.featureId() })
-              }
-              this.createLayer(layer)
-            })
-          } else {
-            // standard geojson file
-            geoJSON = mapforgeJSON
-          }
-        }
+    const content = await readFile(file, format)
+    let geoJSON
+    let kmlMap = {}
 
-        let i = 1
-        geoJSON?.features?.forEach(feature => {
-          feature.id = functions.featureId()
-          feature.properties ||= {}
-          upsert(feature)
-          if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
-            updateElevation(feature).finally(() => {
-              sendMessage('new_feature', feature)
-            })
-          } else {
-            sendMessage('new_feature', feature)
-          }
-          status(window.__('Added feature %{index}/%{total}')
-            .replace('%{index}', i++).replace('%{total}', geoJSON.features.length))
-        })
-
-        // Fly to the center of the imported features.
-        if (geoJSON?.features?.length > 0) {
-          const center = centroid(geoJSON)
-          map.flyTo({
-            center: center.geometry.coordinates,
-            duration: 1000,
-            curve: 0.3,
-            essential: true
-          })
-        }
-
-        if (file.type === 'application/json') {
-          const mapforgeJSON = JSON.parse(content)
-          if (mapforgeJSON.properties) {
-            const props = mapforgeJSON.properties
-            mapProperties.base_map = props.base_map
-            mapProperties.center = props.center
-            mapProperties.zoom = props.zoom
-            mapProperties.pitch = props.pitch
-            mapProperties.bearing = props.bearing
-            if (!mapProperties.name) { updateMapName(props.name) }
-            if (!mapProperties.description) { mapProperties.description = props.description }
-            sendMessage('update_map', mapProperties)
-          }
-        }
-
-        status(window.__('File imported'))
-        initLayersModal()
+    if (format === 'xml' || format === 'kmz') {
+      let imported
+      try {
+        imported = await importFile(file, content)
+      } catch (error) {
+        status(window.__('Could not read the file: %{error}').replace('%{error}', error.message), 'error', 'medium', 8000)
+        return
       }
-
-      if (file.type === 'application/gpx+xml' ||
-        file.type === 'application/vnd.google-earth.kml+xml' ||
-        file.type === 'application/geo+json' ||
-        file.type === 'application/json') {
-        reader.readAsText(file)
-      } else if (file.type.startsWith('image/')) {
-        this.addImageMarker(file)
+      // Every KML <Folder> becomes its own layer. new_layer persists the features server side,
+      // so those skip updateElevation() below, same as the mapforge json import.
+      imported.layers.forEach(layer => {
+        layer.geojson.features.forEach(f => { f.id = functions.featureId() })
+        this.createLayer(layer)
+      })
+      kmlMap = imported.map
+      geoJSON = { type: 'FeatureCollection', features: imported.features }
+    } else if (format === 'geojson') {
+      geoJSON = JSON.parse(content)
+    } else if (format === 'json') {
+      const mapforgeJSON = JSON.parse(content)
+      if (mapforgeJSON.layers) {
+        // mapforge export file
+        mapforgeJSON.layers.forEach(layer => {
+          // reset feature ids
+          if (layer.geojson?.features) {
+            layer.geojson.features.forEach(f => { f.id = functions.featureId() })
+          }
+          this.createLayer(layer)
+        })
       } else {
-        console.log('Unsupported file type: ' + file.type)
+        // standard geojson file
+        geoJSON = mapforgeJSON
       }
     }
+
+    let i = 1
+    geoJSON?.features?.forEach(feature => {
+      feature.id = functions.featureId()
+      feature.properties ||= {}
+      upsert(feature)
+      if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
+        updateElevation(feature).finally(() => {
+          sendMessage('new_feature', feature)
+        })
+      } else {
+        sendMessage('new_feature', feature)
+      }
+      status(window.__('Added feature %{index}/%{total}')
+        .replace('%{index}', i++).replace('%{total}', geoJSON.features.length))
+    })
+
+    // A KML <LookAt> frames the import better than its centroid does.
+    if (kmlMap.center) {
+      const view = { center: kmlMap.center, pitch: kmlMap.pitch, bearing: kmlMap.bearing }
+      if (kmlMap.zoom !== undefined) { view.zoom = kmlMap.zoom }
+      map.flyTo({ ...view, duration: 1000, curve: 0.3, essential: true })
+    } else if (geoJSON?.features?.length > 0) {
+      const center = centroid(geoJSON)
+      map.flyTo({
+        center: center.geometry.coordinates,
+        duration: 1000,
+        curve: 0.3,
+        essential: true
+      })
+    }
+
+    if (kmlMap.name || kmlMap.description) {
+      if (kmlMap.center) {
+        mapProperties.center = kmlMap.center
+        mapProperties.pitch = kmlMap.pitch
+        mapProperties.bearing = kmlMap.bearing
+        if (kmlMap.zoom !== undefined) { mapProperties.zoom = kmlMap.zoom }
+      }
+      if (kmlMap.name && !mapProperties.name) { updateMapName(kmlMap.name) }
+      if (kmlMap.description && !mapProperties.description) { mapProperties.description = kmlMap.description }
+      sendMessage('update_map', mapProperties)
+    }
+
+    if (format === 'json') {
+      const mapforgeJSON = JSON.parse(content)
+      if (mapforgeJSON.properties) {
+        const props = mapforgeJSON.properties
+        mapProperties.base_map = props.base_map
+        mapProperties.center = props.center
+        mapProperties.zoom = props.zoom
+        mapProperties.pitch = props.pitch
+        mapProperties.bearing = props.bearing
+        if (!mapProperties.name) { updateMapName(props.name) }
+        if (!mapProperties.description) { mapProperties.description = props.description }
+        sendMessage('update_map', mapProperties)
+      }
+    }
+
+    status(window.__('File imported'))
+    initLayersModal()
   }
 
   async addImageMarker(file) {
@@ -389,7 +425,9 @@ export default class extends Controller {
       layerData["cluster"] = clustered
       layerData["heatmap"] = layerData.query.includes("heatmap=true")
     }
-    layers.push(createLayerInstance(layerData))
+    const layerInstance = createLayerInstance(layerData)
+    layerInstance.localData = true // renders from memory, see GeoJSONLayer.loadData
+    layers.push(layerInstance)
 
     addUndoState('Layer added', layerData)
     initLayersModal()

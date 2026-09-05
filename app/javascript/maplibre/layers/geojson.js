@@ -127,6 +127,13 @@ export class GeoJSONLayer extends Layer {
   // thread, so the UI stays responsive even for large layers); once loaded we read them back
   // via getData() into this.layer.geojson (for lookup/sync/derived sources) without a 2nd request.
   loadData() {
+    // A layer built client-side (import, undo) carries its features already, and its url only
+    // exists once the server processed the new_layer message, so the first load would 404.
+    if (this.localData) {
+      this.localData = false
+      this.render()
+      return Promise.resolve(this.layer.geojson)
+    }
     const sourceId = this.sourceId
     const source = map.getSource(sourceId)
     return new Promise((resolve) => {

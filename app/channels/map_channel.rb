@@ -65,7 +65,8 @@ class MapChannel < ApplicationCable::Channel
     Yabeda.layers_created.increment(type: layer.type)
     if data["geojson"] && data["geojson"]["features"]
       data["geojson"]["features"].each do |feature|
-        layer.features.create!(feature_atts(feature).merge({ id: feature["id"] }))
+        @feature = layer.features.create!(feature_atts(feature).merge({ id: feature["id"] }))
+        associate_image(feature["properties"]["marker-image-url"]) if feature["properties"] && feature["properties"]["marker-image-url"]
       end
     end
   end

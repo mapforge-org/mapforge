@@ -257,6 +257,9 @@ msgstr "Koordinaten in die Zwischenablage kopiert"
 msgid "Copy"
 msgstr "Kopieren"
 
+msgid "Could not read the file: %{error}"
+msgstr "Datei konnte nicht gelesen werden: %{error}"
+
 msgid "Edit in OSM"
 msgstr "In OSM bearbeiten"
 
@@ -592,6 +595,9 @@ msgstr "Bild:"
 
 msgid "Import"
 msgstr "Importieren"
+
+msgid "Import KML, KMZ and GPX"
+msgstr "KML, KMZ und GPX importieren"
 
 msgid "Import from GeoJSON, GPX and KML"
 msgstr "Importiere GeoJSON, GPX und KML"
@@ -1087,11 +1093,23 @@ msgstr "Nutzungsbedingungen"
 msgid "Terrain added to map"
 msgstr "Gelände zur Karte hinzugefügt"
 
+msgid "The KMZ archive contains no .kml document"
+msgstr "Das KMZ-Archiv enthält kein .kml-Dokument"
+
 msgid "The app can get installed from the browser or from the app store."
 msgstr "Die App kannst du aus dem Browser oder aus dem App Store installieren."
 
+msgid "The file is not a zip archive"
+msgstr "Die Datei ist kein Zip-Archiv"
+
+msgid "The file is not valid XML"
+msgstr "Die Datei ist kein gültiges XML"
+
 msgid "The image contains GPS coordinates (<code>%{coordinates}</code>).<br/>Do you want to place the marker there?"
 msgstr "Das Bild enthält GPS-Koordinaten (<code>%{coordinates}</code>).<br/>Möchtest du den Marker dort platzieren?"
+
+msgid "This browser cannot read KMZ archives. Please unzip it and import the .kml"
+msgstr "Dieser Browser kann keine KMZ-Archive lesen. Bitte entpacke es und importiere die .kml"
 
 msgid "This map is private and not linked from the public listing."
 msgstr "Diese Karte ist privat und nicht in der öffentlichen Liste verlinkt."
@@ -1186,8 +1204,8 @@ msgstr "Verwendete Open-Source-Projekte: %{rails_link} für das Backend, %{mapli
 msgid "Users can explore the map but cannot modify it."
 msgstr "Nutzer können die Karte ansehen, aber nicht ändern."
 
-msgid "Valid formats are gpx, kml, geojson and image files. WGS84 format, max. 2.5MB"
-msgstr "Gültige Formate sind gpx, kml, geojson und Bilddateien. WGS84-Format, max. 2,5 MB"
+msgid "Valid formats are gpx, kml, kmz, geojson and image files. WGS84 format, max. 2.5MB"
+msgstr "Gültige Formate sind gpx, kml, kmz, geojson und Bilddateien. WGS84-Format, max. 2,5 MB"
 
 msgid "VersaTiles satellite imagery combined with street and label overlays."
 msgstr "VersaTiles-Satellitenbilder kombiniert mit Straßen und Beschriftungen."
@@ -1215,6 +1233,9 @@ msgstr "Wegpunkt hinzugefügt"
 
 msgid "Waypoint:"
 msgstr "Wegpunkt:"
+
+msgid "What Mapforge reads from a Google My Maps or Google Earth export."
+msgstr "Was Mapforge aus einem Google-My-Maps- oder Google-Earth-Export liest."
 
 msgid "Width:"
 msgstr "Breite:"

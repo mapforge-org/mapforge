@@ -63,8 +63,9 @@ pin "wgs84", preload: false # @0.0.0
 # https://github.com/Ionaru/easy-markdown-editor
 pin "easymde", preload: false # v2.20.0, manual update
 
-# https://github.com/mapbox/togeojson
-pin "togeojson", to: "togeojson.js", preload: false # @0.16.2
+# https://github.com/placemark/togeojson (successor of the archived mapbox/togeojson)
+# Unminified + patched version to resolve the "normal" Pair of a KML StyleMap
+pin "togeojson", to: "togeojson.js", preload: false # @7.1.2
 
 # Animations for frontpage: https://github.com/michalsnik/aos
 pin "aos" # @2.3.4
