@@ -15,4 +15,12 @@ ConnectionMonitor.staleThreshold = 8 // default 6
 // app to function, so a silent failure to connect should never go unlogged.
 logger.enabled = false
 
-export default createConsumer()
+const consumer = createConsumer()
+
+// Action Cable watches 'visibilitychange' but not 'online'. Without this, a
+// restored network waits for the stale poll (8 s, growing to ~37 s with backoff).
+window.addEventListener('online', () => {
+  if (!consumer.connection.isOpen()) { consumer.connection.reopen() }
+})
+
+export default consumer
