@@ -1972,6 +1972,10 @@ msgstr ""
 msgid "This browser cannot read KMZ archives. Please unzip it and import the .kml"
 msgstr ""
 
+#: ../app/javascript/controllers/feature/edit_controller.js:466
+msgid "This feature no longer exists"
+msgstr ""
+
 #: ../app/views/docs/tutorials.haml:30
 msgid "What Mapforge reads from a Google My Maps or Google Earth export."
 msgstr ""

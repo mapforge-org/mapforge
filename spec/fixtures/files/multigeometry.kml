@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>MultiGeometry</name>
+    <Folder>
+      <name>Routen</name>
+      <Placemark>
+        <name>Levada Route</name>
+        <MultiGeometry>
+          <LineString>
+            <coordinates>
+              -16.8842,32.7791,0
+              -16.8721,32.7834,0
+            </coordinates>
+          </LineString>
+          <LineString>
+            <coordinates>
+              -16.8603,32.7902,0
+              -16.8501,32.7955,0
+            </coordinates>
+          </LineString>
+        </MultiGeometry>
+      </Placemark>
+      <Placemark>
+        <name>Funchal Stop</name>
+        <MultiGeometry>
+          <Point>
+            <coordinates>-16.9089,32.6425,0</coordinates>
+          </Point>
+          <LineString>
+            <coordinates>
+              -16.9089,32.6425,0
+              -16.9001,32.6480,0
+            </coordinates>
+          </LineString>
+        </MultiGeometry>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>

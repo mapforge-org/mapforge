@@ -4,7 +4,10 @@ import { basemaps } from 'maplibre/styles/basemaps'
 import * as maplibregl from 'maplibre-gl'
 
 // eslint expects variables to get imported, but we load the full lib in header
-const deck = window.deck;
+const deck = window.deck
+
+// deck.gl throws when getIcon returns no url, so a point without an image gets a blank one
+const BLANK_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
 ['turbo:load'].forEach(function (e) {
   window.addEventListener(e, function () {
@@ -30,6 +33,11 @@ async function init () {
   })
   map.addControl(new maplibregl.NavigationControl())
 
+  // maplibre-gl 6 moved the camera to map._camera, deck.gl 9.x still reads map.transform
+  if (!map.transform && map._camera) {
+    Object.defineProperty(map, 'transform', { get: () => map._camera.transform })
+  }
+
   // await map.once('load')
 
   // https://deck.gl/docs/api-reference/layers/geojson-layer
@@ -43,7 +51,7 @@ async function init () {
     pointType: 'icon+circle+text', // 'icon+circle+text',
 
     getIcon: d => ({
-      url: d.properties['marker-image-url'],
+      url: d.properties['marker-image-url'] || BLANK_ICON,
       height: 100,
       width: 100,
       anchorY: 50

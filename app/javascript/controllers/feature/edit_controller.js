@@ -6,7 +6,7 @@ import { status } from 'helpers/status'
 import { syncStepperValues } from 'helpers/stepper'
 import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
-import { confirmImageLocation, featureIcon, featureImage, getFeatureTypeName, uploadImageToFeature } from 'maplibre/feature'
+import { confirmImageLocation, featureIcon, featureImage, getFeatureTypeName, resetHighlightedFeature, uploadImageToFeature } from 'maplibre/feature'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
 import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
@@ -458,8 +458,16 @@ export default class extends Controller {
   }
 
   getEditFeature () {
-    const id = this.featureIdValue
-    return getFeature(id)
+    const feature = getFeature(this.featureIdValue)
+    // The feature can vanish under an open modal: another session deleted it, or a reload
+    // dropped it because it never reached the server. Close the modal instead of letting
+    // every handler dereference null on each keystroke.
+    if (!feature) {
+      resetHighlightedFeature()
+      status(window.__('This feature no longer exists'), 'error')
+      throw new Error(`Feature ${this.featureIdValue} no longer exists`)
+    }
+    return feature
   }
 
   // Apply the edited feature to the map with a fast surgical single-feature update (no full

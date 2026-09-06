@@ -1117,6 +1117,9 @@ msgstr "Das Bild enthält GPS-Koordinaten (<code>%{coordinates}</code>).<br/>Mö
 msgid "This browser cannot read KMZ archives. Please unzip it and import the .kml"
 msgstr "Dieser Browser kann keine KMZ-Archive lesen. Bitte entpacke es und importiere die .kml"
 
+msgid "This feature no longer exists"
+msgstr "Dieses Objekt existiert nicht mehr"
+
 msgid "This map is private and not linked from the public listing."
 msgstr "Diese Karte ist privat und nicht in der öffentlichen Liste verlinkt."
 

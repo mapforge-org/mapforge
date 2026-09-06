@@ -65,7 +65,14 @@ class MapChannel < ApplicationCable::Channel
     Yabeda.layers_created.increment(type: layer.type)
     if data["geojson"] && data["geojson"]["features"]
       data["geojson"]["features"].each do |feature|
-        @feature = layer.features.create!(feature_atts(feature).merge({ id: feature["id"] }))
+        # An import sends the whole folder in one message. Without this, the first invalid
+        # feature would abort the loop and silently drop every feature behind it.
+        begin
+          @feature = layer.features.create!(feature_atts(feature).merge({ id: feature["id"] }))
+        rescue Mongoid::Errors::Validations => e
+          Rails.logger.warn "new_layer: skipping invalid feature #{feature["id"]}: #{e.message}"
+          next
+        end
         associate_image(feature["properties"]["marker-image-url"]) if feature["properties"] && feature["properties"]["marker-image-url"]
       end
     end

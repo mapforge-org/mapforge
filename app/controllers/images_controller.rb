@@ -57,7 +57,9 @@ class ImagesController < ApplicationController
     filename = "#{filename}-#{tempfile.size}.webp"
 
     # use existing image if already uploaded
-    unless (img = Image.find_by(public_id: filename))
+    if (img = Image.find_by(public_id: filename))
+      Rails.logger.info "Re-using existing image '#{filename}'"
+    else
       Image.compress_to_webp!(tempfile.path)
       uid = Dragonfly.app.store(tempfile, "name" => filename) # name needs to be a string here
       img = Image.create!(img_uid: uid, public_id: filename, user: @user)

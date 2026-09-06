@@ -135,6 +135,16 @@ describe "Map" do
         .to contain_exactly("Cristiano Ronaldo Statue", "Levada do Caldeirão Verde")
     end
 
+    it "import kml with MultiGeometry placemarks" do
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "multigeometry.kml"))
+      # 2 lines of one placemark merge into one MultiLineString, the mixed placemark splits in two
+      expect(page).to have_text("Routen(3)")
+      wait_for { map.reload.features.count }.to eq 3
+      expect(map.features.map { |f| f.geometry["type"] })
+        .to contain_exactly("MultiLineString", "Point", "LineString")
+    end
+
     it "import kml without folder" do
       page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
       attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "point.kml"))

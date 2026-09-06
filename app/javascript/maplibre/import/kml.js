@@ -45,16 +45,19 @@ export async function importFile (file, content) {
 
   if (file.type === 'application/gpx+xml' || name.endsWith('.gpx')) {
     const geojson = gpx(xmlDoc)
-    geojson.features.forEach(f => { f.properties = mapforgeProperties(f.properties) })
-    return { layers: [], features: geojson.features, map: {} }
+    const gpxFeatures = expandGeometryCollections(geojson.features)
+    gpxFeatures.forEach(f => { f.properties = mapforgeProperties(f.properties) })
+    return { layers: [], features: gpxFeatures, map: {} }
   }
 
   // skipNullGeometry is required: a <Model> placemark otherwise yields geometry: null,
   // which every caller reading feature.geometry.type trips over.
   const tree = kmlWithFolders(xmlDoc, { skipNullGeometry: true })
   const layers = []
-  const features = []
+  let features = []
   collect(tree, layers, features)
+  features = expandGeometryCollections(features)
+  layers.forEach(l => { l.geojson.features = expandGeometryCollections(l.geojson.features) })
 
   const all = features.concat(...layers.map(l => l.geojson.features))
   all.forEach(f => { f.properties = mapforgeProperties(f.properties) })
@@ -77,6 +80,23 @@ function collect (node, layers, loose) {
     layers.push(layer)
     collect(child, layers, layer.geojson.features)
   }
+}
+
+// togeojson turns every <MultiGeometry> placemark into a GeometryCollection, which has no
+// geometry.coordinates: MapLibre draws nothing and the server rejects the feature, so the
+// whole import silently loses it. Members of one type merge into the Multi* equivalent,
+// a mixed collection splits into one feature per member.
+function expandGeometryCollections (features) {
+  return features.flatMap(feature => {
+    if (feature.geometry?.type !== 'GeometryCollection') { return [ feature ] }
+    const parts = feature.geometry.geometries || []
+    if (parts.length === 0) { return [] }
+    const types = [ ...new Set(parts.map(g => g.type)) ]
+    if (types.length === 1) {
+      return [ { ...feature, geometry: { type: `Multi${types[0]}`, coordinates: parts.map(g => g.coordinates) } } ]
+    }
+    return parts.map(geometry => ({ ...feature, geometry }))
+  })
 }
 
 export function mapforgeProperties (props = {}) {
