@@ -108,6 +108,12 @@ export async function initializeMap (divId = 'maplibre-map') {
       hash: true, // enable hash in URL for map center/zoom
       fadeDuration: 200, // shorter fade
       interactive: (window.gon.map_mode !== 'static'), // can move/zoom map
+      // The static styles in public/layers/ must not carry an api key, so add the
+      // configured one to every maptiler request that comes out of them
+      transformRequest: (url) => {
+        if (!url.includes('api.maptiler.com') || url.includes('key=')) { return }
+        return { url: url + (url.includes('?') ? '&' : '?') + 'key=' + window.gon.map_keys.maptiler }
+      },
       // merged over maplibres defaultLocale, only listed keys get overridden
       locale: {
         'AttributionControl.ToggleAttribution': window.__('Toggle attribution'),
@@ -302,7 +308,7 @@ function updateCursorPosition(e) {
 
 // Each map layer has its own source, so different style layers can be applied
 // sourceName convention: layer.type + '-source-' + layer.id
-export function addGeoJSONSource(sourceName, cluster=false) {
+export function addGeoJSONSource(sourceName, cluster=false, attribution=null) {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
   // console.log("Adding source: " + sourceName)
   if (map.getSource(sourceName)) {
@@ -315,7 +321,10 @@ export function addGeoJSONSource(sourceName, cluster=false) {
     data: { type: 'FeatureCollection', features: [] },
     cluster: cluster,
     clusterMaxZoom: 14,
-    clusterRadius: 50
+    clusterRadius: 50,
+    // the attribution control drops a null and de-duplicates the rest, so layers of the
+    // same type credit their data source only once
+    ...(attribution && { attribution })
   })
 }
 

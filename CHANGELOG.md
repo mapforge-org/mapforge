@@ -9,8 +9,7 @@ All notable changes to this project will be documented in this file.
 * Improved View-Edit mode switch
 * Option for users to skip map description on load
 * Improved [KML](https://developers.google.com/kml/documentation/kmlreference)/KMZ import from Google Maps
-* Support [Maki](https://github.com/mapbox/maki) + [Temaki](https://github.com/rapideditor/temaki) icon sets
-* Option to remove the symbol or the image of a point
+* Support [Maki](https://github.com/mapbox/maki), [Temaki](https://github.com/rapideditor/temaki) and [Fontawesame](https://fontawesome.com/) icon sets
 
 ## 2026-08
 

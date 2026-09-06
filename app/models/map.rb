@@ -68,8 +68,8 @@ class Map
     "maptilerStreets", "maptilerNoStreets", "maptilerWinter",
     "maptilerBike", "maptilerBasic" ]
   PROTOMAPS_MAPS = [ "protomapsLight" ]
-  OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets", "osmRasterTiles",
-    "thunderforestCycle", "thunderforestContrast" ]
+  THUNDERFOREST_MAPS = [ "thunderforestCycle", "thunderforestContrast" ]
+  OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets", "osmRasterTiles" ]
 
   DEFAULT_CENTER = [ 11.077, 49.447 ].freeze
   DEFAULT_ZOOM = 10
@@ -333,6 +333,11 @@ class Map
     elsif PROTOMAPS_MAPS.include?(base_map)
       return base_map if ENV["PROTOMAPS_KEY"].present?
       logger.warn("Cannot use protomaps map #{base_map} without PROTOMAPS_KEY. Falling back to: #{default_base_map}")
+      return default_base_map
+    elsif THUNDERFOREST_MAPS.include?(base_map)
+      return base_map if ENV["THUNDERFOREST_KEY"].present?
+      logger.warn("Cannot use thunderforest map #{base_map} without THUNDERFOREST_KEY. " \
+        "Falling back to: #{default_base_map}")
       return default_base_map
     elsif (BASE_MAPS + OPENFREE_MAPS + VERSATILES_MAPS + STADIA_MAPS + OTHER_MAPS).include?(base_map) || base_map == "test"
       return base_map

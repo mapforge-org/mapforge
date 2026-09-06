@@ -13,10 +13,10 @@ import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
 import { addUndoState } from 'maplibre/undo'
 
 // one directory with an index.json per set, see public/icon-sets/README
-const iconSets = [ 'maki', 'temaki' ]
+const iconSets = [ 'maki', 'temaki', 'fontawesome' ]
 // The icons of these sets are white, so that they read well on the circle of a marker. On a
 // page they need a background of their own, see the img rule in feature.css.
-const whiteIconSets = [ 'maki', 'temaki' ]
+const whiteIconSets = [ 'maki', 'temaki', 'fontawesome' ]
 const isWhiteSymbol = symbol => whiteIconSets.some(set => symbol.includes(`/icon-sets/${set}/`))
 
 export default class extends Controller {
@@ -317,12 +317,16 @@ export default class extends Controller {
     this.addUndo()
     const feature = this.getEditFeature()
     delete feature.properties[property]
-    // Picking a symbol or an image turns the colors transparent. Without either of them the
-    // point would render as nothing, so it gets its colors back.
-    if (!feature.properties['marker-symbol'] && !feature.properties['marker-image-url']) {
+    // Picking a symbol or an image can turn the colors transparent (see updateMarkerSymbol).
+    // Without either of them the point would render as nothing, so it gets its colors back.
+    // A feature with its own colors keeps them, only an actually transparent one is restored.
+    const noSymbolOrImage = !feature.properties['marker-symbol'] && !feature.properties['marker-image-url']
+    if (noSymbolOrImage && feature.properties['marker-color'] === 'transparent') {
       document.querySelector('#fill-color-transparent').checked = false
-      document.querySelector('#stroke-color-transparent').checked = false
       this.updateFillColorTransparent()
+    }
+    if (noSymbolOrImage && feature.properties.stroke === 'transparent') {
+      document.querySelector('#stroke-color-transparent').checked = false
       this.updateStrokeColorTransparent()
     }
     document.querySelector('#marker-symbol').value = feature.properties['marker-symbol'] || ''
@@ -375,6 +379,7 @@ export default class extends Controller {
       noCountryFlags: true, // TODO country flags don't work right now
       set: 'native', // default is native icons (they don't match the map icons)
       theme: 'light',
+      skinTonePosition: 'none',
     }
     // emoji-mart marks a removed <em-emoji-picker> as disconnected for good: it drops its
     // observers and renders nothing on re-insert. Build a fresh element on every open.
@@ -386,8 +391,9 @@ export default class extends Controller {
     const editUi = document.querySelector('#feature-edit-ui')
     editUi.prepend(this.picker)
     // the picker covers the edit ui down to the bottom edge of the modal, so that the tab
-    // buttons above it stay clickable. Only the layout knows where those buttons end
-    this.picker.style.top = `${editUi.offsetTop}px`
+    // buttons above it stay clickable. Only the layout knows where those buttons end. A few
+    // px up so the picker's own top padding does not leave the tab row's border peeking out
+    this.picker.style.top = `${editUi.offsetTop - 6}px`
     this.stylePicker()
     this.lazyLoadIcons()
   }
@@ -403,6 +409,18 @@ export default class extends Controller {
       `img[src*="/icon-sets/${set}/"] { background-color: var(--color-dark-charcoal, #354A51); border-radius: 50%; padding: 3px; margin: -3px; }`
     ).join('\n')
     root.appendChild(style)
+
+    const previewStyle = document.createElement('style')
+    previewStyle.id = 'small-preview'
+    // #preview wraps both the emoji icon and its name in one child div, for the idle "Pick an
+    // emoji…" placeholder and for a hovered emoji alike. Only the placeholder row gets the
+    // .preview-placeholder class, so :has() scopes the hidden icon and smaller padding to that
+    // row and leaves a hovered emoji's icon and name untouched.
+    previewStyle.textContent = `
+      #preview:has(.preview-placeholder) { padding: 4px 12px; }
+      #preview:has(.preview-placeholder) > div > div:first-child { display: none; }
+    `
+    root.appendChild(previewStyle)
   }
 
   // The picker renders the rows of all its categories at once, so every icon of every set

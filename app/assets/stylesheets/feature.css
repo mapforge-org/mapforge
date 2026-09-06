@@ -263,7 +263,8 @@
  * page they get a circle of their own, see whiteIconSets in feature/edit_controller.js.
  */
 img[src*="/icon-sets/maki/"],
-img[src*="/icon-sets/temaki/"] {
+img[src*="/icon-sets/temaki/"],
+img[src*="/icon-sets/fontawesome/"] {
   background-color: var(--color-dark-charcoal);
   border-radius: 50%;
   padding: 3px;
@@ -541,6 +542,8 @@ em-emoji-picker {
   max-height: 100%;
   width: calc(100% - 0.6rem);
   z-index: 1000;
+
+  --preview-placeholder-size: 14px; /* default 21px, custom properties cross the shadow boundary */
 }
 
 input {
