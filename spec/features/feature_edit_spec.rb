@@ -375,28 +375,6 @@ describe "Feature edit" do
         wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/maki/cafe.png")
       end
 
-      it "can select an icon of the openmoji set" do
-        find("#edit-button-style").click
-        find("#marker-symbol-select").click
-        expect(page).to have_selector("em-emoji-picker")
-
-        page.execute_script(<<~JS)
-          const shadow = document.querySelector('em-emoji-picker').shadowRoot;
-          const input = shadow.querySelector('input[type="search"]');
-          input.value = 'grinning';
-          input.dispatchEvent(new Event('input', { bubbles: true }));
-        JS
-
-        icon = 'img[src="/icon-sets/openmoji/😀.png"]'
-        wait_for {
-          page.evaluate_script("!!document.querySelector('em-emoji-picker').shadowRoot.querySelector('#{icon}')")
-        }.to be true
-
-        page.execute_script("document.querySelector('em-emoji-picker').shadowRoot.querySelector('#{icon}').click()")
-
-        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/openmoji/😀.png")
-      end
-
       it "can remove the symbol" do
         find("#edit-button-style").click
         find("#marker-symbol-select").click

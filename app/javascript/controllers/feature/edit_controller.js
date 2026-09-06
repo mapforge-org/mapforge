@@ -376,16 +376,18 @@ export default class extends Controller {
       set: 'native', // default is native icons (they don't match the map icons)
       theme: 'light',
     }
-    if (this.picker) {
-      // In Safari the <em-emoji-picker> element needs to be re-initialized
-      this.picker.data = data
-      this.picker.onEmojiSelect = onEmojiSelect
-      this.picker.onClickOutside = onClickOutside
-    } else {
-      this.picker = new Picker(pickerOptions)
-    }
+    // emoji-mart marks a removed <em-emoji-picker> as disconnected for good: it drops its
+    // observers and renders nothing on re-insert. Build a fresh element on every open.
+    functions.e('em-emoji-picker', e => { e.remove() })
+    this.iconObserver?.disconnect()
+    this.iconObserver = null
+    this.picker = new Picker(pickerOptions)
     // adding <em-emoji-picker> element
-    document.querySelector('#feature-edit-ui').prepend(this.picker)
+    const editUi = document.querySelector('#feature-edit-ui')
+    editUi.prepend(this.picker)
+    // the picker covers the edit ui down to the bottom edge of the modal, so that the tab
+    // buttons above it stay clickable. Only the layout knows where those buttons end
+    this.picker.style.top = `${editUi.offsetTop}px`
     this.stylePicker()
     this.lazyLoadIcons()
   }

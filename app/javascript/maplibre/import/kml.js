@@ -1,10 +1,15 @@
 // Converts KML/KMZ/GPX into the property names of Mapforge.
 import { uploadImage } from 'maplibre/feature'
+import { GOOGLE_ICONS } from 'maplibre/import/google_icons'
 import { gpx, kmlWithFolders } from 'togeojson'
 
 // G**gle My Maps points every colored pin at the same white silhouette. The real color rides
 // in <IconStyle><color>, so using the href as marker image would paint every marker white.
 const BLANK_PIN = /-blank_maps\.png$/
+
+// ... and the icon itself is only in the style id, '#icon-<google id>-<color>'. A line or a
+// polygon style is named '#line-...' or '#poly-...', so the regex passes over those.
+const GOOGLE_STYLE = /^#?icon-(\d+)-/
 
 // Consumed by the mapping below, or deliberately dropped. Everything else (ExtendedData
 // fields, timestamp, timespan, stroke, fill, sym, ...) is copied through untouched.
@@ -92,14 +97,19 @@ export function mapforgeProperties (props = {}) {
   }
   if (labelScale > 0 && labelScale !== 1) { out['label-size'] = Math.round(16 * labelScale) }
 
+  const symbol = googleIconSymbol(props.styleUrl)
+  // a maki/temaki icon is white, so it needs a white border to stand out from the marker color
+  if (symbol) { out['marker-symbol'] = symbol; out.stroke = '#fff' }
+
   if (props['icon-color']) { out['marker-color'] = props['icon-color'] }
   if (props['icon-opacity'] !== undefined && props['icon-opacity'] !== 1) { out['marker-opacity'] = props['icon-opacity'] }
   if (props['icon-heading']) { out['marker-rotate'] = props['icon-heading'] }
   if (icon && !isOverlay && !BLANK_PIN.test(icon)) { out['marker-image-url'] = icon }
   // A KML icon is a small pictogram, so the mapforge default of 20 for an image marker
-  // blows it up. Plain markers keep the mapforge base of 6.
-  const base = out['marker-image-url'] ? 10 : 6
-  if (out['marker-image-url'] || (scale !== undefined && scale !== 1)) {
+  // blows it up. A maki/temaki icon keeps a base of 16, smaller than the mapforge default
+  // of 18 for an emoji. Plain markers keep the mapforge base of 6.
+  const base = out['marker-image-url'] ? 10 : symbol ? 16 : 6
+  if (out['marker-image-url'] || symbol || (scale !== undefined && scale !== 1)) {
     out['marker-size'] = Math.max(1, Math.round(base * (scale ?? 1)))
   }
 
@@ -116,6 +126,12 @@ export function mapforgeProperties (props = {}) {
   if (desc.length) { out.desc = desc.join('\n\n') }
 
   return out
+}
+
+function googleIconSymbol (styleUrl) {
+  const match = GOOGLE_STYLE.exec(styleUrl || '')
+  const icon = match && GOOGLE_ICONS[match[1]]
+  return icon ? `/icon-sets/${icon}.png` : undefined
 }
 
 // <Document> name, description and view. Read straight off the DOM: the converter only

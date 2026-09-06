@@ -266,6 +266,8 @@ img[src*="/icon-sets/maki/"],
 img[src*="/icon-sets/temaki/"] {
   background-color: var(--color-dark-charcoal);
   border-radius: 50%;
+  padding: 3px;
+  margin: -3px;
 }
 
 /* an icon of a set, where an emoji would be a text character */
@@ -528,13 +530,17 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
   gap: 0.5rem;
 }
 
-/* cannot set css inside the shadow dom from here */
+/* cannot set css inside the shadow dom from here. The picker fills the modal down to its
+   bottom edge, openEmojiPicker() sets the top. Without a bounded height the picker grows to
+   the height of all its icon rows, which gives the modal a second scrollbar */
 em-emoji-picker {
   position: absolute;
-  height: unset;
+  bottom: 0;
+  left: 0;
+  height: auto; /* with the top set, the height fills the modal down to its bottom edge */
+  max-height: 100%;
   width: calc(100% - 0.6rem);
   z-index: 1000;
-  left: 0;
 }
 
 input {

@@ -10,7 +10,7 @@
       <tilt>30</tilt>
       <range>50000</range>
     </LookAt>
-    <Style id="icon-1899-0F9D58-normal">
+    <Style id="icon-1599-0F9D58-normal">
       <IconStyle>
         <color>ff589d0f</color>
         <scale>1</scale>
@@ -23,7 +23,7 @@
         <scale>0</scale>
       </LabelStyle>
     </Style>
-    <Style id="icon-1899-0F9D58-highlight">
+    <Style id="icon-1599-0F9D58-highlight">
       <IconStyle>
         <color>ffffffff</color>
         <scale>1.1</scale>
@@ -36,14 +36,14 @@
         <scale>1</scale>
       </LabelStyle>
     </Style>
-    <StyleMap id="icon-1899-0F9D58">
+    <StyleMap id="icon-1599-0F9D58">
       <Pair>
         <key>highlight</key>
-        <styleUrl>#icon-1899-0F9D58-highlight</styleUrl>
+        <styleUrl>#icon-1599-0F9D58-highlight</styleUrl>
       </Pair>
       <Pair>
         <key>normal</key>
-        <styleUrl>#icon-1899-0F9D58-normal</styleUrl>
+        <styleUrl>#icon-1599-0F9D58-normal</styleUrl>
       </Pair>
     </StyleMap>
     <Style id="line-000000-1200-normal">
@@ -73,7 +73,7 @@
       <Placemark>
         <name>Cristiano Ronaldo Statue</name>
         <description><![CDATA[Statue am Hafen von Funchal<br>Freier Eintritt]]></description>
-        <styleUrl>#icon-1899-0F9D58</styleUrl>
+        <styleUrl>#icon-1599-0F9D58</styleUrl>
         <ExtendedData>
           <Data name="Kategorie">
             <value>Sehenswürdigkeit</value>
