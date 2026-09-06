@@ -116,7 +116,7 @@
             .swiper-slide
               .item
                 %h2.mb-3.mapforge-font= _("Open Source")
-                %h4.mb-3= "\"Standing on the shoulders of giants\""
+                %h4.mb-3= link_to "\"Standing on the shoulders of giants\"", doc_path(id: 'credits')
                 %ul
                   %li
                     - rails_link = link_to "Ruby on Rails", "https://rubyonrails.org/"

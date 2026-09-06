@@ -12,10 +12,10 @@
   "sources": {
     "openmaptiles": {
       "type": "vector",
-      "url": "https://api.maptiler.com/tiles/v3/tiles.json?key=q6BouNPXYBpxqoGHsiLu"
+      "url": "https://api.maptiler.com/tiles/v3/tiles.json"
     }
   },
-  "glyphs": "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=q6BouNPXYBpxqoGHsiLu",
+  "glyphs": "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
       "id": "background",

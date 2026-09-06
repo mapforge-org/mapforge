@@ -1975,3 +1975,7 @@ msgstr ""
 #: ../app/views/docs/tutorials.haml:30
 msgid "What Mapforge reads from a Google My Maps or Google Earth export."
 msgstr ""
+
+#: ../app/views/shared/_footer.html.haml:23
+msgid "Credits"
+msgstr ""

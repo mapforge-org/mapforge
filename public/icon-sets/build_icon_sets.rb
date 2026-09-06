@@ -5,7 +5,7 @@
 # same size as the emojis in public/icon-sets/noto. The output is committed, this script only
 # runs when a set gets added or updated. See public/icon-sets/README.
 #
-# Usage: bin/build_icon_sets.rb [set ...]   (default: all sets)
+# Usage: ruby public/icon-sets/build_icon_sets.rb [set ...]   (default: all sets)
 
 require "fileutils"
 require "json"
@@ -27,6 +27,13 @@ SETS = {
     icon: "temaki",
     # data/icons.json lists a group per icon, which becomes an extra search keyword
     groups: "data/icons.json"
+  },
+  "fontawesome" => {
+    package: "@fortawesome/fontawesome-free",
+    name: "Font Awesome",
+    icon: "location-dot",
+    # the free package also has regular (thin) and brands (colored logos) styles, see README
+    dir: "svgs/solid"
   },
   # the pngs of an emoji set are downloaded by hand, only its index gets built
   "openmoji" => {
@@ -122,7 +129,7 @@ def build(set, config, root)
 
   Dir.mktmpdir("icon-set-#{set}") do |tmp|
     package = download(config[:package], tmp)
-    ids = rasterize(File.join(package, "icons"), target)
+    ids = rasterize(File.join(package, config[:dir] || "icons"), target)
     groups = config[:groups] ? JSON.parse(File.read(File.join(package, config[:groups]))) : {}
     groups = groups.transform_values { |v| v["groups"] || [] }
     File.write(File.join(target, "index.json"), JSON.pretty_generate(index(set, config, ids, groups)))
@@ -130,7 +137,7 @@ def build(set, config, root)
   end
 end
 
-root = File.expand_path("..", __dir__)
+root = File.expand_path("../..", __dir__)
 sets = ARGV.empty? ? SETS.keys : ARGV
 sets.each do |set|
   config = SETS[set] or abort("unknown icon set '#{set}', known: #{SETS.keys.join(", ")}")

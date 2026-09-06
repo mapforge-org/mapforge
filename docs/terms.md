@@ -1,6 +1,6 @@
 ## Mapforge Terms of Service
 
-*Last updated: March 17, 2026*
+*Last updated: September 6, 2026*
 
 By using Mapforge, you agree to these terms. Please read them carefully.
 
@@ -37,6 +37,31 @@ We may suspend or terminate accounts that violate these terms. You can delete yo
 ### Privacy
 
 Your privacy matters. Please review our [Privacy Policy](/doc/privacy) to understand how we handle your data.
+
+### Third-Party Services and Data
+
+Mapforge shows map data from other providers and sends requests to their services. If you use a
+feature that needs one of these services, the terms of that provider apply to you as well.
+
+| Service | Used for | Terms |
+| ------- | -------- | ----- |
+| [OpenStreetMap](https://www.openstreetmap.org/copyright) | map data for most basemaps and layers | Open Database License |
+| [Overpass API](https://overpass-api.de/) | OpenStreetMap data layers | fair use, data under ODbL |
+| [Photon](https://photon.komoot.io/) by Komoot | place search | fair use, data under ODbL |
+| [openrouteservice](https://openrouteservice.org/terms-of-service/) by HeiGIT | routing and elevation | openrouteservice terms of service |
+| [Wikipedia](https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use) | the Wikipedia layer | Wikimedia terms of use, text under CC BY-SA |
+| [OpenStreetMap API](https://operations.osmfoundation.org/policies/api/) | import of a single map element | OpenStreetMap API usage policy |
+| [Deutsche Bahn](https://developers.deutschebahn.com/) | live train positions | DB API Marketplace terms |
+| [Protomaps](https://protomaps.com/) | basemap | Protomaps terms |
+| [IndoorEqual](https://indoorequal.org/) | indoor maps | IndoorEqual terms |
+| [Stadia Maps](https://stadiamaps.com/terms-of-service/) | the Stamen basemaps | Stadia Maps terms |
+| [Esri](https://www.esri.com/en-us/legal/terms/full-master-agreement) | satellite imagery | Esri terms |
+
+Do not remove or hide the credit in the corner of the map. The licenses of these providers
+require it. If you export a map or embed a map, keep the credit visible.
+
+The [Credits](/doc/credits) page lists every provider, library, font, and icon set of Mapforge,
+together with its license.
 
 ### Governing Law
 

@@ -28,6 +28,10 @@ nav.fixed-top~#docs {
     margin-top: 2rem;
   }
 
+  table {
+    margin-bottom: 1rem;
+  }
+
   td, th {
     border: 0.1rem solid var(--color-light-sand);
     padding: 0.5rem;

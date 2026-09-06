@@ -48,6 +48,16 @@ export let elevationSource = {
   attribution: '© <a href="https://mapterhorn.com" target="_blank">Mapterhorn</a>'
 }
 
+// The attribution control drops a duplicate only when the string matches byte for byte, so
+// every source that shows OpenStreetMap data must credit it with this exact text. The static
+// styles in public/layers/ carry a copy of it.
+export const osmAttribution =
+  'Data <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
+
+// Thunderforest requires credit for the map style, not only for the OpenStreetMap data
+const thunderforestAttribution =
+  'Maps <a href="https://www.thunderforest.com/" target="_blank">© Thunderforest</a>, ' + osmAttribution
+
 // Regular font of the openmaptiles/maptiler glyph endpoints
 const notoFont = 'Noto Sans Bold'
 const versatilesFont = 'noto_sans_bold'
@@ -76,7 +86,8 @@ export function basemaps () {
             tileSize: 256,
             maxzoom: 14,
             minzoom: 1.5,
-            attribution: 'Map tiles by <a target="_blank" href="http://stamen.com">Stamen Design</a>; Hosting by <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>. Data &copy; <a href="https://www.openstreetmap.org/about" target="_blank">OpenStreetMap</a> contributors'
+            attribution: 'Map tiles by <a target="_blank" href="http://stamen.com">Stamen Design</a>; ' +
+              'Hosting by <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>. ' + osmAttribution
           }
         },
         layers: defaultRasterLayer,
@@ -96,7 +107,8 @@ export function basemaps () {
               'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}.jpg'
             ],
             tileSize: 256,
-            attribution: 'Map tiles by <a target="_blank" href="http://stamen.com">Stamen Design</a>; Hosting by <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>. Data &copy; <a href="https://www.openstreetmap.org/about" target="_blank">OpenStreetMap</a> contributors'
+            attribution: 'Map tiles by <a target="_blank" href="http://stamen.com">Stamen Design</a>; ' +
+              'Hosting by <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>. ' + osmAttribution
           }
         },
         layers: defaultRasterLayer,
@@ -118,11 +130,10 @@ export function basemaps () {
             ],
             tileSize: 256,
             maxzoom: 17,
-            attribution: 'Kartendaten: © ' +
-             '<a href="https://openstreetmap.org/copyright" target="_blank">OpenStreetMap-Mitwirkende</a> ' +
-             'SRTM | Kartendarstellung: © ' +
+            attribution: 'Maps © ' +
              '<a href="http://opentopomap.org/" target="_blank">OpenTopoMap</a> ' +
-             '<a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">(CC-BY-SA)</a>'
+             '<a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">(CC-BY-SA)</a>, ' +
+             'SRTM, ' + osmAttribution
           }
         },
         layers: defaultRasterLayer,
@@ -141,7 +152,7 @@ export function basemaps () {
               'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
             ],
             tileSize: 256,
-            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap Contributors</a>'
+            attribution: osmAttribution
           }
         },
         layers: defaultRasterLayer,
@@ -161,7 +172,7 @@ export function basemaps () {
             ],
             tileSize: 256,
             maxzoom: 17,
-            attribution: '<a href="https://www.cyclosm.org/" title="CyclOSM - Open Bicycle render">CyclOSM</a> | <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap Contributors</a>'
+            attribution: 'Maps <a href="https://www.cyclosm.org/" target="_blank">© CyclOSM</a>, ' + osmAttribution
           }
         },
         layers: defaultRasterLayer,
@@ -180,7 +191,7 @@ export function basemaps () {
               'https://api.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=' + window.gon.map_keys.thunderforest
             ],
             tileSize: 256,
-            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap Contributors</a>'
+            attribution: thunderforestAttribution
           }
         },
         layers: defaultRasterLayer,
@@ -198,7 +209,7 @@ export function basemaps () {
               'https://api.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png?apikey=' + window.gon.map_keys.thunderforest
             ],
             tileSize: 256,
-            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap Contributors</a>'
+            attribution: thunderforestAttribution
           }
         },
         layers: defaultRasterLayer,
@@ -242,8 +253,8 @@ export function basemaps () {
     maptilerOpenStreetmap: { description: window.__("MapTiler's rendering of OpenStreetMap data in a familiar style."), style: 'https://api.maptiler.com/maps/openstreetmap/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
     maptilerBuildings: { description: window.__('Streets map highlighting detailed building footprints and 3D shapes.'), style: 'https://api.maptiler.com/maps/streets-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: notoFont } },
     maptilerDataviz: { description: window.__('Neutral MapTiler style designed as a clean backdrop for data visualization.'), style: 'https://api.maptiler.com/maps/dataviz/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
-    maptilerStreets: { description: window.__('Classic MapTiler street map with roads, labels and points of interest.'), style: host + '/layers/streets.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
-    maptilerNoStreets: { description: window.__('MapTiler streets style with road labels removed for a cleaner look.'), style: host + '/layers/nostreets.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
+    maptilerStreets: { description: window.__('Classic MapTiler street map with roads, labels and points of interest.'), style: host + '/layers/streets.json', defaults: { font: notoFont } },
+    maptilerNoStreets: { description: window.__('MapTiler streets style with road labels removed for a cleaner look.'), style: host + '/layers/nostreets.json', defaults: { font: notoFont } },
     maptilerSatellite: { description: window.__('High-resolution satellite imagery without any labels or overlays.'), style: 'https://api.maptiler.com/maps/satellite/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont } },
     maptilerWinter: { description: window.__('Winter-themed MapTiler style with snow-covered terrain and landscapes.'), style: 'https://api.maptiler.com/maps/winter-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: notoFont } },
     maptilerBike: { description: window.__('Cycling-focused MapTiler style highlighting bike routes and trails.'), style: 'https://api.maptiler.com/maps/64d03850-97e0-4aaa-bd1d-8287a9792de1/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: notoFont } },

@@ -119,12 +119,21 @@ export class Layer {
   }
 
   /**
+   * Credit for the data of this layer, shown in the attribution control of the map.
+   * Null for a layer of user data, which needs no credit. A layer type that pulls data
+   * from a third party overrides this with the credit that its license requires.
+   */
+  get attribution() {
+    return null
+  }
+
+  /**
    * Creates the MapLibre source for this layer.
    * Called once during initialization; visibility toggles reuse the source.
    */
   createSource() {
     const cluster = !!this.layer.cluster && !this.layer.heatmap
-    addGeoJSONSource(this.sourceId, cluster)
+    addGeoJSONSource(this.sourceId, cluster, this.attribution)
   }
 
   /**

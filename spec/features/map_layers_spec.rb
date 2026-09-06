@@ -78,30 +78,39 @@ describe "Map" do
       expect(map.name).to eq "Layers test"
     end
 
-    it "import kml" do
-      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
-      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "madeira.kml"))
-      expect(page).to have_text("Unbenannte Ebene(2)")
-      expect(map.reload.layers.count).to eq 2 # 1 default + 1 folder
-      expect(map.features.count).to eq 2
+    context "with kml import" do
+      before do
+        page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+        attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "madeira.kml"))
+        expect(page).to have_text("Unbenannte Ebene(2)")
+      end
 
-      point = map.features.find { |f| f.geometry["type"] == "Point" }
-      expect(point.properties["title"]).to eq "Cristiano Ronaldo Statue"
-      # the KML color ff589d0f is aabbggrr, and it sits in the "normal" pair of a StyleMap
-      expect(point.properties["marker-color"]).to eq "#0f9d58"
-      # the style id icon-1599-... names the G**gle icon, the href is a blank pin for all of them
-      expect(point.properties["marker-symbol"]).to eq "/icon-sets/maki/monument.png"
-      # a maki icon is white, so it needs a white border to stand out from the marker color
-      expect(point.properties["stroke"]).to eq "#fff"
-      expect(point.properties["marker-size"]).to eq 16
-      # <LabelStyle><scale>0</scale> hides the label
-      expect(point.properties["label"]).to be_nil
-      expect(point.properties["desc"]).to include("Statue am Hafen von Funchal")
-      expect(point.properties["Kategorie"]).to eq "Sehenswürdigkeit"
+      it "imports the kml layer and features" do
+        expect(map.reload.layers.count).to eq 2 # 1 default + 1 folder
+        expect(map.features.count).to eq 2
+      end
 
-      line = map.features.find { |f| f.geometry["type"] == "LineString" }
-      expect(line.properties["stroke"]).to eq "#000000"
-      expect(line.properties["stroke-width"]).to eq 1.2
+      it "imports point style and properties" do
+        point = map.features.find { |f| f.geometry["type"] == "Point" }
+        expect(point.properties["title"]).to eq "Cristiano Ronaldo Statue"
+        # the KML color ff589d0f is aabbggrr, and it sits in the "normal" pair of a StyleMap
+        expect(point.properties["marker-color"]).to eq "#0f9d58"
+        # the style id icon-1599-... names the G**gle icon, the href is a blank pin for all of them
+        expect(point.properties["marker-symbol"]).to eq "/icon-sets/maki/monument.png"
+        # a maki icon is white, so it needs a white border to stand out from the marker color
+        expect(point.properties["stroke"]).to eq "#fff"
+        expect(point.properties["marker-size"]).to eq 16
+        # <LabelStyle><scale>0</scale> hides the label
+        expect(point.properties["label"]).to be_nil
+        expect(point.properties["desc"]).to include("Statue am Hafen von Funchal")
+        expect(point.properties["Kategorie"]).to eq "Sehenswürdigkeit"
+      end
+
+      it "imports line style" do
+        line = map.features.find { |f| f.geometry["type"] == "LineString" }
+        expect(line.properties["stroke"]).to eq "#000000"
+        expect(line.properties["stroke-width"]).to eq 1.2
+      end
     end
 
     it "import kml document data" do

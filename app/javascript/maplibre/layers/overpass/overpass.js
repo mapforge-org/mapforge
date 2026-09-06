@@ -5,12 +5,18 @@ import { Layer } from 'maplibre/layers/layer'
 import { layers } from 'maplibre/layers/layers'
 import { applyOverpassQueryStyle } from 'maplibre/layers/overpass/queries'
 import { map } from 'maplibre/map'
+import { osmAttribution } from 'maplibre/styles/basemaps'
 import { initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
 
 export class OverpassLayer extends Layer {
   constructor(layer) {
     super(layer)
     this.contextMenuHandler = null
+  }
+
+  // Overpass serves OpenStreetMap data, which the ODbL requires to be credited
+  get attribution() {
+    return osmAttribution
   }
 
   initialize() {

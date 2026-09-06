@@ -13,7 +13,7 @@
   ],
   "sources": {
     "versatiles-shortbread": {
-      "attribution": "© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+      "attribution": "Data <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">© OpenStreetMap contributors</a>",
       "tiles": [
         "https://tiles.versatiles.org/tiles/osm/{z}/{x}/{y}"
       ],

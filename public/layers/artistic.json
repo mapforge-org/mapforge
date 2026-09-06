@@ -10,7 +10,7 @@
       "tiles": [
         "https://tiles.versatiles.org/tiles/osm/{z}/{x}/{y}"
       ],
-      "attribution": "© <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+      "attribution": "Data <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">© OpenStreetMap contributors</a>",
       "minzoom": 0,
       "maxzoom": 14
     },

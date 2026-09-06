@@ -6,6 +6,12 @@ import { map } from 'maplibre/map'
 import { initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
 
 export class WikipediaLayer extends Layer {
+  // Wikipedia publishes its text under CC BY-SA, which requires the credit and the license
+  get attribution() {
+    return '<a href="https://www.wikipedia.org/">Wikipedia</a> ' +
+      '<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a>'
+  }
+
   initialize() {
     initializeViewStyles(this.sourceId)
     initializeClusterStyles(this.sourceId, "/icons/wikipedia.png")

@@ -7,14 +7,17 @@ name in noto/. A value with a slash is the path of an icon, for example
 Sets in the emoji picker
 ------------------------
 
-noto      Noto Color Emoji, https://fonts.google.com/noto/specimen/Noto+Color+Emoji
-          The picker reads noto/emoji-mart-data.json for its emoji categories.
-maki      CC0, https://github.com/mapbox/maki
-temaki    CC0, https://github.com/rapideditor/temaki
-openmoji  CC BY-SA 4.0, https://openmoji.org/ , an alternative rendering of the emoji set.
+noto        Noto Color Emoji, https://fonts.google.com/noto/specimen/Noto+Color+Emoji
+            The picker reads noto/emoji-mart-data.json for its emoji categories.
+maki        CC0, https://github.com/mapbox/maki
+temaki      CC0, https://github.com/rapideditor/temaki
+openmoji    CC BY-SA 4.0, https://openmoji.org/ , an alternative rendering of the emoji set.
+fontawesome CC BY 4.0, https://fontawesome.com/ , the free "solid" style only. The free
+            package also has a "regular" (thin) style of the same icons and a "brands" style
+            of colored logos, neither is in the index.
 
 Every set except noto has an index.json, which the picker reads as one more category. To add a
-set, add it to SETS in bin/build_icon_sets.rb and to iconSets in
+set, add it to SETS in build_icon_sets.rb and to iconSets in
 app/javascript/controllers/feature/edit_controller.js. The script needs npm, inkscape and
 imagemagick.
 
