@@ -22,6 +22,24 @@ RSpec.describe MapChannel, type: :channel do
     end
   end
 
+  describe "#new_layer" do
+    it "skips invalid features and keeps the valid ones" do
+      subscribe(map_id: map.private_id)
+      layer_id = BSON::ObjectId.new.to_s
+      valid_feature = { "id" => BSON::ObjectId.new.to_s, "type" => "Feature", "properties" => {},
+                        "geometry" => { "type" => "Point", "coordinates" => [ 8.1, 47.2 ] } }
+      invalid_feature = { "id" => BSON::ObjectId.new.to_s, "type" => "Feature", "properties" => {},
+                          "geometry" => { "type" => "Point" } }
+
+      perform :new_layer, id: layer_id, map_id: map.private_id, type: "geojson",
+        geojson: { "features" => [ invalid_feature, valid_feature ] }
+
+      features = map.reload.layers.find(layer_id).features
+      expect(features.count).to eq 1
+      expect(features.first.id.to_s).to eq valid_feature["id"]
+    end
+  end
+
   describe "#update_layer with feature_order" do
     let(:order) { [ b.id.to_s, a.id.to_s ] }
 
