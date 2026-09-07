@@ -170,6 +170,8 @@ a:active, .link:active {
   --bs-tooltip-bg: var(--ctrl-button-color);
   --bs-tooltip-border-radius: 0.4rem;
   --bs-tooltip-opacity: 0.9;
+
+  pointer-events: none;
 }
 
 .tooltip-inner {
