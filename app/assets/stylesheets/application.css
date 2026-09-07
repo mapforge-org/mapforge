@@ -172,6 +172,10 @@ a:active, .link:active {
   --bs-tooltip-opacity: 0.9;
 }
 
+.tooltip-inner {
+  border: 2px solid white;
+}
+
 .small {
   font-size: 75%;
 }

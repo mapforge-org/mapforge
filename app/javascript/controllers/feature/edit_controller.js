@@ -396,6 +396,25 @@ export default class extends Controller {
     this.picker.style.top = `${editUi.offsetTop - 6}px`
     this.stylePicker()
     this.lazyLoadIcons()
+    this.keepPreview()
+  }
+
+  // Moving the pointer from one emoji to the next clears the preview in between, so the block
+  // collapses and pops back on every step. The clear waits, the next hover cancels it.
+  keepPreview () {
+    // the picker assigns its inner component only once its async render ran
+    Object.defineProperty(this.picker, 'component', {
+      configurable: true,
+      set (component) {
+        Object.defineProperty(this, 'component', { value: component, writable: true, configurable: true })
+        const showEmoji = component.handleEmojiOver.bind(component)
+        let clear
+        component.handleEmojiOver = pos => {
+          clearTimeout(clear)
+          if (pos) { showEmoji(pos) } else { clear = setTimeout(showEmoji, 200) }
+        }
+      }
+    })
   }
 
   // A white icon is invisible on the white background of the picker. The picker keeps its
@@ -408,17 +427,18 @@ export default class extends Controller {
     style.textContent = whiteIconSets.map(set =>
       `img[src*="/icon-sets/${set}/"] { background-color: var(--color-dark-charcoal, #354A51); border-radius: 50%; padding: 3px; margin: -3px; }`
     ).join('\n')
+    style.textContent += '\n#nav img { margin: 0; }'
     root.appendChild(style)
 
     const previewStyle = document.createElement('style')
     previewStyle.id = 'small-preview'
-    // #preview wraps both the emoji icon and its name in one child div, for the idle "Pick an
-    // emoji…" placeholder and for a hovered emoji alike. Only the placeholder row gets the
-    // .preview-placeholder class, so :has() scopes the hidden icon and smaller padding to that
-    // row and leaves a hovered emoji's icon and name untouched.
     previewStyle.textContent = `
       #preview:has(.preview-placeholder) { padding: 4px 12px; }
       #preview:has(.preview-placeholder) > div > div:first-child { display: none; }
+      #preview > div > div:first-child { height: 1.5rem !important; }
+      #preview .emoji-mart-emoji > span { font-size: 1.5rem !important; }
+      #preview .emoji-mart-emoji > img { max-width: 1.5rem !important; max-height: 1.5rem !important; }
+      .scroll { padding-right: var(--padding); }
     `
     root.appendChild(previewStyle)
   }
@@ -435,7 +455,9 @@ export default class extends Controller {
       load.unobserve(entry.target)
     }), { rootMargin: '300px' })
 
-    const defer = () => root.querySelectorAll('img:not([data-src])').forEach(img => {
+    // Only the grid holds that many icons. A deferred icon shows its alt text until it loads,
+    // so the preview and the nav keep their src and stay quiet.
+    const defer = () => root.querySelectorAll('.scroll img:not([data-src])').forEach(img => {
       img.dataset.src = img.getAttribute('src')
       img.removeAttribute('src')
       load.observe(img)
