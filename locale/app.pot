@@ -318,6 +318,10 @@ msgstr ""
 msgid "Contour lines:"
 msgstr ""
 
+#: ../app/views/docs/tutorials.haml:12 ../app/views/shared/_footer.html.haml:45
+msgid "Contributing"
+msgstr ""
+
 #: ../app/views/maps/modals/_feature.haml:30
 msgid "Convert to route and edit JSON"
 msgstr ""
@@ -754,8 +758,12 @@ msgstr ""
 msgid "Hillshade:"
 msgstr ""
 
-#: ../app/views/docs/tutorials.haml:15
+#: ../app/views/docs/tutorials.haml:21
 msgid "How to add a custom data layer with OpenStreetMap data."
+msgstr ""
+
+#: ../app/views/docs/tutorials.haml:13
+msgid "How to report a bug, translate Mapforge or contribute code."
 msgstr ""
 
 #: ../app/views/docs/tutorials.haml:35

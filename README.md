@@ -7,11 +7,13 @@
 
 # Mapforge
 
+Create individual maps for your places, tracks and events. Share your maps in real-time. Try it now on  [mapforge.org](https://mapforge.org).
+
 Mapforge is an open source, easy to use GIS software. It's a web application that lets you create and share your places, tracks and events as GeoJSON layers on top of different base maps. It uses [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) as map library and supports both desktop and mobile.
 
 Your browser connects to the server via WebSockets, so that changes are immediately synced to all clients. This enables collaborative editing and sharing real-time maps.
 
-The main instance is running at [mapforge.org](https://mapforge.org), see [self-hosting](#selfhosting) how to run your own. Check the [changelog](CHANGELOG.md) for recent changes.
+The main instance is running at [mapforge.org](https://mapforge.org), see [self-hosting](#selfhosting) how to run your own. Check the [changelog](CHANGELOG.md) for recent changes. Contributions are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 <a href="https://mapforge.org">
 <img width="2550" height="1700" alt="Mapforge Screenshots" src="https://raw.githubusercontent.com/mapforge-org/mapforge/refs/heads/main/public/images/frontpage/github.png" />

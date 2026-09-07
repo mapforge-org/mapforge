@@ -2,6 +2,8 @@
 
 Mapforge is build with a Ruby on Rails backend and uses Maplibre and Stimulus on the frontend.
 
+To report a bug or to send a pull request, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ### Install Dependencies
 
 Example for openSUSE (Debian package names in parentheses):

@@ -242,6 +242,9 @@ msgstr "Höhenlinien zur Karte hinzugefügt"
 msgid "Contour lines:"
 msgstr "Höhenlinien:"
 
+msgid "Contributing"
+msgstr "Mitmachen"
+
 msgid "Convert to route"
 msgstr "In Route umwandeln"
 
@@ -577,6 +580,9 @@ msgstr "Schummerung:"
 
 msgid "How to add a custom data layer with OpenStreetMap data."
 msgstr "So fügst du eine Ebene mit OpenStreetMap-Daten hinzu."
+
+msgid "How to report a bug, translate Mapforge or contribute code."
+msgstr "So meldest du Fehler, übersetzt Mapforge oder steuerst Code bei."
 
 msgid "How to use keyboard shortcuts for common actions."
 msgstr "So nutzt du Tastenkürzel für häufige Aktionen."

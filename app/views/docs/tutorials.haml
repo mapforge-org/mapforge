@@ -7,6 +7,11 @@
       = _("Changelog")
     %i= _("Read about the latest changes and improvements on Mapforge.")
 
+  = link_to doc_path(id: 'CONTRIBUTING'), class: "tutorial-preview mt-3" do
+    %h4
+      = _("Contributing")
+    %i= _("How to report a bug, translate Mapforge or contribute code.")
+
   %h1.mt-4.mb-3.mapforge-font{ 'data-aos': "fade-right" }= _("Tutorials")
 
   = link_to doc_path(id: 'overpass_layers'), class: "tutorial-preview" do
