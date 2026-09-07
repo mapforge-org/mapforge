@@ -74,6 +74,15 @@ describe Map do
       end
     end
 
+    context "when map has no features" do
+      let(:map) { create(:map, center: nil, zoom: nil) }
+
+      it "leaves the view defaults empty, so the caller falls back to the client view" do
+        expect(map.properties[:default_center]).to be_nil
+        expect(map.properties[:default_zoom]).to be_nil
+      end
+    end
+
     context "when map has no zoom defined" do
       let(:map) { create(:map, zoom: nil) }
       let(:layer) { map.layers.first }
@@ -164,6 +173,30 @@ describe Map do
         map.update(base_map: Map::THUNDERFOREST_MAPS.first)
         expect(map.properties[:base_map]).to eq Map::THUNDERFOREST_MAPS.first
       end
+    end
+  end
+
+  describe ".zoom_for_distance" do
+    it "returns the default zoom for a single point" do
+      expect(described_class.zoom_for_distance(0)).to eq Map::DEFAULT_ZOOM
+    end
+
+    it "returns a city level zoom for a short distance" do
+      expect(described_class.zoom_for_distance(10)).to eq 12
+    end
+
+    it "returns the widest zoom for a continental distance" do
+      expect(described_class.zoom_for_distance(3000)).to eq 2
+    end
+  end
+
+  describe ".coarse_center" do
+    it "rounds to about 11km, so the stored region names no person" do
+      expect(described_class.coarse_center([ 11.0776, 49.4471 ])).to eq [ 11.1, 49.4 ]
+    end
+
+    it "returns nil when there is no center" do
+      expect(described_class.coarse_center(nil)).to be_nil
     end
   end
 

@@ -87,6 +87,24 @@ namespace :migrations do
     puts "Saved: #{(saved / 1024.0 / 1024).round(1)}MB (#{original_total.positive? ? ((saved.to_f / original_total) * 100).round(1) : 0}%)"
   end
 
+  desc "Move the IP derived center of empty maps into creator_center. DRY_RUN=1 to report only."
+  task creator_center: :environment do
+    dry_run = ENV["DRY_RUN"].present?
+    Map.each do |map|
+      next if map.center.blank? || map.features_count.positive?
+
+      set = { "creator_center" => Map.coarse_center(map.center) }
+      set["creator_zoom"] = map.zoom.to_i if map.zoom.present?
+      puts "empty map #{map.public_id}: current #{map.center.inspect} -> creator #{set['creator_center'].inspect}"
+      next if dry_run
+
+      # Writing through the collection skips the updated_at bump, which would make the
+      # screenshot task regenerate every preview, and skips the update_map broadcast.
+      map.collection.update_one({ _id: map.id },
+        { "$set" => set, "$unset" => { "center" => "", "zoom" => "" } })
+    end
+  end
+
   desc "Import images into mongoid fs volume"
   task dragonfly_fs_import: :environment do
     Image.each do |image|

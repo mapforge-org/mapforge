@@ -20,6 +20,98 @@ describe MapsController do
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)["updated_at"]).to be_present
     end
+
+    it "leaves the view defaults empty on a map without features" do
+      get map_properties_path(id: create(:map, center: nil, zoom: nil).public_id)
+      properties = JSON.parse(response.body)["properties"]
+      expect(properties["default_center"]).to be_nil
+      expect(properties["default_zoom"]).to be_nil
+    end
+  end
+
+  # The client view is per request and never stored, so it travels on gon and not in
+  # map_properties. A model broadcast has no request context and would overwrite it.
+  describe "#show (client view)" do
+    let(:map) { create(:map, center: nil, zoom: nil) }
+
+    def gon_view(raw, params = {})
+      result = MaxMindDB::Result.new(raw)
+      stub_const("MAXMIND_DB", instance_double(MaxMindDB::Client, lookup: result))
+      get map_path({ id: map.public_id }.merge(params))
+      { center: JSON.parse(response.body[/^gon\.client_center=(.*?);$/, 1]),
+        zoom: JSON.parse(response.body[/^gon\.client_zoom=(.*?);$/, 1]) }
+    end
+
+    it "derives the client zoom from the accuracy radius" do
+      view = gon_view("location" => { "longitude" => 11.0, "latitude" => 49.0, "accuracy_radius" => 20 })
+      expect(view[:center]).to eq [ 11.0, 49.0 ]
+      expect(view[:zoom]).to eq 10
+    end
+
+    it "zooms out on a country wide accuracy radius" do
+      view = gon_view("location" => { "longitude" => 11.0, "latitude" => 49.0, "accuracy_radius" => 1000 })
+      expect(view[:zoom]).to eq 4
+    end
+
+    it "keeps the default zoom when the accuracy radius is missing" do
+      view = gon_view("location" => { "longitude" => 11.0, "latitude" => 49.0 })
+      expect(view[:center]).to eq [ 11.0, 49.0 ]
+      expect(view[:zoom]).to eq Map::DEFAULT_ZOOM
+    end
+
+    it "falls back to the static defaults when the record has no coordinates" do
+      view = gon_view("country" => { "names" => { "en" => "Germany" } })
+      expect(view[:center]).to eq Map::DEFAULT_CENTER
+      expect(view[:zoom]).to eq Map::DEFAULT_ZOOM
+    end
+
+    it "skips the lookup and uses the static zoom when the map has a center" do
+      map.update!(center: [ 1.0, 2.0 ])
+      view = gon_view("location" => { "longitude" => 11.0, "latitude" => 49.0, "accuracy_radius" => 20 })
+      expect(view[:center]).to eq Map::DEFAULT_CENTER
+      expect(view[:zoom]).to eq Map::DEFAULT_ZOOM
+    end
+
+    it "falls back to the creator region when the lookup finds nothing" do
+      map.update!(creator_center: [ 7.6, 51.9 ], creator_zoom: 9)
+      view = gon_view("country" => { "names" => { "en" => "Germany" } })
+      expect(view[:center]).to eq [ 7.6, 51.9 ]
+      expect(view[:zoom]).to eq 9
+    end
+
+    # The screenshot browser runs on the server, so its own location must not be used
+    it "skips the lookup in static mode and uses the creator region" do
+      map.update!(creator_center: [ 7.6, 51.9 ], creator_zoom: 9)
+      view = gon_view({ "location" => { "longitude" => 11.0, "latitude" => 49.0, "accuracy_radius" => 20 } },
+        { static: true })
+      expect(view[:center]).to eq [ 7.6, 51.9 ]
+      expect(view[:zoom]).to eq 9
+    end
+  end
+
+  describe "#create" do
+    let(:user) { create(:user) }
+
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      result = MaxMindDB::Result.new("location" => { "longitude" => 11.0776, "latitude" => 49.4471,
+                                                     "accuracy_radius" => 20 })
+      stub_const("MAXMIND_DB", instance_double(MaxMindDB::Client, lookup: result))
+    end
+
+    it "stores no center and no zoom, so every visitor resolves the view themselves" do
+      post create_map_path
+      map = user.reload.owned_maps.first
+      expect(map.center).to be_nil
+      expect(map.zoom).to be_nil
+    end
+
+    it "stores the rounded creator region for the preview screenshot" do
+      post create_map_path
+      map = user.reload.owned_maps.first
+      expect(map.creator_center).to eq [ 11.1, 49.4 ]
+      expect(map.creator_zoom).to eq 10
+    end
   end
 
   describe "#destroy" do

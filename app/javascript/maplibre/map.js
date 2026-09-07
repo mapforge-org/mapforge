@@ -7,9 +7,9 @@ import { status } from 'helpers/status';
 import * as maplibregl from 'maplibre-gl';
 import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
+import { removeEditControls } from 'maplibre/controls/edit';
 import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
 import { initLevelFromURL } from 'maplibre/controls/levels';
-import { removeEditControls } from 'maplibre/controls/edit';
 import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
@@ -86,6 +86,15 @@ export function initializeMaplibreProperties () {
   return false
 }
 
+// Opening view, in order: the view stored on the map, the view calculated from the
+// features, then the view of the client (IP based, with a static fallback).
+export function initialView () {
+  return {
+    center: mapProperties.center || mapProperties.default_center || window.gon.client_center,
+    zoom: mapProperties.zoom || mapProperties.default_zoom || window.gon.client_zoom
+  }
+}
+
 export async function initializeMap (divId = 'maplibre-map') {
   backgroundMapLayer = null
 
@@ -98,8 +107,8 @@ export async function initializeMap (divId = 'maplibre-map') {
   try {
     map = new maplibregl.Map({
       container: divId,
-      center: (mapProperties.center || mapProperties.default_center),
-      zoom: (mapProperties.zoom || mapProperties.default_zoom), // will zoom in on map:load
+      center: initialView().center,
+      zoom: initialView().zoom, // will zoom in on map:load
       pitch: mapProperties.pitch,
       bearing: mapProperties.bearing || 0,
       maxPitch: 72,
@@ -812,7 +821,7 @@ export function frontFeature(frontFeature) {
 
 export function viewUnchanged() {
   const tolerance = 0.01
-  const mapInitCenter= (mapProperties.center || mapProperties.default_center)
+  const mapInitCenter = initialView().center
   const lngMatch = Math.abs(map.getCenter().lng - mapInitCenter[0]) < tolerance
   const latMatch = Math.abs(map.getCenter().lat - mapInitCenter[1]) < tolerance
   // console.log(lngMatch && latMatch)

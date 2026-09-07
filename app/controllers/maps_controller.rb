@@ -3,6 +3,7 @@ class MapsController < ApplicationController
 
   before_action :set_map, only: %i[show properties feature layer destroy copy]
   before_action :set_map_mode, only: %i[show layer]
+  before_action :set_client_view, only: %i[show]
   before_action :join, only: %i[show]
   before_action :set_global_js_values, only: %i[show tutorial]
   before_action :check_permissions, only: %i[show properties layer]
@@ -42,7 +43,7 @@ class MapsController < ApplicationController
             )
           }
         end
-        @map_properties = map_properties
+        @map_properties = @map.properties
         @user&.track_map_view(params[:id])
 
         gon.map_id = params[:id]
@@ -51,6 +52,8 @@ class MapsController < ApplicationController
         gon.rails_env = Rails.env
         gon.csrf_token = form_authenticity_token
         gon.map_properties = @map_properties
+        gon.client_center = @client_center
+        gon.client_zoom = @client_zoom
         gon.map_layers = @map.layers.map(&:to_summary_json)
         gon.map_updated_at = @map.updated_at
 
@@ -82,9 +85,7 @@ class MapsController < ApplicationController
   end
 
   def create
-    # Setting map center to user IP location (will reset on first feature)
-    coords = ip_coordinates
-    @map = Map.new(center: coords || Map::DEFAULT_CENTER)
+    @map = Map.new(creator_view)
     @map.add_owner(@user)
     @map.save!
 
@@ -100,7 +101,8 @@ class MapsController < ApplicationController
 
   # Endpoint for reloading map properties
   def properties
-    properties = { properties: map_properties, updated_at: @map.updated_at, layers: @map.layers.map(&:to_summary_json) }
+    properties = { properties: @map.properties, updated_at: @map.updated_at,
+                   layers: @map.layers.map(&:to_summary_json) }
     render json: properties
   end
 
@@ -134,35 +136,43 @@ class MapsController < ApplicationController
 
   private
 
-  def map_properties
-    properties = @map.properties
-    # set calculated center to user location when there are no features
-    if @map.features_count.zero?
-      coords = ip_coordinates
-      properties[:default_center] = coords if coords
-    end
-    properties
+  # The opening view for this request only. A map with no center of its own opens at the
+  # location of the visitor. The screenshot browser has no useful IP, so it takes the
+  # region that the creator had.
+  def set_client_view
+    view = ip_location if @map.center.nil? && @map_mode != "static"
+    view ||= { center: @map.creator_center, zoom: @map.creator_zoom }
+    @client_center = view[:center] || Map::DEFAULT_CENTER
+    @client_zoom = view[:zoom] || Map::DEFAULT_ZOOM
   end
 
-  # simplecov:disable
-  def ip_coordinates
+  def creator_view
+    location = ip_location
+    return {} unless location
+    { creator_center: Map.coarse_center(location[:center]), creator_zoom: location[:zoom] }
+  end
+
+  # Returns { center:, zoom: } for the client IP, or nil.
+  def ip_location
     # https://github.com/yhirose/maxminddb
     ret = MAXMIND_DB&.lookup(request.remote_ip)
-    unless ret&.found?
+    center = [ ret.location.longitude, ret.location.latitude ] if ret&.found?
+    unless center&.all?
       Rails.logger.warn "Cannot detect location for IP #{request.remote_ip}"
       Yabeda.geolocation_lookup_failures.increment({})
       return nil
     end
-    ip_coordinates = [ ret.location.longitude, ret.location.latitude ]
-    Rails.logger.info "Client IP: #{request.remote_ip}, coords: #{ip_coordinates.inspect}, loc: #{ret.country.name}/#{ret.city.name}"
+    radius_km = ret.location.accuracy_radius
+    zoom = radius_km && Map.zoom_for_distance(radius_km * 2)
+    Rails.logger.info "Client IP: #{request.remote_ip}, coords: #{center.inspect}, " \
+      "accuracy: #{radius_km}km, zoom: #{zoom}, loc: #{ret.country.name}/#{ret.city.name}"
     Yabeda.geolocation_lookup_successes.increment({})
-    ip_coordinates
+    { center: center, zoom: zoom }
   rescue => e
     Rails.logger.error "Error getting IP coordinates: #{e.message}"
     Yabeda.geolocation_lookup_failures.increment({})
     nil
   end
-  # simplecov:enable
 
   # Batch-load recent maps in 2 queries instead of 2N individual find_by calls.
   # Looks up by private_id (rw) and public_id (ro), preserving view order.

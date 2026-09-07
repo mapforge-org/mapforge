@@ -27,7 +27,7 @@ Some features of the map send a request from your browser to another service. Yo
 * Routing sends your start and end point to [openrouteservice.org](https://openrouteservice.org)
 * Importing a map element sends its id to [openstreetmap.org](https://openstreetmap.org)
 
-To center the map on your region at the first visit, the server looks up your IP address in a local copy of the MaxMind GeoLite2 database. The lookup happens on our server. Mapforge does not send your IP address to MaxMind and does not store the result.
+At your first visit, the server centers the map on your region. To find the region, the server looks up your IP address in a local copy of the MaxMind GeoLite2 database. The lookup happens on our server. Mapforge does not send your IP address to MaxMind, and does not store it. When you create a map, Mapforge stores the region on that map, rounded to about 11 kilometers. The preview image of the map uses that region. As soon as the map has content, the preview uses the content instead.
 
 Mapforge can be run with [Umami](https://umami.is) for anonymous page statistics. Umami sets no cookie and collects no personal data. The operator of the site decides whether to enable it.
 

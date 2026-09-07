@@ -49,12 +49,13 @@ describe "Feature edit" do
         wait_for { Feature.polygon.count }.to eq(1)
       end
 
-      it "clears the IP-derived map center on the first feature" do
+      # A stored center always comes from the owner, so the first feature must not clear it
+      it "keeps the map center when adding the first feature" do
         expect(map.center).to eq(Map::DEFAULT_CENTER)
         find(".mapbox-gl-draw_point").click
         click_coord("#maplibre-map", 50, 50)
         wait_for { Feature.point.count }.to eq(1)
-        wait_for { map.reload.center }.to be_nil
+        expect(map.reload.center).to eq(Map::DEFAULT_CENTER)
       end
     end
   end
@@ -365,12 +366,12 @@ describe "Feature edit" do
           input.dispatchEvent(new Event('input', { bubbles: true }));
         JS
 
-        icon = 'img[src="/icon-sets/maki/cafe.png"]'
-        wait_for {
-          page.evaluate_script("!!document.querySelector('em-emoji-picker').shadowRoot.querySelector('#{icon}')")
-        }.to be true
-
-        page.execute_script("document.querySelector('em-emoji-picker').shadowRoot.querySelector('#{icon}').click()")
+        # Scoped to the grid: while the grid icon waits for its lazy src, a hover preview of
+        # the same icon keeps its own src, and that copy carries no click handler.
+        icon = "document.querySelector('em-emoji-picker').shadowRoot" \
+          ".querySelector('.scroll img[src=\"/icon-sets/maki/cafe.png\"]')"
+        wait_for { page.evaluate_script("!!#{icon}") }.to be true
+        page.execute_script("#{icon}.closest('button').click()")
 
         wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/maki/cafe.png")
       end

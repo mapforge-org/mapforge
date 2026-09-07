@@ -8,7 +8,7 @@ import { status } from 'helpers/status'
 import { resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
 import { getFeatureSource, renderLayers, updateAnimatedFeature } from 'maplibre/layers/layers'
-import { map, mapProperties } from 'maplibre/map'
+import { initialView, map, mapProperties } from 'maplibre/map'
 
 export class AnimationManager {
   constructor () {
@@ -193,8 +193,8 @@ export class AnimatePolygonAnimation extends AnimationManager {
 export function animateViewFromProperties () {
   map.once('moveend', function () { status(window.__('Map view updated')) })
   map.flyTo({
-    center: mapProperties.center || mapProperties.default_center,
-    zoom: mapProperties.zoom || mapProperties.default_zoom,
+    center: initialView().center,
+    zoom: initialView().zoom,
     pitch: mapProperties.pitch,
     bearing: mapProperties.bearing || 0,
     curve: 0.3,

@@ -48,6 +48,10 @@ class Map
   field :template, type: Boolean
   field :edit_permission, type: String, default: "link" # 'private', 'link'
   field :view_permission, type: String, default: "link" # 'private', 'link', 'listed'
+  # The region of the creator, used only for the preview screenshot: the screenshot browser
+  # runs on the server and has no useful IP. Rounded, see docs/privacy.md.
+  field :creator_center, type: Array
+  field :creator_zoom, type: Integer
 
   index({ public_id: 1 }, unique: true, background: true)
   index({ private_id: 1 }, unique: true, background: true)
@@ -279,6 +283,28 @@ class Map
     map
   end
 
+  # Maps a span in km to a zoom level. Used for the extent of the map features and
+  # for the accuracy radius of an IP lookup.
+  def self.zoom_for_distance(distance_km)
+    case distance_km
+    when 0 then DEFAULT_ZOOM
+    when 0..1 then 16
+    when 1..4 then 14
+    when 4..10 then 12
+    when 10..50 then 10
+    when 50..100 then 9
+    when 100..200 then 8
+    when 200..1000 then 6
+    when 1000..2000 then 4
+    else 2
+    end
+  end
+
+  # Coarse enough to name a region, not a person. About 11km.
+  def self.coarse_center(center)
+    center&.map { |coord| coord.round(1) }
+  end
+
   private
 
   def create_default_layer
@@ -290,39 +316,24 @@ class Map
     coordinates.flatten.each_slice(2).to_a
   end
 
-  # setting center to average of all coordinates
+  # setting center to average of all coordinates.
+  # nil when there is nothing to frame, so the client falls back to the request-time
+  # view (MapsController#set_client_view).
   def calculated_center(coordinates = all_points)
-    if coordinates.present?
-      average_latitude = coordinates.map(&:first).reduce(:+) / coordinates.size.to_f
-      average_longitude = coordinates.map(&:last).reduce(:+) / coordinates.size.to_f
-      Rails.logger.info("Calculated map (#{id}) center: #{[ average_latitude, average_longitude ]}")
-      [ average_latitude, average_longitude ]
-    else
-      DEFAULT_CENTER
-    end
+    return nil if coordinates.blank?
+    average_latitude = coordinates.map(&:first).reduce(:+) / coordinates.size.to_f
+    average_longitude = coordinates.map(&:last).reduce(:+) / coordinates.size.to_f
+    Rails.logger.info("Calculated map (#{id}) center: #{[ average_latitude, average_longitude ]}")
+    [ average_latitude, average_longitude ]
   end
 
   def calculated_zoom(coordinates = all_points)
-    if coordinates.present?
-      point1 = RGeo::Geographic.spherical_factory.point(coordinates.map(&:first).max, coordinates.map(&:last).max)
-      point2 = RGeo::Geographic.spherical_factory.point(coordinates.map(&:first).min, coordinates.map(&:last).min)
-      distance_km = point1.distance(point2) / 1000
-      Rails.logger.info("Calculated map (#{id}) feature distance: #{distance_km} km")
-      case distance_km
-      when 0 then DEFAULT_ZOOM
-      when 0..1 then 16
-      when 1..4 then 14
-      when 4..10 then 12
-      when 10..50 then 10
-      when 50..100 then 9
-      when 100..200 then 8
-      when 200..1000 then 6
-      when 1000..2000 then 4
-      else 2
-      end
-    else
-      DEFAULT_ZOOM
-    end
+    return nil if coordinates.blank?
+    point1 = RGeo::Geographic.spherical_factory.point(coordinates.map(&:first).max, coordinates.map(&:last).max)
+    point2 = RGeo::Geographic.spherical_factory.point(coordinates.map(&:first).min, coordinates.map(&:last).min)
+    distance_km = point1.distance(point2) / 1000
+    Rails.logger.info("Calculated map (#{id}) feature distance: #{distance_km} km")
+    self.class.zoom_for_distance(distance_km)
   end
 
   def get_base_map

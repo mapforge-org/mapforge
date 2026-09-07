@@ -1,5 +1,5 @@
 import { hexToRgb } from 'helpers/functions'
-import { mapProperties, initializeMaplibreProperties } from 'maplibre/map'
+import { mapProperties, initializeMaplibreProperties, initialView } from 'maplibre/map'
 import { basemaps } from 'maplibre/styles/basemaps'
 import * as maplibregl from 'maplibre-gl'
 
@@ -27,7 +27,7 @@ async function init () {
     // style: '/layers/nostreets.json?key=' + window.gon.map_keys.maptiler,
     style: (basemaps()[mapProperties.base_map] || basemaps().versatilesGraybeard).style,
     // center: [8.271366455078127, 50.013330503465454],
-    center: mapProperties.center || mapProperties.default_center,
+    center: initialView().center,
     zoom: mapProperties.zoom,
     pitch: 45 // tilt the map
   })

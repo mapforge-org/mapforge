@@ -1,9 +1,9 @@
 / default values will get up by initSettingsModal(), current values by callbacks
 - data = { controller: 'map--modal map--settings',
            map__settings_current_pitch_value: @map_properties[:pitch].to_f.round(0),
-           map__settings_current_zoom_value: (@map_properties[:zoom] || @map_properties[:default_zoom]).to_f.round(2),
+           map__settings_current_zoom_value: (@map_properties[:zoom] || @map_properties[:default_zoom] || @client_zoom).to_f.round(2),
            map__settings_current_bearing_value: @map_properties[:bearing].to_f.round(0),
-           map__settings_current_center_value: (@map_properties[:center] || @map_properties[:default_center]),
+           map__settings_current_center_value: (@map_properties[:center] || @map_properties[:default_center] || @client_center),
            action: "keydown.esc@window->map--modal#close" }
 
 #settings-modal.modal-center.fade{ data: data }
