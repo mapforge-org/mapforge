@@ -418,7 +418,9 @@ export function updateElevation(feature) {
     if (coords[i].length < 3) missing.push(i)
   }
 
-  if (missing.length > 0 && missing.length <= 10) {
+  if (missing.length === 0) return Promise.resolve()
+
+  if (missing.length <= 10) {
     return getPointsElevation(coords, missing)
       .then(updated => { feature.geometry.coordinates = updated })
       .catch(() => fullElevation(feature))
