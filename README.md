@@ -7,48 +7,32 @@
 
 # Mapforge
 
-Create individual maps for your places, tracks and events. Share your maps in real-time. Try it now on  [mapforge.org](https://mapforge.org).
-
-Mapforge is an open source, easy to use GIS software. It's a web application that lets you create and share your places, tracks and events as GeoJSON layers on top of different base maps. It uses [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) as map library and supports both desktop and mobile.
-
-Your browser connects to the server via WebSockets, so that changes are immediately synced to all clients. This enables collaborative editing and sharing real-time maps.
-
-The main instance is running at [mapforge.org](https://mapforge.org), see [self-hosting](#selfhosting) how to run your own. Check the [changelog](CHANGELOG.md) for recent changes. Contributions are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
+Create individual maps for your places, tracks and events, and share them in real time.
 
 <a href="https://mapforge.org">
 <img width="2550" height="1700" alt="Mapforge Screenshots" src="https://raw.githubusercontent.com/mapforge-org/mapforge/refs/heads/main/public/images/frontpage/github.png" />
 </a>
 
+Mapforge is an open source GIS web application. Create and share your places, tracks and events as GeoJSON layers on different base maps, with [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) on desktop and mobile. Changes are synced live to all clients.
+
+**[Try it on mapforge.org](https://mapforge.org)** · [Self-host](#selfhosting) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+
 ### Features
 
 - Create maps with your own data on top of various available base maps.
-- [Self-host](#selfhosting) with Docker Compose or a container image, needs only Redis and MongoDB
-- Draw shapes and [style them](https://mapforge.org/doc/geojson_style_spec): Add pictures, customize colors, symbols, labels, (3D) polygons and more
+- 3D terrain, hillshade, contour lines and globe projection
+- [Self-host](#selfhosting) with ready-to-use Docker Compose file
+- Draw shapes and [style them](https://mapforge.org/doc/geojson_style_spec): Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more. The style attributes extend the [GeoJSON](https://macwright.com/2015/03/23/geojson-second-bite.html) / [Mapbox simplestyle](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0) spec.
+- Plan routes for walking, bike and car with [openrouteservice](https://openrouteservice.org/), with elevation profile and route color coding by steepness or surface
 - Import and export GeoJSON, GPX and KML
+- Search places and addresses, including the features of the open map
 - Real-time collaborative editing, changes sync to every connected client over WebSockets
 - Share maps and embed on your own web page
 - Desktop and mobile UI
 - [Integration](https://mapforge.org/doc/overpass_layers) with [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) for custom OpenStreetMap queries
 - Login with Google, GitHub or OSM OAuth, no auth system to maintain
-- PWA support by default, ships as an [Android app](https://play.google.com/store/apps/details?id=org.mapforge.twa) via Bubblewrap
+- [PWA support](docs/tutorials/app.md) by default, ships as an [Android app](https://play.google.com/store/apps/details?id=org.mapforge.twa) via Bubblewrap
 - Record GPS tracks with the built in [µlogger API](engines/ulogger/README.md)
-
-### Styling & Data Sources
-
-GeoJSON layers can be styled using an extended version of the
-[GeoJSON](https://macwright.com/2015/03/23/geojson-second-bite.html) /
-[Mapbox simplestyle](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0) spec.
-See [docs/tutorials/geojson_style_spec.md](docs/tutorials/geojson_style_spec.md) for supported attributes.
-
-[Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) layers can be added to a map, allowing custom queries and display of OpenStreetMap data.
-See [docs/tutorials/overpass_layers.md](https://mapforge.org/doc/overpass_layers) for details.
-
-### Android App / PWA
-
-Mapforge is built as a Progressive Web App (PWA), see
-[docs/tutorials/app.md](docs/tutorials/app.md).
-
-An [Android App](https://play.google.com/store/apps/details?id=org.mapforge.twa) that wraps the PWA is available in the Play Store.
 
 ## Self‑Hosting
 
