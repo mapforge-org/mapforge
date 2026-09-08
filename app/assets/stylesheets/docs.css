@@ -71,7 +71,7 @@ nav.fixed-top~#docs {
   display: block;
   border: 0.1rem solid var(--color-light-sand);
   border-radius: 1rem;
-  max-width: 35rem;
+  height: 100%;
   padding: 1.2rem;
   color: var(--color-light-sand) !important;
   text-decoration: none;

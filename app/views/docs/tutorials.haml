@@ -2,44 +2,62 @@
 
 #docs.selectable
 
-  = link_to doc_path(id: 'CHANGELOG'), class: "tutorial-preview" do
-    %h4
-      = _("Changelog")
-    %i= _("Read about the latest changes and improvements on Mapforge.")
+  .row.g-3
+    .col-md-6
+      = link_to doc_path(id: 'CHANGELOG'), class: "tutorial-preview" do
+        %h4
+          %i.bi.bi-clock-history.me-2
+          = _("Changelog")
+        %i= _("Read about the latest changes and improvements on Mapforge.")
 
-  = link_to doc_path(id: 'CONTRIBUTING'), class: "tutorial-preview mt-3" do
-    %h4
-      = _("Contributing")
-    %i= _("How to report a bug, translate Mapforge or contribute code.")
+    .col-md-6
+      = link_to doc_path(id: 'CONTRIBUTING'), class: "tutorial-preview" do
+        %h4
+          %i.bi.bi-git.me-2
+          = _("Contributing")
+        %i= _("How to report a bug, translate Mapforge or contribute code.")
 
   %h1.mt-4.mb-3.mapforge-font{ 'data-aos': "fade-right" }= _("Tutorials")
 
-  = link_to doc_path(id: 'overpass_layers'), class: "tutorial-preview" do
-    %h4
-      = _("OpenStreetMap data layers (Overpass)")
-    %i= _("How to add a custom data layer with OpenStreetMap data.")
+  .row.g-3
+    .col-md-6
+      = link_to doc_path(id: 'overpass_layers'), class: "tutorial-preview" do
+        %h4
+          %i.bi.bi-map.me-2
+          = _("OpenStreetMap data layers (Overpass)")
+        %i= _("How to add a custom data layer with OpenStreetMap data.")
 
-  = link_to doc_path(id: 'bike_touring'), class: "tutorial-preview mt-3" do
-    %h4
-      = _("Bicycle Touring with Mapforge")
-    %i= _("Plan your ride and navigate with compass mode and elevation profile.")
+    .col-md-6
+      = link_to doc_path(id: 'bike_touring'), class: "tutorial-preview" do
+        %h4
+          %i.bi.bi-bicycle.me-2
+          = _("Bicycle Touring with Mapforge")
+        %i= _("Plan your ride and navigate with compass mode and elevation profile.")
 
-  = link_to doc_path(id: 'app'), class: "tutorial-preview mt-3" do
-    %h4
-      = _("Install the Mapforge App")
-    %i= _("The app can get installed from the browser or from the app store.")
+    .col-md-6
+      = link_to doc_path(id: 'app'), class: "tutorial-preview" do
+        %h4
+          %i.bi.bi-phone.me-2
+          = _("Install the Mapforge App")
+        %i= _("The app can get installed from the browser or from the app store.")
 
-  = link_to doc_path(id: 'geojson_style_spec'), class: "tutorial-preview mt-3" do
-    %h4
-      = _("Advanced feature styling")
-    %i= _("Learn how to style your map features with extended GeoJSON properties.")
+    .col-md-6
+      = link_to doc_path(id: 'geojson_style_spec'), class: "tutorial-preview" do
+        %h4
+          %i.bi.bi-palette.me-2
+          = _("Advanced feature styling")
+        %i= _("Learn how to style your map features with extended GeoJSON properties.")
 
-  = link_to doc_path(id: 'keyboard_shortcuts'), class: "tutorial-preview mt-3" do
-    %h4
-      = _("Keyboard Shortcuts")
-    %i= _("How to use keyboard shortcuts for common actions.")
+    .col-md-6
+      = link_to doc_path(id: 'keyboard_shortcuts'), class: "tutorial-preview" do
+        %h4
+          %i.bi.bi-keyboard.me-2
+          = _("Keyboard Shortcuts")
+        %i= _("How to use keyboard shortcuts for common actions.")
 
-  = link_to doc_path(id: 'ulogger'), class: "tutorial-preview mt-3" do
-    %h4
-      = _("Tracking with µlogger")
-    %i= _("How to use the µlogger app to log your tracks from your phone.")
+    .col-md-6
+      = link_to doc_path(id: 'ulogger'), class: "tutorial-preview" do
+        %h4
+          %i.bi.bi-geo-alt.me-2
+          = _("Tracking with µlogger")
+        %i= _("How to use the µlogger app to log your tracks from your phone.")
