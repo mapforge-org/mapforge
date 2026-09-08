@@ -143,7 +143,7 @@ podman run ... -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb 
 - `MONGO_DB` — MongoDB database name (default: 'mapforge_production')
 - `MONGO_USER`, `MONGO_PASSWORD` — MongoDB credentials (optional; leave unset to connect without authentication)
 - `REDIS_URL` — Redis URL for Action Cable (default: `redis://localhost:6379/1`)
-- `OPENROUTESERVICE_KEY` — API key for routing features with [openrouteservice.org](https://openrouteservice.org/)
+- `OPENROUTESERVICE_KEY` — API key for routing features with [openrouteservice.org](https://openrouteservice.org/). Without this key the map hides the route buttons (walk, bike, car) in the line menu, and it hides the "Convert to route" section of the feature editor.
 - `INDOOREQUAL_KEY` — API key for [Indoorequal](https://indoorequal.com/)
 - `THUNDERFOREST_KEY` — API key for [Thunderforest](https://www.thunderforest.com/) maps
 - `PROTOMAPS_KEY` — API key for [Protomaps](https://protomaps.com/api) maps

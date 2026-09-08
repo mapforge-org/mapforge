@@ -20,6 +20,12 @@ export const orsProfiles = {
   foot: { profile: 'foot-hiking',     weightings: { green: 0.6, quiet: 0.3 } }
 }
 
+// Routing needs an ORS API key, see README.md#environment-variables. Without it
+// the routing UI stays hidden, because every request would fail.
+export function routingEnabled () {
+  return Boolean(window.gon?.map_keys?.openrouteservice)
+}
+
 // ORS route extras to request
 export const ORS_EXTRA_INFO = ['steepness', 'surface', 'waycategory', 'waytype', 'suitability', 'traildifficulty']
 

@@ -39,6 +39,22 @@ describe "Feature directions" do
     end
   end
 
+  context "without an openrouteservice key" do
+    before do
+      allow(Map).to receive(:provider_keys).and_return(Map.provider_keys.merge(openrouteservice: nil))
+      visit map.private_map_path
+      expect_map_loaded
+    end
+
+    it "hides the route buttons" do
+      find(".mapbox-gl-draw_line").click
+      expect(page).to have_css(".mapbox-gl-draw_paint")
+      expect(page).not_to have_css(".mapbox-gl-draw_foot")
+      expect(page).not_to have_css(".mapbox-gl-draw_bicycle")
+      expect(page).not_to have_css(".mapbox-gl-draw_road")
+    end
+  end
+
   context "convert GPX to routed track" do
     let(:gpx_feature) do
       create(:feature, :line_string,

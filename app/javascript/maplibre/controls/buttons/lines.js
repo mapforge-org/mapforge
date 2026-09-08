@@ -3,6 +3,7 @@ import { resetEditControls } from 'maplibre/controls/edit'
 import { resetHighlightedFeature } from 'maplibre/feature'
 import { draw, toggleDrawMode } from 'maplibre/edit'
 import { map } from 'maplibre/map'
+import { routingEnabled } from 'maplibre/routing/openrouteservice'
 import * as dom from 'helpers/dom'
 
 let lineMenu
@@ -46,9 +47,11 @@ export function addLineMenu() {
   lineMenu.classList.add('hidden')
   addLineButton()
   addPaintButton()
-  addFootButton()
-  addBicycleButton()
-  addRoadButton()
+  if (routingEnabled()) {
+    addFootButton()
+    addBicycleButton()
+    addRoadButton()
+  }
 }
 
 function addLineButton() {

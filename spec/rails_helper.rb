@@ -11,6 +11,8 @@ end
 require "spec_helper"
 ENV["RAILS_ENV"] ||= "test"
 ENV["DEFAULT_MAP"] = "test"
+# The routing UI only renders when an ORS key exists, see Map.provider_keys
+ENV["OPENROUTESERVICE_KEY"] ||= "test"
 
 require_relative "../config/environment"
 # Prevent database truncation if the environment is production

@@ -12,6 +12,7 @@ import { getFeatureTypeName, highlightedFeatureId, showFeatureDetails } from 'ma
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { getFeature, layers } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
+import { routingEnabled } from 'maplibre/routing/openrouteservice'
 import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
 
 let easyMDE
@@ -227,7 +228,8 @@ export default class extends Controller {
       // Show convert-to-route section for non-routed LineStrings
       const convertSection = document.querySelector('#convert-to-route-section')
       if (convertSection) {
-        if (window.gon.map_mode === 'rw' &&
+        if (routingEnabled() &&
+            window.gon.map_mode === 'rw' &&
             feature.geometry.type === 'LineString' &&
             !feature.properties?.route?.provider &&
             getFeature(feature.id, 'geojson')) {
