@@ -46,7 +46,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: ./.github/Dockerfile.base
+          file: ./deploy/Dockerfile.base
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           push: true
           cache-from: type=gha

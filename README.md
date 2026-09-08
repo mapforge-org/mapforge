@@ -22,7 +22,7 @@ The main instance is running at [mapforge.org](https://mapforge.org), see [self-
 ### Features
 
 - Create maps with your own data on top of various available base maps.
-- [Self-host](#selfhosting) via container image, needs only Redis and MongoDB
+- [Self-host](#selfhosting) with Docker Compose or a container image, needs only Redis and MongoDB
 - Draw shapes and [style them](https://mapforge.org/doc/geojson_style_spec): Add pictures, customize colors, symbols, labels, (3D) polygons and more
 - Import and export GeoJSON, GPX and KML
 - Real-time collaborative editing, changes sync to every connected client over WebSockets
@@ -55,13 +55,44 @@ An Android app that wraps the PWA is available in the Play Store:
 
 ## Self‑Hosting
 
+### Quick Start with Docker Compose
+
+[deploy/docker-compose.yml](deploy/docker-compose.yml) starts the application, MongoDB and Redis
+together. Docker Compose and Podman Compose both read it.
+
+```bash
+git clone https://github.com/mapforge-org/mapforge.git
+cd mapforge/deploy
+cp .env.example .env
+docker compose up --detach
+```
+
+Then open [http://localhost:3000](http://localhost:3000). To watch the logs, run `docker compose logs -f mapforge`.
+
+To sign in, either add OAuth credentials to `.env`, or use the local developer login, which is enabled by
+`DEVELOPER_LOGIN_ENABLED`. Only enable the developer login on a local test instance! The first user that logs in becomes admin.
+
+Uploaded images are stored in the volume `storage`, the database in the volume `mongo_data`.
+`docker compose down` keeps both volumes. `docker compose down -v` deletes them.
+
+To update to the latest images: `docker compose pull`
+
+The compose file contains commented sections for a reverse proxy, for the geolocation database and
+for map preview picture generation.
+
 ### Container Image
 
 The [latest image](https://github.com/mapforge-org/mapforge/pkgs/container/mapforge) is available from `ghcr.io/mapforge-org/mapforge:main`.
 
-You can also build your own image locally from the repository with: `podman build -t mapforge .`
+You can also build your own image locally. Run this command in the repository root:
 
-### Required Services
+```bash
+podman build -t mapforge -f deploy/Dockerfile .
+```
+
+### Manual Container Setup
+
+The steps below do the same as the compose file, but with single container commands.
 
 Before running the application container, make sure MongoDB and Redis are running. For example with Podman:
 
@@ -76,9 +107,7 @@ podman run -d --name redis \
   redis
 ```
 
-### Running Mapforge
-
-A minimal example using the GitHub Container Registry image:
+Now run Mapforge with the latest image from the GitHub Container Registry:
 
 ```bash
 podman run \
@@ -106,10 +135,10 @@ podman run ... -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb 
 
 ### Environment Variables
 
-- `SECRET_KEY_BASE` — Rails secret key (must be set in production)
+- `SECRET_KEY_BASE` — Rails secret key (must be set in production). Change the default from `.env.example` before you expose the instance, because anybody who knows the key can forge session cookies. Generate one with `openssl rand -hex 64`.
 - `DEVELOPER_LOGIN_ENABLED` — optional local developer login (only enable this in test instances)
-- `HTTP_PORT` — HTTP port inside the container (default: 3001 for thruster, 3000 for puma)
-- `SSL` — set to `true` if your container is running behind a TLS terminating reverse proxy (default: true)
+- `HTTP_PORT` — HTTP port inside the container (default: 3001 for thruster, 3000 for puma). The container image serves thruster on port 3001.
+- `SSL` — set to `true` if your container is running behind a TLS terminating reverse proxy. The default is `true`, but the container image sets it to `false`.
 - `MONGO_URL` — MongoDB connection string (default: `localhost:27017`)
 - `MONGO_DB` — MongoDB database name (default: 'mapforge_production')
 - `MONGO_USER`, `MONGO_PASSWORD` — MongoDB credentials (optional; leave unset to connect without authentication)

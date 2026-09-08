@@ -1,0 +1,58 @@
+# Mapforge stack: app, MongoDB, Redis. See README.md#quick-start-with-docker-compose
+# Start with: cp .env.example .env && docker compose up -d
+name: mapforge
+
+services:
+  mapforge:
+    image: ghcr.io/mapforge-org/mapforge:main
+    # To run a locally built image instead, comment out `image` above and use:
+    # build:
+    #   context: ..
+    #   dockerfile: deploy/Dockerfile
+    env_file: .env
+    environment:
+      MONGO_URL: mongo:27017
+      REDIS_URL: redis://redis:6379/1
+      # Set to true when a reverse proxy terminates TLS in front of the app.
+      SSL: "false"
+    ports:
+      # Host port 3000 maps to Thruster in the container. Behind a reverse
+      # proxy, drop this mapping and route the proxy to port 3001 instead.
+      - "3000:3001"
+    volumes:
+      - storage:/rails/storage
+      # Geolocation of new maps, see README.md
+      # - ./GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb:ro
+      # Map preview pictures. The host directory must be owned by UID 1000,
+      # because `bin/rake maps:screenshots` writes it as the container user.
+      # - ./previews:/rails/public/previews
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:8.2
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  storage:
+  mongo_data:

@@ -10,6 +10,9 @@
 /.env*
 !/.env*.erb
 
+# Ignore deployment files, they are not used inside the image.
+/deploy/
+
 # Ignore all default key files.
 /config/master.key
 /config/credentials/*.key

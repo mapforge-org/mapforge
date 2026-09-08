@@ -11,6 +11,11 @@
 # Ignore all environment files (except templates).
 /.env*
 !/.env*.erb
+/deploy/.env
+
+# Local data of the docker compose stack.
+/deploy/previews/
+/deploy/GeoLite2-City.mmdb
 
 # Ignore all logfiles and tempfiles.
 /log/*
