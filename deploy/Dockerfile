@@ -45,8 +45,11 @@ USER rails:rails
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD curl --connect-timeout 5 --max-time 5 -f http://localhost:3000/up > /tmp/healthcheck.log 2>&1 || exit 1
+# Probes Thruster on HTTP_PORT, not the Rails server behind it.
+# The start period never delays readiness. Probes still run inside it, and the first
+# success ends it.
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
+  CMD curl --connect-timeout 5 --max-time 5 -f http://localhost:$HTTP_PORT/up > /tmp/healthcheck.log 2>&1 || exit 1
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000

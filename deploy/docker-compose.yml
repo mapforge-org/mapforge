@@ -20,23 +20,34 @@ services:
       # proxy, drop this mapping and route the proxy to port 3001 instead.
       - "3000:3001"
     volumes:
-      - storage:/rails/storage
+      - ./storage:/rails/storage
       # Geolocation of new maps, see README.md
       # - ./GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb:ro
       # Map preview pictures. The host directory must be owned by UID 1000,
       # because `bin/rake maps:screenshots` writes it as the container user.
       # - ./previews:/rails/public/previews
     depends_on:
+      storage-init:
+        condition: service_completed_successfully
       mongo:
         condition: service_healthy
       redis:
         condition: service_healthy
+    # No healthcheck here: the image defines one, see deploy/Dockerfile.
     restart: unless-stopped
+
+  # Docker creates a missing bind mount directory as root. The app container
+  # runs as the non-root `rails` user (UID 1000) and cannot chown it itself.
+  storage-init:
+    image: busybox
+    command: chown -R 1000:1000 /storage
+    volumes:
+      - ./storage:/storage
 
   mongo:
     image: mongo:8.2
     volumes:
-      - mongo_data:/data/db
+      - ./mongo-db:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 10s
@@ -52,7 +63,3 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-
-volumes:
-  storage:
-  mongo_data:

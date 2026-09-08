@@ -15,6 +15,8 @@
 
 # Local data of the docker compose stack.
 /deploy/previews/
+/deploy/mongo-db/
+/deploy/storage/
 /deploy/GeoLite2-City.mmdb
 
 # Ignore all logfiles and tempfiles.

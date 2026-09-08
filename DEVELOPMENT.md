@@ -23,12 +23,26 @@ database and save it as `db/GeoLite2-City.mmdb`.
 
 ### Running the Development Server
 
+Before running the application, make sure MongoDB and Redis are running. For example with Podman:
+
+```bash
+podman run -d --name mongo \
+  -v <local_dir>:/data/db:U,z \
+  -p 27017:27017 \
+  mongo:8.2
+
+podman run -d --name redis \
+  -p 6379:6379 \
+  redis
+```
+
+Then start the Mapforge app:
+
 ```bash
 HTTP_PORT=3001 bin/thrust rails server
 ```
 
 In development, environment variables (see [README](README.md#environment-variables)) can be set in `.env.development`.
-The first user that logs in is automatically made admin.
 
 
 ### Base Maps
@@ -128,6 +142,40 @@ with [act](https://github.com/nektos/act), for example:
 
 ```bash
 act -j test
+```
+
+### Container Images
+
+You can build the app container image with:
+
+```bash
+podman build -t mapforge -f deploy/Dockerfile .
+```
+
+Now run Mapforge with the local image or the latest image from the GitHub Container Registry:
+
+```bash
+podman run \
+  --name mapforge
+  -e SECRET_KEY_BASE=e3c9f2... \
+  -e DEVELOPER_LOGIN_ENABLED=true \
+  --network=host \
+  ghcr.io/mapforge-org/mapforge:main
+```
+
+To persist data like uploaded images in your storage, mount these to the container by adding to the podman command:
+
+```bash
+-v /path/on/host/maps:/rails/public/previews
+-v /path/on/host/rails_storage:/rails/storage
+-v /path/on/host/rack_cache:/rails/tmp/cache/rack
+```
+
+To enable geolocation-based centering of maps, mount the
+[MaxMind GeoLite2](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data/) database:
+
+```bash
+-v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb
 ```
 
 ### Build the Android app
