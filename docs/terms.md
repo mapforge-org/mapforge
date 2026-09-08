@@ -40,8 +40,7 @@ Your privacy matters. Please review our [Privacy Policy](/doc/privacy) to unders
 
 ### Third-Party Services and Data
 
-Mapforge shows map data from other providers and sends requests to their services. If you use a
-feature that needs one of these services, the terms of that provider apply to you as well.
+Mapforge shows map data from other providers and sends requests to their services. If you use a feature that needs one of these services, the terms of that provider apply to you as well.
 
 | Service | Used for | Terms |
 | ------- | -------- | ----- |
@@ -57,11 +56,9 @@ feature that needs one of these services, the terms of that provider apply to yo
 | [Stadia Maps](https://stadiamaps.com/terms-of-service/) | the Stamen basemaps | Stadia Maps terms |
 | [Esri](https://www.esri.com/en-us/legal/terms/full-master-agreement) | satellite imagery | Esri terms |
 
-Do not remove or hide the credit in the corner of the map. The licenses of these providers
-require it. If you export a map or embed a map, keep the credit visible.
+Do not remove or hide the credit in the corner of the map. The licenses of these providers require it. If you export a map or embed a map, keep the credit visible.
 
-The [Credits](/doc/credits) page lists every provider, library, font, and icon set of Mapforge,
-together with its license.
+The [Credits](/doc/credits) page lists every provider, library, font, and icon set of Mapforge, together with its license.
 
 ### Governing Law
 

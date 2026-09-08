@@ -2,7 +2,6 @@ Copyright (c) 2024 Thomas Schmidt
 
 This project is licensed under the Affero General Public License (AGPL), Version 3.0.
 
-This project also includes files covered under the Mozilla Public License (MPL) 2.0. These files are located in the `vendor/javscript` directory, and their source code is made available under the terms of the MPL 2.0.
+This project also includes files covered under other licenses. They are described in /docs/credits.md.
 
 For the full terms of the AGPL 3.0, see docs/agpl-3.0.txt.
-For the full terms of the MPL 2.0, see https://www.mozilla.org/en-US/MPL/2.0/.

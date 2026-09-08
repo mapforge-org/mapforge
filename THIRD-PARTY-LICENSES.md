@@ -6,8 +6,6 @@ explains what Mapforge uses each project for.
 
 Mapforge itself is licensed under the AGPL 3.0. See [LICENSE](LICENSE).
 
-Regenerate this file with `ruby bin/build_licenses.rb`.
-
 ## JavaScript libraries
 
 Every file under `vendor/javascript/` comes from the npm package of the same name.

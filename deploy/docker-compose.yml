@@ -20,34 +20,67 @@ services:
       # proxy, drop this mapping and route the proxy to port 3001 instead.
       - "3000:3001"
     volumes:
-      - ./storage:/rails/storage
+      # The `z` flag relabels the directory for SELinux. Docker ignores it on
+      # systems without SELinux.
+      - ./volumes/storage:/rails/storage:z
       # Geolocation of new maps, see README.md
       # - ./GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb:ro
-      # Map preview pictures. The host directory must be owned by UID 1000,
-      # because `bin/rake maps:screenshots` writes it as the container user.
-      # - ./previews:/rails/public/previews
+      # Map preview pictures, written by the previews service.
+      - ./volumes/previews:/rails/public/previews:z
     depends_on:
-      storage-init:
+      volumes-init:
         condition: service_completed_successfully
       mongo:
         condition: service_healthy
       redis:
         condition: service_healthy
-    # No healthcheck here: the image defines one, see deploy/Dockerfile.
+    # The image defines the same healthcheck, see deploy/Dockerfile. It is
+    # repeated here because Podman does not report the healthcheck of an image
+    # to compose, and `depends_on: service_healthy` then fails.
+    healthcheck:
+      test: ["CMD-SHELL", "curl --connect-timeout 5 --max-time 5 -f http://localhost:$$HTTP_PORT/up || exit 1"]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+    restart: unless-stopped
+
+  # Refreshes the map preview pictures every 3 minutes. Compose has no
+  # scheduler, so the job is a sleep loop. It needs no port and no volume of
+  # its own beyond the shared previews directory.
+  previews:
+    image: ghcr.io/mapforge-org/mapforge:main
+    env_file: .env
+    environment:
+      MONGO_URL: mongo:27017
+      REDIS_URL: redis://redis:6379/1
+      # The app container inside the compose network. Override it in .env if a
+      # reverse proxy terminates TLS, for example https://maps.example.com
+      MAPFORGE_HOST: ${MAPFORGE_HOST:-http://mapforge:3001}
+    command: ["sh", "-c", "while true; do bin/rake maps:screenshots; sleep 180; done"]
+    volumes:
+      - ./volumes/previews:/rails/public/previews:z
+    depends_on:
+      mapforge:
+        condition: service_healthy
     restart: unless-stopped
 
   # Docker creates a missing bind mount directory as root. The app container
-  # runs as the non-root `rails` user (UID 1000) and cannot chown it itself.
-  storage-init:
+  # runs as the non-root `rails` user (UID 1000) and mongo as UID 999, so
+  # neither can chown its own directory.
+  volumes-init:
     image: busybox
-    command: chown -R 1000:1000 /storage
+    command: ["sh", "-c", "mkdir -p /volumes/storage /volumes/previews /volumes/mongodb && chown -R 1000:1000 /volumes/storage /volumes/previews && chown -R 999:999 /volumes/mongodb"]
     volumes:
-      - ./storage:/storage
+      - ./volumes:/volumes:z
 
   mongo:
     image: mongo:8.2
     volumes:
-      - ./mongo-db:/data/db
+      - ./volumes/mongodb:/data/db:z
+    depends_on:
+      volumes-init:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 10s

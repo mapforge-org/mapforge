@@ -48,8 +48,7 @@ See [docs/tutorials/overpass_layers.md](https://mapforge.org/doc/overpass_layers
 Mapforge is built as a Progressive Web App (PWA), see
 [docs/tutorials/app.md](docs/tutorials/app.md).
 
-An Android app that wraps the PWA is available in the Play Store:
-[Mapforge Android App](https://play.google.com/store/apps/details?id=org.mapforge.twa)
+An [Android App](https://play.google.com/store/apps/details?id=org.mapforge.twa) that wraps the PWA is available in the Play Store.
 
 ## Self‑Hosting
 
@@ -63,24 +62,20 @@ It uses the [latest released image](https://github.com/mapforge-org/mapforge/pkg
 git clone https://github.com/mapforge-org/mapforge.git
 cd mapforge/deploy
 cp .env.example .env
-docker compose up --detach
+docker compose up --detach # podman compose works, too
 ```
 
 Then open [http://localhost:3000](http://localhost:3000). To watch the logs, run `docker compose logs -f mapforge`.
 
-To sign in, either add OAuth credentials to `.env`, or use the local developer login, which is enabled by
-`DEVELOPER_LOGIN_ENABLED`. Only enable the developer login on a local test instance! The first user that logs in becomes admin.
+To sign in, either add OAuth credentials to `.env`, or use the local developer login, which is enabled by `DEVELOPER_LOGIN_ENABLED`. Only enable the developer login on a local test instance! The first user that logs in becomes admin.
 
-Uploaded images are stored in `deploy/storage/`, the database in `deploy/mongo-db/`. To update to the latest version: `docker compose pull`
-
-The compose file contains commented sections for a reverse proxy, for the geolocation database and
-for map preview picture generation.
+Uploaded images are stored in `deploy/volumes/storage/`, the database in `deploy/volumes/mongodb/`. To update to the latest version: `docker compose pull`
 
 ### Environment Variables
 
-- `SECRET_KEY_BASE` — Rails secret key (must be set in production). Change the default from `.env.example` before you expose the instance, because anybody who knows the key can forge session cookies. Generate one with `openssl rand -hex 64`.
+- `SECRET_KEY_BASE` — Rails secret key (must be set in production). Generate one with `openssl rand -hex 64`.
 - `DEVELOPER_LOGIN_ENABLED` — optional local developer login (only enable this in test instances)
-- `HTTP_PORT` — HTTP port inside the container (default: 3001 for thruster, 3000 for puma). The container image serves thruster on port 3001.
+- `HTTP_PORT` — HTTP port inside the container (default: 3001 for thruster, 3000 for puma).
 - `FORCE_SSL` — HTTPS enforcement. Set it to `true` if a reverse proxy terminates TLS in front of the app.
 - `MONGO_URL` — MongoDB connection string (default: `localhost:27017`)
 - `MONGO_DB` — MongoDB database name (default: 'mapforge_production')
@@ -90,7 +85,7 @@ for map preview picture generation.
 - `INDOOREQUAL_KEY` — API key for [Indoorequal](https://indoorequal.com/). Without this key the layer menu hides the "OpenStreetMap indoor" entry.
 - `THUNDERFOREST_KEY` — API key for [Thunderforest](https://www.thunderforest.com/) maps. Without this key the app hides the Thunderforest background maps.
 - `PROTOMAPS_KEY` — API key for [Protomaps](https://protomaps.com/api) maps. Without this key the app hides the Protomaps background maps.
-- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — GitHub OAuth credentials
-- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth credentials
-- `OSM_CLIENT_ID`, `OSM_CLIENT_SECRET` — OSM OAuth credentials
-- `DEFAULT_MAP` — default base map identifier (default: [versatilesColorful](https://versatiles.org/))
+- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — GitHub OAuth credentials. Set to enable login via Github.
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth credentials. Set to enable login via Google.
+- `OSM_CLIENT_ID`, `OSM_CLIENT_SECRET` — OSM OAuth credentials. Set to enable login via OpenStreetMap.
+- `DEFAULT_MAP` — default background map (default: [versatilesColorful](https://versatiles.org/))

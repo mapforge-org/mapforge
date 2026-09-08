@@ -10,21 +10,16 @@ Mapforge includes the fonts and the icon sets below.
 
 | Project | Used for | License |
 | ------- | -------- | ------- |
-| [Bree Serif](https://fonts.google.com/specimen/Bree+Serif) | headline font | OFL 1.1 |
-| [Lobster Two](https://fonts.google.com/specimen/Lobster+Two) | display font | OFL 1.1 |
-| [SUSE](https://github.com/SUSE/suse-font) | interface font | OFL 1.1 |
+| [Bree Serif](https://fonts.google.com/specimen/Bree+Serif) | headline font | OFL 1.1, © TypeTogether |
+| [Lobster Two](https://fonts.google.com/specimen/Lobster+Two) | display font | OFL 1.1, © Pablo Impallari |
+| [SUSE](https://github.com/SUSE/suse-font) | interface font | OFL 1.1, © The SUSE Project Authors |
 | [Bootstrap Icons](https://icons.getbootstrap.com/) | interface icons | MIT |
 | [Maki](https://github.com/mapbox/maki) | map symbols | CC0 |
 | [Temaki](https://github.com/rapideditor/temaki) | map symbols | CC0 |
 | [Font Awesome Free](https://fontawesome.com/) | map symbols | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
-| [Noto Emoji](https://github.com/googlefonts/noto-emoji) | emoji symbols | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
+| [Noto Emoji](https://github.com/googlefonts/noto-emoji) | emoji symbols | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0), © Google Inc. |
 
-Copyright of Noto Emoji: Google Inc. Copyright of SUSE: The SUSE Project Authors. Copyright of
-Bree Serif: TypeTogether. Copyright of Lobster Two: Pablo Impallari.
-
-Mapforge changed some of these files. It converted the Maki, Temaki, and Font Awesome icons
-from SVG to PNG images of 72 pixels, and it removed their color. Only the
-solid style of Font Awesome Free is included.
+Mapforge changed some of these files. It converted the Maki, Temaki, and Font Awesome icons from SVG to PNG images of 72 pixels, and it removed their color. Only the solid style of Font Awesome Free is included.
 
 ## Software libraries
 
@@ -36,8 +31,9 @@ solid style of Font Awesome Free is included.
 | [Redis](https://redis.io/) | message bus for the WebSocket updates | AGPL 3.0 or RSAL 2.0 |
 | [Puma](https://puma.io/) | web server | BSD-3-Clause |
 | [Haml](https://haml.info/) | templates | MIT |
-| [Redcarpet](https://github.com/vmg/redcarpet) | markdown for these pages | MIT |
+| [Redcarpet](https://github.com/vmg/redcarpet) | server-side markdown | MIT |
 | [Dragonfly](https://github.com/markevans/dragonfly) | image uploads | MIT |
+| [ImageMagick](https://imagemagick.org/) | image processing | [ImageMagick License](https://imagemagick.org/script/license.php) |
 | [RGeo](https://github.com/rgeo/rgeo) | geometry on the server | BSD-3-Clause |
 | [Turbo and Stimulus](https://hotwired.dev/) | browser interaction | MIT |
 | [Bootstrap](https://getbootstrap.com/) | page layout | MIT |
@@ -52,7 +48,7 @@ solid style of Font Awesome Free is included.
 | [Chart.js](https://www.chartjs.org/) | elevation chart | MIT |
 | [emoji-mart](https://github.com/missive/emoji-mart) | symbol picker | MIT |
 | [EasyMDE](https://github.com/Ionaru/easy-markdown-editor) | text editor | MIT |
-| [marked](https://github.com/markedjs/marked) | markdown in descriptions | MIT |
+| [marked](https://github.com/markedjs/marked) | markdown in js | MIT |
 | [SortableJS](https://github.com/SortableJS/Sortable) | reorder layers | MIT |
 | [Swiper](https://swiperjs.com/) | image galleries | MIT |
 | [AOS](https://github.com/michalsnik/aos) | scroll animations | MIT |
@@ -97,15 +93,10 @@ Mapforge sends requests to the services below when you use the matching feature.
 | [MaxMind GeoLite2](https://www.maxmind.com/) | approximate start position from the IP address, see the note below |
 | [Umami](https://umami.is/) | usage statistics, enabled on mapforge.org |
 
-This product includes GeoLite2 data created by MaxMind, available from
-[https://www.maxmind.com](https://www.maxmind.com).
+Mapforge.org uses GeoLite2 data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com).
 
-Mapforge can sign you in with GitHub, Google, or OpenStreetMap. Mapforge sends your login
-request to the provider that you select.
+When you sign in with GitHub, Google, or OpenStreetMap,  Mapforge sends your login request to that provider.
 
 ## License texts
 
-The MIT, BSD, ISC, Apache 2.0, and OFL licenses require the copyright notice and the license
-text in every copy. The file `THIRD-PARTY-LICENSES.md` in the source of Mapforge holds the
-notice and the text of every project above. Read it at
-[github.com/mapforge-org/mapforge](https://github.com/mapforge-org/mapforge/blob/main/THIRD-PARTY-LICENSES.md).
+The MIT, BSD, ISC, Apache 2.0, and OFL licenses require the copyright notice and the license text in every copy. The file `THIRD-PARTY-LICENSES.md` holds the notice and the license text of every project above.

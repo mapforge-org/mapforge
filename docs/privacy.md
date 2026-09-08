@@ -71,7 +71,6 @@ Please see the privacy policies and terms of service of used services here:
 * Wikipedia: [https://foundation.wikimedia.org/wiki/Policy:Privacy_policy](https://foundation.wikimedia.org/wiki/Policy:Privacy_policy)
 * Stadia Maps: [https://stadiamaps.com/privacy-policy/](https://stadiamaps.com/privacy-policy/)
 * Esri: [https://www.esri.com/en-us/privacy/overview](https://www.esri.com/en-us/privacy/overview)
-* MaxMind: [https://www.maxmind.com/en/privacy_policy](https://www.maxmind.com/en/privacy_policy)
 * Hetzner: [https://www.hetzner.com/legal/privacy-policy/](https://www.hetzner.com/legal/privacy-policy/)
 
 If you log in, the privacy policy of your login provider applies to that step:

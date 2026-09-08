@@ -1,16 +1,16 @@
 # Contributing to Mapforge
 
-Mapforge is an open source project. Every contribution helps: a bug report, a translation, a documentation fix or code.
+Mapforge is an open source project. Every contribution helps: a bug report, a feature proposal, a translation, a documentation fix or code.
 
 ## Ask a question or discuss an idea
 
 Use [GitHub Discussions](https://github.com/mapforge-org/mapforge/discussions) for questions, ideas and feedback.
 
-## Report a bug
+## Report a bug / feature request
 
 1. Search the [open issues](https://github.com/mapforge-org/mapforge/issues) for your problem.
 2. If there is no issue, [open a new issue](https://github.com/mapforge-org/mapforge/issues/new).
-3. Add the steps to reproduce the problem, the expected result and the actual result.
+3. Add the steps to reproduce the problem, the expected result and the actual result (screenshots if available).
 4. Add your browser and your operating system.
 
 Do not put a private map link into an issue. Everybody can read the issue and then edit your map.
@@ -18,8 +18,7 @@ Do not put a private map link into an issue. Everybody can read the issue and th
 ## Contribute code
 
 Before you start, read
-[DEVELOPMENT.md](https://github.com/mapforge-org/mapforge/blob/main/DEVELOPMENT.md).
-It explains the setup of a development environment.
+[DEVELOPMENT.md](https://github.com/mapforge-org/mapforge/blob/main/DEVELOPMENT.md). It explains the setup of a development environment.
 
 1. Fork the repository and create a branch.
 2. Make your change. Keep it small and limited to one topic.
@@ -40,4 +39,3 @@ Mapforge uses gettext. The locale files are in `locale/<lang>/app.po`.
 ## License
 
 Mapforge uses the [AGPL v3](https://github.com/mapforge-org/mapforge/blob/main/LICENSE) license.
-Your contribution uses the same license.

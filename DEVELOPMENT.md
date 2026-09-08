@@ -86,6 +86,7 @@ app/javascript/maplibre/basemaps.js
   ```bash
   bin/rake animation:path[<map_id>,<line_id>,<point_id>,<speed>]
   ```
+
 - Update .pot/.po files with new translatable strings from the code: `bin/rake gettext:find`
 
 - Export translation for use in js: `bin/rake gettext:po_to_json` (automatically called in container image build)
@@ -169,12 +170,6 @@ To persist data like uploaded images in your storage, mount these to the contain
 -v /path/on/host/maps:/rails/public/previews
 -v /path/on/host/rails_storage:/rails/storage
 -v /path/on/host/rack_cache:/rails/tmp/cache/rack
-```
-
-To enable geolocation-based centering of maps, mount the
-[MaxMind GeoLite2](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data/) database:
-
-```bash
 -v /path/on/host/GeoLite2-City.mmdb:/rails/db/GeoLite2-City.mmdb
 ```
 
