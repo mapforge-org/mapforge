@@ -14,7 +14,7 @@ services:
       MONGO_URL: mongo:27017
       REDIS_URL: redis://redis:6379/1
       # Set to true when a reverse proxy terminates TLS in front of the app.
-      SSL: "false"
+      FORCE_SSL: "false"
     ports:
       # Host port 3000 maps to Thruster in the container. Behind a reverse
       # proxy, drop this mapping and route the proxy to port 3001 instead.

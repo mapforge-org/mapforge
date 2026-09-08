@@ -81,7 +81,7 @@ for map preview picture generation.
 - `SECRET_KEY_BASE` — Rails secret key (must be set in production). Change the default from `.env.example` before you expose the instance, because anybody who knows the key can forge session cookies. Generate one with `openssl rand -hex 64`.
 - `DEVELOPER_LOGIN_ENABLED` — optional local developer login (only enable this in test instances)
 - `HTTP_PORT` — HTTP port inside the container (default: 3001 for thruster, 3000 for puma). The container image serves thruster on port 3001.
-- `SSL` — set to `true` if your container is running behind a TLS terminating reverse proxy. The default is `true`, but the container image sets it to `false`.
+- `FORCE_SSL` — HTTPS enforcement. Set it to `true` if a reverse proxy terminates TLS in front of the app.
 - `MONGO_URL` — MongoDB connection string (default: `localhost:27017`)
 - `MONGO_DB` — MongoDB database name (default: 'mapforge_production')
 - `MONGO_USER`, `MONGO_PASSWORD` — MongoDB credentials (optional; leave unset to connect without authentication)

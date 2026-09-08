@@ -21,12 +21,10 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
-  # In our case Traefik terminates SSL, so we need to assume the request was https
-  config.assume_ssl = ENV.fetch("SSL", "true").downcase != "false"
-
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # This is enabling 3 features: TLS redirect, Secure cookies, HTTP Strict Transport Security (HSTS) (https://api.rubyonrails.org/v8.0.2/classes/ActionDispatch/SSL.html)
-  config.force_ssl = ENV.fetch("SSL", "true").downcase != "false"
+  # Trust X-Forwarded-Proto from the TLS terminating proxy, redirect to HTTPS,
+  # send HSTS, mark cookies secure. Set FORCE_SSL=false for plain HTTP.
+  config.assume_ssl = ENV.fetch("FORCE_SSL", "true").downcase != "false"
+  config.force_ssl = ENV.fetch("FORCE_SSL", "true").downcase != "false"
 
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }

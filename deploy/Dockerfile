@@ -13,7 +13,7 @@ ENV RAILS_ENV="production" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development" \
     HTTP_PORT=3001 \
-    SSL=false
+    FORCE_SSL=false
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
