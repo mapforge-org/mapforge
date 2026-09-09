@@ -79,7 +79,8 @@ describe "Map" do
         expect(page).to have_text("Map view updated")
         expect(page.evaluate_script("[map.getCenter().lng, map.getCenter().lat].toString()")).to eq("11,49.5")
         find(".maplibregl-ctrl-map").click
-        expect(page).to have_text("Map default: 11,49.5")
+        expect(find("#map-view-fixed")).to be_checked
+        expect(page).to have_text("11,49.5")
       end
 
       it "client follows default center update if map did not move" do
@@ -93,7 +94,7 @@ describe "Map" do
         wait_for { page.evaluate_script("[map.getCenter().lng.toFixed(3), map.getCenter().lat.toFixed(3)].toString()") }
           .to eq("11.543,49.123")
         find(".maplibregl-ctrl-map").click
-        expect(page).to have_text("Map default: auto")
+        expect(find("#map-view-auto")).to be_checked
       end
 
       it "map zoom update" do
@@ -106,15 +107,11 @@ describe "Map" do
       it "map pitch update" do
         map.update(pitch: 33)
         wait_for { page.evaluate_script("map.getPitch()") }.to eq(33)
-        find(".maplibregl-ctrl-map").click
-        expect(page).to have_text("33")
       end
 
       it "map orientation update" do
         map.update(bearing: 33)
         wait_for { page.evaluate_script("map.getBearing()") }.to eq(33)
-        find(".maplibregl-ctrl-map").click
-        expect(page).to have_text("33")
       end
     end
   end

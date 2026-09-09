@@ -174,6 +174,65 @@ details.feature-section-card > summary {
   margin-left: 0.3rem;
 }
 
+.view-mode {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.view-card {
+  display: flex;
+  align-items: flex-start; /* the radio belongs on the title line, not stretched over the card */
+  gap: 0.4rem;
+  flex: 1 1 13rem;
+  padding: 0.5rem 0.6rem;
+  border: 2px solid var(--color-light-steel-blue);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.2s, background-color 0.2s, border-color 0.2s;
+}
+
+.view-card input {
+  margin-top: 0.25rem;
+  accent-color: var(--color-mid-steel-blue); /* the global light accent disappears on the active card */
+}
+
+.view-card:has(input:checked) {
+  opacity: 1;
+  background: var(--color-light-steel-blue);
+  border-color: var(--color-mid-steel-blue);
+}
+
+.view-card:has(input:disabled) {
+  cursor: default;
+}
+
+.view-card-title {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.view-card-body {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+/* the inactive card is a switch, so its button must not swallow the click */
+.view-card:not(:has(input:checked)) .btn {
+  pointer-events: none;
+}
+
+/* no fixed view was ever set, so there is nothing to show */
+.view-card-body .no-wrap:has(.view-values:empty) {
+  display: none;
+}
+
 .view-values {
   font-family: monospace;
   background: var(--color-light-steel-blue);

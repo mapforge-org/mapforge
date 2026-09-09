@@ -50,18 +50,12 @@ export default class extends Controller {
   }
 
   setupCoordinateCopyHandlers () {
-    const coordinateElements = ['#map-center', '#map-center-current']
-    coordinateElements.forEach(selector => {
-      const element = document.querySelector(selector)
-      if (element) {
-        element.style.cursor = 'pointer'
-        element.addEventListener('click', (event) => {
-          const text = event.target.textContent
-          if (text && text !== 'auto') {
-            copyToClipboard(text, window.__('Coordinates copied to clipboard'))
-          }
-        })
-      }
+    functions.e('#map-center', element => {
+      element.style.cursor = 'pointer'
+      element.addEventListener('click', (event) => {
+        const text = event.target.textContent
+        if (text) { copyToClipboard(text, window.__('Coordinates copied to clipboard')) }
+      })
     })
   }
 
@@ -91,27 +85,29 @@ export default class extends Controller {
     functions.e('img[data-base-map="' + value + '"]', e => { e.classList.add('active') })
   }
 
-  defaultPitchValueChanged (value) { this.setHTML('#map-pitch', value + '°') }
-  currentPitchValueChanged (value) { this.setHTML('#map-pitch-current', value + '°') }
-  defaultZoomValueChanged (value) { this.setHTML('#map-zoom', value || 'auto') }
-  currentZoomValueChanged (value) { this.setHTML('#map-zoom-current', value) }
-  defaultBearingValueChanged (value) { this.setHTML('#map-bearing', value + '°') }
-  currentBearingValueChanged (value) { this.setHTML('#map-bearing-current', value + '°') }
+  defaultPitchValueChanged () { this.renderDefaultView() }
+  defaultZoomValueChanged () { this.renderDefaultView() }
+  defaultBearingValueChanged () { this.renderDefaultView() }
+  defaultCenterValueChanged () { this.renderDefaultView() }
 
-  defaultCenterValueChanged (value, _previousValue) {
-    // console.log('defaultCenterValueChanged(): "' + value + '"')
-    if (value.length !== 0) {
-      value = value.map(coord => parseFloat(coord.toFixed(4)))
-    } else {
-      value = 'auto'
+  // center and zoom are the fields the server can leave unset, which is what 'auto' means
+  renderDefaultView () {
+    const fixed = this.defaultCenterValue.length !== 0 || this.defaultZoomValue !== ''
+    // in 'auto' mode the boxes keep showing the last fixed view, so that a switch back restores it
+    if (fixed) {
+      this.fixedView = {
+        center: this.defaultCenterValue,
+        zoom: this.defaultZoomValue,
+        pitch: this.defaultPitchValue,
+        bearing: this.defaultBearingValue
+      }
+      this.setHTML('#map-center', this.fixedView.center.map(coord => parseFloat(coord.toFixed(4))))
+      this.setHTML('#map-zoom', this.fixedView.zoom)
+      this.setHTML('#map-pitch', this.fixedView.pitch + '°')
+      this.setHTML('#map-bearing', this.fixedView.bearing + '°')
     }
-    document.querySelector('#map-center').innerHTML = value
-  }
-
-  currentCenterValueChanged (value, _previousValue) {
-    // console.log('currentCenterValueChanged(): ' + value)
-    value = value.map(coord => parseFloat(coord.toFixed(4)))
-    document.querySelector('#map-center-current').innerHTML = value
+    functions.e('#map-view-auto', e => { e.checked = !fixed })
+    functions.e('#map-view-fixed', e => { e.checked = fixed })
   }
 
   // alternative to https://maplibre.org/maplibre-gl-js/docs/API/classes/TerrainControl/
@@ -222,18 +218,33 @@ export default class extends Controller {
     document.querySelector('#map-description-input')?.focus()
   }
 
+  // switching back to fixed restores the previous fixed view, not the current one
+  setFixedView (event) {
+    event.preventDefault()
+    this.applyDefaultView(this.fixedView || this.currentView())
+  }
+
   updateDefaultView (event) {
     event.preventDefault()
-    this.defaultCenterValue = this.currentCenterValue
-    this.defaultZoomValue = this.currentZoomValue
-    this.defaultPitchValue = this.currentPitchValue
-    this.defaultBearingValue = this.currentBearingValue
-    mapProperties.default_center = this.currentCenterValue
-    mapProperties.default_zoom = this.currentZoomValue
-    mapProperties.default_pitch = this.currentPitchValue
-    mapProperties.default_bearing = this.currentBearingValue
-    sendMessage('update_map', { center: this.currentCenterValue,
-      zoom: this.currentZoomValue, pitch: this.currentPitchValue, bearing: this.currentBearingValue })
+    this.applyDefaultView(this.currentView())
+  }
+
+  currentView () {
+    return { center: this.currentCenterValue, zoom: this.currentZoomValue,
+      pitch: this.currentPitchValue, bearing: this.currentBearingValue }
+  }
+
+  applyDefaultView ({ center, zoom, pitch, bearing }) {
+    this.defaultCenterValue = center
+    this.defaultZoomValue = zoom
+    this.defaultPitchValue = pitch
+    this.defaultBearingValue = bearing
+    mapProperties.default_center = center
+    mapProperties.default_zoom = zoom
+    mapProperties.default_pitch = pitch
+    mapProperties.default_bearing = bearing
+    // a restored view can miss the parts that were never fixed
+    sendMessage('update_map', { center: center.length === 0 ? null : center, zoom: zoom || null, pitch, bearing })
   }
 
   resetDefaultView(event) {

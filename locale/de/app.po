@@ -110,6 +110,9 @@ msgstr "Aufsteigend"
 msgid "Asphalt"
 msgstr "Asphalt"
 
+msgid "Auto"
+msgstr "Automatisch"
+
 msgid "Background"
 msgstr "Hintergrund"
 
@@ -320,6 +323,9 @@ msgstr "MapTiler-Stil für Radfahrer mit hervorgehobenen Radrouten und Wegen."
 msgid "Dark mode vector map style, easy on the eyes for night-time viewing."
 msgstr "Dunkler Vektorstil, augenschonend für die Nutzung bei Nacht."
 
+msgid "Default view when opening this map."
+msgstr "Standardansicht beim Öffnen dieser Karte."
+
 msgid "Delete"
 msgstr "Löschen"
 
@@ -502,6 +508,9 @@ msgstr "Meinen Standort finden"
 
 msgid "Fine gravel"
 msgstr "Feinschotter"
+
+msgid "Fixed view"
+msgstr "Feste Ansicht"
 
 msgid "Flat"
 msgstr "Eben"
@@ -712,9 +721,6 @@ msgstr "Karte '%{name}'"
 
 msgid "Map Gallery"
 msgstr "Kartengalerie"
-
-msgid "Map default:"
-msgstr "Kartenstandard:"
 
 msgid "Map export"
 msgstr "Karte"
@@ -944,12 +950,6 @@ msgstr "Symbol entfernen"
 msgid "Report issue"
 msgstr "Fehler melden"
 
-msgid "Reset"
-msgstr "Zurücksetzen"
-
-msgid "Reset default view"
-msgstr "Standardansicht zurücksetzen"
-
 msgid "Responsive Design: Works well both on desktop and mobile"
 msgstr "Responsives Design: Funktioniert gut auf Desktop und Mobilgeräten"
 
@@ -1015,9 +1015,6 @@ msgstr "Als Standard"
 
 msgid "Set current view as default"
 msgstr "Aktuelle Ansicht als Standard setzen"
-
-msgid "Set the default view that is shown when opening this map. When 'center' is set to 'auto', the map will start centered on your content."
-msgstr "Lege die Standardansicht fest, die beim Öffnen dieser Karte gezeigt wird. Steht 'center' auf 'auto', startet die Karte zentriert auf deinen Inhalten."
 
 msgid "Share Map"
 msgstr "Karte teilen"
@@ -1119,6 +1116,9 @@ msgstr "Die Datei ist kein gültiges XML"
 
 msgid "The image contains GPS coordinates (<code>%{coordinates}</code>).<br/>Do you want to place the marker there?"
 msgstr "Das Bild enthält GPS-Koordinaten (<code>%{coordinates}</code>).<br/>Möchtest du den Marker dort platzieren?"
+
+msgid "The map starts centered on your content."
+msgstr "Die Karte startet zentriert auf deinen Inhalten."
 
 msgid "This browser cannot read KMZ archives. Please unzip it and import the .kml"
 msgstr "Dieser Browser kann keine KMZ-Archive lesen. Bitte entpacke es und importiere die .kml"
