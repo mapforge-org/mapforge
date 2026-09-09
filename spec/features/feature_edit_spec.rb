@@ -46,6 +46,25 @@ describe "Feature edit" do
         wait_for { Feature.line_string.count }.to eq(1)
       end
 
+      it "shows the freehand line while it is painted" do
+        find(".line-menu-btn").click
+        find(".ctrl-line-menu .mapbox-gl-draw_paint").click
+
+        mouse = page.driver.browser.mouse
+        mouse.move(x: 250, y: 250)
+        mouse.down
+        mouse.move(x: 350, y: 300, steps: 5)
+        mouse.move(x: 450, y: 400, steps: 5)
+        painted = page.evaluate_script(
+          "window.map.queryRenderedFeatures({ layers: " \
+          "['gl-draw-line-active.hot', 'gl-draw-line-paint.hot'] })" \
+          ".map(f => f.layer.id)")
+        mouse.up
+
+        expect(painted).to include("gl-draw-line-active.hot", "gl-draw-line-paint.hot")
+        wait_for { Feature.line_string.count }.to eq(1)
+      end
+
       it "adding a polygon to the map" do
         find(".mapbox-gl-draw_polygon").click
 

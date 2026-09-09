@@ -66,6 +66,17 @@ export function editStyles() {
     // styles()['line-layer-outline'], // line outline below line, because it's a wider line
     // removeSource(styles()['line-layer']),
 
+    // The freehand line under the cursor, in the style it gets after the save. Restricted
+    // to paint mode, because in every other mode the saved feature is already on the map
+    // and a second copy of it would stack its opacity.
+    { ...styles()['line-layer'],
+      id: 'gl-draw-line-paint',
+      filter: ['all',
+        ['==', ['geometry-type'], 'LineString'],
+        ['==', ['get', 'mode'], 'draw_paint_mode'],
+        ['==', ['get', 'active'], 'true']]
+    },
+
     // active polygon outline
     {
       id: 'gl-draw-polygon-stroke-active',

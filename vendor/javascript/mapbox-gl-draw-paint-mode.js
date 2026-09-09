@@ -50,7 +50,7 @@ function stopDrawing(state, e, me) {
   let feature = {
       type: "Feature",
       id: state.currentLineFeature.id,
-      properties: { "stroke-width": "6", "stroke": "#63452c" },
+      properties: { "stroke-width": "4", "stroke": "#63452c" },
       geometry: {
         type: "LineString",
         coordinates: state.currentLineFeature.coordinates,
@@ -74,7 +74,7 @@ PaintMode.onMouseMove = PaintMode.onDrag = PaintMode.onTouchMove = function (sta
   if (!state.currentLineFeature) {
     state.currentLineFeature = this.newFeature({
       type: "Feature",
-      properties: { "stroke-width": "6", "stroke": "#63452c" },
+      properties: { "stroke-width": "4", "stroke": "#63452c" },
       geometry: {
         type: "LineString"
       },
@@ -88,6 +88,11 @@ PaintMode.onMouseMove = PaintMode.onDrag = PaintMode.onTouchMove = function (sta
 }
 
 PaintMode.toDisplayFeatures = function (state, geojson, display) {
+  // The edit styles only draw a LineString while it is active, so the line stays
+  // invisible during the drag unless the in-progress feature is flagged here.
+  geojson.properties.active = (state.currentLineFeature && geojson.properties.id === state.currentLineFeature.id)
+    ? Constants.activeStates.ACTIVE
+    : Constants.activeStates.INACTIVE;
   display(geojson);
 };
 
