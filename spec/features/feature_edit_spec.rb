@@ -6,6 +6,16 @@ describe "Feature edit" do
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+
+    elevation_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_elevation.json"))
+    CapybaraMock.stub_request(
+      :post, /api\.openrouteservice\.org\/elevation\/line/
+    ).to_return(
+      headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
+      status: 200,
+      body: elevation_file
+    )
+
     visit map.private_map_path
     expect_map_loaded
   end
