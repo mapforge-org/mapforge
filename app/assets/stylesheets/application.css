@@ -234,6 +234,8 @@ a:active, .link:active {
 }
 
 button {
+  color: inherit; /* Safari paints unstyled button text in the system accent blue */
+
   a, .link { /* stylelint-disable-line */
     color: var(--default-color);
     cursor: pointer;

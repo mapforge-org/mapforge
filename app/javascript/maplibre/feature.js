@@ -32,6 +32,13 @@ export function featureTitle (feature) {
   return title
 }
 
+// a modal without tabs (read only map, or a feature of a non geojson layer) has no
+// geometry tab, so it keeps the coordinates in the meta line
+function coordinatesTabActive () {
+  if (document.querySelector('#edit-buttons').classList.contains('hidden')) { return true }
+  return document.querySelector('#edit-button-geometry').classList.contains('active')
+}
+
 function featureMeta (feature) {
   let meta = ''
   if (feature.geometry.type === 'LineString' && feature.geometry.coordinates.length > 1) {
@@ -86,7 +93,8 @@ function featureMeta (feature) {
     const googleLink = `<a href="${googleMapsUrl}" target="_blank" rel="noopener noreferrer" class="link text-nowrap d-inline-flex align-items-center me-3"><img src="/icons/google-maps.png" class="me-1" alt="Google Maps"> <span class="d-none d-sm-block me-1">See in</span> Google Maps</a>`
     const osmLink = `<a href="${osmUrl}" target="_blank" rel="noopener noreferrer" class="link text-nowrap d-inline-flex align-items-center"><img src="/icons/osm-icon-smaller.png" class="me-1" alt="OpenStreetMap"> <span class="d-none d-sm-block me-1">See in</span> OpenStreetMap</a>`
 
-    meta = coordsSpan + copyIcon + '<div class="mt-1">' + googleLink + osmLink + '</div>'
+    const coordsPart = coordinatesTabActive() ? coordsSpan + copyIcon : ''
+    meta = coordsPart + '<div class="mt-1">' + googleLink + osmLink + '</div>'
   }
   return meta
 }
