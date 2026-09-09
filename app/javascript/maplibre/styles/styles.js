@@ -616,30 +616,22 @@ export function styles () {
         "circle-pitch-alignment": "map",
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': pointSize(),
-        // force white background for selected point with transparent background
-        'circle-color': ["case",
-          ["all",
-            ['boolean', ['feature-state', 'active'], false],
-            ["==", pointColor(), "transparent"]
-          ],
-          "white",
-          pointColor()
-        ],
-        // force visibility for selected point with transparent background
-        'circle-opacity': ["case",
-          ["all",
-            ['boolean', ['feature-state', 'active'], false],
-            ["==", ['get', 'marker-color'], "transparent"]
-          ],
-          1,
-          ['case',
-            ['boolean', ['feature-state', 'active'], false],
-            pointOpacityActive(),
-            pointOpacity()
-          ]
+        'circle-color': pointColor(),
+        'circle-opacity': ['case',
+          ['boolean', ['feature-state', 'active'], false],
+          pointOpacityActive(),
+          pointOpacity()
         ],
         'circle-blur': defaults.pointBlur,
-        'circle-stroke-color': pointOutlineColor(),
+        // a transparent outline makes the selection invisible, use the active outline color
+        'circle-stroke-color': ["case",
+          ["all",
+            ['boolean', ['feature-state', 'active'], false],
+            ["==", pointOutlineColor(), "transparent"]
+          ],
+          defaults.featureOutlineColorActive,
+          pointOutlineColor()
+        ],
         'circle-stroke-width': [
           'case',
           ['boolean', ['feature-state', 'active'], false],
@@ -670,30 +662,22 @@ export function styles () {
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': pointSize(),
-        // force white background for selected point with transparent background
-        'circle-color': ["case",
-          ["all",
-            ['boolean', ['feature-state', 'active'], false],
-            ["==", pointColor(), "transparent"]
-          ],
-          "white",
-          pointColor()
-        ],
-        // force visibility for selected point with transparent background
-        'circle-opacity': ["case",
-          ["all",
-            ['boolean', ['feature-state', 'active'], false],
-            ["==", ['get', 'marker-color'], "transparent"]
-          ],
-          0.7,
-          ['case',
-            ['boolean', ['feature-state', 'active'], false],
-            pointOpacityActive(),
-            pointOpacity()
-          ]
+        'circle-color': pointColor(),
+        'circle-opacity': ['case',
+          ['boolean', ['feature-state', 'active'], false],
+          pointOpacityActive(),
+          pointOpacity()
         ],
         'circle-blur': defaults.pointBlur,
-        'circle-stroke-color': pointOutlineColor(),
+        // a transparent outline makes the selection invisible, use the active outline color
+        'circle-stroke-color': ["case",
+          ["all",
+            ['boolean', ['feature-state', 'active'], false],
+            ["==", pointOutlineColor(), "transparent"]
+          ],
+          defaults.featureOutlineColorActive,
+          pointOutlineColor()
+        ],
         'circle-stroke-width': [
           'case',
           ['boolean', ['feature-state', 'active'], false],
