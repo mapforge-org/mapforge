@@ -375,7 +375,17 @@ export function initLayersModal () {
 }
 
 export function hideModals () {
+  const wasOpen = document.querySelector('.modal-center.show')
   functions.e('.modal-center', e => { e.classList.remove('show') })
+  if (!wasOpen) { return }
+  // the ctrl buttons that toggle those modals must not stay highlighted
+  functions.e('.maplibregl-ctrl-map, .maplibregl-ctrl-share, .maplibregl-ctrl-layers',
+    e => { e.classList.remove('active') })
+  // draw.modechange is a no-op when the mode did not change, so the select button
+  // needs the highlight back here
+  if (draw && (draw.getMode() === 'simple_select' || draw.getMode() === 'direct_select')) {
+    functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
+  }
 }
 
 export function resetControls () {
