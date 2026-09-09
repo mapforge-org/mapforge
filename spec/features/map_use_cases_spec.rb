@@ -14,14 +14,14 @@ describe "Map settings use cases" do
       expect(page).to have_text("What do you want to do?")
     end
 
-    it "closes the modal on 'empty map'" do
-      click_button "Empty map"
+    it "closes the modal on 'paint objects'" do
+      click_button "Paint objects on the map"
       expect(page).to have_no_css("#settings-modal.show")
     end
 
     it "asks to log in before an import" do
       expect(page).to have_text("Please log in to import files")
-      expect(page).to have_button("Import an image", disabled: true)
+      expect(page).to have_button("Import data (gpx, kml, image)", disabled: true)
     end
 
     it "starts the bike route mode" do
@@ -32,7 +32,7 @@ describe "Map settings use cases" do
     end
 
     it "opens the layers modal on 'OpenStreetMap data'" do
-      click_button "Add OpenStreetMap data"
+      click_button "Add OpenStreetMap layers"
       expect(page).to have_no_css("#settings-modal.show")
       expect(page).to have_css("#layers-modal.show")
     end
@@ -58,8 +58,8 @@ describe "Map settings use cases" do
       allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
       visit map.private_map_path
       expect_map_loaded
-      expect(page).to have_button("Import an image", disabled: false)
-      expect(page).to have_button("Import a file", disabled: false)
+      expect(page).to have_no_text("Please log in to import files")
+      expect(page).to have_button("Import data (gpx, kml, image)", disabled: false)
     end
   end
 
