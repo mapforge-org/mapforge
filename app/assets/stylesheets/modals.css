@@ -62,6 +62,57 @@
   max-height: calc(100vh - 6rem);
 }
 
+details.feature-section-card > summary {
+  cursor: pointer;
+}
+
+.welcome-tiles {
+  margin-top: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+  gap: 0.5rem;
+}
+
+.welcome-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.6rem 0.3rem;
+  border: 1px solid #ccd3dd;
+  border-radius: 0.4rem;
+  background: #fff;
+  font-size: 0.8rem;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.welcome-tile i {
+  font-size: 1.4rem;
+}
+
+.welcome-tile:disabled {
+  opacity: 0.5;
+}
+
+.welcome-tile-icons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.welcome-tile-icons button {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+@media (hover: hover) {
+  button.welcome-tile:hover:not(:disabled),
+  .welcome-tile-icons button:hover {
+    background: #e2e7ee;
+  }
+}
+
 
 .inline-scroll {
   overflow: hidden auto;

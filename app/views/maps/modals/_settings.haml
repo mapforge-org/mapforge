@@ -30,6 +30,46 @@
 
         #map-description-view.ro-only
 
+      - if map_editable?
+        - # Open on an untouched map only, the same rule that opens this modal in edit.js
+        - untouched = @map.name.blank? && @map.layers.all? { |layer| layer.type == "geojson" && layer.features_count.to_i.zero? }
+        %details.feature-section-card.rw-only{ open: untouched }
+          %summary
+            %h4.mapforge-font.mt-2.d-inline= _("What do you want to do?")
+
+          .welcome-tiles
+            %button.welcome-tile{ type: "button", data: { action: "click->map--modal#close" } }
+              %i.bi.bi-brush
+              %span= _("Paint objects on the map")
+
+            %button.welcome-tile{ type: "button", disabled: @user.nil?,
+              data: { action: "click->map--settings#importFile" } }
+              %i.bi.bi-upload
+              %span= _("Import data (gpx, kml, image)")
+
+            - if ENV["OPENROUTESERVICE_KEY"].present?
+              .welcome-tile
+                .welcome-tile-icons
+                  %button{ type: "button", title: _("Walking route"),
+                    data: { action: "click->map--settings#startRoute", "map--settings-mode-param": "directions_foot" } }
+                    %i.bi.bi-person-walking
+                  %button{ type: "button", title: _("Bike route"),
+                    data: { action: "click->map--settings#startRoute", "map--settings-mode-param": "directions_bike" } }
+                    %i.bi.bi-bicycle
+                  %button{ type: "button", title: _("Car route"),
+                    data: { action: "click->map--settings#startRoute", "map--settings-mode-param": "directions_car" } }
+                    %i.bi.bi-car-front-fill
+                %span= _("Create a route")
+
+            %button.welcome-tile{ type: "button", data: { action: "click->map--settings#openLayers" } }
+              %i.bi.bi-stack
+              %span= _("Add OpenStreetMap layers")
+
+          - unless @user
+            %p.small.mt-2.mb-0
+              %i.bi.bi-info-circle.me-1
+              = _("Please log in to import files")
+
       .feature-section-card
         %h4.mapforge-font.mt-2
           = _("Background map")

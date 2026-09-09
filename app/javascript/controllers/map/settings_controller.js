@@ -3,6 +3,8 @@ import { sendMessage } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
+import { resetControls } from 'maplibre/controls/shared'
+import { toggleDrawMode } from 'maplibre/edit'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
 import { basemaps } from 'maplibre/styles/basemaps'
 import { marked } from 'marked'
@@ -240,5 +242,18 @@ export default class extends Controller {
     // need to receive default values from server
     sendMessage('update_map', { center: null,
       zoom: null, pitch: null, bearing: null })
+  }
+
+  importFile () {
+    resetControls()
+    document.getElementById('fileInput').click()
+  }
+
+  startRoute (event) {
+    toggleDrawMode(event.params.mode)
+  }
+
+  openLayers () {
+    document.querySelector('.maplibregl-ctrl-layers').click()
   }
 }

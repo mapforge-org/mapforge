@@ -1509,3 +1509,27 @@ msgstr "🛜 WLAN"
 
 msgid "Credits"
 msgstr "Credits"
+
+msgid "What do you want to do?"
+msgstr "Was möchtest du tun?"
+
+msgid "Paint objects on the map"
+msgstr "Objekte auf der Karte zeichnen"
+
+msgid "Import data (gpx, kml, image)"
+msgstr "Daten importieren (gpx, kml, Bild)"
+
+msgid "Create a route"
+msgstr "Route erstellen"
+
+msgid "Please log in to import files"
+msgstr "Melde dich an, um Dateien zu importieren"
+
+msgid "Walking route"
+msgstr "Wanderroute"
+
+msgid "Bike route"
+msgstr "Fahrradroute"
+
+msgid "Add OpenStreetMap layers"
+msgstr "OpenStreetMap-Ebenen hinzufügen"
