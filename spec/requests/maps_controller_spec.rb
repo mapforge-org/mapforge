@@ -89,6 +89,127 @@ describe MapsController do
     end
   end
 
+  describe "access control" do
+    let(:user) { create(:user) }
+
+    def login
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+    end
+
+    context "with edit_permission private" do
+      let(:map) { create(:map, edit_permission: "private", owners: [ user ]) }
+
+      it "is not accessible via link" do
+        get map.private_map_path
+        expect(response).to redirect_to(maps_path)
+      end
+
+      it "is accessible for the owner" do
+        login
+        get map.private_map_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with edit_permission link" do
+      let(:map) { create(:map, edit_permission: "link") }
+
+      it "is accessible via link" do
+        get map.private_map_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with view_permission private" do
+      let(:map) { create(:map, view_permission: "private", owners: [ user ]) }
+
+      it "is not accessible via link" do
+        get map.public_map_path
+        expect(response).to redirect_to(maps_path)
+      end
+
+      it "is accessible for the owner" do
+        login
+        get map.public_map_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with view_permission link" do
+      let(:map) { create(:map, view_permission: "link") }
+
+      it "is accessible via link" do
+        get map.public_map_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with view_permission public" do
+      let(:map) { create(:map, view_permission: "public") }
+
+      it "is accessible via link" do
+        get map.public_map_path
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe "#index" do
+    let(:user) { create(:user) }
+
+    it "lists the public link of a listed map" do
+      map = create(:map, view_permission: "listed")
+      get maps_path
+      expect(response.body).to include("/m/#{map.public_id}")
+    end
+
+    it "searches in map names" do
+      create(:map, name: "Map1", view_permission: "listed")
+      create(:map, name: "Map2", view_permission: "listed")
+      get maps_path, params: { search: "Map1" }
+      expect(response.body).to include("Map1")
+      expect(response.body).not_to include("Map2")
+    end
+
+    it "searches for map owners" do
+      create(:map, name: "Map1", view_permission: "listed")
+      create(:map, name: "Map2", owners: [ user ], view_permission: "listed")
+      get maps_path, params: { search: "user:#{user.id}" }
+      expect(response.body).to include("Map2")
+      expect(response.body).not_to include("Map1")
+    end
+
+    it "lists every map again without a search" do
+      create(:map, name: "Map1", view_permission: "listed")
+      create(:map, name: "Map2", view_permission: "listed")
+      get maps_path
+      expect(response.body).to include("Map1")
+      expect(response.body).to include("Map2")
+    end
+  end
+
+  describe "#my" do
+    let(:user) { create(:user) }
+
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+    end
+
+    it "lists the private link of an own map" do
+      map = create(:map, owners: [ user ])
+      get my_path
+      expect(response.body).to include("/m/#{map.private_id}")
+    end
+
+    it "searches in map names" do
+      create(:map, name: "Map1", owners: [ user ])
+      create(:map, name: "Map2", owners: [ user ])
+      get my_path, params: { search: "Map1" }
+      expect(response.body).to include("Map1")
+      expect(response.body).not_to include("Map2")
+    end
+  end
+
   describe "#create" do
     let(:user) { create(:user) }
 

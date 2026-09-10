@@ -6,6 +6,19 @@ describe FrontpageController do
       expect(get("/")).to eq(200)
     end
 
+    it "shows the frontpage description" do
+      get "/"
+      expect(response.body).to include("Create your own map")
+    end
+
+    it "links to your maps and create for a logged in user" do
+      user = create(:user)
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      get "/"
+      expect(response.body).to include(">your maps</a>")
+      expect(response.body).to include(">create</a>")
+    end
+
     it "redirects a shared map url to the map" do
       get "/", params: { url: "https://www.example.com/m/abc" }
       expect(response).to redirect_to("/m/abc")
