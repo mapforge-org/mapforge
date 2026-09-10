@@ -95,6 +95,13 @@ jobs:
         with:
           # caches by Gemfile.lock checksum
           bundler-cache: true
+      # Share test run timings across CI runs for optimal distribution
+      - name: Cache spec runtimes
+        uses: actions/cache@v4
+        with:
+          path: tmp/parallel_runtime_rspec.log
+          key: rspec-runtime-${{ github.run_id }}
+          restore-keys: rspec-runtime-
       - name: Run tests
         id: rspec
         #run: |
