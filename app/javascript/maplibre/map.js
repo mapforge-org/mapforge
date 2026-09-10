@@ -19,10 +19,6 @@ import { basemaps, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { applyBasemapDefaults, defaults } from 'maplibre/styles/defaults';
 import { clearImageState, loadImage } from 'maplibre/styles/styles';
 
-// Lazy, only fetched on RTL glyphs.
-maplibregl.setRTLTextPlugin(import.meta.resolve('mapbox-gl-rtl-text'), true)
-  .catch(error => console.error('Failed to load RTL text plugin:', error))
-
 export let map
 export let mapProperties
 export let lastMousePosition
