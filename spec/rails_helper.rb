@@ -1,7 +1,9 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 if ENV["COVERAGE"] == "true"
   require "simplecov"
-  SimpleCov.minimum_coverage 100
+  # CI splits the suite over jobs. A single job covers only its own groups, so the
+  # minimum applies to the merged report instead, see the coverage job in ci.yml.
+  SimpleCov.minimum_coverage 100 unless ENV["CI_PART"]
   SimpleCov.start "rails" do
     skip "app/jobs/application_job.rb"
     skip "lib/tasks"
