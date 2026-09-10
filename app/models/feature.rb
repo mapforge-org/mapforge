@@ -104,7 +104,8 @@ class Feature
 
   def broadcast_update
     ActionCable.server.broadcast("map_channel_#{map.public_id}",
-      { event: "update_feature", feature: geojson.as_json, map_updated_at: map.updated_at })
+      { event: "update_feature", feature: geojson.as_json, layer_id: layer_id.to_s,
+        map_updated_at: map.updated_at })
   end
 
   def broadcast_destroy

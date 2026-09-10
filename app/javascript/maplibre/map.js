@@ -571,9 +571,9 @@ export function onMapClickAfterLayers(callback) {
   })
 }
 
-export function upsert (updatedFeature) {
+export function upsert (updatedFeature, layerId) {
   const feature = getFeature(updatedFeature.id)
-  if (!feature) { addFeature(updatedFeature); return }
+  if (!feature) { addFeature(updatedFeature, layerId); return }
 
   // only update feature if it was changed, disregarding properties.id on both sides
   // (the server now includes it for MapLibre's promoteId, so it isn't a meaningful diff)
@@ -586,10 +586,11 @@ export function upsert (updatedFeature) {
   }
 }
 
-export function addFeature (feature) {
+export function addFeature (feature, layerId) {
   feature.properties.id = feature.id
-  // Adding new features to the first geojson layer
-  const layer = layers.find(l => l.type === 'geojson')
+  // A remote feature carries its layer id; local edits have none and go to the first geojson layer
+  const layer = layers.find(l => l.type === 'geojson' && l.id === layerId) ||
+    layers.find(l => l.type === 'geojson')
   layer.geojson.features.push(feature)
   // Surgical single-feature add instead of a full re-render of every geojson layer.
   layer.applyFeatureAdd(feature)

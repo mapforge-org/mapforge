@@ -28,6 +28,12 @@ let remoteCursors = {};
   })
 })
 
+function cursorColor (uuid) {
+  let hash = 0
+  for (let i = 0; i < uuid.length; i++) { hash = (hash * 31 + uuid.charCodeAt(i)) % 360 }
+  return `hsl(${hash}, 85%, 45%)`
+}
+
 function unload () {
   if (mapChannel) {
     console.log('Unsubscribing from map_channel', mapChannel.identifier)
@@ -141,7 +147,10 @@ export function initializeSocket () {
           connectionUUID = data.uuid
           break
         case 'update_feature':
-          upsert(data.feature)
+          upsert(data.feature, data.layer_id)
+          break
+        case 'fly_to':
+          map.flyTo({ center: data.center, zoom: data.zoom, curve: 0.3, essential: true, duration: 2000 })
           break
         case 'delete_feature':
           destroyFeature(data.feature.id)
@@ -192,6 +201,8 @@ export function initializeSocket () {
             cursor = document.getElementById("remote-cursor-template").cloneNode(true)
             cursor.classList.remove("hidden")
             cursor.id = data.uuid
+            cursor.style.setProperty('--remote-cursor-color', cursorColor(data.uuid))
+            cursor.title = data.user_name || ''
             if (data.user_image) {
               const img = document.createElement("img")
               img.src = data.user_image
