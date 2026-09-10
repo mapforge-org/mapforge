@@ -26,6 +26,12 @@ require "database_cleaner/mongoid"
 require "capybara-screenshot/rspec"
 require "mongoid-rspec"
 require "capybara_mock/rspec"
+require "webmock/rspec"
+
+# host-resolver-rules in spec/support/capybara.rb isolates Chrome. This isolates the Rails
+# process the same way, so a missed stub fails loudly instead of reaching the real network.
+# The Capybara server and the Chrome debug port both listen on localhost.
+WebMock.disable_net_connect!(allow_localhost: true)
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
