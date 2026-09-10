@@ -159,15 +159,14 @@ const lineOpacity = () => ['to-number', styleProp(['stroke-opacity', 'user_strok
 // Thickness of one casing (edge line) side.
 // 'line-gap-width' keeps the line's own width free.
 // Capped at the stroke width, so that thin lines do not get a casing that dwarfs them.
-const outlineWidth = () => ['min',
-  [
-    'interpolate',
-    ['linear'],
-    ['zoom'],
-    8, ['case', ['boolean', ['feature-state', 'active'], false], 2, 1.5],
-    17, ['case', ['boolean', ['feature-state', 'active'], false], 4, 3]
-  ],
-  ['to-number', strokeWidth()]
+// The cap sits inside the stops because 'zoom' is only valid at the top level of 'interpolate'.
+const cappedToStroke = value => ['min', value, ['to-number', strokeWidth()]]
+const outlineWidth = () => [
+  'interpolate',
+  ['linear'],
+  ['zoom'],
+  8, cappedToStroke(['case', ['boolean', ['feature-state', 'active'], false], 2, 1.5]),
+  17, cappedToStroke(['case', ['boolean', ['feature-state', 'active'], false], 4, 3])
 ]
 
 const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
