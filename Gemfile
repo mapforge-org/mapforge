@@ -110,4 +110,5 @@ group :test do
   gem "cuprite"
   gem "capybara_mock"
   gem "table_print"
+  gem "webmock"
 end

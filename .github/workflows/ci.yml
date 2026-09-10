@@ -58,6 +58,20 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    # The runner is too weak for more than 2 headless Chrome instances, so every job
+    # keeps 2 processes and the fan out happens over jobs. All jobs must compute the
+    # same 6 groups, so they must read the same runtime log. Only the coverage job
+    # writes that cache.
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - part: 1
+            groups: "1,2"
+          - part: 2
+            groups: "3,4"
+          - part: 3
+            groups: "5,6"
     #container:
     #  image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     services:
@@ -71,8 +85,8 @@ jobs:
         #  password: ${{ secrets.DOCKER_TOKEN }}
     env:
       RAILS_ENV: test
-      PARALLEL_TEST_PROCESSORS: ${{ vars.PARALLEL_TEST_PROCESSORS }}
       COVERAGE: true
+      CI_PART: ${{ matrix.part }} # turns off the per job coverage minimum
       SE_AVOID_STATS: true # skip Selenium stats
       SE_DISABLE_REMOTE_MANAGER: true # skip Selenium plausible telemetry
       # MONGO_URL is only needed when not running on ubuntu-latest VM
@@ -96,8 +110,8 @@ jobs:
           # caches by Gemfile.lock checksum
           bundler-cache: true
       # Share test run timings across CI runs for optimal distribution
-      - name: Cache spec runtimes
-        uses: actions/cache@v4
+      - name: Restore spec runtimes
+        uses: actions/cache/restore@v4
         with:
           path: tmp/parallel_runtime_rspec.log
           key: rspec-runtime-${{ github.run_id }}
@@ -107,26 +121,81 @@ jobs:
         #run: |
         #  bin/rspec --pattern "spec/**/*_spec.rb,engines/**/*_spec.rb"
         run: |
-          bin/parallel_rspec spec engines
+          # --group-by runtime reads the log without a rescue, so it must exist
+          mkdir -p tmp && touch tmp/parallel_runtime_rspec.log
+          bin/parallel_rspec spec engines -n 6 \
+            --group-by runtime --allowed-missing 100 --only-group ${{ matrix.groups }}
         shell: bash
+      - name: Upload partial results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: part-${{ matrix.part }}
+          include-hidden-files: true
+          path: |
+            coverage/.resultset.json
+            tmp/parallel_runtime_rspec.log
       - name: Upload screenshots
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots
+          name: screenshots-${{ matrix.part }}
           path: ./tmp/capybara
       - name: Upload logs
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: rails-logs
+          name: rails-logs-${{ matrix.part }}
           path: ./log/test.log
+
+  coverage:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Update package lists
+        run: sudo apt-get update
+      # rgeo-proj4 does not build without it
+      - name: Install dependencies
+        run: sudo apt-get install --no-install-recommends -y libproj-dev libimlib2-dev
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          # caches by Gemfile.lock checksum
+          bundler-cache: true
+      - name: Download partial results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: part-*
+          path: parts
+      # Every job only knows the coverage of its own groups. The minimum in
+      # spec/rails_helper.rb therefore cannot apply. Enforce it over the merged data.
+      - name: Check merged coverage
+        run: |
+          bundle exec ruby -e '
+            require "simplecov"
+            SimpleCov.collate Dir["parts/*/coverage/.resultset.json"], "rails" do
+              minimum_coverage 100
+              skip "app/jobs/application_job.rb"
+              skip "lib/tasks"
+            end
+          '
       - name: Upload coverage
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: ./coverage
+      - name: Merge spec runtimes
+        run: |
+          mkdir -p tmp
+          cat parts/*/tmp/parallel_runtime_rspec.log > tmp/parallel_runtime_rspec.log
+      - name: Save spec runtimes
+        uses: actions/cache/save@v4
+        with:
+          path: tmp/parallel_runtime_rspec.log
+          key: rspec-runtime-${{ github.run_id }}
       # - name: Coveralls
       #   uses: coverallsapp/github-action@v2
       #   with:
