@@ -149,9 +149,14 @@ export function initializeSocket () {
         case 'update_feature':
           upsert(data.feature, data.layer_id)
           break
-        case 'fly_to':
-          map.flyTo({ center: data.center, zoom: data.zoom, curve: 0.3, essential: true, duration: 2000 })
+        case 'fly_to': {
+          // maplibre reads 'pitch' in options, so an undefined key would give it NaN
+          const view = { center: data.center, zoom: data.zoom, curve: 0.3, essential: true, duration: 2000 }
+          if (data.pitch != null) { view.pitch = data.pitch }
+          if (data.bearing != null) { view.bearing = data.bearing }
+          map.flyTo(view)
           break
+        }
         case 'delete_feature':
           destroyFeature(data.feature.id)
           break
