@@ -471,6 +471,8 @@ body:has(#map-mode-badge) .layer-popover {
 }
 
 .remote-cursor {
+  --remote-cursor-color: #0d6efd;
+
   position: fixed;
   width: 1rem;
   height: 1rem;
@@ -479,21 +481,31 @@ body:has(#map-mode-badge) .layer-popover {
 }
 
 .remote-cursor-pointer {
-  color: #fff;
-  font-size: 1.2rem;
+  color: var(--remote-cursor-color);
+  font-size: 1.4rem;
   position: relative;
   left: 0.1rem;
   top: 0.4rem;
+
+  /* white halo first, then a soft dark shadow: readable on light and on dark base maps */
+  filter:
+    drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff)
+    drop-shadow(0 1px 2px rgb(0 0 0 / 45%));
 }
 
 .bi-cursor-fill::before {
   transform: scaleX(-1);
 }
 
-.remote-cursor-image {
+.remote-cursor .remote-cursor-image {
   position: relative;
-  left: 0.8rem;
-  top: -0.3rem;
+  left: 0.7rem;
+  top: -0.2rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: #fff;
+  border: 2px solid var(--remote-cursor-color);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 45%);
 }
 
 /* Same metrics as .dropdown-menu, the items are plain divs and get no bootstrap styling. */
