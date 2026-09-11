@@ -74,6 +74,10 @@ Capybara.register_driver(:cuprite) do |app|
   Capybara::Cuprite::Driver.new(app, window_size: [ 1024, 860 ],
     headless: "new",
     process_timeout: 30,
+    # Every example resets the browser, so the next one waits for a fresh tab. Ferrum gives
+    # Chrome 5 seconds for that, which a loaded machine misses: parallel_rspec runs two
+    # browsers, and then Ferrum::NoSuchTargetError fails the example before it starts.
+    protocol_timeout: 30,
     js_errors: true,
     logger: StringIO.new,
     # Specs must not depend on the network. Chrome resolves no host but the Capybara server,
