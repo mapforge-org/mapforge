@@ -65,5 +65,9 @@
 
 #dropdown-space
 
+-# The viewBox starts on the arrow tip, so the top left corner of the svg is the tip.
+-# The path is the bootstrap "cursor-fill" icon, mirrored to point up and left.
 #remote-cursor-template.remote-cursor.hidden
-  %i.bi.bi-cursor-fill.remote-cursor-pointer
+  %svg.remote-cursor-pointer{ viewBox: "1.815 2.182 16 16", fill: "currentColor" }
+    %path{ transform: "scale(-1 1) translate(-16 0)",
+           d: "M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .557.103z" }
