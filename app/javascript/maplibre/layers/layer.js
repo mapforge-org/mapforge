@@ -21,7 +21,8 @@ export const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overp
 // so retry with a small box when the exact pixel misses. The exact hit still wins, which
 // keeps the top-most-feature rule intact.
 const CLICK_TOLERANCE = 12
-const CLICK_TOLERANCE_TOUCH = 20
+// 30px radius = a 60px target, above the 44px minimum that a fingertip needs
+const CLICK_TOLERANCE_TOUCH = 30
 
 export function queryFeaturesNear (point, options) {
   const exact = map.queryRenderedFeatures(point, options)

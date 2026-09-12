@@ -205,6 +205,9 @@ export async function initializeEditMode () {
   // Mapbox Draw kills the click event on mobile (https://github.com/mapbox/mapbox-gl-js/issues/9114)
   // patching click on touchstart + touchend on same position
   // alternative solution: https://github.com/mapbox/mapbox-gl-draw/issues/617#issuecomment-2764850360
+  // A finger tap drifts, so the slop matches the platform touch slop (~8dp) instead of the
+  // 3px mouse threshold. Below this, no click fires at all and no feature can be selected.
+  const TAP_SLOP = 10
   let touchStartPosition
   let touchEndPosition
   map.on('touchstart', (e) => {
@@ -213,8 +216,9 @@ export async function initializeEditMode () {
   map.on('touchend', (e) => {
     // No mode check: draw stays attached in view mode and keeps killing the click there
     touchEndPosition = e.point
-    if (Math.abs(touchStartPosition.x - touchEndPosition.x) < 3  &&
-      Math.abs(touchStartPosition.y - touchEndPosition.y) < 3 &&
+    if (touchStartPosition &&
+      Math.abs(touchStartPosition.x - touchEndPosition.x) < TAP_SLOP &&
+      Math.abs(touchStartPosition.y - touchEndPosition.y) < TAP_SLOP &&
       (draw.getMode() === 'simple_select' || draw.getMode().startsWith('directions_')) &&
       !map.longPressTriggered) {
       // Construct an event-like object that has preventDefault as an own property.
