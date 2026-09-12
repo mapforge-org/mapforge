@@ -9,9 +9,7 @@
 
 Create individual maps for your places, tracks and events, and share them in real time.
 
-<a href="https://mapforge.org">
-<img width="2550" height="1700" alt="Mapforge Screenshots" src="https://raw.githubusercontent.com/mapforge-org/mapforge/refs/heads/main/public/images/frontpage/github.png" />
-</a>
+[recording.webm](https://github.com/user-attachments/assets/bc3cb27b-a36e-43e8-a645-2f6c838e9cfa)
 
 Mapforge is an open source GIS web application. Create and share your places, tracks and events as GeoJSON layers on different base maps, with [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) on desktop and mobile. Changes are synced live to all clients.
 
