@@ -2,14 +2,18 @@
 # * Map basemap style is loaded
 # * GeoJSON features loaded + drawn
 # * Websocket is established
+#
+# visible: :all, because .map starts at opacity 0 and only fades in on map 'load'.
+# Cuprite treats opacity 0 as invisible, so the default filter would wait for the
+# fade-in animation instead of the data attributes.
 def expect_map_loaded
-  expect(page).to have_css("#maplibre-map[data-geojson-loaded='true']", wait: 30)
-  expect(page).to have_css("#maplibre-map[data-map-loaded='true']", wait: 30)
-  expect(page).to have_css("#maplibre-map[data-online='true']")
+  expect(page).to have_css("#maplibre-map[data-geojson-loaded='true']", wait: 30, visible: :all)
+  expect(page).to have_css("#maplibre-map[data-map-loaded='true']", wait: 30, visible: :all)
+  expect(page).to have_css("#maplibre-map[data-online='true']", visible: :all)
 end
 
 def expect_overpass_loaded
-  expect(page).to have_css("#maplibre-map[data-overpass-loaded='true']", wait: 30)
+  expect(page).to have_css("#maplibre-map[data-overpass-loaded='true']", wait: 30, visible: :all)
 end
 
 def layer_visibility(layer_id, type = 'geojson')
