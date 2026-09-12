@@ -96,7 +96,7 @@ describe "Map layers" do
         # the style id icon-1599-... names the G**gle icon, the href is a blank pin for all of them
         expect(point.properties["marker-symbol"]).to eq "/icon-sets/pinhead/obelisk_on_plinth.png"
         # a pinhead icon is white, so it needs a white border to stand out from the marker color
-        expect(point.properties["stroke"]).to eq "#fff"
+        expect(point.properties["stroke"]).to eq "#ffffff"
         expect(point.properties["marker-size"]).to eq 16
         # <LabelStyle><scale>0</scale> hides the label
         expect(point.properties["label"]).to be_nil
