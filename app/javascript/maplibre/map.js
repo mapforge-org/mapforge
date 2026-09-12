@@ -148,6 +148,15 @@ export async function initializeMap (divId = 'maplibre-map') {
   window.map = map
   window.maplibregl = maplibregl
 
+  // Maplibre guesses 'wheel' vs 'trackpad' per event and then applies zoom rates that
+  // differ by 4.5x, so a single misread event makes the zoom jump. Keep both rates at
+  // the value that fits the device of the current event, which makes a misread harmless.
+  map.getCanvasContainer().addEventListener('wheel', (e) => {
+    const rate = (e.ctrlKey || Math.abs(e.deltaY) < 40) ? 0.01 : 1 / 450
+    map.scrollZoom.setZoomRate(rate)
+    map.scrollZoom.setWheelZoomRate(rate)
+  }, { capture: true })
+
   if (!!mapProperties.description?.trim() && !localStorage.getItem(descriptionHiddenKey())) {
     dom.showElements('#description-modal')
   }
