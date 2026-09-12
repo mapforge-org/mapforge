@@ -139,17 +139,38 @@ describe "Feature details" do
       expect(page).to have_no_css("#image-viewer[open]")
     end
 
-    it "opens the image inside the map when the app runs standalone" do
+    def fake_standalone
       # headless Chrome cannot emulate display-mode, so fake it for isApp()
       page.execute_script(<<~JS)
         const original = window.matchMedia.bind(window)
         window.matchMedia = query => query.includes('display-mode: standalone') ? { matches: true } : original(query)
       JS
+    end
+
+    it "opens the image inside the map when the app runs standalone" do
+      fake_standalone
       find(".feature-symbol a").click
 
       expect(page).to have_css("#image-viewer[open] img[src='/image/none.webp']", visible: :all)
       expect(page).to have_css("#feature-details-modal.show")
       expect(page).to have_current_path(map.private_map_path, ignore_query: true)
+    end
+
+    def viewport_content
+      page.evaluate_script("document.querySelector('meta[name=\"viewport\"]').content")
+    end
+
+    it "allows pinch zoom while the maximized image is open" do
+      fake_standalone
+      expect(viewport_content).to include("user-scalable=no")
+
+      find(".feature-symbol a").click
+      expect(page).to have_css("#image-viewer[open]", visible: :all)
+      expect(viewport_content).not_to include("user-scalable", "maximum-scale")
+
+      find("#image-viewer .modal-close-button").click
+      expect(page).to have_no_css("#image-viewer[open]", visible: :all)
+      expect(viewport_content).to include("user-scalable=no", "maximum-scale=1.0")
     end
   end
 

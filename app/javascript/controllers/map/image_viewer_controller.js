@@ -12,6 +12,7 @@ export default class extends Controller {
     if (!link || !isApp() || this.element.open) { return }
     event.preventDefault()
     this.imageTarget.src = link.getAttribute('href')
+    this.allowZoom()
     this.element.showModal()
   }
 
@@ -22,5 +23,20 @@ export default class extends Controller {
   // the feature modal closes on esc as well, keep it open below the image
   stopEsc (event) {
     if (this.element.open) { event.stopPropagation() }
+  }
+
+  get viewport () {
+    return document.querySelector('meta[name="viewport"]')
+  }
+
+  // the page forbids zoom for the map gestures, let the browser pinch zoom the image
+  allowZoom () {
+    this.pageViewport = this.viewport.content
+    this.viewport.content = this.pageViewport.replace(/,\s*(maximum-scale|user-scalable)=[^,]*/g, '')
+  }
+
+  // runs on the close event, so the system back button restores the page as well
+  forbidZoom () {
+    if (this.pageViewport) { this.viewport.content = this.pageViewport }
   }
 }
