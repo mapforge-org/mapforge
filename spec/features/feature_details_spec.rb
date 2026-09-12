@@ -170,7 +170,9 @@ describe "Feature details" do
 
       find("#image-viewer .modal-close-button").click
       expect(page).to have_no_css("#image-viewer[open]", visible: :all)
-      expect(viewport_content).to include("user-scalable=no", "maximum-scale=1.0")
+      # the page viewport returns one frame after the scale lock, so let the matcher retry
+      expect(page).to have_css('meta[name="viewport"][content*="user-scalable=no"][content*="maximum-scale=1.0"]',
+        visible: :all)
     end
   end
 

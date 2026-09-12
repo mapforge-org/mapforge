@@ -35,8 +35,12 @@ export default class extends Controller {
     this.viewport.content = this.pageViewport.replace(/,\s*(maximum-scale|user-scalable)=[^,]*/g, '')
   }
 
-  // runs on the close event, so the system back button restores the page as well
+  // runs on the close event, so the system back button and a click on the image
+  // both restore the page. Chrome keeps the pinch scale when the page viewport
+  // comes back, the locked scale below zooms the page out first
   forbidZoom () {
-    if (this.pageViewport) { this.viewport.content = this.pageViewport }
+    if (!this.pageViewport) { return }
+    this.viewport.content = 'width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no'
+    requestAnimationFrame(() => { this.viewport.content = this.pageViewport })
   }
 }

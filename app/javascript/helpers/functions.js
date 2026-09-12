@@ -15,7 +15,7 @@ export function hexToRgb (hex) {
 }
 
 // <input type="color"> takes #rrggbb only. Firefox silently turns a short hex like '#fff'
-// (what the KML import writes) or a name like 'red' into black, so canvas expands it first.
+// or a name like 'red' into black, so canvas expands it first.
 let colorCtx
 export function hexColor (color, fallback) {
   colorCtx ||= document.createElement('canvas').getContext('2d')
