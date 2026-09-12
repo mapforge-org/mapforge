@@ -94,16 +94,20 @@ describe "Feature edit, point features" do
         find("#marker-symbol-select").click
         expect(page).to have_selector("em-emoji-picker")
 
-        # Cannot select in shadow dom wiht capybara
-        shadow_host = find("em-emoji-picker")
-        page.execute_script(<<~JS, shadow_host)
-          const host = arguments[0];
-          const shadow = host.shadowRoot;
-          if (shadow) {
-            const el = shadow.querySelector('span.emoji-mart-emoji');
-            el.click();
-          }
+        # Cannot select in shadow dom wiht capybara. The picker renders only the rows in view,
+        # and Pinhead is the first category, so an emoji gets searched for.
+        page.execute_script(<<~JS)
+          const shadow = document.querySelector('em-emoji-picker').shadowRoot;
+          const input = shadow.querySelector('input[type="search"]');
+          input.value = 'thumbsup';
+          input.dispatchEvent(new Event('input', { bubbles: true }));
         JS
+
+        # An icon of a set wraps an img, an emoji wraps the character in a span
+        emoji = "document.querySelector('em-emoji-picker').shadowRoot" \
+          ".querySelector('.scroll span.emoji-mart-emoji:not(:has(img))')"
+        wait_for { page.evaluate_script("!!#{emoji}") }.to be true
+        page.execute_script("#{emoji}.click()")
 
         wait_for { point.reload.properties["marker-symbol"] }.to match("👍")
       end
@@ -113,7 +117,9 @@ describe "Feature edit, point features" do
         find("#marker-symbol-select").click
         expect(page).to have_selector("em-emoji-picker")
 
-        # An icon of a set is only rendered once its row is visible, so it gets searched for
+        # An icon of a set is only rendered once its row is visible, so it gets searched for.
+        # 'cafe' is the maki name of the icon, it only matches through the alias keywords that
+        # build_icon_sets.rb reads out of the pinhead changelog.
         page.execute_script(<<~JS)
           const shadow = document.querySelector('em-emoji-picker').shadowRoot;
           const input = shadow.querySelector('input[type="search"]');
@@ -124,11 +130,11 @@ describe "Feature edit, point features" do
         # Scoped to the grid: while the grid icon waits for its lazy src, a hover preview of
         # the same icon keeps its own src, and that copy carries no click handler.
         icon = "document.querySelector('em-emoji-picker').shadowRoot" \
-          ".querySelector('.scroll img[src=\"/icon-sets/maki/cafe.png\"]')"
+          ".querySelector('.scroll img[src=\"/icon-sets/pinhead/cup_and_saucer.png\"]')"
         wait_for { page.evaluate_script("!!#{icon}") }.to be true
         page.execute_script("#{icon}.closest('button').click()")
 
-        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/maki/cafe.png")
+        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/cup_and_saucer.png")
       end
 
       it "can remove the symbol" do

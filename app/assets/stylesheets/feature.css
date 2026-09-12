@@ -262,8 +262,7 @@
 /* The icons of these sets are white, a marker draws them on a circle in its own color. On the
  * page they get a circle of their own, see whiteIconSets in feature/edit_controller.js.
  */
-img[src*="/icon-sets/maki/"],
-img[src*="/icon-sets/temaki/"],
+img[src*="/icon-sets/pinhead/"],
 img[src*="/icon-sets/fontawesome/"] {
   background-color: var(--color-dark-charcoal);
   border-radius: 50%;
@@ -544,6 +543,7 @@ em-emoji-picker {
   z-index: 1000;
 
   --preview-placeholder-size: 14px; /* default 21px, custom properties cross the shadow boundary */
+  --category-icon-size: 22px; /* default 18px */
 }
 
 input {

@@ -13,10 +13,17 @@ import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
 import { addUndoState } from 'maplibre/undo'
 
 // one directory with an index.json per set, see public/icon-sets/README
-const iconSets = [ 'maki', 'temaki', 'fontawesome' ]
+const iconSets = [ 'pinhead', 'fontawesome' ]
 // The icons of these sets are white, so that they read well on the circle of a marker. On a
 // page they need a background of their own, see the img rule in feature.css.
-const whiteIconSets = [ 'maki', 'temaki', 'fontawesome' ]
+const whiteIconSets = [ 'pinhead', 'fontawesome' ]
+// emoji-mart appends a custom set behind its own categories, and it sorts the shown
+// categories by this list. A category that is missing here gets no tab, like 'flags'.
+const categories = [ 'frequent', 'pinhead', 'people', 'nature', 'foods', 'activity', 'places',
+  'fontawesome' ]
+// emoji-mart has no merge option, so the emojis of these categories move into 'places' and
+// share its tab. The tab keeps the travel icon of emoji-mart.
+const mergedCategories = [ 'objects', 'symbols' ]
 const isWhiteSymbol = symbol => whiteIconSets.some(set => symbol.includes(`/icon-sets/${set}/`))
 
 export default class extends Controller {
@@ -348,7 +355,12 @@ export default class extends Controller {
       const response = await fetch(
         '/icon-sets/noto/emoji-mart-data.json',
       )
-      return response.json()
+      const json = await response.json()
+      const places = json.categories.find(category => category.id === 'places')
+      json.categories.filter(category => mergedCategories.includes(category.id))
+        .forEach(category => places.emojis.push(...category.emojis))
+      json.categories = json.categories.filter(category => !mergedCategories.includes(category.id))
+      return json
     }
     // Each icon set is one more category tab, see public/icon-sets
     const custom = await Promise.all(iconSets.map(async set => {
@@ -373,9 +385,15 @@ export default class extends Controller {
     const pickerOptions = {
       data: data,
       custom: custom,
+      categories: categories,
       onEmojiSelect: onEmojiSelect,
       onClickOutside: onClickOutside,
       dynamicWidth: true,
+      // dynamicWidth fits floor(pickerWidth / emojiButtonSize) icons in a row, and the modal
+      // is 25rem wide, so 38 gives 10 per row. The icon fills more of its button than the
+      // emoji-mart default of 24 of 36, which leaves 2px between two white icon circles.
+      emojiButtonSize: 38,
+      emojiSize: 28,
       noCountryFlags: true, // TODO country flags don't work right now
       set: 'native', // default is native icons (they don't match the map icons)
       theme: 'light',
@@ -439,6 +457,10 @@ export default class extends Controller {
       #preview .emoji-mart-emoji > span { font-size: 1.5rem !important; }
       #preview .emoji-mart-emoji > img { max-width: 1.5rem !important; max-height: 1.5rem !important; }
       .scroll { padding-right: var(--padding); }
+      /* emoji-mart paints its own blue, the tab of the active category takes the blue of an
+         active map control button. The property crosses the shadow boundary. */
+      #nav .bar { background-color: var(--ctrl-button-color); }
+      #nav button[aria-selected] { color: var(--ctrl-button-color); }
     `
     root.appendChild(previewStyle)
   }

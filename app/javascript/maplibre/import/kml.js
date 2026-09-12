@@ -118,7 +118,7 @@ export function mapforgeProperties (props = {}) {
   if (labelScale > 0 && labelScale !== 1) { out['label-size'] = Math.round(16 * labelScale) }
 
   const symbol = googleIconSymbol(props.styleUrl)
-  // a maki/temaki icon is white, so it needs a white border to stand out from the marker color
+  // a pinhead icon is white, so it needs a white border to stand out from the marker color
   if (symbol) { out['marker-symbol'] = symbol; out.stroke = '#fff' }
 
   if (props['icon-color']) { out['marker-color'] = props['icon-color'] }
@@ -126,7 +126,7 @@ export function mapforgeProperties (props = {}) {
   if (props['icon-heading']) { out['marker-rotate'] = props['icon-heading'] }
   if (icon && !isOverlay && !BLANK_PIN.test(icon)) { out['marker-image-url'] = icon }
   // A KML icon is a small pictogram, so the mapforge default of 20 for an image marker
-  // blows it up. A maki/temaki icon keeps a base of 16, smaller than the mapforge default
+  // blows it up. A pinhead icon keeps a base of 16, smaller than the mapforge default
   // of 18 for an emoji. Plain markers keep the mapforge base of 6.
   const base = out['marker-image-url'] ? 10 : symbol ? 16 : 6
   if (out['marker-image-url'] || symbol || (scale !== undefined && scale !== 1)) {

@@ -1819,19 +1819,13 @@ https://openmoji.org/
 
 Copyright OpenMoji contributors. License: CC-BY-SA-4.0.
 
-### Maki
+### Pinhead
 
-https://github.com/mapbox/maki
+https://github.com/waysidemapping/pinhead
 
-Copyright Mapbox. License: CC0-1.0.
+Copyright Pinhead contributors. License: CC0-1.0.
 
-### Temaki
-
-https://github.com/rapideditor/temaki
-
-Copyright Temaki contributors. License: CC0-1.0.
-
-Mapforge converted the Maki, Temaki, and Font Awesome icons from SVG to PNG images of
+Mapforge converted the Pinhead and Font Awesome icons from SVG to PNG images of
 72 pixels and removed their color. Mapforge renamed the Noto Emoji and OpenMoji files
 from their code points to the emoji character. Mapforge made no other change.
 

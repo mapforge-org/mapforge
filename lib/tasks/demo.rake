@@ -19,10 +19,10 @@ namespace :demo do
     sea_view = { center: [ 10.124200, 42.803900 ], zoom: 16.5, bearing: 150, pitch: 52 }
     beach = [ [ 10.121079, 42.802693 ], [ 10.121444, 42.802848 ],
               [ 10.121523, 42.802739 ], [ 10.121133, 42.802628 ] ]
-    spots = [ [ [ 10.122646, 42.802339 ], "viewpoint", "Punta della Zanca" ],
-              [ [ 10.123342, 42.802896 ], "park", "Old junipers" ],
-              [ [ 10.123330, 42.803400 ], "swimming", "Snorkeling" ],
-              [ [ 10.124150, 42.803180 ], "natural", "Cliff" ] ]
+    spots = [ [ [ 10.122646, 42.802339 ], "binoculars", "Punta della Zanca" ],
+              [ [ 10.123342, 42.802896 ], "broadleaved_tree", "Old junipers" ],
+              [ [ 10.123330, 42.803400 ], "person_swimming_in_water", "Snorkeling" ],
+              [ [ 10.124150, 42.803180 ], "cliff_with_rocks", "Cliff" ] ]
     dive_sites = [
       [ [ [ 10.122952, 42.803489 ], [ 10.123967, 42.803615 ], [ 10.123987, 42.803415 ],
           [ 10.122878, 42.803213 ], [ 10.122475, 42.803199 ], [ 10.122022, 42.803068 ],
@@ -261,7 +261,7 @@ namespace :demo do
         sleep 0.2
         scout[:layer].features.create!(
           geometry: { "type" => "Point", "coordinates" => point },
-          properties: { "title" => title, "marker-symbol" => "/icon-sets/maki/#{icon}.png",
+          properties: { "title" => title, "marker-symbol" => "/icon-sets/pinhead/#{icon}.png",
                         "marker-color" => "#1971c2", "label" => title, "min-zoom" => 14 })
         sleep 0.3
       end
@@ -310,7 +310,7 @@ namespace :demo do
       sleep 0.2
       artist[:layer].features.create!(
         geometry: { "type" => "Point", "coordinates" => garden_spot },
-        properties: { "title" => "Terrace", "marker-symbol" => "/icon-sets/maki/picnic-site.png",
+        properties: { "title" => "Terrace", "marker-symbol" => "/icon-sets/pinhead/picnic_table.png",
                       "marker-color" => "#5c940d", "label" => "Terrace", "min-zoom" => 14 })
     }
 

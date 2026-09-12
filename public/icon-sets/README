@@ -2,29 +2,35 @@ Icon sets for the 'marker-symbol' and 'stroke-symbol' attributes of a feature.
 
 A value without a slash is an emoji character, and it is rendered with the image of the same
 name in noto/. A value with a slash is the path of an icon, for example
-/icon-sets/maki/cafe.png. See app/javascript/helpers/functions.js (symbolUrl).
+/icon-sets/pinhead/cup_and_saucer.png. See app/javascript/helpers/functions.js (symbolUrl).
 
 Sets in the emoji picker
 ------------------------
 
+pinhead     CC0, https://github.com/waysidemapping/pinhead , the icon set of the map and the
+            first category of the picker. It redrew Maki, Temaki and eleven more sources to
+            one style, so those sets are not included separately any more.
 noto        Noto Color Emoji, https://fonts.google.com/noto/specimen/Noto+Color+Emoji
             The picker reads noto/emoji-mart-data.json for its emoji categories.
-maki        CC0, https://github.com/mapbox/maki
-temaki      CC0, https://github.com/rapideditor/temaki
 openmoji    CC BY-SA 4.0, https://openmoji.org/ , an alternative rendering of the emoji set.
 fontawesome CC BY 4.0, https://fontawesome.com/ , the free "solid" style only. The free
             package also has a "regular" (thin) style of the same icons and a "brands" style
             of colored logos, neither is in the index.
 
 Every set except noto has an index.json, which the picker reads as one more category. To add a
-set, add it to SETS in build_icon_sets.rb and to iconSets in
+set, add it to SETS in build_icon_sets.rb and to iconSets and categories in
 app/javascript/controllers/feature/edit_controller.js. The script needs npm, inkscape and
 imagemagick.
 
-maki and temaki are monochrome SVG sets. The script downloads the npm package of a set and
-rasterizes its icons to 72px PNG. It then keeps only the alpha channel, so that the icon is
+pinhead and fontawesome are monochrome SVG sets. The script downloads the npm package of a set
+and rasterizes its icons to 72px PNG. It then keeps only the alpha channel, so that the icon is
 white: a marker draws it on a circle in the color of the feature. A white icon needs a
 background of its own on the page, see whiteIconSets in edit_controller.js.
+
+Pinhead renamed the icons that it took over: maki 'cafe' is pinhead 'cup_and_saucer'. Its
+dist/changelog.json records the source name per icon, and the script turns those names into
+search keywords, so a search for 'cafe' still finds the icon. The same file gave the pinhead
+ids in app/javascript/maplibre/import/google_icons.js.
 
 openmoji is an emoji set of PNG files. The script builds its index from the names and the
 keywords of noto/emoji-mart-data.json, and it takes the png of the same emoji character.

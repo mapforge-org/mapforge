@@ -16,17 +16,15 @@ SIZE = 72
 EMOJI_DATA = "public/icon-sets/noto/emoji-mart-data.json"
 
 SETS = {
-  "maki" => {
-    package: "@mapbox/maki",
-    name: "Maki",
-    icon: "marker"
-  },
-  "temaki" => {
-    package: "@ideditor/temaki",
-    name: "Temaki",
-    icon: "temaki",
-    # data/icons.json lists a group per icon, which becomes an extra search keyword
-    groups: "data/icons.json"
+  "pinhead" => {
+    package: "@waysidemapping/pinhead",
+    name: "Pinhead",
+    icon: "map_pin_with_dot",
+    dir: "dist/icons",
+    # changelog.json names the icon of every source set that a pinhead icon replaces, and
+    # those names become extra search keywords, see aliases
+    aliases: "dist/changelog.json",
+    sources: "dist/external_sources.json"
   },
   "fontawesome" => {
     package: "@fortawesome/fontawesome-free",
@@ -79,7 +77,7 @@ end
 
 # The shape of one entry of the 'custom' option of emoji-mart. The id must be unique across the
 # whole picker, so it carries the name of the set.
-def index(set, config, ids, groups)
+def index(set, config, ids, keywords)
   {
     id: set,
     name: config[:name],
@@ -88,11 +86,39 @@ def index(set, config, ids, groups)
       {
         id: "#{set}-#{id}",
         name: humanize(id),
-        keywords: (id.split(/[-_]/) + groups.fetch(id, [])).uniq,
+        keywords: (id.split(/[-_]/) + keywords.fetch(id, [])).uniq,
         skins: [ { src: "/icon-sets/#{set}/#{id}.png" } ]
       }
     end
   }
+end
+
+# Pinhead redrew the icons of maki, temaki and eleven more sets, and it renamed most of them:
+# maki 'cafe' is pinhead 'cup_and_saucer'. changelog.json records the source name per icon,
+# and those are the names our users know, so they become search keywords. A later release can
+# rename an icon, which it records as oldId and newId, so the chain is followed to the id that
+# still exists.
+def aliases(package, config, ids)
+  changes = JSON.parse(File.read(File.join(package, config[:aliases])))
+    .flat_map { |release| release["iconChanges"] }
+  renamed = changes.filter_map { |c| [ c["oldId"], c["newId"] ] if c["oldId"] && c["newId"] }.to_h
+  sources = JSON.parse(File.read(File.join(package, config[:sources]))).map { |s| s["id"] }
+  known = ids.to_set
+
+  changes.each_with_object({}) do |change, keywords|
+    id = resolve(change["newId"], renamed, known) or next
+    # a source name can be an OSM tag, 'tourism/hostel' gives the keywords 'tourism' and 'hostel'
+    names = sources.flat_map { |source| Array(change[source]) }.grep(String)
+    (keywords[id] ||= []).concat(names.flat_map { |name| name.split(%r{[-_/]}) })
+  end
+end
+
+def resolve(id, renamed, known)
+  seen = Set.new
+  while id && !known.include?(id) && renamed.key?(id) && seen.add?(id)
+    id = renamed[id]
+  end
+  id if known.include?(id)
 end
 
 # An emoji set brings one png per emoji, named after the emoji character (see
@@ -130,9 +156,8 @@ def build(set, config, root)
   Dir.mktmpdir("icon-set-#{set}") do |tmp|
     package = download(config[:package], tmp)
     ids = rasterize(File.join(package, config[:dir] || "icons"), target)
-    groups = config[:groups] ? JSON.parse(File.read(File.join(package, config[:groups]))) : {}
-    groups = groups.transform_values { |v| v["groups"] || [] }
-    File.write(File.join(target, "index.json"), JSON.pretty_generate(index(set, config, ids, groups)))
+    keywords = config[:aliases] ? aliases(package, config, ids) : {}
+    File.write(File.join(target, "index.json"), JSON.generate(index(set, config, ids, keywords)))
     puts "#{set}: #{ids.size} icons"
   end
 end

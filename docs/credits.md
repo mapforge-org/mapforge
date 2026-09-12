@@ -14,12 +14,11 @@ Mapforge includes the fonts and the icon sets below.
 | [Lobster Two](https://fonts.google.com/specimen/Lobster+Two) | display font | OFL 1.1, © Pablo Impallari |
 | [SUSE](https://github.com/SUSE/suse-font) | interface font | OFL 1.1, © The SUSE Project Authors |
 | [Bootstrap Icons](https://icons.getbootstrap.com/) | interface icons | MIT |
-| [Maki](https://github.com/mapbox/maki) | map symbols | CC0 |
-| [Temaki](https://github.com/rapideditor/temaki) | map symbols | CC0 |
+| [Pinhead](https://github.com/waysidemapping/pinhead) | map symbols | CC0 |
 | [Font Awesome Free](https://fontawesome.com/) | map symbols | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Noto Emoji](https://github.com/googlefonts/noto-emoji) | emoji symbols | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0), © Google Inc. |
 
-Mapforge changed some of these files. It converted the Maki, Temaki, and Font Awesome icons from SVG to PNG images of 72 pixels, and it removed their color. Only the solid style of Font Awesome Free is included.
+Mapforge changed some of these files. It converted the Pinhead and Font Awesome icons from SVG to PNG images of 72 pixels, and it removed their color. Only the solid style of Font Awesome Free is included.
 
 ## Software libraries
 
