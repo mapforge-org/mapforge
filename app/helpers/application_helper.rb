@@ -25,6 +25,11 @@ module ApplicationHelper
     @map_mode == "rw" || map_owner?
   end
 
+  # open external and image links in new tab, same rule as sanitizeMarkdown() in helpers/functions.js
+  def sanitize_markdown(html)
+    html.gsub(/<a(\s+)(href=['"]https?:\/\/|href=['"]\/image)/i, '<a\1target="_blank" \2')
+  end
+
   def avatar_url(base_url, size)
     uri = URI(base_url)
     params = URI.decode_www_form(uri.query.to_s)
