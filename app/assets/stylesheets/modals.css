@@ -408,11 +408,8 @@ body.map-mode-rw .ro-only {
 
 /* Layers modal */
 
-#file-input-label {
-  max-width: 17rem;
-}
-
-#query-dropdown {
+#query-dropdown,
+#import-dropdown {
   background-color: var(--ctrl-hover-color);
   overflow-y: auto;
   max-height: 50vh;
@@ -423,11 +420,13 @@ body.map-mode-rw .ro-only {
   --bs-dropdown-padding-y: 0.3rem;
 }
 
-.map-modal:has(#query-dropdown.show) {
+.map-modal:has(#query-dropdown.show),
+.map-modal:has(#import-dropdown.show) {
   overflow-y: visible;
 }
 
-.inline-scroll:has(#query-dropdown.show) {
+.inline-scroll:has(#query-dropdown.show),
+.inline-scroll:has(#import-dropdown.show) {
   overflow: visible;
   mask-image: none;
 }
@@ -449,14 +448,28 @@ body.map-mode-rw .ro-only {
   display: none;
 }
 
-#query-dropdown li {
+#query-dropdown li,
+#import-dropdown li {
   margin: 0.1em 0.5em;
-  cursor: pointer;
 }
 
-#query-dropdown .dropdown-item {
+#query-dropdown .dropdown-item,
+#import-dropdown .dropdown-item {
   border-radius: .375rem;
   padding-left: 0.5rem;
+  cursor: pointer;
+
+  /* the menu is narrower than the longest entry, so wrap instead of scrolling sideways.
+     The flex column keeps the wrapped line under the text, not under the icon. */
+  white-space: normal;
+  display: flex;
+  align-items: baseline;
+}
+
+#query-dropdown .dropdown-header {
+  padding: 0.4rem 0.5rem 0.1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 /* dim layer name and content when hidden, but not the action buttons/dropdown */

@@ -38,6 +38,21 @@ describe "Map layers" do
       find(".maplibregl-ctrl-layers").click
     end
 
+    it "narrows the file picker per import entry" do
+      click_button "Import"
+      within("#import-dropdown") do
+        find("button.dropdown-item", text: "Images and photos").trigger("click")
+      end
+      expect(page.evaluate_script("document.querySelector('#fileInput').accept")).to eq "image/*"
+
+      click_button "Import"
+      within("#import-dropdown") do
+        find("button.dropdown-item", text: "Map data").trigger("click")
+      end
+      expect(page.evaluate_script("document.querySelector('#fileInput').accept"))
+        .to eq ".gpx,.kml,.kmz,.geojson,.json"
+    end
+
     it "import geojson" do
       page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
       attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "features.geojson"))

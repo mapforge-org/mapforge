@@ -10,11 +10,31 @@
         .row.align-items-center.rw-only
           .col-6.pe-0
             - if @user
-              %label.no-wrap.form-control.btn.btn-blue#file-input-label{ for: "fileInput", title: _('Valid formats are gpx, kml, kmz, geojson and image files. WGS84 format, max. 2.5MB') }
-                %i.bi.bi-upload.me-1
+              %button#importDropdown.no-wrap.form-control.btn.btn-blue.dropdown-toggle{
+                type: "button",
+                "data-bs-toggle": "dropdown",
+                "aria-expanded": "false",
+                title: _('Supported formats: gpx, kml, kmz, geojson, mapforge json and images. WGS84 format, max. 2.5MB')
+              }
+                %i.bi.bi-file-earmark-arrow-down.me-1
                 = _("Import")
-                .d-none.d-sm-inline
-                  = _("(track / image)")
+
+              %ul#import-dropdown.dropdown-menu{ "aria-labelledby": "importDropdown" }
+                %li
+                  %button.dropdown-item{
+                    type: "button",
+                    data: { action: "click->map--layers#pickFile", accept: ".gpx,.kml,.kmz,.geojson,.json" }
+                  }
+                    %i.bi.bi-map.me-2
+                    = _("Map data (gpx, kml, geojson)")
+                %li
+                  %button.dropdown-item{
+                    type: "button",
+                    data: { action: "click->map--layers#pickFile", accept: "image/*" }
+                  }
+                    %i.bi.bi-image.me-2
+                    = _("Images and photos")
+
               %input.hidden#fileInput{ type: "file", data: { action: "change->map--layers#upload" } }
             - else
               %i.bi.bi-info-circle
@@ -39,31 +59,35 @@
                   %i.bi.bi-grid-3x3.me-2
                   = _("Custom raster layer")
               %li
+                %h6.dropdown-header waymarkedtrails.org
+              %li
                 %button.dropdown-item{
                   type: "button",
                   data: { action: "click->map--layers#createHikingWaymarkedtrailsLayer" }
                 }
-                  🥾 waymarkedtrails.org: hiking
+                  🥾 hiking
               %li
                 %button.dropdown-item{
                   type: "button",
                   data: { action: "click->map--layers#createCyclingWaymarkedtrailsLayer" }
                 }
-                  🚴 waymarkedtrails.org: cycling
+                  🚴 cycling
               %li
                 %button.dropdown-item{
                   type: "button",
                   data: { action: "click->map--layers#createMtbWaymarkedtrailsLayer" }
                 }
-                  🚵 waymarkedtrails.org: mtb
+                  🚵 mtb
               %li
                 %button.dropdown-item{
                   type: "button",
                   data: { action: "click->map--layers#createSlopesWaymarkedtrailsLayer" }
                 }
-                  ⛷️ waymarkedtrails.org: slopes
+                  ⛷️ slopes
               %li
                 %hr.dropdown-divider
+              %li
+                %h6.dropdown-header Overpass
               %li
                 %button.dropdown-item{
                   type: "button",

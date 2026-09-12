@@ -37,6 +37,12 @@ function readFile (file, format) {
 }
 
 export default class extends Controller {
+  pickFile (event) {
+    const fileInput = document.getElementById('fileInput')
+    fileInput.accept = event.currentTarget.dataset.accept
+    fileInput.click()
+  }
+
   async upload () {
     const fileInput = document.getElementById('fileInput')
     const file = fileInput.files[0]

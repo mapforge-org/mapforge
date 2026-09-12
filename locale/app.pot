@@ -50,10 +50,6 @@ msgstr ""
 msgid "%{type} update"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:17
-msgid "(track / image)"
-msgstr ""
-
 #: ../app/views/maps/modals/_settings.haml:49
 msgid "3D Terrain:"
 msgstr ""
@@ -786,7 +782,11 @@ msgstr ""
 msgid "Image:"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:15
+#: ../app/views/maps/modals/_layers.haml:36
+msgid "Images and photos"
+msgstr ""
+
+#: ../app/views/maps/modals/_layers.haml:20
 msgid "Import"
 msgstr ""
 
@@ -928,6 +928,10 @@ msgstr ""
 
 #: ../app/views/maps/index.html.haml:6 ../app/views/shared/_header.html.haml:19 ../app/views/shared/_header.html.haml:36
 msgid "Map Gallery"
+msgstr ""
+
+#: ../app/views/maps/modals/_layers.haml:29
+msgid "Map data (gpx, kml, geojson)"
 msgstr ""
 
 #: ../app/views/maps/modals/_settings.haml:72
@@ -1428,6 +1432,10 @@ msgstr ""
 msgid "Style JSON"
 msgstr ""
 
+#: ../app/views/maps/modals/_layers.haml:17
+msgid "Supported formats: gpx, kml, kmz, geojson, mapforge json and images. WGS84 format, max. 2.5MB"
+msgstr ""
+
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:50
 msgid "Surface"
 msgstr ""
@@ -1570,10 +1578,6 @@ msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:54
 msgid "Users can explore the map but cannot modify it."
-msgstr ""
-
-#: ../app/views/maps/modals/_layers.haml:13
-msgid "Valid formats are gpx, kml, kmz, geojson and image files. WGS84 format, max. 2.5MB"
 msgstr ""
 
 #: ../app/javascript/maplibre/styles/basemaps.js:231

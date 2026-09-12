@@ -41,9 +41,6 @@ msgstr "%{type}-Eigenschaft geändert"
 msgid "%{type} update"
 msgstr "%{type} geändert"
 
-msgid "(track / image)"
-msgstr "(Track / Bild)"
-
 msgid "3D Terrain:"
 msgstr "3D-Gelände:"
 
@@ -608,6 +605,9 @@ msgstr "Bild"
 msgid "Image:"
 msgstr "Bild:"
 
+msgid "Images and photos"
+msgstr "Bilder und Fotos"
+
 msgid "Import"
 msgstr "Importieren"
 
@@ -721,6 +721,9 @@ msgstr "Karte '%{name}'"
 
 msgid "Map Gallery"
 msgstr "Kartengalerie"
+
+msgid "Map data (gpx, kml, geojson)"
+msgstr "Kartendaten (gpx, kml, geojson)"
 
 msgid "Map export"
 msgstr "Karte"
@@ -1090,6 +1093,9 @@ msgstr "Stil-Hilfe"
 msgid "Style JSON"
 msgstr "Stil-JSON"
 
+msgid "Supported formats: gpx, kml, kmz, geojson, mapforge json and images. WGS84 format, max. 2.5MB"
+msgstr "Unterstützte Formate: gpx, kml, kmz, geojson, mapforge json und Bilder. WGS84-Format, max. 2,5 MB"
+
 msgid "Surface"
 msgstr "Untergrund"
 
@@ -1218,9 +1224,6 @@ msgstr "Verwendete Open-Source-Projekte: %{rails_link} für das Backend, %{mapli
 
 msgid "Users can explore the map but cannot modify it."
 msgstr "Nutzer können die Karte ansehen, aber nicht ändern."
-
-msgid "Valid formats are gpx, kml, kmz, geojson and image files. WGS84 format, max. 2.5MB"
-msgstr "Gültige Formate sind gpx, kml, kmz, geojson und Bilddateien. WGS84-Format, max. 2,5 MB"
 
 msgid "VersaTiles satellite imagery combined with street and label overlays."
 msgstr "VersaTiles-Satellitenbilder kombiniert mit Straßen und Beschriftungen."
