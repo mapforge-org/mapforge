@@ -119,7 +119,7 @@ export function mapforgeProperties (props = {}) {
 
   const symbol = googleIconSymbol(props.styleUrl)
   // a pinhead icon is white, so it needs a white border to stand out from the marker color
-  if (symbol) { out['marker-symbol'] = symbol; out.stroke = '#fff' }
+  if (symbol) { out['marker-symbol'] = symbol; out.stroke = '#ffffff' }
 
   if (props['icon-color']) { out['marker-color'] = props['icon-color'] }
   if (props['icon-opacity'] !== undefined && props['icon-opacity'] !== 1) { out['marker-opacity'] = props['icon-opacity'] }

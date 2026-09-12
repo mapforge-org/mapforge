@@ -152,6 +152,27 @@ describe "Feature edit, point features" do
       end
     end
 
+    # A color input takes '#rrggbb' only. Firefox turns every other notation into black,
+    # so the KML import color '#fff' showed up as a black swatch.
+    context "with colors that are not 6 digit hex" do
+      let(:point) do
+        create(:feature, :point_middle,
+               properties: { "marker-size" => "150", "stroke" => "#fff", "marker-color" => "bogus" })
+      end
+
+      before do
+        click_coord("#maplibre-map", 512, 430)
+        find("#edit-button-edit").click
+      end
+
+      it "shows the expanded color, and the default for an unknown one" do
+        find("#edit-button-style").click
+
+        expect(find("#stroke-color").value).to eq("#ffffff")
+        expect(find("#fill-color").value).to eq("#0a870a")
+      end
+    end
+
     it "can copy feature via context menu" do
       click_coord("#maplibre-map", 512, 430, button: :right)
       expect(page).to have_text("Copy")

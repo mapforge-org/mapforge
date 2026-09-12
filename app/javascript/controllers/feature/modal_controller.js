@@ -117,7 +117,7 @@ export default class extends Controller {
       if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
         default_stroke = defaults.featureColor
       }
-      document.querySelector('#stroke-color').value = feature.properties.stroke || default_stroke
+      document.querySelector('#stroke-color').value = functions.hexColor(feature.properties.stroke, default_stroke)
       document.querySelector('#stroke-color-transparent').checked = false
     }
 
@@ -127,7 +127,7 @@ export default class extends Controller {
       document.querySelector('#fill-color-transparent').checked = true
     } else {
       document.querySelector('#fill-color').removeAttribute('disabled')
-      document.querySelector('#fill-color').value = feature.properties.fill || defaults.featureColor
+      document.querySelector('#fill-color').value = functions.hexColor(feature.properties.fill, defaults.featureColor)
       document.querySelector('#fill-color-transparent').checked = false
     }
 
@@ -142,7 +142,7 @@ export default class extends Controller {
       document.querySelector('#point-size').value = size
       document.querySelector('#point-size-val').innerHTML = size
       document.querySelector('#point-scaling').checked = feature.properties['marker-scaling']
-      document.querySelector('#fill-color').value = feature.properties['marker-color'] || defaults.featureColor
+      document.querySelector('#fill-color').value = functions.hexColor(feature.properties['marker-color'], defaults.featureColor)
       functions.e('#marker-image', e => { e.value = '' })
     } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
       const size = feature.properties['stroke-width'] || defaults.lineWidth
@@ -172,8 +172,8 @@ export default class extends Controller {
       dom.showElements(['#feature-edit-ui .edit-line'])
     } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
       dom.showElements(['#feature-edit-ui .edit-polygon'])
-      document.querySelector('#fill-color').value = feature.properties.fill || defaults.featureColor
-      document.querySelector('#stroke-color').value = feature.properties.stroke || defaults.featureOutlineColor
+      document.querySelector('#fill-color').value = functions.hexColor(feature.properties.fill, defaults.featureColor)
+      document.querySelector('#stroke-color').value = functions.hexColor(feature.properties.stroke, defaults.featureOutlineColor)
       const size = feature.properties['stroke-width'] || defaults.lineWidth
       document.querySelector('#outline-width').value = size
       document.querySelector('#outline-width-val').innerHTML = size
