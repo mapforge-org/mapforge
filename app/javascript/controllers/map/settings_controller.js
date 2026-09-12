@@ -73,7 +73,8 @@ export default class extends Controller {
   }
 
   setChecked (selector, value) { document.querySelector(selector).checked = value }
-  setHTML (selector, value) { document.querySelector(selector).innerHTML = value }
+  // the view section only renders in rw mode
+  setHTML (selector, value) { functions.e(selector, e => { e.innerHTML = value }) }
 
   mapTerrainValueChanged (value) { this.setChecked('#map-terrain', value) }
   mapHillshadeValueChanged (value) { this.setChecked('#map-hillshade', value) }

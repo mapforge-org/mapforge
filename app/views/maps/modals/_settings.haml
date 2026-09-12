@@ -104,48 +104,46 @@
             %input#map-globe{type: "checkbox", data: { action: "click->map--settings#updateGlobe"} }
 
 
-      .feature-section-card
-        %h4.mapforge-font.mt-2= _("View")
+      - if map_editable?
+        .feature-section-card.rw-only
+          %h4.mapforge-font.mt-2= _("View")
 
-        - if map_editable?
-          %p.rw-only
-            = _("Default view when opening this map.")
+          %p= _("Default view when opening this map.")
 
-        .view-mode
-          %label.view-card
-            %input#map-view-auto{ type: "radio", name: "map-view-mode", autocomplete: "off",
-              disabled: !map_editable?, data: { action: "change->map--settings#resetDefaultView" } }
-            .view-card-main
-              .view-card-title
-                %i.bi.bi-bounding-box.me-1
-                = _("Auto")
-              .view-card-body= _("The map starts centered on your content.")
+          .view-mode
+            %label.view-card
+              %input#map-view-auto{ type: "radio", name: "map-view-mode", autocomplete: "off",
+                data: { action: "change->map--settings#resetDefaultView" } }
+              .view-card-main
+                .view-card-title
+                  %i.bi.bi-bounding-box.me-1
+                  = _("Auto")
+                .view-card-body= _("The map starts centered on your content.")
 
-          %label.view-card
-            %input#map-view-fixed{ type: "radio", name: "map-view-mode", autocomplete: "off",
-              disabled: !map_editable?, data: { action: "change->map--settings#setFixedView" } }
-            .view-card-main
-              .view-card-title
-                %i.bi.bi-geo-alt.me-1
-                = _("Fixed view")
-              .view-card-body
-                %span.no-wrap
-                  %i.bi.bi-crosshair.me-1
-                  %span.view-values.selectable#map-center>
+            %label.view-card
+              %input#map-view-fixed{ type: "radio", name: "map-view-mode", autocomplete: "off",
+                data: { action: "change->map--settings#setFixedView" } }
+              .view-card-main
+                .view-card-title
+                  %i.bi.bi-geo-alt.me-1
+                  = _("Fixed view")
+                .view-card-body
+                  %span.no-wrap
+                    %i.bi.bi-crosshair.me-1
+                    %span.view-values.selectable#map-center>
 
-                %span.no-wrap
-                  %i.bi.bi-zoom-in.me-1
-                  %span.view-values.selectable#map-zoom>
+                  %span.no-wrap
+                    %i.bi.bi-zoom-in.me-1
+                    %span.view-values.selectable#map-zoom>
 
-                %span.no-wrap
-                  %i.bi.bi-triangle.me-1
-                  %span.view-values.selectable#map-pitch>
+                  %span.no-wrap
+                    %i.bi.bi-triangle.me-1
+                    %span.view-values.selectable#map-pitch>
 
-                %span.no-wrap
-                  %i.bi.bi-arrow-counterclockwise.me-1
-                  %span.view-values.selectable#map-bearing>
+                  %span.no-wrap
+                    %i.bi.bi-arrow-counterclockwise.me-1
+                    %span.view-values.selectable#map-bearing>
 
-                - if map_editable?
-                  %button.btn.btn-blue.btn-sm.no-wrap.rw-only#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
+                  %button.btn.btn-blue.btn-sm.no-wrap#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
                     %span.d-none.d-sm-inline= _("Set current view as default")
                     %span.d-sm-none= _("Set as default")
