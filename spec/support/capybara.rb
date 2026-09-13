@@ -88,6 +88,22 @@ Capybara.register_driver(:cuprite) do |app|
                       "download.default_directory": Capybara.save_path })
 end
 
+# Ferrum dispatches CDP events on one thread without a rescue, so a callback that raises kills
+# it. No event reaches Ruby after that, and every following example fails with
+# Ferrum::NoSuchTargetError once protocol_timeout expires. Callbacks do issue synchronous
+# commands (Page.getFrameTree, Target.detachFromTarget for the service worker), and those
+# time out on a loaded machine.
+module FerrumSubscriberRescue
+  private
+
+  def call(message)
+    super
+  rescue StandardError => e
+    warn "Ferrum event callback raised #{e.class}: #{e.message}"
+  end
+end
+Ferrum::Client::Subscriber.prepend(FerrumSubscriberRescue)
+
 # https://github.com/rubycdp/cuprite
 Capybara.javascript_driver = :cuprite
 
