@@ -1,6 +1,6 @@
 import { symbolUrl } from 'helpers/functions'
 import { map } from 'maplibre/map'
-import { defaults } from 'maplibre/styles/defaults'
+import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
 
 // A marker that maplibre draws as one icon: the shape, and the emoji on it, go to a canvas,
 // and the canvas becomes a map image. A circle style layer below a symbol style layer would
@@ -10,18 +10,18 @@ import { defaults } from 'maplibre/styles/defaults'
 // never drops the images of another.
 const imageName = (prefix, color, symbol) => `${prefix}-${color.replace('#', '')}${symbol}`
 
-// css pixel size of a 'shape' image. The style layer scales the image from there.
-export const SHAPE_BASE = 48
-
 // Inset of the shape in its canvas, and the width of its border, as a fraction of the canvas.
 // The same margin for every shape, so a circle, a pin and a square read as one size.
 const MARGIN = 1 / 12
 const BORDER = 1 / 18
 
-// The filled part of a shape, in css pixels. A plain circle of the same 'marker-size' covers
-// exactly this much, so the style layer scales a shape to it (see shapeScale in styles.js) and
-// a marker keeps its size whether it carries a symbol or not.
-export const SHAPE_FILL = SHAPE_BASE * (1 - 2 * MARGIN - BORDER)
+// The filled part of a shape, as a fraction of its canvas.
+const FILL = 1 - 2 * MARGIN - BORDER
+
+// css pixel size of the canvas of a shape whose filled part is as wide as a plain circle of the
+// given 'marker-size'. A marker keeps its size whether it carries a symbol or not, and the map
+// draws the image at icon-size 1: a scaled bitmap blurs above 1 and aliases below 0.5.
+export const shapeCanvasSize = markerSize => 2 * markerSize / FILL
 
 // A retina display needs more pixels than the style layer asks for
 const pixelRatio = () => Math.min(window.devicePixelRatio || 1, 2)
@@ -115,7 +115,8 @@ export function shapeImageName (properties) {
   return [ 'shape-' + (properties['marker-shape'] || 'circle'),
     properties['marker-color'] || defaults.featureColor,
     properties.stroke || defaults.featureOutlineColor,
-    properties['marker-image-url'] || properties['marker-symbol'] || '' ].join('|')
+    properties['marker-image-url'] || properties['marker-symbol'] || '',
+    Number(properties['marker-size']) || defaultPointSize({ properties }) ].join('|')
 }
 
 // Which points the map draws as one image. KEEP IN SYNC with shapedPoint() in styles.js.

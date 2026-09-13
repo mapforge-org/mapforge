@@ -1,7 +1,7 @@
 import { symbolUrl } from 'helpers/functions'
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { map, removeStyleLayers } from 'maplibre/map'
-import { markerImage, SHAPE_BASE, SHAPE_FILL } from 'maplibre/styles/circle_image'
+import { markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
 import { defaults } from 'maplibre/styles/defaults'
 
 // fill-extrusion-opacity is not data-driven in MapLibre, so per-feature opacity
@@ -72,8 +72,8 @@ export async function loadImage (id) {
   // re-check of MapLibre finds the image at once. imageState does not apply: a prune can
   // drop the image, and then MapLibre asks for it again.
   if (id.startsWith('shape-')) {
-    const [ shape, color, border, symbol ] = id.slice('shape-'.length).split('|')
-    markerImage(id, { shape, color, border, symbol, size: SHAPE_BASE })
+    const [ shape, color, border, symbol, size ] = id.slice('shape-'.length).split('|')
+    markerImage(id, { shape, color, border, symbol, size: shapeCanvasSize(Number(size)) })
     return
   }
 
@@ -244,18 +244,17 @@ const shapeImage = () => ['concat',
   'shape-', markerShape(),
   '|', pointColor(),
   '|', pointOutlineColor(),
-  '|', ['coalesce', ['get', 'marker-image-url'], markerSymbol()]
+  '|', ['coalesce', ['get', 'marker-image-url'], markerSymbol()],
+  '|', ['to-string', pointSizeMax()]
 ]
 
-// The image is scaled so that its filled part is as wide as a plain circle of the same
-// 'marker-size' is, which keeps a marker the same size with and without a symbol.
+// The image is drawn at the size of the marker (see shapeCanvasSize), so it needs no scaling.
 // A selected shape does not grow: icon-size is a layout property, and a layout property takes
 // no feature-state. The opacity marks the selection instead (see icon-opacity below).
-const shapeScale = () => ['/', ['*', 2, pointSizeMax()], SHAPE_FILL]
 // Same structure as iconSizeMin/iconSizeMax, so that 'marker-scaling' keeps working
 const shapeIconSize = () => ['interpolate', ['exponential', 2], ['zoom'],
-  0, ['case', shouldScale, 0, shapeScale()],
-  21, ['case', shouldScale, ['*', 32, shapeScale()], shapeScale()]
+  0, ['case', shouldScale, 0, 1],
+  21, ['case', shouldScale, 32, 1]
 ]
 
 export const pointOutlineSize = () => ['to-number', styleProp(['user_stroke-width', 'stroke-width'], defaults.pointOutlineSize)]
