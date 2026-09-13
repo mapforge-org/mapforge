@@ -264,22 +264,16 @@ class Map
     Rails.application.routes.url_helpers.map_path(id: public_id, name: name)
   end
 
+  # The seed is an export of the author's own tutorial map, so its greeting carries a name.
   def self.tutorial_map(user)
-    tutorial_file = Rails.root.join("db/seeds/demo.json")
+    map = user&.owned_maps&.tutorial&.first
+    return map if map
 
-    if user&.name
-      unless (map = user.owned_maps.tutorial.first)
-        map = Map.create_from_file(tutorial_file)
-        name = user.name.split.first
-        map.update(type: "tutorial")
-        map.add_owner(user)
-        map.features.where("properties.label" => "Welcome to the Mapforge Tutorial map")
-          .update_all("properties.label" => "Welcome #{name} to the Mapforge Tutorial map")
-      end
-    else
-      map = Map.create_from_file(tutorial_file)
-      map.update(type: "tutorial")
-    end
+    map = Map.create_from_file(Rails.root.join("db/seeds/demo.json"))
+    map.update(type: "tutorial")
+    map.add_owner(user) if user
+    greeting = [ "Welcome", user&.name&.split&.first, "to the Mapforge Tutorial map" ].compact.join(" ")
+    map.features.where("properties.label" => /\AWelcome .*Tutorial map\z/).update_all("properties.label" => greeting)
     map
   end
 

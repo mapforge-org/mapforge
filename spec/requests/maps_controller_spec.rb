@@ -252,6 +252,28 @@ describe MapsController do
       expect(Map.tutorial.count).to eq 2
     end
 
+    it "greets guests without a name" do
+      post tutorial_path
+      labels = Map.tutorial.first.features.pluck(:properties).map { |p| p["label"] }
+      expect(labels).to include("Welcome to the Mapforge Tutorial map")
+      expect(labels.grep(/Thomas/)).to be_empty
+    end
+
+    it "greets logged in users by first name" do
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      post tutorial_path
+      labels = Map.tutorial.first.features.pluck(:properties).map { |p| p["label"] }
+      expect(labels).to include("Welcome First to the Mapforge Tutorial map")
+    end
+
+    it "creates tutorial map without a CSRF token" do
+      ActionController::Base.allow_forgery_protection = true
+      post tutorial_path
+      expect(response).to redirect_to(map_path(id: Map.tutorial.first.private_id))
+    ensure
+      ActionController::Base.allow_forgery_protection = false
+    end
+
     it "creates persistent tutorial map for each logged in user" do
       allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
       post tutorial_path

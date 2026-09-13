@@ -9,8 +9,11 @@ class MapsController < ApplicationController
   before_action :check_permissions, only: %i[show properties layer]
   before_action :require_login, only: %i[my create copy]
   before_action :require_map_owner, only: %i[destroy]
+  # Visitors without login get no session cookie (ApplicationController#disable_session_cookies),
+  # so their CSRF token can never verify.
+  skip_forgery_protection only: :tutorial
 
-  rate_limit to: 5, within: 15.minutes, only: :create
+  rate_limit to: 5, within: 15.minutes, only: %i[create tutorial]
 
   layout "map", only: [ :show, :tutorial ]
 
