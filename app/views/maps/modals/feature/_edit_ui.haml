@@ -64,8 +64,8 @@
       %datalist#color-presets
 
       #stroke-color-ui.edit-ui.edit-line.edit-polygon.edit-point
-        %label.left-label.edit-polygon.edit-line{ for: "stroke-color"}= _("Line color:")
-        %label.left-label.edit-point{ for: "stroke-color"}= _("Border color:")
+        %label.left-label.edit-line{ for: "stroke-color"}= _("Line color:")
+        %label.left-label.edit-polygon.edit-point{ for: "stroke-color"}= _("Border color:")
         %select#stroke-color-mode.form-select.form-select-sm.hidden{ data: { action: "change->feature--edit#addUndo change->feature--edit#updateStrokeColorMode change->feature--edit#saveFeature" } }
           %option{ value: "" }= _("Color")
         %input.form-control#stroke-color{ type: "color", list: "color-presets", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateStrokeColor change->feature--edit#saveFeature" }
