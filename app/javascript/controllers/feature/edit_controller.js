@@ -28,6 +28,12 @@ const categories = [ 'frequent', 'pinhead', 'people', 'nature', 'foods', 'activi
 // share its tab. The tab keeps the travel icon of emoji-mart.
 const mergedCategories = [ 'objects', 'symbols' ]
 const isWhiteSymbol = symbol => whiteIconSets.some(set => symbol.includes(`/icon-sets/${set}/`))
+// emoji-mart keeps its data across pickers and builds the search index of a custom emoji only
+// once, on the object of the first picker. A later picker registers the objects that it gets,
+// so a fresh fetch per open leaves every icon of the sets without an index after a reopen.
+let iconSetIndexes = null
+const loadIconSets = () => iconSetIndexes ||= Promise.all(iconSets.map(set =>
+  fetch(`/icon-sets/${set}/index.json`).then(response => response.json())))
 // the property that each mode of the marker content toggle owns, 'none' owns nothing
 const MARKER_CONTENT = { symbol: 'marker-symbol', image: 'marker-image-url' }
 
@@ -427,10 +433,7 @@ export default class extends Controller {
       return json
     }
     // Each icon set is one more category tab, see public/icon-sets
-    const custom = await Promise.all(iconSets.map(async set => {
-      const response = await fetch(`/icon-sets/${set}/index.json`)
-      return response.json()
-    }))
+    const custom = await loadIconSets()
     const onEmojiSelect = (emoji) => {
       // console.log('Emoji selected:', emoji)
       // an icon of a set has no native character, it carries the path of its image
