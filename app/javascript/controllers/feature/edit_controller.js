@@ -6,7 +6,10 @@ import { status } from 'helpers/status'
 import { syncStepperValues } from 'helpers/stepper'
 import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
-import { confirmImageLocation, featureIcon, featureImage, getFeatureTypeName, resetHighlightedFeature, uploadImageToFeature } from 'maplibre/feature'
+import {
+  confirmImageLocation, featureIcon, getFeatureTypeName, markerContentMode, markerMemory,
+  resetHighlightedFeature, syncMarkerContent, syncShapeButtons, uploadImageToFeature
+} from 'maplibre/feature'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
 import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
@@ -25,6 +28,8 @@ const categories = [ 'frequent', 'pinhead', 'people', 'nature', 'foods', 'activi
 // share its tab. The tab keeps the travel icon of emoji-mart.
 const mergedCategories = [ 'objects', 'symbols' ]
 const isWhiteSymbol = symbol => whiteIconSets.some(set => symbol.includes(`/icon-sets/${set}/`))
+// the property that each mode of the marker content toggle owns, 'none' owns nothing
+const MARKER_CONTENT = { symbol: 'marker-symbol', image: 'marker-image-url' }
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
@@ -243,24 +248,97 @@ export default class extends Controller {
     this.renderFeature({ refreshKmMarkers: true })
   }
 
-  updateMarkerSymbol () {
+  updateShape (e) {
     const feature = this.getEditFeature()
-    let symbol = document.querySelector('#marker-symbol').value
-    functions.showSymbol(document.querySelector('#emoji'), symbol)
-    // strip variation selector (emoji) U+FE0F to match icon file names. The path of an icon
-    // set keeps it, the index of the set already names the file that exists.
-    if (!symbol.includes('/')) { symbol = symbol.replace(/\uFE0F/g, '') }
-    feature.properties['marker-symbol'] = symbol
-    // draw layer feature properties aren't getting updated by draw.set()
-    // Only update draw if feature is in draw (i.e., geometry editing is active)
+    const shape = e.currentTarget.dataset.shape
+    if (shape === 'circle') { delete feature.properties['marker-shape'] } else { feature.properties['marker-shape'] = shape }
     if (draw && draw.get(this.featureIdValue)) {
-      draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
+      draw.setFeatureProperty(this.featureIdValue, 'marker-shape', feature.properties['marker-shape'] || null)
     }
-    functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
+    // A shape is the marker itself, so it must be visible. A symbol before it can have turned
+    // the colors transparent (see updateMarkerSymbol).
+    if (feature.properties['marker-shape'] && feature.properties['marker-color'] === 'transparent') {
+      document.querySelector('#fill-color-transparent').checked = false
+      this.updateFillColorTransparent()
+    }
+    if (feature.properties['marker-shape'] && feature.properties.stroke === 'transparent') {
+      document.querySelector('#stroke-color-transparent').checked = false
+      this.updateStrokeColorTransparent()
+    }
+    syncShapeButtons(feature)
     this.syncPointSizeDefault()
+    // the draw overlay keeps its own copy of the properties, a delete does not reach it
+    this.renderFeature({ resetDraw: true })
+    this.saveFeature()
+  }
+
+  // The toggle keeps the value it steps away from, so that it returns on the way back. A click
+  // on the mode that is already on opens its picker again, the button is the only way in.
+  updateMarkerContent (e) {
+    const mode = e.currentTarget.dataset.content
+    const feature = this.getEditFeature()
+    if (mode === markerContentMode(feature)) { return this.pickMarkerContent(mode) }
+
+    this.addUndo()
+    const memory = markerMemory.get(this.featureIdValue) || {}
+    markerMemory.set(this.featureIdValue, memory)
+    Object.values(MARKER_CONTENT).forEach(property => {
+      if (feature.properties[property]) { memory[property] = feature.properties[property] }
+      delete feature.properties[property]
+    })
+    const restored = memory[MARKER_CONTENT[mode]]
+    if (restored) { feature.properties[MARKER_CONTENT[mode]] = restored }
+
+    if (mode === 'image' && restored) {
+      this.hideMarkerCircle(feature)
+    } else if (mode === 'symbol' && restored) {
+      this.syncSymbolColors(feature)
+    } else {
+      this.showMarkerCircle(feature)
+    }
+    this.syncMarkerPreviews(feature)
+    this.syncPointSizeDefault()
+    // the draw overlay keeps its own copy of the properties, a delete does not reach it
+    this.renderFeature({ resetDraw: true })
+    this.saveFeature()
+    if (!restored) { this.pickMarkerContent(mode) }
+  }
+
+  pickMarkerContent (mode) {
+    if (mode === 'symbol') { this.openEmojiPicker() }
+    if (mode === 'image') { functions.e('#marker-image', e => { e.click() }) }
+  }
+
+  // An image covers the circle of the marker, so its colors step back (see uploadImageToFeature)
+  hideMarkerCircle (feature) {
+    feature.properties.stroke = 'transparent'
+    feature.properties['marker-color'] = 'transparent'
+    document.querySelector('#stroke-color').setAttribute('disabled', 'true')
+    document.querySelector('#stroke-color-transparent').checked = true
+    document.querySelector('#fill-color').setAttribute('disabled', 'true')
+    document.querySelector('#fill-color-transparent').checked = true
+  }
+
+  // Picking a symbol or an image can turn the colors transparent (see syncSymbolColors).
+  // Without either of them the point would render as nothing, so it gets its colors back.
+  // A feature with its own colors keeps them, only an actually transparent one is restored.
+  showMarkerCircle (feature) {
+    if (feature.properties['marker-color'] === 'transparent') {
+      document.querySelector('#fill-color-transparent').checked = false
+      this.updateFillColorTransparent()
+    }
+    if (feature.properties.stroke === 'transparent') {
+      document.querySelector('#stroke-color-transparent').checked = false
+      this.updateStrokeColorTransparent()
+    }
+  }
+
+  syncSymbolColors (feature) {
+    const symbol = feature.properties['marker-symbol']
     // An emoji reads better without the default circle behind it, but only while the user
     // has picked no colors of their own.
-    if (symbol && !isWhiteSymbol(symbol) && !feature.properties['marker-color'] && !feature.properties.stroke) {
+    if (symbol && !isWhiteSymbol(symbol) && !feature.properties['marker-shape'] &&
+      !feature.properties['marker-color'] && !feature.properties.stroke) {
       document.querySelector('#fill-color-transparent').checked = true
       document.querySelector('#stroke-color-transparent').checked = true
       this.updateFillColorTransparent()
@@ -270,6 +348,28 @@ export default class extends Controller {
       document.querySelector('#fill-color-transparent').checked = false
       this.updateFillColorTransparent()
     }
+  }
+
+  syncMarkerPreviews (feature) {
+    syncMarkerContent(feature)
+    functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature, { lazy: false }) })
+  }
+
+  updateMarkerSymbol () {
+    const feature = this.getEditFeature()
+    let symbol = document.querySelector('#marker-symbol').value
+    // strip variation selector (emoji) U+FE0F to match icon file names. The path of an icon
+    // set keeps it, the index of the set already names the file that exists.
+    if (!symbol.includes('/')) { symbol = symbol.replace(/\uFE0F/g, '') }
+    feature.properties['marker-symbol'] = symbol
+    // draw layer feature properties aren't getting updated by draw.set()
+    // Only update draw if feature is in draw (i.e., geometry editing is active)
+    if (draw && draw.get(this.featureIdValue)) {
+      draw.setFeatureProperty(this.featureIdValue, 'marker-symbol', symbol)
+    }
+    this.syncSymbolColors(feature)
+    this.syncMarkerPreviews(feature)
+    this.syncPointSizeDefault()
     this.renderFeature()
   }
 
@@ -287,6 +387,10 @@ export default class extends Controller {
   async updateMarkerImage () {
     const feature = this.getEditFeature()
     const image = document.querySelector('#marker-image').files[0]
+    if (image.size > 15 * 1024 * 1024) {
+      status(window.__('Image exceeds 15MB'), 'error')
+      return
+    }
     const imageLocation = await confirmImageLocation(image)
 
     uploadImageToFeature(image, feature)
@@ -295,13 +399,8 @@ export default class extends Controller {
         if (draw && draw.get(this.featureIdValue)) {
           draw.setFeatureProperty(this.featureIdValue, 'marker-image-url', data.icon)
         }
-        document.querySelector('#stroke-color').setAttribute('disabled', 'true')
-        document.querySelector('#stroke-color-transparent').checked = true
-        document.querySelector('#fill-color').setAttribute('disabled', 'true')
-        document.querySelector('#fill-color-transparent').checked = true
-
-        functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
-        functions.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
+        this.hideMarkerCircle(feature)
+        this.syncMarkerPreviews(feature)
         this.syncPointSizeDefault()
         if (imageLocation) {
           feature.geometry.coordinates = imageLocation
@@ -310,41 +409,6 @@ export default class extends Controller {
         this.renderFeature()
         this.saveFeature()
       })
-  }
-
-  removeMarkerSymbol () {
-    this.removeMarkerProperty('marker-symbol')
-  }
-
-  removeMarkerImage () {
-    this.removeMarkerProperty('marker-image-url')
-  }
-
-  removeMarkerProperty (property) {
-    this.addUndo()
-    const feature = this.getEditFeature()
-    delete feature.properties[property]
-    // Picking a symbol or an image can turn the colors transparent (see updateMarkerSymbol).
-    // Without either of them the point would render as nothing, so it gets its colors back.
-    // A feature with its own colors keeps them, only an actually transparent one is restored.
-    const noSymbolOrImage = !feature.properties['marker-symbol'] && !feature.properties['marker-image-url']
-    if (noSymbolOrImage && feature.properties['marker-color'] === 'transparent') {
-      document.querySelector('#fill-color-transparent').checked = false
-      this.updateFillColorTransparent()
-    }
-    if (noSymbolOrImage && feature.properties.stroke === 'transparent') {
-      document.querySelector('#stroke-color-transparent').checked = false
-      this.updateStrokeColorTransparent()
-    }
-    document.querySelector('#marker-symbol').value = feature.properties['marker-symbol'] || ''
-    functions.showSymbol(document.querySelector('#emoji'), feature.properties['marker-symbol'])
-    functions.e('#marker-image', e => { e.value = '' })
-    functions.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
-    functions.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
-    this.syncPointSizeDefault()
-    // the draw overlay keeps its own copy of the properties, a delete does not reach it
-    this.renderFeature({ resetDraw: true })
-    this.saveFeature()
   }
 
   // https://github.com/missive/emoji-mart
@@ -410,8 +474,8 @@ export default class extends Controller {
     editUi.prepend(this.picker)
     // the picker covers the edit ui down to the bottom edge of the modal, so that the tab
     // buttons above it stay clickable. Only the layout knows where those buttons end. A few
-    // px up so the picker's own top padding does not leave the tab row's border peeking out
-    this.picker.style.top = `${editUi.offsetTop - 6}px`
+    // px down, so that the underline of the open tab stays visible above the picker
+    this.picker.style.top = `${editUi.offsetTop + 4}px`
     this.stylePicker()
     this.lazyLoadIcons()
     this.keepPreview()

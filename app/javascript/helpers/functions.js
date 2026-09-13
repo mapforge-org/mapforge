@@ -159,15 +159,6 @@ export function symbolUrl (symbol) {
   return symbol.includes('/') ? symbol : '/icon-sets/noto/' + symbol + '.png'
 }
 
-// An emoji shows as a character, an icon of a set as its image
-export function showSymbol (element, symbol) {
-  if (symbol && symbol.includes('/')) {
-    element.innerHTML = "<img class='symbol-preview' src='" + escapeHtml(symbol) + "'>"
-  } else {
-    element.textContent = symbol || ''
-  }
-}
-
 export function sanitizeMarkdown (desc) {
   // open external and image links in new tab
   desc = desc.replace(/<a(\s+)(href=['"]https?:\/\/|href=['"]\/image)/gi, '<a$1target="_blank" $2')

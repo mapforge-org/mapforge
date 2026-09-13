@@ -89,27 +89,42 @@
           %span.stepper-val
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
-      #marker-symbol-ui.edit-ui.edit-point
-        %label.left-label{ for: "marker-symbol"}= _("Symbol:")
-        %input.form-control#marker-symbol{ type: "hidden", inputmode: 'emoji' }
-        #marker-symbol-select.btn.btn-secondary.ps-1.pe-2{ 'data-action': "click->feature--edit#openEmojiPicker" }
-          %i.bi.bi-pencil-square.ms-1#no-emoji
-        %span#emoji
-        %button.marker-remove{ type: "button", title: _("Remove symbol"), data: { action: "click->feature--edit#removeMarkerSymbol" } }
-          %i.bi.bi-x-lg
+      #marker-shape-ui.edit-ui.edit-point
+        %label.left-label= _("Shape:")
+        .btn-group.segmented{ role: "group" }
+          %button.btn{ type: "button", title: _("Circle"),
+            data: { shape: "circle", action: "click->feature--edit#addUndo click->feature--edit#updateShape" } }
+            %i.bi.bi-circle-fill
+          %button.btn{ type: "button", title: _("Pin"),
+            data: { shape: "pin", action: "click->feature--edit#addUndo click->feature--edit#updateShape" } }
+            %i.bi.bi-geo-alt-fill
+          %button.btn{ type: "button", title: _("Square"),
+            data: { shape: "square", action: "click->feature--edit#addUndo click->feature--edit#updateShape" } }
+            %i.bi.bi-square-fill
 
-      #marker-image-ui.edit-ui.edit-point
-        %label.left-label{ for: "marker-image"}= _("Image:")
+      -# Each button carries what it holds, and a click on the active one opens its picker again.
+      #marker-content-ui.edit-ui.edit-point
+        %label.left-label= _("Symbol:")
+        %input#marker-symbol{ type: "hidden", inputmode: 'emoji' }
+        .btn-group.segmented{ role: "group" }
+          %button.btn{ type: "button", title: _("None"),
+            data: { content: "none", action: "click->feature--edit#updateMarkerContent" } }
+            %i.bi.bi-slash-circle
+            %span.btn-label= _("None")
+          %button.btn{ type: "button", title: _("Icon"),
+            data: { content: "symbol", action: "click->feature--edit#updateMarkerContent" } }
+            %span#emoji
+            %i.bi.bi-emoji-smile
+            %span.btn-label= _("Icon")
+          %button.btn{ type: "button", disabled: !@user,
+            title: @user ? _("Max. 5MB") : _("Please log in to upload images"),
+            data: { content: "image", action: "click->feature--edit#updateMarkerContent" } }
+            %span#marker-image-preview
+            %i.bi.bi-image
+            %span.btn-label= _("Image")
         - if @user
-          %label.btn.btn-secondary.p-1.ps-2.pe-2{for: 'marker-image'}
-            %i.bi.bi-upload
-          %input.form-control#marker-image.hidden{ type: "file", 'data-action': "input->feature--edit#addUndo change->feature--edit#updateMarkerImage" }
-        - else
-          %i.bi.bi-info-circle
-            = _("Please log in to upload images")
-        .feature-image
-        %button.marker-remove{ type: "button", title: _("Remove image"), data: { action: "click->feature--edit#removeMarkerImage" } }
-          %i.bi.bi-x-lg
+          %input#marker-image.hidden{ type: "file", accept: "image/*",
+            'data-action': "input->feature--edit#addUndo change->feature--edit#updateMarkerImage" }
 
       #fill-extrusion-height-ui.edit-ui.edit-line.edit-polygon
         %label.left-label{ for: "fill-extrusion-height"}= _("Height:")

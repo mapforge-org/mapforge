@@ -161,8 +161,7 @@ export async function showFeatureDetails (feature) {
     modal.removeAttribute('data-feature--edit-feature-id-value')
   }
 
-  f.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature) })
-  f.e('.feature-image', e => { e.innerHTML = featureImage(feature) })
+  f.e('.feature-symbol', e => { e.innerHTML = featureIcon(feature, { lazy: false }) })
 
   const title = featureTitle(feature)
   const titleElement = document.querySelector('#feature-title')
@@ -228,23 +227,26 @@ async function featureDescription (feature) {
 const isImageUrl = url => !!url && (url.startsWith('/') || url.startsWith('http'))
 
 // set title image according to feature type
-export function featureIcon (feature, { link = true } = {}) {
+// A long feature list loads its images lazily. A single icon that replaces another one must
+// not: a lazy image stays blank until an async viewport check, so it flickers even from cache.
+export function featureIcon (feature, { link = true, lazy = true } = {}) {
   let image = ''
   let iconColor = feature.properties['marker-color'] || feature.properties['fill'] || feature.properties['stroke'] || defaults.featureColor
   if (iconColor === 'transparent') { iconColor = '#c0c0c0' }
   let iconColorStyle = `style='color: ${iconColor};'`
+  const loading = lazy ? "loading='lazy' " : ''
   if (isImageUrl(feature.properties['marker-image-url'])) {
     const markerImageUrl = feature.properties['marker-image-url']
     const imageHref = markerImageUrl.startsWith('/icon') ? markerImageUrl.replace('/icon', '/image') : markerImageUrl
-    const img = `<img loading='lazy' class='feature-details-icon' src='${markerImageUrl}'>`
+    const img = `<img ${loading}class='feature-details-icon' src='${markerImageUrl}'>`
     image = link ? `<a target='_blank' href='${imageHref}'>${img}</a>` : img
   } else if (feature.properties['marker-symbol']) {
     const outlineColor = feature.properties['stroke'] || defaults.featureOutlineColor
-    image = "<img loading='lazy' class='feature-details-icon marker-circle' " +
+    image = `<img ${loading}class='feature-details-icon marker-circle' ` +
       `style='background-color: ${iconColor}; border-color: ${outlineColor};' ` +
       "src='" + f.symbolUrl(feature.properties['marker-symbol']) + "'>"
   } else if (feature.properties['stroke-image-url']) {
-    image = "<img loading='lazy' class='feature-details-icon' src='" + feature.properties['stroke-image-url'] + "'>"
+    image = `<img ${loading}class='feature-details-icon' src='` + feature.properties['stroke-image-url'] + "'>"
   } else if (feature.properties?.route?.profile?.startsWith("cycling-") || feature.properties?.route?.profile === "bike") {
     image = `<i class='bi bi-bicycle fs-3' ${iconColorStyle}></i>`
   } else if (feature.properties?.route?.profile === "driving-car" || feature.properties?.route?.profile === "car") {
@@ -259,6 +261,47 @@ export function featureIcon (feature, { link = true } = {}) {
     image = `<i class='bi bi-record-circle fs-3' ${iconColorStyle}></i>`
   }
   return image
+}
+
+// Marks the button of the shape that the feature uses. No 'marker-shape' means a circle.
+export function syncShapeButtons (feature) {
+  const shape = feature.properties['marker-shape'] || 'circle'
+  document.querySelectorAll('#marker-shape-ui [data-shape]').forEach(button => {
+    button.classList.toggle('active', button.dataset.shape === shape)
+  })
+}
+
+// An image covers a symbol, so a point that carries both reads as an image.
+export function markerContentMode (feature) {
+  if (feature.properties['marker-image-url']) { return 'image' }
+  if (feature.properties['marker-symbol']) { return 'symbol' }
+  return 'none'
+}
+
+// What the marker content toggle stepped away from, keyed by feature id. Lets the value come
+// back when the user switches back to its mode. Page local, it never reaches the server.
+export const markerMemory = new Map()
+
+// Each toggle button carries what it holds, so the previews live inside the buttons. A button
+// that is off keeps showing what it remembers, so the user sees what a click brings back.
+export function syncMarkerContent (feature) {
+  const mode = markerContentMode(feature)
+  document.querySelectorAll('#marker-content-ui [data-content]').forEach(button => {
+    button.classList.toggle('active', button.dataset.content === mode)
+  })
+  const memory = markerMemory.get(feature.id) || {}
+  const symbol = feature.properties['marker-symbol'] || memory['marker-symbol']
+  const imageUrl = feature.properties['marker-image-url'] || memory['marker-image-url']
+  f.e('#marker-symbol', e => { e.value = feature.properties['marker-symbol'] || '' })
+  // the same rendering as the icon in the modal head, circle color and border included. An
+  // image wins over a symbol in featureIcon, so the preview feature carries the symbol alone.
+  const symbolFeature = { ...feature, properties: { ...feature.properties, 'marker-image-url': null, 'marker-symbol': symbol } }
+  f.e('#emoji', e => { e.innerHTML = symbol ? featureIcon(symbolFeature, { link: false, lazy: false }) : '' })
+  f.e('#marker-image-preview', e => {
+    e.innerHTML = imageUrl ? `<img class='feature-details-icon' src='${f.escapeHtml(imageUrl)}'>` : ''
+  })
+  // a reset lets the same file fire 'change' again
+  f.e('#marker-image', e => { e.value = '' })
 }
 
 export function getFeatureTypeName(feature) {
@@ -290,16 +333,6 @@ export function moveFeatureTo(feature, lngLat) {
     coord[0] += lngLat.lng - lng
     coord[1] += lngLat.lat - lat
   })
-}
-
-export function featureImage(feature) {
-  let image = ''
-  if (isImageUrl(feature.properties['marker-image-url'])) {
-    const imageUrl = feature.properties['marker-image-url'].replace('/icon/', '/image/')
-    image = "<a href='" + imageUrl + "' target='_blank'>" +
-      "<img class='feature-details-icon' src='" + feature.properties['marker-image-url'] + "'></a>"
-  }
-  return image
 }
 
 export function resetHighlightedFeature () {

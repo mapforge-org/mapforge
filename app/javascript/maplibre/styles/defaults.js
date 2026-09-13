@@ -106,6 +106,8 @@ export const editDefaults = { ...baseEditDefaults }
 // Size a point falls back to when it has no explicit 'marker-size'.
 // Keep the branch order in sync with pointSizeMax() in styles.js, which is what the map renders.
 export function defaultPointSize (feature) {
+  // a pin or a square at the plain default is too small to recognize
+  if ((feature.properties['marker-shape'] || 'circle') !== 'circle') { return defaults.pointSizeEmoji }
   if (feature.properties['marker-symbol']) { return defaults.pointSizeEmoji }
   if (feature.properties['marker-image-url']) { return defaults.pointSizeImage }
   return defaults.pointSizePlain

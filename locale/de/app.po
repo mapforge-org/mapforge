@@ -200,6 +200,9 @@ msgstr "Klassische OpenStreetMap-Rasterkacheln mit Straßen, Beschriftungen und 
 msgid "Clean, minimal MapTiler style focused on readability and simplicity."
 msgstr "Klarer, minimaler MapTiler-Stil mit Fokus auf Lesbarkeit und Einfachheit."
 
+msgid "Circle"
+msgstr "Kreis"
+
 msgid "Clear filter"
 msgstr "Filter entfernen"
 
@@ -599,11 +602,14 @@ msgstr "So zeichnest du mit der µlogger-App deine Tracks mit dem Handy auf."
 msgid "Ice"
 msgstr "Eis"
 
+msgid "Icon"
+msgstr "Icon"
+
 msgid "Image"
 msgstr "Bild"
 
-msgid "Image:"
-msgstr "Bild:"
+msgid "Image exceeds 15MB"
+msgstr "Bild überschreitet 5MB"
 
 msgid "Images and photos"
 msgstr "Bilder und Fotos"
@@ -764,6 +770,9 @@ msgstr "Mapforge ist werbefrei und respektiert deine Privatsphäre."
 msgid "Mapforge: Create and share your own maps online"
 msgstr "Mapforge: Erstelle und teile deine eigenen Karten online"
 
+msgid "Max. 5MB"
+msgstr "Max. 5MB"
+
 msgid "Maximum zoom level %{zoom} reached"
 msgstr "Maximale Zoomstufe %{zoom} erreicht"
 
@@ -818,6 +827,9 @@ msgstr "Keine Elemente in dieser Ebene"
 msgid "No route found"
 msgstr "Keine Route gefunden"
 
+msgid "None"
+msgstr "Ohne"
+
 msgid "OSM Info (experimental)"
 msgstr "OSM-Info (experimentell)"
 
@@ -862,6 +874,9 @@ msgstr "Befestigt"
 
 msgid "Paving stones"
 msgstr "Pflastersteine"
+
+msgid "Pin"
+msgstr "Nadel"
 
 msgid "Plan your ride and navigate with compass mode and elevation profile."
 msgstr "Plane deine Tour und navigiere mit Kompassmodus und Höhenprofil."
@@ -943,12 +958,6 @@ msgstr "Aktualisieren"
 
 msgid "Refresh layer for current view"
 msgstr "Ebene für aktuellen Kartenausschnitt neu laden"
-
-msgid "Remove image"
-msgstr "Bild entfernen"
-
-msgid "Remove symbol"
-msgstr "Symbol entfernen"
 
 msgid "Report issue"
 msgstr "Fehler melden"
@@ -1034,6 +1043,9 @@ msgstr "Eigentümerlink teilen"
 msgid "Share view link"
 msgstr "Ansichtslink teilen"
 
+msgid "Shape:"
+msgstr "Form:"
+
 msgid "Show in public gallery"
 msgstr "In der Galerie zeigen"
 
@@ -1068,6 +1080,9 @@ msgstr "Geringe Steigung (1-3 %)"
 
 msgid "Snapping waypoints to road network..."
 msgstr "Wegpunkte werden auf das Straßennetz gesetzt..."
+
+msgid "Square"
+msgstr "Quadrat"
 
 msgid "Steep downhill (>16%)"
 msgstr "Starkes Gefälle (>16 %)"

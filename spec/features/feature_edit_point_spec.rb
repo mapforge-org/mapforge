@@ -20,6 +20,18 @@ describe "Feature edit, point features" do
         expect(point.reload.properties["marker-size"]).to eq("15")
       end
 
+      it "can set marker shape" do
+        find("#edit-button-style").click
+        find("#marker-shape-ui [data-shape='pin']").click
+        wait_for { point.reload.properties["marker-shape"] }.to eq("pin")
+        # the style expression asks for the image, and the resolver draws it
+        images = "window.map.listImages().some(name => name.startsWith('shape-pin'))"
+        wait_for { page.evaluate_script(images) }.to be true
+
+        find("#marker-shape-ui [data-shape='circle']").click
+        wait_for { point.reload.properties["marker-shape"] }.to be_nil
+      end
+
       it "can update title" do
         fill_in "feature-title", with: "New Title"
         wait_for { point.reload.properties["title"] }.to eq("New Title")
@@ -71,6 +83,7 @@ describe "Feature edit, point features" do
       it "can upload image" do
         find("#edit-button-style").click
         image_path = Rails.root.join("spec", "fixtures", "files", "mapforge-logo-icon.png")
+        find("#marker-content-ui [data-content='image']").click
         page.driver.execute_script("document.querySelector('#marker-image').classList.remove('hidden')")
         expect(page).to have_selector("#marker-image")
         attach_file("marker-image", image_path)
@@ -82,6 +95,7 @@ describe "Feature edit, point features" do
       it "can upload image bigger 1024px" do
         find("#edit-button-style").click
         image_path = Rails.root.join("spec", "fixtures", "files", "image_large.jpg")
+        find("#marker-content-ui [data-content='image']").click
         page.driver.execute_script("document.querySelector('#marker-image').classList.remove('hidden')")
         expect(page).to have_selector("#marker-image")
         attach_file("marker-image", image_path)
@@ -91,7 +105,7 @@ describe "Feature edit, point features" do
 
       it "can use emoji selector" do
         find("#edit-button-style").click
-        find("#marker-symbol-select").click
+        find("#marker-content-ui [data-content='symbol']").click
         expect(page).to have_selector("em-emoji-picker")
 
         # Cannot select in shadow dom wiht capybara. The picker renders only the rows in view,
@@ -114,7 +128,7 @@ describe "Feature edit, point features" do
 
       it "can select an icon of an icon set" do
         find("#edit-button-style").click
-        find("#marker-symbol-select").click
+        find("#marker-content-ui [data-content='symbol']").click
         expect(page).to have_selector("em-emoji-picker")
 
         # An icon of a set is only rendered once its row is visible, so it gets searched for.
@@ -139,16 +153,18 @@ describe "Feature edit, point features" do
 
       it "can remove the symbol" do
         find("#edit-button-style").click
-        find("#marker-symbol-select").click
+        find("#marker-content-ui [data-content='symbol']").click
         shadow_host = find("em-emoji-picker")
         page.execute_script(<<~JS, shadow_host)
           arguments[0].shadowRoot.querySelector('span.emoji-mart-emoji').click();
         JS
         wait_for { point.reload.properties["marker-symbol"] }.to be_present
 
-        find("#marker-symbol-ui .marker-remove").click
+        find("#marker-content-ui [data-content='none']").click
 
         wait_for { point.reload.properties["marker-symbol"] }.to be_nil
+        # the icon button keeps the preview of the symbol that a click brings back
+        expect(page).to have_selector("#emoji img")
       end
     end
 

@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 * Improved [KML](https://developers.google.com/kml/documentation/kmlreference)/KMZ import from Google Maps
 * Support the [Pinhead](https://github.com/waysidemapping/pinhead) and [Fontawesame](https://fontawesome.com/) icon sets
 * Provide a docker compose setup for self hosting
+* Shape selection for points: circle, pin, square
 
 ## 2026-08
 

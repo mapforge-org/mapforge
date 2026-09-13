@@ -1,6 +1,7 @@
 import { symbolUrl } from 'helpers/functions'
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { map, removeStyleLayers } from 'maplibre/map'
+import { markerImage, SHAPE_BASE, SHAPE_FILL } from 'maplibre/styles/circle_image'
 import { defaults } from 'maplibre/styles/defaults'
 
 // fill-extrusion-opacity is not data-driven in MapLibre, so per-feature opacity
@@ -16,6 +17,8 @@ export const viewStyleNames = [
   'line-labels',
   'points-layer-flat',
   'points-layer',
+  'shapes-layer-flat',
+  'shapes-layer',
   'symbols-layer-flat',
   'symbols-layer',
   'text-layer-flat',
@@ -64,6 +67,16 @@ export function clearImageState() {
 }
 
 export async function loadImage (id) {
+  // A shaped marker carries its style in the name of its image, and the image is drawn here
+  // on demand (see shapeImage below). The branch stays synchronous, so that the getImage
+  // re-check of MapLibre finds the image at once. imageState does not apply: a prune can
+  // drop the image, and then MapLibre asks for it again.
+  if (id.startsWith('shape-')) {
+    const [ shape, color, border, symbol ] = id.slice('shape-'.length).split('|')
+    markerImage(id, { shape, color, border, symbol, size: SHAPE_BASE })
+    return
+  }
+
   // Skip if already loading, loaded, or failed
   if (imageState[id]) {
     // console.log(`Skipped loading image '${id}'`, imageState[id])
@@ -172,15 +185,19 @@ const outlineWidth = () => [
 const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
 const pointColor = () => styleProp(['user_marker-color', 'marker-color'], defaults.featureColor)
 const markerSize = styleProp(['user_marker-size', 'marker-size'])
+const markerShape = () => styleProp(['user_marker-shape', 'marker-shape'], 'circle')
+const markerSymbol = () => styleProp(['user_marker-symbol', 'marker-symbol'], '')
 const minZoomFilter = () => [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], defaults.minZoom]]]
 const maxZoomFilter = () => ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], defaults.maxZoom]]]
 
-// set default size of point depending on if there is an emoji or marker image.
+// set default size of point depending on if there is an emoji, a shape or a marker image.
 // Only a plain point gets a smaller value at low zoom: an emoji or image does not scale with
 // zoom, so its background circle must not scale either.
+// KEEP IN SYNC with defaultPointSize() in defaults.js, which is what the size slider reads.
 const pointSizeDefault = plain => [
   'case',
-  hasProp('marker-symbol'),
+  // a pin or a square at the plain default is too small to recognize
+  ['any', ['!=', markerShape(), 'circle'], hasProp('marker-symbol')],
   defaults.pointSizeEmoji,
   hasProp('marker-image-url'),
   defaults.pointSizeImage,
@@ -193,28 +210,52 @@ const pointSizeMin = () => ['to-number', ['coalesce',
 export const pointSizeMax = () => ['to-number', ['coalesce',
   ...markerSize.slice(1), pointSizeDefault(defaults.pointSizePlain)]]
 
-// the emoji covers the middle of the circle, at the full marker size the ring around it
-// gets too wide. only the radius shrinks, pointSizeMax stays the marker size, so the
-// label keeps its distance. a zoom expression must stay at the top of the property,
-// so the factor goes into the stops
-const emojiCircle = size => ['*', ['case', hasProp('marker-symbol'), 0.82, 1], size]
-
 export const pointSize = () => [
   'interpolate',
   ['linear'],
   ['zoom'],
-  5, emojiCircle([
+  5, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
     ['+', 1, pointSizeMin()],
     pointSizeMin()
-  ]),
-  17, emojiCircle([
+  ],
+  17, [
     'case',
     ['boolean', ['feature-state', 'active'], false],
     ['+', 1, pointSizeMax()],
     pointSizeMax()
-  ])
+  ]
+]
+
+// A point with a shape or a symbol leaves the circle layer and the symbol layer, and gets
+// drawn as one image instead (see shapesLayerStyles). A plain circle keeps the old layers, so
+// an uploaded image without a shape still renders as just the image, with nothing behind it.
+// KEEP IN SYNC with isShapedPoint() in circle_image.js, which is what the prune reads.
+const shapedPoint = () => ['all',
+  ['==', ['geometry-type'], 'Point'],
+  ['any', ['!=', markerShape(), 'circle'], ['!=', markerSymbol(), '']]
+]
+const plainPoint = () => ['!', shapedPoint()]
+
+// The name of the image of a shaped marker.
+// KEEP IN SYNC with shapeImageName() in circle_image.js, which is what the prune reads.
+const shapeImage = () => ['concat',
+  'shape-', markerShape(),
+  '|', pointColor(),
+  '|', pointOutlineColor(),
+  '|', ['coalesce', ['get', 'marker-image-url'], markerSymbol()]
+]
+
+// The image is scaled so that its filled part is as wide as a plain circle of the same
+// 'marker-size' is, which keeps a marker the same size with and without a symbol.
+// A selected shape does not grow: icon-size is a layout property, and a layout property takes
+// no feature-state. The opacity marks the selection instead (see icon-opacity below).
+const shapeScale = () => ['/', ['*', 2, pointSizeMax()], SHAPE_FILL]
+// Same structure as iconSizeMin/iconSizeMax, so that 'marker-scaling' keeps working
+const shapeIconSize = () => ['interpolate', ['exponential', 2], ['zoom'],
+  0, ['case', shouldScale, 0, shapeScale()],
+  21, ['case', shouldScale, ['*', 32, shapeScale()], shapeScale()]
 ]
 
 export const pointOutlineSize = () => ['to-number', styleProp(['user_stroke-width', 'stroke-width'], defaults.pointOutlineSize)]
@@ -351,6 +392,8 @@ function symbolsLayerStyles(mode) {
       type: 'symbol',
       filter: ['all',
         ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
+        // a shaped marker carries its symbol inside its own image
+        plainPoint(),
         flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
         minZoomFilter(),
         maxZoomFilter()
@@ -360,6 +403,47 @@ function symbolsLayerStyles(mode) {
         ...modeSpecificLayout
       },
       paint: sharedPaint
+    }
+  }
+}
+
+// A shaped marker is one image: the shape and the symbol on it. See circle_image.js.
+function shapesLayerStyles(mode) {
+  const flatMode = mode === 'flat'
+  const layerId = flatMode ? 'shapes-layer-flat' : 'shapes-layer'
+
+  return {
+    [layerId]: {
+      id: layerId,
+      type: 'symbol',
+      filter: ['all',
+        shapedPoint(),
+        flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
+        minZoomFilter(),
+        maxZoomFilter()
+      ],
+      layout: {
+        'symbol-sort-key': sortKey(),
+        'icon-image': shapeImage(),
+        'icon-size': shapeIconSize(),
+        // the tip of a pin marks the coordinate, the other shapes sit on it
+        'icon-anchor': ['case', ['==', markerShape(), 'pin'], 'bottom', 'center'],
+        'icon-overlap': 'always',
+        'icon-rotate': ['coalesce', ['get', 'marker-rotate'], 0],
+        'icon-ignore-placement': true,
+        ...(flatMode ? {
+          'icon-pitch-alignment': 'map',
+          'icon-rotation-alignment': 'map',
+          'icon-allow-overlap': true
+        } : { 'icon-pitch-alignment': 'viewport' })
+      },
+      paint: {
+        'icon-opacity': ['case',
+          ['boolean', ['feature-state', 'active'], false],
+          pointOpacityActive(),
+          pointOpacity()
+        ]
+      }
     }
   }
 }
@@ -613,6 +697,7 @@ export function styles () {
         ["!", ["has", "point_count"]],
         ["!", ["has", "marker-image-url"]],
         ["!", ["has", "route-extras-label"]],
+        plainPoint(),
         minZoomFilter(),
         maxZoomFilter()],
       paint: {
@@ -659,6 +744,7 @@ export function styles () {
         ["!", ["has", "point_count"]],
         ["!", ["has", "marker-image-url"]],
         ["!", ["has", "route-extras-label"]],
+        plainPoint(),
         minZoomFilter(),
         maxZoomFilter()
       ],
@@ -712,6 +798,8 @@ export function styles () {
     // support symbols on all feature types (projected on map surface or viewport)
     ...symbolsLayerStyles('flat'),
     ...symbolsLayerStyles('viewport'),
+    ...shapesLayerStyles('flat'),
+    ...shapesLayerStyles('viewport'),
     // Line labels sometimes get rendered wrong when line is extruded
     'line-labels': {
       id: 'line-labels',

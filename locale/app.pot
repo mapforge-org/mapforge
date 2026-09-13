@@ -258,6 +258,10 @@ msgstr ""
 msgid "Clean, minimal MapTiler style focused on readability and simplicity."
 msgstr ""
 
+#: ../app/views/maps/modals/feature/_edit_ui.haml:95
+msgid "Circle"
+msgstr ""
+
 #: ../app/views/maps/_search_filters.haml:7 ../app/views/maps/_search_filters.haml:14
 msgid "Clear filter"
 msgstr ""
@@ -774,12 +778,15 @@ msgstr ""
 msgid "Ice"
 msgstr ""
 
+msgid "Icon"
+msgstr ""
+
 #: ../app/views/maps/modals/_image_viewer.haml:2
 msgid "Image"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:100
-msgid "Image:"
+#: ../app/javascript/controllers/feature/edit_controller.js:328
+msgid "Image exceeds 15MB"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:36
@@ -990,6 +997,10 @@ msgstr ""
 msgid "Mapforge: Create and share your own maps online"
 msgstr ""
 
+#: ../app/views/maps/modals/feature/_edit_ui.haml:134
+msgid "Max. 5MB"
+msgstr ""
+
 #: ../app/javascript/maplibre/map.js:278
 msgid "Maximum zoom level %{zoom} reached"
 msgstr ""
@@ -1062,6 +1073,10 @@ msgstr ""
 msgid "No route found"
 msgstr ""
 
+#: ../app/views/maps/modals/feature/_edit_ui.haml:113
+msgid "None"
+msgstr ""
+
 #: ../app/views/maps/modals/_layers.haml:117
 msgid "OSM Info (experimental)"
 msgstr ""
@@ -1120,6 +1135,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:56
 msgid "Paving stones"
+msgstr ""
+
+#: ../app/views/maps/modals/feature/_edit_ui.haml:98
+msgid "Pin"
 msgstr ""
 
 #: ../app/views/docs/tutorials.haml:20
@@ -1354,6 +1373,10 @@ msgstr ""
 msgid "Share view link"
 msgstr ""
 
+#: ../app/views/maps/modals/feature/_edit_ui.haml:93
+msgid "Shape:"
+msgstr ""
+
 #: ../app/views/maps/modals/_share.haml:63
 msgid "Show in public gallery"
 msgstr ""
@@ -1400,6 +1423,10 @@ msgstr ""
 msgid "Snapping waypoints to road network..."
 msgstr ""
 
+#: ../app/views/maps/modals/feature/_edit_ui.haml:101
+msgid "Square"
+msgstr ""
+
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:42
 msgid "Steep downhill (>16%)"
 msgstr ""
@@ -1440,7 +1467,6 @@ msgstr ""
 msgid "Surface"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:93
 msgid "Symbol:"
 msgstr ""
 
@@ -1956,9 +1982,7 @@ msgstr ""
 msgid "🛜 Wifi"
 msgstr ""
 
-
-
-msgid 
+msgid
 
 #: ../app/javascript/controllers/map/layers_controller.js:65
 msgid "Could not read the file: %{error}"

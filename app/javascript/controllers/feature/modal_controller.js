@@ -8,7 +8,10 @@ import { status } from 'helpers/status'
 import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { draw, select, unselect } from 'maplibre/edit'
-import { getFeatureTypeName, highlightedFeatureId, refreshFeatureMeta, showFeatureDetails } from 'maplibre/feature'
+import {
+  getFeatureTypeName, highlightedFeatureId, refreshFeatureMeta, showFeatureDetails,
+  syncMarkerContent, syncShapeButtons
+} from 'maplibre/feature'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { getFeature, layers } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
@@ -29,6 +32,9 @@ export default class extends Controller {
   }
 
   toggle_edit_feature (event) {
+    // The picker covers the edit ui, so any tab click closes it. It cannot close itself here:
+    // its own outside click listener sits on the document, and this handler stops propagation.
+    functions.e('em-emoji-picker', e => { e.remove() })
     const activeUiTab = document.querySelector('#edit-buttons .feature-tab-btn.active[data-edit-type="ui"]')?.dataset?.editTab
     const activeGeometry = document.querySelector('#edit-button-geometry')?.classList.contains('active')
     document.querySelector('#edit-button-details')?.classList.remove('active')
@@ -67,9 +73,8 @@ export default class extends Controller {
       event?.currentTarget?.classList?.add('active')
       this.show_feature_edit_ui(tab)
     } else {
-      // Repeated click on the current edit mode returns to feature description
-      showFeatureDetails(this.getSelectedFeature())
-      unselect()
+      // A repeated click on the open tab keeps it open, the details tab is the way back
+      event?.currentTarget?.classList?.add('active')
     }
     document.querySelector('#feature-edit-raw .error').innerHTML = ''
     functions.e('#feature-edit-raw-geometry .error', e => { e.innerHTML = '' })
@@ -93,7 +98,6 @@ export default class extends Controller {
     if (tab === 'advanced') { document.querySelector('#edit-button-advanced')?.classList.add('active') }
     // the coordinates of a point show up in the geometry tab only
     refreshFeatureMeta(feature)
-    functions.e('em-emoji-picker', e => { e.remove() })
 
     this.updateColorPresets()
 
@@ -134,16 +138,14 @@ export default class extends Controller {
     if (feature.geometry.type === 'Point') {
       dom.showElements(['#feature-edit-ui .edit-point'])
 
-      document.querySelector('#marker-symbol').value = feature.properties['marker-symbol'] || ''
-      functions.showSymbol(document.querySelector('#emoji'), feature.properties['marker-symbol'])
-
       const size = feature.properties['marker-size'] || defaultPointSize(feature)
 
       document.querySelector('#point-size').value = size
       document.querySelector('#point-size-val').innerHTML = size
       document.querySelector('#point-scaling').checked = feature.properties['marker-scaling']
       document.querySelector('#fill-color').value = functions.hexColor(feature.properties['marker-color'], defaults.featureColor)
-      functions.e('#marker-image', e => { e.value = '' })
+      syncShapeButtons(feature)
+      syncMarkerContent(feature)
     } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
       const size = feature.properties['stroke-width'] || defaults.lineWidth
       document.querySelector('#line-width').value = size

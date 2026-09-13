@@ -15,9 +15,15 @@ import {
   renderRouteExtras
 } from 'maplibre/layers/geojson/route_extras'
 import { Layer } from 'maplibre/layers/layer'
-import { getFeature } from 'maplibre/layers/layers'
+import { getFeature, layers } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties, removeGeoJSONSource } from 'maplibre/map'
+import { pruneShapeImages } from 'maplibre/styles/circle_image'
 import { clusterStyles, initializeClusterStyles, initializeViewStyles, styles, viewStyleNames } from 'maplibre/styles/styles'
+
+// Every layer counts, so that the render of one layer never drops the shape images of another
+function pruneShapes() {
+  pruneShapeImages((layers || []).flatMap(layer => layer.geojson?.features || []))
+}
 
 // Whether a feature needs a buffered extrusion polygon: a LineString with a height set, not
 // already rendered as a route-extras segment (which builds its own extrusion), and not hidden by 3D terrain.
@@ -200,6 +206,7 @@ export class GeoJSONLayer extends Layer {
     }
 
     this.resetDrawFeatures(resetDraw)
+    pruneShapes()
   }
 
   bringToFront(feature) {
@@ -263,6 +270,7 @@ export class GeoJSONLayer extends Layer {
 
     // Keep the MapboxDraw overlay in sync for geometry edits (no-op when nothing is in draw).
     if (resetDraw) { this.resetDrawFeatures(true) }
+    pruneShapes()
   }
 
   // Surgically add a feature to this layer's source without a full render(). Unlike

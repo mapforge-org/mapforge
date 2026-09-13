@@ -32,6 +32,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 
 #### *Point* geometry:
 
+* `marker-shape`: background shape of the marker: `circle` (default), `pin` or `square`. A marker with a `marker-shape` or a `marker-symbol` is drawn as one image, with `marker-symbol` or `marker-image-url` inside the shape. `stroke-width` is ignored for such a marker, the border keeps a fixed width.
 * `marker-color`: circle color (default "green", 'transparent' for none)
 * `marker-size`: radius of the marker (default: 6, with 'marker-symbol' fixed to 16 )
 * `marker-opacity`: opacity of the marker (default: 0.7)

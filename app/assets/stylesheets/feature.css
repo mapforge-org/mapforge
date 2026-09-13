@@ -210,6 +210,7 @@
   #fill-color, #stroke-color, #marker-symbol {
     min-width: 2rem;
     max-width: 2rem;
+    height: 2rem; /* same as .segmented .btn, so color, shape and symbol buttons line up */
     padding: 0.3rem;
   }
 }
@@ -228,37 +229,6 @@
   box-sizing: border-box;
 }
 
-/* a box of a fixed size, so that the symbol, the image and both remove buttons line up */
-#marker-symbol-ui #emoji,
-#marker-image-ui .feature-image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 1.8rem;
-  font-size: 1.3rem;
-}
-
-#marker-image-ui .feature-details-icon {
-  margin: 0;
-  max-height: 1.8rem;
-}
-
-.marker-remove {
-  border: none;
-  background: none;
-  color: var(--color-dark-charcoal);
-  font-size: 0.75rem;
-  opacity: 0.6;
-  margin-left: -0.6rem;
-}
-
-/* the button has nothing to remove while the symbol span or the image container is empty */
-#marker-image-ui:has(.feature-image:empty) .marker-remove,
-#marker-symbol-ui:has(#emoji:empty) .marker-remove {
-  display: none;
-}
-
 /* The icons of these sets are white, a marker draws them on a circle in its own color. On the
  * page they get a circle of their own, see whiteIconSets in feature/edit_controller.js.
  */
@@ -268,16 +238,6 @@ img[src*="/icon-sets/fontawesome/"] {
   border-radius: 50%;
   padding: 3px;
   margin: -3px;
-}
-
-/* an icon of a set, where an emoji would be a text character */
-.symbol-preview {
-  height: 1.4rem;
-  vertical-align: text-bottom;
-}
-
-#marker-symbol-ui .symbol-preview {
-  height: 1.8rem;
 }
 
 #elevation-info-line {
@@ -455,6 +415,96 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
   }
 }
 
+/* The segmented buttons repeat the look of .maplibregl-ctrl-group: same cell height, same ring,
+   same divider and the same colors for hover and the selected button. A real border, not a
+   box-shadow, because .edit-ui clips overflow and a box-shadow ring would lose its bottom edge. */
+.segmented {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgb(0 0 0 / 10%);
+}
+
+.segmented .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 2rem;
+  padding: 0 0.8rem;
+  border: 0;
+  border-radius: 0;
+  font-size: 1rem;
+  background-color: #fff;
+  color: var(--ctrl-button-color);
+}
+
+.segmented .btn + .btn {
+  border-left: 1px solid #0000001c;
+}
+
+@media (hover: hover) {
+  .segmented .btn:not(.active):hover {
+    background-color: var(--ctrl-hover-color);
+  }
+}
+
+.segmented .btn.active {
+  background-color: var(--ctrl-button-color);
+  color: #FFF;
+}
+
+/* A toggle button carries the preview of what it holds, an empty one must add no gap. */
+#emoji:empty,
+#marker-image-preview:empty {
+  display: none;
+}
+
+#marker-content-ui .btn .feature-details-icon {
+  margin: 0;
+  max-height: 1.5rem;
+}
+
+/* On a narrow screen the three words do not fit in the row, so each button shows an icon
+   instead. A filled preview already says what the button holds and replaces the icon. */
+#marker-content-ui .btn .bi {
+  display: none;
+}
+
+@media (width <= 640px) {
+  #marker-content-ui .btn .bi {
+    display: inline;
+  }
+
+  #marker-content-ui .btn-label,
+  #marker-content-ui :is(#emoji, #marker-image-preview):not(:empty) + .bi {
+    display: none;
+  }
+
+  /* the same cell as a shape button keeps both rows aligned. A min-width, because a wide
+     image preview needs more room than an icon */
+  #marker-content-ui .segmented .btn {
+    min-width: 2.6rem;
+    padding: 0;
+  }
+}
+
+/* the shape buttons hold an icon instead of a word, the width matches an icon-only content button */
+#marker-shape-ui .segmented .btn {
+  width: 2.6rem;
+  padding: 0;
+}
+
+/* a solid glyph in the full button color weighs as much as the active cell */
+#marker-shape-ui .segmented .btn:not(.active) {
+  color: color-mix(in srgb, var(--ctrl-button-color) 70%, #FFF);
+}
+
+/* bi-geo-alt-fill carries more empty padding in its glyph box than the circle and square
+   icons, so it reads smaller at the same font-size */
+#marker-shape-ui .btn .bi-geo-alt-fill {
+  font-size: 1.6rem;
+}
+
 .edit-ui .slider {
   flex-grow: 1;
   flex-shrink: 1;
@@ -578,6 +628,10 @@ input {
 
   .feature-details-card-header h5 {
     font-size: 0.9rem;
+  }
+
+  .edit-ui {
+    gap: 0.5rem;
   }
 }
 
