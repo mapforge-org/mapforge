@@ -13,7 +13,7 @@ describe "Map places search" do
   # the marker of a result draws only after its circle image is built, and a click on the
   # map before that misses the marker. the result row appears earlier than the marker.
   def wait_for_result_markers
-    layer = "symbols-layer_search-source-results"
+    layer = "shapes-layer_search-source-results"
     wait_for {
       page.evaluate_script(
         "map.getLayer('#{layer}')" \
@@ -151,13 +151,13 @@ describe "Map places search" do
     # results render into their own source, so they are visible to the map, not to the DOM
     let(:source) { "search-source-results" }
 
-    # the circle and the emoji of a result are one icon, so the symbols layer draws it.
+    # the circle and the emoji of a result are one icon, so the shapes layer draws it.
     # the style layer only exists once the first results arrive, and querying it before
     # that logs a console error, which rails_helper turns into a failure
     def result_features
       page.evaluate_script(
-        "map.getLayer('symbols-layer_#{source}')" \
-        " ? map.queryRenderedFeatures({ layers: ['symbols-layer_#{source}'] }).map(f => [" \
+        "map.getLayer('shapes-layer_#{source}')" \
+        " ? map.queryRenderedFeatures({ layers: ['shapes-layer_#{source}'] }).map(f => [" \
         "     f.properties['marker-symbol']," \
         "     map.getFeatureState({ source: '#{source}', id: f.id }).active === true])" \
         " : []"

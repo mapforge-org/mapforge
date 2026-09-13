@@ -4,7 +4,7 @@ import { animateElement } from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { featureIcon, featureTitle, getFeatureTypeName, highlightFeature, highlightedFeatureId } from 'maplibre/feature'
 import { getFeature, getFeatureSource, getLayer, layers } from 'maplibre/layers/layers'
-import { MARKER_LABEL_OFFSET, MARKER_OPACITY, MARKER_SIZE, resetSearchLayer, resultMarkerImage, searchLayer } from 'maplibre/layers/search'
+import { MARKER_OPACITY, MARKER_OUTLINE, markerColor, resetSearchLayer, searchLayer } from 'maplibre/layers/search'
 import { map } from 'maplibre/map'
 
 const PHOTON_LANGS = ['de', 'en', 'fr', 'it']
@@ -263,12 +263,9 @@ function toResultItem (feature, title) {
   }
 }
 
-// the circle and the emoji of a result are one image, so that the circle of the next result
-// cannot cover the emoji of this one. marker-symbol stays for the icon of the details panel,
-// and for a copy of the result to a layer of the map.
+// the shapes layer draws the emoji on a circle in the color of the map controls
 function toMapFeature (item) {
   const [title] = item.place_name.split(',')
-  const symbol = categorySymbol(item.properties)
   return {
     type: 'Feature',
     id: functions.featureId(),
@@ -278,12 +275,11 @@ function toMapFeature (item) {
       title: title,
       label: title,
       desc: item.place_name,
-      'marker-symbol': symbol,
-      'marker-image-url': resultMarkerImage(symbol),
-      'marker-size': MARKER_SIZE,
-      // one image has one size, so the hovered result answers with its opacity
-      'marker-opacity': MARKER_OPACITY,
-      'label-offset': MARKER_LABEL_OFFSET
+      'marker-symbol': categorySymbol(item.properties),
+      'marker-color': markerColor(),
+      stroke: MARKER_OUTLINE,
+      // a shape does not grow on hover, so the hovered result answers with its opacity
+      'marker-opacity': MARKER_OPACITY
     }
   }
 }
@@ -472,12 +468,9 @@ export function initializeSearchControl () {
     searchLayer().clearResults()
   })
 
-  // a basemap change drops every source and every image, so the visible results need a
-  // re-render, and their marker image a re-draw in the color of the new basemap
+  // a basemap change drops every source, so the visible results need a re-render
   map.on('style.load', () => {
-    if (!results.length) { return }
-    results.forEach(f => { f.properties['marker-image-url'] = resultMarkerImage(f.properties['marker-symbol']) })
-    searchLayer().setResults(results)
+    if (results.length) { searchLayer().setResults(results) }
   })
 
   const geocoderButton = document.querySelector('.maplibregl-ctrl-geocoder')
