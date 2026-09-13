@@ -68,7 +68,7 @@ export const queries = [
   },
   {
     name: '🚶🏾 Hiking routes',
-    query: "relation[type=route][route=hiking];way(r);out geom 50;"
+    query: "relation[type=route][route=hiking];out geom 50;"
   },
   {
     name: '🚴 Bicycle routes',
