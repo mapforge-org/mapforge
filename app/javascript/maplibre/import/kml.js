@@ -9,7 +9,11 @@ const BLANK_PIN = /-blank_maps\.png$/
 
 // ... and the icon itself is only in the style id, '#icon-<google id>-<color>'. A line or a
 // polygon style is named '#line-...' or '#poly-...', so the regex passes over those.
-const GOOGLE_STYLE = /^#?icon-(\d+)-/
+// A KMZ export packs the icons already colored and leaves <IconStyle><color> out, so the
+// color in the style id is the only one there is for a pin or a pinhead symbol.
+const GOOGLE_STYLE = /^#?icon-(\d+)-([0-9a-f]{6})?/i
+// the plain pin of My Maps, which is the pin shape of mapforge
+const GOOGLE_PIN = '1899'
 
 // Consumed by the mapping below, or deliberately dropped. Everything else (ExtendedData
 // fields, timestamp, timespan, stroke, fill, sym, ...) is copied through untouched.
@@ -117,19 +121,31 @@ export function mapforgeProperties (props = {}) {
   }
   if (labelScale > 0 && labelScale !== 1) { out['label-size'] = Math.round(16 * labelScale) }
 
-  const symbol = googleIconSymbol(props.styleUrl)
+  const [, googleId, googleColor] = GOOGLE_STYLE.exec(props.styleUrl || '') || []
+  const pin = googleId === GOOGLE_PIN
+  if (pin) { out['marker-shape'] = 'pin' }
+  // A KMZ packs a white pictogram next to doc.kml, and <IconStyle><color> tints it. Mapforge
+  // draws such a symbol on a circle in the marker color, like a pinhead icon, so the color
+  // survives. uploadPackedIcons swaps the packed path for the uploaded copy.
+  const tinted = icon && !isOverlay && !pin && props['icon-color'] && !/^\w+:/.test(icon)
+  const symbol = googleIconSymbol(googleId) || (tinted ? icon : undefined)
+  if (symbol) { out['marker-symbol'] = symbol }
   // a pinhead icon is white, so it needs a white border to stand out from the marker color
-  if (symbol) { out['marker-symbol'] = symbol; out.stroke = '#ffffff' }
+  if (symbol || pin) { out.stroke = '#ffffff' }
 
-  if (props['icon-color']) { out['marker-color'] = props['icon-color'] }
+  const color = props['icon-color'] || (googleColor && `#${googleColor.toLowerCase()}`)
+  if (color) { out['marker-color'] = color }
   if (props['icon-opacity'] !== undefined && props['icon-opacity'] !== 1) { out['marker-opacity'] = props['icon-opacity'] }
   if (props['icon-heading']) { out['marker-rotate'] = props['icon-heading'] }
-  if (icon && !isOverlay && !BLANK_PIN.test(icon)) { out['marker-image-url'] = icon }
-  // A KML icon is a small pictogram, so the mapforge default of 20 for an image marker
-  // blows it up. A pinhead icon keeps a base of 16, smaller than the mapforge default
-  // of 18 for an emoji. Plain markers keep the mapforge base of 6.
-  const base = out['marker-image-url'] ? 10 : symbol ? 16 : 6
-  if (out['marker-image-url'] || symbol || (scale !== undefined && scale !== 1)) {
+  // The style draws marker-image-url over marker-symbol, so a packed KMZ copy of a known
+  // G**gle icon must not replace the pinhead symbol.
+  if (icon && !isOverlay && !symbol && !pin && !BLANK_PIN.test(icon)) { out['marker-image-url'] = icon }
+  // A linked KML icon is a small pictogram, so the mapforge default of 20 for an image marker
+  // blows it up. A packed icon becomes a 160px mapforge icon, so it keeps that default.
+  // A pinhead icon or a pin keeps a base of 13, which matches the size of a My Maps marker.
+  // Plain markers keep the mapforge base of 6.
+  const base = out['marker-image-url'] ? (/^https?:/.test(icon) ? 10 : 20) : (symbol || pin) ? 13 : 6
+  if (out['marker-image-url'] || symbol || pin || (scale !== undefined && scale !== 1)) {
     out['marker-size'] = Math.max(1, Math.round(base * (scale ?? 1)))
   }
 
@@ -148,9 +164,8 @@ export function mapforgeProperties (props = {}) {
   return out
 }
 
-function googleIconSymbol (styleUrl) {
-  const match = GOOGLE_STYLE.exec(styleUrl || '')
-  const icon = match && GOOGLE_ICONS[match[1]]
+function googleIconSymbol (googleId) {
+  const icon = googleId && GOOGLE_ICONS[googleId]
   return icon ? `/icon-sets/${icon}.png` : undefined
 }
 
@@ -190,16 +205,22 @@ const num = (text) => {
 async function uploadPackedIcons (features, entries) {
   const uploads = new Map()
   for (const feature of features) {
-    const href = feature.properties['marker-image-url']
+    // a tinted pictogram sits on the marker circle, so it takes the plain image, not the
+    // rounded icon with the white border
+    const key = feature.properties['marker-symbol'] ? 'marker-symbol' : 'marker-image-url'
+    const href = feature.properties[key]
     if (!href || !entries.has(href)) { continue }
     if (!uploads.has(href)) {
       const name = href.split('/').pop()
       const type = IMAGE_TYPES[name.split('.').pop().toLowerCase()] || 'application/octet-stream'
-      uploads.set(href, uploadImage(new File([entries.get(href)], name, { type })).then(data => data.icon))
+      uploads.set(href, uploadImage(new File([entries.get(href)], name, { type })))
     }
-    feature.properties['marker-image-url'] = await uploads.get(href)
-    feature.properties['marker-color'] = 'transparent'
-    feature.properties.stroke = 'transparent'
+    const data = await uploads.get(href)
+    feature.properties[key] = key === 'marker-symbol' ? data.image : data.icon
+    if (key === 'marker-image-url') {
+      feature.properties['marker-color'] = 'transparent'
+      feature.properties.stroke = 'transparent'
+    }
   }
 }
 

@@ -36,7 +36,7 @@ export const GOOGLE_ICONS = {
   1532: 'pinhead/bus_with_destination_display',
   1533: 'pinhead/aerial_tram',
   1534: 'pinhead/cup_and_saucer',
-  1535: 'pinhead/dot_with_rays_up',
+  1535: 'pinhead/camera',
   1536: 'pinhead/person_paddling_canoe_on_water',
   1537: 'pinhead/ferryboat',
   1538: 'pinhead/car',
