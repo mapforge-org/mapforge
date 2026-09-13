@@ -1,4 +1,4 @@
-name: Build base container image
+name: Build base container
 
 on:
   # rebuild image with updated patches each night:
