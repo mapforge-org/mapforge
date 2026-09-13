@@ -185,21 +185,26 @@ export async function initializeMap (divId = 'maplibre-map') {
     functions.e('#preloader', e => { e.classList.add('hidden') })
     functions.e('.map', e => { e.setAttribute('data-map-loaded', true) })
 
-    // Wait for layers to be loaded before accessing features
     // Safe to call even if already triggered by style.load — returns the cached promise, no double loading
-    await initializeLayers()
+    const layersLoaded = initializeLayers()
 
     const urlFeatureId = new URLSearchParams(window.location.search).get('f')
     let feature
-    if (urlFeatureId && (feature = getFeature(urlFeatureId))) {
-      resetControls()
-      highlightFeature(feature, true)
-      const center = centroid(feature)
-      map.setCenter(center.geometry.coordinates) // set center before zooming in animation
+    if (urlFeatureId) {
+      // Only a feature link waits for the layers, the zoom-in below must start from its center.
+      // Every other map zooms in right away, before the overpass/wikipedia fetches finish.
+      await layersLoaded
+      if ((feature = getFeature(urlFeatureId))) {
+        resetControls()
+        highlightFeature(feature, true)
+        map.setCenter(centroid(feature).geometry.coordinates)
+      }
     }
 
     if (!functions.isTestEnvironment()) { map.easeTo({ zoom: map.getZoom() + 1, duration: 1000 })} // zoom in to configured zoom level
     console.log("Map loaded ('load')")
+
+    await layersLoaded
 
     // Set idle marker for screenshot task — fires after all animations complete and tiles load
     map.once('idle', () => {
