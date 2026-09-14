@@ -283,7 +283,7 @@ export default class extends Controller {
   updateMarkerContent (e) {
     const mode = e.currentTarget.dataset.content
     const feature = this.getEditFeature()
-    if (mode === markerContentMode(feature)) { return this.pickMarkerContent(mode) }
+    if (mode === markerContentMode(feature)) { return this.pickMarkerContent(mode, e) }
 
     this.addUndo()
     const memory = markerMemory.get(this.featureIdValue) || {}
@@ -307,11 +307,11 @@ export default class extends Controller {
     // the draw overlay keeps its own copy of the properties, a delete does not reach it
     this.renderFeature({ resetDraw: true })
     this.saveFeature()
-    if (!restored) { this.pickMarkerContent(mode) }
+    if (!restored) { this.pickMarkerContent(mode, e) }
   }
 
-  pickMarkerContent (mode) {
-    if (mode === 'symbol') { this.openEmojiPicker() }
+  pickMarkerContent (mode, event) {
+    if (mode === 'symbol') { this.openEmojiPicker(event) }
     if (mode === 'image') { functions.e('#marker-image', e => { e.click() }) }
   }
 
@@ -418,7 +418,8 @@ export default class extends Controller {
   }
 
   // https://github.com/missive/emoji-mart
-  async openEmojiPicker() {
+  // openedBy is the click that asks for the picker, see onClickOutside
+  async openEmojiPicker(openedBy) {
     // Dynamically import emoji-mart + its data
     const { Picker } = await import('emoji-mart')
     const data = async () => {
@@ -444,9 +445,12 @@ export default class extends Controller {
       //this.picker.remove()
       document.querySelector('em-emoji-picker').remove()
     }
+    // The picker adds its own click handler on document while the click that opened it still
+    // travels up to document. Only the first open waits for a fetch and misses that click,
+    // every later one is served from cache and closed itself right after it appeared.
     const onClickOutside = (event) => {
-      // click in the symbol input is not considered outside
-      if (event.target.id != 'marker-symbol') { document.querySelector('em-emoji-picker').remove() }
+      if (event === openedBy) { return }
+      document.querySelector('em-emoji-picker')?.remove()
     }
 
     const pickerOptions = {

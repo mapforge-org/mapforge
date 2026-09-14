@@ -122,8 +122,10 @@
             %span#marker-image-preview
             %i.bi.bi-image
             %span.btn-label= _("Image")
+        -# visually-hidden, not hidden: mobile Safari opens no file dialog for a click() on a
+           'display: none' input, so the input has to stay in the layout
         - if @user
-          %input#marker-image.hidden{ type: "file", accept: "image/*",
+          %input#marker-image.visually-hidden{ type: "file", accept: "image/*",
             'data-action': "input->feature--edit#addUndo change->feature--edit#updateMarkerImage" }
 
       #fill-extrusion-height-ui.edit-ui.edit-line.edit-polygon

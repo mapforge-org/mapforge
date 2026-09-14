@@ -84,7 +84,7 @@ describe "Feature edit, point features" do
         find("#edit-button-style").click
         image_path = Rails.root.join("spec", "fixtures", "files", "mapforge-logo-icon.png")
         find("#marker-content-ui [data-content='image']").click
-        page.driver.execute_script("document.querySelector('#marker-image').classList.remove('hidden')")
+        page.driver.execute_script("document.querySelector('#marker-image').classList.remove('visually-hidden')")
         expect(page).to have_selector("#marker-image")
         attach_file("marker-image", image_path)
 
@@ -96,7 +96,7 @@ describe "Feature edit, point features" do
         find("#edit-button-style").click
         image_path = Rails.root.join("spec", "fixtures", "files", "image_large.jpg")
         find("#marker-content-ui [data-content='image']").click
-        page.driver.execute_script("document.querySelector('#marker-image').classList.remove('hidden')")
+        page.driver.execute_script("document.querySelector('#marker-image').classList.remove('visually-hidden')")
         expect(page).to have_selector("#marker-image")
         attach_file("marker-image", image_path)
 
@@ -124,6 +124,17 @@ describe "Feature edit, point features" do
         page.execute_script("#{emoji}.click()")
 
         wait_for { point.reload.properties["marker-symbol"] }.to match("👍")
+      end
+
+      # Only the first open waits for the emoji data. A later one mounts in time to catch the
+      # very click that opened it, and that click closed it again, see onClickOutside
+      it "can open the emoji selector again" do
+        find("#edit-button-style").click
+        find("#marker-content-ui [data-content='symbol']").click
+        expect(page).to have_selector("em-emoji-picker")
+
+        find("#marker-content-ui [data-content='symbol']").click
+        expect(page).to have_selector("em-emoji-picker")
       end
 
       it "can select an icon of an icon set" do
