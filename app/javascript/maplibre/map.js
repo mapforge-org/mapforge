@@ -368,13 +368,15 @@ export function setLayerVisibility(sourceName, visible) {
       sources.push(sourceName.replace('geojson-source-', 'km-marker-source-'))
       sources.push(sourceName.replace('geojson-source-', 'route-extras-source-'))
       sources.push(sourceName.replace('geojson-source-', 'extrusion-source-'))
+      // one image overlay source per feature, see image_overlays.js
+      sources.push(sourceName.replace('geojson-source-', 'image-overlay-source-') + '-')
     }
     // raster layers with waymarkedtrails have companion sources for clicked routes
     if (sourceName.startsWith('raster-source-')) {
       sources.push(sourceName + '-features')
     }
     style.layers
-      .filter(l => sources.includes(l.source))
+      .filter(l => sources.some(s => l.source === s || (s.endsWith('-') && l.source.startsWith(s))))
       .forEach(l => {
         if (map.getLayer(l.id)) map.setLayoutProperty(l.id, 'visibility', visible ? 'visible' : 'none')
       })
@@ -774,6 +776,7 @@ export function sortLayers () {
   const groups = [
     styleLayers.filter(e => e.id.startsWith('raster-layer_')), // raster overlays below all geojson layers
     styleLayers.filter(e => e.id.startsWith('polygon-layer_geojson-source') && !e.id.includes('extrusion') && !e.id.includes('shadow')),
+    styleLayers.filter(e => e.id.startsWith('image-overlay-layer_')),
     styleLayers.filter(e => e.id.startsWith('polygon-layer-outline_geojson-source')),
     styleLayers.filter(e => e.id.includes('-flat')), // keep flat layers behind houses
     styleLayers.filter(e => e.id.startsWith('line-layer-outline_geojson-source')),

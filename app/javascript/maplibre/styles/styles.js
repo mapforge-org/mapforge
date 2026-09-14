@@ -140,7 +140,10 @@ const labelShadowWidth = () => styleProp(['user_label-shadow-width', 'label-shad
 const labelFont = () => ['coalesce', ['get', 'label-font'], ['literal', [defaults.font]]]
 
 const fillColor = () => styleProp(['fill', 'user_fill'], defaults.featureColor)
-const fillOpacity = () => ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaults.extrusionOpacity)]
+// A fill under an image overlay (see image_overlays.js) would tint it, so it is invisible by
+// default. The polygon stays clickable: a fill layer is hit-tested by geometry, not by pixels.
+const fillOpacity = () => ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'],
+  ['case', hasProp('fill-image-url'), 0, defaults.extrusionOpacity])]
 
 const lineColor = () => styleProp(['stroke', 'user_stroke'], defaults.featureColor)
 const polygonOutlineColor = () => styleProp(['stroke', 'user_stroke'], defaults.featureOutlineColor)

@@ -1,6 +1,11 @@
 import { draw, select } from 'maplibre/edit'
 import { buildLineExtrusion } from 'maplibre/layers/geojson/extrusion'
 import {
+  removeFeatureImageOverlay,
+  renderImageOverlays,
+  syncImageOverlay
+} from 'maplibre/layers/geojson/image_overlays'
+import {
   applyLevelFilter as applyKmMarkerLevelFilter,
   cleanupKmMarkerImages,
   hasKmMarkers,
@@ -75,6 +80,7 @@ export class GeoJSONLayer extends Layer {
     removeGeoJSONSource(this.kmMarkerSourceId)
     removeGeoJSONSource(this.routeExtrasSourceId)
     removeGeoJSONSource(this.extrusionSourceId)
+    renderImageOverlays([], this.id)
   }
 
   initialize() {
@@ -127,6 +133,7 @@ export class GeoJSONLayer extends Layer {
 
     applyKmMarkerLevelFilter(this.kmMarkerSourceId)
     applyRouteExtrasLevelFilter(this.routeExtrasSourceId)
+    renderImageOverlays(this.layer.geojson?.features || [], this.id, this.show !== false)
   }
 
   // setData(url) lets MapLibre fetch AND parse the features in its web worker (off the main
@@ -191,6 +198,7 @@ export class GeoJSONLayer extends Layer {
     renderKmMarkers(features, this.kmMarkerSourceId)
     renderRouteExtras(features, this.routeExtrasSourceId)
     this.renderExtrusionLines(features)
+    renderImageOverlays(features, this.id, this.show !== false)
 
     if (sourceLoaded) {
       // MapLibre's URL load already holds exactly this set; don't re-parse it.
@@ -268,6 +276,8 @@ export class GeoJSONLayer extends Layer {
       renderKmMarkers(this.layer.geojson.features, this.kmMarkerSourceId)
     }
 
+    syncImageOverlay(feature, this.id, this.show !== false)
+
     // Keep the MapboxDraw overlay in sync for geometry edits (no-op when nothing is in draw).
     if (resetDraw) { this.resetDrawFeatures(true) }
     pruneShapes()
@@ -294,6 +304,8 @@ export class GeoJSONLayer extends Layer {
     if (hasKmMarkers(feature)) {
       renderKmMarkers(this.layer.geojson.features, this.kmMarkerSourceId)
     }
+
+    syncImageOverlay(feature, this.id, this.show !== false)
   }
 
   // Surgically remove a feature from this layer's source without a full render(). See
@@ -315,6 +327,8 @@ export class GeoJSONLayer extends Layer {
     if (hasKmMarkers(feature)) {
       renderKmMarkers(this.layer.geojson.features, this.kmMarkerSourceId)
     }
+
+    removeFeatureImageOverlay(feature, this.id)
 
     // Cheap regardless of draw's contents, so always keep it in sync (e.g. a feature deleted
     // remotely while selected locally).

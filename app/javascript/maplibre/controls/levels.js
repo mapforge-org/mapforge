@@ -53,6 +53,13 @@ export function levelFilterFragment() {
   ]
 }
 
+// The JS twin of levelFilterFragment(), for layers without a style filter (image overlays)
+export function featureOnLevel(feature) {
+  if (!activeLevel) return true
+  const levels = parseFeatureLevels(feature.properties?.level)
+  return levels.length === 0 || levels.includes(activeLevel)
+}
+
 /**
  * Compose a style layer's base filter with the current level filter fragment.
  */
