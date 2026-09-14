@@ -7,67 +7,85 @@
 
 # Mapforge
 
+**[Try it on mapforge.org](https://mapforge.org)** · [Self-host](SELF-HOSTING.md) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+
 Create individual maps for your places, tracks and events, and share them in real time.
 
 ![demo screencast](public/images/frontpage/demo.webp)
 
 Mapforge is an open source GIS web application. Create and share your places, tracks and events as GeoJSON layers on different base maps, with [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) on desktop and mobile. Changes are synced live to all clients.
 
-**[Try it on mapforge.org](https://mapforge.org)** · [Self-host](#selfhosting) · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+## Features
 
-### Features
+### Map and data
 
 - Create maps with your own data on top of various available base maps.
 - 3D terrain, hillshade, contour lines and globe projection
-- [Self-host](#selfhosting) with ready-to-use Docker Compose file
 - Draw shapes and [style them](https://mapforge.org/doc/geojson_style_spec): Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more. The style attributes extend the [GeoJSON](https://macwright.com/2015/03/23/geojson-second-bite.html) / [Mapbox simplestyle](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0) spec.
-- Plan routes for walking, bike and car with [openrouteservice](https://openrouteservice.org/), with elevation profile and route color coding by steepness or surface
 - Import and export GeoJSON, GPX and KML
 - Search places and addresses, including the features of the open map
+- [Integration](https://mapforge.org/doc/overpass_layers) with [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) for custom OpenStreetMap queries
+
+### Routing
+
+- Plan routes for walking, bike and car with [openrouteservice](https://openrouteservice.org/), with elevation profile and route color coding by steepness or surface
+
+### Collaboration and sharing
+
 - Real-time collaborative editing, changes sync to every connected client over WebSockets
 - Share maps and embed on your own web page
+
+### Apps and platforms
+
 - Desktop and mobile UI
-- [Integration](https://mapforge.org/doc/overpass_layers) with [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) for custom OpenStreetMap queries
-- Login with Google, GitHub or OSM OAuth, no auth system to maintain
 - [PWA support](docs/tutorials/app.md) by default, ships as an [Android app](https://play.google.com/store/apps/details?id=org.mapforge.twa) via Bubblewrap
 - Record GPS tracks with the built in [µlogger API](engines/ulogger/README.md)
+- Login with Google, GitHub or OSM OAuth, no auth system to maintain
 
-## Self‑Hosting
+### Privacy and self-hosting
 
-### Quick Start with Docker Compose
+- [Self-host](SELF-HOSTING.md) with ready-to-use Docker Compose file
+- No ads and no tracking
 
-[deploy/docker-compose.yml](deploy/docker-compose.yml) starts the application, MongoDB and Redis together.
+## How Mapforge compares
 
-It uses the [latest released image](https://github.com/mapforge-org/mapforge/pkgs/container/mapforge) from `ghcr.io/mapforge-org/mapforge:main`.
+|                                      | Mapforge                         | [uMap][umap]                 | [Google My Maps][mymaps]     | [Felt][felt]             |
+| ------------------------------------ | -------------------------------- | ---------------------------- | ---------------------------- | ------------------------ |
+| License                              | AGPL v3                          | AGPL v3                      | proprietary                  | proprietary              |
+| Self-hosting                         | yes, Docker Compose              | yes                          | no                           | no                       |
+| Real-time collaboration              | yes                              | yes, opt-in                  | through account sharing      | yes                      |
+| Vector base maps, 3D terrain, globe  | yes                              | no, Leaflet 2D               | no                           | no                       |
+| Routing with elevation profile       | yes, with [ORS key][ors-key]     | no                           | directions only              | no                       |
+| Import formats                       | GeoJSON, GPX, KML                | CSV, GeoJSON, GPX, KML, OSM  | CSV, XLSX, KML, GPX, Sheets  | Shapefile, GeoTIFF, CSV  |
+| Emoji markers                        | yes, emoji + [Pinhead][pinhead]  | yes, icon symbol field       | no, icon images only         | yes                      |
+| Photo upload                         | yes, max 5 MB                    | no, image URL only           | yes                          | yes, with EXIF position  |
+| Live GPS track recording             | yes, [µlogger API][ulogger]      | no                           | no                           | yes, field app           |
+| Mobile app                           | PWA and Android app              | responsive web only          | view only, no edit           | iOS and Android          |
+| Interface languages                  | English, German                  | 47 languages                 | Google account language      | English                  |
 
-```bash
-git clone https://github.com/mapforge-org/mapforge.git
-cd mapforge/deploy
-cp .env.example .env
-docker compose up --detach # podman compose works, too
-```
+### What Mapforge does not do
 
-Then open [http://localhost:3000](http://localhost:3000). To watch the logs, run `docker compose logs -f mapforge`.
+Mapforge is a map editor, not a full GIS suite. These functions are missing today:
 
-To sign in, either add OAuth credentials to `.env`, or use the local developer login, which is enabled by `DEVELOPER_LOGIN_ENABLED`. Only enable the developer login on a local test instance! The first user that logs in becomes admin.
+- No spreadsheet import. Mapforge cannot read CSV or XLSX, and it cannot geocode a list of addresses.
+- No Shapefile, GeoPackage or GeoTIFF import.
+- No spatial analysis. There are no buffers, no joins between layers and no data driven classification.
 
-Uploaded images are stored in `deploy/volumes/storage/`, the database in `deploy/volumes/mongodb/`. To update to the latest version: `docker compose pull`
+## Development
 
-### Environment Variables
+Mapforge is a Rails 8 application. It uses Mongoid on MongoDB for persistence, Redis and Action Cable for live sync, Importmap with Turbo and Stimulus for the frontend, and MapLibre GL JS for the map.
 
-- `SECRET_KEY_BASE` — Rails secret key (must be set in production). Generate one with `openssl rand -hex 64`.
-- `DEVELOPER_LOGIN_ENABLED` — optional local developer login (only enable this in test instances)
-- `HTTP_PORT` — HTTP port inside the container (default: 3001 for thruster, 3000 for puma).
-- `FORCE_SSL` — HTTPS enforcement. Set it to `true` if a reverse proxy terminates TLS in front of the app.
-- `MONGO_URL` — MongoDB connection string (default: `localhost:27017`)
-- `MONGO_DB` — MongoDB database name (default: 'mapforge_production')
-- `MONGO_USER`, `MONGO_PASSWORD` — MongoDB credentials (optional; leave unset to connect without authentication)
-- `REDIS_URL` — Redis URL for Action Cable (default: `redis://localhost:6379/1`)
-- `OPENROUTESERVICE_KEY` — API key for routing features with [openrouteservice.org](https://openrouteservice.org/). Without this key the map hides the route buttons (walk, bike, car) in the line menu.
-- `INDOOREQUAL_KEY` — API key for [Indoorequal](https://indoorequal.com/). Without this key the layer menu hides the "OpenStreetMap indoor" entry.
-- `THUNDERFOREST_KEY` — API key for [Thunderforest](https://www.thunderforest.com/) maps. Without this key the app hides the Thunderforest background maps.
-- `PROTOMAPS_KEY` — API key for [Protomaps](https://protomaps.com/api) maps. Without this key the app hides the Protomaps background maps.
-- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — GitHub OAuth credentials. Set to enable login via Github.
-- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth credentials. Set to enable login via Google.
-- `OSM_CLIENT_ID`, `OSM_CLIENT_SECRET` — OSM OAuth credentials. Set to enable login via OpenStreetMap.
-- `DEFAULT_MAP` — default background map (default: [versatilesColorful](https://versatiles.org/))
+- [DEVELOPMENT.md](DEVELOPMENT.md) explains the local setup.
+- [CONTRIBUTING.md](CONTRIBUTING.md) explains the workflow for bug reports, code and translations.
+- [GitHub Discussions](https://github.com/mapforge-org/mapforge/discussions) is the place for questions and ideas.
+
+## License
+
+Mapforge uses the [AGPL v3](LICENSE) license. See [THIRD-PARTY-LICENSES.md](THIRD-PARTY-LICENSES.md) for the licenses of the bundled open source projects.
+
+[umap]: https://umap-project.org/
+[mymaps]: https://www.google.com/mymaps
+[felt]: https://felt.com/
+[ors-key]: SELF-HOSTING.md#map-and-routing-service-keys
+[pinhead]: https://github.com/waysidemapping/pinhead
+[ulogger]: https://mapforge.org/doc/ulogger

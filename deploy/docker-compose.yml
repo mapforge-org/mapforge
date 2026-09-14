@@ -1,4 +1,4 @@
-# Mapforge stack: app, MongoDB, Redis. See README.md#quick-start-with-docker-compose
+# Mapforge stack: app, MongoDB, Redis. See ../SELF-HOSTING.md#quick-start-with-docker-compose
 # Start with: cp .env.example .env && docker compose up -d
 name: mapforge
 

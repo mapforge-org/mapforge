@@ -42,7 +42,7 @@ Then start the Mapforge app:
 HTTP_PORT=3001 bin/thrust rails server
 ```
 
-In development, environment variables (see [README](README.md#environment-variables)) can be set in `.env.development`.
+In development, environment variables (see [SELF-HOSTING.md](SELF-HOSTING.md#environment-variables)) can be set in `.env.development`.
 
 
 ### Base Maps
