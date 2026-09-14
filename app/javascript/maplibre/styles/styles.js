@@ -145,7 +145,10 @@ const fillOpacity = () => ['to-number', styleProp(['fill-opacity', 'user_fill-op
 const lineColor = () => styleProp(['stroke', 'user_stroke'], defaults.featureColor)
 const polygonOutlineColor = () => styleProp(['stroke', 'user_stroke'], defaults.featureOutlineColor)
 
-const strokeWidth = () => styleProp(['user_stroke-width', 'stroke-width'], defaults.lineWidth)
+// A route carries more visual weight than a plain line, so it falls back to a wider default.
+// KEEP IN SYNC with defaultLineWidth() in defaults.js, which is what the width slider reads.
+const lineWidthDefault = () => ['case', hasProp('route'), defaults.routeWidth, defaults.lineWidth]
+const strokeWidth = () => styleProp(['user_stroke-width', 'stroke-width'], lineWidthDefault())
 const lineWidthMin = () => ['ceil', ['/', ['to-number', strokeWidth()], 2]]
 const lineWidthMax = () => ['*', ['to-number', strokeWidth()], 2]
 const outlineWidthPolygon = () => ['to-number', styleProp(['user_stroke-width', 'stroke-width'], defaults.polygonOutlineWidth)]

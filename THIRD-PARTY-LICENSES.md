@@ -137,7 +137,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.<Paste>
 ```
 
-### @mapbox/mapbox-gl-draw 1.5.1
+### @mapbox/mapbox-gl-draw 1.5.2
 
 https://www.npmjs.com/package/@mapbox/mapbox-gl-draw
 

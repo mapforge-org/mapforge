@@ -224,7 +224,7 @@ export function initDirections (profile, feature) {
                                 "fill-extrusion-base": 3,
                                 "stroke-opacity": 0.65,
                                 "fill-extrusion-width": 1.5,
-                                "stroke-width": 5,
+                                "stroke-width": defaults.routeWidth,
                                 "stroke": trackColor,
                                 "stroke-dasharray": true,
                                 "show-km-markers": true }

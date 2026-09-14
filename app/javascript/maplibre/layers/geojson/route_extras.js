@@ -297,7 +297,7 @@ export function renderRouteExtras (features, sourceId) {
             .filter(key => key in feature.properties)
             .map(key => [key, feature.properties[key]])),
           'stroke': resolveExtrasColor(extrasType, value),
-          'stroke-width': feature.properties['stroke-width'] || 5
+          'stroke-width': feature.properties['stroke-width'] || defaults.routeWidth
         }
       })
     })

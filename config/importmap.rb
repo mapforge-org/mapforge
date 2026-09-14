@@ -48,8 +48,8 @@ pin "chart.js", to: "chart-js.js", preload: false # @4.5.1
 pin "marked", preload: false # @18.0.12
 
 # https://github.com/mapbox/mapbox-gl-draw
-# Unminified + patched version to style midpoints & vertexes (https://github.com/mapbox/mapbox-gl-draw/pull/964)
-pin "@mapbox/mapbox-gl-draw", to: "@mapbox--mapbox-gl-draw.js", preload: false # @1.5.1
+# Unminified + locally patched, see the header of the vendored file
+pin "@mapbox/mapbox-gl-draw", to: "@mapbox--mapbox-gl-draw.js", preload: false # @1.5.2
 pin "@mapbox/geojson-area", to: "@mapbox--geojson-area.js", preload: false # @0.2.2
 pin "@mapbox/geojson-normalize", to: "@mapbox--geojson-normalize.js", preload: false # @0.0.1
 pin "@mapbox/point-geometry", to: "@mapbox--point-geometry.js", preload: false # @1.1.0

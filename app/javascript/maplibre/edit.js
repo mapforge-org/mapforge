@@ -105,10 +105,10 @@ export async function initializeEditMode () {
   // styles already split per source bucket, so rebuild them the same way it does.
   map.on('basemap.change', () => {
     const editLayers = editStyles()
-    const bucketed = bucket => editLayers.map(style => style.source
-      ? style
-      : { ...style, id: `${style.id}.${bucket}`, source: `mapbox-gl-draw-${bucket}` })
-    draw.options.styles = [...bucketed('cold'), ...bucketed('hot')]
+    const sourceless = editLayers.filter(style => !style.source)
+    const bucketed = bucket => sourceless.map(style =>
+      ({ ...style, id: `${style.id}.${bucket}`, source: `mapbox-gl-draw-${bucket}` }))
+    draw.options.styles = [...editLayers.filter(style => style.source), ...bucketed('cold'), ...bucketed('hot')]
   })
 
   initializeEditStyles()

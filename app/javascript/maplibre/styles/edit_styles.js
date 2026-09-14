@@ -119,10 +119,7 @@ export function editStyles() {
       type: 'circle',
       filter: ['all',
         ['==', '$type', 'Point'],
-        ['==', 'meta', 'midpoint'],
-        // only show midpoints if this is not a route
-        // parent properties are patched into the midpoint properties
-        ['!has', 'user_route']
+        ['==', 'meta', 'midpoint']
       ],
       paint: {
         'circle-radius': editDefaults.midpointSize,
@@ -176,8 +173,7 @@ export function editStyles() {
       filter: ['all',
         ['==', 'meta', 'vertex'],
         ['==', '$type', 'Point'],
-        ['!=', 'mode', 'static'],
-        ['!has', 'user_route']
+        ['!=', 'mode', 'static']
       ],
       paint: {
         'circle-radius': editDefaults.vertexSize,
@@ -187,53 +183,18 @@ export function editStyles() {
         'circle-stroke-opacity': 1
       }
     },
-    // inactive vertex points on lines + polygons (non-route)
+    // inactive vertex points on lines + polygons
     {
       id: 'gl-draw-polygon-and-line-vertex-inactive',
       type: 'circle',
       filter: ['all',
         ['==', 'meta', 'vertex'],
         ['==', '$type', 'Point'],
-        ['!=', 'mode', 'static'],
-        ['!has', 'user_route']
+        ['!=', 'mode', 'static']
       ],
       paint: {
         'circle-radius': editDefaults.vertexSize,
         'circle-color': editDefaults.highlightColor
-      }
-    },
-    // Route point borders (rendered like midpoints in normal linestring)
-    {
-      id: 'gl-draw-route-vertex-inactive-midpoint-border',
-      type: 'circle',
-      filter: ['all',
-        ['==', 'meta', 'vertex'],
-        ['==', '$type', 'Point'],
-        ['!=', 'mode', 'static'],
-        ['has', 'user_route']
-      ],
-      paint: {
-        'circle-radius': editDefaults.routeVertexSize,
-        'circle-opacity': 0,
-        'circle-stroke-opacity': 1,
-        'circle-stroke-color': editDefaults.routeVertexBorderColor,
-        'circle-stroke-width': editDefaults.routeVertexBorderWidth,
-      }
-    },
-    // Route midpoints (rendered like midpoints in normal linestring)
-    {
-      id: 'gl-draw-route-vertex-inactive-midpoint',
-      type: 'circle',
-      filter: ['all',
-        ['==', 'meta', 'vertex'],
-        ['==', '$type', 'Point'],
-        ['!=', 'mode', 'static'],
-        ['has', 'user_route']
-      ],
-      paint: {
-        'circle-radius': editDefaults.routeVertexSize,
-        'circle-color': editDefaults.routeVertexColor,
-        'circle-opacity': editDefaults.routeVertexOpacity
       }
     },
     //

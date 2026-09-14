@@ -39,7 +39,8 @@ const baseDefaults = {
   extrudedShadowOpacity: 0.7,
   extrudedShadowOpacityActive: 0.4,
 
-  lineWidth: 3,
+  lineWidth: 2,
+  routeWidth: 3,
   lineOpacity: 0.8,
   lineOpacityActive: 1,
   polygonOutlineWidth: 2,
@@ -91,13 +92,7 @@ const baseEditDefaults = {
   activePointOpacity: 0.2,
   activePointOutlineWidth: 4,
   vertexOutlineColor: '#444',
-  vertexOutlineWidth: 2,
-
-  routeVertexSize: 4,
-  routeVertexColor: 'grey',
-  routeVertexOpacity: 0.7,
-  routeVertexBorderColor: '#ffffff',
-  routeVertexBorderWidth: 1
+  vertexOutlineWidth: 2
 }
 
 export const defaults = { ...baseDefaults }
@@ -111,6 +106,12 @@ export function defaultPointSize (feature) {
   if (feature.properties['marker-symbol']) { return defaults.pointSizeEmoji }
   if (feature.properties['marker-image-url']) { return defaults.pointSizeImage }
   return defaults.pointSizePlain
+}
+
+// Width a line falls back to when it has no explicit 'stroke-width'.
+// Keep in sync with lineWidthDefault() in styles.js, which is what the map renders.
+export function defaultLineWidth (feature) {
+  return feature.properties.route ? defaults.routeWidth : defaults.lineWidth
 }
 
 // Re-applies the base values first, so keys overridden by the previous basemap

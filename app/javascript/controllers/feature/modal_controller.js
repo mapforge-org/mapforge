@@ -16,7 +16,7 @@ import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { getFeature, layers } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
 import { routingEnabled } from 'maplibre/routing/openrouteservice'
-import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
+import { defaultLineWidth, defaultPointSize, defaults } from 'maplibre/styles/defaults'
 
 let easyMDE
 
@@ -147,7 +147,7 @@ export default class extends Controller {
       syncShapeButtons(feature)
       syncMarkerContent(feature)
     } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
-      const size = feature.properties['stroke-width'] || defaults.lineWidth
+      const size = feature.properties['stroke-width'] || defaultLineWidth(feature)
       document.querySelector('#line-width').value = size
       document.querySelector('#line-width-val').innerHTML = size
       document.querySelector('#show-km-markers').checked = feature.properties['show-km-markers']
@@ -176,7 +176,7 @@ export default class extends Controller {
       dom.showElements(['#feature-edit-ui .edit-polygon'])
       document.querySelector('#fill-color').value = functions.hexColor(feature.properties.fill, defaults.featureColor)
       document.querySelector('#stroke-color').value = functions.hexColor(feature.properties.stroke, defaults.featureOutlineColor)
-      const size = feature.properties['stroke-width'] || defaults.lineWidth
+      const size = feature.properties['stroke-width'] || defaults.polygonOutlineWidth
       document.querySelector('#outline-width').value = size
       document.querySelector('#outline-width-val').innerHTML = size
       document.querySelector('#opacity').value = (feature.properties['fill-opacity'] || defaults.extrusionOpacity) * 10

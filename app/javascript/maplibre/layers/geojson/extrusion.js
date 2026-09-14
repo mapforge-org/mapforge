@@ -1,5 +1,5 @@
 import { buffer } from "@turf/buffer"
-import { defaults } from 'maplibre/styles/defaults'
+import { defaultLineWidth, defaults } from 'maplibre/styles/defaults'
 
 // Buffer a LineString into a polygon for MapLibre's fill-extrusion layer, which has no line support.
 // Returns null for geometry that can't be buffered (non-line, <2 coords, or degenerate).
@@ -8,7 +8,7 @@ export function buildLineExtrusion(feature) {
   if (feature.geometry?.type !== 'LineString' || feature.geometry.coordinates.length < 2) {
     return null
   }
-  const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaults.lineWidth
+  const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth(feature)
   const extrusionLine = buffer(feature, width / 2, { units: 'meters' })
   if (!extrusionLine) { return null }
   // Route-extras segments are anonymous slices of a route, so they stay id-less.

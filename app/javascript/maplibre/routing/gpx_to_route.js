@@ -9,6 +9,7 @@ import { status } from 'helpers/status'
 import { showFeatureDetails } from 'maplibre/feature'
 import { upsert } from 'maplibre/map'
 import { getRouteElevation, ORS_EXTRA_INFO, orsProfiles } from 'maplibre/routing/openrouteservice'
+import { defaults } from 'maplibre/styles/defaults'
 import { addUndoState } from 'maplibre/undo'
 import Openrouteservice from 'openrouteservice-js'
 
@@ -198,7 +199,7 @@ export async function convertToRoute(originalFeature, profile) {
         // Route-specific styling
         'stroke': trackColor,
         'stroke-opacity': 0.65,
-        'stroke-width': 5,
+        'stroke-width': defaults.routeWidth,
         'stroke-dasharray': true,
         'show-km-markers': true,
         'fill-extrusion-height': 8,
@@ -349,7 +350,7 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
       ...originalFeature.properties,
       'stroke': trackColor,
       'stroke-opacity': 0.65,
-      'stroke-width': 5,
+      'stroke-width': defaults.routeWidth,
       'stroke-dasharray': true,
       'show-km-markers': true,
       'fill-extrusion-height': 8,
