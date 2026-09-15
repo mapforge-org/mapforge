@@ -294,7 +294,7 @@ const iconSize = () => [
     ]
 
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
-// This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
+// This is the size for zoom=14. With each zoom level the size doubles when marker-scaling=true
 const userLabelSize = styleProp(['user_label-size', 'label-size'])
 const scaledLabelSize = () => ['coalesce', ...userLabelSize.slice(1), ['*', 2, pointSizeMax()]] // fallback to 2*pointSizeMax
 const staticLabelSize = () => ['coalesce', ...userLabelSize.slice(1), defaults.labelSize]
@@ -332,10 +332,13 @@ export const labelFontSizeMin = () => [
   'case', shouldScale,
   0, labelFontSize() ]
 
+// The 254 caps the last stop, so it scales the whole curve down instead of only flattening its
+// top: every 'label-size' from 254/factor upwards then renders the same. Stopping the growth at
+// zoom 17 keeps that factor at 8, which leaves 'label-size' usable up to 31.
 export const labelFontSizeMax = () => [
   "min",
   ['case', shouldScale,
-    ['*', 32, labelFontSize()], labelFontSize()],
+    ['*', 8, labelFontSize()], labelFontSize()],
   254 // max map font size
 ]
 
@@ -345,7 +348,7 @@ const labelSize = () => [
   ["exponential", 2],
   ['zoom'],
   0, labelFontSizeMin(), // At zoom 0
-  19, labelFontSizeMax()
+  17, labelFontSizeMax() // zoom 14 renders the label at 'label-size', above zoom 17 it stops growing
 ]
 
 // Shared configuration for symbols layers

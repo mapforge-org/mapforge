@@ -83,17 +83,17 @@ namespace :demo do
     map.update!(center: wide_view[:center], zoom: wide_view[:zoom],
                 pitch: wide_view[:pitch], bearing: wide_view[:bearing])
     word = "MAPFORGE"
-    title_at = [ 10.132244, 42.802396 ]
-    show_title = -> {
-      artist[:layer].features.create!(
-        geometry: { "type" => "Point", "coordinates" => title_at },
-        properties: { "title" => word, "label" => word, "label-font" => [ "Bree Serif" ],
-                      "label-size" => 80, "label-color" => "#fff",
-                      "label-shadow" => "#000", "label-shadow-width" => 5,
-                      "stroke" => "transparent", "marker-color" => "transparent",
-                      "marker-size" => 6, "sort-key" => 2 })
-    }
-    title = show_title.call
+    # The logo stays up for the whole recording. It is flat, so it lies on the ground and
+    # turns with the camera instead of covering the scene.
+    artist[:layer].features.create!(
+      geometry: { "type" => "Point", "coordinates" => [ 10.132244, 42.802396 ] },
+      properties: { "title" => word, "label" => word,
+                    "label-font" => [ "Bold", "Bree Serif" ], "label-letter-spacing" => 0.08,
+                    "label-size" => 500, "label-color" => "#fff",
+                    "label-shadow" => "#d9d9a5", "label-shadow-width" => 4,
+                    "stroke" => "transparent", "marker-color" => "transparent",
+                    "marker-size" => 40, "sort-key" => 2,
+                    "flat" => true, "marker-scaling" => true })
 
     # Store the photos the way ImagesController#upload does, so the markers point at a
     # stored image. Done before the recording starts, because compression is slow.
@@ -243,7 +243,8 @@ namespace :demo do
         hiker[:layer].features.create!(
           geometry: { "type" => "Point", "coordinates" => track[stop].first(2) }, image: photo,
           properties: { "title" => "Photo #{i + 1}", "marker-size" => 26, "min-zoom" => 14,
-                        "marker-image-url" => "/icon/#{photo.public_id}" })
+                        "marker-image-url" => "/icon/#{photo.public_id}",
+                        "desc" => "[![image](/image/#{photo.public_id})](/image/#{photo.public_id})\n" })
         # Hold on the waypoint, long enough for the camera to settle on it. The client only
         # fetches a marker image when MapLibre renders the marker and misses it
         # (setMissingStyleImageResolver). Fly away at once and the fetch never starts, so the
@@ -339,7 +340,6 @@ namespace :demo do
     print "Start the recorder, then press Enter: "
     $stdin.gets
 
-    title.destroy                                  # the title clears the way for the first scene
     fly.call(scenes.first.first, 1.6)              # the first scene starts 0.4s before the camera lands
     scenes.each_with_index do |(view, scene, cursor, _start), n|
       scene.call
@@ -362,7 +362,6 @@ namespace :demo do
     [ [ hiker, track[track.size / 2].first(2) ],
       [ scout, sea_view[:center] ],
       [ artist, house_view[:center] ] ].each { |cursor, spot| glide.call(cursor, spot, 0.6) }
-    show_title.call
     sleep 2.0
 
     puts "Done: /m/#{map.private_id}"
