@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 * Support the [Pinhead](https://github.com/waysidemapping/pinhead) and [Fontawesame](https://fontawesome.com/) icon sets
 * Provide a docker compose setup for self hosting
 * Shape selection for points: circle, pin, square
+* Background for polygons: a fill color, an image like a floor plan, or a pattern
 
 ## 2026-08
 

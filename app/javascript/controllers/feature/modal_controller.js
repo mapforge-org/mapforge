@@ -10,7 +10,7 @@ import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromPropertie
 import { draw, select, unselect } from 'maplibre/edit'
 import {
   getFeatureTypeName, highlightedFeatureId, refreshFeatureMeta, showFeatureDetails,
-  syncMarkerContent, syncShapeButtons
+  syncBackground, syncMarkerContent, syncShapeButtons
 } from 'maplibre/feature'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { getFeature, layers } from 'maplibre/layers/layers'
@@ -179,8 +179,10 @@ export default class extends Controller {
       const size = feature.properties['stroke-width'] || defaults.polygonOutlineWidth
       document.querySelector('#outline-width').value = size
       document.querySelector('#outline-width-val').innerHTML = size
-      document.querySelector('#opacity').value = (feature.properties['fill-opacity'] || defaults.extrusionOpacity) * 10
-      document.querySelector('#opacity-val').textContent = (feature.properties['fill-opacity'] || defaults.extrusionOpacity) * 100 + '%'
+      const opacity = feature.properties['fill-opacity'] ?? defaults.extrusionOpacity
+      document.querySelector('#opacity').value = opacity * 10
+      document.querySelector('#opacity-val').textContent = opacity * 100 + '%'
+      syncBackground(feature)
     }
 
     if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString' ||

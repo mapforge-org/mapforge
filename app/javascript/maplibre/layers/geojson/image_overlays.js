@@ -1,5 +1,6 @@
 import { featureOnLevel } from 'maplibre/controls/levels'
 import { map } from 'maplibre/map'
+import { defaults } from 'maplibre/styles/defaults'
 
 // A polygon with 'fill-image-url' is drawn as a MapLibre image source: its corners are pinned
 // to the ground, unlike a scaled 'flat' symbol, whose size is evaluated at the anchor only and
@@ -8,14 +9,17 @@ import { map } from 'maplibre/map'
 const sourcePrefix = layerId => `image-overlay-source-${layerId}-`
 const layerIdOf = sourceId => `image-overlay-layer_${sourceId}`
 
+// An image source takes four corners, no more and no less, so only a quadrangle can carry one.
+// The ring repeats its first point, so four corners are five coordinates.
+export const canPinImage = feature => feature.geometry?.type === 'Polygon' &&
+  feature.geometry.coordinates[0]?.length === 5
+
 export function hasImageOverlay (feature) {
-  return feature.geometry?.type === 'Polygon' &&
-    !!feature.properties?.['fill-image-url'] &&
-    feature.geometry.coordinates[0]?.length >= 5
+  return canPinImage(feature) && !!feature.properties?.['fill-image-url']
 }
 
-// The first four vertices of the outer ring, in the order MapLibre expects: top left, top right,
-// bottom right, bottom left. Extra vertices are ignored.
+// The four vertices of the outer ring, without its repeated last point, in the order MapLibre
+// expects: top left, top right, bottom right, bottom left.
 const corners = feature => feature.geometry.coordinates[0].slice(0, 4)
 
 export function renderImageOverlays (features, layerId, visible = true) {
@@ -58,6 +62,10 @@ function upsertImageOverlay (feature, layerId, visible) {
   } else {
     source.setCoordinates(coordinates)
   }
+  // The image covers the fill of its polygon (see the beforeId of addLayer above), so the
+  // opacity slider, which writes 'fill-opacity', reads as the opacity of the image.
+  map.setPaintProperty(layerIdOf(sourceId), 'raster-opacity',
+    Number(feature.properties['fill-opacity'] ?? defaults.extrusionOpacity))
   const shown = visible && featureOnLevel(feature)
   map.setLayoutProperty(layerIdOf(sourceId), 'visibility', shown ? 'visible' : 'none')
 }

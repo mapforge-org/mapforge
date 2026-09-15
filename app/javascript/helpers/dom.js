@@ -64,6 +64,21 @@ export function initTooltips (root = document) {
   }
 }
 
+// A tooltip reads its text from 'data-bs-original-title': Bootstrap moves the title there on
+// init and reads the title attribute no more. A title attribute next to it would add the
+// tooltip of the browser on top of the Bootstrap one.
+export function setTooltip (element, text) {
+  element.setAttribute('data-bs-original-title', text)
+  element.setAttribute('aria-label', text)
+  element.removeAttribute('title')
+  const tooltip = typeof bootstrap === 'undefined' ? null : bootstrap.Tooltip.getInstance(element)
+  if (tooltip) {
+    tooltip.setContent({ '.tooltip-inner': text })
+  } else {
+    initTooltips(element.parentElement)
+  }
+}
+
 export function scrollToId(elementId) {
   const element = document.getElementById(elementId)
   if (element) {

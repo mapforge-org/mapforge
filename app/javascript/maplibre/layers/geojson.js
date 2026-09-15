@@ -23,11 +23,14 @@ import { Layer } from 'maplibre/layers/layer'
 import { getFeature, layers } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties, removeGeoJSONSource } from 'maplibre/map'
 import { pruneShapeImages } from 'maplibre/styles/circle_image'
+import { prunePatternImages } from 'maplibre/styles/pattern_image'
 import { clusterStyles, initializeClusterStyles, initializeViewStyles, styles, viewStyleNames } from 'maplibre/styles/styles'
 
 // Every layer counts, so that the render of one layer never drops the shape images of another
 function pruneShapes() {
-  pruneShapeImages((layers || []).flatMap(layer => layer.geojson?.features || []))
+  const features = (layers || []).flatMap(layer => layer.geojson?.features || [])
+  pruneShapeImages(features)
+  prunePatternImages(features)
 }
 
 // Whether a feature needs a buffered extrusion polygon: a LineString with a height set, not

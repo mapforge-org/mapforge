@@ -3,6 +3,7 @@ import { withLevelFilter } from 'maplibre/controls/levels'
 import { map, removeStyleLayers } from 'maplibre/map'
 import { markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
 import { defaults } from 'maplibre/styles/defaults'
+import { patternImage } from 'maplibre/styles/pattern_image'
 
 // fill-extrusion-opacity is not data-driven in MapLibre, so per-feature opacity
 // is emulated by stacking one fill-extrusion layer per bucket (0.1 … 1.0)
@@ -10,6 +11,7 @@ export const extrusionOpacityBuckets = Array.from({ length: 10 }, (_, i) => (i +
 
 export const viewStyleNames = [
   'polygon-layer',
+  'polygon-layer-pattern', // the pattern draws on the fill color, so it goes above the fill
   'polygon-layer-outline',
   'line-layer-outline', // casing beside the line, drawn below it
   'line-layer',
@@ -77,6 +79,12 @@ export async function loadImage (id) {
     return
   }
 
+  // the tile of a polygon pattern, drawn on demand as well (see pattern_image.js)
+  if (id.startsWith('pattern-')) {
+    patternImage(id)
+    return
+  }
+
   // Skip if already loading, loaded, or failed
   if (imageState[id]) {
     // console.log(`Skipped loading image '${id}'`, imageState[id])
@@ -140,10 +148,12 @@ const labelShadowWidth = () => styleProp(['user_label-shadow-width', 'label-shad
 const labelFont = () => ['coalesce', ['get', 'label-font'], ['literal', [defaults.font]]]
 
 const fillColor = () => styleProp(['fill', 'user_fill'], defaults.featureColor)
-// A fill under an image overlay (see image_overlays.js) would tint it, so it is invisible by
-// default. The polygon stays clickable: a fill layer is hit-tested by geometry, not by pixels.
-const fillOpacity = () => ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'],
-  ['case', hasProp('fill-image-url'), 0, defaults.extrusionOpacity])]
+const fillOpacity = () => ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaults.extrusionOpacity)]
+
+// The name of the image of a polygon pattern, drawn by the resolver of maplibre on first use.
+// KEEP IN SYNC with patternImageName() in pattern_image.js.
+const patternImageExpression = () => ['concat', 'pattern-',
+  styleProp(['fill-pattern', 'user_fill-pattern']), '|', polygonOutlineColor()]
 
 const lineColor = () => styleProp(['stroke', 'user_stroke'], defaults.featureColor)
 const polygonOutlineColor = () => styleProp(['stroke', 'user_stroke'], defaults.featureOutlineColor)
@@ -613,6 +623,22 @@ export function styles () {
         maxZoomFilter()],
       paint: {
         'fill-color': fillColor(),
+        'fill-opacity': fillOpacity()
+      }
+    },
+    // The tile of the pattern is transparent between its marks, so the fill color of the
+    // polygon-layer below stays the background of the pattern.
+    'polygon-layer-pattern': {
+      id: 'polygon-layer-pattern',
+      type: 'fill',
+      filter: ['all',
+        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
+        hasProp('fill-pattern'),
+        ['==', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
+        minZoomFilter(),
+        maxZoomFilter()],
+      paint: {
+        'fill-pattern': patternImageExpression(),
         'fill-opacity': fillOpacity()
       }
     },

@@ -28,7 +28,8 @@ export function addLineVertexMenuItems(f) {
   const feature = getFeature(f.properties.parent, 'geojson')
   // console.log("addLineVertexMenuItems", feature)
   if (feature.geometry.type === 'LineString' && (feature.geometry.coordinates.length <= 2)) { return }
-  if (feature.geometry.type === 'Polygon' && (feature.geometry.coordinates[0].length <= 3)) { return }
+  // the ring of a polygon repeats its first point, so a triangle holds four coordinates
+  if (feature.geometry.type === 'Polygon' && (feature.geometry.coordinates[0].length <= 4)) { return }
   // coord path looks like 0.3 in polygons
   let vertexIndex = parseFloat(f.properties.coord_path, 10)
   if (feature.geometry.type === 'Polygon') { vertexIndex = vertexIndex * 10 }

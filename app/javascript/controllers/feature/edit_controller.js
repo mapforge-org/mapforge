@@ -7,12 +7,14 @@ import { syncStepperValues } from 'helpers/stepper'
 import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
 import {
-  confirmImageLocation, featureIcon, getFeatureTypeName, markerContentMode, markerMemory,
-  resetHighlightedFeature, syncMarkerContent, syncShapeButtons, uploadImageToFeature
+  backgroundMode, confirmImageLocation, featureIcon, getFeatureTypeName, markerContentMode,
+  markerMemory, resetHighlightedFeature, syncBackground, syncMarkerContent, syncShapeButtons,
+  uploadImage, uploadImageToFeature
 } from 'maplibre/feature'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
 import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
+import { patternKeys } from 'maplibre/styles/pattern_image'
 import { addUndoState } from 'maplibre/undo'
 
 // one directory with an index.json per set, see public/icon-sets/README
@@ -36,6 +38,8 @@ const loadIconSets = () => iconSetIndexes ||= Promise.all(iconSets.map(set =>
   fetch(`/icon-sets/${set}/index.json`).then(response => response.json())))
 // the property that each mode of the marker content toggle owns, 'none' owns nothing
 const MARKER_CONTENT = { symbol: 'marker-symbol', image: 'marker-image-url' }
+// the same for the background toggle of a polygon, 'fill' owns nothing
+const BACKGROUND = { image: 'fill-image-url', pattern: 'fill-pattern' }
 
 export default class extends Controller {
   // https://stimulus.hotwired.dev/reference/values
@@ -416,6 +420,78 @@ export default class extends Controller {
         this.renderFeature()
         this.saveFeature()
       })
+  }
+
+  // The toggle keeps the value it steps away from, so that it returns on the way back, and the
+  // 'Fill' mode is what removes an image or a pattern. A click on the mode that is already on
+  // opens its picker again, the button is the only way in.
+  updateBackground (e) {
+    const mode = e.currentTarget.dataset.background
+    const feature = this.getEditFeature()
+    if (mode === backgroundMode(feature)) { return this.pickBackground(mode) }
+
+    this.addUndo()
+    const memory = markerMemory.get(this.featureIdValue) || {}
+    markerMemory.set(this.featureIdValue, memory)
+    Object.values(BACKGROUND).forEach(property => {
+      if (feature.properties[property]) { memory[property] = feature.properties[property] }
+      delete feature.properties[property]
+    })
+    // a pattern needs no upload, so the first one is on right away and the menu only changes it
+    const restored = memory[BACKGROUND[mode]] || (mode === 'pattern' ? patternKeys[0] : null)
+    if (restored) { feature.properties[BACKGROUND[mode]] = restored }
+
+    // An image covers the fill, so it steps back. Off that button the owner keeps the fill
+    // as it is, because only they know whether the transparent fill was their choice.
+    if (mode === 'image' && restored) { this.setFillTransparent() }
+    syncBackground(feature)
+    this.renderFeature()
+    this.saveFeature()
+    if (!restored) { this.pickBackground(mode) }
+  }
+
+  // the pattern menu opens on its own, the button carries data-bs-toggle
+  pickBackground (mode) {
+    // the input keeps its last file, and picking that same file again fires no change event
+    if (mode === 'image') { functions.e('#fill-image', e => { e.value = ''; e.click() }) }
+  }
+
+  updateFillPattern (e) {
+    const feature = this.getEditFeature()
+    this.addUndo()
+    feature.properties['fill-pattern'] = e.currentTarget.dataset.pattern
+    syncBackground(feature)
+    this.renderFeature()
+    this.saveFeature()
+  }
+
+  // The image of a polygon is pinned to its corners and covers its fill (see image_overlays.js),
+  // so the fill steps back. uploadImageToFeature is the marker path, it writes other properties.
+  async updateFillImage () {
+    const feature = this.getEditFeature()
+    const image = document.querySelector('#fill-image').files[0]
+    if (image.size > 15 * 1024 * 1024) {
+      status(window.__('Image exceeds 15MB'), 'error')
+      return
+    }
+    // the full image, not the 150px icon with its round white border
+    const data = await uploadImage(image)
+    feature.properties['fill-image-url'] = data.image
+    this.setFillTransparent()
+    // a background image starts opaque, the slider fades it from there
+    document.querySelector('#opacity').value = 10
+    this.updateOpacity()
+    syncBackground(feature)
+    this.saveFeature()
+  }
+
+  // The fill steps back behind an image. Nothing turns it on again, because only the owner
+  // knows whether a transparent fill is what they want.
+  setFillTransparent () {
+    const feature = this.getEditFeature()
+    if (feature.properties.fill === 'transparent') { return }
+    document.querySelector('#fill-color-transparent').checked = true
+    this.updateFillColorTransparent()
   }
 
   // https://github.com/missive/emoji-mart

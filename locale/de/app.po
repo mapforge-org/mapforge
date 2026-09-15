@@ -59,6 +59,9 @@ msgstr "Zugriffskontrolle: Speichere Karten privat oder teile sie mit Lese- oder
 msgid "Add"
 msgstr "Hinzufügen"
 
+msgid "Add OpenStreetMap layers"
+msgstr "OpenStreetMap-Ebenen hinzufügen"
+
 msgid "Add a description text"
 msgstr "Beschreibungstext hinzufügen"
 
@@ -82,6 +85,9 @@ msgstr "Objekt %{index}/%{total} hinzugefügt"
 
 msgid "Added image"
 msgstr "Bild hinzugefügt"
+
+msgid "Address"
+msgstr "Adresse"
 
 msgid "Admin"
 msgstr "Admin"
@@ -116,6 +122,9 @@ msgstr "Hintergrund"
 msgid "Background map"
 msgstr "Hintergrundkarte"
 
+msgid "Background:"
+msgstr "Hintergrund:"
+
 msgid "Basemap Info (experimental)"
 msgstr "Basiskarten-Info (experimentell)"
 
@@ -137,11 +146,20 @@ msgstr "Fahrradroute"
 msgid "Bicycle-focused map highlighting cycle routes, paths and bike infrastructure."
 msgstr "Fahrradkarte mit hervorgehobenen Radrouten, Wegen und Radinfrastruktur."
 
+msgid "Big dots"
+msgstr "Große Punkte"
+
 msgid "Bike"
 msgstr "Fahrrad"
 
+msgid "Bike route"
+msgstr "Fahrradroute"
+
 msgid "Border color:"
 msgstr "Randfarbe:"
+
+msgid "Border width:"
+msgstr "Randbreite:"
 
 msgid "Bright, colorful vector style with clear roads and readable labels."
 msgstr "Heller, farbenfroher Vektorstil mit klaren Straßen und gut lesbaren Beschriftungen."
@@ -185,11 +203,17 @@ msgstr "Farben und Aussehen ändern"
 msgid "Changelog"
 msgstr "Changelog"
 
+msgid "Checker"
+msgstr "Schachbrett"
+
 msgid "Choose your base map: Streets, Satellite, Topographic, Biking"
 msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad"
 
 msgid "Choose your base map: Streets, Satellite, Topographic, Biking, 3D houses etc."
 msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad, 3D-Gebäude usw."
+
+msgid "Circle"
+msgstr "Kreis"
 
 msgid "Classic MapTiler street map with roads, labels and points of interest."
 msgstr "Klassische MapTiler-Straßenkarte mit Straßen, Beschriftungen und interessanten Orten."
@@ -199,9 +223,6 @@ msgstr "Klassische OpenStreetMap-Rasterkacheln mit Straßen, Beschriftungen und 
 
 msgid "Clean, minimal MapTiler style focused on readability and simplicity."
 msgstr "Klarer, minimaler MapTiler-Stil mit Fokus auf Lesbarkeit und Einfachheit."
-
-msgid "Circle"
-msgstr "Kreis"
 
 msgid "Clear filter"
 msgstr "Filter entfernen"
@@ -220,6 +241,9 @@ msgstr "Zusammenarbeit"
 
 msgid "Color"
 msgstr "Farbe"
+
+msgid "Color:"
+msgstr "Farbe:"
 
 msgid "Colorful vector map with vivid colors and a clear road hierarchy."
 msgstr "Farbenfrohe Vektorkarte mit kräftigen Farben und klarer Straßenhierarchie."
@@ -263,12 +287,6 @@ msgstr "Koordinaten in die Zwischenablage kopiert"
 msgid "Copy"
 msgstr "Kopieren"
 
-msgid "Could not read the file: %{error}"
-msgstr "Datei konnte nicht gelesen werden: %{error}"
-
-msgid "Edit in OSM"
-msgstr "In OSM bearbeiten"
-
 msgid "Copy %{type}"
 msgstr "%{type} kopieren"
 
@@ -287,6 +305,12 @@ msgstr "Karte kopieren"
 msgid "Copy to my layer"
 msgstr "In meine Ebene kopieren"
 
+msgid "Could not read the file: %{error}"
+msgstr "Datei konnte nicht gelesen werden: %{error}"
+
+msgid "Create a route"
+msgstr "Route erstellen"
+
 msgid "Create individual maps for your places, tracks and events. Share your maps in real-time."
 msgstr "Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen. Teile deine Karten in Echtzeit."
 
@@ -299,11 +323,14 @@ msgstr "Gestalte deine Karte"
 msgid "Create your own map"
 msgstr "Gestalte deine eigene Karte"
 
+msgid "Credits"
+msgstr "Credits"
+
 msgid "Cross platform"
 msgstr "Plattformübergreifend"
 
-msgid "Current:"
-msgstr "Aktuell:"
+msgid "Crosshatch"
+msgstr "Kreuzschraffur"
 
 msgid "Custom Overpass query"
 msgstr "Eigene Overpass-Abfrage"
@@ -347,6 +374,9 @@ msgstr "%{type} wird gelöscht"
 msgid "Descending"
 msgstr "Absteigend"
 
+msgid "Description"
+msgstr "Beschreibung"
+
 msgid "Detailed vector map with landmarks, buildings and points of interest."
 msgstr "Detaillierte Vektorkarte mit Sehenswürdigkeiten, Gebäuden und interessanten Orten."
 
@@ -379,6 +409,9 @@ msgstr "Doku"
 
 msgid "Don't show again for this map"
 msgstr "Für diese Karte nicht mehr anzeigen"
+
+msgid "Dots"
+msgstr "Punkte"
 
 msgid "Downhill"
 msgstr "Bergab"
@@ -433,6 +466,9 @@ msgstr "Dynamische Ebenen: Nutze %{overpass_link}, um Ebenen aus OpenStreetMap-D
 
 msgid "Edit"
 msgstr "Bearbeiten"
+
+msgid "Edit in OSM"
+msgstr "In OSM bearbeiten"
 
 msgid "Edit link copied"
 msgstr "Bearbeitungslink kopiert"
@@ -500,8 +536,11 @@ msgstr "Datei größer als 2,5 MB. Bitte vereinfache sie, zum Beispiel mit mapsh
 msgid "File imported"
 msgstr "Datei importiert"
 
-msgid "Fill color:"
-msgstr "Füllfarbe:"
+msgid "Fill"
+msgstr "Fläche"
+
+msgid "Fill color"
+msgstr "Flächenfarbe"
 
 msgid "Find my location"
 msgstr "Meinen Standort finden"
@@ -554,11 +593,17 @@ msgstr "Rasengittersteine"
 msgid "Gravel"
 msgstr "Schotter"
 
+msgid "Grid"
+msgstr "Gitter"
+
 msgid "Ground"
 msgstr "Erde"
 
 msgid "Happy mapping!"
 msgstr "Viel Spaß mit deiner Karte!"
+
+msgid "Hatch"
+msgstr "Schraffur"
 
 msgid "Height:"
 msgstr "Höhe:"
@@ -617,8 +662,8 @@ msgstr "Bilder und Fotos"
 msgid "Import"
 msgstr "Importieren"
 
-msgid "Import KML, KMZ and GPX"
-msgstr "KML, KMZ und GPX importieren"
+msgid "Import data (gpx, kml, image)"
+msgstr "Daten importieren (gpx, kml, Bild)"
 
 msgid "Import from GeoJSON, GPX and KML"
 msgstr "Importiere GeoJSON, GPX und KML"
@@ -680,8 +725,8 @@ msgstr "Linienfarbe:"
 msgid "Line cut into 2 segments"
 msgstr "Linie in 2 Abschnitte geteilt"
 
-msgid "Line width:"
-msgstr "Linienbreite:"
+msgid "Lines"
+msgstr "Linien"
 
 msgid "Live updates: Map changes are synchronized via websockets"
 msgstr "Live-Updates: Kartenänderungen werden über WebSockets synchronisiert"
@@ -701,11 +746,11 @@ msgstr "Live-Ebene wird geladen"
 msgid "Loading..."
 msgstr "Wird geladen..."
 
-msgid "Location (https only)"
-msgstr "Standort (nur mit https)"
-
 msgid "Location"
 msgstr "Ort"
+
+msgid "Location (https only)"
+msgstr "Standort (nur mit https)"
 
 msgid "Location not available"
 msgstr "Standort nicht verfügbar"
@@ -809,6 +854,9 @@ msgstr "Gedeckter, monochromer Vektorstil für ein klares, ablenkungsfreies Bild
 msgid "Name:"
 msgstr "Name:"
 
+msgid "Needs a polygon with four corners"
+msgstr "Benötigt ein Polygon mit vier Ecken"
+
 msgid "Neutral MapTiler style designed as a clean backdrop for data visualization."
 msgstr "Neutraler MapTiler-Stil als klarer Hintergrund für Datenvisualisierungen."
 
@@ -866,8 +914,14 @@ msgstr "Eigentümerlink kopiert"
 msgid "Paint Mode: Click on the map to start drawing, release to finish"
 msgstr "Mal-Modus: Auf die Karte klicken zum Zeichnen, loslassen zum Beenden"
 
+msgid "Paint objects on the map"
+msgstr "Objekte auf der Karte zeichnen"
+
 msgid "Paste %{type}"
 msgstr "%{type} einfügen"
+
+msgid "Pattern"
+msgstr "Muster"
 
 msgid "Paved"
 msgstr "Befestigt"
@@ -883,6 +937,9 @@ msgstr "Plane deine Tour und navigiere mit Kompassmodus und Höhenprofil."
 
 msgid "Please confirm"
 msgstr "Bitte bestätigen"
+
+msgid "Please log in to import files"
+msgstr "Melde dich an, um Dateien zu importieren"
 
 msgid "Please log in to upload images"
 msgstr "Melde dich an, um Bilder hochzuladen"
@@ -1028,6 +1085,9 @@ msgstr "Als Standard"
 msgid "Set current view as default"
 msgstr "Aktuelle Ansicht als Standard setzen"
 
+msgid "Shape:"
+msgstr "Form:"
+
 msgid "Share Map"
 msgstr "Karte teilen"
 
@@ -1042,9 +1102,6 @@ msgstr "Eigentümerlink teilen"
 
 msgid "Share view link"
 msgstr "Ansichtslink teilen"
-
-msgid "Shape:"
-msgstr "Form:"
 
 msgid "Show in public gallery"
 msgstr "In der Galerie zeigen"
@@ -1140,6 +1197,9 @@ msgstr "Das Bild enthält GPS-Koordinaten (<code>%{coordinates}</code>).<br/>Mö
 
 msgid "The map starts centered on your content."
 msgstr "Die Karte startet zentriert auf deinen Inhalten."
+
+msgid "Thick lines"
+msgstr "Dicke Linien"
 
 msgid "This browser cannot read KMZ archives. Please unzip it and import the .kml"
 msgstr "Dieser Browser kann keine KMZ-Archive lesen. Bitte entpacke es und importiere die .kml"
@@ -1261,14 +1321,17 @@ msgstr "Sichtbarer Abschnitt"
 msgid "Walk Mode: Click on the map to set waypoints, double click to finish"
 msgstr "Fußweg-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklick zum Beenden"
 
+msgid "Walking route"
+msgstr "Wanderroute"
+
 msgid "Waypoint added"
 msgstr "Wegpunkt hinzugefügt"
 
 msgid "Waypoint:"
 msgstr "Wegpunkt:"
 
-msgid "What Mapforge reads from a Google My Maps or Google Earth export."
-msgstr "Was Mapforge aus einem Google-My-Maps- oder Google-Earth-Export liest."
+msgid "What do you want to do?"
+msgstr "Was möchtest du tun?"
 
 msgid "Width:"
 msgstr "Breite:"
@@ -1524,30 +1587,3 @@ msgstr "🚻 Öffentliche Toiletten"
 
 msgid "🛜 Wifi"
 msgstr "🛜 WLAN"
-
-msgid "Credits"
-msgstr "Credits"
-
-msgid "What do you want to do?"
-msgstr "Was möchtest du tun?"
-
-msgid "Paint objects on the map"
-msgstr "Objekte auf der Karte zeichnen"
-
-msgid "Import data (gpx, kml, image)"
-msgstr "Daten importieren (gpx, kml, Bild)"
-
-msgid "Create a route"
-msgstr "Route erstellen"
-
-msgid "Please log in to import files"
-msgstr "Melde dich an, um Dateien zu importieren"
-
-msgid "Walking route"
-msgstr "Wanderroute"
-
-msgid "Bike route"
-msgstr "Fahrradroute"
-
-msgid "Add OpenStreetMap layers"
-msgstr "OpenStreetMap-Ebenen hinzufügen"

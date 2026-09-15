@@ -25,6 +25,19 @@ describe "Map image overlay" do
       .to eq "visible"
   end
 
+  context "with a fill opacity" do
+    let(:polygon) {
+      create(:feature, :polygon_middle,
+        properties: { "fill-opacity" => 0.4, "fill-image-url" => "/icons/direction-arrow.png" })
+    }
+
+    it "fades the image" do
+      wait_for {
+        page.evaluate_script("map.getPaintProperty('image-overlay-layer_#{source_id}', 'raster-opacity')")
+      }.to eq 0.4
+    end
+  end
+
   context "with levels" do
     let(:polygon) {
       create(:feature, :polygon_middle,

@@ -52,7 +52,7 @@
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
       #outline-width-ui.edit-ui.edit-polygon
-        %label.left-label{ for: "outline-width"}= _("Line width:")
+        %label.left-label{ for: "outline-width"}= _("Border width:")
         %input.slider#outline-width{ type: "range", min: "0", max: "15", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateOutLineWidth change->feature--edit#saveFeature" }
         %span#outline-width-val.text-muted.small
         .stepper{ 'data-stepper-for': "outline-width", 'data-stepper-step': "1" }
@@ -74,11 +74,42 @@
           %label{ for: "stroke-color-transparent"}= _("transparent")
 
       #fill-color-ui.edit-ui.edit-polygon.edit-point
-        %label.left-label{ for: "fill-color"}= _("Fill color:")
+        %label.left-label{ for: "fill-color"}= _("Color:")
         %input.form-control#fill-color{ type: "color", list: "color-presets", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateFillColor change->feature--edit#saveFeature" }
         %div
           %input#fill-color-transparent{type: "checkbox", value: 'transparent', data: { action: "input->feature--edit#addUndo input->feature--edit#updateFillColorTransparent change->feature--edit#saveFeature"} }
           %label{ for: "fill-color-transparent"}= _("transparent")
+
+      -# Each button carries what it holds, and 'Fill' is what takes an image or a pattern off
+         again. The image is pinned to the corners of the polygon, see image_overlays.js
+      #fill-image-ui.edit-ui.edit-polygon
+        %label.left-label= _("Background:")
+        .btn-group.segmented{ role: "group" }
+          %button#fill-plain-button.btn{ type: "button", title: _("Fill color"),
+            data: { background: "fill", action: "click->feature--edit#updateBackground" } }
+            %i.bi.bi-square-fill
+            %span.btn-label= _("Fill")
+          -# the tooltip text says why the button is off, syncBackground writes it
+          %button#fill-image-button.btn{ type: "button", disabled: !@user,
+            data: { background: "image", action: "click->feature--edit#updateBackground",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
+            %span#fill-image-preview
+            %i.bi.bi-image
+            %span.btn-label= _("Image")
+          -# fixed strategy: the menu escapes the clipped row without turning off its overflow
+          %button#fill-pattern-button.btn{ type: "button", title: _("Pattern"),
+            data: { background: "pattern", action: "click->feature--edit#updateBackground",
+              'bs-toggle': "dropdown", 'bs-popper-config': '{"strategy":"fixed"}' } }
+            %span#fill-pattern-preview
+            %i.bi.bi-grid-3x3
+            %span.btn-label= _("Pattern")
+          -# filled by syncBackground, the swatches carry the colors of the feature
+          %ul#fill-pattern-menu.dropdown-menu
+        -# visually-hidden, not hidden: mobile Safari opens no file dialog for a click() on a
+           'display: none' input, so the input has to stay in the layout
+        - if @user
+          %input#fill-image.visually-hidden{ type: "file", accept: "image/*",
+            'data-action': "input->feature--edit#addUndo change->feature--edit#updateFillImage" }
 
       #opacity-ui.edit-ui.edit-polygon
         %label.left-label{ for: "opacity"}= _("Opacity:")

@@ -67,8 +67,9 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `stroke`: line color (default: 'darkgreen', 'transparent' for none)
 * `stroke-opacity`: opacity of the line (default: 1.0)
 * `fill`: fill color (default: "#0A870A", green, 'transparent' for none)
-* `fill-opacity`: opacity of the fill color (default: 0.9, or 0 with a `fill-image-url`)
-* `fill-image-url`: URL of an image (for example a floor plan) that is pinned to the ground. The first four corners of the polygon place the image: top left, top right, bottom right, bottom left. Can point to a Mapforge hosted image like /image/<id>.
+* `fill-opacity`: opacity of the fill color, and of a `fill-image-url` image (default: 0.9)
+* `fill-image-url`: URL pointing to an image (for example a floor plan). Can point to a Mapforge hosted image like /image/<id>.
+* `fill-pattern`: a pattern drawn on the fill color, in the `stroke` color. One of `hatch`, `cross`, `lines`, `lines-bold`, `grid`, `dots`, `dots-big`, `checker`.
 * `fill-extrusion-color`: color of the extrusion (default: green, a 'transparent' `fill` is ignored here)
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-base`: ground distance in m (default: 0)

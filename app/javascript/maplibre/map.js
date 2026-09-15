@@ -776,6 +776,7 @@ export function sortLayers () {
   const groups = [
     styleLayers.filter(e => e.id.startsWith('raster-layer_')), // raster overlays below all geojson layers
     styleLayers.filter(e => e.id.startsWith('polygon-layer_geojson-source') && !e.id.includes('extrusion') && !e.id.includes('shadow')),
+    styleLayers.filter(e => e.id.startsWith('polygon-layer-pattern_geojson-source')), // pattern on the fill
     styleLayers.filter(e => e.id.startsWith('image-overlay-layer_')),
     styleLayers.filter(e => e.id.startsWith('polygon-layer-outline_geojson-source')),
     styleLayers.filter(e => e.id.includes('-flat')), // keep flat layers behind houses

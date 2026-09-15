@@ -147,6 +147,43 @@ describe "Feature edit" do
         expect(page).to have_text("27.64 km²")
       end
 
+      it "can upload a background image" do
+        find("#edit-button-edit").click
+        find("#edit-button-style").click
+        image_path = Rails.root.join("spec", "fixtures", "files", "mapforge-logo-icon.png")
+        page.driver.execute_script("document.querySelector('#fill-image').classList.remove('visually-hidden')")
+        attach_file("fill-image", image_path)
+
+        wait_for { polygon.reload.properties["fill-image-url"] }.to match(%r{image/.+})
+        # the image covers the fill, so the fill steps back and the slider fades the image
+        expect(polygon.properties["fill"]).to eq("transparent")
+        expect(polygon.properties["fill-opacity"]).to eq(1)
+        # the channel stores the properties first and attaches the image after that
+        wait_for { polygon.reload.image&.public_id }.to match(/mapforge-logo-icon-\d+.webp/)
+      end
+
+      it "can set a background pattern" do
+        find("#edit-button-edit").click
+        find("#edit-button-style").click
+        check("fill-color-transparent")
+        wait_for { polygon.reload.properties["fill"] }.to eq("transparent")
+
+        # the first pattern is on right away, the menu changes it
+        find("#fill-pattern-button").click
+        wait_for { polygon.reload.properties["fill-pattern"] }.to eq("hatch")
+        find("#fill-pattern-menu [data-pattern='dots']").click
+        wait_for { polygon.reload.properties["fill-pattern"] }.to eq("dots")
+        # the map draws the tile of the pattern on demand, see pattern_image.js
+        wait_for { page.evaluate_script("window.map.listImages().filter(n => n.startsWith('pattern-'))") }
+          .to include(a_string_starting_with("pattern-dots|"))
+
+        # 'Fill' takes the pattern off again, so the row needs no remove button
+        find("#fill-plain-button").click
+        wait_for { polygon.reload.properties["fill-pattern"] }.to be_nil
+        # the background buttons leave the transparent fill of the owner alone
+        expect(polygon.properties["fill"]).to eq("transparent")
+      end
+
       it "can delete a line vertex via context menu (delete midpoint)" do
         xy = viewport_xy_for_lat_lng(polygon.geometry['coordinates'][0][3][1], polygon.geometry['coordinates'][0][3][0])
         find("#edit-button-geometry").click
@@ -159,6 +196,27 @@ describe "Feature edit" do
         find(".context-menu-item", text: "Delete midpoint").click
         wait_for { polygon.reload.geometry["coordinates"][0].length }.to eq(4)
       end
+    end
+  end
+
+  context "with triangle on map" do
+    let!(:triangle) {
+      create(:feature, :polygon_middle, geometry: { "type" => "Polygon", "coordinates" =>
+        [ [ [ 11.0406078, 49.4665013 ], [ 11.0402645, 49.4285336 ],
+          [ 11.130215, 49.4283102 ], [ 11.0406078, 49.4665013 ] ] ] })
+    }
+    let(:map) { create(:map, features: [ triangle ]) }
+
+    # an image source takes four corners, so the button stays off and its tooltip says why
+    it "offers no background image" do
+      xy = viewport_xy_for_lat_lng(49.435, 11.055)
+      click_coord("#maplibre-map", xy[:x], xy[:y])
+      find("#edit-button-edit").click
+      find("#edit-button-style").click
+
+      expect(page).to have_css("#fill-image-button[disabled]")
+      find("#fill-image-button").hover
+      expect(page).to have_css(".tooltip-inner", text: "Needs a polygon with four corners")
     end
   end
 

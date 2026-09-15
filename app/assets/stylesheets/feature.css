@@ -447,7 +447,7 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
 }
 
 @media (hover: hover) {
-  .segmented .btn:not(.active):hover {
+  .segmented .btn:not(.active, :disabled):hover {
     background-color: var(--ctrl-hover-color);
   }
 }
@@ -459,34 +459,85 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
 
 /* A toggle button carries the preview of what it holds, an empty one must add no gap. */
 #emoji:empty,
-#marker-image-preview:empty {
+#marker-image-preview:empty,
+#fill-image-preview:empty,
+#fill-pattern-preview:empty {
   display: none;
 }
 
-#marker-content-ui .btn .feature-details-icon {
+/* One tile of the pattern on the fill color of the feature. The tile is drawn at twice the
+   size, so that it stays sharp on a retina display (see patternDataUrl). The ids carry the
+   rule past '.edit-ui span', which unsets the height of every span in the row. */
+:is(#fill-image-ui, #fill-pattern-menu) .pattern-swatch {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid rgb(0 0 0 / 15%);
+  border-radius: 4px;
+  background-size: 16px 16px;
+  vertical-align: middle;
+}
+
+/* the same look as the dropdowns of the layers modal, see #query-dropdown in modals.css */
+#fill-pattern-menu {
+  background-color: var(--ctrl-hover-color);
+
+  --bs-dropdown-item-padding-y: 0.1rem;
+  --bs-dropdown-padding-y: 0.3rem;
+}
+
+#fill-pattern-menu li {
+  margin: 0.1em 0.5em;
+}
+
+#fill-pattern-menu .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.375rem;
+  padding-left: 0.5rem;
+  cursor: pointer;
+}
+
+:is(#marker-content-ui, #fill-image-ui) .btn .feature-details-icon {
   margin: 0;
   max-height: 1.5rem;
 }
 
+/* the preview already fills the left of the button, so it needs less room there */
+#fill-image-button:has(#fill-image-preview:not(:empty)),
+#fill-pattern-button:has(#fill-pattern-preview:not(:empty)) {
+  padding-left: 0.3rem;
+}
+
+/* Bootstrap takes the pointer events off a disabled button, and its own tooltip needs them to
+   see the hover. The tooltip says why the button is off, so the events must stay. A disabled
+   button fires no click, so the hand cursor turns into the blocked one. */
+#fill-image-ui .btn:disabled {
+  pointer-events: auto;
+  cursor: not-allowed;
+}
+
 /* On a narrow screen the three words do not fit in the row, so each button shows an icon
    instead. A filled preview already says what the button holds and replaces the icon. */
-#marker-content-ui .btn .bi {
+:is(#marker-content-ui, #fill-image-ui) .btn .bi {
   display: none;
 }
 
 @media (width <= 640px) {
-  #marker-content-ui .btn .bi {
+  :is(#marker-content-ui, #fill-image-ui) .btn .bi {
     display: inline;
   }
 
-  #marker-content-ui .btn-label,
-  #marker-content-ui :is(#emoji, #marker-image-preview):not(:empty) + .bi {
+  :is(#marker-content-ui, #fill-image-ui) .btn-label,
+  :is(#marker-content-ui, #fill-image-button, #fill-pattern-button)
+    :is(#emoji, #marker-image-preview, #fill-image-preview, #fill-pattern-preview):not(:empty) + .bi {
     display: none;
   }
 
   /* the same cell as a shape button keeps both rows aligned. A min-width, because a wide
      image preview needs more room than an icon */
-  #marker-content-ui .segmented .btn {
+  :is(#marker-content-ui, #fill-image-ui) .segmented .btn {
     min-width: 2.6rem;
     padding: 0;
   }
