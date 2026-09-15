@@ -43,7 +43,7 @@ class MapChannel < ApplicationCable::Channel
     @feature = map.features.find(data["id"])
     raise "Feature #{data["id"]} not found on map #{data["map_id"]}" unless @feature
     @feature.update!(feature_atts(data))
-    associate_image(data["properties"]["marker-image-url"]) if data["properties"] && data["properties"]["marker-image-url"]
+    associate_image(data["properties"])
   end
 
   # new_feature uses the feature id set by the client
@@ -51,7 +51,7 @@ class MapChannel < ApplicationCable::Channel
     Yabeda.websocket.messages_received.increment({ action: "new_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     @feature = map.layers.geojson.first.features.create!(feature_atts(data).merge({ id: data["id"] }))
-    associate_image(data["properties"]["marker-image-url"]) if data["properties"] && data["properties"]["marker-image-url"]
+    associate_image(data["properties"])
   end
 
   # new_layer uses the layer + feature ids set by the client
@@ -70,7 +70,7 @@ class MapChannel < ApplicationCable::Channel
           Rails.logger.warn "new_layer: skipping invalid feature #{feature["id"]}: #{e.message}"
           next
         end
-        associate_image(feature["properties"]["marker-image-url"]) if feature["properties"] && feature["properties"]["marker-image-url"]
+        associate_image(feature["properties"])
       end
     end
   end
@@ -125,14 +125,19 @@ class MapChannel < ApplicationCable::Channel
     map
   end
 
-  def associate_image(url)
-    public_id = url.to_s.sub(%r{^/(icon|image)/}, "")
-    if (img = Image.find_by(public_id:))
-      @feature.update!(image: img)
-    else
-      # simplecov:disable
-      Rails.logger.info "Cannot associate image object '#{public_id}' to feature, not hosted on mapforge"
-      # simplecov:enable
-    end
+  # Properties that can carry a mapforge hosted image, in the order they win the relation.
+  # A KMZ import puts the uploaded image into 'marker-symbol' (see import/kml.js).
+  IMAGE_PROPERTIES = %w[marker-image-url fill-image-url marker-symbol].freeze
+  IMAGE_URL = %r{\A/(?:icon|image)/(.+)\z}
+
+  # Follows the properties in both directions: an image that is dropped from the properties
+  # also drops the relation, so a feature never keeps an image it no longer shows.
+  def associate_image(properties)
+    properties = {} unless properties.is_a?(Hash)
+    image = IMAGE_PROPERTIES.lazy.filter_map do |key|
+      public_id = properties[key].to_s[IMAGE_URL, 1]
+      Image.find_by(public_id:) if public_id
+    end.first
+    @feature.update!(image:) unless @feature.image_id == image&.id
   end
 end

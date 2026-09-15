@@ -72,4 +72,40 @@ RSpec.describe MapChannel, type: :channel do
       expect(layer.reload.feature_order).to eq []
     end
   end
+
+  describe "image relation" do
+    let(:image) { Image.create!(img: File.new(Rails.root.join("public/logo/pwa/mapforge-logo-pwa-512.png"))) }
+
+    before { subscribe(map_id: map.private_id) }
+
+    def geometry
+      { "type" => "Point", "coordinates" => [ 8.1, 47.2 ] }
+    end
+
+    it "sets the relation for each property that carries a hosted image" do
+      %w[marker-image-url fill-image-url marker-symbol].each do |property|
+        perform :update_feature, id: a.id.to_s, map_id: map.private_id, geometry: geometry,
+          properties: { property => "/icon/#{image.public_id}" }
+
+        expect(a.reload.image).to eq image
+      end
+    end
+
+    it "clears the relation when the image is removed from the properties" do
+      perform :update_feature, id: a.id.to_s, map_id: map.private_id, geometry: geometry,
+        properties: { "marker-image-url" => "/image/#{image.public_id}" }
+      expect(a.reload.image).to eq image
+
+      perform :update_feature, id: a.id.to_s, map_id: map.private_id, geometry: geometry, properties: {}
+
+      expect(a.reload.image).to be_nil
+    end
+
+    it "leaves the relation empty for an image that is not hosted on mapforge" do
+      perform :update_feature, id: a.id.to_s, map_id: map.private_id, geometry: geometry,
+        properties: { "marker-image-url" => "https://example.com/photo.png" }
+
+      expect(a.reload.image).to be_nil
+    end
+  end
 end
