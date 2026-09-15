@@ -312,7 +312,8 @@ export default class extends Controller {
 
   pickMarkerContent (mode, event) {
     if (mode === 'symbol') { this.openEmojiPicker(event) }
-    if (mode === 'image') { functions.e('#marker-image', e => { e.click() }) }
+    // the input keeps its last file, and picking that same file again fires no change event
+    if (mode === 'image') { functions.e('#marker-image', e => { e.value = ''; e.click() }) }
   }
 
   // An image covers the circle of the marker, so its colors step back (see uploadImageToFeature)
@@ -445,9 +446,9 @@ export default class extends Controller {
       //this.picker.remove()
       document.querySelector('em-emoji-picker').remove()
     }
-    // The picker adds its own click handler on document while the click that opened it still
-    // travels up to document. Only the first open waits for a fetch and misses that click,
-    // every later one is served from cache and closed itself right after it appeared.
+    // The picker adds its own click handler on document, and a picker that mounts fast enough
+    // catches the very click that opened it and closes again. Chrome mounts it after that
+    // click (the dynamic import defers), so the guard below only covers other engines.
     const onClickOutside = (event) => {
       if (event === openedBy) { return }
       document.querySelector('em-emoji-picker')?.remove()

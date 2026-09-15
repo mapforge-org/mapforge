@@ -126,12 +126,16 @@ describe "Feature edit, point features" do
         wait_for { point.reload.properties["marker-symbol"] }.to match("👍")
       end
 
-      # Only the first open waits for the emoji data. A later one mounts in time to catch the
-      # very click that opened it, and that click closed it again, see onClickOutside
+      # The picker covers the content buttons, so a reopen starts with a click outside it.
+      # This passes with and without the openedBy guard of onClickOutside, chrome mounts the
+      # picker after the opening click.
       it "can open the emoji selector again" do
         find("#edit-button-style").click
         find("#marker-content-ui [data-content='symbol']").click
         expect(page).to have_selector("em-emoji-picker")
+
+        page.execute_script("document.body.click()")
+        expect(page).to have_no_selector("em-emoji-picker")
 
         find("#marker-content-ui [data-content='symbol']").click
         expect(page).to have_selector("em-emoji-picker")
