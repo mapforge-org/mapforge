@@ -12,6 +12,7 @@
 Create individual maps for your places, tracks and events, and share them in real time.
 
 ![demo screencast](public/images/frontpage/demo.webp)
+<br/>*See the demo map [here](https://mapforge.org/m/3799d512/Demo%20Map)*
 
 Mapforge is an open source GIS web application. Create and share your places, tracks and events as GeoJSON layers on different base maps, with [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) on desktop and mobile. Changes are synced live to all clients.
 
