@@ -1223,7 +1223,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-### maplibre-gl 6.9.0
+### maplibre-gl 6.10.0
 
 https://www.npmjs.com/package/maplibre-gl
 
