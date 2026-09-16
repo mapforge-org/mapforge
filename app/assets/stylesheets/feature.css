@@ -504,10 +504,13 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
   max-height: 1.5rem;
 }
 
-/* the preview already fills the left of the button, so it needs less room there */
-#fill-image-button:has(#fill-image-preview:not(:empty)),
-#fill-pattern-button:has(#fill-pattern-preview:not(:empty)) {
-  padding-left: 0.3rem;
+/* the preview already fills the left of the button, so it needs less room there. Only with the
+   label: the ids outweigh the mobile 'padding: 0' below and would push the lone preview off center */
+@media (width > 640px) {
+  #fill-image-button:has(#fill-image-preview:not(:empty)),
+  #fill-pattern-button:has(#fill-pattern-preview:not(:empty)) {
+    padding-left: 0.3rem;
+  }
 }
 
 /* Bootstrap takes the pointer events off a disabled button, and its own tooltip needs them to

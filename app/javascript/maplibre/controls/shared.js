@@ -509,6 +509,13 @@ const RUBBER_BAND_FACTOR = 0.3 // resistance when dragging past bounds
 function initializeFeatureTouchScroll() {
   const modal = document.querySelector('#feature-details-modal')
 
+  // the pattern menu is positioned 'fixed', a resized sheet leaves it hanging where the button was
+  new ResizeObserver(() => {
+    modal.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(button => {
+      window.bootstrap?.Dropdown.getInstance(button)?.hide()
+    })
+  }).observe(modal)
+
   f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
     if (!f.isTouchDevice()) return
     if (event.target.tagName.toLowerCase() === 'em-emoji-picker') return
