@@ -513,7 +513,7 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
 /* Bootstrap takes the pointer events off a disabled button, and its own tooltip needs them to
    see the hover. The tooltip says why the button is off, so the events must stay. A disabled
    button fires no click, so the hand cursor turns into the blocked one. */
-#fill-image-ui .btn:disabled {
+:is(#fill-image-ui, #marker-content-ui) .btn:disabled {
   pointer-events: auto;
   cursor: not-allowed;
 }

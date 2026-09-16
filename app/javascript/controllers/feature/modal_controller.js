@@ -194,6 +194,7 @@ export default class extends Controller {
 
     syncStepperValues()
     initSteppers()
+    dom.initTooltips(this.element)
 
     // scrollHeight is only correct after the sections of this tab are visible
     if (tab === 'geometry' && !this.element.dataset.userSized) {

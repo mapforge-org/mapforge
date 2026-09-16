@@ -173,6 +173,8 @@ describe "Feature edit" do
         wait_for { polygon.reload.properties["fill-pattern"] }.to eq("hatch")
         find("#fill-pattern-menu [data-pattern='dots']").click
         wait_for { polygon.reload.properties["fill-pattern"] }.to eq("dots")
+        # a second component on the button would keep the menu open, see the comment in _edit_ui
+        expect(page).to have_no_css("#fill-pattern-menu.show")
         # the map draws the tile of the pattern on demand, see pattern_image.js
         wait_for { page.evaluate_script("window.map.listImages().filter(n => n.startsWith('pattern-'))") }
           .to include(a_string_starting_with("pattern-dots|"))

@@ -86,7 +86,8 @@
         %label.left-label= _("Background:")
         .btn-group.segmented{ role: "group" }
           %button#fill-plain-button.btn{ type: "button", title: _("Fill color"),
-            data: { background: "fill", action: "click->feature--edit#updateBackground" } }
+            data: { background: "fill", action: "click->feature--edit#updateBackground",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
             %i.bi.bi-square-fill
             %span.btn-label= _("Fill")
           -# the tooltip text says why the button is off, syncBackground writes it
@@ -96,8 +97,9 @@
             %span#fill-image-preview
             %i.bi.bi-image
             %span.btn-label= _("Image")
-          -# fixed strategy: the menu escapes the clipped row without turning off its overflow
-          %button#fill-pattern-button.btn{ type: "button", title: _("Pattern"),
+          -# fixed strategy: the menu escapes the clipped row without turning off its overflow.
+             No tooltip here, Bootstrap binds one component per element and this one is a dropdown.
+          %button#fill-pattern-button.btn{ type: "button", 'aria-label': _("Pattern"),
             data: { background: "pattern", action: "click->feature--edit#updateBackground",
               'bs-toggle': "dropdown", 'bs-popper-config': '{"strategy":"fixed"}' } }
             %span#fill-pattern-preview
@@ -124,13 +126,16 @@
         %label.left-label= _("Shape:")
         .btn-group.segmented{ role: "group" }
           %button.btn{ type: "button", title: _("Circle"),
-            data: { shape: "circle", action: "click->feature--edit#addUndo click->feature--edit#updateShape" } }
+            data: { shape: "circle", action: "click->feature--edit#addUndo click->feature--edit#updateShape",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
             %i.bi.bi-circle-fill
           %button.btn{ type: "button", title: _("Pin"),
-            data: { shape: "pin", action: "click->feature--edit#addUndo click->feature--edit#updateShape" } }
+            data: { shape: "pin", action: "click->feature--edit#addUndo click->feature--edit#updateShape",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
             %i.bi.bi-geo-alt-fill
           %button.btn{ type: "button", title: _("Square"),
-            data: { shape: "square", action: "click->feature--edit#addUndo click->feature--edit#updateShape" } }
+            data: { shape: "square", action: "click->feature--edit#addUndo click->feature--edit#updateShape",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
             %i.bi.bi-square-fill
 
       -# Each button carries what it holds, and a click on the active one opens its picker again.
@@ -139,17 +144,20 @@
         %input#marker-symbol{ type: "hidden", inputmode: 'emoji' }
         .btn-group.segmented{ role: "group" }
           %button.btn{ type: "button", title: _("None"),
-            data: { content: "none", action: "click->feature--edit#updateMarkerContent" } }
+            data: { content: "none", action: "click->feature--edit#updateMarkerContent",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
             %i.bi.bi-slash-circle
             %span.btn-label= _("None")
           %button.btn{ type: "button", title: _("Icon"),
-            data: { content: "symbol", action: "click->feature--edit#updateMarkerContent" } }
+            data: { content: "symbol", action: "click->feature--edit#updateMarkerContent",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
             %span#emoji
             %i.bi.bi-emoji-smile
             %span.btn-label= _("Icon")
           %button.btn{ type: "button", disabled: !@user,
             title: @user ? _("Max. 5MB") : _("Please log in to upload images"),
-            data: { content: "image", action: "click->feature--edit#updateMarkerContent" } }
+            data: { content: "image", action: "click->feature--edit#updateMarkerContent",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
             %span#marker-image-preview
             %i.bi.bi-image
             %span.btn-label= _("Image")

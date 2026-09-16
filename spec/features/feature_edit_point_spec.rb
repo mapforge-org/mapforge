@@ -22,6 +22,8 @@ describe "Feature edit, point features" do
 
       it "can set marker shape" do
         find("#edit-button-style").click
+        find("#marker-shape-ui [data-shape='pin']").hover
+        expect(page).to have_css(".tooltip", text: "Pin")
         find("#marker-shape-ui [data-shape='pin']").click
         wait_for { point.reload.properties["marker-shape"] }.to eq("pin")
         # the style expression asks for the image, and the resolver draws it
