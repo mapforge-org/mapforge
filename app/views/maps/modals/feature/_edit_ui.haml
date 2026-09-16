@@ -37,11 +37,6 @@
           %span.stepper-val
           %button.stepper-btn.stepper-btn-inc{ type: "button" } +
 
-      #point-scaling-ui.edit-ui.edit-point
-        %label.left-label.edit-polygon.edit-line{ for: "point-scaling"}= _("Point scaling:")
-        %input#point-scaling{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updatePointScaling change->feature--edit#saveFeature"} }
-        %label{ for: "point-scaling"}= _("Scaled with zoom")
-
       #line-width-ui.edit-ui.edit-line
         %label.left-label{ for: "line-width"}= _("Width:")
         %input.slider#line-width{ type: "range", min: "1", max: "15", value: "1", 'data-action': "input->feature--edit#addUndo input->feature--edit#updateLineWidth change->feature--edit#saveFeature" }

@@ -142,7 +142,6 @@ export default class extends Controller {
 
       document.querySelector('#point-size').value = size
       document.querySelector('#point-size-val').innerHTML = size
-      document.querySelector('#point-scaling').checked = feature.properties['marker-scaling']
       document.querySelector('#fill-color').value = functions.hexColor(feature.properties['marker-color'], defaults.featureColor)
       syncShapeButtons(feature)
       syncMarkerContent(feature)
