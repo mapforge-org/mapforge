@@ -41,6 +41,9 @@ msgstr "%{type}-Eigenschaft geändert"
 msgid "%{type} update"
 msgstr "%{type} geändert"
 
+msgid "%{type} updated"
+msgstr "%{type} aktualisiert"
+
 msgid "3D Terrain:"
 msgstr "3D-Gelände:"
 
@@ -1281,9 +1284,6 @@ msgstr "Aktualisieren"
 
 msgid "Update Layer"
 msgstr "Ebene aktualisieren"
-
-msgid "Updated %{type} '%{title}'"
-msgstr "%{type} '%{title}' aktualisiert"
 
 msgid "Uphill"
 msgstr "Bergauf"

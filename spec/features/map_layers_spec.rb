@@ -13,7 +13,7 @@ describe "Map layers" do
   context "feature listing" do
     before do
       feature
-      expect(page).to have_text("Point added")
+      expect(page).to have_text("Point 'Feature 1' added")
       find(".maplibregl-ctrl-layers").click
     end
 

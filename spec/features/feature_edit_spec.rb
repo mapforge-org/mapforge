@@ -137,7 +137,7 @@ describe "Feature edit" do
           find("#edit-button-advanced").click
           find("#edit-button-trash").click
         end
-        expect(page).to have_text("Polygon deleted")
+        expect(page).to have_text("Polygon 'Poly Title' deleted")
         # need to wait until feature is saved server side
         wait_for { Feature.count }.to eq(0)
       end

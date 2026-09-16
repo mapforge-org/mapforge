@@ -392,6 +392,13 @@ export function getFeatureTypeName(feature) {
   }
 }
 
+// type name plus the feature title, for status messages: "Point 'Cafe'"
+export function featureLabel (feature) {
+  const title = featureTitle(feature)
+  const type = getFeatureTypeName(feature)
+  return title ? `${type} '${title}'` : type
+}
+
 // move a feature so that its center sits on the given position
 export function moveFeatureTo(feature, lngLat) {
   const [ lng, lat ] = center(feature).geometry.coordinates

@@ -274,7 +274,7 @@ describe "Feature edit, point features" do
       accept_alert do
         find(".context-menu-item", text: "Delete").click
       end
-      expect(page).to have_text("Point deleted")
+      expect(page).to have_text("Point 'Point Title' deleted")
       # need to wait until feature is saved server side
       wait_for { Feature.count }.to eq(0)
     end

@@ -50,6 +50,10 @@ msgstr ""
 msgid "%{type} update"
 msgstr ""
 
+#: ../app/javascript/maplibre/map.js:641
+msgid "%{type} updated"
+msgstr ""
+
 #: ../app/views/maps/modals/_settings.haml:91
 msgid "3D Terrain:"
 msgstr ""
@@ -1702,10 +1706,6 @@ msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:198 ../app/views/maps/modals/_layers.haml:211
 msgid "Update Layer"
-msgstr ""
-
-#: ../app/javascript/maplibre/map.js:641
-msgid "Updated %{type} '%{title}'"
 msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:42
