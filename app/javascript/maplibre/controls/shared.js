@@ -50,7 +50,7 @@ export class MapSettingsControl {
         resetControls()
         if (draw) { resetEditControls() }
         initSettingsModal()
-        e.target.closest('button').classList.add('active')
+        e.currentTarget.querySelector('button').classList.add('active')
         modal.classList.add('show')
         window.history.pushState({ modal: 'settings' }, '', `${window.location.pathname}#settings`)
       }
@@ -80,7 +80,7 @@ export class MapShareControl {
       } else {
         resetControls()
         if (draw) { resetEditControls() }
-        e.target.closest('button').classList.add('active')
+        e.currentTarget.querySelector('button').classList.add('active')
         modal.classList.add('show')
         const galleryToggle = document.querySelector('#map-gallery-toggle')
         if (galleryToggle) {
@@ -117,7 +117,7 @@ export class MapLayersControl {
         resetControls()
         if (draw) { resetEditControls() }
         initLayersModal()
-        e.target.closest('button').classList.add('active')
+        e.currentTarget.querySelector('button').classList.add('active')
         modal.classList.add('show')
         window.history.pushState({ modal: 'layers' }, '', `${window.location.pathname}#layers`)
       }

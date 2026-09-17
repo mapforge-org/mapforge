@@ -8,7 +8,7 @@ export class MapSelectControl {
     this._container.onclick = function (e) {
       resetControls()
       resetEditControls()
-      e.target.closest('button').classList.add('active')
+      e.currentTarget.querySelector('button').classList.add('active')
     }
   }
   onAdd (map) {

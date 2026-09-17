@@ -17,10 +17,10 @@ export class LineMenuControl {
     resetControls()
     resetEditControls()
       if (lineMenu.classList.contains('hidden')) {
-        e.target.closest('button').classList.add('active')
+        e.currentTarget.querySelector('button').classList.add('active')
         lineMenu.classList.remove('hidden')
       } else {
-        e.target.closest('button').classList.remove('active')
+        e.currentTarget.querySelector('button').classList.remove('active')
         draw.changeMode('simple_select')
         map.fire('draw.modechange')
       }
