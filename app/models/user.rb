@@ -6,7 +6,7 @@ class User
   scope :admin, -> { where(admin: true) }
   scope :github, -> { where(provider: "github") }
   scope :google, -> { where(provider: "google_oauth2") }
-  scope :with_maps, -> { where(:_id.in => Map.distinct(:owner_ids)) }
+  scope :with_maps, -> { where(:_id.in => Map.distinct(:owner_ids).grep(BSON::ObjectId)) }
   scope :with_images, -> { where(:images_count.gt => 0) }
 
   field :uid
