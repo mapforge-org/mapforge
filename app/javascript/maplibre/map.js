@@ -520,7 +520,8 @@ export function initializeViewMode () {
     initializeViewControls()
     initializeDefaultControls()
   })
-  onMapClickAfterLayers(() => { resetControls() })
+  // the handler stays registered after a switch to edit mode, where a reset would end a draw mode
+  onMapClickAfterLayers(() => { if (window.gon.map_mode === 'ro') { resetControls() } })
 }
 
 // Swaps the control set of the running map, so that the mode toggle needs no page load.
