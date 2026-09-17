@@ -74,7 +74,7 @@ Mapforge is a map editor, not a full GIS suite. These functions are missing toda
 
 ## Development
 
-Mapforge is a Rails 8 application. It uses Mongoid on MongoDB for persistence, Redis and Action Cable for live sync, Importmap with Turbo and Stimulus for the frontend, and MapLibre GL JS for the map.
+Mapforge is a Rails 8 application. It uses Mongoid on MongoDB for persistence, Redis and Action Cable for live sync, and Importmap with Turbo and Stimulus for the frontend. The map uses MapLibre GL JS, mapbox-gl-draw for drawing and Turf.js for geometry calculations.
 
 - [DEVELOPMENT.md](DEVELOPMENT.md) explains the local setup.
 - [CONTRIBUTING.md](CONTRIBUTING.md) explains the workflow for bug reports, code and translations.

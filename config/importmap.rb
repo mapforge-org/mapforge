@@ -66,10 +66,6 @@ pin "togeojson", to: "togeojson.js", preload: false # @7.1.2
 
 # Animations for frontpage: https://github.com/michalsnik/aos
 pin "aos" # @2.3.4
-# https://swiperjs.com/, from https://esm.sh/swiper, manual download
-pin "swiper", to: "swiper-bundle.min.js", preload: false # v11.2.10
-# From https://esm.sh/swiper/modules
-pin "swiper/modules", to: "swiper-modules.js", preload: false # v11.2.10
 # Emoji picker: https://github.com/missive/emoji-mart (alternative: https://www.npmjs.com/package/emoji-picker-element)
 pin "emoji-mart", preload: false # @5.6.0
 # Drag-and-drop reordering: https://github.com/SortableJS/Sortable

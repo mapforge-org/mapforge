@@ -77,8 +77,8 @@ msgstr "Ebene hinzufügen"
 msgid "Add pictures, customize colors, symbols, labels"
 msgstr "Füge Bilder hinzu, passe Farben, Symbole und Beschriftungen an"
 
-msgid "Add pictures, customize colors, symbols, labels, (3D) polygons and more"
-msgstr "Füge Bilder hinzu, passe Farben, Symbole, Beschriftungen, (3D-)Polygone und mehr an"
+msgid "Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more"
+msgstr "Füge Bilder hinzu, passe Farben, Symbole, Beschriftungen, (3D-)Polygone, Indoor-Karten und mehr an"
 
 msgid "Add your own data:"
 msgstr "Füge eigene Daten hinzu:"
@@ -102,7 +102,7 @@ msgid "Advanced feature styling"
 msgstr "Erweiterte Objektgestaltung"
 
 msgid "Also available for self-hosting, giving you full control over your data."
-msgstr "Auch zum Self-Hosting verfügbar, mit voller Kontrolle über deine Daten."
+msgstr "Zum Self-Hosting verfügbar, mit voller Kontrolle über deine Daten."
 
 msgid "Are you sure you want to proceed?"
 msgstr "Möchtest du wirklich fortfahren?"
@@ -118,9 +118,6 @@ msgstr "Asphalt"
 
 msgid "Auto"
 msgstr "Automatisch"
-
-msgid "Background"
-msgstr "Hintergrund"
 
 msgid "Background map"
 msgstr "Hintergrundkarte"
@@ -168,7 +165,7 @@ msgid "Bright, colorful vector style with clear roads and readable labels."
 msgstr "Heller, farbenfroher Vektorstil mit klaren Straßen und gut lesbaren Beschriftungen."
 
 msgid "Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map."
-msgstr "Verwalte %{maps_link}, lerne mehr auf der %{tutorial_link} oder %{create_link} direkt eine neue Karte."
+msgstr "Verwalte %{maps_link}, lerne mehr auf der %{tutorial_link} oder %{create_link} eine neue Karte."
 
 msgid "Browse maps by user %{email}"
 msgstr "Durchstöbere Karten von Benutzer %{email}"
@@ -496,6 +493,9 @@ msgstr "Einbettungscode kopiert"
 
 msgid "Embed map"
 msgstr "Karte einbetten"
+
+msgid "Embedding: Include your map on your own web page"
+msgstr "Einbetten: Binde deine Karte in deine eigene Webseite ein"
 
 msgid "Enter name / Search queries"
 msgstr "Name eingeben / Abfragen suchen"
@@ -956,9 +956,6 @@ msgstr "Punkt"
 msgid "Point Mode: Click on the map to place a marker"
 msgstr "Punkt-Modus: Auf die Karte klicken, um einen Marker zu setzen"
 
-msgid "Point scaling:"
-msgstr "Punktskalierung:"
-
 msgid "Polygon"
 msgstr "Polygon"
 
@@ -1046,6 +1043,9 @@ msgstr "Route weicht deutlich vom ursprünglichen Track ab (%{original} km -> %{
 msgid "Routing segment %{index}/%{total}..."
 msgstr "Abschnitt %{index}/%{total} wird berechnet..."
 
+msgid "Routing: Plan routes for walking, bike and car, with elevation profile"
+msgstr "Routing: Plane Routen zu Fuß, mit dem Rad oder Auto, mit Höhenprofil"
+
 msgid "Run from your home screen as %{app_link}"
 msgstr "Starte vom Homescreen als %{app_link}"
 
@@ -1057,9 +1057,6 @@ msgstr "Satellitenbilder kombiniert mit Straßennamen und Beschriftungen."
 
 msgid "Saving %{type}"
 msgstr "%{type} wird gespeichert"
-
-msgid "Scaled with zoom"
-msgstr "Mit Zoom skalieren"
 
 msgid "Search location"
 msgstr "Ort suchen"
@@ -1367,7 +1364,7 @@ msgid "Your browser cannot render 3D graphics on the web. Update your browser, o
 msgstr "Dein Browser kann keine 3D-Grafik im Web darstellen. Aktualisiere deinen Browser, oder schalte die Hardwarebeschleunigung in den Browser-Einstellungen ein."
 
 msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
-msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - passe sie an, arbeite gemeinsam daran und teile sie in Echtzeit."
+msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - und teile sie in Echtzeit."
 
 msgid "Your maps (%{count})"
 msgstr "Deine Karten (%{count})"
