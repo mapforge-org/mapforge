@@ -1,6 +1,6 @@
 import consumer from 'channels/consumer'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, resetLayerInitialization } from 'maplibre/layers/layers'
+import { initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers'
 import {
   destroyFeature,
   initializeMaplibreProperties,
@@ -57,9 +57,6 @@ export function initializeSocket () {
       window.mapChannel = mapChannel
       // On reconnect (channelStatus === 'off'), defer the 'online' event
       if (channelStatus === 'off') {
-        // Rebuild layers directly (rather than initializeLayers()) to force a refetch and handle
-        // a possible basemap change; reset the memoization so a later initializeLayers() re-runs.
-        resetLayerInitialization()
         reloadMapProperties().then(() => true, error => {
           // If we can't confirm what changed while offline, don't silently assume
           // nothing did — fall through to the reload path below as a safe default.

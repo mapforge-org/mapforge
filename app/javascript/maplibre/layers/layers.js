@@ -37,12 +37,6 @@ export function resetInitializationState() {
   setLoadedMapUpdatedAt(null)
 }
 
-// Clear the initializeLayers() memoization without tearing down existing layers, so a later
-// initializeLayers() re-runs from scratch. Used on reconnect, which rebuilds layers directly.
-export function resetLayerInitialization() {
-  initializePromise = null
-}
-
 /**
  * Loads layer definitions from server and initializes them.
  * Combines loadLayerDefinitions(), initializeLayerSources(), and initializeLayerStyles()
