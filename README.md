@@ -58,23 +58,16 @@ Mapforge is an open source GIS web application. Create and share your places, tr
 | Vector base maps, 3D terrain, globe  | yes                              | no, Leaflet 2D               | no                           | no                       |
 | Routing with elevation profile       | yes, with [ORS key][ors-key]     | no                           | directions only              | no                       |
 | Import formats                       | GeoJSON, GPX, KML                | CSV, GeoJSON, GPX, KML, OSM  | CSV, XLSX, KML, GPX, Sheets  | Shapefile, GeoTIFF, CSV  |
-| Emoji markers                        | yes, emoji + [Pinhead][pinhead]  | yes, icon symbol field       | no, icon images only         | yes                      |
+| Spatial analysis (buffers, joins)    | no                               | no                           | no                           | yes                      |
+| Icon markers                        | yes, emoji + [Pinhead][pinhead]  | yes, icon symbol field       | no, icon images only         | yes                      |
 | Photo upload                         | yes, max 5 MB                    | no, image URL only           | yes                          | yes, with EXIF position  |
 | Live GPS track recording             | yes, [µlogger API][ulogger]      | no                           | no                           | yes, field app           |
 | Mobile app                           | PWA and Android app              | responsive web only          | view only, no edit           | iOS and Android          |
 | Interface languages                  | English, German                  | 47 languages                 | Google account language      | English                  |
 
-### What Mapforge does not do
-
-Mapforge is a map editor, not a full GIS suite. These functions are missing today:
-
-- No spreadsheet import. Mapforge cannot read CSV or XLSX, and it cannot geocode a list of addresses.
-- No Shapefile, GeoPackage or GeoTIFF import.
-- No spatial analysis. There are no buffers, no joins between layers and no data driven classification.
-
 ## Development
 
-Mapforge is a Rails 8 application. It uses Mongoid on MongoDB for persistence, Redis and Action Cable for live sync, and Importmap with Turbo and Stimulus for the frontend. The map uses MapLibre GL JS, mapbox-gl-draw for drawing and Turf.js for geometry calculations.
+Mapforge is a Ruby on Rails 8 application. It uses Mongoid on MongoDB for persistence, Redis and Action Cable for live sync, and Importmap with Turbo and Stimulus for the frontend. The map uses MapLibre GL JS, mapbox-gl-draw for drawing and Turf.js for geometry calculations.
 
 - [DEVELOPMENT.md](DEVELOPMENT.md) explains the local setup.
 - [CONTRIBUTING.md](CONTRIBUTING.md) explains the workflow for bug reports, code and translations.
