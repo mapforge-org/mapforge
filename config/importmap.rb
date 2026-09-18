@@ -38,7 +38,7 @@ pin "openrouteservice-js", preload: false # @0.4.1
 # https://github.com/maplibre/maplibre-gl-directions/tree/main
 pin "@maplibre/maplibre-gl-directions", preload: false, to: "@maplibre--maplibre-gl-directions.js" # @0.9.1
 # https://github.com/onthegomap/maplibre-contour
-pin "maplibre-contour", preload: false # @0.1.0
+pin "maplibre-contour", preload: false # @0.1.1
 
 # Elevation chart
 # from https://esm.sh/chart.js@4.5.0/es2022/chart.bundle.mjs
