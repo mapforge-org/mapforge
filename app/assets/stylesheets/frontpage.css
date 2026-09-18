@@ -2,38 +2,8 @@ html:has(#frontpage) {
   scroll-behavior: smooth;
 }
 
-#frontpage-map {
-  opacity: 0.5;
-  transition: opacity 1.5s ease-out;
-}
-
-.frontpage-title {
-  font-size: calc(min(12vw, 12rem)); /* max font size is 12rem; vw is % of viewport width */
-  position: absolute; top: calc(30vh - calc(min(12vw, 12rem))); /* 30% of height - font size */
-  padding-right: unset;
-  padding-left: unset;
-}
-
-
-@media only screen and (orientation: portrait) {
-  .frontpage-title {
-    font-size: calc(min(19vw, 12rem)); /* max font size is 12em; vw is % of viewport width */
-    position: absolute; top: calc(30vh - calc(min(19vw, 12rem))); /* 30% of height - font size */
-  }
-
-  .frontpage-subtitle {
-    font-size: calc(max(min(5vw, 6rem), 0.75rem));
-    font-weight: 500;
-  }
-}
-
 .fade-in {
   transition: opacity 1s linear;
-  opacity: 0;
-}
-
-.fade-in-slow {
-  transition: opacity 2s linear;
   opacity: 0;
 }
 
