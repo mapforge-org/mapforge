@@ -2,7 +2,7 @@
 
 *"Standing on the shoulders of giants"*
 
-Mapforge wouldn't exist without the great open source projects from the mapping community. This page gives credit to the software, open data, and web services used.
+Mapforge builds on the great open source projects from the mapping community. This page gives credit to the software, open data, and web services used.
 
 ## Fonts and icons
 
@@ -49,7 +49,6 @@ Mapforge changed some of these files. It converted the Pinhead and Font Awesome 
 | [EasyMDE](https://github.com/Ionaru/easy-markdown-editor) | text editor | MIT |
 | [marked](https://github.com/markedjs/marked) | markdown in js | MIT |
 | [SortableJS](https://github.com/SortableJS/Sortable) | reorder layers | MIT |
-| [Swiper](https://swiperjs.com/) | image galleries | MIT |
 | [AOS](https://github.com/michalsnik/aos) | scroll animations | MIT |
 | [exif-reader](https://github.com/devongovett/exif-reader) | image coordinates | MIT |
 
@@ -79,7 +78,7 @@ shows the credit for the active basemap in the corner of the map.
 
 ## Services and APIs
 
-Mapforge sends requests to the services below when you use the matching feature.
+When you use the matching feature, Mapforge sends requests to the services below.
 
 | Service | Used for |
 | ------- | -------- |
@@ -92,7 +91,7 @@ Mapforge sends requests to the services below when you use the matching feature.
 | [MaxMind GeoLite2](https://www.maxmind.com/) | approximate start position from the IP address, see the note below |
 | [Umami](https://umami.is/) | usage statistics, enabled on mapforge.org |
 
-Mapforge.org uses GeoLite2 data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com).
+Mapforge.org uses GeoLite2 data created by [MaxMind](https://www.maxmind.com). The data is available from their website.
 
 When you sign in with GitHub, Google, or OpenStreetMap,  Mapforge sends your login request to that provider.
 

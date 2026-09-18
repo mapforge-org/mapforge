@@ -56,7 +56,7 @@ Mapforge is an open source GIS web application. Create and share your places, tr
 | Self-hosting                         | yes, Docker Compose              | yes                          | no                           | no                       |
 | Real-time collaboration              | yes                              | yes, opt-in                  | through account sharing      | yes                      |
 | Vector base maps, 3D terrain, globe  | yes                              | no, Leaflet 2D               | no                           | no                       |
-| Routing with elevation profile       | yes, with [ORS key][ors-key]     | no                           | directions only              | no                       |
+| Routing with elevation profile       | yes, with [ORS key][ors-key]     | yes (ORS)                         | directions only              | no                       |
 | Import formats                       | GeoJSON, GPX, KML                | CSV, GeoJSON, GPX, KML, OSM  | CSV, XLSX, KML, GPX, Sheets  | Shapefile, GeoTIFF, CSV  |
 | Spatial analysis (buffers, joins)    | no                               | no                           | no                           | yes                      |
 | Icon markers                        | yes, emoji + [Pinhead][pinhead]  | yes, icon symbol field       | no, icon images only         | yes                      |
