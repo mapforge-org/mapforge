@@ -14,7 +14,7 @@ import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsMo
 import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
 import { featureLabel, highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
-import { renderDescBanners, rescaleDescBanners } from 'maplibre/layers/geojson/desc_banners';
+import { refreshDescBanners, renderDescBanners } from 'maplibre/layers/geojson/desc_banners';
 import { applyFeatureUpdate, getFeature, getLayer, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
 import { basemaps, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { applyBasemapDefaults, defaults } from 'maplibre/styles/defaults';
@@ -40,6 +40,9 @@ let serverProperties = {}
 // -blocking reload is actually needed. Set on every full (re)load of the map data.
 export let loadedMapUpdatedAt = null
 export function setLoadedMapUpdatedAt (value) { loadedMapUpdatedAt = value }
+
+// Above this zoom a clustered source shows every point on its own
+export const clusterMaxZoom = 14
 
 let mapInteracted
 let backgroundTerrain
@@ -238,7 +241,7 @@ export async function initializeMap (divId = 'maplibre-map') {
   })
   map.on('zoom', (e) => {
     limitZoom()
-    rescaleDescBanners()
+    refreshDescBanners()
     if (e.originalEvent) { hideModals() } // ignore programmatic zoom (e.g. initial zoom-in effect)
   })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
@@ -341,7 +344,7 @@ export function addGeoJSONSource(sourceName, cluster=false, attribution=null) {
     promoteId: 'id',
     data: { type: 'FeatureCollection', features: [] },
     cluster: cluster,
-    clusterMaxZoom: 14,
+    clusterMaxZoom,
     clusterRadius: 50,
     // the attribution control drops a null and de-duplicates the rest, so layers of the
     // same type credit their data source only once
@@ -385,7 +388,7 @@ export function setLayerVisibility(sourceName, visible) {
   }
   // description banners are DOM popups, not style layers, see desc_banners.js
   const layer = layers.find(l => l.sourceId === sourceName)
-  if (layer?.type === 'geojson') { renderDescBanners(layer.geojson?.features || [], layer.id, visible) }
+  if (layer?.type === 'geojson') { renderDescBanners(layer.geojson?.features || [], layer, visible) }
 }
 
 export function removeGeoJSONSource(sourceName) {

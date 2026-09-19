@@ -65,6 +65,17 @@ describe "Feature edit, point features" do
         expect(page).not_to have_css(".desc-banner")
       end
 
+      it "strips scripts and event handlers from the description on the map" do
+        click_button "Add description"
+        find(:css, ".CodeMirror textarea", visible: false)
+          .set('<img src="x" onerror="window.pwned = true"> plain <script>window.pwned = true</script>')
+        find("#desc-shape-ui [data-desc-shape='banner']").click
+        expect(page).to have_css(".desc-banner img")
+        expect(page.evaluate_script("document.querySelector('.desc-banner img').hasAttribute('onerror')")).to be false
+        expect(page.evaluate_script("window.pwned")).to be_nil
+        expect(page).to have_css(".desc-banner", text: "plain")
+      end
+
       it "can update desc" do
         expect(page).not_to have_selector("#feature-desc-input")
         click_button "Add description"
@@ -220,6 +231,17 @@ describe "Feature edit, point features" do
 
         expect(find("#stroke-color").value).to eq("#ffffff")
         expect(find("#fill-color").value).to eq("#0a870a")
+      end
+    end
+
+    context "with a clustered layer" do
+      let(:point) { create(:feature, :point_middle, desc: "Clustered", properties: { "show-desc" => "banner" }) }
+      let(:map) { create(:map, features: [ point ]).tap { |m| m.layers.first.update!(cluster: true) } }
+
+      it "shows the banner only above the cluster zoom" do
+        expect(page).to have_css(".desc-banner.hidden", visible: :all)
+        page.execute_script("window.map.setZoom(15)")
+        expect(page).to have_css(".desc-banner:not(.hidden)", text: "Clustered")
       end
     end
 

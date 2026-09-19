@@ -3,7 +3,7 @@ import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { featureOnLevel } from 'maplibre/controls/levels'
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
-import { frontFeature, map } from 'maplibre/map'
+import { clusterMaxZoom, frontFeature, map } from 'maplibre/map'
 import { defaultPointSize } from 'maplibre/styles/defaults'
 import { marked } from 'marked'
 
@@ -11,50 +11,54 @@ import { marked } from 'marked'
 // marker. Popups are DOM elements, not style layers, so this module keeps them by hand, keyed
 // by the geojson layer id like the image overlays.
 const banners = new Map()
-const prefix = layerId => `${layerId}/`
-const key = (layerId, feature) => prefix(layerId) + feature.id
+const prefix = layer => `${layer.id}/`
+const key = (layer, feature) => prefix(layer) + feature.id
 
 export const hasDescBanner = feature => feature.geometry?.type === 'Point' &&
   !!feature.properties?.['show-desc'] && !!feature.properties?.desc
 
-export function renderDescBanners (features, layerId, visible = true) {
+export function renderDescBanners (features, layer, visible = layer.show !== false) {
   const wanted = new Set()
   features.filter(hasDescBanner).forEach(feature => {
-    wanted.add(key(layerId, feature))
-    upsertDescBanner(feature, layerId, visible)
+    wanted.add(key(layer, feature))
+    upsertDescBanner(feature, layer, visible)
   })
   Array.from(banners.keys())
-    .filter(id => id.startsWith(prefix(layerId)) && !wanted.has(id))
+    .filter(id => id.startsWith(prefix(layer)) && !wanted.has(id))
     .forEach(removeBanner)
 }
 
-export function syncDescBanner (feature, layerId, visible = true) {
+export function syncDescBanner (feature, layer, visible = layer.show !== false) {
   if (hasDescBanner(feature)) {
-    upsertDescBanner(feature, layerId, visible)
+    upsertDescBanner(feature, layer, visible)
   } else {
-    removeBanner(key(layerId, feature))
+    removeBanner(key(layer, feature))
   }
 }
 
-export function removeDescBanner (feature, layerId) {
-  removeBanner(key(layerId, feature))
+export function removeDescBanner (feature, layer) {
+  removeBanner(key(layer, feature))
 }
 
-export function rescaleDescBanners () {
-  banners.forEach(({ popup, feature }) => scaleBanner(popup, feature))
+// on zoom: the scale follows the marker, and a clustered layer folds its points into clusters
+export function refreshDescBanners () {
+  banners.forEach(entry => {
+    scaleBanner(entry.popup, entry.feature)
+    showBanner(entry)
+  })
 }
 
 export const descShape = feature => feature.properties['show-desc'] || 'none'
 
-function upsertDescBanner (feature, layerId, visible) {
+function upsertDescBanner (feature, layer, visible) {
   marked.use({ gfm: true, breaks: true })
   const html = sanitizeMarkdown(marked(feature.properties.desc))
   const shape = descShape(feature)
   // the tail of a bubble sits at its corner, and maplibre puts the tip where the anchor is
   const anchor = shape === 'bubble' ? 'bottom-left' : 'bottom'
-  let popup = banners.get(key(layerId, feature))?.popup
+  let popup = banners.get(key(layer, feature))?.popup
   if (popup && popup.options.anchor !== anchor) {
-    removeBanner(key(layerId, feature))
+    removeBanner(key(layer, feature))
     popup = null
   }
   if (!popup) {
@@ -63,17 +67,25 @@ function upsertDescBanner (feature, layerId, visible) {
       closeButton: false, closeOnClick: false, focusAfterOpen: false, anchor, className: 'desc-banner', maxWidth: '40rem'
     }).setLngLat(feature.geometry.coordinates).addTo(map)
   }
-  const created = !banners.has(key(layerId, feature))
-  banners.set(key(layerId, feature), { popup, feature })
+  const created = !banners.has(key(layer, feature))
+  const entry = { popup, feature, layer, visible }
+  banners.set(key(layer, feature), entry)
   // the element of the popup exists only after its first content
   popup.setLngLat(feature.geometry.coordinates).setHTML(html)
-  if (created) { bindBannerEvents(popup.getElement(), key(layerId, feature)) }
+  if (created) { bindBannerEvents(popup.getElement(), key(layer, feature)) }
   scaleBanner(popup, feature)
   const p = feature.properties
   const el = popup.getElement()
   ;['banner', 'square', 'bubble'].forEach(s => el.classList.toggle(`shape-${s}`, s === shape))
   el.classList.toggle('no-tip', p['marker-color'] === 'transparent' && p.stroke === 'transparent')
-  el.classList.toggle('hidden', !(visible && featureOnLevel(feature)))
+  showBanner(entry)
+}
+
+// ponytail: a clustered layer hides every banner up to clusterMaxZoom, a point that stands
+// alone down there loses its banner too. querySourceFeatures per point if that matters.
+function showBanner ({ popup, feature, layer, visible }) {
+  const clustered = layer.clustered && map.getZoom() < clusterMaxZoom + 1
+  popup.getElement().classList.toggle('hidden', !(visible && featureOnLevel(feature)) || clustered)
 }
 
 // The popup sits beside the canvas container, so the map sees none of its events: the wheel
