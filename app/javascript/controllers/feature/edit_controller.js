@@ -8,8 +8,8 @@ import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
 import {
   backgroundMode, confirmImageLocation, featureIcon, getFeatureTypeName, markerContentMode,
-  markerMemory, resetHighlightedFeature, syncBackground, syncMarkerContent, syncShapeButtons,
-  uploadImage, uploadImageToFeature
+  markerMemory, resetHighlightedFeature, syncBackground, syncDescShapeButtons, syncMarkerContent,
+  syncShapeButtons, uploadImage, uploadImageToFeature
 } from 'maplibre/feature'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
@@ -254,14 +254,13 @@ export default class extends Controller {
     this.renderFeature({ refreshKmMarkers: true })
   }
 
-  updateShowDescOnMap () {
+  updateDescShape (e) {
     const feature = this.getEditFeature()
-    if (document.querySelector('#feature-show-desc-on-map').checked) {
-      feature.properties['show-desc'] = true
-    } else {
-      delete feature.properties['show-desc']
-    }
+    const shape = e.currentTarget.dataset.descShape
+    if (shape === 'none') { delete feature.properties['show-desc'] } else { feature.properties['show-desc'] = shape }
+    syncDescShapeButtons(feature)
     this.renderFeature()
+    this.saveFeature()
   }
 
   updateShape (e) {

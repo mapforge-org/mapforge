@@ -547,13 +547,13 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
 }
 
 /* the shape buttons hold an icon instead of a word, the width matches an icon-only content button */
-#marker-shape-ui .segmented .btn {
+:is(#marker-shape-ui, #desc-shape-ui) .segmented .btn {
   width: 2.6rem;
   padding: 0;
 }
 
 /* a solid glyph in the full button color weighs as much as the active cell */
-#marker-shape-ui .segmented .btn:not(.active) {
+:is(#marker-shape-ui, #desc-shape-ui) .segmented .btn:not(.active) {
   color: color-mix(in srgb, var(--ctrl-button-color) 70%, #FFF);
 }
 
@@ -630,7 +630,8 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
 }
 
 .edit-ui .left-label {
-  width: 5rem;
+  min-width: 5rem;
+  max-width: 6rem;
 }
 
 #feature-show-title-ui {

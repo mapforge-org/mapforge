@@ -51,11 +51,16 @@ describe "Feature edit, point features" do
       it "can toggle description visibility on map" do
         click_button "Add description"
         find(:css, ".CodeMirror textarea", visible: false).set("**Bold** banner")
-        check "Show description on map"
-        wait_for { point.reload.properties["show-desc"] }.to be true
-        expect(page).to have_css(".desc-banner strong", text: "Bold")
+        find("#desc-shape-ui [data-desc-shape='banner']").click
+        wait_for { point.reload.properties["show-desc"] }.to eq("banner")
+        expect(page).to have_css(".desc-banner.shape-banner strong", text: "Bold")
+        expect(page).to have_css(".desc-banner.maplibregl-popup-anchor-bottom")
 
-        uncheck "Show description on map"
+        find("#desc-shape-ui [data-desc-shape='bubble']").click
+        wait_for { point.reload.properties["show-desc"] }.to eq("bubble")
+        expect(page).to have_css(".desc-banner.shape-bubble.maplibregl-popup-anchor-bottom-left")
+
+        find("#desc-shape-ui [data-desc-shape='none']").click
         wait_for { point.reload.properties["show-desc"] }.to be_nil
         expect(page).not_to have_css(".desc-banner")
       end

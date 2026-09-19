@@ -125,6 +125,9 @@ msgstr "Hintergrundkarte"
 msgid "Background:"
 msgstr "Hintergrund:"
 
+msgid "Banner"
+msgstr "Banner"
+
 msgid "Basemap Info (experimental)"
 msgstr "Basiskarten-Info (experimentell)"
 
@@ -881,6 +884,9 @@ msgstr "Keine Route gefunden"
 msgid "None"
 msgstr "Ohne"
 
+msgid "Not shown"
+msgstr "Nicht anzeigen"
+
 msgid "OSM Info (experimental)"
 msgstr "OSM-Info (experimentell)"
 
@@ -1103,9 +1109,6 @@ msgstr "Eigentümerlink teilen"
 msgid "Share view link"
 msgstr "Ansichtslink teilen"
 
-msgid "Show description on map"
-msgstr "Beschreibung auf der Karte anzeigen"
-
 msgid "Show in public gallery"
 msgstr "In der Galerie zeigen"
 
@@ -1117,6 +1120,9 @@ msgstr "Karte in der öffentlichen Mapforge-Galerie zeigen"
 
 msgid "Show navigation"
 msgstr "Navigation anzeigen"
+
+msgid "Show on map:"
+msgstr "Auf der Karte:"
 
 msgid "Show title on map"
 msgstr "Titel auf der Karte anzeigen"
@@ -1182,6 +1188,9 @@ msgstr "Nutzungsbedingungen"
 
 msgid "Terrain added to map"
 msgstr "Gelände zur Karte hinzugefügt"
+
+msgid "Text bubble"
+msgstr "Sprechblase"
 
 msgid "The KMZ archive contains no .kml document"
 msgstr "Das KMZ-Archiv enthält kein .kml-Dokument"

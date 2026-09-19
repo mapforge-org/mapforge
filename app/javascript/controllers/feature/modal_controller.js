@@ -10,7 +10,7 @@ import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromPropertie
 import { draw, select, unselect } from 'maplibre/edit'
 import {
   getFeatureTypeName, highlightedFeatureId, refreshFeatureMeta, showFeatureDetails,
-  syncBackground, syncMarkerContent, syncShapeButtons
+  syncBackground, syncDescShapeButtons, syncMarkerContent, syncShapeButtons
 } from 'maplibre/feature'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { applyFeatureUpdate, getFeature, layers } from 'maplibre/layers/layers'
@@ -104,7 +104,7 @@ export default class extends Controller {
     // init ui input elements
     document.querySelector('#feature-title-input input').value = feature.properties.title || null
     document.querySelector('#feature-show-title-on-map').checked = !!feature.properties.label
-    document.querySelector('#feature-show-desc-on-map').checked = !!feature.properties['show-desc']
+    syncDescShapeButtons(feature)
 
     dom.hideElements(['.edit-point', '.edit-line', '.edit-polygon'])
 

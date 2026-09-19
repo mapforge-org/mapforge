@@ -44,7 +44,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `heatmap`: if set, points will be styled as a heatmap
 * `flat`: if set, marker + label with be projected 'flat' on the map
 * `marker-rotate`: rotate marker by x degrees clockwise
-* `show-desc`: render `desc` as an HTML banner above the marker, scaled by `marker-scaling` (default: false)
+* `show-desc`: render `desc` as HTML above the marker, scaled by `marker-scaling`. One of `banner`, `square` or `bubble` (default: not shown)
 
 #### *LineString* geometry:
 

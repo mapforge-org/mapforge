@@ -9,6 +9,7 @@ import { status } from 'helpers/status'
 import { resetControls } from 'maplibre/controls/shared'
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { showExtrasTotals } from 'maplibre/feature/extras_totals'
+import { descShape } from 'maplibre/layers/geojson/desc_banners'
 import { canPinImage } from 'maplibre/layers/geojson/image_overlays'
 import { getFeature, getFeatureSource, getLayer, layers } from "maplibre/layers/layers"
 import { wikipediaFeatureDescription } from 'maplibre/layers/wikipedia'
@@ -270,6 +271,13 @@ export function syncShapeButtons (feature) {
   const shape = feature.properties['marker-shape'] || 'circle'
   document.querySelectorAll('#marker-shape-ui [data-shape]').forEach(button => {
     button.classList.toggle('active', button.dataset.shape === shape)
+  })
+}
+
+export function syncDescShapeButtons (feature) {
+  const shape = descShape(feature)
+  document.querySelectorAll('#desc-shape-ui [data-desc-shape]').forEach(button => {
+    button.classList.toggle('active', button.dataset.descShape === shape)
   })
 }
 
