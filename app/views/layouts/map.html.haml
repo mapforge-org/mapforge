@@ -1,5 +1,6 @@
 !!!
 %html{ lang: I18n.locale }
+  - content_for :lock_zoom, "1"
   = render 'layouts/head'
 
   %body{ontouchstart: "", class: ("map-mode-rw" if @map_mode == "rw")}

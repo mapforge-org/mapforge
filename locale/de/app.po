@@ -53,6 +53,12 @@ msgstr "3D-Gelände: Betrachte deine Karte mit Höhendaten"
 msgid "3D Terrain: View your map with realistic elevation"
 msgstr "3D-Gelände: Betrachte deine Karte mit realistischen Höhendaten"
 
+msgid "A bike tour, every bench in your town, a guide for your wedding guests"
+msgstr "Eine Radtour, jede Bank in deiner Stadt, ein Wegweiser für deine Hochzeitsgäste"
+
+msgid "A view link, an edit link, a gallery listing, or private"
+msgstr "Ein Ansichtslink, ein Bearbeitungslink, ein Eintrag in der Galerie, oder privat"
+
 msgid "About"
 msgstr "Über"
 
@@ -172,6 +178,9 @@ msgstr "Durchstöbere Karten von Benutzer %{email}"
 
 msgid "Browse the %{gallery_link}, learn how to use Mapforge on the %{tutorial_link} or %{login_link} to create your own maps."
 msgstr "Durchstöbere die %{gallery_link}, lerne auf der %{tutorial_link} wie du Mapforge nutzt, oder %{login_link} um eigene Karten zu erstellen."
+
+msgid "Browse the gallery"
+msgstr "Galerie ansehen"
 
 msgid "Buy me a coffee"
 msgstr "Spende mir einen Kaffee"
@@ -317,9 +326,6 @@ msgstr "Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen. Te
 msgid "Create map"
 msgstr "Karte erstellen"
 
-msgid "Create your map"
-msgstr "Gestalte deine Karte"
-
 msgid "Create your own map"
 msgstr "Gestalte deine eigene Karte"
 
@@ -340,9 +346,6 @@ msgstr "Eigener künstlerischer Kartenstil mit einzigartiger, handgemachter Farb
 
 msgid "Custom raster layer"
 msgstr "Eigene Rasterebene"
-
-msgid "Customize your map"
-msgstr "Passe deine Karte an"
 
 msgid "Cycling-focused MapTiler style highlighting bike routes and trails."
 msgstr "MapTiler-Stil für Radfahrer mit hervorgehobenen Radrouten und Wegen."
@@ -370,6 +373,9 @@ msgstr "Zwischenpunkt löschen"
 
 msgid "Deleting %{type}"
 msgstr "%{type} wird gelöscht"
+
+msgid "Demo map"
+msgstr "Demo-Karte"
 
 msgid "Descending"
 msgstr "Absteigend"
@@ -518,6 +524,9 @@ msgstr "Fehler beim Aktualisieren der Geometrie von %{type}"
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
 
+msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on your own site."
+msgstr "Jede Karte hat einen Ansichtslink und einen Bearbeitungslink. Teile sie mit wem du willst, stelle deine Karte in die Galerie, oder halte sie privat. Bette sie auf deiner eigenen Seite ein."
+
 msgid "Failed to copy"
 msgstr "Kopieren fehlgeschlagen"
 
@@ -601,9 +610,6 @@ msgstr "Gitter"
 
 msgid "Ground"
 msgstr "Erde"
-
-msgid "Happy mapping!"
-msgstr "Viel Spaß mit deiner Karte!"
 
 msgid "Hatch"
 msgstr "Schraffur"
@@ -767,6 +773,9 @@ msgstr "Login: Ordne deine Karten deinem Konto zu"
 msgid "Logout"
 msgstr "Abmelden"
 
+msgid "Make the map you have in mind"
+msgstr "Mach die Karte, die du im Kopf hast"
+
 msgid "Map"
 msgstr "Karte"
 
@@ -844,6 +853,9 @@ msgstr "Mittlere Steigung (7-11 %)"
 
 msgid "More about WebGL"
 msgstr "Mehr über WebGL"
+
+msgid "More maps in the gallery"
+msgstr "Mehr Karten in der Galerie"
 
 msgid "Most viewed"
 msgstr "Meistgesehen"
@@ -1094,6 +1106,9 @@ msgstr "Karte teilen"
 msgid "Share edit link"
 msgstr "Bearbeitungslink teilen"
 
+msgid "Share it your way"
+msgstr "Teile sie, wie du willst"
+
 msgid "Share map"
 msgstr "Karte teilen"
 
@@ -1140,6 +1155,9 @@ msgstr "Wegpunkte werden auf das Straßennetz gesetzt..."
 
 msgid "Square"
 msgstr "Quadrat"
+
+msgid "Start a map"
+msgstr "Karte starten"
 
 msgid "Steep downhill (>16%)"
 msgstr "Starkes Gefälle (>16 %)"
@@ -1255,6 +1273,9 @@ msgstr "Position wird verfolgt"
 msgid "Tracking with µlogger"
 msgstr "Aufzeichnen mit µlogger"
 
+msgid "Tutorial map"
+msgstr "Tutorial-Karte"
+
 msgid "Tutorials"
 msgstr "Tutorials"
 
@@ -1348,9 +1369,6 @@ msgstr "Holz"
 msgid "Woodchips"
 msgstr "Hackschnitzel"
 
-msgid "Work with others and stream map changes to all connected clients"
-msgstr "Arbeite mit anderen zusammen und übertrage Kartenänderungen live an alle verbundenen Geräte"
-
 msgid "Yes"
 msgstr "Ja"
 
@@ -1365,6 +1383,9 @@ msgstr "Dein Browser kann keine 3D-Grafik im Web darstellen. Aktualisiere deinen
 
 msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
 msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - und teile sie in Echtzeit."
+
+msgid "Your maps"
+msgstr "Deine Karten"
 
 msgid "Your maps (%{count})"
 msgstr "Deine Karten (%{count})"
@@ -1476,9 +1497,6 @@ msgstr "Waescherei|Wäscherei|Waschsalon|Waschen"
 
 msgid "log in"
 msgstr "melde dich an"
-
-msgid "map maker, create map, my maps, share maps, my maps, custom map, travel maps, map editor, indoor, geojson, maplibre, openstreetmap, privacy, open source, free to use"
-msgstr "Map erstellen, Karte erstellen, meine Karten, Karten teilen, meine Karten, individuelle Karte, Reisekarten, Karteneditor, Indoor, geojson, maplibre, openstreetmap, Datenschutz, open source, kostenlos nutzbar"
 
 msgid "movies|movie_theater"
 msgstr "Kino|Filmtheater"

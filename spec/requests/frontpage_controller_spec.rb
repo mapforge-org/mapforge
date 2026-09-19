@@ -11,12 +11,35 @@ describe FrontpageController do
       expect(response.body).to include("Create your own map")
     end
 
-    it "links to your maps and create for a logged in user" do
+    it "offers the demo map, start a map and the gallery to a visitor" do
+      get "/"
+      expect(response.body).to include(">Demo map</button>")
+      expect(response.body).to include(">Start a map</a>")
+      expect(response.body).to include(">Browse the gallery</a>")
+    end
+
+    it "offers start a map and your maps to a logged in user" do
       user = create(:user)
       allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
       get "/"
-      expect(response.body).to include(">your maps</a>")
-      expect(response.body).to include(">create</a>")
+      expect(response.body).to include(">Start a map</button>")
+      expect(response.body).to include(">Your maps</a>")
+      expect(response.body).not_to include(">Browse the gallery</a>")
+    end
+
+    it "shows the three most viewed listed maps that have a screenshot" do
+      create(:map, name: "Unlisted", view_permission: "link", view_count: 9)
+      create(:map, name: "No screenshot", view_permission: "listed", view_count: 8)
+      4.times { |i| create(:map, name: "Featured #{i}", view_permission: "listed", view_count: 7 - i) }
+      allow_any_instance_of(Map).to receive(:screenshot) { |map| "/previews/1/#{map.public_id}.jpg" if map.name.start_with?("Featured") }
+      get "/"
+      expect(response.body).to include("Featured 0", "Featured 1", "Featured 2")
+      expect(response.body).not_to include("Featured 3", "Unlisted", "No screenshot")
+    end
+
+    it "sends a default open graph image" do
+      get "/"
+      expect(response.body).to include('<meta content="http://www.example.com/images/map_list_preview.png" property="og:image">')
     end
 
     it "redirects a shared map url to the map" do

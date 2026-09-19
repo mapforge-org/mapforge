@@ -1,8 +1,8 @@
 module MapListFilters
   extend ActiveSupport::Concern
 
-  def filter_and_sort_maps(maps)
-    @sort = params[:sort] || "updated_at"
+  def filter_and_sort_maps(maps, default_sort: "updated_at")
+    @sort = params[:sort] || default_sort
     @direction = params[:direction] || "desc"
     @search = @filter = params[:search].to_s.strip
     if @search.include? "user:"

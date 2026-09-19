@@ -79,13 +79,6 @@ export function setTooltip (element, text) {
   }
 }
 
-export function scrollToId(elementId) {
-  const element = document.getElementById(elementId)
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-}
-
 export function loadStylesheet (href) {
   if (document.querySelector(`link[href="${href}"]`)) return
   const link = document.createElement('link')

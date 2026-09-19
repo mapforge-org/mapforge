@@ -1,0 +1,4 @@
+.maps-list.recently-viewed-maps
+  - @featured_maps.each do |map|
+    = render map
+= link_to _("More maps in the gallery"), maps_path, class: 'gallery-link'

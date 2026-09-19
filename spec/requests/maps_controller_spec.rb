@@ -233,6 +233,14 @@ describe MapsController do
       expect(map.creator_center).to eq [ 11.1, 49.4 ]
       expect(map.creator_zoom).to eq 10
     end
+
+    it "creates a map without an owner for a visitor without login" do
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({})
+      post create_map_path
+      map = Map.last
+      expect(response).to redirect_to(map.private_map_path)
+      expect(map.owners).to be_empty
+    end
   end
 
   describe "#destroy" do

@@ -5,17 +5,13 @@
   = stylesheet_link_tag "easymde.min.css" # v2.20.0, manual update
 
 - content_for :title, "Mapforge map: #{@map.name.presence}" if @map.name.presence
+- content_for :og_title, @map.name if @map.name
+- content_for :og_description, @map.description if @map.description
+- content_for :og_image, "#{request.base_url}#{@map.screenshot}" if @map.screenshot
 - content_for :head do
   - # Speed up default basemap tile fetches (versatilesColorful uses tiles.versatiles.org)
   %link{ rel: "preconnect", href: "https://tiles.versatiles.org", crossorigin: true }
   %link{ rel: "dns-prefetch", href: "https://tiles.versatiles.org" }
-  - # Open Graph protocol https://ogp.me/
-  - if @map.name
-    %meta{ property: 'og:title', content: @map.name }
-  - if @map.description
-    %meta{ property: 'og:description', content: @map.description }
-  - if @map.screenshot
-    %meta{ property: 'og:image', content: "#{request.protocol}#{request.host_with_port}#{@map.screenshot}" }
 
 
 #preloader
