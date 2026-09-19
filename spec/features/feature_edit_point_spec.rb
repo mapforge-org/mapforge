@@ -48,6 +48,18 @@ describe "Feature edit, point features" do
         wait_for { point.reload.properties["label"] }.to be_nil
       end
 
+      it "can toggle description visibility on map" do
+        click_button "Add description"
+        find(:css, ".CodeMirror textarea", visible: false).set("**Bold** banner")
+        check "Show description on map"
+        wait_for { point.reload.properties["show-desc"] }.to be true
+        expect(page).to have_css(".desc-banner strong", text: "Bold")
+
+        uncheck "Show description on map"
+        wait_for { point.reload.properties["show-desc"] }.to be_nil
+        expect(page).not_to have_css(".desc-banner")
+      end
+
       it "can update desc" do
         expect(page).not_to have_selector("#feature-desc-input")
         click_button "Add description"

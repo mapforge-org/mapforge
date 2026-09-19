@@ -1103,6 +1103,9 @@ msgstr "Eigentümerlink teilen"
 msgid "Share view link"
 msgstr "Ansichtslink teilen"
 
+msgid "Show description on map"
+msgstr "Beschreibung auf der Karte anzeigen"
+
 msgid "Show in public gallery"
 msgstr "In der Galerie zeigen"
 

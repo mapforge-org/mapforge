@@ -400,6 +400,18 @@ body:has(#map-mode-badge) .layer-popover {
   opacity: 0.9 !important;
 }
 
+/* --scale follows marker-scaling, set in desc_banners.js. Maplibre positions the outer
+   .maplibregl-popup with its own transform, so the scale goes on the content instead. */
+.desc-banner .maplibregl-popup-content {
+  transform: scale(var(--scale, 1));
+  transform-origin: bottom center;
+}
+
+/* marked wraps the text in <p>, its bootstrap margin would leave an empty strip at the bottom */
+.desc-banner .maplibregl-popup-content > :last-child {
+  margin-bottom: 0;
+}
+
 .elevation-marker {
   border-radius: 50%;
   width: 20px;

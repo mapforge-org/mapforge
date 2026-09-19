@@ -25,6 +25,9 @@
     #feature-desc-section.feature-section-card.hidden
       #feature-desc
         %textarea#feature-desc-input
+      .edit-ui.ms-2.edit-point
+        %input#feature-show-desc-on-map{ type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateShowDescOnMap change->feature--edit#saveFeature" } }
+        %label{ for: "feature-show-desc-on-map"}= _("Show description on map")
 
   .feature-edit-section.hidden{ 'data-edit-section': "style" }
     .feature-section-card.pt-2

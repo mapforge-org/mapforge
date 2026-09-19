@@ -254,6 +254,16 @@ export default class extends Controller {
     this.renderFeature({ refreshKmMarkers: true })
   }
 
+  updateShowDescOnMap () {
+    const feature = this.getEditFeature()
+    if (document.querySelector('#feature-show-desc-on-map').checked) {
+      feature.properties['show-desc'] = true
+    } else {
+      delete feature.properties['show-desc']
+    }
+    this.renderFeature()
+  }
+
   updateShape (e) {
     const feature = this.getEditFeature()
     const shape = e.currentTarget.dataset.shape

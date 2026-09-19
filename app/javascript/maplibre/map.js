@@ -14,6 +14,7 @@ import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsMo
 import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
 import { featureLabel, highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
+import { renderDescBanners, rescaleDescBanners } from 'maplibre/layers/geojson/desc_banners';
 import { applyFeatureUpdate, getFeature, getLayer, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
 import { basemaps, demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { applyBasemapDefaults, defaults } from 'maplibre/styles/defaults';
@@ -237,6 +238,7 @@ export async function initializeMap (divId = 'maplibre-map') {
   })
   map.on('zoom', (e) => {
     limitZoom()
+    rescaleDescBanners()
     if (e.originalEvent) { hideModals() } // ignore programmatic zoom (e.g. initial zoom-in effect)
   })
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
@@ -381,6 +383,9 @@ export function setLayerVisibility(sourceName, visible) {
         if (map.getLayer(l.id)) map.setLayoutProperty(l.id, 'visibility', visible ? 'visible' : 'none')
       })
   }
+  // description banners are DOM popups, not style layers, see desc_banners.js
+  const layer = layers.find(l => l.sourceId === sourceName)
+  if (layer?.type === 'geojson') { renderDescBanners(layer.geojson?.features || [], layer.id, visible) }
 }
 
 export function removeGeoJSONSource(sourceName) {

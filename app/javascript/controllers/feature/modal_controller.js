@@ -13,7 +13,7 @@ import {
   syncBackground, syncMarkerContent, syncShapeButtons
 } from 'maplibre/feature'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
-import { getFeature, layers } from 'maplibre/layers/layers'
+import { applyFeatureUpdate, getFeature, layers } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
 import { routingEnabled } from 'maplibre/routing/openrouteservice'
 import { defaultLineWidth, defaultPointSize, defaults } from 'maplibre/styles/defaults'
@@ -104,6 +104,7 @@ export default class extends Controller {
     // init ui input elements
     document.querySelector('#feature-title-input input').value = feature.properties.title || null
     document.querySelector('#feature-show-title-on-map').checked = !!feature.properties.label
+    document.querySelector('#feature-show-desc-on-map').checked = !!feature.properties['show-desc']
 
     dom.hideElements(['.edit-point', '.edit-line', '.edit-polygon'])
 
@@ -319,6 +320,7 @@ export default class extends Controller {
     try {
       if (easyMDE && feature.properties.desc !== easyMDE.value()) {
         feature.properties.desc = easyMDE.value()
+        if (feature.properties['show-desc']) { applyFeatureUpdate(feature) }
         functions.debounce(() => { this.saveFeature() }, 'desc', 2000)
       }
     } catch (error) {
