@@ -400,6 +400,78 @@ body:has(#map-mode-badge) .layer-popover {
   opacity: 0.9 !important;
 }
 
+/* --scale follows marker-scaling, set in desc_banners.js. Maplibre positions the outer
+   .maplibregl-popup with its own transform, so content and tip scale on their own, both around
+   the anchor: the point of the tip, which sits below the content. */
+.desc-banner .maplibregl-popup-content {
+  transform: scale(var(--scale, 1));
+  transform-origin: 50% calc(100% + 10px);
+}
+
+.desc-banner .maplibregl-popup-tip {
+  transform: scale(var(--scale, 1));
+  transform-origin: bottom center;
+}
+
+.desc-banner.shape-square .maplibregl-popup-content {
+  border-radius: 0;
+  transform-origin: bottom center;
+}
+
+/* A comic bubble: an ellipse with a straight tail from its lower left to the bottom-left anchor.
+   The tail is the tip of maplibre, an svg stretched over up to half the bubble width
+   (vector-effect keeps the stroke width). It lies below the ellipse, which hides the part of its base that
+   reaches inside, and ::after repeats its fill above the outline, so the outline stops at the
+   tail edges. Both boxes share the tail size and the --overlap into the ellipse. */
+.desc-banner.shape-bubble {
+  --tail-h: 3.5rem;
+  --tail-w: min(50%, 10rem);
+  --overlap: 1.6rem;
+}
+
+.desc-banner.shape-bubble .maplibregl-popup-content {
+  z-index: 1;
+  border: 2px solid #000;
+  border-radius: 50%;
+
+  /* narrower than the 40rem of the popup, a wide ellipse goes flat and its tail with it.
+     ponytail: fixed padding, a text of more than five lines pokes its corners out of the ellipse */
+  max-width: 26rem;
+  padding: 2rem 3rem;
+  transform-origin: 0 calc(100% + var(--tail-h) - var(--overlap));
+}
+
+.desc-banner.shape-bubble .maplibregl-popup-content::after {
+  content: "";
+  position: absolute;
+  left: -2px;
+  bottom: calc(var(--overlap) - var(--tail-h) - 2px);
+  width: var(--tail-w);
+  height: var(--tail-h);
+  background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-3 0 106 103' preserveAspectRatio='none'><path d='M50 0L0 100L76 0Z' fill='%23fff'/></svg>") 0 0 / 100% 100% no-repeat;
+}
+
+.desc-banner.shape-bubble .maplibregl-popup-tip {
+  z-index: 0;
+  width: var(--tail-w);
+  height: var(--tail-h);
+  margin-top: calc(-1 * var(--overlap));
+  border: 0;
+  background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-3 0 106 103' preserveAspectRatio='none'><path d='M50 0L0 100L76 0Z' fill='%23fff'/><path d='M50 0L0 100L76 0' fill='none' stroke='%23000' stroke-width='2' vector-effect='non-scaling-stroke'/></svg>") 0 0 / 100% 100% no-repeat;
+  transform-origin: bottom left;
+}
+
+/* an invisible marker has nothing for the tip to point at, a square carries none. The tail of
+   a comic bubble is part of its drawing, so it stays. */
+.desc-banner:is(.no-tip:not(.shape-bubble), .shape-square) .maplibregl-popup-tip {
+  display: none;
+}
+
+/* marked wraps the text in <p>, its bootstrap margin would leave an empty strip at the bottom */
+.desc-banner .maplibregl-popup-content > :last-child {
+  margin-bottom: 0;
+}
+
 .elevation-marker {
   border-radius: 50%;
   width: 20px;

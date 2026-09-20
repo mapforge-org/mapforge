@@ -133,8 +133,11 @@ export class Layer {
    * Called once during initialization; visibility toggles reuse the source.
    */
   createSource() {
-    const cluster = !!this.layer.cluster && !this.layer.heatmap
-    addGeoJSONSource(this.sourceId, cluster, this.attribution)
+    addGeoJSONSource(this.sourceId, this.clustered, this.attribution)
+  }
+
+  get clustered() {
+    return !!this.layer.cluster && !this.layer.heatmap
   }
 
   /**

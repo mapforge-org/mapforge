@@ -1,4 +1,5 @@
 import { draw, select } from 'maplibre/edit'
+import { removeDescBanner, renderDescBanners, syncDescBanner } from 'maplibre/layers/geojson/desc_banners'
 import { buildLineExtrusion } from 'maplibre/layers/geojson/extrusion'
 import {
   removeFeatureImageOverlay,
@@ -84,6 +85,7 @@ export class GeoJSONLayer extends Layer {
     removeGeoJSONSource(this.routeExtrasSourceId)
     removeGeoJSONSource(this.extrusionSourceId)
     renderImageOverlays([], this.id)
+    renderDescBanners([], this)
   }
 
   initialize() {
@@ -137,6 +139,7 @@ export class GeoJSONLayer extends Layer {
     applyKmMarkerLevelFilter(this.kmMarkerSourceId)
     applyRouteExtrasLevelFilter(this.routeExtrasSourceId)
     renderImageOverlays(this.layer.geojson?.features || [], this.id, this.show !== false)
+    renderDescBanners(this.layer.geojson?.features || [], this)
   }
 
   // setData(url) lets MapLibre fetch AND parse the features in its web worker (off the main
@@ -202,6 +205,7 @@ export class GeoJSONLayer extends Layer {
     renderRouteExtras(features, this.routeExtrasSourceId)
     this.renderExtrusionLines(features)
     renderImageOverlays(features, this.id, this.show !== false)
+    renderDescBanners(features, this)
 
     if (sourceLoaded) {
       // MapLibre's URL load already holds exactly this set; don't re-parse it.
@@ -280,6 +284,7 @@ export class GeoJSONLayer extends Layer {
     }
 
     syncImageOverlay(feature, this.id, this.show !== false)
+    syncDescBanner(feature, this)
 
     // Keep the MapboxDraw overlay in sync for geometry edits (no-op when nothing is in draw).
     if (resetDraw) { this.resetDrawFeatures(true) }
@@ -309,6 +314,7 @@ export class GeoJSONLayer extends Layer {
     }
 
     syncImageOverlay(feature, this.id, this.show !== false)
+    syncDescBanner(feature, this)
   }
 
   // Surgically remove a feature from this layer's source without a full render(). See
@@ -332,6 +338,7 @@ export class GeoJSONLayer extends Layer {
     }
 
     removeFeatureImageOverlay(feature, this.id)
+    removeDescBanner(feature, this)
 
     // Cheap regardless of draw's contents, so always keep it in sync (e.g. a feature deleted
     // remotely while selected locally).

@@ -25,6 +25,25 @@
     #feature-desc-section.feature-section-card.hidden
       #feature-desc
         %textarea#feature-desc-input
+      #desc-shape-ui.edit-ui.edit-point
+        %label.left-label= _("Show on map:")
+        .btn-group.segmented{ role: "group" }
+          %button.btn{ type: "button", title: _("Not shown"),
+            data: { 'desc-shape': "none", action: "click->feature--edit#addUndo click->feature--edit#updateDescShape",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
+            %i.bi.bi-slash-circle
+          %button.btn{ type: "button", title: _("Banner"),
+            data: { 'desc-shape': "banner", action: "click->feature--edit#addUndo click->feature--edit#updateDescShape",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
+            %i.bi.bi-chat-square-fill
+          %button.btn{ type: "button", title: _("Square"),
+            data: { 'desc-shape': "square", action: "click->feature--edit#addUndo click->feature--edit#updateDescShape",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
+            %i.bi.bi-square-fill
+          %button.btn{ type: "button", title: _("Text bubble"),
+            data: { 'desc-shape': "bubble", action: "click->feature--edit#addUndo click->feature--edit#updateDescShape",
+              toggle: "tooltip", 'bs-trigger': "hover" } }
+            %i.bi.bi-chat-fill
 
   .feature-edit-section.hidden{ 'data-edit-section': "style" }
     .feature-section-card.pt-2

@@ -226,22 +226,17 @@ const pointSizeMin = () => ['to-number', ['coalesce',
 export const pointSizeMax = () => ['to-number', ['coalesce',
   ...markerSize.slice(1), pointSizeDefault(defaults.pointSizePlain)]]
 
-export const pointSize = () => [
-  'interpolate',
-  ['linear'],
-  ['zoom'],
-  5, [
-    'case',
-    ['boolean', ['feature-state', 'active'], false],
-    ['+', 1, pointSizeMin()],
-    pointSizeMin()
-  ],
-  17, [
-    'case',
-    ['boolean', ['feature-state', 'active'], false],
-    ['+', 1, pointSizeMax()],
-    pointSizeMax()
-  ]
+// With 'marker-scaling' the radius doubles per zoom level like shapeIconSize, else it grows
+// linearly from min at zoom 5 to max at zoom 17. One 'interpolate' has one curve, so the
+// exponential one serves both: the extra stops keep the linear case within 0.2px of a line.
+const activeBonus = () => ['case', ['boolean', ['feature-state', 'active'], false], 1, 0]
+const pointRadiusAt = zoom => ['case', shouldScale,
+  ['*', 2 ** (zoom - 16), ['+', activeBonus(), pointSizeMax()]],
+  ['+', activeBonus(), pointSizeMin(), ['*', Math.min(1, (zoom - 5) / 12), ['-', pointSizeMax(), pointSizeMin()]]]
+]
+
+export const pointSize = () => ['interpolate', ['exponential', 2], ['zoom'],
+  ...[5, 8, 11, 14, 17, 21].flatMap(zoom => [zoom, pointRadiusAt(zoom)])
 ]
 
 // A point with a shape or a symbol leaves the circle layer and the symbol layer, and gets
@@ -275,6 +270,17 @@ const shapeIconSize = () => ['interpolate', ['exponential', 2], ['zoom'],
 
 export const pointOutlineSize = () => ['to-number', styleProp(['user_stroke-width', 'stroke-width'], defaults.pointOutlineSize)]
 export const pointOutlineSizeActive = () => ['+', 1, pointOutlineSize()]
+
+// The outline of a scaled circle shrinks with it, else it would keep a 2px dot at low zoom
+const pointOutlineWidth = () => ['interpolate', ['exponential', 2], ['zoom'],
+  0, ['case', shouldScale, 0, pointOutlineSizeCurrent()],
+  21, ['case', shouldScale, ['*', 32, pointOutlineSizeCurrent()], pointOutlineSizeCurrent()]
+]
+const pointOutlineSizeCurrent = () => ['case',
+  ['boolean', ['feature-state', 'active'], false],
+  pointOutlineSizeActive(),
+  pointOutlineSize()
+]
 const pointOutlineColor = () => styleProp(['user_stroke', 'stroke'], defaults.featureOutlineColor)
 const defaultPointOpacity = () => ['case',
   ['any', ['has', 'marker-image-url'], ['has', 'marker-symbol']],
@@ -754,12 +760,7 @@ export function styles () {
           defaults.featureOutlineColorActive,
           pointOutlineColor()
         ],
-        'circle-stroke-width': [
-          'case',
-          ['boolean', ['feature-state', 'active'], false],
-          pointOutlineSizeActive(),
-          pointOutlineSize()
-        ],
+        'circle-stroke-width': pointOutlineWidth(),
         'circle-stroke-opacity': ['to-number', ["min", 1, ['+', pointOpacity(), 0.2]]]
       },
       layout: {
@@ -801,12 +802,7 @@ export function styles () {
           defaults.featureOutlineColorActive,
           pointOutlineColor()
         ],
-        'circle-stroke-width': [
-          'case',
-          ['boolean', ['feature-state', 'active'], false],
-          pointOutlineSizeActive(),
-          pointOutlineSize()
-        ],
+        'circle-stroke-width': pointOutlineWidth(),
         'circle-stroke-opacity': ["min", 1, ['+', pointOpacity(), 0.2]]
       },
       layout: {
