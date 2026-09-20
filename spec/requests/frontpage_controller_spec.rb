@@ -15,7 +15,7 @@ describe FrontpageController do
       get "/"
       expect(response.body).to include(">Tutorial map</button>")
       expect(response.body).to include(">Start a map</a>")
-      expect(response.body).to include("btn-green\" href=\"/login\">Login</a>")
+      expect(response.body).to include("href=\"/login\">log in</a>")
       expect(response.body).not_to include(">Your maps</a>")
     end
 
@@ -26,7 +26,7 @@ describe FrontpageController do
       expect(response.body).to include(">Start a map</button>")
       expect(response.body).to include(">Your maps</a>")
       expect(response.body).to include(">Tutorial map</a>")
-      expect(response.body).not_to include("btn-green\" href=\"/login\">Login</a>")
+      expect(response.body).not_to include("href=\"/login\">log in</a>")
     end
 
     it "shows the three most viewed listed maps that have a screenshot" do
