@@ -53,8 +53,8 @@ msgstr "3D-Gelände: Betrachte deine Karte mit Höhendaten"
 msgid "3D Terrain: View your map with realistic elevation"
 msgstr "3D-Gelände: Betrachte deine Karte mit realistischen Höhendaten"
 
-msgid "A bike tour, every bench in your town, a guide for your wedding guests"
-msgstr "Eine Radtour, jede Bank in deiner Stadt, ein Wegweiser für deine Hochzeitsgäste"
+msgid "A bike tour, your indoor event map, a guide for your wedding guests"
+msgstr "Eine Radtour, der Indoor-Plan für dein Event, ein Wegweiser für deine Hochzeitsgäste"
 
 msgid "A view link, an edit link, a gallery listing, or private"
 msgstr "Ein Ansichtslink, ein Bearbeitungslink, ein Eintrag in der Galerie, oder privat"
@@ -179,8 +179,8 @@ msgstr "Durchstöbere Karten von Benutzer %{email}"
 msgid "Browse the %{gallery_link}, learn how to use Mapforge on the %{tutorial_link} or %{login_link} to create your own maps."
 msgstr "Durchstöbere die %{gallery_link}, lerne auf der %{tutorial_link} wie du Mapforge nutzt, oder %{login_link} um eigene Karten zu erstellen."
 
-msgid "Browse the gallery"
-msgstr "Galerie ansehen"
+msgid "Build the map you have in mind"
+msgstr "Erstelle deine Karten-Idee"
 
 msgid "Buy me a coffee"
 msgstr "Spende mir einen Kaffee"
@@ -374,9 +374,6 @@ msgstr "Zwischenpunkt löschen"
 msgid "Deleting %{type}"
 msgstr "%{type} wird gelöscht"
 
-msgid "Demo map"
-msgstr "Demo-Karte"
-
 msgid "Descending"
 msgstr "Absteigend"
 
@@ -524,8 +521,8 @@ msgstr "Fehler beim Aktualisieren der Geometrie von %{type}"
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
 
-msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on your own site."
-msgstr "Jede Karte hat einen Ansichtslink und einen Bearbeitungslink. Teile sie mit wem du willst, stelle deine Karte in die Galerie, oder halte sie privat. Bette sie auf deiner eigenen Seite ein."
+msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
+msgstr "Jede Karte hat einen Ansichtslink und einen Bearbeitungslink. Teile sie, stelle deine Karte in die Galerie, oder halte sie privat. Binde sie auf anderen Webseiten ein."
 
 msgid "Failed to copy"
 msgstr "Kopieren fehlgeschlagen"
@@ -772,9 +769,6 @@ msgstr "Login: Ordne deine Karten deinem Konto zu"
 
 msgid "Logout"
 msgstr "Abmelden"
-
-msgid "Make the map you have in mind"
-msgstr "Mach die Karte, die du im Kopf hast"
 
 msgid "Map"
 msgstr "Karte"
@@ -1106,8 +1100,8 @@ msgstr "Karte teilen"
 msgid "Share edit link"
 msgstr "Bearbeitungslink teilen"
 
-msgid "Share it your way"
-msgstr "Teile sie, wie du willst"
+msgid "Share it"
+msgstr "Teile sie"
 
 msgid "Share map"
 msgstr "Karte teilen"

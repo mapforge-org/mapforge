@@ -143,6 +143,20 @@ section,
   margin-left: 3rem;
 }
 
+/* Bootstrap's container is narrower than wide viewports, so its right column would start on
+   the dark half. Span the viewport instead, so the featured maps sit on the map half. */
+@media (width >= 992px) {
+  .hero .container:not(.feature-tour-col) {
+    flex: 1;
+    max-width: none;
+    margin-right: 3rem;
+  }
+
+  .hero blockquote {
+    max-width: 40rem;
+  }
+}
+
 .welcome-text {
   font-size: 1.1rem;
 }
@@ -181,11 +195,6 @@ section,
   margin-bottom: 2rem;
 }
 
-.hero-actions a {
-  font-weight: 600;
-  text-decoration: underline;
-}
-
 /* maps.css loads after this file, so the selectors below carry one class more to win */
 .featured-maps {
   z-index: 3;
@@ -199,6 +208,7 @@ section,
 
 .featured-maps .recently-viewed-maps .map-preview {
   width: 9rem;
+  border-color: var(--color-dark-moss-green);
 }
 
 .featured-maps .recently-viewed-maps .map-preview-title {
@@ -208,8 +218,8 @@ section,
 
 .featured-maps .gallery-link {
   display: block;
-  text-align: center;
-  margin-top: 0.5rem;
+  width: fit-content;
+  margin: 0.5rem auto 0;
 }
 
 .featured-maps-mobile {

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 01:06+0200\n"
-"PO-Revision-Date: 2026-09-20 01:06+0200\n"
+"POT-Creation-Date: 2026-09-20 12:26+0200\n"
+"PO-Revision-Date: 2026-09-20 12:26+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -67,7 +67,7 @@ msgid "3D Terrain: View your map with realistic elevation"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:76
-msgid "A bike tour, every bench in your town, a guide for your wedding guests"
+msgid "A bike tour, your indoor event map, a guide for your wedding guests"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:110
@@ -234,8 +234,8 @@ msgstr ""
 msgid "Browse the %{gallery_link}, learn how to use Mapforge on the %{tutorial_link} or %{login_link} to create your own maps."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:40
-msgid "Browse the gallery"
+#: ../app/views/frontpage/index.haml:75
+msgid "Build the map you have in mind"
 msgstr ""
 
 #: ../app/views/shared/_footer.html.haml:49
@@ -494,10 +494,6 @@ msgstr ""
 msgid "Deleting %{type}"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:38
-msgid "Demo map"
-msgstr ""
-
 #: ../app/views/maps/_list_filter.haml:43
 msgid "Descending"
 msgstr ""
@@ -695,7 +691,7 @@ msgid "Error uploading image"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:18
-msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on your own site."
+msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
 msgstr ""
 
 #: ../app/javascript/helpers/clipboard.js:73
@@ -1014,7 +1010,7 @@ msgstr ""
 msgid "Location not available"
 msgstr ""
 
-#: ../app/views/shared/_header.html.haml:102
+#: ../app/views/frontpage/index.haml:40 ../app/views/shared/_header.html.haml:102
 msgid "Login"
 msgstr ""
 
@@ -1024,10 +1020,6 @@ msgstr ""
 
 #: ../app/views/shared/_header.html.haml:66 ../app/views/shared/_header.html.haml:98
 msgid "Logout"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:75
-msgid "Make the map you have in mind"
 msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:82 ../app/javascript/maplibre/map.js:127
@@ -1471,7 +1463,7 @@ msgid "Share edit link"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:109
-msgid "Share it your way"
+msgid "Share it"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/shared.js:75
@@ -1692,7 +1684,7 @@ msgstr ""
 msgid "Tracking with µlogger"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:36
+#: ../app/views/frontpage/index.haml:36 ../app/views/frontpage/index.haml:38
 msgid "Tutorial map"
 msgstr ""
 

@@ -15,7 +15,7 @@
               %p.d-sm-none
                 = _("Your open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events.")
               %p.d-none.d-sm-block
-                = _("Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on your own site.")
+                = _("Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites.")
               %p.d-none.d-sm-block
                 = _("Mapforge is ad-free and respects your privacy.")
                 = _("Also available for self-hosting, giving you full control over your data.")
@@ -32,12 +32,12 @@
             .hero-actions.d-none.d-sm-flex
               - if @user
                 = button_to _("Start a map"), create_map_path, class: 'btn btn-orange btn-lg'
-                = link_to _("Your maps"), my_path
-                = link_to _("Tutorial map"), tutorial_path, data: { turbo_method: :post }
+                = link_to _("Your maps"), my_path, class: 'btn btn-secondary btn-green'
+                = link_to _("Tutorial map"), tutorial_path, class: 'btn btn-secondary btn-green', data: { turbo_method: :post }
               - else
-                = button_to _("Demo map"), tutorial_path, class: 'btn btn-orange btn-lg'
-                = link_to _("Start a map"), create_map_path, data: { turbo_method: :post }
-                = link_to _("Browse the gallery"), maps_path
+                = button_to _("Tutorial map"), tutorial_path, class: 'btn btn-orange btn-lg'
+                = link_to _("Start a map"), create_map_path, class: 'btn btn-secondary btn-green', data: { turbo_method: :post }
+                = link_to _("Login"), login_path, class: 'btn btn-secondary btn-green'
 
         .col-lg-6.featured-maps.d-none.d-lg-block{ 'data-aos': "fade-up" }
           / News Banner – update the text below to advertise new features or site news.
@@ -72,8 +72,8 @@
         %img{ src: "/images/frontpage/demo.webp", alt: _("Map tools"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
-          %h2.mb-3.mapforge-font= _("Make the map you have in mind")
-          %h4.mb-3= _("A bike tour, every bench in your town, a guide for your wedding guests")
+          %h2.mb-3.mapforge-font= _("Build the map you have in mind")
+          %h4.mb-3= _("A bike tour, your indoor event map, a guide for your wedding guests")
           %ul
             %li
               %span.d-none.d-sm-inline><
@@ -106,7 +106,7 @@
         %img{ src: "/images/frontpage/feature1.png", alt: _("Collaboration"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
-          %h2.mb-3.mapforge-font= _("Share it your way")
+          %h2.mb-3.mapforge-font= _("Share it")
           %h4.mb-3= _("A view link, an edit link, a gallery listing, or private")
           %ul
             %li= _("Access control: Keep maps private or share with view-only or edit permissions")
@@ -134,7 +134,7 @@
       .col-lg-7.background-bright.slides
         .item
           %h2.mb-3.mapforge-font= _("Open Source")
-          %h4.mb-3= link_to "\"Standing on the shoulders of giants\"", doc_path(id: 'credits')
+          %h4.mb-3= "Standing on the shoulders of giants"
           %ul
             %li
               - rails_link = link_to "Ruby on Rails", "https://rubyonrails.org/"

@@ -11,20 +11,22 @@ describe FrontpageController do
       expect(response.body).to include("Create your own map")
     end
 
-    it "offers the demo map, start a map and the gallery to a visitor" do
+    it "offers the tutorial map, start a map and login to a visitor" do
       get "/"
-      expect(response.body).to include(">Demo map</button>")
+      expect(response.body).to include(">Tutorial map</button>")
       expect(response.body).to include(">Start a map</a>")
-      expect(response.body).to include(">Browse the gallery</a>")
+      expect(response.body).to include("btn-green\" href=\"/login\">Login</a>")
+      expect(response.body).not_to include(">Your maps</a>")
     end
 
-    it "offers start a map and your maps to a logged in user" do
+    it "offers start a map, your maps and the tutorial map to a logged in user" do
       user = create(:user)
       allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
       get "/"
       expect(response.body).to include(">Start a map</button>")
       expect(response.body).to include(">Your maps</a>")
-      expect(response.body).not_to include(">Browse the gallery</a>")
+      expect(response.body).to include(">Tutorial map</a>")
+      expect(response.body).not_to include("btn-green\" href=\"/login\">Login</a>")
     end
 
     it "shows the three most viewed listed maps that have a screenshot" do
