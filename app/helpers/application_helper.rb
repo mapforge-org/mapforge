@@ -1,3 +1,5 @@
+require "redcarpet/render_strip"
+
 module ApplicationHelper
   # Loads the compiled JS translations for the current locale
   # plus the gettext.js runtime. The locale file is
@@ -28,6 +30,12 @@ module ApplicationHelper
   # open external and image links in new tab, same rule as sanitizeMarkdown() in helpers/functions.js
   def sanitize_markdown(html)
     html.gsub(/<a(\s+)(href=['"]https?:\/\/|href=['"]\/image)/i, '<a\1target="_blank" \2')
+  end
+
+  # Social previews show markup as plain text, so og:description gets the text only
+  def markdown_to_text(markdown)
+    renderer = Redcarpet::Markdown.new(Redcarpet::Render::StripDown, autolink: true, tables: true)
+    strip_tags(renderer.render(markdown)).squish.truncate(300)
   end
 
   def avatar_url(base_url, size)

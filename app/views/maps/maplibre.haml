@@ -6,7 +6,7 @@
 
 - content_for :title, "Mapforge map: #{@map.name.presence}" if @map.name.presence
 - content_for :og_title, @map.name if @map.name
-- content_for :og_description, @map.description if @map.description
+- content_for :og_description, markdown_to_text(@map.description) if @map.description
 - content_for :og_image, "#{request.base_url}#{@map.screenshot}" if @map.screenshot
 - content_for :head do
   - # Speed up default basemap tile fetches (versatilesColorful uses tiles.versatiles.org)
