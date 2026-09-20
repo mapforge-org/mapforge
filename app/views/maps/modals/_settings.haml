@@ -43,10 +43,11 @@
               %i.bi.bi-brush
               %span= _("Paint objects on the map")
 
-            %button.welcome-tile{ type: "button", disabled: @user.nil?,
-              data: { action: "click->map--settings#importFile" } }
+            - # the layers modal narrows accept per dropdown entry, this tile offers everything the user may upload
+            %button.welcome-tile{ type: "button",
+              data: { action: "click->map--settings#importFile", accept: ".gpx,.kml,.kmz,.geojson,.json#{',image/*' if @user}" } }
               %i.bi.bi-upload
-              %span= _("Import data (gpx, kml, image)")
+              %span= @user ? _("Import data (gpx, kml, image)") : _("Import data (gpx, kml)")
 
             - if ENV["OPENROUTESERVICE_KEY"].present?
               .welcome-tile
@@ -69,7 +70,7 @@
           - unless @user
             %p.small.mt-2.mb-0
               %i.bi.bi-info-circle.me-1
-              = _("Please log in to import files")
+              = _("Please log in to upload images")
 
       .feature-section-card
         %h4.mapforge-font.mt-2

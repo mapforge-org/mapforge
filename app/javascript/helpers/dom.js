@@ -46,7 +46,9 @@ export function animateElement (selector, effect = 'fade-in', delay = 0) {
 
 // initialize bs5 tooltips
 export function initTooltips (root = document) {
-  if (!functions.isTouchDevice()) {
+  // a touch laptop with a mouse still hovers, isTouchDevice() alone would turn tooltips off there
+  const touchOnly = functions.isTouchDevice() && !window.matchMedia('(hover: hover)').matches
+  if (!touchOnly) {
     root.querySelectorAll('[data-toggle="tooltip"]').forEach(element => {
       if (typeof bootstrap !== 'undefined') {
         let tooltip = bootstrap.Tooltip.getInstance(element)

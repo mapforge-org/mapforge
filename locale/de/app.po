@@ -668,6 +668,9 @@ msgstr "Bilder und Fotos"
 msgid "Import"
 msgstr "Importieren"
 
+msgid "Import data (gpx, kml)"
+msgstr "Daten importieren (gpx, kml)"
+
 msgid "Import data (gpx, kml, image)"
 msgstr "Daten importieren (gpx, kml, Bild)"
 
@@ -947,14 +950,8 @@ msgstr "Plane deine Tour und navigiere mit Kompassmodus und Höhenprofil."
 msgid "Please confirm"
 msgstr "Bitte bestätigen"
 
-msgid "Please log in to import files"
-msgstr "Melde dich an, um Dateien zu importieren"
-
 msgid "Please log in to upload images"
 msgstr "Melde dich an, um Bilder hochzuladen"
-
-msgid "Please log in to upload tracks"
-msgstr "Melde dich an, um Tracks hochzuladen"
 
 msgid "Point"
 msgstr "Punkt"
