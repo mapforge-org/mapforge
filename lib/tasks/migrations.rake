@@ -81,10 +81,11 @@ namespace :migrations do
     end
 
     saved = original_total - new_total
+    saved_pct = original_total.positive? ? ((saved.to_f / original_total) * 100).round(1) : 0
     puts "\n#{dry_run ? '[DRY RUN] ' : ''}Done."
     puts "Converted: #{converted}, skipped: #{skipped}, failed: #{failed}"
     puts "Before: #{(original_total / 1024.0 / 1024).round(1)}MB, after: #{(new_total / 1024.0 / 1024).round(1)}MB"
-    puts "Saved: #{(saved / 1024.0 / 1024).round(1)}MB (#{original_total.positive? ? ((saved.to_f / original_total) * 100).round(1) : 0}%)"
+    puts "Saved: #{(saved / 1024.0 / 1024).round(1)}MB (#{saved_pct}%)"
   end
 
   desc "Move the IP derived center of empty maps into creator_center. DRY_RUN=1 to report only."
