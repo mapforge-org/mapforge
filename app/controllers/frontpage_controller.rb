@@ -6,7 +6,8 @@ class FrontpageController < ApplicationController
     return redirect_to path if path
 
     # screenshot is a file check, so the filter runs in Ruby on a few candidates
-    @featured_maps = Map.unscoped.listed.sorted("view_count", "desc").limit(20).to_a.select(&:screenshot).first(3)
+    @featured_maps = Map.unscoped.listed.where(tags: "featured").to_a.shuffle.select(&:screenshot).first(3).presence ||
+      Map.unscoped.listed.sorted("view_count", "desc").limit(20).to_a.select(&:screenshot).first(3)
   end
 
   private

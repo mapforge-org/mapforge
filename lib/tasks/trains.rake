@@ -34,7 +34,7 @@ namespace :trains do
 
     map = Map.create
     lons, lats = coordinates.transpose
-    map.update!({ name: route.name, zoom: "10", base_map: "versatilesGraybeard", type: "train",
+    map.update!({ name: route.name, zoom: "10", base_map: "versatilesGraybeard", tags: [ "train" ],
       public_id: public_id, center: [ (lons.min + lons.max) / 2, (lats.min + lats.max) / 2 ] }.compact)
     layer = map.layers.first
     # The line is the IRIS line name, the l attribute on every stop event, eg "RB21" or "S1". It
@@ -99,7 +99,7 @@ namespace :trains do
   end
 
 
-  desc "Animate every train map (type=train) that has a client connected, and only those"
+  desc "Animate every map tagged train that has a client connected, and only those"
   task supervise: :environment do
     train_logger!
     supervisor = Mapforge::Trains::Supervisor.new

@@ -39,6 +39,16 @@ describe FrontpageController do
       expect(response.body).not_to include("Featured 3", "Unlisted", "No screenshot")
     end
 
+    it "prefers listed maps tagged featured over the most viewed ones" do
+      create(:map, name: "Featured popular", view_permission: "listed", view_count: 9)
+      create(:map, name: "Featured tagged", view_permission: "listed", tags: [ "featured" ])
+      create(:map, name: "Featured unlisted", view_permission: "link", tags: [ "featured" ])
+      allow_any_instance_of(Map).to receive(:screenshot) { |map| "/previews/1/#{map.public_id}.jpg" }
+      get "/"
+      expect(response.body).to include("Featured tagged")
+      expect(response.body).not_to include("Featured popular", "Featured unlisted")
+    end
+
     it "sends a default open graph image" do
       get "/"
       expect(response.body).to include('<meta content="http://www.example.com/images/map_list_preview.png" property="og:image">')
