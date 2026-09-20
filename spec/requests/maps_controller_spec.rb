@@ -347,6 +347,14 @@ describe MapsController do
 
       expect(map.reload.owners).to eq [ user ]
     end
+
+    it "renders the description as plain text in og:description" do
+      map.update!(description: "# Hello **world**\n\n<b>bold</b>")
+
+      get map_path(id: map.public_id)
+
+      expect(response.body).to include('<meta content="Hello world bold" property="og:description">')
+    end
   end
 
   describe "#load_recent_maps" do
