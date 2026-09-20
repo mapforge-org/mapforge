@@ -271,6 +271,7 @@ class Map
     return map if map
 
     map = Map.create_from_file(Rails.root.join("db/seeds/demo.json"))
+    Yabeda.maps_created.increment(kind: "tutorial", owner: user ? "user" : "anonymous", user: user&.id.to_s)
     map.update(tags: [ "tutorial" ])
     map.add_owner(user) if user
     greeting = [ "Welcome", user&.name&.split&.first, "to the Mapforge Tutorial map" ].compact.join(" ")

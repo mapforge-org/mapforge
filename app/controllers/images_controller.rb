@@ -64,6 +64,7 @@ class ImagesController < ApplicationController
       uid = Dragonfly.app.store(tempfile, "name" => filename) # name needs to be a string here
       img = Image.create!(img_uid: uid, public_id: filename, user: @user)
     end
+    Yabeda.images_uploaded.increment(user: @user&.id.to_s)
     render json: { icon: "/icon/#{img.public_id}", image: "/image/#{img.public_id}" }
   end
 

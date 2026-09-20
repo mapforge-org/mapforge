@@ -42,6 +42,24 @@ Yabeda.configure do
     comment: "Total number of layers created, by type",
     tags: %i[type]
 
+  # The user id label feeds the per user alerts in grafana. It grows one series per user
+  # who created a map or uploaded an image since the last deploy.
+  counter :maps_created,
+    comment: "Total number of maps created, by kind (map, copy, tutorial), owner (user, anonymous) and user id",
+    tags: %i[kind owner user]
+
+  counter :images_uploaded,
+    comment: "Total number of images uploaded, by user id",
+    tags: %i[user]
+
+  counter :map_downloads,
+    comment: "Total number of map downloads, by format (geojson, gpx, mapforge)",
+    tags: %i[format]
+
+  counter :feature_exports,
+    comment: "Total number of single feature exports, by format (geojson, gpx)",
+    tags: %i[format]
+
   counter :geolocation_lookup_failures,
     comment: "Total number of failed MaxMind IP geolocation lookups"
 

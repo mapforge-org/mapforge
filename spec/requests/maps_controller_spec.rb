@@ -12,6 +12,29 @@ describe MapsController do
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)["updated_at"]).to be_present
     end
+
+    it "counts only the export as a download" do
+      expect { get map_json_path(id: map.public_id) }
+        .not_to change { Yabeda.map_downloads.get(format: "mapforge").to_i }
+      expect { get map_json_path(id: map.public_id, export: true) }
+        .to change { Yabeda.map_downloads.get(format: "mapforge").to_i }.by(1)
+    end
+  end
+
+  describe "#show (gpx)" do
+    it "counts the download" do
+      expect { get map_gpx_path(id: map.public_id) }
+        .to change { Yabeda.map_downloads.get(format: "gpx").to_i }.by(1)
+    end
+  end
+
+  describe "#feature" do
+    let!(:feature) { create(:feature, :point, layer: map.layers.first) }
+
+    it "counts the export" do
+      expect { get map_feature_gpx_path(id: map.public_id, feature_id: feature.id) }
+        .to change { Yabeda.feature_exports.get(format: "gpx").to_i }.by(1)
+    end
   end
 
   describe "#properties" do
@@ -255,6 +278,17 @@ describe MapsController do
       expect(response).to redirect_to(map.private_map_path)
       expect(map.owners).to be_empty
     end
+
+    it "counts the map per user" do
+      expect { post create_map_path }
+        .to change { Yabeda.maps_created.get(kind: "map", owner: "user", user: user.id.to_s).to_i }.by(1)
+    end
+
+    it "counts anonymous maps with an empty user id" do
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({})
+      expect { post create_map_path }
+        .to change { Yabeda.maps_created.get(kind: "map", owner: "anonymous", user: "").to_i }.by(1)
+    end
   end
 
   describe "#destroy" do
@@ -301,6 +335,13 @@ describe MapsController do
       post tutorial_path
       post tutorial_path
       expect(Map.tutorial.count).to eq 1
+    end
+
+    it "counts only the creation, not the reuse" do
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      counter = -> { Yabeda.maps_created.get(kind: "tutorial", owner: "user", user: user.id.to_s).to_i }
+      expect { post tutorial_path }.to change(&counter).by(1)
+      expect { post tutorial_path }.not_to change(&counter)
     end
   end
 
