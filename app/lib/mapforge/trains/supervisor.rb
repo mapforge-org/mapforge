@@ -27,7 +27,7 @@ module Mapforge
       end
 
       def run
-        Rails.logger.info "Watching #{Map.where(type: "train").count} train maps, " \
+        Rails.logger.info "Watching #{Map.trains.count} train maps, " \
                           "animating up to #{MAX} of them at a time"
         loop do
           sync
@@ -40,7 +40,7 @@ module Mapforge
       # One pass: start what is being watched, stop what has been left alone for long enough. Only
       # ever called from the one thread that owns @runners.
       def sync(now = Time.current)
-        maps = Map.where(type: "train").to_a
+        maps = Map.trains.to_a
         watched = watched_ids(maps)
         maps.each do |map|
           runner = @runners[map.public_id]

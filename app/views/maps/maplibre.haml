@@ -5,17 +5,13 @@
   = stylesheet_link_tag "easymde.min.css" # v2.20.0, manual update
 
 - content_for :title, "Mapforge map: #{@map.name.presence}" if @map.name.presence
+- content_for :og_title, @map.name if @map.name
+- content_for :og_description, @map.description if @map.description
+- content_for :og_image, "#{request.base_url}#{@map.screenshot}" if @map.screenshot
 - content_for :head do
   - # Speed up default basemap tile fetches (versatilesColorful uses tiles.versatiles.org)
   %link{ rel: "preconnect", href: "https://tiles.versatiles.org", crossorigin: true }
   %link{ rel: "dns-prefetch", href: "https://tiles.versatiles.org" }
-  - # Open Graph protocol https://ogp.me/
-  - if @map.name
-    %meta{ property: 'og:title', content: @map.name }
-  - if @map.description
-    %meta{ property: 'og:description', content: @map.description }
-  - if @map.screenshot
-    %meta{ property: 'og:image', content: "#{request.protocol}#{request.host_with_port}#{@map.screenshot}" }
 
 
 #preloader
@@ -33,7 +29,7 @@
       #map-nav-toggle.navbar-toggler-icon.ms-2.me-2{ title: _("Show navigation"), data: { 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom" } }
     %h1#map-title{ title: _("Map settings"), data: { 'action': "click->header#openMapSettings", 'toggle': "tooltip", 'bs-placement': "bottom" } }= @map.name
 
-  - if map_owner? && @map_mode != 'static' && params['nomenu'] != 'true'
+  - if map_editable? && @map_mode != 'static' && params['nomenu'] != 'true'
     #map-mode-badge.permission-badge{ data: { controller: "header" } }
       = link_to map_path(@map.public_id), class: ("active" if @map_mode == 'ro'), data: { turbo: false, mode: "ro", action: "click->header#switchMode" } do
         %span.d-none.d-sm-inline= _("View mode")
@@ -51,6 +47,14 @@
   - # context. Outside of it they would paint above the expanded search control.
   - unless @map_mode == 'static'
     = render 'layer_loading'
+
+- if @map_mode == 'rw' && !@user && params['nomenu'] != 'true'
+  %dialog#edit-notice{ open: true }
+    %i.bi.bi-exclamation-triangle-fill.me-2
+    - login_link = link_to(_('log in'), login_path(origin: map_path(@map.private_id, join: true)))
+    = raw(_("Bookmark the edit link of this map, or %{login_link} to add it to your account.") % { login_link: login_link })
+    %form{ method: "dialog" }
+      %button.notice-close{ title: _("Dismiss") } &times;
 
 - unless @map_mode == 'static'
   = render 'status'

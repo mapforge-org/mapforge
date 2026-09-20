@@ -3,7 +3,9 @@
   - title = "Dev " + title if Rails.env.development?
   %title= title
   %meta{ charset: "UTF-8"}
-  %meta{ name: 'viewport', content: 'width=device-width, height=device-height, initial-scale=1, maximum-scale=1.0, user-scalable=no' }
+  - # Only the map layout locks pinch zoom, the map canvas handles it itself.
+  - zoom_lock = content_for?(:lock_zoom) ? ", maximum-scale=1.0, user-scalable=no" : ""
+  %meta{ name: 'viewport', content: "width=device-width, height=device-height, initial-scale=1#{zoom_lock}" }
   %meta{ name: 'view-transition', content: 'same-origin' }
 
   %meta{ name: 'turbo-prefetch', content: 'false' }
@@ -15,13 +17,16 @@
   %meta{ name: 'apple-mobile-web-app-capable', content: 'yes' }
   %meta{ name: 'apple-mobile-web-app-title', content: "#{title}" }
 
-  %meta{ name: 'description', content: (content_for?(:title) ? yield(:title) : _("Create individual maps for your places, tracks and events. Share your maps in real-time.")) }
-  %meta{ name: 'keywords', content: _('map maker, create map, my maps, share maps, my maps, custom map, travel maps, map editor, indoor, geojson, maplibre, openstreetmap, privacy, open source, free to use') }
+  - description = content_for?(:title) ? yield(:title) : _("Create individual maps for your places, tracks and events. Share your maps in real-time.")
+  %meta{ name: 'description', content: description }
 
   - # Open Graph protocol https://ogp.me/
   %meta{ property: 'og:type', content: 'website' }
   %meta{ property: 'og:url', content: request.url }
   %meta{ property: 'og:site_name', content: 'Mapforge' }
+  %meta{ property: 'og:title', content: (content_for?(:og_title) ? yield(:og_title) : title) }
+  %meta{ property: 'og:description', content: (content_for?(:og_description) ? yield(:og_description) : description) }
+  %meta{ property: 'og:image', content: (content_for?(:og_image) ? yield(:og_image) : "#{request.base_url}/images/map_list_preview.png") }
 
   = csrf_meta_tags
   = csp_meta_tag

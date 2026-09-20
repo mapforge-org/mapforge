@@ -19,9 +19,11 @@ describe "Map settings use cases" do
       expect(page).to have_no_css("#settings-modal.show")
     end
 
-    it "asks to log in before an import" do
-      expect(page).to have_text("Please log in to import files")
-      expect(page).to have_button("Import data (gpx, kml, image)", disabled: true)
+    it "offers the import without images" do
+      expect(page).to have_text("Please log in to upload images")
+      click_button "Import data (gpx, kml)"
+      expect(page.evaluate_script("document.querySelector('#fileInput').accept"))
+        .to eq ".gpx,.kml,.kmz,.geojson,.json"
     end
 
     it "starts the bike route mode" do
@@ -35,6 +37,20 @@ describe "Map settings use cases" do
       click_button "Add OpenStreetMap layers"
       expect(page).to have_no_css("#settings-modal.show")
       expect(page).to have_css("#layers-modal.show")
+    end
+
+    it "imports map data but not images from the layers modal" do
+      click_button "Add OpenStreetMap layers"
+      click_button "Import"
+      within("#import-dropdown") do
+        expect(page).to have_button("Images and photos", disabled: true)
+        expect(page).to have_button("Map data (gpx, kml, geojson)", disabled: false)
+        find("li[data-toggle='tooltip']").hover
+      end
+      expect(page).to have_css(".tooltip-inner", text: "Please log in to upload images")
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "track.gpx"))
+      wait_for { map.reload.features.count }.to eq 2
     end
   end
 
@@ -58,8 +74,10 @@ describe "Map settings use cases" do
       allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
       visit map.private_map_path
       expect_map_loaded
-      expect(page).to have_no_text("Please log in to import files")
-      expect(page).to have_button("Import data (gpx, kml, image)", disabled: false)
+      expect(page).to have_no_text("Please log in to upload images")
+      click_button "Import data (gpx, kml, image)"
+      expect(page.evaluate_script("document.querySelector('#fileInput').accept"))
+        .to eq ".gpx,.kml,.kmz,.geojson,.json,image/*"
     end
   end
 

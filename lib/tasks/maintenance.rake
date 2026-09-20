@@ -65,7 +65,7 @@ namespace :maintenance do
       db_size = ->(map) { map.layers.sum { |layer| bytes_by_layer[layer.id].to_i } }
       puts "Maps: #{maps.size} (#{maps.count { _1.features_count.zero? }} empty, #{Map.listed.count} listed, " \
            "#{Map.where(edit_permission: 'private').count} private)"
-      puts "Types: #{tally.call(maps.map { _1.type || 'map' })}"
+      puts "Tags: #{tally.call(maps.flat_map { _1.tags.presence || 'none' })}"
       puts "Layers: #{Layer.count} (#{tally.call(Layer.pluck(:type))}), features: #{Feature.count}, " \
            "#{mb.call(bytes_by_layer.values.sum)} in the database"
       puts new_since.call(Map)

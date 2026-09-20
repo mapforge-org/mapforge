@@ -105,6 +105,20 @@ namespace :migrations do
     end
   end
 
+  desc "Move the map type into the tags list. DRY_RUN=1 to report only."
+  task map_type_to_tags: :environment do
+    dry_run = ENV["DRY_RUN"].present?
+    # The raw collection: the model no longer has the type field, and this keeps updated_at
+    # and the update_map broadcast out of it, like creator_center above.
+    Map.collection.find("type" => { "$exists" => true }).each do |doc|
+      tags = (Array(doc["tags"]) + [ doc["type"] ]).compact.uniq
+      puts "map #{doc['public_id']}: type #{doc['type'].inspect} -> tags #{tags.inspect}"
+      next if dry_run
+
+      Map.collection.update_one({ _id: doc["_id"] }, { "$set" => { "tags" => tags }, "$unset" => { "type" => "" } })
+    end
+  end
+
   desc "Import images into mongoid fs volume"
   task dragonfly_fs_import: :environment do
     Image.each do |image|

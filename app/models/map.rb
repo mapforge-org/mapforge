@@ -14,9 +14,9 @@ class Map
   # implicit_order_column is not supported by mongoid
   default_scope { sorted(:created_at, :asc) }
   scope :listed, -> { where(view_permission: "listed") }
-  scope :tutorial, -> { where(type: "tutorial") }
-  scope :ulogger, -> { where(type: "ulogger") }
-  scope :trains, -> { where(type: "trains") }
+  scope :tutorial, -> { where(tags: "tutorial") }
+  scope :ulogger, -> { where(tags: "ulogger") }
+  scope :trains, -> { where(tags: "train") }
   scope :search, ->(term) {
     regex = /#{Regexp.escape(term)}/i
     where(:$or => [ { name: regex }, { description: regex } ])
@@ -42,8 +42,8 @@ class Map
   field :public_id, type: String, default: -> { SecureRandom.hex(4) }
   field :viewed_at, type: DateTime
   field :view_count, type: Integer, default: 0
-  # tutorial, train
-  field :type, type: String
+  # tutorial, train, ulogger
+  field :tags, type: Array, default: []
   field :share_cursor, type: Boolean
   field :template, type: Boolean
   field :edit_permission, type: String, default: "link" # 'private', 'link'
@@ -158,7 +158,7 @@ class Map
      description: description,
      public_id: public_id,
      base_map: get_base_map,
-     type: type,
+     tags: tags,
      center: center,
      default_center: center ? nil : calculated_center(points), # only set when no center defined
      zoom: zoom,
@@ -225,7 +225,8 @@ class Map
     file = File.read(path)
     map_hash = JSON.parse(file)
 
-    map = Map.create!(map_hash["properties"].except("default_center", "default_zoom", "public_id"))
+    # "type" is the pre-tags field, still present in older exports
+    map = Map.create!(map_hash["properties"].except("default_center", "default_zoom", "public_id", "type"))
     map.layers.delete_all
     map_hash["layers"].each do |layer|
       features = Feature.from_collection(layer["geojson"], collection_format: collection_format)
@@ -270,7 +271,7 @@ class Map
     return map if map
 
     map = Map.create_from_file(Rails.root.join("db/seeds/demo.json"))
-    map.update(type: "tutorial")
+    map.update(tags: [ "tutorial" ])
     map.add_owner(user) if user
     greeting = [ "Welcome", user&.name&.split&.first, "to the Mapforge Tutorial map" ].compact.join(" ")
     map.features.where("properties.label" => /\AWelcome .*Tutorial map\z/).update_all("properties.label" => greeting)

@@ -5,6 +5,8 @@ class SessionsController < ApplicationController
   layout "frontpage"
 
   def new
+    # url_from drops foreign hosts, so the param cannot turn the login into an open redirect
+    session[:return_to] = url_from(params[:origin])
     render :new
   end
 
@@ -24,6 +26,6 @@ class SessionsController < ApplicationController
     # Make first user admin
     user.update!(admin: true) if User.count == 1
     session[:user_id] = user.id
-    redirect_to my_path
+    redirect_to session.delete(:return_to) || my_path
   end
 end

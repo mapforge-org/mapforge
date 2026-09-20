@@ -191,22 +191,24 @@ a:active, .link:active {
   text-align: center;
 }
 
+/* Links styled as Bootstrap buttons keep the button colors: these link rules would outrank
+   .btn:hover and paint the hovered button text in the link hover color. */
 .background-dark, .dark-background {
   background-color: var(--color-dark-moss-green);
   color: var(--color-light-sand);
 
-  a, .link {
+  a:where(:not(.btn)), .link {
     color: #fff;
     cursor: pointer;
   }
 
-  a:active, .link:active {
+  a:where(:not(.btn)):active, .link:active {
     color: var(--color-light-teagreen);
   }
 
   /* only add hover effects to supported browsers */
   @media (hover: hover) {
-    a:hover, .link:hover {
+    a:where(:not(.btn)):hover, .link:hover {
       color: var(--color-light-teagreen);
     }
   }
@@ -216,18 +218,18 @@ a:active, .link:active {
   background-color: var(--color-light-sand);
   color: var(--text-color);
 
-  a, .link { /* stylelint-disable-line */
+  a:where(:not(.btn)), .link { /* stylelint-disable-line */
     color: var(--text-color);
     cursor: pointer;
   }
 
-  a:active, .link:active {
+  a:where(:not(.btn)):active, .link:active {
     color: var(--hover-color);
   }
 
   /* only add hover effects to supported browsers */
   @media (hover: hover) {
-    a:hover, .link:hover {
+    a:where(:not(.btn)):hover, .link:hover {
       color: var(--hover-color);
     }
   }

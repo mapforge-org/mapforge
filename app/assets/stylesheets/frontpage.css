@@ -143,6 +143,20 @@ section,
   margin-left: 3rem;
 }
 
+/* Bootstrap's container is narrower than wide viewports, so its right column would start on
+   the dark half. Span the viewport instead, so the featured maps sit on the map half. */
+@media (width >= 992px) {
+  .hero .container:not(.feature-tour-col) {
+    flex: 1;
+    max-width: none;
+    margin-right: 3rem;
+  }
+
+  .hero blockquote {
+    max-width: 40rem;
+  }
+}
+
 .welcome-text {
   font-size: 1.1rem;
 }
@@ -170,6 +184,53 @@ section,
 @media (width <= 640px) {
   .hero h1 {
     font-size: clamp(1.5rem, 9.5vw, 2.3rem);
+  }
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* maps.css loads after this file, so the selectors below carry one class more to win */
+.featured-maps {
+  z-index: 3;
+  position: relative;
+}
+
+.featured-maps .recently-viewed-maps {
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.featured-maps .recently-viewed-maps .map-preview {
+  width: 9rem;
+  border-color: var(--color-dark-moss-green);
+}
+
+.featured-maps .recently-viewed-maps .map-preview-title {
+  font-size: 1rem;
+  top: 3.4rem;
+}
+
+.featured-maps .gallery-link {
+  display: block;
+  width: fit-content;
+  margin: 0.5rem auto 0;
+}
+
+.featured-maps-mobile {
+  padding: 1.5rem 1rem;
+  border-top: 2px solid var(--color-dark-moss-green);
+}
+
+/* three cards of 9rem plus gaps need about 30rem, below that the third one goes */
+@media (width < 576px) {
+  .featured-maps .recently-viewed-maps .map-preview:nth-child(3) {
+    display: none;
   }
 }
 
@@ -228,10 +289,7 @@ section,
 }
 
 .banner-explorer {
-  position: absolute;
-  z-index: 10;
-  top: 8rem;
-  right: 5rem;
+  margin: 0 3rem 2rem auto;
   width: 13rem;
   height: 13rem;
   background: var(--color-mid-fawn);
@@ -270,7 +328,7 @@ section,
   text-decoration: underline;
 }
 
-.banner-explorer-content h4 {
+.banner-explorer-content .banner-title {
   margin: 0;
   font-size: 1.1rem;
   letter-spacing: 1px;
@@ -292,12 +350,6 @@ section,
   font-weight: 500;
 }
 
-@media (width <= 992px) {
-  .banner-explorer {
-    display: none;
-  }
-}
-
 
 
 /* --------------------------------------------------------------
@@ -305,8 +357,12 @@ section,
 -------------------------------------------------------------- */
 
 #features {
-  border-top: 2px solid var(--color-light-sand);
+  border-top: 2px solid var(--color-dark-moss-green);
   font-size: 1.1rem;
+}
+
+#features .background-bright {
+  --default-color: var(--text-color);
 }
 
 #features .img-bg {
@@ -334,8 +390,8 @@ section,
   color: color-mix(in srgb, var(--default-color), transparent 30%);
 }
 
-#features .row + .row {
-  border-top: 2px solid var(--color-light-sand);
+#features .row + .row, footer {
+  border-top: 2px solid var(--color-dark-moss-green);
 }
 
 #features .slides {

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Mapforge::Trains::Supervisor do
   subject(:supervisor) { described_class.new(redis: redis, prefix: "test") }
 
-  let!(:map) { create(:map, type: "train") }
+  let!(:map) { create(:map, tags: [ "train" ]) }
   let(:now) { Time.utc(2026, 8, 1, 12, 0) }
   let(:redis) { instance_double(Redis) }
 
@@ -108,7 +108,7 @@ RSpec.describe Mapforge::Trains::Supervisor do
   end
 
   it "runs no more routes at a time than the DB API budget allows" do
-    maps = [ map ] + Array.new(described_class::MAX) { create(:map, type: "train") }
+    maps = [ map ] + Array.new(described_class::MAX) { create(:map, tags: [ "train" ]) }
     watched(*maps.map(&:public_id))
 
     supervisor.sync(now)

@@ -84,6 +84,41 @@ describe "Map public view" do
     end
   end
 
+  context "edit mode without login" do
+    let(:map) { create(:map, name: "Named, so the settings modal stays closed") }
+    let(:path) { map.private_map_path }
+
+    it "shows the bookmark notice until dismissed, and again on the next visit" do
+      expect(page).to have_css("#edit-notice", text: "Bookmark the edit link")
+      find("#edit-notice .notice-close").click
+      expect(page).not_to have_css("#edit-notice", visible: true)
+
+      visit path
+      expect_map_loaded
+      expect(page).to have_css("#edit-notice", text: "Bookmark the edit link")
+    end
+
+    it "offers the mode toggle and keeps the notice in view mode" do
+      find("#map-mode-badge a", text: /view mode/i).click
+      expect(page).to have_css("#map-mode-badge .active", text: /view mode/i)
+      expect(page).to have_current_path("/m/#{map.public_id}")
+      expect(page).to have_css("#edit-notice", text: "Bookmark the edit link")
+    end
+
+    # A modal pushes a history entry without Turbo state, and Turbo ignores a popstate
+    # to such an entry. The map layout opts out of Turbo, so the login page is a full load.
+    it "comes back from the login page with the browser back button" do
+      find(".maplibregl-ctrl-map").click
+      find("#settings-modal .modal-close-button").click
+      within("#edit-notice") { click_link "log in" }
+      expect(page).to have_css("#login")
+
+      page.go_back
+      expect_map_loaded
+      expect(page).to have_css("#edit-notice", text: "Bookmark the edit link")
+    end
+  end
+
   context "settings modal" do
     let(:map) { create(:map, description: "Map Description") }
 

@@ -256,11 +256,10 @@ export default class extends Controller {
       zoom: null, pitch: null, bearing: null })
   }
 
-  importFile () {
+  importFile (event) {
     resetControls()
     const fileInput = document.getElementById('fileInput')
-    // the layers modal narrows accept per dropdown entry, the welcome tile offers everything
-    fileInput.accept = '.gpx,.kml,.kmz,.geojson,.json,image/*'
+    fileInput.accept = event.currentTarget.dataset.accept
     fileInput.click()
   }
 

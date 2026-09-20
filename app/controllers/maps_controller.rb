@@ -7,18 +7,18 @@ class MapsController < ApplicationController
   before_action :join, only: %i[show]
   before_action :set_global_js_values, only: %i[show tutorial]
   before_action :check_permissions, only: %i[show properties layer]
-  before_action :require_login, only: %i[my create copy]
+  before_action :require_login, only: %i[my copy]
   before_action :require_map_owner, only: %i[destroy]
   # Visitors without login get no session cookie (ApplicationController#disable_session_cookies),
   # so their CSRF token can never verify.
-  skip_forgery_protection only: :tutorial
+  skip_forgery_protection only: %i[tutorial create]
 
   rate_limit to: 5, within: 15.minutes, only: %i[create tutorial]
 
   layout "map", only: [ :show, :tutorial ]
 
   def index
-    @maps = filter_and_sort_maps(Map.unscoped.listed.includes(:layers, :owners))
+    @maps = filter_and_sort_maps(Map.unscoped.listed.includes(:layers, :owners), default_sort: "view_count")
   end
 
   def my
@@ -89,7 +89,7 @@ class MapsController < ApplicationController
 
   def create
     @map = Map.new(creator_view)
-    @map.add_owner(@user)
+    @map.add_owner(@user) if @user
     @map.save!
 
     redirect_to @map.private_map_path, notice: "Map was successfully created."

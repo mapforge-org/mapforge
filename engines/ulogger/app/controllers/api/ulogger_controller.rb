@@ -33,7 +33,7 @@ module Ulogger
       else
         session["track_name"] = params[:track]
         @map = Map.new(private_id: random_map_id, name: params[:track],
-          type: 'ulogger', view_permission: "link", edit_permission: "link")
+          tags: [ "ulogger" ], view_permission: "link", edit_permission: "link")
         @map.add_owner(@user) if @user
         @map.save!
       end
