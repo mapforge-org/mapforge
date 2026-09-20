@@ -161,6 +161,9 @@ msgstr "Fahrrad"
 msgid "Bike route"
 msgstr "Fahrradroute"
 
+msgid "Bookmark the edit link of this map, or %{login_link} to add it to your account."
+msgstr "Setze ein Lesezeichen auf den Bearbeitungslink dieser Karte, oder %{login_link}, um sie deinem Konto hinzuzufügen."
+
 msgid "Border color:"
 msgstr "Randfarbe:"
 
@@ -394,6 +397,9 @@ msgstr "Erde"
 
 msgid "Discuss"
 msgstr "Diskutieren"
+
+msgid "Dismiss"
+msgstr "Ausblenden"
 
 msgid "Distance markers:"
 msgstr "Distanzen:"

@@ -43,6 +43,18 @@ describe SessionsController do
       get my_path
       expect(response).to have_http_status(:ok)
     end
+
+    it "returns to the origin page of the login link" do
+      get login_path, params: { origin: "/m/abc?join=true" }
+      developer_login
+      expect(response).to redirect_to("/m/abc?join=true")
+    end
+
+    it "ignores a foreign origin" do
+      get login_path, params: { origin: "https://evil.example/" }
+      developer_login
+      expect(response).to redirect_to(my_path)
+    end
   end
 
   describe "#logout" do

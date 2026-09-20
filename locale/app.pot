@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 13:16+0200\n"
-"PO-Revision-Date: 2026-09-20 13:16+0200\n"
+"POT-Creation-Date: 2026-09-20 14:18+0200\n"
+"PO-Revision-Date: 2026-09-20 14:18+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Access control: Keep maps private or share with view-only or edit permissions"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:48
+#: ../app/views/maps/modals/_layers.haml:50
 msgid "Add"
 msgstr ""
 
@@ -98,7 +98,7 @@ msgstr ""
 msgid "Add description"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:47
+#: ../app/views/maps/modals/_layers.haml:49
 msgid "Add layer"
 msgstr ""
 
@@ -170,7 +170,7 @@ msgstr ""
 msgid "Background:"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:132
+#: ../app/views/maps/modals/_layers.haml:134
 msgid "Basemap Info (experimental)"
 msgstr ""
 
@@ -208,6 +208,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/_settings.haml:58
 msgid "Bike route"
+msgstr ""
+
+#: ../app/views/maps/maplibre.haml:55
+msgid "Bookmark the edit link of this map, or %{login_link} to add it to your account."
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:63
@@ -446,7 +450,7 @@ msgstr ""
 msgid "Crosshatch"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:94
+#: ../app/views/maps/modals/_layers.haml:96
 msgid "Custom Overpass query"
 msgstr ""
 
@@ -454,7 +458,7 @@ msgstr ""
 msgid "Custom artistic map style with a unique, hand-crafted color palette."
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:57
+#: ../app/views/maps/modals/_layers.haml:59
 msgid "Custom raster layer"
 msgstr ""
 
@@ -470,11 +474,11 @@ msgstr ""
 msgid "Default view when opening this map."
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:178 ../app/views/maps/modals/feature/_edit_ui.haml:220 ../app/javascript/maplibre/controls/context_menu.js:157
+#: ../app/views/maps/modals/_layers.haml:180 ../app/views/maps/modals/feature/_edit_ui.haml:220 ../app/javascript/maplibre/controls/context_menu.js:157
 msgid "Delete"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:155
+#: ../app/views/maps/modals/_layers.haml:157
 msgid "Delete Layer"
 msgstr ""
 
@@ -520,6 +524,10 @@ msgstr ""
 
 #: ../app/views/shared/_footer.html.haml:37
 msgid "Discuss"
+msgstr ""
+
+#: ../app/views/maps/maplibre.haml:57
+msgid "Dismiss"
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:175
@@ -634,7 +642,7 @@ msgstr ""
 msgid "Edit mode"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:153 ../app/views/maps/modals/_layers.haml:174
+#: ../app/views/maps/modals/_layers.haml:155 ../app/views/maps/modals/_layers.haml:176
 msgid "Edit query"
 msgstr ""
 
@@ -662,7 +670,7 @@ msgstr ""
 msgid "Embedding: Include your map on your own web page"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:183
+#: ../app/views/maps/modals/_layers.haml:185
 msgid "Enter name / Search queries"
 msgstr ""
 
@@ -814,7 +822,7 @@ msgstr ""
 msgid "Height:"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:149 ../app/views/maps/modals/_layers.haml:166 ../app/javascript/controllers/map/layers_controller.js:319 ../app/javascript/maplibre/controls/shared.js:316 ../app/javascript/maplibre/controls/shared.js:317
+#: ../app/views/maps/modals/_layers.haml:151 ../app/views/maps/modals/_layers.haml:168 ../app/javascript/controllers/map/layers_controller.js:319 ../app/javascript/maplibre/controls/shared.js:316 ../app/javascript/maplibre/controls/shared.js:317
 msgid "Hide layer"
 msgstr ""
 
@@ -878,11 +886,11 @@ msgstr ""
 msgid "Image exceeds 15MB"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:36
+#: ../app/views/maps/modals/_layers.haml:38
 msgid "Images and photos"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:19
+#: ../app/views/maps/modals/_layers.haml:21
 msgid "Import"
 msgstr ""
 
@@ -926,7 +934,7 @@ msgstr ""
 msgid "Layer elements"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:146 ../app/views/maps/modals/_layers.haml:200
+#: ../app/views/maps/modals/_layers.haml:148 ../app/views/maps/modals/_layers.haml:202
 msgid "Layer name"
 msgstr ""
 
@@ -1038,7 +1046,7 @@ msgstr ""
 msgid "Map Gallery"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:28
+#: ../app/views/maps/modals/_layers.haml:30
 msgid "Map data (gpx, kml, geojson)"
 msgstr ""
 
@@ -1182,7 +1190,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:138
+#: ../app/views/maps/modals/_layers.haml:140
 msgid "OSM Info (experimental)"
 msgstr ""
 
@@ -1210,11 +1218,11 @@ msgstr ""
 msgid "OpenStreetMap data layers (Overpass)"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:124
+#: ../app/views/maps/modals/_layers.haml:126
 msgid "OpenStreetMap indoor"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:192
+#: ../app/views/maps/modals/_layers.haml:194
 msgid "Overpass tutorial"
 msgstr ""
 
@@ -1262,7 +1270,7 @@ msgstr ""
 msgid "Please confirm"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:30 ../app/views/maps/modals/_settings.haml:73 ../app/views/maps/modals/feature/_edit_ui.haml:152 ../app/javascript/maplibre/feature.js:368
+#: ../app/views/maps/modals/_layers.haml:32 ../app/views/maps/modals/_settings.haml:73 ../app/views/maps/modals/feature/_edit_ui.haml:152 ../app/javascript/maplibre/feature.js:368
 msgid "Please log in to upload images"
 msgstr ""
 
@@ -1298,11 +1306,11 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:189
+#: ../app/views/maps/modals/_layers.haml:191
 msgid "Query"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:205
+#: ../app/views/maps/modals/_layers.haml:207
 msgid "Raster URL (https://<host>/{z}/{x}/{y}.png)"
 msgstr ""
 
@@ -1346,11 +1354,11 @@ msgstr ""
 msgid "Redone: %{type}"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:170
+#: ../app/views/maps/modals/_layers.haml:172
 msgid "Refresh"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:151
+#: ../app/views/maps/modals/_layers.haml:153
 msgid "Refresh layer for current view"
 msgstr ""
 
@@ -1560,7 +1568,7 @@ msgstr ""
 msgid "Style JSON"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:12
+#: ../app/views/maps/modals/_layers.haml:18
 msgid "Supported formats: gpx, kml, kmz, geojson, mapforge json and images. WGS84 format, max. 2.5MB"
 msgstr ""
 
@@ -1632,7 +1640,7 @@ msgstr ""
 msgid "Thunderforest Cycle map with elevation contours and cycling infrastructure."
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:184 ../app/views/maps/modals/_layers.haml:201 ../app/views/maps/modals/feature/_edit_ui.haml:14
+#: ../app/views/maps/modals/_layers.haml:186 ../app/views/maps/modals/_layers.haml:203 ../app/views/maps/modals/feature/_edit_ui.haml:14
 msgid "Title"
 msgstr ""
 
@@ -1712,11 +1720,11 @@ msgstr ""
 msgid "Unpaved"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:196 ../app/views/maps/modals/_layers.haml:209 ../app/views/maps/modals/feature/_edit_raw.haml:7 ../app/views/maps/modals/feature/_edit_raw_geometry.haml:7
+#: ../app/views/maps/modals/_layers.haml:198 ../app/views/maps/modals/_layers.haml:211 ../app/views/maps/modals/feature/_edit_raw.haml:7 ../app/views/maps/modals/feature/_edit_raw_geometry.haml:7
 msgid "Update"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:195 ../app/views/maps/modals/_layers.haml:208
+#: ../app/views/maps/modals/_layers.haml:197 ../app/views/maps/modals/_layers.haml:210
 msgid "Update Layer"
 msgstr ""
 
@@ -1788,7 +1796,7 @@ msgstr ""
 msgid "Width:"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:116
+#: ../app/views/maps/modals/_layers.haml:118
 msgid "Wikipedia articles"
 msgstr ""
 
@@ -1976,7 +1984,7 @@ msgstr ""
 msgid "launderette|laundromat"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:30
+#: ../app/views/frontpage/index.haml:30 ../app/views/maps/maplibre.haml:54
 msgid "log in"
 msgstr ""
 
@@ -2068,54 +2076,54 @@ msgstr ""
 msgid "your maps"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:98
+#: ../app/views/maps/modals/_layers.haml:100
 msgid "🍻 Breweries"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:100
+#: ../app/views/maps/modals/_layers.haml:102
 msgid "🏊 Swimming pools"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:99
+#: ../app/views/maps/modals/_layers.haml:101
 msgid "🏕️ Camping"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:100
+#: ../app/views/maps/modals/_layers.haml:102
 msgid "🏪 Food Shops"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:99
+#: ../app/views/maps/modals/_layers.haml:101
 msgid "👨🏻‍🚒 Hydranten"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:100
+#: ../app/views/maps/modals/_layers.haml:102
 msgid "🚆 Trains"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:98
+#: ../app/views/maps/modals/_layers.haml:100
 msgid "🚇 Subway"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:99
+#: ../app/views/maps/modals/_layers.haml:101
 msgid "🚒 Feuerwehr"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:98
+#: ../app/views/maps/modals/_layers.haml:100
 msgid "🚰 Drinking water"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:99
+#: ../app/views/maps/modals/_layers.haml:101
 msgid "🚴 Bicycle routes"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:99
+#: ../app/views/maps/modals/_layers.haml:101
 msgid "🚶🏾 Hiking routes"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:98
+#: ../app/views/maps/modals/_layers.haml:100
 msgid "🚻 Public toilets"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:100
+#: ../app/views/maps/modals/_layers.haml:102
 msgid "🛜 Wifi"
 msgstr ""

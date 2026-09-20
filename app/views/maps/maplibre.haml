@@ -29,7 +29,7 @@
       #map-nav-toggle.navbar-toggler-icon.ms-2.me-2{ title: _("Show navigation"), data: { 'action': "click->header#toggleNav", 'toggle': "tooltip", 'bs-placement': "bottom" } }
     %h1#map-title{ title: _("Map settings"), data: { 'action': "click->header#openMapSettings", 'toggle': "tooltip", 'bs-placement': "bottom" } }= @map.name
 
-  - if map_owner? && @map_mode != 'static' && params['nomenu'] != 'true'
+  - if map_editable? && @map_mode != 'static' && params['nomenu'] != 'true'
     #map-mode-badge.permission-badge{ data: { controller: "header" } }
       = link_to map_path(@map.public_id), class: ("active" if @map_mode == 'ro'), data: { turbo: false, mode: "ro", action: "click->header#switchMode" } do
         %span.d-none.d-sm-inline= _("View mode")
@@ -47,6 +47,14 @@
   - # context. Outside of it they would paint above the expanded search control.
   - unless @map_mode == 'static'
     = render 'layer_loading'
+
+- if @map_mode == 'rw' && !@user && params['nomenu'] != 'true'
+  %dialog#edit-notice{ open: true }
+    %i.bi.bi-exclamation-triangle-fill.me-2
+    - login_link = link_to(_('log in'), login_path(origin: map_path(@map.private_id, join: true)))
+    = raw(_("Bookmark the edit link of this map, or %{login_link} to add it to your account.") % { login_link: login_link })
+    %form{ method: "dialog" }
+      %button.notice-close{ title: _("Dismiss") } &times;
 
 - unless @map_mode == 'static'
   = render 'status'

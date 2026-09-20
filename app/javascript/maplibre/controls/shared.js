@@ -669,6 +669,8 @@ function pitchCompassView() {
 
 // Restore modals on back/forward buttons
 window.addEventListener('popstate', (e) => {
+  // the listener outlives the map page, the map controller nulls window.map on disconnect
+  if (!window.map) { return }
   const state = e.state || {}
   const modalIdInState = state.modal || null
   if (modalIdInState === 'share') {

@@ -22,7 +22,8 @@
               = _("Tutorials")
 
       - if create_button
-        = link_to create_map_path, { class: 'me-4 btn btn-orange btn-create-map no-wrap', data: { turbo_method: :post } } do
+        -# turbo: true, because the map layout body opts out of Turbo and turbo_method needs it
+        = link_to create_map_path, { class: 'me-4 btn btn-orange btn-create-map no-wrap', data: { turbo: true, turbo_method: :post } } do
           %i.bi.bi-plus-square
           = _("Create map")
 

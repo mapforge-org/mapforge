@@ -118,6 +118,20 @@ describe MapsController do
         get map.private_map_path
         expect(response).to have_http_status(:ok)
       end
+
+      it "asks a visitor without login to bookmark the edit link or log in" do
+        get map.private_map_path
+        expect(response.body).to include('id="edit-notice"')
+        expect(response.body).to include(login_path(origin: map_path(map.private_id, join: true)))
+      end
+
+      it "shows no bookmark notice to a logged in user or in view mode" do
+        get map.public_map_path
+        expect(response.body).not_to include("edit-notice")
+        login
+        get map.private_map_path
+        expect(response.body).not_to include("edit-notice")
+      end
     end
 
     context "with view_permission private" do
