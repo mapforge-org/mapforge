@@ -53,8 +53,8 @@ msgstr "3D-Gelände: Betrachte deine Karte mit Höhendaten"
 msgid "3D Terrain: View your map with realistic elevation"
 msgstr "3D-Gelände: Betrachte deine Karte mit realistischen Höhendaten"
 
-msgid "A bike tour, your indoor event map, a guide for your wedding guests"
-msgstr "Eine Radtour, der Indoor-Plan für dein Event, ein Wegweiser für deine Hochzeitsgäste"
+msgid "A bike tour, the floor plan for your conference, a guide for your wedding guests"
+msgstr "Eine Radtour, der Raumplan deiner Konferenz, ein Wegweiser für deine Hochzeitsgäste"
 
 msgid "A view link, an edit link, a gallery listing, or private"
 msgstr "Ein Ansichtslink, ein Bearbeitungslink, ein Eintrag in der Galerie, oder privat"
@@ -188,6 +188,9 @@ msgstr "Durchstöbere die %{gallery_link}, lerne auf der %{tutorial_link} wie du
 msgid "Build the map you have in mind"
 msgstr "Erstelle deine Karten-Idee"
 
+msgid "Built with %{rails_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link} and %{ors_link}"
+msgstr "Gebaut mit %{rails_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link} und %{ors_link}"
+
 msgid "Buy me a coffee"
 msgstr "Spende mir einen Kaffee"
 
@@ -224,8 +227,8 @@ msgstr "Schachbrett"
 msgid "Choose your base map: Streets, Satellite, Topographic, Biking"
 msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad"
 
-msgid "Choose your base map: Streets, Satellite, Topographic, Biking, 3D houses etc."
-msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad, 3D-Gebäude usw."
+msgid "Choose your base map: Streets, Satellite, Topographic, Biking, Watercolor, 3D houses etc."
+msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad, Aquarell, 3D-Gebäude usw."
 
 msgid "Circle"
 msgstr "Kreis"
@@ -533,6 +536,9 @@ msgstr "Fehler beim Hochladen des Bildes"
 msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
 msgstr "Jede Karte hat einen Ansichtslink und einen Bearbeitungslink. Teile sie, stelle deine Karte in die Galerie, oder halte sie privat. Binde sie auf anderen Webseiten ein."
 
+msgid "Export your maps as GeoJSON, or %{deploy_link}"
+msgstr "Exportiere deine Karten als GeoJSON, oder %{deploy_link}"
+
 msgid "Failed to copy"
 msgstr "Kopieren fehlgeschlagen"
 
@@ -797,6 +803,9 @@ msgstr "Kartendaten (gpx, kml, geojson)"
 msgid "Map export"
 msgstr "Karte"
 
+msgid "Map it while you're out there"
+msgstr "Kartiere unterwegs"
+
 msgid "Map layers"
 msgstr "Kartenebenen"
 
@@ -890,11 +899,17 @@ msgstr "Neuigkeiten"
 msgid "No"
 msgstr "Nein"
 
+msgid "No ads, no tracking, no lock-in"
+msgstr "Keine Werbung, kein Tracking, kein Lock-in"
+
 msgid "No elements in this layer"
 msgstr "Keine Elemente in dieser Ebene"
 
 msgid "No route found"
 msgstr "Keine Route gefunden"
+
+msgid "Nobody can take it away from you"
+msgstr "Niemand kann es dir wegnehmen"
 
 msgid "None"
 msgstr "Ohne"
@@ -907,6 +922,9 @@ msgstr "OSM-Info (experimentell)"
 
 msgid "Official German basemap.de style with detailed European cartography."
 msgstr "Offizieller deutscher basemap.de-Stil mit detaillierter europäischer Kartografie."
+
+msgid "One link to view, one to edit"
+msgstr "Ein Link zum Ansehen, einer zum Bearbeiten"
 
 msgid "Only LineString tracks can be converted to routes"
 msgstr "Nur LineString-Tracks können in Routen umgewandelt werden"
@@ -1061,6 +1079,9 @@ msgstr "Abschnitt %{index}/%{total} wird berechnet..."
 msgid "Routing: Plan routes for walking, bike and car, with elevation profile"
 msgstr "Routing: Plane Routen zu Fuß, mit dem Rad oder Auto, mit Höhenprofil"
 
+msgid "Run Mapforge on your phone, edit in the field, stream your track live"
+msgstr "Nutze Mapforge auf deinem Handy, bearbeite vor Ort, streame deinen Track live"
+
 msgid "Run from your home screen as %{app_link}"
 msgstr "Starte vom Homescreen als %{app_link}"
 
@@ -1091,9 +1112,6 @@ msgstr "Linien-Zeichenmodus wählen"
 msgid "Select mode"
 msgstr "Auswahlmodus"
 
-msgid "Self-Hosted Solution: You can use Mapforge either on %{mapforge_link}, or %{deploy_link} it in your own infrastructure"
-msgstr "Selbst gehostete Lösung: Du kannst Mapforge entweder unter %{mapforge_link} nutzen, oder %{deploy_link} es in deiner eigenen Infrastruktur"
-
 msgid "Set as default"
 msgstr "Als Standard"
 
@@ -1108,9 +1126,6 @@ msgstr "Karte teilen"
 
 msgid "Share edit link"
 msgstr "Bearbeitungslink teilen"
-
-msgid "Share it"
-msgstr "Teile sie"
 
 msgid "Share map"
 msgstr "Karte teilen"
@@ -1163,7 +1178,7 @@ msgid "Square"
 msgstr "Quadrat"
 
 msgid "Start a map"
-msgstr "Karte starten"
+msgstr "Neue Karte erstellen"
 
 msgid "Steep downhill (>16%)"
 msgstr "Starkes Gefälle (>16 %)"
@@ -1173,9 +1188,6 @@ msgstr "Starke Steigung (>16 %)"
 
 msgid "Steepness"
 msgstr "Steigung"
-
-msgid "Storing only minimal data about you, no sharing of data with ad- or analytics companies."
-msgstr "Speichert nur minimale Daten über dich, keine Weitergabe von Daten an Werbe- oder Analyseunternehmen."
 
 msgid "Streets map highlighting detailed building footprints and 3D shapes."
 msgstr "Straßenkarte mit detaillierten Gebäudegrundrissen und 3D-Formen."
@@ -1318,12 +1330,6 @@ msgstr "Bergauf"
 msgid "Uphill (12-15%)"
 msgstr "Steigung (12-15 %)"
 
-msgid "Use Mapforge with different clients + apps"
-msgstr "Nutze Mapforge mit verschiedenen Clients und Apps"
-
-msgid "Used open source projects: %{rails_link} for the backend, %{maplibre_link} and %{osm_link} for the frontend, %{draw_link}, %{turf_link}, %{ors_link} as helping libraries."
-msgstr "Verwendete Open-Source-Projekte: %{rails_link} für das Backend, %{maplibre_link} und %{osm_link} für das Frontend, %{draw_link}, %{turf_link}, %{ors_link} als Hilfsbibliotheken."
-
 msgid "Users can explore the map but cannot modify it."
 msgstr "Nutzer können die Karte ansehen, aber nicht ändern."
 
@@ -1453,9 +1459,6 @@ msgstr "erstelle"
 msgid "dental"
 msgstr "Zahnarzt|Zahnaerztin|Zahnärztin"
 
-msgid "deploy"
-msgstr "installiere"
-
 msgid "dining|eat|food"
 msgstr "Essen|Restaurant|Gaststaette|Gaststätte|Lokal"
 
@@ -1533,6 +1536,9 @@ msgstr "öffentliche ID:"
 
 msgid "public_library"
 msgstr "Bibliothek|Buecherei|Bücherei|Stadtbibliothek"
+
+msgid "run the whole app on your own server"
+msgstr "betreibe die ganze App auf deinem eigenen Server"
 
 msgid "shopping_centre|shopping_center|shopping"
 msgstr "Einkaufszentrum|Shoppingcenter|Einkaufen|Kaufhaus"
