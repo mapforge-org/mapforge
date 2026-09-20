@@ -37,7 +37,6 @@
               - else
                 = button_to _("Tutorial map"), tutorial_path, class: 'btn btn-orange btn-lg'
                 = link_to _("Start a map"), create_map_path, class: 'btn btn-secondary btn-green', data: { turbo_method: :post }
-                = link_to _("Login"), login_path, class: 'btn btn-secondary btn-green'
 
         .col-lg-6.featured-maps.d-none.d-lg-block{ 'data-aos': "fade-up" }
           / News Banner – update the text below to advertise new features or site news.
@@ -73,11 +72,11 @@
       .col-lg-7.background-bright.slides
         .item
           %h2.mb-3.mapforge-font= _("Build the map you have in mind")
-          %h4.mb-3= _("A bike tour, your indoor event map, a guide for your wedding guests")
+          %h4.mb-3= _("A bike tour, the floor plan for your conference, a guide for your wedding guests")
           %ul
             %li
               %span.d-none.d-sm-inline><
-                = _("Choose your base map: Streets, Satellite, Topographic, Biking, 3D houses etc.")
+                = _("Choose your base map: Streets, Satellite, Topographic, Biking, Watercolor, 3D houses etc.")
               %span.d-sm-none><
                 = _("Choose your base map: Streets, Satellite, Topographic, Biking")
             %li
@@ -106,7 +105,7 @@
         %img{ src: "/images/frontpage/feature1.png", alt: _("Collaboration"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
-          %h2.mb-3.mapforge-font= _("Share it")
+          %h2.mb-3.mapforge-font= _("One link to view, one to edit")
           %h4.mb-3= _("A view link, an edit link, a gallery listing, or private")
           %ul
             %li= _("Access control: Keep maps private or share with view-only or edit permissions")
@@ -118,8 +117,8 @@
         %img{ src: "/images/frontpage/feature2.png", alt: _("Cross platform"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
-          %h2.mb-3.mapforge-font= _("Cross platform")
-          %h4.mb-3= _("Use Mapforge with different clients + apps")
+          %h2.mb-3.mapforge-font= _("Map it while you're out there")
+          %h4.mb-3= _("Run Mapforge on your phone, edit in the field, stream your track live")
           %ul
             %li= _("Responsive Design: Works well both on desktop and mobile")
             %li
@@ -134,19 +133,17 @@
       .col-lg-7.background-bright.slides
         .item
           %h2.mb-3.mapforge-font= _("Open Source")
-          %h4.mb-3= "Standing on the shoulders of giants"
+          %h4.mb-3= _("Nobody can take it away from you")
           %ul
+            %li= _("No ads, no tracking, no lock-in")
             %li
+              - deploy_link = link_to _('run the whole app on your own server'), "https://github.com/mapforge-org/mapforge/blob/main/SELF-HOSTING.md"
+              = raw(_("Export your maps as GeoJSON, or %{deploy_link}") % { deploy_link: deploy_link })
+            %li.small.text-muted
               - rails_link = link_to "Ruby on Rails", "https://rubyonrails.org/"
               - maplibre_link = link_to "MapLibre GL JS", "https://github.com/maplibre/maplibre-gl-js"
               - osm_link = link_to "OpenStreetMap", "https://www.openstreetmap.org"
               - draw_link = link_to "mapbox-gl-draw", "https://github.com/mapbox/mapbox-gl-draw"
               - turf_link = link_to "Turf.js", "https://turfjs.org/"
               - ors_link = link_to "Openrouteservice", "https://openrouteservice.org/"
-              = raw(_("Used open source projects: %{rails_link} for the backend, %{maplibre_link} and %{osm_link} for the frontend, %{draw_link}, %{turf_link}, %{ors_link} as helping libraries.") % { rails_link: rails_link, maplibre_link: maplibre_link, osm_link: osm_link, draw_link: draw_link, turf_link: turf_link, ors_link: ors_link })
-            %li
-              = _("Storing only minimal data about you, no sharing of data with ad- or analytics companies.")
-            %li
-              - mapforge_link = link_to("mapforge.org", "https://mapforge.org")
-              - deploy_link = link_to _('deploy'), "https://github.com/mapforge-org/mapforge/blob/main/SELF-HOSTING.md"
-              = raw(_("Self-Hosted Solution: You can use Mapforge either on %{mapforge_link}, or %{deploy_link} it in your own infrastructure") % { mapforge_link: mapforge_link, deploy_link: deploy_link })
+              = raw(_("Built with %{rails_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link} and %{ors_link}") % { rails_link: rails_link, maplibre_link: maplibre_link, osm_link: osm_link, draw_link: draw_link, turf_link: turf_link, ors_link: ors_link })
