@@ -53,7 +53,7 @@ msgstr "3D-Gelände: Betrachte deine Karte mit Höhendaten"
 msgid "3D Terrain: View your map with realistic elevation"
 msgstr "3D-Gelände: Betrachte deine Karte mit realistischen Höhendaten"
 
-msgid "A bike tour, the floor plan for your conference, a guide for your wedding guests"
+msgid "A bicycle tour, the floor plan for your conference, a guide for your wedding guests"
 msgstr "Eine Radtour, der Raumplan deiner Konferenz, ein Wegweiser für deine Hochzeitsgäste"
 
 msgid "A view link, an edit link, a gallery listing, or private"
@@ -140,6 +140,9 @@ msgstr "Basiskarten-Info (experimentell)"
 msgid "Basement %{n}"
 msgstr "Untergeschoss %{n}"
 
+msgid "Bicycle"
+msgstr "Fahrrad"
+
 msgid "Bicycle Mode: Click on the map to set waypoints, double click to finish"
 msgstr "Fahrrad-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklick zum Beenden"
 
@@ -157,12 +160,6 @@ msgstr "Fahrradkarte mit hervorgehobenen Radrouten, Wegen und Radinfrastruktur."
 
 msgid "Big dots"
 msgstr "Große Punkte"
-
-msgid "Bike"
-msgstr "Fahrrad"
-
-msgid "Bike route"
-msgstr "Fahrradroute"
 
 msgid "Bookmark the edit link of this map, or %{login_link} to add it to your account."
 msgstr "Setze ein Lesezeichen auf den Bearbeitungslink dieser Karte, oder %{login_link}, um sie deinem Konto hinzuzufügen."
@@ -1076,7 +1073,7 @@ msgstr "Route weicht deutlich vom ursprünglichen Track ab (%{original} km -> %{
 msgid "Routing segment %{index}/%{total}..."
 msgstr "Abschnitt %{index}/%{total} wird berechnet..."
 
-msgid "Routing: Plan routes for walking, bike and car, with elevation profile"
+msgid "Routing: Plan routes for walking, bicycle and car, with elevation profile"
 msgstr "Routing: Plane Routen zu Fuß, mit dem Rad oder Auto, mit Höhenprofil"
 
 msgid "Run Mapforge on your phone, edit in the field, stream your track live"

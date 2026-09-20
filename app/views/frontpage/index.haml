@@ -48,6 +48,7 @@
                 .divider
                 %p
                   = _("Tour planning with Mapforge:")
+                  %br
                   =link_to _('See how it works'), '/doc/bike_touring'
 
           - if @featured_maps.present?
@@ -72,7 +73,7 @@
       .col-lg-7.background-bright.slides
         .item
           %h2.mb-3.mapforge-font= _("Build the map you have in mind")
-          %h4.mb-3= _("A bike tour, the floor plan for your conference, a guide for your wedding guests")
+          %h4.mb-3= _("A bicycle tour, the floor plan for your conference, a guide for your wedding guests")
           %ul
             %li
               %span.d-none.d-sm-inline><
@@ -94,7 +95,7 @@
             %li
               - overpass_link = link_to 'Overpass', doc_path(id: 'overpass_layers')
               = raw(_("Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data") % { overpass_link: overpass_link })
-            %li= _("Routing: Plan routes for walking, bike and car, with elevation profile")
+            %li= _("Routing: Plan routes for walking, bicycle and car, with elevation profile")
             %li
               %span.d-none.d-sm-inline
                 = _("3D Terrain: View your map with realistic elevation")

@@ -27,7 +27,7 @@ describe "Map settings use cases" do
     end
 
     it "starts the bike route mode" do
-      click_button "Bike route"
+      click_button "Bicycle route"
       expect(page).to have_no_css("#settings-modal.show")
       expect(page).to have_css(".ctrl-line-menu:not(.hidden) .mapbox-gl-draw_bicycle.active")
       expect(page.evaluate_script("draw.getMode()")).to eq("directions_bike")

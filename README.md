@@ -29,7 +29,7 @@ Mapforge is an open source GIS web application. Create and share your places, tr
 
 ### Routing
 
-- Plan routes for walking, bike and car with [openrouteservice](https://openrouteservice.org/), with elevation profile and route color coding by steepness or surface
+- Plan routes for walking, bicycle and car with [openrouteservice](https://openrouteservice.org/), with elevation profile and route color coding by steepness or surface
 
 ### Collaboration and sharing
 

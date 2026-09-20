@@ -61,7 +61,7 @@ Every key here is optional. Without the key, the application hides the feature.
 
 | Variable               | Description                                                       | Effect if unset                                                     |
 | ---------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `OPENROUTESERVICE_KEY` | API key for [openrouteservice.org](https://openrouteservice.org/) | The map hides the route buttons (walk, bike, car) in the line menu. |
+| `OPENROUTESERVICE_KEY` | API key for [openrouteservice.org](https://openrouteservice.org/) | The map hides the route buttons (walk, bicycle, car) in the line menu. |
 | `INDOOREQUAL_KEY`      | API key for [Indoorequal](https://indoorequal.com/)               | The layer menu hides the "OpenStreetMap indoor" entry.              |
 | `THUNDERFOREST_KEY`    | API key for [Thunderforest](https://www.thunderforest.com/) maps  | The app hides the Thunderforest background maps.                    |
 | `PROTOMAPS_KEY`        | API key for [Protomaps](https://protomaps.com/api) maps           | The app hides the Protomaps background maps.                        |

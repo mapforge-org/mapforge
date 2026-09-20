@@ -1,16 +1,16 @@
 # Bicycle Touring with Mapforge
 
-![Bike touring with Mapforge](/images/tutorials/bike_touring_intro.png)
+![Bicycle touring with Mapforge](/images/tutorials/bike_touring_intro.png)
 
-Mapforge is a great companion for your next bike tour. Plan your route on the desktop, then open the same map on your phone and follow your track with compass mode and a live elevation profile. This tutorial walks you through the workflow.
+Mapforge is a great companion for your next bicycle tour. Plan your route on the desktop, then open the same map on your phone and follow your track with compass mode and a live elevation profile. This tutorial walks you through the workflow.
 
 ### Plan your route
 
-There are two ways to get a track onto your map: create one with the built-in bike routing, or import an existing GPX file. It's useful to use a basemap that shows existing bike infrastructure.
+There are two ways to get a track onto your map: create one with the built-in bicycle routing, or import an existing GPX file. It's useful to use a basemap that shows existing bicycle infrastructure.
 
-#### Create a track manually with bike routing
+#### Create a track manually with bicycle routing
 
-Create a new map after logging in. Select the **bike routing** tool from the 'draw line' menu (or press `b` on the keyboard). Now click on the map to place waypoints. Mapforge will calculate a bike-friendly route between them using OpenStreetMap data.
+Create a new map after logging in. Select the **bicycle routing** tool from the 'draw line' menu (or press `b` on the keyboard). Now click on the map to place waypoints. Mapforge will calculate a bicycle-friendly route between them using OpenStreetMap data.
 You can also create the track without automatic routing, by creating all points manually (select 'Draw line' (`l`) for this).
 
 <video controls preload="metadata" poster="/images/tutorials/bike_touring_routing_poster.jpg">
@@ -39,7 +39,7 @@ The imported track will appear on your map with elevation data, ready to use.
 
 Imported GPX tracks are plain lines without routing metadata. Converting a track to a route gives you waypoints, and extras like steepness and surface information.
 
-To convert an imported track, select it on the map, open the edit panel, and go to the **Advanced** tab. Under "Convert to routed track", choose a profile (Foot, Bike, or Car).
+To convert an imported track, select it on the map, open the edit panel, and go to the **Advanced** tab. Under "Convert to routed track", choose a profile (Foot, Bicycle, or Car).
 
 Mapforge will extract waypoints from your track, snap them to the road network, and calculate a route using OpenRouteService. The result appears as a **new feature** alongside your original track. The routed track gets dashed styling, kilometer markers, and route extras data.
 
@@ -57,7 +57,7 @@ Once your planned track is on the map, you can tailor everything to your ride:
 
 - **Segment your track**: right-click on the track to split it into sections at any point. This is useful for highlighting different parts of your route for example in multi-day rides.
 - **Style your track**: change the track color, line width, and enable **distance markers** to see kilometer markers along the route.
-- **Choose a background map**: switch to a base map that suits cycling, such as the topographic or bike map, in the map settings. You can also enable 3D, contour lines or a hillshade effect.
+- **Choose a background map**: switch to a base map that suits cycling, such as the topographic or bicycle map, in the map settings. You can also enable 3D, contour lines or a hillshade effect.
 - **Bicycle tracks overlay**: Add existing bicycle tracks to your map to plan your ride along them (Layers modal -> 'Add Layer').
 - **Add points of interest**: mark stops, water refills, or scenic viewpoints as point features on your map. You can also copy important waymarks from overpass layers.
 - **Share your map**: decide whether to keep your map private or share it publicly so others can ride your track.
@@ -81,7 +81,7 @@ Open the map on your phone: Either in the browser or the [installed app](/doc/ap
 
 Tap the **geolocate button** (right screen side) once to follow your position on the map. Tap it again to activate **compass mode**. The map will rotate to match the direction your phone is facing, so the road ahead is always at the top of the screen.
 
-![Compass mode on the bike](/images/tutorials/bike_touring_compass.jpg)
+![Compass mode on the bicycle](/images/tutorials/bike_touring_compass.jpg)
 
 Your position is shown as a dot with a directional cone indicating where you're heading. The screen stays on automatically while compass mode is active, so you don't need to keep tapping your phone.
 
@@ -112,7 +112,7 @@ In the "Share" panel, you can decide to share your track publicly in the Mapforg
 
 ### Other Apps and Tools
 
-There are quite some apps that can be used in combination with Mapforge for optimal results in planning your bike trip:
+There are quite some apps that can be used in combination with Mapforge for optimal results in planning your bicycle trip:
 
 * [gpx-simplify-optimizer](https://opengeo.tech/gpx-simplify-optimizer/) (simplify gpx track before import)
 * [mapshaper.org](https://mapshaper.org/) (another gpx simplifier)
@@ -122,11 +122,11 @@ There are quite some apps that can be used in combination with Mapforge for opti
 * [mapillary.com](https://www.mapillary.com/) (street view like photos)
 * [opencampingmap.org](https://opencampingmap.org) (camp sites)
 * [campwild.org](https://map.campwild.org/) (shelters)
-* [bikeparking.lorenz.lu](https://bikeparking.lorenz.lu/parkingmap) + [rackfinder.app](https://rackfinder.app) (bike parking)
+* [bikeparking.lorenz.lu](https://bikeparking.lorenz.lu/parkingmap) + [rackfinder.app](https://rackfinder.app) (bicycle parking)
 * [tilda-geo.de](https://tilda-geo.de/regionen/radinfra) (help to improve bicycle related data in OSM)
 
 
-Creating bike routes:
+Creating bicycle routes:
 
 Netzpolitik.org recently [tested](https://netzpolitik.org/2026/wandern-radfahren-frei-und-dezentral-ins-gruene/) some privacy friendly routing apps (german).
 
@@ -136,10 +136,10 @@ Netzpolitik.org recently [tested](https://netzpolitik.org/2026/wandern-radfahren
 * [brouter.de](https://brouter.de/brouter-web/) (original project for bikerouter.de)
 * [sherpa-map.com](https://sherpa-map.com)
 * [veloplanner.com](https://veloplanner.com)
-* [graphhopper.com](https://graphhopper.com/maps/?profile=bike&layer=TF+Cycle) (bike routing)
+* [graphhopper.com](https://graphhopper.com/maps/?profile=bike&layer=TF+Cycle) (bicycle routing)
 
 
-Commercial alternatives for bike routing:
+Commercial alternatives for bicycle routing:
 
 * [ridewithgps.com](https://ridewithgps.com/)
 * [alltrails.com](https://www.alltrails.com) (former gpsies.com)
