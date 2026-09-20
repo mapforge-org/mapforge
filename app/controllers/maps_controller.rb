@@ -68,14 +68,20 @@ class MapsController < ApplicationController
         end
       end
       format.json do
+        # the client loads the plain json on every map open, only 'export' is a download
+        Yabeda.map_downloads.increment(format: "mapforge") if params[:export].present?
         # updated_at bumps on any feature/layer/map change via the touch chain,
         # so it's a sufficient (and private) validator for a 304 on repeat loads.
         if stale?(etag: @map.updated_at)
           render json: @map.to_json(include_features: params[:export].present?)
         end
       end
-      format.geojson { render json: @map.to_geojson }
+      format.geojson do
+        Yabeda.map_downloads.increment(format: "geojson")
+        render json: @map.to_geojson
+      end
       format.gpx do
+        Yabeda.map_downloads.increment(format: "gpx")
         name = @map.name.presence&.parameterize || @map.public_id
         send_data @map.to_gpx, filename: name + ".gpx", disposition: "attachment"
       end
@@ -91,6 +97,7 @@ class MapsController < ApplicationController
     @map = Map.new(creator_view)
     @map.add_owner(@user) if @user
     @map.save!
+    count_map_created("map")
 
     redirect_to @map.private_map_path, notice: "Map was successfully created."
   end
@@ -99,6 +106,7 @@ class MapsController < ApplicationController
     require_map_owner if @map.view_permission == "private"
     cloned_map = @map.clone_with_layers
     cloned_map.update(owners: [ @user ], name: "Copy of " + @map.name.to_s)
+    count_map_created("copy")
     redirect_to cloned_map.private_map_path, notice: "Map was successfully copied."
   end
 
@@ -113,8 +121,12 @@ class MapsController < ApplicationController
     feature = @map.features.find(params["feature_id"])
     head :not_found and return unless feature
     respond_to do |format|
-      format.geojson { render json: feature.to_geojson }
+      format.geojson {
+        Yabeda.feature_exports.increment(format: "geojson")
+        render json: feature.to_geojson
+      }
       format.gpx {
+        Yabeda.feature_exports.increment(format: "gpx")
         name = feature.properties["title"].presence || feature.id
         send_data feature.to_gpx, filename: "#{name}.gpx", disposition: "attachment"
       }
@@ -138,6 +150,11 @@ class MapsController < ApplicationController
   end
 
   private
+
+  # Prometheus needs every declared label, so an anonymous request passes an empty user id.
+  def count_map_created(kind)
+    Yabeda.maps_created.increment(kind:, owner: @user ? "user" : "anonymous", user: @user&.id.to_s)
+  end
 
   # The opening view for this request only. A map with no center of its own opens at the
   # location of the visitor. The screenshot browser has no useful IP, so it takes the

@@ -38,6 +38,10 @@ describe ImagesController do
       expect { upload }.not_to change(Image, :count)
       expect(response.parsed_body["image"]).to eq public_id
     end
+
+    it "counts every upload, also a re-used one" do
+      expect { 2.times { upload } }.to change { Yabeda.images_uploaded.get(user: "").to_i }.by(2)
+    end
   end
 
   describe "#osmc_symbol" do
