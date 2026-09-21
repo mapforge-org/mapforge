@@ -30,7 +30,8 @@ namespace :demo do
         "Posidonia meadow", "Sea bream, wrasse and sea urchins", "#2f9e44" ],
       [ [ [ 10.124537, 42.803864 ], [ 10.124951, 42.804083 ], [ 10.125415, 42.804082 ],
           [ 10.125561, 42.803866 ], [ 10.125500, 42.803700 ], [ 10.124814, 42.803611 ] ],
-        "Rocky reef", "Octopus, moray eel and scorpionfish", "#0c8599" ] ]
+        "Rocky reef", "Octopus, moray eel and scorpionfish", "#0c8599",
+        { "fill-pattern" => "cross" } ] ]
     wreck = [ 10.124450, 42.804750 ]
 
     # Scene 3: a house in La Zanca. Local metres, x along the long wall, y into the plot.
@@ -269,19 +270,23 @@ namespace :demo do
         sleep 0.3
       end
       fly.call(sea_view)
-      dive_sites.each do |ring, title, animals, color|
+      dive_sites.each do |ring, title, animals, color, extra|
         trace.call(scout, ring, { "title" => title, "desc" => animals, "stroke" => color,
                                   "fill" => color, "fill-opacity" => 0.35,
-                                  "label" => animals, "label-title" => title, "label-size" => 11 })
+                                  "label" => animals, "label-title" => title,
+                                  "label-size" => 11 }.merge(extra.to_h))
         sleep 0.3
       end
       glide.call(scout, wreck, 0.6)
       sleep 0.2
       scout[:layer].features.create!(
         geometry: { "type" => "Point", "coordinates" => wreck },
-        properties: { "title" => "Shipwreck", "desc" => "Steel hull at 22 m, groupers inside",
-                      "marker-symbol" => "/icon-sets/fontawesome/ship.png",
-                      "marker-color" => "#495057", "label" => "Shipwreck" })
+        properties: { "title" => "Shipwreck", "marker-scaling" => true,
+                      "desc" => "Steel hull at 22 m, groupers inside\n\n" \
+                                "<img src=\"/images/frontpage/shipwreck.jpg\" width=\"150\">\n",
+                      "marker-color" => "#000000", "stroke" => "transparent",
+                      "show-desc" => "banner", "marker-size" => "13",
+                      "marker-symbol" => "/icon-sets/fontawesome/ship.png" })
     }
 
     # Scene 3: Ada maps the plot around two houses, then raises both into 3D.
