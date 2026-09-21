@@ -11,11 +11,11 @@
           %div{ 'data-aos': "fade-up" }
             %blockquote{ 'data-aos': "fade-up" }
               %p.d-none.d-sm-block
-                = _("Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time.")
+                = _("Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - draw, style and share in real-time.")
               %p.d-sm-none
-                = _("Your open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events.")
+                = _("Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events. No signup needed.")
               %p.d-none.d-sm-block
-                = _("Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites.")
+                = _("No signup needed. Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites.")
               %p.d-none.d-sm-block
                 = _("Mapforge is ad-free and respects your privacy.")
                 = _("Also available for self-hosting, giving you full control over your data.")
@@ -76,11 +76,6 @@
           %h4.mb-3= _("A bicycle tour, the floor plan for your conference, a guide for your wedding guests")
           %ul
             %li
-              %span.d-none.d-sm-inline><
-                = _("Choose your base map: Streets, Satellite, Topographic, Biking, Watercolor, 3D houses etc.")
-              %span.d-sm-none><
-                = _("Choose your base map: Streets, Satellite, Topographic, Biking")
-            %li
               = _("Add your own data:")
               %span.d-none.d-sm-inline
                 = _("Import your data from GeoJSON, GPX and KML")
@@ -92,10 +87,15 @@
                 = _("Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more")
               %span.d-sm-none
                 = _("Add pictures, customize colors, symbols, labels")
+            %li= _("Routing: Plan routes for walking, bicycle and car, with elevation profile")
             %li
               - overpass_link = link_to 'Overpass', doc_path(id: 'overpass_layers')
               = raw(_("Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data") % { overpass_link: overpass_link })
-            %li= _("Routing: Plan routes for walking, bicycle and car, with elevation profile")
+            %li
+              %span.d-none.d-sm-inline><
+                = _("Choose your base map: Streets, Satellite, Topographic, Biking, Watercolor, 3D houses etc.")
+              %span.d-sm-none><
+                = _("Choose your base map: Streets, Satellite, Topographic, Biking")
             %li
               %span.d-none.d-sm-inline
                 = _("3D Terrain: View your map with mountains")
@@ -110,7 +110,7 @@
           %h4.mb-3= _("Listed in the gallery, or shared privately")
           %ul
             %li= _("Embedding: Include your map on your own web page")
-            %li= _("Live updates: Map changes are synchronized via websockets")
+            %li= _("Real-time: Map changes are synchronized to all users")
             %li= _("Login: Have your maps assigned to your account")
     .row.g-0
       .col-lg-5.img-bg
@@ -123,7 +123,7 @@
             %li= _("GPS and compass: The map follows your position and turns with you")
             %li
               - app_link = link_to _('app on your phone'), doc_path(id: 'app')
-              = raw(_("Run from your home screen as %{app_link}") % { app_link: app_link })
+              = raw(_("Run in desktop/mobile browser or as %{app_link}") % { app_link: app_link })
             %li
               - ulogger_link = link_to "µlogger", "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md"
               = raw(_("Map your track: Use %{ulogger_link} to visualize and share your tracks live") % { ulogger_link: ulogger_link })
@@ -133,17 +133,19 @@
       .col-lg-7.background-bright.slides
         .item
           %h2.mb-3.mapforge-font= _("Open Source")
-          %h4.mb-3= _("Nobody can take it away from you")
+          %h4.mb-3= _("The code is public, map data is owned by you")
           %ul
             %li= _("No ads, no tracking, no lock-in")
             %li
-              - deploy_link = link_to _('run the whole app on your own server'), "https://github.com/mapforge-org/mapforge/blob/main/SELF-HOSTING.md"
-              = raw(_("Export your maps as GeoJSON, or %{deploy_link}") % { deploy_link: deploy_link })
-            %li.small.text-muted
+              - deploy_link = link_to _('run Mapforge on your own server'), "https://github.com/mapforge-org/mapforge/blob/main/SELF-HOSTING.md"
+              = raw(_("Export your maps as GPX/GeoJSON, or %{deploy_link}") % { deploy_link: deploy_link })
+            %li
               - rails_link = link_to "Ruby on Rails", "https://rubyonrails.org/"
+              - mongodb_link = link_to "MongoDB", "https://www.mongodb.com/"
               - maplibre_link = link_to "MapLibre GL JS", "https://github.com/maplibre/maplibre-gl-js"
               - osm_link = link_to "OpenStreetMap", "https://www.openstreetmap.org"
               - draw_link = link_to "mapbox-gl-draw", "https://github.com/mapbox/mapbox-gl-draw"
               - turf_link = link_to "Turf.js", "https://turfjs.org/"
+              - pinhead_link = link_to "Pinhead", "https://github.com/waysidemapping/pinhead"
               - ors_link = link_to "Openrouteservice", "https://openrouteservice.org/"
-              = raw(_("Built with %{rails_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link} and %{ors_link}") % { rails_link: rails_link, maplibre_link: maplibre_link, osm_link: osm_link, draw_link: draw_link, turf_link: turf_link, ors_link: ors_link })
+              = raw(_("Built with %{rails_link}, %{mongodb_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link}, %{pinhead_link} and %{ors_link}") % { rails_link: rails_link, mongodb_link: mongodb_link, maplibre_link: maplibre_link, osm_link: osm_link, draw_link: draw_link, turf_link: turf_link, pinhead_link: pinhead_link, ors_link: ors_link })

@@ -179,8 +179,8 @@ msgstr "Durchstöbere die %{gallery_link}, lerne auf der %{tutorial_link} wie du
 msgid "Build the map you have in mind"
 msgstr "Erstelle deine Karten-Idee"
 
-msgid "Built with %{rails_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link} and %{ors_link}"
-msgstr "Gebaut mit %{rails_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link} und %{ors_link}"
+msgid "Built with %{rails_link}, %{mongodb_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link}, %{pinhead_link} and %{ors_link}"
+msgstr "Gebaut mit %{rails_link}, %{mongodb_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link}, %{pinhead_link} und %{ors_link}"
 
 msgid "Buy me a coffee"
 msgstr "Spende mir einen Kaffee"
@@ -524,11 +524,8 @@ msgstr "Fehler beim Aktualisieren der Geometrie von %{type}"
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
 
-msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
-msgstr "Jede Karte hat einen Ansichtslink und einen Bearbeitungslink. Teile sie, stelle deine Karte in die Galerie, oder halte sie privat. Binde sie auf anderen Webseiten ein."
-
-msgid "Export your maps as GeoJSON, or %{deploy_link}"
-msgstr "Exportiere deine Karten als GeoJSON, oder %{deploy_link}"
+msgid "Export your maps as GPX/GeoJSON, or %{deploy_link}"
+msgstr "Exportiere deine Karten als GPX/GeoJSON, oder %{deploy_link}"
 
 msgid "Failed to copy"
 msgstr "Kopieren fehlgeschlagen"
@@ -749,9 +746,6 @@ msgstr "Linien"
 msgid "Listed in the gallery, or shared privately"
 msgstr "In der Galerie gelistet, oder privat geteilt"
 
-msgid "Live updates: Map changes are synchronized via websockets"
-msgstr "Live-Updates: Kartenänderungen werden über WebSockets synchronisiert"
-
 msgid "Load for this area"
 msgstr "Für diesen Bereich laden"
 
@@ -902,8 +896,8 @@ msgstr "Keine Elemente in dieser Ebene"
 msgid "No route found"
 msgstr "Keine Route gefunden"
 
-msgid "Nobody can take it away from you"
-msgstr "Niemand kann es dir wegnehmen"
+msgid "No signup needed. Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
+msgstr "Ohne Anmeldung. Jede Karte hat einen Ansichtslink und einen Bearbeitungslink. Teile sie, stelle deine Karte in die Galerie, oder halte sie privat. Binde sie auf anderen Webseiten ein."
 
 msgid "None"
 msgstr "Ohne"
@@ -1013,6 +1007,9 @@ msgstr "Nur Lesen"
 msgid "Read about the latest changes and improvements on Mapforge."
 msgstr "Lies mehr über die neuesten Änderungen und Verbesserungen bei Mapforge."
 
+msgid "Real-time: Map changes are synchronized to all users"
+msgstr "Echtzeit: Kartenänderungen werden für alle Nutzer synchronisiert"
+
 msgid "Really delete this %{type}?"
 msgstr "%{type} wirklich löschen?"
 
@@ -1073,8 +1070,8 @@ msgstr "Routing: Plane Routen zu Fuß, mit dem Rad oder Auto, mit Höhenprofil"
 msgid "Run Mapforge on your phone, edit in the field, stream your track live"
 msgstr "Nutze Mapforge auf deinem Handy, bearbeite vor Ort, streame deinen Track live"
 
-msgid "Run from your home screen as %{app_link}"
-msgstr "Starte vom Homescreen als %{app_link}"
+msgid "Run in desktop/mobile browser or as %{app_link}"
+msgstr "Starte im Desktop-/Mobil-Browser oder als %{app_link}"
 
 msgid "Sand"
 msgstr "Sand"
@@ -1215,6 +1212,9 @@ msgstr "Das KMZ-Archiv enthält kein .kml-Dokument"
 
 msgid "The app can get installed from the browser or from the app store."
 msgstr "Die App kannst du aus dem Browser oder aus dem App Store installieren."
+
+msgid "The code is public, map data is owned by you"
+msgstr "Der Code ist öffentlich, die Kartendaten gehören dir"
 
 msgid "The file is not a zip archive"
 msgstr "Die Datei ist kein Zip-Archiv"
@@ -1390,17 +1390,17 @@ msgstr "Deine Karten"
 msgid "Your browser cannot render 3D graphics on the web. Update your browser, or turn on hardware acceleration in the browser settings."
 msgstr "Dein Browser kann keine 3D-Grafik im Web darstellen. Aktualisiere deinen Browser, oder schalte die Hardwarebeschleunigung in den Browser-Einstellungen ein."
 
-msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
-msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - und teile sie in Echtzeit."
+msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - draw, style and share in real-time."
+msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - gestalte und teile in Echtzeit."
+
+msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events. No signup needed."
+msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen. Ohne Anmeldung."
 
 msgid "Your maps"
 msgstr "Deine Karten"
 
 msgid "Your maps (%{count})"
 msgstr "Deine Karten (%{count})"
-
-msgid "Your open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events."
-msgstr "Dein Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen."
 
 msgid "Zoom in"
 msgstr "Vergrößern"
@@ -1531,8 +1531,8 @@ msgstr "öffentliche ID:"
 msgid "public_library"
 msgstr "Bibliothek|Buecherei|Bücherei|Stadtbibliothek"
 
-msgid "run the whole app on your own server"
-msgstr "betreibe die ganze App auf deinem eigenen Server"
+msgid "run Mapforge on your own server"
+msgstr "betreibe Mapforge auf deinem eigenen Server"
 
 msgid "shopping_centre|shopping_center|shopping"
 msgstr "Einkaufszentrum|Shoppingcenter|Einkaufen|Kaufhaus"

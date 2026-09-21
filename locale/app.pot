@@ -234,8 +234,8 @@ msgstr ""
 msgid "Build the map you have in mind"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:149
-msgid "Built with %{rails_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link} and %{ors_link}"
+#: ../app/views/frontpage/index.haml:151
+msgid "Built with %{rails_link}, %{mongodb_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link}, %{pinhead_link} and %{ors_link}"
 msgstr ""
 
 #: ../app/views/shared/_footer.html.haml:49
@@ -694,12 +694,8 @@ msgstr ""
 msgid "Error uploading image"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:18
-msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
-msgstr ""
-
 #: ../app/views/frontpage/index.haml:141
-msgid "Export your maps as GeoJSON, or %{deploy_link}"
+msgid "Export your maps as GPX/GeoJSON, or %{deploy_link}"
 msgstr ""
 
 #: ../app/javascript/helpers/clipboard.js:73
@@ -994,10 +990,6 @@ msgstr ""
 msgid "Listed in the gallery, or shared privately"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:113
-msgid "Live updates: Map changes are synchronized via websockets"
-msgstr ""
-
 #: ../app/views/maps/_layer_loading.haml:3
 msgid "Load for this area"
 msgstr ""
@@ -1198,8 +1190,8 @@ msgstr ""
 msgid "No route found"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:136
-msgid "Nobody can take it away from you"
+#: ../app/views/frontpage/index.haml:18
+msgid "No signup needed. Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:160 ../app/views/maps/modals/feature/_edit_ui.haml:164
@@ -1346,6 +1338,10 @@ msgstr ""
 msgid "Read about the latest changes and improvements on Mapforge."
 msgstr ""
 
+#: ../app/views/frontpage/index.haml:113
+msgid "Real-time: Map changes are synchronized to all users"
+msgstr ""
+
 #: ../app/javascript/controllers/feature/edit_controller.js:67 ../app/javascript/controllers/map/context_menu_controller.js:132
 msgid "Really delete this %{type}?"
 msgstr ""
@@ -1427,7 +1423,7 @@ msgid "Run Mapforge on your phone, edit in the field, stream your track live"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:126
-msgid "Run from your home screen as %{app_link}"
+msgid "Run in desktop/mobile browser or as %{app_link}"
 msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:58
@@ -1614,6 +1610,10 @@ msgstr ""
 
 #: ../app/views/docs/tutorials.haml:42
 msgid "The app can get installed from the browser or from the app store."
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:136
+msgid "The code is public, map data is owned by you"
 msgstr ""
 
 #: ../app/javascript/maplibre/import/kml.js:241
@@ -1849,7 +1849,11 @@ msgid "Your browser cannot render 3D graphics on the web. Update your browser, o
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:14
-msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - customize, collaborate and share in real-time."
+msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - draw, style and share in real-time."
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:16
+msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events. No signup needed."
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:35
@@ -1858,10 +1862,6 @@ msgstr ""
 
 #: ../app/views/shared/_header.html.haml:48 ../app/views/shared/_header.html.haml:95
 msgid "Your maps (%{count})"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:16
-msgid "Your open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events."
 msgstr ""
 
 #: ../app/javascript/maplibre/map.js:134
@@ -2037,7 +2037,7 @@ msgid "public_library"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:140
-msgid "run the whole app on your own server"
+msgid "run Mapforge on your own server"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/search.js:152
