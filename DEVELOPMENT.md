@@ -58,7 +58,7 @@ app/javascript/maplibre/basemaps.js
 A map URL accepts these parameters. They are useful for embedded maps:
 
 - `nomenu=true` hides the navigation toggle.
-- `nocontrols=true` hides all map controls and the view/edit mode badge.
+- `nocontrols=true` hides all map controls, the view/edit mode badge and the route extras legend.
 
 ### Rake Tasks
 

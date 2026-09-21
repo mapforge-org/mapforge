@@ -196,10 +196,11 @@
   color: var(--color-mid-chili);
 }
 
-/* ?nocontrols=true hides the map controls and the view/edit mode badge. The attribution
-   and the logo stay */
+/* ?nocontrols=true hides the map controls, the view/edit mode badge and the route extras
+   legend. The attribution and the logo stay */
 body.map-nocontrols .maplibregl-ctrl:not(.maplibregl-ctrl-attrib, :has(> .maplibregl-ctrl-logo)),
-body.map-nocontrols #map-mode-badge {
+body.map-nocontrols #map-mode-badge,
+body.map-nocontrols .route-extras-legend {
   display: none;
 }
 

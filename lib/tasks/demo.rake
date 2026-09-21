@@ -9,30 +9,32 @@ namespace :demo do
     # Opening and closing shot: all three scenes in one frame
     wide_view = { center: [ 10.13148, 42.80478 ], zoom: 14.4, bearing: 0, pitch: 0 }
 
-    # Scene 1: Ben's walk on the coast path west of Sant'Andrea
+    # Scene 1: Cleo's walk on the coast path west of Sant'Andrea
     walk_view = { center: [ 10.141389, 42.806839 ], zoom: 16.89, bearing: 36.8, pitch: 63 }
     walk = [ [ 10.141065, 42.805958 ], [ 10.137624, 42.806340 ],
              [ 10.132795, 42.803512 ], [ 10.130609, 42.804515 ] ]
+    snake = [ 10.133219, 42.804052 ]
 
-    # Scene 2: Cleo maps the shore at Punta della Zanca, then the water in front of it
+    # Scene 2: Ben maps the shore at Punta della Zanca, then the water in front of it
     shore_view = { center: [ 10.122640, 42.802750 ], zoom: 16.4, bearing: 122.7, pitch: 55 }
     sea_view = { center: [ 10.124200, 42.803900 ], zoom: 16.5, bearing: 150, pitch: 52 }
     beach = [ [ 10.121079, 42.802693 ], [ 10.121444, 42.802848 ],
               [ 10.121523, 42.802739 ], [ 10.121133, 42.802628 ] ]
     spots = [ [ [ 10.122646, 42.802339 ], "binoculars", "Punta della Zanca" ],
-              [ [ 10.123330, 42.803400 ], "person_swimming_in_water", "Snorkeling" ],
               [ [ 10.124150, 42.803180 ], "cliff_with_rocks", "Cliff" ] ]
+    snorkel = [ [ 10.123676, 42.803444 ], "person_swimming_in_water", "Snorkeling" ]
     dive_sites = [
       [ [ [ 10.122952, 42.803489 ], [ 10.123967, 42.803615 ], [ 10.123987, 42.803415 ],
           [ 10.122878, 42.803213 ], [ 10.122475, 42.803199 ], [ 10.122022, 42.803068 ],
           [ 10.121423, 42.803003 ], [ 10.121755, 42.803182 ], [ 10.122270, 42.803290 ],
           [ 10.122795, 42.803376 ] ],
         "Posidonia meadow", "Sea bream, wrasse and sea urchins", "#2f9e44" ],
-      [ [ [ 10.124537, 42.803864 ], [ 10.124951, 42.804083 ], [ 10.125415, 42.804082 ],
-          [ 10.125561, 42.803866 ], [ 10.125500, 42.803700 ], [ 10.124814, 42.803611 ] ],
+      [ [ [ 10.124158, 42.803901 ], [ 10.124355, 42.804035 ], [ 10.124860, 42.804149 ],
+          [ 10.125415, 42.804082 ], [ 10.125561, 42.803866 ], [ 10.125500, 42.803700 ],
+          [ 10.124955, 42.803406 ], [ 10.124244, 42.803430 ] ],
         "Rocky reef", "Octopus, moray eel and scorpionfish", "#0c8599",
         { "fill-pattern" => "cross" } ] ]
-    wreck = [ 10.124450, 42.804750 ]
+    wreck = [ 10.125209, 42.805112 ]
 
     # Scene 3: a house in La Zanca. Local metres, x along the long wall, y into the plot.
     # The vectors come from the real footprint of the building (16.3 m by 9.6 m).
@@ -44,14 +46,13 @@ namespace :demo do
       [ at.call(x0, y0), at.call(x1, y0), at.call(x1, y1), at.call(x0, y1) ]
     }
     house = rect.call(0, 0, 16.3, 9.6)
-    garden = [ [ 10.133597, 42.801638 ], [ 10.133464, 42.801825 ], [ 10.133387, 42.802046 ],
-               [ 10.133649, 42.802109 ], [ 10.133738, 42.801924 ], [ 10.133816, 42.801723 ],
-               [ 10.133640, 42.801654 ] ]
+    garden = [ [ 10.133543, 42.801620 ], [ 10.133309, 42.802022 ],
+               [ 10.133702, 42.802142 ], [ 10.133888, 42.801750 ] ]
     parking = [ [ 10.133963, 42.801293 ], [ 10.134043, 42.801373 ], [ 10.134133, 42.801312 ],
                 [ 10.134019, 42.801243 ], [ 10.133915, 42.801155 ], [ 10.133861, 42.801189 ] ]
     # From the parking, around the west side of the neighbour house, up to the door.
-    drive = [ [ 10.133986, 42.801382, 150 ], [ 10.133915, 42.801452, 150 ],
-              [ 10.133855, 42.801417, 150 ], [ 10.133708, 42.801548, 150 ],
+    drive = [ [ 10.133944, 42.801427, 150 ], [ 10.133929, 42.801451, 150 ],
+              [ 10.133855, 42.801417, 150 ], [ 10.133726, 42.801558, 150 ],
               [ 10.133910, 42.801632, 150 ], [ 10.133872, 42.801681, 138 ] ]
     garden_spot = [ 10.133465, 42.801623 ]
     # The neighbour house, from its real footprint in OpenStreetMap (way 169710115).
@@ -67,8 +68,8 @@ namespace :demo do
     # broadcast goes out. A cursor is a broadcast, so it needs a connected client.
     puts "Open #{ENV.fetch("MAPFORGE_HOST", "http://localhost:3000")}/m/#{map.private_id}"
 
-    hiker  = { uuid: "demo-hiker", name: "Ben", image: "/images/frontpage/avatar2.jpeg" }
-    scout  = { uuid: "demo-scout", name: "Cleo", image: "/images/frontpage/avatar3.jpeg" }
+    hiker  = { uuid: "demo-hiker", name: "Cleo", image: "/images/frontpage/avatar2.jpeg" }
+    scout  = { uuid: "demo-scout", name: "Ben", image: "/images/frontpage/avatar3.jpeg" }
     artist = { uuid: "demo-artist", name: "Ada", image: "/images/frontpage/avatar1.jpeg" }
 
     # Reuse the layers instead of recreating them. A destroyed layer makes every open client
@@ -197,8 +198,8 @@ namespace :demo do
       feature
     }
 
-    # Scene 1: Ben walks the routed coast path and pins a photo on every waypoint.
-    # The track grows under his cursor, so it is drawn while he moves.
+    # Scene 1: Cleo walks the routed coast path and pins a photo on every waypoint.
+    # The track grows under her cursor, so it is drawn while she moves.
     track_feature = nil
     track_properties = ->(upto) {
       { "title" => "Coast walk", "stroke" => "#e8590c", "stroke-width" => 5,
@@ -224,8 +225,8 @@ namespace :demo do
         if i.positive?
           from = stops[i - 1]
           leg = track[from..stop]
-          # The camera leads Ben. It settles on the middle of the leg, then flies on to the
-          # next waypoint while he is only halfway, so the track never leaves the frame.
+          # The camera leads Cleo. It settles on the middle of the leg, then flies on to the
+          # next waypoint while she is only halfway, so the track never leaves the frame.
           fly.call(walk_view.merge(center: leg[leg.size / 2].first(2)), 1.2)
           drawn = Time.now
           ahead = false
@@ -243,9 +244,17 @@ namespace :demo do
         photo = photos[i % photos.size]
         hiker[:layer].features.create!(
           geometry: { "type" => "Point", "coordinates" => track[stop].first(2) }, image: photo,
-          properties: { "title" => "Photo #{i + 1}", "marker-size" => 26, "min-zoom" => 14,
+          properties: { "title" => "Photo #{i + 1}", "marker-size" => 22, "min-zoom" => 14,
                         "marker-image-url" => "/icon/#{photo.public_id}",
                         "desc" => "[![image](/image/#{photo.public_id})](/image/#{photo.public_id})\n" })
+        if i == 2
+          hiker[:layer].features.create!(
+            geometry: { "type" => "Point", "coordinates" => snake },
+            properties: { "desc" => "#### Saw a snake here!", "show-desc" => "bubble",
+                          "marker-shape" => "pin", "marker-symbol" => "🐍",
+                          "marker-color" => "#5c940d", "marker-size" => 11,
+                          "marker-scaling" => true })
+        end
         # Hold on the waypoint, long enough for the camera to settle on it. The client only
         # fetches a marker image when MapLibre renders the marker and misses it
         # (setMissingStyleImageResolver). Fly away at once and the fetch never starts, so the
@@ -255,27 +264,30 @@ namespace :demo do
       end
     }
 
-    # Scene 2: Cleo marks the beach, the nature points around it, and the dive sites offshore.
+    # Scene 2: Ben marks the beach, the nature points around it, and the dive sites offshore.
     shore_scene = -> {
       trace.call(scout, beach, { "title" => "Spiaggia della Zanca", "fill" => "#f6c453",
                                  "fill-opacity" => 0.5, "label" => "Beach" })
       sleep 0.3
-      spots.each do |point, icon, title|
+      pin = ->(point, icon, title) {
         glide.call(scout, point, 0.6)
         sleep 0.2
         scout[:layer].features.create!(
           geometry: { "type" => "Point", "coordinates" => point },
           properties: { "title" => title, "marker-symbol" => "/icon-sets/pinhead/#{icon}.png",
-                        "marker-color" => "#1971c2", "label" => title, "min-zoom" => 14 })
+                        "marker-color" => "#1971c2", "marker-size" => 14,
+                        "label" => title, "min-zoom" => 14 })
         sleep 0.3
-      end
+      }
+      spots.each { |spot| pin.call(*spot) }
       fly.call(sea_view)
-      dive_sites.each do |ring, title, animals, color, extra|
+      dive_sites.each_with_index do |(ring, title, animals, color, extra), i|
         trace.call(scout, ring, { "title" => title, "desc" => animals, "stroke" => color,
                                   "fill" => color, "fill-opacity" => 0.35,
                                   "label" => animals, "label-title" => title,
                                   "label-size" => 11 }.merge(extra.to_h))
         sleep 0.3
+        pin.call(*snorkel) if i.zero?
       end
       glide.call(scout, wreck, 0.6)
       sleep 0.2
@@ -285,7 +297,7 @@ namespace :demo do
                       "desc" => "Steel hull at 22 m, groupers inside\n\n" \
                                 "<img src=\"/images/frontpage/shipwreck.jpg\" width=\"150\">\n",
                       "marker-color" => "#000000", "stroke" => "transparent",
-                      "show-desc" => "banner", "marker-size" => "13",
+                      "show-desc" => "banner", "marker-size" => 14,
                       "marker-symbol" => "/icon-sets/fontawesome/ship.png" })
     }
 
@@ -314,7 +326,8 @@ namespace :demo do
       # Both houses grow one step per garden point, so they are still rising while Ada draws.
       rise.call
       trace.call(artist, garden, { "title" => "Garden", "stroke" => "#5c940d",
-                                   "fill" => "#a9e34b", "fill-opacity" => 0.4,
+                                   "fill" => "transparent", "fill-opacity" => 1,
+                                   "fill-image-url" => "/images/frontpage/garden.jpg",
                                    "label" => "Garden", "label-size" => 12 }) { rise.call }
       sleep 0.3
       trace.call(artist, parking, { "title" => "Parking", "stroke" => "#868e96",
@@ -329,7 +342,8 @@ namespace :demo do
       artist[:layer].features.create!(
         geometry: { "type" => "Point", "coordinates" => garden_spot },
         properties: { "title" => "Terrace", "marker-symbol" => "/icon-sets/pinhead/picnic_table.png",
-                      "marker-color" => "#5c940d", "label" => "Terrace", "min-zoom" => 14 })
+                      "marker-color" => "#5c940d", "marker-size" => 14,
+                      "label" => "Terrace", "min-zoom" => 14 })
     }
 
     scenes = [ [ walk_view, walk_scene, hiker, track[stops.first].first(2) ],
