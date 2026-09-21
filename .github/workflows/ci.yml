@@ -126,24 +126,30 @@ jobs:
           bin/parallel_rspec spec engines -n 6 \
             --group-by runtime --allowed-missing 100 --only-group ${{ matrix.groups }}
         shell: bash
+      # The coverage job needs this artifact, so a failed upload must fail this job.
+      # Otherwise "re-run failed jobs" only re-runs coverage and never regenerates it.
       - name: Upload partial results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: part-${{ matrix.part }}
           include-hidden-files: true
           path: |
             coverage/.resultset.json
             tmp/parallel_runtime_rspec.log
+      # Diagnostic uploads only. The artifact backend returns transient 403s on
+      # finalize, which must not change the job result.
       - name: Upload screenshots
         if: failure()
-        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
         with:
           name: screenshots-${{ matrix.part }}
           path: ./tmp/capybara
       - name: Upload logs
         if: failure()
-        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
         with:
           name: rails-logs-${{ matrix.part }}
           path: ./log/test.log
@@ -183,7 +189,8 @@ jobs:
           '
       - name: Upload coverage
         if: always()
-        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
         with:
           name: coverage
           path: ./coverage
