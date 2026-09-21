@@ -6,7 +6,9 @@
   -# The map page pushes its own history entries (modals, mode switch, feature selection).
   -# Turbo ignores a popstate to those, so after a Turbo visit away, the browser back button
   -# would leave the other page on screen. Full page loads keep the back button working.
-  %body{ontouchstart: "", class: ("map-mode-rw" if @map_mode == "rw"), data: { turbo: "false" }}
+  %body{ontouchstart: "", data: { turbo: "false" },
+        class: [ ("map-mode-rw" if @map_mode == "rw"),
+                 ("map-nocontrols" if params["nocontrols"] == "true") ]}
 
     = javascript_import_module_tag "maplibre-gl"
     = javascript_import_module_tag "controllers"

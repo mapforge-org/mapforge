@@ -53,6 +53,13 @@ Available base maps can be customized in:
 app/javascript/maplibre/basemaps.js
 ```
 
+### Map URL Parameters
+
+A map URL accepts these parameters. They are useful for embedded maps:
+
+- `nomenu=true` hides the navigation toggle.
+- `nocontrols=true` hides all map controls and the view/edit mode badge.
+
 ### Rake Tasks
 
 - Import a map from a Mapforge export:

@@ -196,6 +196,13 @@
   color: var(--color-mid-chili);
 }
 
+/* ?nocontrols=true hides the map controls and the view/edit mode badge. The attribution
+   and the logo stay */
+body.map-nocontrols .maplibregl-ctrl:not(.maplibregl-ctrl-attrib, :has(> .maplibregl-ctrl-logo)),
+body.map-nocontrols #map-mode-badge {
+  display: none;
+}
+
 /* hide search form on mobile */
 @media (width < 640px) {
   .maplibregl-ctrl-top-left .maplibregl-ctrl, .maplibregl-ctrl-bottom-left .maplibregl-ctrl {

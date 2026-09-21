@@ -20,6 +20,26 @@ describe "Map public view" do
     end
   end
 
+  context "with nocontrols=true" do
+    let(:path) { "#{map.public_map_path}?nocontrols=true" }
+
+    it "hides the controls but keeps the attribution" do
+      expect(page).to have_css(".maplibregl-ctrl-attrib")
+      expect(page).not_to have_css(".maplibregl-ctrl-zoom-in")
+      expect(page).not_to have_css(".maplibregl-ctrl-geolocate")
+      expect(page).not_to have_css(".maplibregl-ctrl-layers")
+    end
+
+    context "in edit mode" do
+      let(:path) { "#{map.private_map_path}?nocontrols=true" }
+
+      it "hides the mode badge and the edit controls" do
+        expect(page).not_to have_css("#map-mode-badge")
+        expect(page).not_to have_css(".maplibregl-ctrl-select")
+      end
+    end
+  end
+
   # features are created before loading the map, to make sure they're loaded via /features
   context "with existing features" do
     # this polygon is in the middle of nbg (default view)
