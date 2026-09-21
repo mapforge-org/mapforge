@@ -50,20 +50,14 @@ msgstr "3D-Gelände:"
 msgid "3D Terrain: View your map with elevation"
 msgstr "3D-Gelände: Betrachte deine Karte mit Höhendaten"
 
-msgid "3D Terrain: View your map with realistic elevation"
-msgstr "3D-Gelände: Betrachte deine Karte mit realistischen Höhendaten"
+msgid "3D Terrain: View your map with mountains"
+msgstr "3D-Gelände: Betrachte deine Karte mit Bergen"
 
 msgid "A bicycle tour, the floor plan for your conference, a guide for your wedding guests"
 msgstr "Eine Radtour, der Raumplan deiner Konferenz, ein Wegweiser für deine Hochzeitsgäste"
 
-msgid "A view link, an edit link, a gallery listing, or private"
-msgstr "Ein Ansichtslink, ein Bearbeitungslink, ein Eintrag in der Galerie, oder privat"
-
 msgid "About"
 msgstr "Über"
-
-msgid "Access control: Keep maps private or share with view-only or edit permissions"
-msgstr "Zugriffskontrolle: Speichere Karten privat oder teile sie mit Lese- oder Bearbeitungsrechten"
 
 msgid "Add"
 msgstr "Hinzufügen"
@@ -590,6 +584,9 @@ msgstr "Zu Fuß"
 msgid "Full track"
 msgstr "Gesamter Track"
 
+msgid "GPS and compass: The map follows your position and turns with you"
+msgstr "GPS und Kompass: Die Karte folgt deiner Position und dreht sich mit dir"
+
 msgid "Gentle downhill (4-6%)"
 msgstr "Leichtes Gefälle (4-6 %)"
 
@@ -749,6 +746,9 @@ msgstr "Linie in 2 Abschnitte geteilt"
 msgid "Lines"
 msgstr "Linien"
 
+msgid "Listed in the gallery, or shared privately"
+msgstr "In der Galerie gelistet, oder privat geteilt"
+
 msgid "Live updates: Map changes are synchronized via websockets"
 msgstr "Live-Updates: Kartenänderungen werden über WebSockets synchronisiert"
 
@@ -799,9 +799,6 @@ msgstr "Kartendaten (gpx, kml, geojson)"
 
 msgid "Map export"
 msgstr "Karte"
-
-msgid "Map it while you're out there"
-msgstr "Kartiere unterwegs"
 
 msgid "Map layers"
 msgstr "Kartenebenen"
@@ -1049,9 +1046,6 @@ msgstr "Ebene für aktuellen Kartenausschnitt neu laden"
 msgid "Report issue"
 msgstr "Fehler melden"
 
-msgid "Responsive Design: Works well both on desktop and mobile"
-msgstr "Responsives Design: Funktioniert gut auf Desktop und Mobilgeräten"
-
 msgid "Reverse track"
 msgstr "Track umkehren"
 
@@ -1230,6 +1224,9 @@ msgstr "Die Datei ist kein gültiges XML"
 
 msgid "The image contains GPS coordinates (<code>%{coordinates}</code>).<br/>Do you want to place the marker there?"
 msgstr "Das Bild enthält GPS-Koordinaten (<code>%{coordinates}</code>).<br/>Möchtest du den Marker dort platzieren?"
+
+msgid "The map goes with you"
+msgstr "Die Karte kommt mit"
 
 msgid "The map starts centered on your content."
 msgstr "Die Karte startet zentriert auf deinen Inhalten."

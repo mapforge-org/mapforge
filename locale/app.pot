@@ -63,23 +63,15 @@ msgid "3D Terrain: View your map with elevation"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:101
-msgid "3D Terrain: View your map with realistic elevation"
+msgid "3D Terrain: View your map with mountains"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:76
 msgid "A bicycle tour, the floor plan for your conference, a guide for your wedding guests"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
-msgid "A view link, an edit link, a gallery listing, or private"
-msgstr ""
-
 #: ../app/views/shared/_footer.html.haml:52
 msgid "About"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:112
-msgid "Access control: Keep maps private or share with view-only or edit permissions"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:50
@@ -242,7 +234,7 @@ msgstr ""
 msgid "Build the map you have in mind"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:150
+#: ../app/views/frontpage/index.haml:149
 msgid "Built with %{rails_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link} and %{ors_link}"
 msgstr ""
 
@@ -446,7 +438,7 @@ msgstr ""
 msgid "Credits"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:118
+#: ../app/views/frontpage/index.haml:117
 msgid "Cross platform"
 msgstr ""
 
@@ -670,7 +662,7 @@ msgstr ""
 msgid "Embed map"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:113
+#: ../app/views/frontpage/index.haml:112
 msgid "Embedding: Include your map on your own web page"
 msgstr ""
 
@@ -706,7 +698,7 @@ msgstr ""
 msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:142
+#: ../app/views/frontpage/index.haml:141
 msgid "Export your maps as GeoJSON, or %{deploy_link}"
 msgstr ""
 
@@ -780,6 +772,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/feature/elevation.js:341
 msgid "Full track"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:123
+msgid "GPS and compass: The map follows your position and turns with you"
 msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:44
@@ -994,7 +990,11 @@ msgstr ""
 msgid "Lines"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:114
+#: ../app/views/frontpage/index.haml:110
+msgid "Listed in the gallery, or shared privately"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:113
 msgid "Live updates: Map changes are synchronized via websockets"
 msgstr ""
 
@@ -1034,7 +1034,7 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:115
+#: ../app/views/frontpage/index.haml:114
 msgid "Login: Have your maps assigned to your account"
 msgstr ""
 
@@ -1060,10 +1060,6 @@ msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:81
 msgid "Map export"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:121
-msgid "Map it while you're out there"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/shared.js:110
@@ -1094,7 +1090,7 @@ msgstr ""
 msgid "Map view updated"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:130
+#: ../app/views/frontpage/index.haml:129
 msgid "Map your track: Use %{ulogger_link} to visualize and share your tracks live"
 msgstr ""
 
@@ -1190,7 +1186,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:139
+#: ../app/views/frontpage/index.haml:138
 msgid "No ads, no tracking, no lock-in"
 msgstr ""
 
@@ -1202,7 +1198,7 @@ msgstr ""
 msgid "No route found"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:137
+#: ../app/views/frontpage/index.haml:136
 msgid "Nobody can take it away from you"
 msgstr ""
 
@@ -1234,7 +1230,7 @@ msgstr ""
 msgid "Opacity:"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:133 ../app/views/frontpage/index.haml:136
+#: ../app/views/frontpage/index.haml:132 ../app/views/frontpage/index.haml:132
 msgid "Open Source"
 msgstr ""
 
@@ -1394,10 +1390,6 @@ msgstr ""
 msgid "Report issue"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:124
-msgid "Responsive Design: Works well both on desktop and mobile"
-msgstr ""
-
 #: ../app/javascript/maplibre/controls/context_menu.js:72
 msgid "Reverse track"
 msgstr ""
@@ -1430,11 +1422,11 @@ msgstr ""
 msgid "Routing: Plan routes for walking, bicycle and car, with elevation profile"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:122
+#: ../app/views/frontpage/index.haml:121
 msgid "Run Mapforge on your phone, edit in the field, stream your track live"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:127
+#: ../app/views/frontpage/index.haml:126
 msgid "Run from your home screen as %{app_link}"
 msgstr ""
 
@@ -1634,6 +1626,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/feature.js:554
 msgid "The image contains GPS coordinates (<code>%{coordinates}</code>).<br/>Do you want to place the marker there?"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:120
+msgid "The map goes with you"
 msgstr ""
 
 #: ../app/views/maps/modals/_settings.haml:122
@@ -1880,7 +1876,7 @@ msgstr ""
 msgid "accommodation|lodging"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:126
+#: ../app/views/frontpage/index.haml:125
 msgid "app on your phone"
 msgstr ""
 
@@ -2040,7 +2036,7 @@ msgstr ""
 msgid "public_library"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:141
+#: ../app/views/frontpage/index.haml:140
 msgid "run the whole app on your own server"
 msgstr ""
 

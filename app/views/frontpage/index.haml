@@ -98,7 +98,7 @@
             %li= _("Routing: Plan routes for walking, bicycle and car, with elevation profile")
             %li
               %span.d-none.d-sm-inline
-                = _("3D Terrain: View your map with realistic elevation")
+                = _("3D Terrain: View your map with mountains")
               %span.d-sm-none
                 = _("3D Terrain: View your map with elevation")
     .row.g-0
@@ -107,9 +107,8 @@
       .col-lg-7.background-bright.slides
         .item
           %h2.mb-3.mapforge-font= _("One link to view, one to edit")
-          %h4.mb-3= _("A view link, an edit link, a gallery listing, or private")
+          %h4.mb-3= _("Listed in the gallery, or shared privately")
           %ul
-            %li= _("Access control: Keep maps private or share with view-only or edit permissions")
             %li= _("Embedding: Include your map on your own web page")
             %li= _("Live updates: Map changes are synchronized via websockets")
             %li= _("Login: Have your maps assigned to your account")
@@ -118,10 +117,10 @@
         %img{ src: "/images/frontpage/feature2.png", alt: _("Cross platform"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
-          %h2.mb-3.mapforge-font= _("Map it while you're out there")
+          %h2.mb-3.mapforge-font= _("The map goes with you")
           %h4.mb-3= _("Run Mapforge on your phone, edit in the field, stream your track live")
           %ul
-            %li= _("Responsive Design: Works well both on desktop and mobile")
+            %li= _("GPS and compass: The map follows your position and turns with you")
             %li
               - app_link = link_to _('app on your phone'), doc_path(id: 'app')
               = raw(_("Run from your home screen as %{app_link}") % { app_link: app_link })
