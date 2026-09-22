@@ -9,9 +9,9 @@ import { updateElevation } from 'maplibre/edit'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { importFile } from 'maplibre/import/kml'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer } from 'maplibre/layers/layers'
+import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, upsert } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/overpass/queries'
-import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName, upsert } from 'maplibre/map'
+import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
 
 // Browsers report an empty file.type for these when the platform mime database

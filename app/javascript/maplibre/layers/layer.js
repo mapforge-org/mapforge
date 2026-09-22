@@ -9,8 +9,8 @@ import {
   resetHighlightedFeature,
   stickyFeatureHighlight
 } from 'maplibre/feature'
-import { getFeature } from 'maplibre/layers/layers'
-import { addGeoJSONSource, frontFeature, map } from 'maplibre/map'
+import { frontFeature, getFeature } from 'maplibre/layers/layers'
+import { addGeoJSONSource, map } from 'maplibre/map'
 
 // Source prefixes whose features are selectable via click. Excludes basemap
 // vector features and raster layers (which handle their own clicks).

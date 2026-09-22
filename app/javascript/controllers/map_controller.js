@@ -3,9 +3,8 @@ import { initializeSocket, sendMessage } from 'channels/map_channel'
 import { parseClipboardFeature, setCopiedFeature } from 'helpers/clipboard'
 import * as functions from 'helpers/functions'
 import { moveFeatureTo } from 'maplibre/feature'
-import { resetInitializationState } from 'maplibre/layers/layers'
+import { addFeature, resetInitializationState } from 'maplibre/layers/layers'
 import {
-  addFeature,
   initializeMap,
   initializeStaticMode,
   initializeViewMode,

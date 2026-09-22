@@ -6,8 +6,7 @@ import { status } from 'helpers/status'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { handleDelete, updateElevation } from 'maplibre/edit'
 import { getFeatureTypeName } from 'maplibre/feature'
-import { applyFeatureUpdate, getFeature, renderLayers } from 'maplibre/layers/layers'
-import { addFeature } from 'maplibre/map'
+import { addFeature, applyFeatureUpdate, getFeature, renderLayers } from 'maplibre/layers/layers'
 import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {

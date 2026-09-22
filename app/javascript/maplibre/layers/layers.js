@@ -1,5 +1,9 @@
+import equal from 'fast-deep-equal'
 import * as functions from 'helpers/functions'
+import { status } from 'helpers/status'
+import { AnimatePointAnimation } from 'maplibre/animations'
 import { resetLevels } from 'maplibre/controls/levels'
+import { featureLabel, resetHighlightedFeature } from 'maplibre/feature'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { map, setLoadedMapUpdatedAt, sortLayers } from 'maplibre/map'
 
@@ -277,6 +281,95 @@ export function applyFeatureUpdate(feature, options) {
   const layer = getLayer(feature.id)
   if (layer?.applyFeatureUpdate) {
     layer.applyFeatureUpdate(feature, options)
+  }
+}
+
+export function upsert (updatedFeature, layerId) {
+  const feature = getFeature(updatedFeature.id)
+  if (!feature) { addFeature(updatedFeature, layerId); return }
+
+  // only update feature if it was changed, disregarding properties.id on both sides
+  // (the server now includes it for MapLibre's promoteId, so it isn't a meaningful diff)
+  const { id: _existingId, ...existingProperties } = feature.properties
+  const { id: _incomingId, ...incomingProperties } = updatedFeature.properties
+  if (!equal(feature.geometry, updatedFeature.geometry) || !equal(existingProperties, incomingProperties)) {
+    updateFeature(feature, updatedFeature)
+  }
+}
+
+export function addFeature (feature, layerId) {
+  feature.properties.id = feature.id
+  // A remote feature carries its layer id; local edits have none and go to the first geojson layer
+  const layer = layers?.find(l => l.type === 'geojson' && l.id === layerId) ||
+    layers?.find(l => l.type === 'geojson')
+  if (!layer) {
+    console.error('No geojson layer to add feature ' + feature.id + ' to')
+    return
+  }
+  layer.geojson.features.push(feature)
+  // Surgical single-feature add instead of a full re-render of every geojson layer.
+  layer.applyFeatureAdd(feature)
+  status(window.__('%{type} added').replace('%{type}', featureLabel(feature)))
+}
+
+// feature id -> AnimatePointAnimation, so each marker keeps its own timing and a new
+// position cancels only that marker's in-flight animation
+const pointAnimations = new Map()
+
+function updateFeature (feature, updatedFeature) {
+  const newCoords = updatedFeature.geometry.coordinates
+  const animateFrom = feature.geometry.type === 'Point' && !equal(feature.geometry.coordinates, newCoords)
+    ? feature.geometry.coordinates
+    : null
+
+  feature.geometry = updatedFeature.geometry
+  feature.properties = updatedFeature.properties
+
+  if (animateFrom) {
+    // Hold the marker where it currently is and let the animation walk it to newCoords. Without
+    // this the render below slams it onto the target and the first animation frame pulls it back.
+    feature.geometry.coordinates = animateFrom
+    let animation = pointAnimations.get(feature.id)
+    if (!animation) {
+      animation = new AnimatePointAnimation()
+      pointAnimations.set(feature.id, animation)
+    }
+    animation.animateTo(feature, newCoords)
+  }
+
+  status(window.__('%{type} updated').replace('%{type}', featureLabel(feature)))
+  // Surgical single-feature update instead of a full re-render of every geojson layer.
+  // A remote update may have changed geometry or toggled companions, so refresh them.
+  // (A remote change to a feature's level won't re-filter here — that needs a full render.)
+  applyFeatureUpdate(feature, { refreshRouteExtras: true, refreshKmMarkers: true })
+}
+
+export function destroyFeature (featureId) {
+  const feature = getFeature(featureId)
+  if (feature) {
+    status(window.__('Deleting %{type}').replace('%{type}', featureLabel(feature)))
+    const layer = getLayer(featureId)
+    layer.geojson.features = layer.geojson.features.filter(f => f.id !== featureId)
+    // Surgical single-feature remove instead of a full re-render of every geojson layer.
+    layer.applyFeatureRemove(feature)
+    resetHighlightedFeature()
+  }
+}
+
+export function frontFeature(frontFeature) {
+  // move feature to end of its layer's features array
+  for (const layer of layers) {
+    if (!layer?.geojson?.features) { continue }
+    const features = layer.geojson.features
+    const idx = features.findIndex(f => f.id === frontFeature.id)
+    if (idx !== -1) {
+      if (idx === features.length - 1) { break } // already in front, nothing to do
+      const [feature] = features.splice(idx, 1) // Remove it
+      features.push(feature) // Add to end
+      layer.bringToFront(feature)
+
+      break // done, exit loop
+    }
   }
 }
 

@@ -1,8 +1,7 @@
 import consumer from 'channels/consumer'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions } from 'maplibre/layers/layers'
+import { destroyFeature, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, upsert } from 'maplibre/layers/layers'
 import {
-  destroyFeature,
   initializeMaplibreProperties,
   loadedMapUpdatedAt,
   map,
@@ -11,8 +10,7 @@ import {
   setBackgroundMapLayer,
   setLayerVisibility,
   setLoadedMapUpdatedAt,
-  updateMapName,
-  upsert
+  updateMapName
 } from 'maplibre/map'
 
 

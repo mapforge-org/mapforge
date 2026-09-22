@@ -5,7 +5,7 @@ import * as dom from 'helpers/dom';
 import * as functions from 'helpers/functions';
 import { status } from 'helpers/status';
 import * as maplibregl from 'maplibre-gl';
-import { AnimateLineAnimation, AnimatePointAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
+import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations';
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
 import { removeEditControls } from 'maplibre/controls/edit';
 import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
@@ -13,12 +13,13 @@ import { initLevelFromURL } from 'maplibre/controls/levels';
 import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
-import { featureLabel, highlightFeature, resetHighlightedFeature } from 'maplibre/feature';
+import { highlightFeature } from 'maplibre/feature';
 import { refreshDescBanners, renderDescBanners } from 'maplibre/layers/geojson/desc_banners';
-import { applyFeatureUpdate, getFeature, getLayer, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
-import { basemaps, demSource, elevationSource } from 'maplibre/styles/basemaps';
+import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
+import { basemaps } from 'maplibre/styles/basemaps';
 import { applyBasemapDefaults, defaults } from 'maplibre/styles/defaults';
 import { clearImageState, loadImage } from 'maplibre/styles/styles';
+import { addElevationLayers } from 'maplibre/styles/terrain';
 
 export let map
 export let mapProperties
@@ -45,10 +46,8 @@ export function setLoadedMapUpdatedAt (value) { loadedMapUpdatedAt = value }
 export const clusterMaxZoom = 14
 
 let mapInteracted
-let backgroundTerrain
-let backgroundHillshade
-let backgroundGlobe
-let backgroundContours
+// basemap plus the properties that setStyle bakes into the style, see setBackgroundMapLayer
+let backgroundStyleKey
 
 // Workflow of map loading:
 //
@@ -97,6 +96,8 @@ export function initialView () {
 
 export async function initializeMap (divId = 'maplibre-map') {
   backgroundMapLayer = null
+  backgroundStyleKey = null
+  rasterZoomLimits = {}
 
   // Initialize level from URL FIRST, before any layer initialization
   // This ensures the level is set before style.load triggers initializeLayers
@@ -177,59 +178,76 @@ export async function initializeMap (divId = 'maplibre-map') {
   })
 
   // NOTE: map 'load' can happen before layers are loaded when loading features is slow
-  map.once('load', async function (_e) {
-    // trigger map fade-in
-    dom.animateElement('.map', 'fade-in', 250)
-    initCtrlTooltips()
-    functions.e('.maplibregl-ctrl button', e => {
-      e.setAttribute('data-toggle', 'tooltip')
-      e.setAttribute('data-bs-trigger', 'hover')
-    })
-    dom.initTooltips()
-    functions.e('#preloader', e => { e.classList.add('hidden') })
-    functions.e('.map', e => { e.setAttribute('data-map-loaded', true) })
+  map.once('load', onMapLoad)
+  bindMapEvents()
 
-    // Safe to call even if already triggered by style.load — returns the cached promise, no double loading
-    const layersLoaded = initializeLayers()
+  // map.on('error', (err) => {
+  //   console.log('map error >>> ', err)
+  // })
 
-    const urlFeatureId = new URLSearchParams(window.location.search).get('f')
-    let feature
-    if (urlFeatureId) {
-      // Only a feature link waits for the layers, the zoom-in below must start from its center.
-      // Every other map zooms in right away, before the overpass/wikipedia fetches finish.
-      await layersLoaded
-      if ((feature = getFeature(urlFeatureId))) {
-        resetControls()
-        highlightFeature(feature, true)
-        map.setCenter(centroid(feature).geometry.coordinates)
-      }
-    }
+  return true
+}
 
-    if (!functions.isTestEnvironment()) { map.easeTo({ zoom: map.getZoom() + 1, duration: 1000 })} // zoom in to configured zoom level
-    console.log("Map loaded ('load')")
+async function onMapLoad () {
+  // trigger map fade-in
+  dom.animateElement('.map', 'fade-in', 250)
+  initCtrlTooltips()
+  functions.e('.maplibregl-ctrl button', e => {
+    e.setAttribute('data-toggle', 'tooltip')
+    e.setAttribute('data-bs-trigger', 'hover')
+  })
+  dom.initTooltips()
+  functions.e('#preloader', e => { e.classList.add('hidden') })
+  functions.e('.map', e => { e.setAttribute('data-map-loaded', true) })
 
+  // Safe to call even if already triggered by style.load — returns the cached promise, no double loading
+  const layersLoaded = initializeLayers()
+
+  const urlFeatureId = new URLSearchParams(window.location.search).get('f')
+  let feature
+  if (urlFeatureId) {
+    // Only a feature link waits for the layers, the zoom-in below must start from its center.
+    // Every other map zooms in right away, before the overpass/wikipedia fetches finish.
     await layersLoaded
-
-    // Set idle marker for screenshot task — fires after all animations complete and tiles load
-    map.once('idle', () => {
-      functions.e('.map', e => { e.setAttribute('data-map-idle', true) })
-    })
-
-    const urlFeatureAnimateId = new URLSearchParams(window.location.search).get('a')
-    if (urlFeatureAnimateId && (feature = getFeature(urlFeatureAnimateId))) {
-      console.log('Animating ' + feature.id)
+    if ((feature = getFeature(urlFeatureId))) {
       resetControls()
-      if (feature.geometry.type === 'LineString') {
-        new AnimateLineAnimation().run(feature)
-      } else if (feature?.geometry?.type === 'Polygon') {
-        new AnimatePolygonAnimation().run(feature)
-      } else {
-        console.error('Feature to animate ' + animateFeatureId + ' not found!')
-      }
-      animateViewFromProperties()
+      highlightFeature(feature, true)
+      map.setCenter(centroid(feature).geometry.coordinates)
     }
+  }
+
+  if (!functions.isTestEnvironment()) { map.easeTo({ zoom: map.getZoom() + 1, duration: 1000 })} // zoom in to configured zoom level
+  console.log("Map loaded ('load')")
+
+  await layersLoaded
+
+  // Set idle marker for screenshot task — fires after all animations complete and tiles load
+  map.once('idle', () => {
+    functions.e('.map', e => { e.setAttribute('data-map-idle', true) })
   })
 
+  animateFeatureFromUrl()
+}
+
+function animateFeatureFromUrl () {
+  const featureId = new URLSearchParams(window.location.search).get('a')
+  const feature = featureId && getFeature(featureId)
+  if (!feature) { return }
+
+  console.log('Animating ' + feature.id)
+  resetControls()
+  const type = feature.geometry?.type
+  if (type === 'LineString') {
+    new AnimateLineAnimation().run(feature)
+  } else if (type === 'Polygon') {
+    new AnimatePolygonAnimation().run(feature)
+  } else {
+    console.error('Feature ' + featureId + ' has type ' + type + ', which cannot be animated')
+  }
+  animateViewFromProperties()
+}
+
+function bindMapEvents () {
   map.on('mousemove', (e) => { updateCursorPosition(e) })
   map.on('touchend', (e) => { updateCursorPosition(e) })
   map.on('drag', () => {
@@ -259,22 +277,21 @@ export async function initializeMap (divId = 'maplibre-map') {
     map.once('drag', (_e) => { hideContextMenu() })
   })
   map.on('touchstart', () => { map.longPressTriggered = false })
+}
 
-  // map.on('error', (err) => {
-  //   console.log('map error >>> ', err)
-  // })
+// Read from the style JSON once per basemap load, because getStyle() copies the whole style and
+// limitZoom runs on every zoom event. The live source object is no substitute: it reports the
+// maplibre default maxzoom 22 when the style sets none.
+let rasterZoomLimits = {}
 
-  return true
+function updateRasterZoomLimits () {
+  const sources = map.getStyle().sources
+  const rasterSource = sources['raster-tiles'] || sources['satellite']
+  rasterZoomLimits = { maxZoom: rasterSource?.maxzoom, minZoom: rasterSource?.minzoom }
 }
 
 function limitZoom() {
-  if (!layers) { return }
-
-  const style = map.getStyle()
-  const rasterSource = Object.entries(style.sources)
-    .find(([name, _source]) => (name === 'raster-tiles' || name === 'satellite'))
-  const maxZoom = rasterSource ? rasterSource[1].maxzoom : null
-  const minZoom = rasterSource ? rasterSource[1].minzoom : null
+  const { maxZoom, minZoom } = rasterZoomLimits
 
   // block zooming in closer than defined max zoom level
   if (maxZoom && (map.getZoom() > maxZoom - 0.2)) {
@@ -354,7 +371,7 @@ export function setLayerVisibility(sourceName, visible) {
       })
   }
   // description banners are DOM popups, not style layers, see desc_banners.js
-  const layer = layers.find(l => l.sourceId === sourceName)
+  const layer = layers?.find(l => l.sourceId === sourceName)
   if (layer?.type === 'geojson') { renderDescBanners(layer.geojson?.features || [], layer, visible) }
 }
 
@@ -379,111 +396,6 @@ export function reloadMapProperties () {
       window.gon.map_updated_at = data.updated_at
     })
     .catch(error => { console.error('Failed to fetch map properties', error) })
-}
-
-function addTerrain () {
-  if (backgroundMapLayer === 'test') { return }
-  map.addSource('map-terrain', elevationSource)
-  map.setTerrain({
-    source: 'map-terrain',
-    exaggeration: 0.05
-  })
-  status(window.__('Terrain added to map'))
-}
-
-function addHillshade () {
-  if (backgroundMapLayer === 'test') { return }
-  map.addSource('map-hillshade', elevationSource)
-  map.addLayer({
-    id: 'hills',
-    type: 'hillshade',
-    source: 'map-hillshade',
-    layout: { visibility: 'visible' },
-    paint: {
-      "hillshade-method": "standard",
-      'hillshade-shadow-color': '#473B24',
-      "hillshade-exaggeration": 0.2
-    }
-  })
-  status(window.__('Hillshade added to map'))
-}
-
-function addContours () {
-  if (backgroundMapLayer === 'test') { return }
-  map.addSource('map-contours', {
-    type: "vector",
-    tiles: [
-      demSource.contourProtocolUrl({
-        thresholds: {
-          // zoom: [minor, major]
-          10: [200, 400],
-          11: [200, 400],
-          12: [100, 200],
-          13: [100, 200],
-          14: [50, 100],
-          15: [20, 100],
-        },
-        elevationKey: "ele",
-        levelKey: "level",
-        contourLayer: "contours",
-        buffer: 1,
-        overzoom: 2
-      }),
-    ],
-    maxzoom: 16,
-  })
-  map.addLayer({
-    id: "contours",
-    type: "line",
-    source: "map-contours",
-    "source-layer": "contours",
-    paint: {
-      "line-color": "rgba(0,0,0, 50%)",
-      "line-width": ["match", ["get", "level"], 1, 1, 0.5],
-    },
-    layout: {
-      "line-join": "round",
-    },
-  })
-  map.addLayer({
-    id: "contour-text",
-    type: "symbol",
-    source: "map-contours",
-    "source-layer": "contours",
-    filter: [">", ["get", "level"], 0],
-    paint: {
-      "text-halo-color": "white",
-      "text-halo-width": 1,
-    },
-    layout: {
-      "symbol-placement": "line",
-      "text-anchor": "center",
-      "text-size": 11,
-      "text-field": [
-        "concat",
-        ["number-format", ["get", "ele"], {}],
-        "m",
-      ],
-      "text-font": [defaults.font]
-    }
-  })
-  status(window.__('Contour lines added to map'))
-}
-
-function addGlobe () {
-  // https://maplibre.org/maplibre-style-spec/projection/
-  map.setProjection({ type: 'globe' })
-  // see https://maplibre.org/maplibre-gl-js/docs/examples/sky-with-fog-and-terrain/
-  map.setSky({
-    'atmosphere-blend': [
-      'interpolate',
-      ['linear'],
-      ['zoom'],
-      0, 1,
-      5, 1,
-      7, 0
-    ]
-  })
 }
 
 export function initializeStaticMode () {
@@ -563,87 +475,11 @@ export function onMapClickAfterLayers(callback) {
   })
 }
 
-export function upsert (updatedFeature, layerId) {
-  const feature = getFeature(updatedFeature.id)
-  if (!feature) { addFeature(updatedFeature, layerId); return }
-
-  // only update feature if it was changed, disregarding properties.id on both sides
-  // (the server now includes it for MapLibre's promoteId, so it isn't a meaningful diff)
-  const existingFeature = JSON.parse(JSON.stringify(feature))
-  const incomingFeature = JSON.parse(JSON.stringify(updatedFeature))
-  delete existingFeature.properties.id
-  delete incomingFeature.properties.id
-  if (!equal(existingFeature, incomingFeature)) {
-    updateFeature(feature, updatedFeature)
-  }
-}
-
-export function addFeature (feature, layerId) {
-  feature.properties.id = feature.id
-  // A remote feature carries its layer id; local edits have none and go to the first geojson layer
-  const layer = layers.find(l => l.type === 'geojson' && l.id === layerId) ||
-    layers.find(l => l.type === 'geojson')
-  layer.geojson.features.push(feature)
-  // Surgical single-feature add instead of a full re-render of every geojson layer.
-  layer.applyFeatureAdd(feature)
-  status(window.__('%{type} added').replace('%{type}', featureLabel(feature)))
-}
-
-// feature id -> AnimatePointAnimation, so each marker keeps its own timing and a new
-// position cancels only that marker's in-flight animation
-const pointAnimations = new Map()
-
-function updateFeature (feature, updatedFeature) {
-  const newCoords = updatedFeature.geometry.coordinates
-  const animateFrom = feature.geometry.type === 'Point' && !equal(feature.geometry.coordinates, newCoords)
-    ? feature.geometry.coordinates
-    : null
-
-  feature.geometry = updatedFeature.geometry
-  feature.properties = updatedFeature.properties
-
-  if (animateFrom) {
-    // Hold the marker where it currently is and let the animation walk it to newCoords. Without
-    // this the render below slams it onto the target and the first animation frame pulls it back.
-    feature.geometry.coordinates = animateFrom
-    let animation = pointAnimations.get(feature.id)
-    if (!animation) {
-      animation = new AnimatePointAnimation()
-      pointAnimations.set(feature.id, animation)
-    }
-    animation.animateTo(feature, newCoords)
-  }
-
-  status(window.__('%{type} updated').replace('%{type}', featureLabel(feature)))
-  // Surgical single-feature update instead of a full re-render of every geojson layer.
-  // A remote update may have changed geometry or toggled companions, so refresh them.
-  // (A remote change to a feature's level won't re-filter here — that needs a full render.)
-  applyFeatureUpdate(feature, { refreshRouteExtras: true, refreshKmMarkers: true })
-}
-
-export function destroyFeature (featureId) {
-  const feature = getFeature(featureId)
-  if (feature) {
-    status(window.__('Deleting %{type}').replace('%{type}', featureLabel(feature)))
-    const layer = getLayer(featureId)
-    layer.geojson.features = layer.geojson.features.filter(f => f.id !== featureId)
-    // Surgical single-feature remove instead of a full re-render of every geojson layer.
-    layer.applyFeatureRemove(feature)
-    resetHighlightedFeature()
-  }
-}
-
 // after basemap style is ready/changed, init layers + load their data if needed
 async function initializeStyles() {
   console.log('Initializing sources and layer styles after basemap load/change')
 
-  // Add terrain/hillshade/contours FIRST so they're in the base layer group
-  // when sortLayers() runs, keeping them below user GeoJSON features
-  demSource.setupMaplibre(maplibregl)
-  if (mapProperties.terrain) { addTerrain() }
-  if (mapProperties.hillshade) { addHillshade() }
-  if (mapProperties.globe) { addGlobe() }
-  if (mapProperties.contours) { addContours() }
+  addElevationLayers(mapProperties, backgroundMapLayer)
 
   // First load: initialize layers (loads definitions, creates sources, loads styles/data)
   // Subsequent calls: re-initialize sources and styles (basemap change removes all sources/layers)
@@ -681,38 +517,31 @@ function basemapFontTransform (basemap) {
 // Returns true if a basemap reload was triggered (caller can rely on the
 // style.load handler to re-initialize layer sources/styles), false otherwise.
 export function setBackgroundMapLayer (mapName = mapProperties.base_map, force = false) {
-  if (backgroundMapLayer === mapName &&
-      backgroundTerrain === mapProperties.terrain &&
-      backgroundHillshade === mapProperties.hillshade &&
-      backgroundContours === mapProperties.contours &&
-      backgroundGlobe === mapProperties.globe && !force) { return false }
+  const { terrain, hillshade, contours, globe } = mapProperties
+  const styleKey = JSON.stringify([mapName, terrain, hillshade, contours, globe])
+  if (backgroundStyleKey === styleKey && !force) { return false }
   let basemap = basemaps()[mapName]
   if (!basemap) {
     console.error('Base map ' + mapName + ' not available!')
     basemap = basemaps()['osmRasterTiles']
   }
-  if (basemap) {
-    map.once('style.load', async () => {
-      status(window.__('Loaded base map %{name}').replace('%{name}', mapName))
-      // on map style change, all sources and layers are removed, so we need to re-initialize them
-      await initializeStyles()
-      limitZoom()
-    })
-    backgroundMapLayer = mapName
-    backgroundTerrain = mapProperties.terrain
-    backgroundHillshade = mapProperties.hillshade
-    backgroundContours = mapProperties.contours
-    backgroundGlobe = mapProperties.globe
-    applyBasemapDefaults(basemap)
-    // Edit styles are built once when MapboxDraw is created, so they need to get
-    // rebuilt from the new defaults before setStyle makes draw re-add its layers
-    map.fire('basemap.change')
-    // Clear image cache so icons can be re-loaded after basemap change
-    clearImageState()
-    map.setStyle(basemap.style, { diff: true, strictMode: true, transformStyle: basemapFontTransform(basemap) })
-    return true
-  }
-  return false
+  map.once('style.load', async () => {
+    status(window.__('Loaded base map %{name}').replace('%{name}', mapName))
+    // on map style change, all sources and layers are removed, so we need to re-initialize them
+    updateRasterZoomLimits()
+    await initializeStyles()
+    limitZoom()
+  })
+  backgroundMapLayer = mapName
+  backgroundStyleKey = styleKey
+  applyBasemapDefaults(basemap)
+  // Edit styles are built once when MapboxDraw is created, so they need to get
+  // rebuilt from the new defaults before setStyle makes draw re-add its layers
+  map.fire('basemap.change')
+  // Clear image cache so icons can be re-loaded after basemap change
+  clearImageState()
+  map.setStyle(basemap.style, { diff: true, strictMode: true, transformStyle: basemapFontTransform(basemap) })
+  return true
 }
 
 export function updateBuildingOpacity () {
@@ -789,23 +618,6 @@ export function updateMapName (name) {
     document.title = 'Mapforge map: ' + mapProperties.name
   }
   functions.e('#map-title', e => { e.textContent = mapProperties.name })
-}
-
-export function frontFeature(frontFeature) {
-  // move feature to end of its layer's features array
-  for (const layer of layers) {
-    if (!layer?.geojson?.features) { continue }
-    const features = layer.geojson.features
-    const idx = features.findIndex(f => f.id === frontFeature.id)
-    if (idx !== -1) {
-      if (idx === features.length - 1) { break } // already in front, nothing to do
-      const [feature] = features.splice(idx, 1) // Remove it
-      features.push(feature) // Add to end
-      layer.bringToFront(feature)
-
-      break // done, exit loop
-    }
-  }
 }
 
 export function viewUnchanged() {
