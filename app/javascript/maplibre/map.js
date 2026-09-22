@@ -247,51 +247,18 @@ export async function initializeMap (divId = 'maplibre-map') {
   map.on('online', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', true) }) })
   map.on('offline', (_e) => { functions.e('#maplibre-map', e => { e.setAttribute('data-online', false) }) })
 
+  // MapLibre >= 6.11 fires contextmenu on touch long press itself
   map.on('contextmenu', (e) => {
     e.preventDefault()
+    // lets the tap-to-click patch in edit.js skip the touchend that ends a long press
+    map.longPressTriggered = true
     // menu gets unhidden only when there are buttons
     initContextMenu(e)
     map.once('zoom', (_e) => { hideContextMenu() })
     map.once('rotate', (_e) => { hideContextMenu() })
     map.once('drag', (_e) => { hideContextMenu() })
   })
-
-  // Long-press support for touch devices
-  if (functions.isTouchDevice()) {
-    let longPressTimer = null
-    let longPressStartPoint = null
-    const cancelLongPress = () => {
-      if (longPressTimer) clearTimeout(longPressTimer)
-      longPressTimer = null
-      longPressStartPoint = null
-    }
-
-    map.on('touchstart', (e) => {
-      if (e.originalEvent.touches.length > 1) return cancelLongPress() // Cancel on multi-touch
-      longPressStartPoint = e.point
-      longPressTimer = setTimeout(() => {
-        map.fire('contextmenu', {
-          point: longPressStartPoint,
-          lngLat: map.unproject(longPressStartPoint),
-          preventDefault: () => {}
-        })
-        map.longPressTriggered = true
-        cancelLongPress()
-      }, 500)
-    })
-
-    map.on('touchmove', (e) => {
-      if (!longPressTimer) return
-      const dx = Math.abs(e.point.x - longPressStartPoint.x)
-      const dy = Math.abs(e.point.y - longPressStartPoint.y)
-      if (dx > 10 || dy > 10) cancelLongPress()
-    })
-
-    map.on('touchend', () => {
-      cancelLongPress()
-      setTimeout(() => { map.longPressTriggered = false }, 0)
-    })
-  }
+  map.on('touchstart', () => { map.longPressTriggered = false })
 
   // map.on('error', (err) => {
   //   console.log('map error >>> ', err)
