@@ -12,17 +12,50 @@ import { refreshFeatureMeta } from 'maplibre/feature/details';
 import { addFeature, applyFeatureUpdate, destroyFeature, getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
 import { map, mapProperties, onMapClickAfterLayers } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
-import { getPointsElevation, getRouteElevation, getRouteUpdate } from 'maplibre/routing/openrouteservice';
+import { getRouteUpdate, updateElevation } from 'maplibre/routing/openrouteservice';
 import { editStyles, initializeEditStyles } from 'maplibre/styles/edit_styles';
 import { addUndoState, redo, undo } from 'maplibre/undo';
 
 export let draw
-export let selectedFeature
+// The route feature that directions currently edits. Only directions sets it.
+export let selectedRoute
 let currentMode
 
 // Every handler that initializeEditMode() registers stays alive after a switch to
 // view mode, so the edit-only ones must check the current mode when they fire.
 const inEditMode = () => window.gon.map_mode === 'rw'
+
+// The messages are functions so that the translation runs after the locale loads
+const DRAW_MODES = {
+  draw_paint_mode: {
+    button: '.mapbox-gl-draw_paint', lineMenu: true,
+    message: () => window.__('Paint Mode: Click on the map to start drawing, release to finish')
+  },
+  directions_car: {
+    button: '.mapbox-gl-draw_road', lineMenu: true, profile: 'car',
+    message: () => window.__('Road Mode: Click on the map to set waypoints, double click to finish')
+  },
+  directions_bike: {
+    button: '.mapbox-gl-draw_bicycle', lineMenu: true, profile: 'bike',
+    message: () => window.__('Bicycle Mode: Click on the map to set waypoints, double click to finish')
+  },
+  directions_foot: {
+    button: '.mapbox-gl-draw_foot', lineMenu: true, profile: 'foot',
+    message: () => window.__('Walk Mode: Click on the map to set waypoints, double click to finish')
+  },
+  draw_point: {
+    button: '.mapbox-gl-draw_point',
+    message: () => window.__('Point Mode: Click on the map to place a marker')
+  },
+  draw_polygon: {
+    button: '.mapbox-gl-draw_polygon',
+    message: () => window.__('Polygon Mode: Click on the map to draw a polygon')
+  },
+  draw_line_string: {
+    button: '.ctrl-line-menu .mapbox-gl-draw_line', lineMenu: true,
+    message: () => window.__('Line Mode: Click on the map to draw a line')
+  }
+}
 
 // https://github.com/mapbox/mapbox-gl-draw
 export async function initializeEditMode () {
@@ -40,45 +73,8 @@ export async function initializeEditMode () {
   MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-'
   MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group'
 
-  // Patching direct select mode to not allow dragging features
-  // similar to https://github.com/zakjan/mapbox-gl-draw-waypoint
-  const DirectSelectMode = { ...MapboxDraw.modes.direct_select }
-  DirectSelectMode.dragFeature = function (_state, _e, _delta) { /* noop */ }
-
-  // Hide context menu when dragging vertices
-  const originalDragVertex = DirectSelectMode.dragVertex
-  DirectSelectMode.dragVertex = function (state, e, delta) {
-    hideContextMenu()
-    return originalDragVertex.call(this, state, e, delta)
-  }
-
-  // Patch simple select mode to hide context menu when dragging points
-  const SimpleSelectMode = { ...MapboxDraw.modes.simple_select }
-  const originalStartOnActiveFeature = SimpleSelectMode.startOnActiveFeature
-  SimpleSelectMode.startOnActiveFeature = function (state, e) {
-    hideContextMenu()
-    return originalStartOnActiveFeature.call(this, state, e)
-  }
-
-  const DirectionsMode = { ...SimpleSelectMode }
-  DirectionsMode.onClick = function (_state, _e, _delta) { /* noop */ }
-  const DirectionsCarMode = { ...DirectionsMode }
-  const DirectionsBikeMode = { ...DirectionsMode }
-  const DirectionsFootMode = { ...DirectionsMode }
-
   // load mapbox-gl-draw-paint-mode on demand
   const PaintModeModule = await import('mapbox-gl-draw-paint-mode')
-  const PaintMode = PaintModeModule.default
-
-  const modes = {
-    ...MapboxDraw.modes,
-    simple_select: SimpleSelectMode,
-    directions_car: DirectionsCarMode,
-    directions_bike: DirectionsBikeMode,
-    directions_foot: DirectionsFootMode,
-    direct_select: DirectSelectMode,
-    draw_paint_mode: PaintMode
-  }
 
   draw = new MapboxDraw({
     displayControlsDefault: false,
@@ -95,7 +91,7 @@ export async function initializeEditMode () {
     touchBuffer: 5, // default 25, allow more fine selection eg. of midpoints
     // user properties are available, prefixed with 'user_'
     userProperties: true,
-    modes
+    modes: buildModes(MapboxDraw.modes, PaintModeModule.default)
   })
 
   // Expose draw for testing
@@ -129,94 +125,140 @@ export async function initializeEditMode () {
     if (feature) { map.fire('draw.selectionchange', {features: [feature]}) }
   })
 
-  map.on('draw.modechange', () => {
-    // probably mapbox draw bug: map can lose drag capabilities on double click
-    if (!isGeolocateCompassModeActive()) map.dragPan.enable()
-    if (currentMode === draw.getMode()) { return }
-    console.log("Switch draw mode from '" + currentMode + "' to '" + draw.getMode() + "'")
-
-    // Reduce extrusion opacity to make edit handles visible. When restoring, each
-    // bucket layer goes back to its own opacity (encoded as the trailing number in
-    // the layer id, e.g. polygon-layer-extrusion-7_... → 0.7).
-    if (map.getStyle && map.getStyle().layers) {
-      const restoring = draw.getMode() === 'simple_select' || draw.getMode().startsWith('draw_')
-      map.getStyle().layers
-        .filter(l => l.id.startsWith('polygon-layer-extrusion-'))
-        .forEach(l => {
-          const bucket = parseInt(l.id.match(/^polygon-layer-extrusion-(\d+)_/)?.[1], 10)
-          const opacity = restoring ? bucket / 10 : 0.5
-          map.setPaintProperty(l.id, 'fill-extrusion-opacity', opacity)
-        })
-    }
-
-    currentMode = draw.getMode()
-    resetDirections()
-    functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
-    // any paint mode
-    if (draw.getMode() !== 'simple_select' && draw.getMode() !== 'direct_select') {
-      functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
-      functions.e('.maplibregl-ctrl-select', e => { e.classList.remove('active') })
-    } else {
-      // select mode
-      hideInfoStatus()
-      functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
-      functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
-    }
-    if (draw.getMode() === 'draw_paint_mode') {
-      functions.e('.mapbox-gl-draw_paint', e => { e.classList.add('active') })
-      functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
-      status(window.__('Paint Mode: Click on the map to start drawing, release to finish'),
-        'info', 'medium', 8000)
-    } else if (draw.getMode() === 'directions_car') {
-      functions.e('.mapbox-gl-draw_road', e => { e.classList.add('active') })
-      functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
-      status(window.__('Road Mode: Click on the map to set waypoints, double click to finish'),
-        'info', 'medium', 8000)
-      initDirections('car')
-    } else if (draw.getMode() === 'directions_bike') {
-      functions.e('.mapbox-gl-draw_bicycle', e => { e.classList.add('active') })
-      functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
-      status(window.__('Bicycle Mode: Click on the map to set waypoints, double click to finish'),
-        'info', 'medium', 8000)
-      initDirections('bike')
-    } else if (draw.getMode() === 'directions_foot') {
-      functions.e('.mapbox-gl-draw_foot', e => { e.classList.add('active') })
-      functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
-      status(window.__('Walk Mode: Click on the map to set waypoints, double click to finish'),
-        'info', 'medium', 8000)
-      initDirections('foot')
-    } else if (draw.getMode() === 'draw_point') {
-      functions.e('.mapbox-gl-draw_point', e => { e.classList.add('active') })
-      status(window.__('Point Mode: Click on the map to place a marker'), 'info', 'medium', 8000)
-    } else if (draw.getMode() === 'draw_polygon') {
-      functions.e('.mapbox-gl-draw_polygon', e => { e.classList.add('active') })
-      status(window.__('Polygon Mode: Click on the map to draw a polygon'), 'info', 'medium', 8000)
-    } else if (draw.getMode() === 'draw_line_string') {
-      functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') })
-      functions.e('.ctrl-line-menu .mapbox-gl-draw_line', e => { e.classList.add('active') })
-      status(window.__('Line Mode: Click on the map to draw a line'), 'info', 'medium', 8000)
-    }
-  })
+  map.on('draw.modechange', handleModeChange)
 
   // https://github.com/mapbox/mapbox-gl-draw/blob/main/src/constants.js#L57
   map.on('draw.create', handleCreate)
   map.on('draw.update', handleUpdate)
   map.on('draw.delete', handleDelete)
 
-  // Mapbox Draw kills the click event on mobile (https://github.com/mapbox/mapbox-gl-js/issues/9114)
-  // patching click on touchstart + touchend on same position
-  // alternative solution: https://github.com/mapbox/mapbox-gl-draw/issues/617#issuecomment-2764850360
+  patchTouchClick()
+
+  map.on('online', (_e) => { enableEditControls() })
+  map.on('offline', (_e) => { disableEditControls() })
+
+  // in edit mode, map click handler is needed to hide modals
+  // and to hide feature modal if no feature is selected
+  onMapClickAfterLayers(() => {
+    // mapbox draw type features don't fire map.click, but directions does - ignore it
+    if (draw.getMode() == 'direct_select' || draw.getMode() == 'simple_select') {
+      selectedRoute = null
+      resetControls()
+      // the edit controls are gone after a switch to view mode
+      functions.e('#edit-buttons', e => { e.classList.add('hidden') })
+      functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
+    }
+  })
+
+  document.addEventListener('keydown', function (event) {
+    // console.log('key', event)
+    if (!inEditMode()) { return }
+    if (functions.isFormFieldFocused()) { return }
+    if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+      event.preventDefault()
+      undo()
+    }
+    if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
+      event.preventDefault()
+      redo()
+    }
+  })
+}
+
+function buildModes (drawModes, PaintMode) {
+  // Patching direct select mode to not allow dragging features
+  // similar to https://github.com/zakjan/mapbox-gl-draw-waypoint
+  const DirectSelectMode = { ...drawModes.direct_select }
+  DirectSelectMode.dragFeature = function (_state, _e, _delta) { /* noop */ }
+
+  // Hide context menu when dragging vertices
+  const originalDragVertex = DirectSelectMode.dragVertex
+  DirectSelectMode.dragVertex = function (state, e, delta) {
+    hideContextMenu()
+    return originalDragVertex.call(this, state, e, delta)
+  }
+
+  // Patch simple select mode to hide context menu when dragging points
+  const SimpleSelectMode = { ...drawModes.simple_select }
+  const originalStartOnActiveFeature = SimpleSelectMode.startOnActiveFeature
+  SimpleSelectMode.startOnActiveFeature = function (state, e) {
+    hideContextMenu()
+    return originalStartOnActiveFeature.call(this, state, e)
+  }
+
+  const DirectionsMode = { ...SimpleSelectMode }
+  DirectionsMode.onClick = function (_state, _e, _delta) { /* noop */ }
+
+  return {
+    ...drawModes,
+    simple_select: SimpleSelectMode,
+    directions_car: DirectionsMode,
+    directions_bike: DirectionsMode,
+    directions_foot: DirectionsMode,
+    direct_select: DirectSelectMode,
+    draw_paint_mode: PaintMode
+  }
+}
+
+function handleModeChange () {
+  // probably mapbox draw bug: map can lose drag capabilities on double click
+  if (!isGeolocateCompassModeActive()) map.dragPan.enable()
+  const mode = draw.getMode()
+  if (currentMode === mode) { return }
+  console.log("Switch draw mode from '" + currentMode + "' to '" + mode + "'")
+
+  setExtrusionOpacity(mode === 'simple_select' || mode.startsWith('draw_'))
+
+  currentMode = mode
+  resetDirections()
+  functions.e('.ctrl-line-menu', e => { e.classList.add('hidden') })
+  // any paint mode
+  if (mode !== 'simple_select' && mode !== 'direct_select') {
+    functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
+    functions.e('.maplibregl-ctrl-select', e => { e.classList.remove('active') })
+  } else {
+    // select mode
+    hideInfoStatus()
+    functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
+    functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
+  }
+
+  const config = DRAW_MODES[mode]
+  if (!config) { return }
+  functions.e(config.button, e => { e.classList.add('active') })
+  if (config.lineMenu) { functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') }) }
+  status(config.message(), 'info', 'medium', 8000)
+  if (config.profile) { initDirections(config.profile) }
+}
+
+// Reduce extrusion opacity to make edit handles visible. When restoring, each
+// bucket layer goes back to its own opacity (encoded as the trailing number in
+// the layer id, e.g. polygon-layer-extrusion-7_... → 0.7).
+function setExtrusionOpacity (restoring) {
+  if (!map.getStyle || !map.getStyle().layers) { return }
+  map.getStyle().layers
+    .filter(l => l.id.startsWith('polygon-layer-extrusion-'))
+    .forEach(l => {
+      const bucket = parseInt(l.id.match(/^polygon-layer-extrusion-(\d+)_/)?.[1], 10)
+      const opacity = restoring ? bucket / 10 : 0.5
+      map.setPaintProperty(l.id, 'fill-extrusion-opacity', opacity)
+    })
+}
+
+// Mapbox Draw kills the click event on mobile (https://github.com/mapbox/mapbox-gl-js/issues/9114)
+// patching click on touchstart + touchend on same position
+// alternative solution: https://github.com/mapbox/mapbox-gl-draw/issues/617#issuecomment-2764850360
+function patchTouchClick () {
   // A finger tap drifts, so the slop matches the platform touch slop (~8dp) instead of the
   // 3px mouse threshold. Below this, no click fires at all and no feature can be selected.
   const TAP_SLOP = 10
   let touchStartPosition
-  let touchEndPosition
   map.on('touchstart', (e) => {
     touchStartPosition = e.point
   })
   map.on('touchend', (e) => {
     // No mode check: draw stays attached in view mode and keeps killing the click there
-    touchEndPosition = e.point
+    const touchEndPosition = e.point
     if (touchStartPosition &&
       Math.abs(touchStartPosition.x - touchEndPosition.x) < TAP_SLOP &&
       Math.abs(touchStartPosition.y - touchEndPosition.y) < TAP_SLOP &&
@@ -240,40 +282,16 @@ export async function initializeEditMode () {
       setTimeout(() => { if (!isGeolocateCompassModeActive()) map.dragPan.enable() }, 0)
     }
   })
-
-  map.on('online', (_e) => { enableEditControls() })
-  map.on('offline', (_e) => { disableEditControls() })
-
-  // in edit mode, map click handler is needed to hide modals
-  // and to hide feature modal if no feature is selected
-  onMapClickAfterLayers(() => {
-    // mapbox draw type features don't fire map.click, but directions does - ignore it
-    if (draw.getMode() == 'direct_select' || draw.getMode() == 'simple_select') {
-      selectedFeature = null
-      resetControls()
-      // the edit controls are gone after a switch to view mode
-      functions.e('#edit-buttons', e => { e.classList.add('hidden') })
-      functions.e('.maplibregl-ctrl-select', e => { e.classList.add('active') })
-    }
-  })
-
-  document.addEventListener('keydown', function (event) {
-    // console.log('key', event)
-    if (!inEditMode()) { return }
-    if (functions.isFormFieldFocused()) { return }
-    if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
-      event.preventDefault()
-      undo()
-    }
-    if ((event.ctrlKey || event.metaKey) && event.key === 'y') {
-      event.preventDefault()
-      redo()
-    }
-  })
 }
 
 export function resetEditMode() {
-  if (draw) {  draw = null }
+  draw = null
+}
+
+// draw.changeMode() does not fire 'draw.modechange' itself
+function changeMode (mode, options) {
+  draw.changeMode(mode, options)
+  map.fire('draw.modechange')
 }
 
 export function toggleDrawMode(mode) {
@@ -282,8 +300,7 @@ export function toggleDrawMode(mode) {
     return  // noop - mode stays active
   }
   resetControls()
-  draw.changeMode(mode)
-  map.fire('draw.modechange')
+  changeMode(mode)
 }
 
 // switching directly from 'simple_select' to 'direct_select',
@@ -291,31 +308,25 @@ export function toggleDrawMode(mode) {
 // direct_select mode does not allow to select other features
 export function select (feature) {
   // console.log('select', feature)
-  if (feature?.properties?.route?.provider === 'osrm' || feature?.properties?.route?.provider === 'ors') {
-    let profile = feature?.properties?.route?.profile
+  const route = feature?.properties?.route
+  if (route?.provider === 'osrm' || route?.provider === 'ors') {
     // don't re-initialize direction if already active on same feature
-    if (draw.getMode() !== 'directions_' + profile
-      || selectedFeature?.id !== feature.id) {
-      draw.changeMode('directions_' + profile)
-      map.fire('draw.modechange') // fire event before initDirections
-      initDirections(profile, feature)
-      functions.e('.maplibregl-canvas', e => { e.classList.add('cursor-crosshair') })
+    if (draw.getMode() !== 'directions_' + route.profile
+      || selectedRoute?.id !== feature.id) {
+      changeMode('directions_' + route.profile) // fire event before initDirections
+      initDirections(route.profile, feature)
     }
   } else if (feature.geometry.type === 'Point') {
-    draw.changeMode('simple_select', { featureIds: [feature.id] })
-    map.fire('draw.modechange')
+    changeMode('simple_select', { featureIds: [feature.id] })
   } else {
-    draw.changeMode('direct_select', { featureId: feature.id })
-    map.fire('draw.modechange')
+    changeMode('direct_select', { featureId: feature.id })
   }
 }
 
 export function unselect() {
   draw.deleteAll()
   resetDirections()
-  draw.changeMode('simple_select')
-  map.fire('draw.modechange')
-  functions.e('.maplibregl-canvas', e => { e.classList.remove('cursor-crosshair') })
+  changeMode('simple_select')
 }
 
 function handleCreate (e) {
@@ -333,11 +344,18 @@ function handleCreate (e) {
   addFeature(feature)
   addUndoState('Feature added', feature)
   // redraw if the painted feature was changed in this method
-  if (mode === 'directions_car' || mode === 'directions_bike' || mode === 'directions_foot' || mode === 'draw_paint_mode') {
+  if (mode.startsWith('directions_') || mode === 'draw_paint_mode') {
     renderLayers('geojson', false)
   }
   sendMessage('new_feature', feature)
-  if (feature.geometry.type === 'LineString') { updateElevation(feature) }
+  if (feature.geometry.type === 'LineString') {
+    // Elevation arrives after new_feature went out, so the server gets it as an update.
+    // Both elevation helpers replace the coordinates array only when they got new data.
+    const coordinates = feature.geometry.coordinates
+    updateElevation(feature).then(() => {
+      if (feature.geometry.coordinates !== coordinates) { sendMessage('update_feature', feature) }
+    })
+  }
 
   // Switch to feature edit mode after create
   setTimeout(() => {
@@ -370,7 +388,7 @@ async function handleUpdate (e) {
   addUndoState('Feature update', geojsonFeature)
 
   // change route with openrouteservice
-  if (selectedFeature?.properties?.route?.provider === 'ors') {
+  if (selectedRoute?.properties?.route?.provider === 'ors') {
     feature = await getRouteUpdate(geojsonFeature, feature)
   }
 
@@ -380,20 +398,14 @@ async function handleUpdate (e) {
   // Geometry changed, so companion segments/markers must follow.
   applyFeatureUpdate(geojsonFeature, { refreshRouteExtras: true, refreshKmMarkers: true })
 
-  if (feature.geometry.type === 'LineString') {
-    // gets also triggered on failure
-    updateElevation(feature).then(() => {
-      sendMessage('update_feature', feature)
-      refreshFeatureMeta(feature)
-    })
-  } else {
-    sendMessage('update_feature', feature)
-    refreshFeatureMeta(feature)
-  }
+  // updateElevation() never rejects, a failed fetch keeps the old coordinates
+  if (feature.geometry.type === 'LineString') { await updateElevation(feature) }
+  sendMessage('update_feature', feature)
+  refreshFeatureMeta(feature)
 }
 
 export function handleDelete (e) {
-  selectedFeature = null
+  selectedRoute = null
   const deletedFeature = e.features[0] // Assuming one feature is deleted at a time
   destroyFeature(deletedFeature.id)
   addUndoState('Feature deleted', deletedFeature)
@@ -403,43 +415,6 @@ export function handleDelete (e) {
   sendMessage('delete_feature', { id: deletedFeature.id })
 }
 
-// Fetch elevation from openrouteservice. Coords without elevation (length 2)
-// are detected automatically — moved/added points lose their 3rd element via
-// mapbox-gl-draw's updateCoordinate(). When only a few points lack elevation,
-// fetches just those individually instead of re-fetching the entire track.
-export function updateElevation(feature) {
-  if (!window.gon.map_keys.openrouteservice) {
-    console.warn('Skipping elevation, no openrouteservice key set')
-    return Promise.resolve()
-  }
-
-  // MultiLineString coordinates are nested per-segment; getRouteElevation expects
-  // a flat point array. Skip elevation fetching for these.
-  if (feature.geometry.type === 'MultiLineString') return Promise.resolve()
-
-  const coords = feature.geometry.coordinates
-  const missing = []
-  for (let i = 0; i < coords.length; i++) {
-    if (coords[i].length < 3) missing.push(i)
-  }
-
-  if (missing.length === 0) return Promise.resolve()
-
-  if (missing.length <= 10) {
-    return getPointsElevation(coords, missing)
-      .then(updated => { feature.geometry.coordinates = updated })
-      .catch(() => fullElevation(feature))
-  }
-
-  return fullElevation(feature)
-}
-
-function fullElevation(feature) {
-  return getRouteElevation(feature.geometry.coordinates)
-    .then(coords => { if (coords) feature.geometry.coordinates = coords })
-    .catch(err => console.error("Elevation update failed:", err))
-}
-
-export function setSelectedFeature(feature) {
-  selectedFeature = feature
+export function setSelectedRoute(feature) {
+  selectedRoute = feature
 }

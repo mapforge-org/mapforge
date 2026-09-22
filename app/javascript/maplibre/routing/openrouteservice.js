@@ -186,6 +186,43 @@ export async function getPointsElevation (coordinates, changedIndices) {
   return updatedCoords
 }
 
+// Fetch elevation from openrouteservice. Coords without elevation (length 2)
+// are detected automatically — moved/added points lose their 3rd element via
+// mapbox-gl-draw's updateCoordinate(). When only a few points lack elevation,
+// fetches just those individually instead of re-fetching the entire track.
+export function updateElevation(feature) {
+  if (!window.gon.map_keys.openrouteservice) {
+    console.warn('Skipping elevation, no openrouteservice key set')
+    return Promise.resolve()
+  }
+
+  // MultiLineString coordinates are nested per-segment; getRouteElevation expects
+  // a flat point array. Skip elevation fetching for these.
+  if (feature.geometry.type === 'MultiLineString') return Promise.resolve()
+
+  const coords = feature.geometry.coordinates
+  const missing = []
+  for (let i = 0; i < coords.length; i++) {
+    if (coords[i].length < 3) missing.push(i)
+  }
+
+  if (missing.length === 0) return Promise.resolve()
+
+  if (missing.length <= 10) {
+    return getPointsElevation(coords, missing)
+      .then(updated => { feature.geometry.coordinates = updated })
+      .catch(() => fullElevation(feature))
+  }
+
+  return fullElevation(feature)
+}
+
+function fullElevation(feature) {
+  return getRouteElevation(feature.geometry.coordinates)
+    .then(coords => { if (coords) feature.geometry.coordinates = coords })
+    .catch(err => console.error("Elevation update failed:", err))
+}
+
 // --- Route update ---
 
 // Recalculate route when waypoints are dragged in direct_select mode

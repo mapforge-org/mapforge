@@ -3,11 +3,11 @@ import { sendMessage } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { decodePolyline, encodePolyline } from 'helpers/polyline'
 import { status } from 'helpers/status'
-import { setSelectedFeature, unselect, updateElevation } from 'maplibre/edit'
+import { setSelectedRoute, unselect } from 'maplibre/edit'
 import { refreshFeatureMeta, showFeatureDetails } from 'maplibre/feature/details'
 import { getFeature, upsert } from 'maplibre/layers/layers'
 import { map } from 'maplibre/map'
-import { ORS_EXTRA_INFO, orsBuildRequest, orsFetch, orsProfiles } from 'maplibre/routing/openrouteservice'
+import { ORS_EXTRA_INFO, orsBuildRequest, orsFetch, orsProfiles, updateElevation } from 'maplibre/routing/openrouteservice'
 import { defaults, editDefaults } from 'maplibre/styles/defaults'
 import { styles } from 'maplibre/styles/styles'
 import { addUndoState } from 'maplibre/undo'
@@ -245,7 +245,7 @@ export function initDirections (profile, feature) {
       console.log('ORS route extras:', currentFeature.properties.route.extras)
     }
 
-    setSelectedFeature(currentFeature)
+    setSelectedRoute(currentFeature)
     const isExisting = !!getFeature(currentFeature.id)
 
     // add elevation from openrouteservice (when not included in route response)

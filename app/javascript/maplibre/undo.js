@@ -1,6 +1,6 @@
 import { sendMessage } from 'channels/map_channel'
 import { status } from 'helpers/status'
-import { select, selectedFeature } from 'maplibre/edit'
+import { select, selectedRoute } from 'maplibre/edit'
 import { getFeatureTypeName } from 'maplibre/feature'
 import { showFeatureDetails } from 'maplibre/feature/details'
 import { addFeature, destroyFeature, getFeature, layers, renderLayers } from 'maplibre/layers/layers'
@@ -312,8 +312,8 @@ function redoLayerUpdated(nextState) {
 
 // keep feature selected
 function keepSelection() {
-  if (selectedFeature) {
-    let geojsonFeature = getFeature(selectedFeature.id, 'geojson')
+  if (selectedRoute) {
+    let geojsonFeature = getFeature(selectedRoute.id, 'geojson')
     if (geojsonFeature) {
       showFeatureDetails(geojsonFeature)
       select(geojsonFeature)
