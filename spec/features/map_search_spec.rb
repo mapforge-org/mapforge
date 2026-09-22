@@ -286,21 +286,48 @@ describe "Map places search" do
     let(:map) { create(:map, name: "Search test", center: [ 13.3888599, 52.5170365 ], zoom: 15) }
     let(:map_path) { map.private_map_path }
 
-    it "copies a result into the geojson layer of the map" do
-      expect(Feature.count).to eq(0)
+    def search_berlin
       find(".maplibregl-ctrl-geocoder--input").set("Berlin")
       expect(page).to have_css(".geocoder-result-title", text: "Berlin")
       wait_for_result_markers
+    end
 
+    def copy_first_result
+      expect(Feature.count).to eq(0)
       center = center_of_screen
       click_coord("#maplibre-map", center[:x], center[:y], button: :right)
       find(".context-menu-item", text: "Copy to my layer").click
 
       wait_for { Feature.count }.to eq(1)
-      copied_feature = Feature.first
+      Feature.first
+    end
+
+    it "copies a result into the geojson layer of the map" do
+      search_berlin
+      copied_feature = copy_first_result
       expect(copied_feature.properties["title"]).to eq("Berlin")
       expect(copied_feature.properties["marker-symbol"]).to eq("🏙")
       expect(copied_feature.geometry["coordinates"]).to eq([ 13.3888599, 52.5170365 ])
+      expect(copied_feature.properties["desc"]).to eq("Berlin, Germany")
+    end
+
+    context "with the tags of the result" do
+      before do
+        CapybaraMock.stub_request(:post, %r{overpass-api\.de/api/interpreter}).to_return do |**|
+          [ 200,
+            { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
+            { elements: [ { tags: { "opening_hours" => "Mo-Fr 08:00-18:00" } } ] }.to_json ]
+        end
+      end
+
+      it "copies the osm description that a click on the result loaded" do
+        search_berlin
+        center = center_of_screen
+        click_coord("#maplibre-map", center[:x], center[:y])
+        expect(page).to have_css("#feature-details-modal.show", text: "Mo-Fr 08:00-18:00")
+
+        expect(copy_first_result.properties["desc"]).to include("Mo-Fr 08:00-18:00")
+      end
     end
   end
 end

@@ -54,6 +54,9 @@ export class SearchLayer extends Layer {
     const feature = this.geojson.features.find(f => f.id === id)
     if (!feature) { return null }
     const properties = { ...feature.properties }
+    // no geojson layer builds a description on demand, so tags that a click on the
+    // result already loaded are rendered into the text of the copy
+    if (properties.osm) { properties.desc = overpassDescription(properties.osm) }
     TRANSIENT_PROPERTIES.forEach(key => delete properties[key])
     return { ...feature, properties: properties }
   }
@@ -86,8 +89,11 @@ export class SearchLayer extends Layer {
     const tags = await fetchOverpassTags(type, feature.properties.osm_id)
     if (!tags) { return feature.properties.desc }
 
-    feature.properties.osm = { ...tags, id: `${type}/${feature.properties.osm_id}` }
-    return overpassDescription(feature.properties.osm)
+    const osm = { ...tags, id: `${type}/${feature.properties.osm_id}` }
+    // the modal passes a copy, the copy to a layer reads the tags from the source feature
+    const source = this.geojson.features.find(f => f.id === feature.id)
+    if (source) { source.properties.osm = osm }
+    return overpassDescription(osm)
   }
 
   // -1 deactivates all of them again
