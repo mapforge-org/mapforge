@@ -1,5 +1,5 @@
 // Converts KML/KMZ/GPX into the property names of Mapforge.
-import { uploadImage } from 'maplibre/feature'
+import { uploadImage } from 'maplibre/feature/image_upload'
 import { GOOGLE_ICONS } from 'maplibre/import/google_icons'
 import { gpx, kmlWithFolders } from 'togeojson'
 

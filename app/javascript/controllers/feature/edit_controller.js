@@ -6,11 +6,12 @@ import { status } from 'helpers/status'
 import { syncStepperValues } from 'helpers/stepper'
 import { flyToFeature } from 'maplibre/animations'
 import { draw, handleDelete } from 'maplibre/edit'
+import { featureIcon, getFeatureTypeName, resetHighlightedFeature } from 'maplibre/feature'
 import {
-  backgroundMode, confirmImageLocation, featureIcon, getFeatureTypeName, markerContentMode,
-  markerMemory, resetHighlightedFeature, syncBackground, syncDescShapeButtons, syncMarkerContent,
-  syncShapeButtons, uploadImage, uploadImageToFeature
-} from 'maplibre/feature'
+  backgroundMode, markerContentMode, markerMemory, syncBackground, syncDescShapeButtons,
+  syncMarkerContent, syncShapeButtons
+} from 'maplibre/feature/edit_ui'
+import { confirmImageLocation, uploadImage, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
 import { defaultPointSize, defaults } from 'maplibre/styles/defaults'

@@ -72,7 +72,6 @@ gem "maxminddb"
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug"
-  gem "dotenv-rails", require: "dotenv/load"
   gem "listen"
   gem "mongo_logs_on_roids"
   gem "parallel_tests"
@@ -92,6 +91,7 @@ group :development do
   gem "standard"
   gem "brakeman"
   gem "bundler-audit"
+  gem "dotenv-rails", require: "dotenv/load"
 
   gem "web-console"
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]

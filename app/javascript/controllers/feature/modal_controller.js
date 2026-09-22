@@ -8,10 +8,11 @@ import { status } from 'helpers/status'
 import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { draw, select, unselect } from 'maplibre/edit'
+import { getFeatureTypeName, highlightedFeatureId } from 'maplibre/feature'
+import { refreshFeatureMeta, showFeatureDetails } from 'maplibre/feature/details'
 import {
-  getFeatureTypeName, highlightedFeatureId, refreshFeatureMeta, showFeatureDetails,
   syncBackground, syncDescShapeButtons, syncMarkerContent, syncShapeButtons
-} from 'maplibre/feature'
+} from 'maplibre/feature/edit_ui'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { applyFeatureUpdate, getFeature, layers } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
