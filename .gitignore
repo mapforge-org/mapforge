@@ -51,6 +51,7 @@ coverage/
 
 public/previews/*.png
 public/previews/*.jpg
+public/images/frontpage/demo.mp4
 
 db/GeoLite2-City.mmdb
 
