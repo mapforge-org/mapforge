@@ -314,7 +314,7 @@ export class Layer {
    */
   setupMouseMoveHandler() {
     if (!functions.isTouchDevice()) {
-      this.mouseMoveHandler = (e) => {
+      this.mouseMoveHandler = functions.perFrame((e) => {
         // switchMapMode() keeps the layers and their handlers, so the mode is read per event
         if (window.gon.map_mode !== 'ro') { return }
         if (stickyFeatureHighlight && highlightedFeatureId) { return }
@@ -331,7 +331,7 @@ export class Layer {
         } else if (highlightedFeatureSource === this.sourceId) {
           resetHighlightedFeature()
         }
-      }
+      })
 
       map.on('mousemove', this.mouseMoveHandler)
     }
@@ -344,9 +344,7 @@ export class Layer {
   getStyleLayerIds() {
     // Get all layer IDs that belong to this source
     const sourceSuffix = '_' + this.sourceId
-    return map.getStyle().layers
-      .filter(layer => layer.id.endsWith(sourceSuffix))
-      .map(layer => layer.id)
+    return map.getLayersOrder().filter(id => id.endsWith(sourceSuffix))
   }
 
   /**

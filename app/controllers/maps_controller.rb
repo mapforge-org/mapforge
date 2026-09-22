@@ -36,13 +36,13 @@ class MapsController < ApplicationController
       format.html do
         unless params["viewcount"] == "false"
           # Defer view_count update until after the response is flushed so it doesn't add to TTFB.
-          map = @map
+          map_id = @map.id
           request.env["rack.after_reply"] ||= []
           request.env["rack.after_reply"] << -> {
             # Avoid 'updated_at' update
-            map.collection.update_one(
-              { _id: map.id },
-              { "$set" => { view_count: (map.view_count || 0) + 1, viewed_at: Time.now } }
+            Map.collection.update_one(
+              { _id: map_id },
+              { "$inc" => { view_count: 1 }, "$set" => { viewed_at: Time.now } }
             )
           }
         end

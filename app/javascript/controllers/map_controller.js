@@ -31,7 +31,11 @@ export default class extends Controller {
       if (window.gon.map_mode === 'rw') {
         // Lazy-load the edit module so read-only viewers don't pay for mapbox-gl-draw,
         // turf, routing, edit_styles and friends.
-        const { initializeEditMode } = await import('maplibre/edit')
+        // initializeEditMode imports the draw modules one after another, so fetch them in
+        // parallel here. The basemap style still waits: edit mode registers a map 'load' handler.
+        const [{ initializeEditMode }] = await Promise.all([
+          import('maplibre/edit'), import('@mapbox/mapbox-gl-draw'), import('mapbox-gl-draw-paint-mode')
+        ])
         await initializeEditMode()
       } else {
         initializeViewMode()

@@ -58,21 +58,14 @@ class MapChannel < ApplicationCable::Channel
   def new_layer(data)
     Yabeda.websocket.messages_received.increment({ action: "new_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
-    layer = map.layers.create!(layer_atts(data).merge({ id: data["id"] }))
+    layer = map.layers.new(layer_atts(data).merge({ id: data["id"] }))
+    documents = import_documents(layer, data.dig("geojson", "features") || [])
+    Feature.collection.insert_many(documents) if documents.any?
+    layer.features_count = documents.size
+    # Saved after the features, so that its one update_layer broadcast makes other
+    # clients fetch the complete layer, instead of one update_feature per feature
+    layer.save!
     Yabeda.layers_created.increment(type: layer.type)
-    if data["geojson"] && data["geojson"]["features"]
-      data["geojson"]["features"].each do |feature|
-        # An import sends the whole folder in one message. Without this, the first invalid
-        # feature would abort the loop and silently drop every feature behind it.
-        begin
-          @feature = layer.features.create!(feature_atts(feature).merge({ id: feature["id"] }))
-        rescue Mongoid::Errors::Validations => e
-          Rails.logger.warn "new_layer: skipping invalid feature #{feature["id"]}: #{e.message}"
-          next
-        end
-        associate_image(feature["properties"])
-      end
-    end
   end
 
   def delete_feature(data)
@@ -133,11 +126,34 @@ class MapChannel < ApplicationCable::Channel
   # Follows the properties in both directions: an image that is dropped from the properties
   # also drops the relation, so a feature never keeps an image it no longer shows.
   def associate_image(properties)
+    image = image_for(properties)
+    @feature.update!(image:) unless @feature.image_id == image&.id
+  end
+
+  def image_for(properties)
     properties = {} unless properties.is_a?(Hash)
-    image = IMAGE_PROPERTIES.lazy.filter_map do |key|
+    IMAGE_PROPERTIES.lazy.filter_map do |key|
       public_id = properties[key].to_s[IMAGE_URL, 1]
       Image.find_by(public_id:) if public_id
     end.first
-    @feature.update!(image:) unless @feature.image_id == image&.id
+  end
+
+  # insert_many skips validations, callbacks and timestamps, so they are applied here
+  def import_documents(layer, features)
+    now = Time.now
+    features.each_with_index.filter_map do |feature, index|
+      doc = Feature.new(feature_atts(feature).merge({ id: feature["id"], layer_id: layer.id }.compact))
+      # An import sends the whole folder in one message. Without this, the first invalid
+      # feature would abort the import and silently drop every feature behind it.
+      unless doc.valid?
+        Rails.logger.warn "new_layer: skipping invalid feature #{feature["id"]}: #{doc.errors.full_messages}"
+        next
+      end
+      doc.send(:sanitize_coordinates)
+      doc.image = image_for(feature["properties"])
+      # BSON dates keep milliseconds. Distinct timestamps keep the import order for the default scope.
+      doc.created_at = doc.updated_at = now + (index / 1000.0)
+      doc.as_document
+    end
   end
 end

@@ -41,6 +41,22 @@ export function throttle(callback, name, delay=500) {
   }
 }
 
+// Runs callback at most once per animation frame, with the arguments of the latest call.
+// Unlike throttle(), the last call is never dropped, so a hover ends on the right feature.
+export function perFrame (callback) {
+  let pending = null
+  return (...args) => {
+    if (!pending) {
+      requestAnimationFrame(() => {
+        const latest = pending
+        pending = null
+        callback(...latest)
+      })
+    }
+    pending = args
+  }
+}
+
 export function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }

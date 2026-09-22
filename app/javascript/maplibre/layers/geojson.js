@@ -1,6 +1,6 @@
 import { draw, select } from 'maplibre/edit'
 import { removeDescBanner, renderDescBanners, syncDescBanner } from 'maplibre/layers/geojson/desc_banners'
-import { buildLineExtrusion } from 'maplibre/layers/geojson/extrusion'
+import { bufferLoaded, buildLineExtrusion, loadBuffer } from 'maplibre/layers/geojson/extrusion'
 import {
   removeFeatureImageOverlay,
   renderImageOverlays,
@@ -200,6 +200,7 @@ export class GeoJSONLayer extends Layer {
     detectLevels()
 
     const features = this.layer.geojson.features
+    this.ensureBuffer(features)
 
     renderKmMarkers(features, this.kmMarkerSourceId)
     renderRouteExtras(features, this.routeExtrasSourceId)
@@ -251,7 +252,8 @@ export class GeoJSONLayer extends Layer {
   // - refreshRouteExtras: rebuild the route-extras companion source even when the feature has
   //   no route extras itself (needed when the toggle just removed them).
   // - refreshKmMarkers: rebuild the km-marker companion source (geometry change / toggle).
-  applyFeatureUpdate(feature, { resetDraw = false, refreshRouteExtras = false, refreshKmMarkers = false } = {}) {
+  // - pruneImages: drop shape and pattern images that no feature uses any more (scans all layers).
+  applyFeatureUpdate(feature, { resetDraw = false, refreshRouteExtras = false, refreshKmMarkers = false, pruneImages = true } = {}) {
     feature.properties = feature.properties || {}
     feature.id = feature.id || feature.properties.id
     feature.properties.id = feature.id
@@ -259,6 +261,7 @@ export class GeoJSONLayer extends Layer {
     const source = map.getSource(this.sourceId)
     if (!source) { return }
     source.updateData({ remove: [feature.id], add: [feature] })
+    this.ensureBuffer([feature])
 
     // Route-extras segments copy the parent's style properties (see inheritedProps) and build
     // their own extrusion, so ANY property edit on a route feature leaves them stale.
@@ -288,7 +291,7 @@ export class GeoJSONLayer extends Layer {
 
     // Keep the MapboxDraw overlay in sync for geometry edits (no-op when nothing is in draw).
     if (resetDraw) { this.resetDrawFeatures(true) }
-    pruneShapes()
+    if (pruneImages) { pruneShapes() }
   }
 
   // Surgically add a feature to this layer's source without a full render(). Unlike
@@ -298,6 +301,7 @@ export class GeoJSONLayer extends Layer {
     const source = map.getSource(this.sourceId)
     if (!source) { return }
     source.updateData({ add: [feature] })
+    this.ensureBuffer([feature])
 
     if (hasRouteExtras(feature)) {
       renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
@@ -355,7 +359,9 @@ export class GeoJSONLayer extends Layer {
     // The km rebuild is throttled on top of that because it is the pricier one.
     this.applyFeatureUpdate(feature, {
       refreshRouteExtras: hasRouteExtras(feature),
-      refreshKmMarkers: hasKmMarkers(feature) && frameCount % 10 === 0
+      refreshKmMarkers: hasKmMarkers(feature) && frameCount % 10 === 0,
+      // a frame moves the geometry only, so no image can go out of use
+      pruneImages: false
     })
   }
 
@@ -375,6 +381,16 @@ export class GeoJSONLayer extends Layer {
         }
       })
     }
+  }
+
+  // buildLineExtrusion() returns null until @turf/buffer is loaded, so the extrusions render again then
+  ensureBuffer(features) {
+    if (bufferLoaded() || !features.some(f => needsExtrusionPolygon(f) || hasRouteExtras(f))) { return }
+    loadBuffer().then(() => {
+      if (!this.layer?.geojson?.features) { return }
+      renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
+      this.renderExtrusionLines(this.layer.geojson.features)
+    })
   }
 
   renderExtrusionLines(features) {

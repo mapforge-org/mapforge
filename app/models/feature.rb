@@ -12,6 +12,7 @@ class Feature
   field :properties, type: Hash, default: {}
 
   index({ layer_id: 1, created_at: 1 }, background: true)
+  index({ image_id: 1 }, background: true)
 
   # implicit_order_column is not supported by mongoid
   default_scope { order(created_at: :asc) }

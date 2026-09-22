@@ -38,6 +38,37 @@ RSpec.describe MapChannel, type: :channel do
       expect(features.count).to eq 1
       expect(features.first.id.to_s).to eq valid_feature["id"]
     end
+
+    context "with a bulk import" do
+      let(:ids) { Array.new(5) { BSON::ObjectId.new.to_s } }
+
+      before do
+        subscribe(map_id: map.private_id)
+        allow(ActionCable.server).to receive(:broadcast).and_call_original
+        image = create(:image)
+        features = ids.map do |id|
+          { "id" => id, "type" => "Feature", "properties" => { "marker-image-url" => "/image/#{image.public_id}" },
+            "geometry" => { "type" => "LineString", "coordinates" => [ [ 8.1, 47.2 ], nil, [ 8.2, 47.3 ] ] } }
+        end
+        perform :new_layer, id: BSON::ObjectId.new.to_s, map_id: map.private_id, type: "geojson",
+          geojson: { "features" => features }
+      end
+
+      it "stores the features in order, sanitized, counted and with their image" do
+        imported = map.reload.layers.last
+        expect(imported.features.map { |f| f.id.to_s }).to eq ids
+        expect(imported.features_count).to eq 5
+        expect(imported.features.first.image).to eq Image.last
+        expect(imported.features.first.geometry["coordinates"]).to eq [ [ 8.1, 47.2 ], [ 8.2, 47.3 ] ]
+      end
+
+      it "broadcasts the layer once instead of each feature" do
+        expect(ActionCable.server).to have_received(:broadcast)
+          .with("map_channel_#{map.public_id}", hash_including(event: "update_layer")).once
+        expect(ActionCable.server).not_to have_received(:broadcast)
+          .with("map_channel_#{map.public_id}", hash_including(event: "update_feature"))
+      end
+    end
   end
 
   describe "#update_layer with feature_order" do

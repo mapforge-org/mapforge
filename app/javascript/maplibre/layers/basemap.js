@@ -85,8 +85,7 @@ export class BasemapLayer extends Layer {
    */
   basemapFeaturesAtPoint(point) {
     const basemapSource = basemaps()[mapProperties.base_map].sourceName
-    const mapLayers = map.getStyle().layers
-    const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
+    const queryLayerIds = map.getLayersOrder().filter(id => map.getLayer(id)?.source === basemapSource)
     return map.queryRenderedFeatures(point, { layers: queryLayerIds })
       .filter(feature => this.highlightable(feature))
   }
@@ -127,6 +126,8 @@ export class BasemapLayer extends Layer {
   highlightFeatureAtPoint(point) {
     if (stickyFeatureHighlight && highlightedFeatureId) { return }
     if (document.querySelector('.show > .map-modal')) { return }
+    // a frame queued by perFrame() can run after the source is gone
+    if (!map.getSource(this.sourceId)) { return }
 
     const features = this.basemapFeaturesAtPoint(point)
     if (!features.length) { return }
@@ -144,9 +145,9 @@ export class BasemapLayer extends Layer {
    * Custom mousemove handler for basemap layer - queries basemap source layers.
    */
   setupMouseMoveHandler() {
-    this.mouseMoveHandler = (e) => {
+    this.mouseMoveHandler = functions.perFrame((e) => {
       this.highlightFeatureAtPoint(e.point)
-    }
+    })
 
     this.touchStartHandler = (e) => {
       // Only handle single touch

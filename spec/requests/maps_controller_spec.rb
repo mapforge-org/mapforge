@@ -52,6 +52,17 @@ describe MapsController do
     end
   end
 
+  describe "#show (view count)" do
+    # rack.after_reply only runs under Puma, so the spec runs the deferred callbacks itself
+    it "counts each view" do
+      2.times do
+        get map_path(id: map.public_id)
+        request.env["rack.after_reply"].each(&:call)
+      end
+      expect(map.reload.view_count).to eq(2)
+    end
+  end
+
   # The client view is per request and never stored, so it travels on gon and not in
   # map_properties. A model broadcast has no request context and would overwrite it.
   describe "#show (client view)" do

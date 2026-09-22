@@ -1,11 +1,22 @@
-import { buffer } from "@turf/buffer"
 import { defaultLineWidth, defaults } from 'maplibre/styles/defaults'
 
+// @turf/buffer pulls in JSTS and d3-geo (~350 KB), which most maps never need
+let buffer = null
+let bufferLoading = null
+
+export function bufferLoaded() { return !!buffer }
+
+export function loadBuffer() {
+  bufferLoading ||= import('@turf/buffer').then(module => { buffer = module.buffer })
+  return bufferLoading
+}
+
 // Buffer a LineString into a polygon for MapLibre's fill-extrusion layer, which has no line support.
-// Returns null for geometry that can't be buffered (non-line, <2 coords, or degenerate).
+// Returns null for geometry that can't be buffered (non-line, <2 coords, or degenerate),
+// and before loadBuffer() finished.
 // @turf/buffer (JSTS) is expensive, so callers should only invoke this for features that changed.
 export function buildLineExtrusion(feature) {
-  if (feature.geometry?.type !== 'LineString' || feature.geometry.coordinates.length < 2) {
+  if (!buffer || feature.geometry?.type !== 'LineString' || feature.geometry.coordinates.length < 2) {
     return null
   }
   const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth(feature)

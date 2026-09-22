@@ -308,7 +308,7 @@ class Map
   end
 
   def all_points
-    coordinates = features.map { |feature| feature.coordinates(include_height: false) }
+    coordinates = features.only(:geometry).map { |feature| feature.coordinates(include_height: false) }
     coordinates.flatten.each_slice(2).to_a
   end
 
