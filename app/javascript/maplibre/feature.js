@@ -168,7 +168,7 @@ export async function showFeatureDetails (feature) {
 
   const title = featureTitle(feature)
   const titleElement = document.querySelector('#feature-title')
-  titleElement.innerHTML = title
+  titleElement.textContent = title
   titleElement.style.fontSize = titleElement.textContent.length > 24 ? '1rem' : null;
   document.querySelector('.feature-modal-header').classList.toggle('no-title', !title)
 
@@ -213,16 +213,17 @@ async function featureDescription (feature) {
     // show feature target if onclick is feature
     desc = `<p><i class="bi bi-geo-alt-fill"></i> ${feature.properties['onclick-target']}</p>`
   } else if (feature?.properties?.wikipediaId) {
-    desc = wikipediaFeatureDescription(feature)
+    desc = await wikipediaFeatureDescription(feature)
   } else {
     // layers can load their description on demand, the modal shows a loading message meanwhile.
     // the search layer is imported here, a static import of it breaks the module init order
     const { searchLayerOf } = await import('maplibre/layers/search')
     const layer = getLayer(feature.id) || searchLayerOf(feature.id)
     const markdown = layer?.description ? await layer.description(feature) : feature?.properties?.desc
-    desc = f.sanitizeMarkdown(marked(markdown || ''))
+    desc = marked(markdown || '')
   }
-  return desc
+  // every branch builds html from properties or api answers that a stranger can control
+  return f.sanitizeMarkdown(desc)
 }
 
 // A marker image that is drawn on the fly is a name of a map image, not a url, and an
@@ -404,7 +405,7 @@ export function getFeatureTypeName(feature) {
 export function featureLabel (feature) {
   const title = featureTitle(feature)
   const type = getFeatureTypeName(feature)
-  return title ? `${type} '${title}'` : type
+  return title ? `${type} '${f.escapeHtml(title)}'` : type
 }
 
 // move a feature so that its center sits on the given position

@@ -235,7 +235,7 @@ export default class extends Controller {
       !layer.query.includes("geom") // clustering breaks lines & geometries
     layer["cluster"] = clustered
     layer["heatmap"] = layer.query.includes("heatmap=true")
-    event.target.closest('.layer-item').querySelector('.layer-name').innerHTML = layer.name
+    event.target.closest('.layer-item').querySelector('.layer-name').textContent = layer.name
     sendMessage('update_layer', layer.toJSON())
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
     layer.initialize().then(() => { initLayersModal() })

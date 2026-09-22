@@ -271,7 +271,7 @@ export function initLayersModal () {
       const emojiRegex = /^(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*)/u
       const match = layerName.match(emojiRegex)
       if (match) {
-        head.innerHTML = layerName.replace(emojiRegex, `<span class='fst-normal'>$1</span>`)
+        head.innerHTML = f.escapeHtml(layerName).replace(emojiRegex, `<span class='fst-normal'>$1</span>`)
       } else {
         head.textContent = layerName
       }
