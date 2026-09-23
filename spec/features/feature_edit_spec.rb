@@ -198,6 +198,41 @@ describe "Feature edit" do
         find(".context-menu-item", text: "Delete midpoint").click
         wait_for { polygon.reload.geometry["coordinates"][0].length }.to eq(4)
       end
+
+      it "can move the whole polygon" do
+        original = polygon.geometry["coordinates"][0]
+        find("#edit-button-geometry").click
+        find("#geometry-mode-ui [data-geometry-mode='move']").click
+        expect(page).to have_text("Drag the polygon to move it")
+        # draw hands the move mode layers to a worker, a forced repaint makes 'idle' fire after that
+        page.evaluate_async_script("window.map.once('idle', arguments[0]); window.map.triggerRepaint()")
+        drag_coord(512, 430, 612, 430)
+
+        wait_for { polygon.reload.geometry["coordinates"][0].first }.not_to eq(original.first)
+        moved = polygon.geometry["coordinates"][0]
+        expect(moved.length).to eq(original.length)
+        offsets = moved.zip(original).map { |m, o| [ (m[0] - o[0]).round(6), (m[1] - o[1]).round(6) ] }
+        expect(offsets.uniq.length).to eq(1)
+        expect(offsets.first[0]).to be > 0
+      end
+
+      it "can rotate the whole polygon" do
+        original = polygon.geometry["coordinates"][0]
+        find("#edit-button-geometry").click
+        find("#geometry-mode-ui [data-geometry-mode='rotate']").click
+        expect(page).to have_text("Drag the polygon to rotate it")
+        page.evaluate_async_script("window.map.once('idle', arguments[0]); window.map.triggerRepaint()")
+        center = viewport_xy_for_lat_lng(49.4476, 11.0853)
+        drag_coord(center[:x] + 60, center[:y], center[:x], center[:y] - 60)
+
+        wait_for { polygon.reload.geometry["coordinates"][0].first }.not_to eq(original.first)
+        rotated = polygon.geometry["coordinates"][0]
+        expect(rotated.length).to eq(original.length)
+        offsets = rotated.zip(original).map { |m, o| [ (m[0] - o[0]).round(6), (m[1] - o[1]).round(6) ] }
+        expect(offsets.uniq.length).to be > 1
+        centroid = ->(ring) { ring[0..-2].transpose.map { |c| c.sum / c.length } }
+        centroid.(rotated).zip(centroid.(original)).each { |r, o| expect(r).to be_within(0.0001).of(o) }
+      end
     end
   end
 
@@ -229,6 +264,24 @@ describe "Feature edit" do
         title: "Line Title")
     end
     let(:map) { create(:map, features: [ line ], center: [ 11.056, 49.463 ], zoom: 15) }
+
+    it "can move the whole line" do
+      coords = line.geometry["coordinates"]
+      xy = viewport_xy_for_lat_lng(coords[1][1], coords[1][0])
+      click_coord("#maplibre-map", xy[:x], xy[:y])
+      find("#edit-button-geometry").click
+      find("#geometry-mode-ui [data-geometry-mode='move']").click
+      # draw hands the move mode layers to a worker, a forced repaint makes 'idle' fire after that
+      page.evaluate_async_script("window.map.once('idle', arguments[0]); window.map.triggerRepaint()")
+      drag_coord(xy[:x], xy[:y], xy[:x] + 100, xy[:y])
+
+      # the elevation stub replaces the saved coordinates, so the moved line is read from draw
+      moved = page.evaluate_script("window.draw.get('#{line.id}').geometry.coordinates")
+      expect(moved.length).to eq(3)
+      offsets = moved.zip(coords).map { |m, o| (m[0] - o[0]).round(6) }
+      expect(offsets.uniq.length).to eq(1)
+      expect(offsets.first).to be > 0
+    end
 
     it "can delete a line vertex via context menu (delete midpoint)" do
       xy = viewport_xy_for_lat_lng(line.geometry['coordinates'][1][1], line.geometry['coordinates'][1][0])

@@ -1,3 +1,6 @@
+import { centroid } from "@turf/centroid";
+import { coordEach } from "@turf/meta";
+import { toMercator, toWgs84 } from "@turf/projection";
 import { simplify } from "@turf/simplify";
 import { sendMessage } from 'channels/map_channel';
 import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep-equal
@@ -9,6 +12,7 @@ import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
 import { featureLabel, highlightFeature } from 'maplibre/feature';
 import { refreshFeatureMeta } from 'maplibre/feature/details';
+import { CLICK_TOLERANCE } from 'maplibre/layers/layer';
 import { addFeature, applyFeatureUpdate, destroyFeature, getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
 import { map, mapProperties, onMapClickAfterLayers } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
@@ -20,6 +24,9 @@ export let draw
 // The route feature that directions currently edits. Only directions sets it.
 export let selectedRoute
 let currentMode
+// Rotate mode is simple_select with a rotating drag, because many handlers only treat
+// simple_select and direct_select as select modes.
+let rotating = false
 
 // Every handler that initializeEditMode() registers stays alive after a switch to
 // view mode, so the edit-only ones must check the current mode when they fire.
@@ -87,7 +94,7 @@ export async function initializeEditMode () {
       // uncombine_features
     },
     styles: editStyles(),
-    clickBuffer: 5,
+    clickBuffer: CLICK_TOLERANCE,
     touchBuffer: 5, // default 25, allow more fine selection eg. of midpoints
     // user properties are available, prefixed with 'user_'
     userProperties: true,
@@ -183,11 +190,51 @@ function buildModes (drawModes, PaintMode) {
   const originalStartOnActiveFeature = SimpleSelectMode.startOnActiveFeature
   SimpleSelectMode.startOnActiveFeature = function (state, e) {
     hideContextMenu()
+    state.rotateStart = null
     return originalStartOnActiveFeature.call(this, state, e)
+  }
+
+  const originalDragMove = SimpleSelectMode.dragMove
+  SimpleSelectMode.dragMove = function (state, e) {
+    if (!rotating) { return originalDragMove.call(this, state, e) }
+    state.dragMoving = true
+    e.originalEvent.stopPropagation()
+    const feature = this.getSelected()[0]
+    const angleTo = (pivot, [x, y]) => Math.atan2(y - pivot[1], x - pivot[0])
+    const mouse = toMercator([e.lngLat.lng, e.lngLat.lat])
+    if (!state.rotateStart) {
+      // rotate in Web Mercator, in lng/lat degrees the shape would skew away from the equator
+      const geometry = toMercator(feature.toGeoJSON().geometry)
+      const pivot = centroid(geometry).geometry.coordinates
+      state.rotateStart = { geometry, pivot, angle: angleTo(pivot, mouse) }
+    }
+    const { geometry, pivot, angle } = state.rotateStart
+    const delta = angleTo(pivot, mouse) - angle
+    const [cos, sin] = [Math.cos(delta), Math.sin(delta)]
+    const rotated = structuredClone(geometry)
+    coordEach(rotated, c => {
+      const [x, y] = [c[0] - pivot[0], c[1] - pivot[1]]
+      c[0] = pivot[0] + x * cos - y * sin
+      c[1] = pivot[1] + x * sin + y * cos
+    })
+    feature.incomingCoords(toWgs84(rotated, { mutate: true }).coordinates)
   }
 
   const DirectionsMode = { ...SimpleSelectMode }
   DirectionsMode.onClick = function (_state, _e, _delta) { /* noop */ }
+
+  // simple_select draws the vertices of a selected line or polygon on top of it. draw only
+  // starts a move on the feature itself, so a drag that starts on a vertex would pan the map.
+  for (const handler of ['onMouseDown', 'onTouchStart']) {
+    const original = SimpleSelectMode[handler]
+    SimpleSelectMode[handler] = function (state, e) {
+      const target = e.featureTarget?.properties
+      if (target?.meta === 'vertex') {
+        return this.startOnActiveFeature(state, { ...e, featureTarget: { properties: { id: target.parent } } })
+      }
+      return original.call(this, state, e)
+    }
+  }
 
   return {
     ...drawModes,
@@ -204,6 +251,8 @@ function handleModeChange () {
   // probably mapbox draw bug: map can lose drag capabilities on double click
   if (!isGeolocateCompassModeActive()) map.dragPan.enable()
   const mode = draw.getMode()
+  if (mode !== 'simple_select') { rotating = false }
+  syncGeometryModeUi(mode)
   if (currentMode === mode) { return }
   console.log("Switch draw mode from '" + currentMode + "' to '" + mode + "'")
 
@@ -229,6 +278,22 @@ function handleModeChange () {
   if (config.lineMenu) { functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') }) }
   status(config.message(), 'info', 'medium', 8000)
   if (config.profile) { initDirections(config.profile) }
+}
+
+// A click on the selected line or polygon in move mode makes draw switch to direct_select
+// by itself, so the buttons follow the draw mode and not the button click.
+function syncGeometryModeUi (mode) {
+  let geometryMode = 'reshape'
+  if (mode === 'simple_select' && draw.getSelected().features.some(f => f.geometry.type !== 'Point')) {
+    geometryMode = rotating ? 'rotate' : 'move'
+  }
+  document.querySelectorAll('#geometry-mode-ui [data-geometry-mode]').forEach(button => {
+    button.classList.toggle('active', button.dataset.geometryMode === geometryMode)
+  })
+  functions.e('[data-edit-section="geometry"]', e => {
+    e.classList.toggle('geometry-moving', geometryMode === 'move')
+    e.classList.toggle('geometry-rotating', geometryMode === 'rotate')
+  })
 }
 
 // Reduce extrusion opacity to make edit handles visible. When restoring, each
@@ -306,8 +371,9 @@ export function toggleDrawMode(mode) {
 // switching directly from 'simple_select' to 'direct_select',
 // allow only to select one feature
 // direct_select mode does not allow to select other features
-export function select (feature) {
+export function select (feature, { geometryMode = 'reshape' } = {}) {
   // console.log('select', feature)
+  rotating = geometryMode === 'rotate'
   const route = feature?.properties?.route
   if (route?.provider === 'osrm' || route?.provider === 'ors') {
     // don't re-initialize direction if already active on same feature
@@ -316,7 +382,7 @@ export function select (feature) {
       changeMode('directions_' + route.profile) // fire event before initDirections
       initDirections(route.profile, feature)
     }
-  } else if (feature.geometry.type === 'Point') {
+  } else if (feature.geometry.type === 'Point' || geometryMode !== 'reshape') {
     changeMode('simple_select', { featureIds: [feature.id] })
   } else {
     changeMode('direct_select', { featureId: feature.id })

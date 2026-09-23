@@ -112,7 +112,9 @@ export async function initializeMap (divId = 'maplibre-map') {
       zoom: initialView().zoom, // will zoom in on map:load
       pitch: mapProperties.pitch,
       bearing: mapProperties.bearing || 0,
-      maxPitch: 72,
+      // Above ~70°, the top of the canvas shows sky. MapLibre 6.11 then computes a negative
+      // maxPitchScaleFactor, and queryRenderedFeatures returns nothing, so no feature is selectable.
+      maxPitch: 65,
       maxZoom: 24, // hard limit of maplibre
       maplibreLogo: true,
       hash: true, // enable hash in URL for map center/zoom
