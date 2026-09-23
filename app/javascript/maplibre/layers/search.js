@@ -1,6 +1,6 @@
 import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { Layer } from 'maplibre/layers/layer'
-import { fetchOverpassTags, overpassDescription } from 'maplibre/layers/overpass/overpass'
+import { fetchOsmElement, overpassDescription } from 'maplibre/layers/osm_description'
 import { map } from 'maplibre/map'
 import { initializeViewStyles } from 'maplibre/styles/styles'
 
@@ -80,13 +80,13 @@ export class SearchLayer extends Layer {
 
   /**
    * Photon answers with a fixed set of address fields. The osm id of the result buys the
-   * rest of the tags from overpass, on demand, so a click pays for one result only.
+   * rest of the tags from the OSM API, on demand, so a click pays for one result only.
    */
   async description(feature) {
     const type = OSM_TYPES[feature.properties.osm_type]
     if (!type) { return feature.properties.desc }
 
-    const tags = await fetchOverpassTags(type, feature.properties.osm_id)
+    const tags = (await fetchOsmElement(`${type}/${feature.properties.osm_id}`))?.tags
     if (!tags) { return feature.properties.desc }
 
     const osm = { ...tags, id: `${type}/${feature.properties.osm_id}` }

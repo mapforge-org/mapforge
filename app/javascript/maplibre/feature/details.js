@@ -6,7 +6,6 @@ import { featureIcon, featureTitle } from 'maplibre/feature'
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { showExtrasTotals } from 'maplibre/feature/extras_totals'
 import { getFeature, getLayer } from "maplibre/layers/layers"
-import { wikipediaFeatureDescription } from 'maplibre/layers/wikipedia'
 import { marked } from 'marked'
 
 // a modal without tabs (read only map, or a feature of a non geojson layer) has no
@@ -165,8 +164,6 @@ async function featureDescription (feature) {
   } else if (feature?.properties?.onclick === 'feature' && feature?.properties?.['onclick-target']) {
     // show feature target if onclick is feature
     desc = `<p><i class="bi bi-geo-alt-fill"></i> ${feature.properties['onclick-target']}</p>`
-  } else if (feature?.properties?.wikipediaId) {
-    desc = await wikipediaFeatureDescription(feature)
   } else {
     // layers can load their description on demand, the modal shows a loading message meanwhile.
     // the search layer is imported here, a static import of it breaks the module init order

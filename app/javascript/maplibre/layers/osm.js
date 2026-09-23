@@ -1,14 +1,13 @@
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
 import { BasemapLayer } from 'maplibre/layers/basemap'
-import { isSelectable, queryFeaturesNear } from 'maplibre/layers/layer'
-import { overpassDescription } from 'maplibre/layers/overpass/overpass'
+import { selectableFeaturesNear } from 'maplibre/layers/layer'
+import { fetchOsmElement, overpassDescription } from 'maplibre/layers/osm_description'
 import { map } from 'maplibre/map'
 
 const OSM_ELEMENT_TYPES = { 1: 'node', 2: 'way', 3: 'relation' }
 // Layer classes in protomaps/basemaps that call FeatureMerge in postProcess
 const MERGING_SOURCE_LAYERS = ['roads', 'water', 'earth', 'landuse', 'buildings', 'landcover', 'boundaries']
-const elementCache = new Map()
 
 /**
  * Highlights basemap features that come from OpenStreetMap, and logs their OpenStreetMap id.
@@ -96,8 +95,7 @@ export class OsmLayer extends BasemapLayer {
       if (e.defaultPrevented) { return }
 
       // user layers win over basemap elements
-      const covering = queryFeaturesNear(e.point, {}, isSelectable).filter(f => !f.properties?.cluster)
-      if (covering.length) { return }
+      if (selectableFeaturesNear(e.point).length) { return }
 
       const stack = this.osmFeaturesAtPoint(e.point)
       if (!stack.length) { return }
@@ -130,35 +128,5 @@ export class OsmLayer extends BasemapLayer {
 
     feature.properties.osm = { ...element.tags, id: osmId }
     return overpassDescription(feature.properties.osm)
-  }
-
-  removeEventHandlers() {
-    if (this.clickHandler) {
-      map.off('click', this.clickHandler)
-      this.clickHandler = null
-    }
-    super.removeEventHandlers()
-  }
-}
-
-/**
- * Loads a single OSM element by its id, for example "way/12345".
- * @returns {Promise<object|null>} the element with its tags, or null when the request fails
- */
-export async function fetchOsmElement(osmId) {
-  if (elementCache.has(osmId)) { return elementCache.get(osmId) }
-
-  try {
-    const response = await fetch(`https://api.openstreetmap.org/api/0.6/${osmId}.json`)
-    if (!response.ok) {
-      console.warn(`Failed to fetch OSM element ${osmId}: ${response.status}`)
-      return null
-    }
-    const element = (await response.json()).elements?.[0] || null
-    elementCache.set(osmId, element)
-    return element
-  } catch (error) {
-    console.error(`Error fetching OSM element ${osmId}:`, error)
-    return null
   }
 }

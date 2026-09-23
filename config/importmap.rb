@@ -36,16 +36,16 @@ pin "@maplibre/maplibre-gl-geocoder", preload: false, to: "@maplibre--maplibre-g
 # https://github.com/GIScience/openrouteservice-js?tab=readme-ov-file
 pin "openrouteservice-js", preload: false # @0.4.1
 # https://github.com/maplibre/maplibre-gl-directions/tree/main
-pin "@maplibre/maplibre-gl-directions", preload: false, to: "@maplibre--maplibre-gl-directions.js" # @0.9.1
+pin "@maplibre/maplibre-gl-directions", preload: false, to: "@maplibre--maplibre-gl-directions.js" # @0.10.1
 # https://github.com/onthegomap/maplibre-contour
-pin "maplibre-contour", preload: false # @0.1.0
+pin "maplibre-contour", preload: false # @0.1.1
 
 # Elevation chart
 # from https://esm.sh/chart.js@4.5.0/es2022/chart.bundle.mjs
 pin "chart.js", to: "chart-js.js", preload: false # @4.5.1
 
 # render markdown
-pin "marked", preload: false # @18.0.13
+pin "marked", preload: false # @18.0.14
 # https://github.com/cure53/DOMPurify, strips scripts and event handlers from rendered markdown
 pin "dompurify", preload: false # @3.4.15
 
