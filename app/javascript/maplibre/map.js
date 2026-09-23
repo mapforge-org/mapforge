@@ -367,7 +367,7 @@ export function setLayerVisibility(sourceName, visible) {
       sources.push(sourceName + '-features')
     }
     style.layers
-      .filter(l => sources.some(s => l.source === s || (s.endsWith('-') && l.source.startsWith(s))))
+      .filter(l => sources.some(s => l.source === s || (s.endsWith('-') && l.source?.startsWith(s))))
       .forEach(l => {
         if (map.getLayer(l.id)) map.setLayoutProperty(l.id, 'visibility', visible ? 'visible' : 'none')
       })
