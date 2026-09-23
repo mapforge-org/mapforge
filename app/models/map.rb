@@ -75,6 +75,8 @@ class Map
   THUNDERFOREST_MAPS = [ "thunderforestCycle", "thunderforestContrast" ]
   OTHER_MAPS = [ "cyclosmTiles", "satelliteStreets", "osmRasterTiles" ]
 
+  PLAYGROUND_ID = "playground"
+
   DEFAULT_CENTER = [ 11.077, 49.447 ].freeze
   DEFAULT_ZOOM = 10
   DEFAULT_PITCH = 0
@@ -143,8 +145,12 @@ class Map
 
   # Add an owner (idempotent)
   def add_owner(user)
-    return if owned_by?(user)
+    return if owned_by?(user) || playground?
     owners << user
+  end
+
+  def playground?
+    private_id == PLAYGROUND_ID
   end
 
   # Remove an owner (allows maps with no owners for anonymous/demo maps)
@@ -279,6 +285,11 @@ class Map
     greeting = [ "Welcome", user&.name&.split&.first, "to the Mapforge Tutorial map" ].compact.join(" ")
     map.features.where("properties.label" => /\AWelcome .*Tutorial map\z/).update_all("properties.label" => greeting)
     map
+  end
+
+  def self.playground
+    find_by(private_id: PLAYGROUND_ID) ||
+      create_from_file(Rails.root.join("db/seeds/demo.json")).tap { |map| map.update!(private_id: PLAYGROUND_ID) }
   end
 
   # Maps a span in km to a zoom level. Used for the extent of the map features and

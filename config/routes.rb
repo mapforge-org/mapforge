@@ -39,6 +39,7 @@ Rails.application.routes.draw do
 
   post "/demo", to: redirect("/tutorial") # legacy route
   post "/tutorial" => "maps#tutorial", :as => "tutorial"
+  get "/playground" => "maps#playground", :as => "playground"
   get "/my" => "maps#my", :as => "my"
   get "/fosdem", to: redirect("/m/fosdem")
 

@@ -965,6 +965,9 @@ msgstr "Nadel"
 msgid "Plan your ride and navigate with compass mode and elevation profile."
 msgstr "Plane deine Tour und navigiere mit Kompassmodus und Höhenprofil."
 
+msgid "Playground"
+msgstr "Demo-Karte"
+
 msgid "Please confirm"
 msgstr "Bitte bestätigen"
 
@@ -1515,6 +1518,9 @@ msgstr "Picknick|Picknickplatz|Rastplatz"
 
 msgid "play_area"
 msgstr "Spielplatz|Spielplaetze|Spielplätze"
+
+msgid "playground"
+msgstr "Demo-Karte"
 
 msgid "police_station"
 msgstr "Polizei|Polizeiwache|Revier"

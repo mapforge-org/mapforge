@@ -393,6 +393,30 @@ describe MapsController do
     end
   end
 
+  describe "#playground" do
+    it "reuses one shared map in edit mode with cursor sharing" do
+      get playground_path
+      get playground_path
+      map = Map.find_by(private_id: "playground")
+      expect(Map.where(private_id: "playground").count).to eq 1
+      expect(map.share_cursor).to be true
+      expect(response).to redirect_to(map.private_map_path)
+    end
+
+    it "shows no bookmark notice" do
+      get playground_path
+      get response.location
+      expect(response.body).not_to include("edit-notice")
+    end
+
+    it "cannot be joined by a user" do
+      get playground_path
+      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: create(:user).id })
+      get map_path(id: Map::PLAYGROUND_ID, join: true)
+      expect(Map.find_by(private_id: Map::PLAYGROUND_ID).owners).to be_empty
+    end
+  end
+
   describe "#layer" do
     let(:layer) { map.layers.first }
 

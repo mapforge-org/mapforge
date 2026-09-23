@@ -1,8 +1,9 @@
 class ApplicationCable::Connection < ActionCable::Connection::Base
-  identified_by :uuid
+  identified_by :uuid, :current_user
 
   def connect
     self.uuid = SecureRandom.uuid
+    self.current_user = User.find_by(id: request.session[:user_id]) if request.session[:user_id]
     Yabeda.websocket.connections_opened.increment({})
     Yabeda.websocket.active_connections.set({}, current_active_connections + 1)
   end

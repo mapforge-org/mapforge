@@ -10,8 +10,8 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 #### *All* geometries:
 
 * `label`: Label to show on the map (no emoji support)
-* `label-title`: heading line, drawn above `label` at 1.3 times `label-size` (works without a `label`, and takes the same color, font, anchor and offset as the label)
-* `label-size`: font size (default 16, max. 254). With `marker-scaling`, this is the size at zoom 14, and the label doubles with every zoom level up to zoom 17 (so values above 31 have no further effect)
+* `label-title`: heading line above `label`, at 1.3 times `label-size`. It works without a `label`. It takes the same color, font, anchor and offset as the label.
+* `label-size`: font size (default 16, max. 254). With `marker-scaling`, this is the size at zoom 14. The label then doubles with every zoom level up to zoom 17, so values above 31 have no further effect.
 * `label-font`: label font array (default depends on base map, like `["noto_sans_regular"]`), see *[Label fonts](#label-fonts)* below
 * `label-color`: font color in format "#000000" (default)
 * `label-justify`: alignment: auto (default), left, center, right
@@ -24,7 +24,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `sort-key`: sort order of features: higher numbers overlay lower numbers (default: 1)
 * `min-zoom`: Display feature only on zoom levels bigger than min-zoom (only integer values)
 * `max-zoom`: Display feature only on zoom levels smaller than max-zoom (only integer values)
-* `level`: floor the feature belongs to (e.g. `"0"`, `"1"`, `"-1"`). Accepts an OSM-style semicolon-separated list (`"0;1;2"`) for features that span multiple floors. Features without this property are always visible.
+* `level`: floor the feature belongs to (for example `"0"`, `"1"`, `"-1"`). Accepts an OSM-style semicolon-separated list (`"0;1;2"`) for features that span multiple floors. Features without this property are always visible.
 * `title`: title
 * `desc`: detailed description (markdown supported)
 * `onclick`: on hover/click behavior: 'details' (default), 'false' (do not react on hover/click), 'link' (link to url), 'feature' (link to another feature on the map)
@@ -41,7 +41,6 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `marker-scaling`: marker scales with zoom level (default: false)
 * `stroke-width`: width of the circle border line (default: 2)
 * `stroke`: circle border color (default "white", 'transparent' for none)
-* `heatmap`: if set, points will be styled as a heatmap
 * `flat`: if set, marker + label with be projected 'flat' on the map
 * `marker-rotate`: rotate marker by x degrees clockwise
 * `show-desc`: render `desc` as HTML above the marker, scaled by `marker-scaling`. One of `banner`, `square` or `bubble` (default: not shown)
@@ -82,7 +81,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 `label-font` takes an array of font names. Names are looked up in two places:
 
 1. **The glyph server of the base map.** Every base map ships a fixed set of fonts, so the valid names differ per map: `noto_sans_regular` / `noto_sans_bold` and 16 other families on the VersaTiles based maps ([full list](https://github.com/versatiles-org/versatiles-fonts/tree/main/fonts)), `Noto Sans Regular` and friends on the MapTiler and OpenFreeMap based maps.
-2. **Web fonts and device fonts.** If the name is not on the glyph server, the label is rendered in the browser instead, from any font the browser can resolve by CSS name. That covers the web fonts Mapforge loads on every page — `SUSE`, `Bree Serif`, `Lobster Two` — and the fonts installed on the device of the viewer.
+2. **Web fonts and device fonts.** The browser renders each label with a font name that is not on the glyph server. It uses any font that the browser can resolve by CSS name. That includes the fonts on the device of the viewer. It also includes the web fonts that Mapforge loads on every page: `SUSE`, `Bree Serif` and `Lobster Two`.
 
 #### Weight and style
 

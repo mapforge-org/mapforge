@@ -48,7 +48,7 @@
   - unless @map_mode == 'static'
     = render 'layer_loading'
 
-- if @map_mode == 'rw' && !@user && params['nomenu'] != 'true'
+- if @map_mode == 'rw' && !@user && params['nomenu'] != 'true' && !@map.playground?
   %dialog#edit-notice{ open: true }
     %i.bi.bi-exclamation-triangle-fill.me-2
     - login_link = link_to(_('log in'), login_path(origin: map_path(@map.private_id, join: true)))

@@ -50,7 +50,6 @@ class MapsController < ApplicationController
         @user&.track_map_view(params[:id])
 
         gon.map_id = params[:id]
-        gon.user_id = @user.id if @user
         gon.map_mode = @map_mode
         gon.rails_env = Rails.env
         gon.csrf_token = form_authenticity_token
@@ -91,6 +90,10 @@ class MapsController < ApplicationController
   def tutorial
     @map = Map.tutorial_map(@user)
     redirect_to map_url(id: @map.private_id)
+  end
+
+  def playground
+    redirect_to Map.playground.private_map_path
   end
 
   def create

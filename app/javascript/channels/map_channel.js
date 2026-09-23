@@ -231,7 +231,6 @@ export function sendMessage (event, data) {
   // shallow copy to avoid mutating caller's data; geometry is never touched so it's left shared
   const payload = { ...data }
   payload.map_id = window.gon.map_id
-  payload.user_id = window.gon.user_id
   payload.uuid = connectionUUID
   // dropping properties.id before sending to server
   if (payload.properties && payload.properties.id) {

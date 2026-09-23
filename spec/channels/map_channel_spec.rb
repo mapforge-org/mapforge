@@ -6,7 +6,7 @@ RSpec.describe MapChannel, type: :channel do
   let!(:a) { create(:feature, :point, layer: layer) }
   let!(:b) { create(:feature, :point, layer: layer) }
 
-  before { stub_connection(uuid: SecureRandom.uuid) }
+  before { stub_connection(uuid: SecureRandom.uuid, current_user: nil) }
 
   describe "#subscribed" do
     it "rejects the subscription for an unknown map id" do
@@ -40,6 +40,47 @@ RSpec.describe MapChannel, type: :channel do
       subscribe(map_id: map.private_id)
 
       expect { perform :mouse, lng: 8.1, lat: 47.2 }.not_to have_broadcasted_to("map_channel_#{map.public_id}")
+    end
+
+    context "with a logged in user" do
+      let(:user) { create(:user) }
+
+      before { stub_connection(uuid: SecureRandom.uuid, current_user: user) }
+
+      it "keeps the cursor anonymous on the playground" do
+        map.update!(private_id: Map::PLAYGROUND_ID)
+        subscribe(map_id: map.private_id)
+
+        expect { perform :mouse, lng: 8.1, lat: 47.2 }
+          .to have_broadcasted_to("map_channel_#{map.public_id}")
+          .with(event: "mouse", uuid: connection.uuid, lng: 8.1, lat: 47.2)
+      end
+    end
+  end
+
+  describe "#update_map with a private permission" do
+    let(:user) { create(:user) }
+
+    before do
+      stub_connection(uuid: SecureRandom.uuid, current_user: user)
+      subscribe(map_id: map.private_id)
+    end
+
+    it "refuses a user who does not own the map" do
+      expect { perform :update_map, map_id: map.private_id, view_permission: "private" }.to raise_error(/owner/)
+      expect { perform :update_map, map_id: map.private_id, edit_permission: "private" }.to raise_error(/owner/)
+      expect(map.reload.attributes.values_at("view_permission", "edit_permission")).to eq %w[link link]
+    end
+
+    it "lets the owner set the map to private" do
+      map.add_owner(user)
+      perform :update_map, map_id: map.private_id, view_permission: "private"
+      expect(map.reload.view_permission).to eq "private"
+    end
+
+    it "lets a visitor list the map in the gallery" do
+      perform :update_map, map_id: map.private_id, view_permission: "listed"
+      expect(map.reload.view_permission).to eq "listed"
     end
   end
 

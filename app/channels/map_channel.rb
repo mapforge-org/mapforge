@@ -12,6 +12,7 @@ class MapChannel < ApplicationCable::Channel
 
     @public_id = map.public_id
     @share_cursor = map.share_cursor
+    @playground = map.playground?
     stream_from "map_channel_#{@public_id}"
     transmit({ event: "connection", uuid: uuid })
     Rails.logger.info { "MapChannel subscribed '#{uuid}' for '#{params[:map_id]}'" }
@@ -27,7 +28,13 @@ class MapChannel < ApplicationCable::Channel
   def update_map(data)
     Yabeda.websocket.messages_received.increment({ action: "update_map", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
-    map.update!(map_atts(data))
+    atts = map_atts(data)
+    # A private map is visible to its owners only, so a map without owners would lock out everybody
+    if atts.values_at("view_permission", "edit_permission").include?("private") &&
+        !(current_user&.admin? || map.owned_by?(current_user))
+      raise "Only an owner can set map '#{map.public_id}' to private"
+    end
+    map.update!(atts)
   end
 
   def update_layer(data)
@@ -79,14 +86,16 @@ class MapChannel < ApplicationCable::Channel
     Yabeda.websocket.messages_received.increment({ action: "delete_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     layer = map.layers.find(data["id"])
+    # new_feature always writes into the first geojson layer
+    raise "Cannot delete the first geojson layer of map '#{map.public_id}'" if layer == map.layers.geojson.first
     layer.destroy
   end
 
   def mouse(data)
     return unless @public_id && @share_cursor
     payload = { event: "mouse", uuid:, lng: data["lng"], lat: data["lat"] }
-    if (user = User.find_by(id: data["user_id"]))
-      payload.merge!(user_name: user.name, user_image: user.image)
+    if current_user && !@playground
+      payload.merge!(user_name: current_user.name, user_image: current_user.image)
     end
     ActionCable.server.broadcast("map_channel_#{@public_id}", payload)
   end
