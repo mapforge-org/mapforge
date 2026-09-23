@@ -2,11 +2,11 @@ class MapsController < ApplicationController
   include MapListFilters
 
   before_action :set_map, only: %i[show properties feature layer destroy copy]
-  before_action :set_map_mode, only: %i[show layer]
+  before_action :set_map_mode, only: %i[show properties feature layer]
   before_action :set_client_view, only: %i[show]
   before_action :join, only: %i[show]
   before_action :set_global_js_values, only: %i[show tutorial]
-  before_action :check_permissions, only: %i[show properties layer]
+  before_action :check_permissions, only: %i[show properties feature layer]
   before_action :require_login, only: %i[my copy]
   before_action :require_map_owner, only: %i[destroy]
   # Visitors without login get no session cookie (ApplicationController#disable_session_cookies),
@@ -104,6 +104,7 @@ class MapsController < ApplicationController
 
   def copy
     require_map_owner if @map.view_permission == "private"
+    return if performed?
     cloned_map = @map.clone_with_layers
     cloned_map.update(owners: [ @user ], name: "Copy of " + @map.name.to_s)
     count_map_created("copy")
