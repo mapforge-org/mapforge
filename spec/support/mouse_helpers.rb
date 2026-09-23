@@ -69,5 +69,9 @@ def drag_element(source_selector, target_selector)
   mouse.move(x: rect[0], y: rect[1])
   mouse.down
   mouse.move(x: rect[2], y: rect[3], steps: 12)
+  # SortableJS fallback mode detects the list under the pointer on a 50ms timer,
+  # a release before its next tick misses a drop into another list
+  sleep 0.1
+  mouse.move(x: rect[2], y: rect[3] + 1)
   mouse.up
 end

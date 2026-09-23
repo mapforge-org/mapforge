@@ -553,6 +553,11 @@ body.map-mode-rw .ro-only {
   touch-action: none;
 }
 
+/* an empty layer must stay a drop target for features from other layers */
+.feature-drop-list:empty {
+  min-height: 1.5rem;
+}
+
 .layer-feature-item.sortable-chosen {
   background-color: var(--bs-tertiary-bg);
 }

@@ -166,6 +166,40 @@ RSpec.describe MapChannel, type: :channel do
     end
   end
 
+  describe "moving a feature to another layer" do
+    let!(:target) { create(:layer, map: map) }
+
+    def move(layer_id, map_id: map.private_id)
+      perform :update_feature, id: a.id.to_s, map_id:, layer_id: layer_id.to_s,
+        geometry: a.geometry, properties: a.properties
+    end
+
+    it "moves the feature, updates both counters and broadcasts the new layer" do
+      subscribe(map_id: map.private_id)
+
+      expect { move(target.id) }.to have_broadcasted_to("map_channel_#{map.public_id}")
+        .with(hash_including(event: "update_feature", layer_id: target.id.to_s))
+      expect(a.reload.layer).to eq target
+      expect(layer.reload.features_count).to eq 1
+      expect(target.reload.features_count).to eq 1
+    end
+
+    it "rejects a layer of another map" do
+      other_layer = create(:map).layers.first
+      subscribe(map_id: map.private_id)
+
+      expect { move(other_layer.id) }.to raise_error(/not found/)
+      expect(a.reload.layer).to eq layer
+    end
+
+    it "rejects a move with the public id" do
+      subscribe(map_id: map.public_id)
+
+      expect { move(target.id, map_id: map.public_id) }.to raise_error(/public/)
+      expect(a.reload.layer).to eq layer
+    end
+  end
+
   describe "image relation" do
     let(:image) { Image.create!(img: File.new(Rails.root.join("public/logo/pwa/mapforge-logo-pwa-512.png"))) }
 

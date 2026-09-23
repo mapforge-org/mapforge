@@ -49,7 +49,12 @@ class MapChannel < ApplicationCable::Channel
     map = get_map_rw!(data["map_id"])
     @feature = map.features.find(data["id"])
     raise "Feature #{data["id"]} not found on map #{data["map_id"]}" unless @feature
-    @feature.update!(feature_atts(data))
+    atts = feature_atts(data)
+    if data["layer_id"]
+      atts["layer"] = map.layers.geojson.find(data["layer_id"])
+      raise "Layer #{data["layer_id"]} not found on map #{data["map_id"]}" unless atts["layer"]
+    end
+    @feature.update!(atts)
     associate_image(data["properties"])
   end
 

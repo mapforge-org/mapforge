@@ -9,7 +9,7 @@ import { initializeGeoLocateControl } from 'maplibre/controls/geolocate'
 import { initializeSearchControl } from 'maplibre/controls/search'
 import { draw, unselect } from 'maplibre/edit'
 import { featureIcon, getFeatureTypeName, resetHighlightedFeature } from 'maplibre/feature'
-import { layers } from 'maplibre/layers/layers'
+import { layers, moveFeature } from 'maplibre/layers/layers'
 import { map, mapProperties } from 'maplibre/map'
 
 export class ControlGroup {
@@ -181,6 +181,13 @@ export function initSettingsModal () {
 
 }
 
+function updateFeatureCount (ul, layer) {
+  const layerElement = ul.closest('.layer-item')
+  const count = layer.geojson.features.length
+  layerElement.querySelector('.layer-feature-count').textContent = '(' + count + ')'
+  layerElement.querySelector('.layer-empty-note')?.classList.toggle('hidden', count > 0)
+}
+
 function renderLayerFeatures (layerElement, layer) {
   // a later initLayersModal() call detaches this element, then the build is obsolete
   if (!layerElement.isConnected) { return }
@@ -218,6 +225,7 @@ function renderLayerFeatures (layerElement, layer) {
     ul.appendChild(listItem)
   })
   if (window.gon.map_mode === 'rw' && layer.type === 'geojson') {
+    ul.classList.add('feature-drop-list')
     let dragging = false
     // Swallow the click that fires after a drop so reordering never selects a feature
     ul.addEventListener('click', e => {
@@ -227,23 +235,32 @@ function renderLayerFeatures (layerElement, layer) {
     import('sortablejs').then(({ default: Sortable }) => {
       Sortable.create(ul, {
         handle: '.feature-drag-handle',
+        group: 'features',
         animation: 150,
         // Use the JS fallback (pointer events) instead of native HTML5 DnD for
         // consistent touch + mouse behaviour and styling
         forceFallback: true,
         onStart: () => { dragging = true },
         onEnd: evt => {
-          if (evt.oldIndex === evt.newIndex) {
+          if (evt.from === evt.to && evt.oldIndex === evt.newIndex) {
             setTimeout(() => { dragging = false }, 0)
             return
           }
+          const toLayer = layers.find(l => l.id === evt.to.closest('.layer-item').dataset.layerId)
+          if (evt.from !== evt.to) {
+            const feature = layer.geojson.features.find(f => f.id === evt.item.dataset.featureId)
+            moveFeature(feature, toLayer.id)
+            sendMessage('update_feature', { ...feature, layer_id: toLayer.id })
+            updateFeatureCount(evt.from, layer)
+            updateFeatureCount(evt.to, toLayer)
+          }
           // The list is shown top-first, so reverse it back to draw order (bottom first)
-          const orderedIds = Array.from(ul.querySelectorAll('li[data-feature-id]'))
+          const orderedIds = Array.from(evt.to.querySelectorAll('li[data-feature-id]'))
             .map(li => li.getAttribute('data-feature-id'))
             .reverse()
-          layer.applyFeatureOrder(orderedIds)
-          layer.render()
-          sendMessage('update_layer', { id: layer.id, feature_order: orderedIds })
+          toLayer.applyFeatureOrder(orderedIds)
+          toLayer.render()
+          sendMessage('update_layer', { id: toLayer.id, feature_order: orderedIds })
           // reset after the post-drop click has been processed
           setTimeout(() => { dragging = false }, 0)
         }
@@ -279,7 +296,7 @@ export function initLayersModal () {
       // Don't show feature count for raster and indoor layers
       if (layer.type !== 'raster' && layer.type !== 'indoor') {
         const featureCount = document.createElement('span')
-        featureCount.classList.add('small')
+        featureCount.classList.add('small', 'layer-feature-count')
         featureCount.textContent = '(' + features.length + ')'
         head.parentNode.insertBefore(featureCount, head.nextSibling)
       }
@@ -366,7 +383,7 @@ export function initLayersModal () {
 
       if (features.length === 0 && layer.type !== 'raster' && layer.type !== 'indoor') {
         const newNode = document.createElement('i')
-        newNode.classList.add('ms-3')
+        newNode.classList.add('ms-3', 'layer-empty-note')
         newNode.textContent = window.__('No elements in this layer')
         layerElement.querySelector('.layer-content').appendChild(newNode)
       }

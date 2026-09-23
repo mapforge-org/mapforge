@@ -340,4 +340,29 @@ describe "Map layers, visibility and order" do
       expect(page).not_to have_css("#feature-details-modal.show")
     end
   end
+
+  context "moving features across layers" do
+    let!(:feature) { create(:feature, :point, title: "Mover", layer: map.layers.first) }
+    let!(:target) { create(:layer, map: map, name: "Target layer") }
+    let!(:resident) { create(:feature, :point_middle, title: "Resident", layer: target) }
+
+    before do
+      visit map.private_map_path
+      expect_map_loaded
+      find(".maplibregl-ctrl-layers").click
+      find("#layer-list-#{target.id} .layer-name").click
+      find("#layer-list-#{map.layers.first.id} .layer-name").click
+      expect(page).to have_css("#layer-list-#{target.id} li[data-feature-id='#{resident.id}']")
+    end
+
+    it "drags a feature into another layer and persists it" do
+      drag_element("li[data-feature-id='#{feature.id}'] .feature-drag-handle",
+        "#layer-list-#{target.id} li[data-feature-id='#{resident.id}']")
+
+      expect(page).to have_css("#layer-list-#{target.id} li[data-feature-id='#{feature.id}']")
+      expect(page).to have_css("#layer-list-#{target.id} .layer-feature-count", text: "(2)")
+      wait_for { feature.reload.layer }.to eq target
+      wait_for { target.reload.feature_order }.to include(feature.id.to_s)
+    end
+  end
 end

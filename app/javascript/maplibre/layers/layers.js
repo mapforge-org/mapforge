@@ -268,6 +268,7 @@ export function applyFeatureUpdate(feature, options) {
 export function upsert (updatedFeature, layerId) {
   const feature = getFeature(updatedFeature.id)
   if (!feature) { addFeature(updatedFeature, layerId); return }
+  if (layerId) { moveFeature(feature, layerId) }
 
   // only update feature if it was changed, disregarding properties.id on both sides
   // (the server now includes it for MapLibre's promoteId, so it isn't a meaningful diff)
@@ -323,6 +324,16 @@ function updateFeature (feature, updatedFeature) {
   // A remote update may have changed geometry or toggled companions, so refresh them.
   // (A remote change to a feature's level won't re-filter here — that needs a full render.)
   applyFeatureUpdate(feature, { refreshRouteExtras: true, refreshKmMarkers: true })
+}
+
+export function moveFeature (feature, layerId) {
+  const from = getLayer(feature.id)
+  const to = layers.find(l => l.type === 'geojson' && l.id === layerId)
+  if (!from || !to || from === to) { return }
+  from.geojson.features = from.geojson.features.filter(f => f.id !== feature.id)
+  from.applyFeatureRemove(feature)
+  to.geojson.features.push(feature)
+  to.applyFeatureAdd(feature)
 }
 
 export function destroyFeature (featureId) {

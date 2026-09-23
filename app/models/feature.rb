@@ -26,7 +26,7 @@ class Feature
 
   after_save :broadcast_update, if: -> {
     previous_changes.present? && layer.present? && map.present? &&
-      (previous_changes["geometry"] || previous_changes["properties"])
+      (previous_changes["geometry"] || previous_changes["properties"] || previous_changes["layer_id"])
   }
   before_save :sanitize_coordinates
   validate :require_coords
