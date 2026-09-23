@@ -359,7 +359,7 @@ describe MapsController do
     it "greets guests without a name" do
       post tutorial_path
       labels = Map.tutorial.first.features.pluck(:properties).map { |p| p["label"] }
-      expect(labels).to include("Welcome to the Mapforge Tutorial map")
+      expect(labels).to include("Welcome to the Tutorial")
       expect(labels.grep(/Thomas/)).to be_empty
     end
 
@@ -367,7 +367,7 @@ describe MapsController do
       allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
       post tutorial_path
       labels = Map.tutorial.first.features.pluck(:properties).map { |p| p["label"] }
-      expect(labels).to include("Welcome First to the Mapforge Tutorial map")
+      expect(labels).to include("Welcome First to the Tutorial")
     end
 
     it "creates tutorial map without a CSRF token" do

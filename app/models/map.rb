@@ -273,7 +273,7 @@ class Map
     Rails.application.routes.url_helpers.map_path(id: public_id, name: name)
   end
 
-  # The seed is an export of the author's own tutorial map, so its greeting carries a name.
+  # The seed can be an export of the author's own tutorial map, so its greeting can carry a name.
   def self.tutorial_map(user)
     map = user&.owned_maps&.tutorial&.first
     return map if map
@@ -282,8 +282,8 @@ class Map
     Yabeda.maps_created.increment(kind: "tutorial", owner: user ? "user" : "anonymous", user: user&.id.to_s)
     map.update(tags: [ "tutorial" ])
     map.add_owner(user) if user
-    greeting = [ "Welcome", user&.name&.split&.first, "to the Mapforge Tutorial map" ].compact.join(" ")
-    map.features.where("properties.label" => /\AWelcome .*Tutorial map\z/).update_all("properties.label" => greeting)
+    greeting = [ "Welcome", user&.name&.split&.first, "to the Tutorial" ].compact.join(" ")
+    map.features.where("properties.label" => /\AWelcome .*Tutorial\z/).update_all("properties.label" => greeting)
     map
   end
 
