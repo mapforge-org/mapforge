@@ -11,12 +11,17 @@
           data: { 'geometry-mode': "move", action: "click->feature--modal#setGeometryMode",
             toggle: "tooltip", 'bs-trigger': "hover" } }
           %i.bi.bi-arrows-move
+        %button.btn{ type: "button", title: _("Rotate"),
+          data: { 'geometry-mode': "rotate", action: "click->feature--modal#setGeometryMode",
+            toggle: "tooltip", 'bs-trigger': "hover" } }
+          %i.bi.bi-arrow-repeat
     .geometry-hint.text-center.text-muted.pt-3.pb-3
       %p#geometry-hint-point.edit-point= _("Drag the point to move it")
       %p#geometry-hint-line.edit-line= _("Drag points to reshape")
       %p#geometry-hint-polygon.edit-polygon= _("Drag points to reshape")
       %p#geometry-hint-move-line.edit-line= _("Drag the line to move it")
       %p#geometry-hint-move-polygon.edit-polygon= _("Drag the polygon to move it")
+      %p#geometry-hint-rotate-polygon.edit-polygon= _("Drag the polygon to rotate it")
       %p#geometry-hint-routed.hidden= _("Drag or add waypoints to reroute")
 
   .feature-edit-section{ 'data-edit-section': "properties" }

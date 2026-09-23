@@ -385,7 +385,9 @@ img[src*="/icon-sets/fontawesome/"] {
 }
 
 [data-edit-section="geometry"]:not(.geometry-moving) :is(#geometry-hint-move-line, #geometry-hint-move-polygon),
-.geometry-moving :is(#geometry-hint-line, #geometry-hint-polygon) {
+[data-edit-section="geometry"]:not(.geometry-rotating) #geometry-hint-rotate-polygon,
+.geometry-moving :is(#geometry-hint-line, #geometry-hint-polygon),
+.geometry-rotating :is(#geometry-hint-line, #geometry-hint-polygon, #geometry-hint-move-line, #geometry-hint-move-polygon) {
   display: none;
 }
 

@@ -215,6 +215,24 @@ describe "Feature edit" do
         expect(offsets.uniq.length).to eq(1)
         expect(offsets.first[0]).to be > 0
       end
+
+      it "can rotate the whole polygon" do
+        original = polygon.geometry["coordinates"][0]
+        find("#edit-button-geometry").click
+        find("#geometry-mode-ui [data-geometry-mode='rotate']").click
+        expect(page).to have_text("Drag the polygon to rotate it")
+        page.evaluate_async_script("window.map.once('idle', arguments[0]); window.map.triggerRepaint()")
+        center = viewport_xy_for_lat_lng(49.4476, 11.0853)
+        drag_coord(center[:x] + 60, center[:y], center[:x], center[:y] - 60)
+
+        wait_for { polygon.reload.geometry["coordinates"][0].first }.not_to eq(original.first)
+        rotated = polygon.geometry["coordinates"][0]
+        expect(rotated.length).to eq(original.length)
+        offsets = rotated.zip(original).map { |m, o| [ (m[0] - o[0]).round(6), (m[1] - o[1]).round(6) ] }
+        expect(offsets.uniq.length).to be > 1
+        centroid = ->(ring) { ring[0..-2].transpose.map { |c| c.sum / c.length } }
+        centroid.(rotated).zip(centroid.(original)).each { |r, o| expect(r).to be_within(0.0001).of(o) }
+      end
     end
   end
 
