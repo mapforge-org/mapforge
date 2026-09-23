@@ -19,17 +19,20 @@ export const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overp
 
 // MapLibre queries a single pixel. A line drawn 2px wide at low zoom is almost unhittable,
 // so retry with a small box when the exact pixel misses. The exact hit still wins, which
-// keeps the top-most-feature rule intact.
-const CLICK_TOLERANCE = 12
-// 30px radius = a 60px target, above the 44px minimum that a fingertip needs
-const CLICK_TOLERANCE_TOUCH = 30
+// keeps the top-most-feature rule intact. draw uses the same value as its clickBuffer.
+export const CLICK_TOLERANCE = 8
+// 15px radius = a 30px target for a fingertip
+const CLICK_TOLERANCE_TOUCH = 15
 
-export function queryFeaturesNear (point, options) {
-  const exact = map.queryRenderedFeatures(point, options)
+export const isSelectable = f => SELECTABLE_SOURCE_PREFIXES.some(p => f.source.startsWith(p))
+
+// keep: only these hits count, so a basemap feature under the cursor does not stop the box query
+export function queryFeaturesNear (point, options, keep = () => true) {
+  const exact = map.queryRenderedFeatures(point, options).filter(keep)
   if (exact.length) { return exact }
-  const r = functions.isTouchDevice() ? CLICK_TOLERANCE_TOUCH : CLICK_TOLERANCE
+  const r = window.matchMedia('(pointer: coarse)').matches ? CLICK_TOLERANCE_TOUCH : CLICK_TOLERANCE
   const box = [[point.x - r, point.y - r], [point.x + r, point.y + r]]
-  return map.queryRenderedFeatures(box, options)
+  return map.queryRenderedFeatures(box, options).filter(keep)
 }
 
 /**
@@ -219,11 +222,10 @@ export class Layer {
       // Query all features at click point across all layers (not just registered layers)
       const allFeatures = queryFeaturesNear(e.point, {
         filter: ['!', ['has', 'cluster']]
-      })
+      }, isSelectable)
 
       // queryRenderedFeatures returns features top-most first → visual z-order
-      const selectable = allFeatures
-        .filter(f => !f.properties?.cluster && SELECTABLE_SOURCE_PREFIXES.some(p => f.source.startsWith(p)))
+      const selectable = allFeatures.filter(f => !f.properties?.cluster)
 
       const isViewMode = window.gon.map_mode === 'ro' || e.originalEvent.shiftKey
       const clickable = isViewMode

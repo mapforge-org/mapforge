@@ -12,6 +12,7 @@ import { isGeolocateCompassModeActive } from 'maplibre/controls/geolocate';
 import { initializeDefaultControls, resetControls } from 'maplibre/controls/shared';
 import { featureLabel, highlightFeature } from 'maplibre/feature';
 import { refreshFeatureMeta } from 'maplibre/feature/details';
+import { CLICK_TOLERANCE } from 'maplibre/layers/layer';
 import { addFeature, applyFeatureUpdate, destroyFeature, getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
 import { map, mapProperties, onMapClickAfterLayers } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
@@ -93,7 +94,7 @@ export async function initializeEditMode () {
       // uncombine_features
     },
     styles: editStyles(),
-    clickBuffer: 5,
+    clickBuffer: CLICK_TOLERANCE,
     touchBuffer: 5, // default 25, allow more fine selection eg. of midpoints
     // user properties are available, prefixed with 'user_'
     userProperties: true,
