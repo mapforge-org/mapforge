@@ -48,7 +48,7 @@ class ImagesController < ApplicationController
 
   # upload image
   def upload
-    uploaded_file = params[:image]
+    uploaded_file = params.require(:image)
     tempfile = uploaded_file.tempfile
     # Avoid duplicate files by identifying uploaded files by <name>-<size>.
     # Always stored as WebP, so the public_id ends in .webp regardless of source format.
