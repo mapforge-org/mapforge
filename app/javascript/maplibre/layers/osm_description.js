@@ -37,7 +37,7 @@ const OSM_PRIMARY_KEYS = ['amenity', 'shop', 'tourism', 'leisure', 'historic', '
 const OSM_CODE_KEYS = ['opening_hours', 'service_times', 'collection_times', 'happy_hours']
 // taginfo has no page for a free text value, and a personal one must not leave the modal
 const OSM_NO_TAGINFO_KEYS = ['wikipedia', 'wikidata', 'wikimedia_commons', 'email', 'phone', 'operator',
-  'addr:housenumber', 'website', 'url']
+  'addr:housenumber', 'website', 'url', 'image']
 
 // 'outdoor_seating' -> 'Outdoor Seating', 'contact:phone' -> 'Contact Phone'
 function osmLabel(key) {
@@ -51,6 +51,22 @@ function osmLink(key, value) {
   return null
 }
 
+// 'File:X.jpg' of wikimedia_commons, or a commons page url, or a direct url to an image file
+function osmImageUrl(key, value) {
+  if (key !== 'image' && key !== 'wikimedia_commons') { return null }
+
+  const commonsFile = value.match(/^(?:https?:\/\/commons\.wikimedia\.org\/wiki\/)?(File:.+)$/)?.[1]
+  if (commonsFile) {
+    // no encodeURIComponent, the name in a commons page url is percent encoded already
+    return `https://commons.wikimedia.org/wiki/Special:FilePath/${commonsFile.slice(5).replace(/ /g, '_')}?width=400`
+  }
+  if (/^https?:\/\/.+\.(jpe?g|png|gif|webp|svg)(\?.*)?$/i.test(value)) {
+    // img_src of the content security policy allows https only, many OSM image tags are plain http
+    return value.replace(/^http:/i, 'https:')
+  }
+  return null
+}
+
 function osmValueHtml(key, value, primaryKey) {
   const escaped = functions.escapeHtml(value)
   if (value === 'yes') { return `<i class="bi bi-check-lg osm-yes"></i> ${escaped}` }
@@ -59,6 +75,11 @@ function osmValueHtml(key, value, primaryKey) {
   if (OSM_CODE_KEYS.includes(key)) { return `<code class="osm-code">${escaped}</code>` }
 
   const link = osmLink(key, value)
+  const image = osmImageUrl(key, value)
+  if (image) {
+    return `<a href="${functions.escapeHtml(link || value)}" target="_blank">` +
+      `<img class="osm-image" src="${functions.escapeHtml(image)}" alt="${escaped}" loading="lazy"></a>`
+  }
   if (link) { return `<a href="${link}" target="_blank">${escaped}</a>` }
   // a website tag often drops the scheme, without it the browser reads the value as a relative path
   if (/^https?:\/\//.test(value)) { return `<a href="${escaped}" target="_blank">${escaped}</a>` }

@@ -839,6 +839,12 @@ input {
   font-size: 0.85rem;
 }
 
+.osm-image {
+  max-width: 10rem;
+  max-height: 8rem;
+  border-radius: 0.4rem;
+}
+
 .osm-yes {
   color: #3fa34d;
 }
