@@ -384,6 +384,11 @@ img[src*="/icon-sets/fontawesome/"] {
   margin: 0;
 }
 
+[data-edit-section="geometry"]:not(.geometry-moving) :is(#geometry-hint-move-line, #geometry-hint-move-polygon),
+.geometry-moving :is(#geometry-hint-line, #geometry-hint-polygon) {
+  display: none;
+}
+
 .feature-section-card {
   background: #f1f3f6;
   border: 1px solid #dfe4eb;

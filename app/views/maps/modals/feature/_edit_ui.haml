@@ -1,10 +1,22 @@
 #feature-edit-ui.hidden
 
   .feature-edit-section{ 'data-edit-section': "geometry" }
+    #geometry-mode-ui.flex-center.pt-3.hidden
+      .btn-group.segmented{ role: "group" }
+        %button.btn.active{ type: "button", title: _("Reshape"),
+          data: { 'geometry-mode': "reshape", action: "click->feature--modal#setGeometryMode",
+            toggle: "tooltip", 'bs-trigger': "hover" } }
+          %i.bi.bi-bounding-box
+        %button.btn{ type: "button", title: _("Move"),
+          data: { 'geometry-mode': "move", action: "click->feature--modal#setGeometryMode",
+            toggle: "tooltip", 'bs-trigger': "hover" } }
+          %i.bi.bi-arrows-move
     .geometry-hint.text-center.text-muted.pt-3.pb-3
       %p#geometry-hint-point.edit-point= _("Drag the point to move it")
-      %p#geometry-hint-line.edit-line= _("Drag vertices to reshape")
-      %p#geometry-hint-polygon.edit-polygon= _("Drag vertices to reshape")
+      %p#geometry-hint-line.edit-line= _("Drag points to reshape")
+      %p#geometry-hint-polygon.edit-polygon= _("Drag points to reshape")
+      %p#geometry-hint-move-line.edit-line= _("Drag the line to move it")
+      %p#geometry-hint-move-polygon.edit-polygon= _("Drag the polygon to move it")
       %p#geometry-hint-routed.hidden= _("Drag or add waypoints to reroute")
 
   .feature-edit-section{ 'data-edit-section': "properties" }

@@ -77,6 +77,17 @@ export function editStyles() {
         ['==', ['get', 'active'], 'true']]
     },
 
+    // Invisible, only there so that draw finds the polygon under the cursor for a move drag.
+    // Restricted to simple_select, because in direct_select a hit would block the map pan.
+    {
+      id: 'gl-draw-polygon-fill-move',
+      type: 'fill',
+      filter: ['all',
+        ['==', 'active', 'true'],
+        ['==', 'mode', 'simple_select'],
+        ['==', '$type', 'Polygon']],
+      paint: { 'fill-opacity': 0 }
+    },
     // active polygon outline
     {
       id: 'gl-draw-polygon-stroke-active',

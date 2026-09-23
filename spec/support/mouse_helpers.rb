@@ -39,6 +39,14 @@ def click_coord(_selector, x, y, button: :left)
   browser.mouse.click(x: x, y: y, button: button)
 end
 
+def drag_coord(x, y, to_x, to_y)
+  mouse = page.driver.browser.mouse
+  mouse.move(x: x, y: y)
+  mouse.down
+  mouse.move(x: to_x, y: to_y, steps: 10)
+  mouse.up
+end
+
 def hover_coord(x, y)
   browser = page.driver.browser
   browser.mouse.move(x: x, y: y)

@@ -189,6 +189,19 @@ function buildModes (drawModes, PaintMode) {
   const DirectionsMode = { ...SimpleSelectMode }
   DirectionsMode.onClick = function (_state, _e, _delta) { /* noop */ }
 
+  // simple_select draws the vertices of a selected line or polygon on top of it. draw only
+  // starts a move on the feature itself, so a drag that starts on a vertex would pan the map.
+  for (const handler of ['onMouseDown', 'onTouchStart']) {
+    const original = SimpleSelectMode[handler]
+    SimpleSelectMode[handler] = function (state, e) {
+      const target = e.featureTarget?.properties
+      if (target?.meta === 'vertex') {
+        return this.startOnActiveFeature(state, { ...e, featureTarget: { properties: { id: target.parent } } })
+      }
+      return original.call(this, state, e)
+    }
+  }
+
   return {
     ...drawModes,
     simple_select: SimpleSelectMode,
@@ -204,6 +217,7 @@ function handleModeChange () {
   // probably mapbox draw bug: map can lose drag capabilities on double click
   if (!isGeolocateCompassModeActive()) map.dragPan.enable()
   const mode = draw.getMode()
+  syncGeometryModeUi(mode)
   if (currentMode === mode) { return }
   console.log("Switch draw mode from '" + currentMode + "' to '" + mode + "'")
 
@@ -229,6 +243,16 @@ function handleModeChange () {
   if (config.lineMenu) { functions.e('.ctrl-line-menu', e => { e.classList.remove('hidden') }) }
   status(config.message(), 'info', 'medium', 8000)
   if (config.profile) { initDirections(config.profile) }
+}
+
+// A click on the selected line or polygon in move mode makes draw switch to direct_select
+// by itself, so the buttons follow the draw mode and not the button click.
+function syncGeometryModeUi (mode) {
+  const move = mode === 'simple_select' && draw.getSelected().features.some(f => f.geometry.type !== 'Point')
+  document.querySelectorAll('#geometry-mode-ui [data-geometry-mode]').forEach(button => {
+    button.classList.toggle('active', (button.dataset.geometryMode === 'move') === move)
+  })
+  functions.e('[data-edit-section="geometry"]', e => { e.classList.toggle('geometry-moving', move) })
 }
 
 // Reduce extrusion opacity to make edit handles visible. When restoring, each
@@ -306,7 +330,7 @@ export function toggleDrawMode(mode) {
 // switching directly from 'simple_select' to 'direct_select',
 // allow only to select one feature
 // direct_select mode does not allow to select other features
-export function select (feature) {
+export function select (feature, { move = false } = {}) {
   // console.log('select', feature)
   const route = feature?.properties?.route
   if (route?.provider === 'osrm' || route?.provider === 'ors') {
@@ -316,7 +340,7 @@ export function select (feature) {
       changeMode('directions_' + route.profile) // fire event before initDirections
       initDirections(route.profile, feature)
     }
-  } else if (feature.geometry.type === 'Point') {
+  } else if (feature.geometry.type === 'Point' || move) {
     changeMode('simple_select', { featureIds: [feature.id] })
   } else {
     changeMode('direct_select', { featureId: feature.id })

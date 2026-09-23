@@ -256,17 +256,25 @@ export default class extends Controller {
     }
   }
 
+  setGeometryMode (event) {
+    select(this.getSelectedFeature(), { move: event.currentTarget.dataset.geometryMode === 'move' })
+  }
+
   updateGeometryHint (feature) {
-    dom.hideElements(['#geometry-hint-point', '#geometry-hint-line', '#geometry-hint-polygon', '#geometry-hint-routed'])
+    dom.hideElements(['#geometry-hint-point', '#geometry-hint-line', '#geometry-hint-polygon', '#geometry-hint-routed',
+      '#geometry-hint-move-line', '#geometry-hint-move-polygon'])
+    // points move with a drag anyway, routed features only take waypoint changes
+    const movable = !feature.properties?.route?.provider && feature.geometry.type !== 'Point'
+    document.querySelector('#geometry-mode-ui').classList.toggle('hidden', !movable)
 
     if (feature.properties?.route?.provider) {
       dom.showElements(['#geometry-hint-routed'])
     } else if (feature.geometry.type === 'Point') {
       dom.showElements(['#geometry-hint-point'])
     } else if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
-      dom.showElements(['#geometry-hint-line'])
+      dom.showElements(['#geometry-hint-line', '#geometry-hint-move-line'])
     } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
-      dom.showElements(['#geometry-hint-polygon'])
+      dom.showElements(['#geometry-hint-polygon', '#geometry-hint-move-polygon'])
     }
   }
 
