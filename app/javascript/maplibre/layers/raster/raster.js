@@ -1,8 +1,7 @@
 import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
-import { Layer, queryFeaturesNear } from 'maplibre/layers/layer'
-import { layers } from 'maplibre/layers/layers'
+import { Layer, selectableFeaturesNear } from 'maplibre/layers/layer'
 import { extractTheme, fetchNearestRoute, fetchRouteDetails } from 'maplibre/layers/raster/waymarkedtrails'
 import { addGeoJSONSource, map, removeStyleLayers } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
@@ -244,17 +243,8 @@ export class RasterLayer extends Layer {
         if (drawFeature) return
       }
 
-      // Priority: skip waymarkedtrails if user has geojson features at this location
-      const geojsonLayers = layers?.filter(l => l.type === 'geojson' && l.show) || []
-      if (geojsonLayers.length > 0) {
-        const geojsonLayerIds = geojsonLayers.flatMap(l => l.getStyleLayerIds())
-        const geojsonFeatures = queryFeaturesNear(e.point, { layers: geojsonLayerIds })
-        const geojsonFeature = geojsonFeatures.find(f => !f.properties?.cluster)
-        if (geojsonFeature) {
-          // User's geojson feature takes priority - don't select waymarkedtrails
-          return
-        }
-      }
+      // features of the map and of the other layers win over the trails
+      if (selectableFeaturesNear(e.point).length) { return }
 
       const feature = await this.fetchAndStoreRoute(theme, e.lngLat.lng, e.lngLat.lat)
 

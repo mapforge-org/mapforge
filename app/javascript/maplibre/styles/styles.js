@@ -44,10 +44,19 @@ export function initializeViewStyles (sourceName, heatmap=false) {
   // console.log('View styles added for source ' + sourceName)
 }
 
+// A layer runs initialize() again on each show and reconnect. MapLibre keeps a delegated
+// listener after its style layers are gone, so a second map.on would zoom twice per click.
+const clusterClickSources = new WeakMap()
+
 export function initializeClusterStyles(sourceName, icon, color=null) {
   clusterStyles(icon, color).forEach(style => {
     map.addLayer(setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceName))
   })
+
+  if (!clusterClickSources.has(map)) { clusterClickSources.set(map, new Set()) }
+  const registered = clusterClickSources.get(map)
+  if (registered.has(sourceName)) { return }
+  registered.add(sourceName)
 
   // zoom into cluster on click
   map.on('click', ['cluster_circles_' + sourceName, 'cluster_labels_' + sourceName], async function (e) {

@@ -5,7 +5,7 @@ import {
   stickyFeatureHighlight
 } from 'maplibre/feature'
 import { Layer } from 'maplibre/layers/layer'
-import { overpassDescription } from 'maplibre/layers/overpass/overpass'
+import { overpassDescription } from 'maplibre/layers/osm_description'
 import { addGeoJSONSource, map, mapProperties } from 'maplibre/map'
 import { basemaps } from 'maplibre/styles/basemaps'
 import { initializeViewStyles } from 'maplibre/styles/styles'
@@ -36,7 +36,7 @@ export class BasemapLayer extends Layer {
   }
 
   /**
-   * Override to disable click handler and provide custom mousemove for basemap layers.
+   * Adds a context menu for the copy of the highlighted feature, and a custom mousemove.
    */
   setupEventHandlers() {
     this.removeEventHandlers()
@@ -46,10 +46,7 @@ export class BasemapLayer extends Layer {
     this.contextMenuHandler = (e) => {
       e.preventDefault()
 
-      const basemapSource = this.sourceId
-      const mapLayers = map.getStyle().layers
-      const queryLayerIds = mapLayers.filter(layer => layer.source === basemapSource).map(layer => layer.id)
-      const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds })
+      const features = map.queryRenderedFeatures(e.point, { layers: this.getStyleLayerIds() })
 
       // the hovered feature was stored by highlightFeatureAtPoint, with an id of its own
       if (features.length) {
@@ -133,12 +130,23 @@ export class BasemapLayer extends Layer {
     if (!features.length) { return }
 
     const feature = features[0]
-    // exit early when moving over same feature
-    if (JSON.stringify(feature.geometry) === JSON.stringify(this?.selectedFeature?.geometry)) { return }
+    if (this.sameFeature(feature, this.selectedFeature)) { return }
     this.selectedFeature = feature
     hideContextMenu()
 
     this.renderHighlight(feature)
+  }
+
+  // Runs on every mouse frame, and stringifying large polygons (water, landuse) is slow, so a
+  // different id answers at once. Merged tile features can share an id, so the geometry decides
+  // the rest, and the one of the selected feature is stringified only once.
+  sameFeature(feature, selected) {
+    if (!selected || feature.id !== selected.id || feature.sourceLayer !== selected.sourceLayer) { return false }
+    if (this.selectedGeometryOf !== selected) {
+      this.selectedGeometryOf = selected
+      this.selectedGeometry = JSON.stringify(selected.geometry)
+    }
+    return JSON.stringify(feature.geometry) === this.selectedGeometry
   }
 
   /**

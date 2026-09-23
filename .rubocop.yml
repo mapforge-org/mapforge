@@ -4,7 +4,13 @@ inherit_gem:
 
 inherit_from: .rubocop_todo.yml
 
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
+  Exclude:
+    - 'deploy/**/*'
   TargetRubyVersion: 4.0
   DisplayCopNames: true
   DisplayStyleGuide: true

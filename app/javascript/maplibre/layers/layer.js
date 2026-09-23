@@ -32,6 +32,72 @@ export function queryFeaturesNear (point, options) {
   return map.queryRenderedFeatures(box, options)
 }
 
+// Features of every selectable source near the point, top-most first
+export function selectableFeaturesNear (point) {
+  return queryFeaturesNear(point, { filter: ['!', ['has', 'cluster']] })
+    .filter(f => !f.properties?.cluster && SELECTABLE_SOURCE_PREFIXES.some(p => f.source.startsWith(p)))
+}
+
+function selectFeatureOnClick (e) {
+  if (draw && draw.getMode() !== 'simple_select') { return }
+  if (window.gon.map_mode === 'static') { return }
+  // Exit if another layer already selected a feature on this click
+  if (e.defaultPrevented) { return }
+
+  // queryRenderedFeatures returns features top-most first → visual z-order
+  const selectable = selectableFeaturesNear(e.point)
+
+  const isViewMode = window.gon.map_mode === 'ro' || e.originalEvent.shiftKey
+  const clickable = isViewMode
+    ? selectable.filter(f => f.properties?.onclick !== false)
+    : selectable
+  if (!clickable.length) { return }
+
+  // Visual top = first in z-order (matches hover behavior)
+  const visualTop = clickable[0]
+
+  // Stable cycling order, deduped by id, independent of z-order reshuffling by frontFeature()
+  const clickableStack = [...new Map(clickable.map(f => [f.id, f])).values()]
+    .sort((a, b) => String(a.id).localeCompare(String(b.id)))
+
+  const currentIdx = clickableStack.findIndex(f => f.id === highlightedFeatureId)
+  let feature
+  if (!stickyFeatureHighlight || currentIdx === -1) {
+    feature = visualTop                                   // fresh click → top feature
+  } else {
+    feature = currentIdx === clickableStack.length - 1    // re-click → advance cycle
+      ? clickableStack[0]
+      : clickableStack[currentIdx + 1]
+  }
+
+  if (isViewMode) {
+
+    if (feature.properties?.onclick === 'link' && feature.properties?.['onclick-target']) {
+      window.location.href = feature.properties?.['onclick-target']
+      return
+    }
+    if (feature.properties?.onclick === 'feature' && feature.properties?.['onclick-target']) {
+      const targetId = feature.properties?.['onclick-target']
+      const targetFeature = getFeature(targetId)
+      if (targetFeature) {
+        flyToFeature(targetFeature)
+      } else {
+        console.error('Target feature with id ' + targetId + ' not found')
+      }
+      return
+    }
+  }
+  hideContextMenu()
+  highlightFeature(feature, true, feature.source)
+  // Defer the layer re-upload until after the browser paints the selection state —
+  // frontFeature calls setData on the whole layer, which would otherwise stall feedback.
+  requestAnimationFrame(() => frontFeature(feature))
+  e.preventDefault()
+}
+
+// maps that already have selectFeatureOnClick, a new map comes with each page visit
+const selectClickMaps = new WeakSet()
+
 /**
  * Base class for map layers. Subclass to create new layer types.
  *
@@ -210,102 +276,12 @@ export class Layer {
    * Override to customize click behavior.
    */
   setupClickHandler() {
-    this.clickHandler = (e) => {
-      if (draw && draw.getMode() !== 'simple_select') { return }
-      if (window.gon.map_mode === 'static') { return }
-      // Exit if another layer already selected a feature on this click
-      if (e.defaultPrevented) { return }
-
-      // Query all features at click point across all layers (not just registered layers)
-      const allFeatures = queryFeaturesNear(e.point, {
-        filter: ['!', ['has', 'cluster']]
-      })
-
-      // queryRenderedFeatures returns features top-most first → visual z-order
-      const selectable = allFeatures
-        .filter(f => !f.properties?.cluster && SELECTABLE_SOURCE_PREFIXES.some(p => f.source.startsWith(p)))
-
-      const isViewMode = window.gon.map_mode === 'ro' || e.originalEvent.shiftKey
-      const clickable = isViewMode
-        ? selectable.filter(f => f.properties?.onclick !== false)
-        : selectable
-      if (!clickable.length) { return }
-
-      // Visual top = first in z-order (matches hover behavior)
-      const visualTop = clickable[0]
-
-      // Stable cycling order, deduped by id, independent of z-order reshuffling by frontFeature()
-      const clickableStack = [...new Map(clickable.map(f => [f.id, f])).values()]
-        .sort((a, b) => String(a.id).localeCompare(String(b.id)))
-
-      const currentIdx = clickableStack.findIndex(f => f.id === highlightedFeatureId)
-      let feature
-      if (!stickyFeatureHighlight || currentIdx === -1) {
-        feature = visualTop                                   // fresh click → top feature
-      } else {
-        feature = currentIdx === clickableStack.length - 1    // re-click → advance cycle
-          ? clickableStack[0]
-          : clickableStack[currentIdx + 1]
-      }
-
-      if (isViewMode) {
-
-        if (feature.properties?.onclick === 'link' && feature.properties?.['onclick-target']) {
-          window.location.href = feature.properties?.['onclick-target']
-          return
-        }
-        if (feature.properties?.onclick === 'feature' && feature.properties?.['onclick-target']) {
-          const targetId = feature.properties?.['onclick-target']
-          const targetFeature = getFeature(targetId)
-          if (targetFeature) {
-            flyToFeature(targetFeature)
-          } else {
-            console.error('Target feature with id ' + targetId + ' not found')
-          }
-          return
-        }
-      }
-      hideContextMenu()
-      highlightFeature(feature, true, feature.source)
-      // Defer the layer re-upload until after the browser paints the selection state —
-      // frontFeature calls setData on the whole layer, which would otherwise stall feedback.
-      requestAnimationFrame(() => frontFeature(feature))
-      e.preventDefault()
-    }
-
     // Registered map-wide, not per style layer: the delegated form only fires on an exact
-    // pixel hit, which would bypass the tolerance in queryFeaturesNear. The handler already
-    // queries every selectable source and picks the global top feature, and layers that run
-    // later exit on e.defaultPrevented.
-    map.on('click', this.clickHandler)
-
-    // Double-click opens geometry edit mode directly
-    this.dblClickHandler = (e) => {
-      if (window.gon.map_mode !== 'rw') { return }
-      if (this.type !== 'geojson') { return }
-      if (draw && draw.getMode() !== 'simple_select') { return }
-      if (e.defaultPrevented) { return }
-
-      const feature = queryFeaturesNear(e.point, { layers: this.getStyleLayerIds() })
-        .find(f => !f.properties?.cluster)
-      if (!feature) { return }
-
-      console.log('Double-click on feature:', feature.id)
-
-      highlightFeature(feature, true, this.sourceId)
-      requestAnimationFrame(() => frontFeature(feature))
-
-      // Dispatch custom event to open geometry tab
-      window.dispatchEvent(new CustomEvent('toggle-edit-feature', {
-        detail: { type: 'geometry' }
-      }))
-
-      // Prevent map zoom on double-click
-      e.preventDefault()
-      e.originalEvent.stopPropagation()
-    }
-
-    map.on('dblclick', this.dblClickHandler)
+    // pixel hit, which would bypass the tolerance in queryFeaturesNear. The handler queries
+    // every selectable source and picks the global top feature, so one per map is enough.
+    if (selectClickMaps.has(map)) { return }
+    selectClickMaps.add(map)
+    map.on('click', selectFeatureOnClick)
   }
 
   /**
@@ -356,10 +332,6 @@ export class Layer {
     if (this.clickHandler) {
       map.off('click', this.clickHandler)
       this.clickHandler = null
-    }
-    if (this.dblClickHandler) {
-      map.off('dblclick', this.dblClickHandler)
-      this.dblClickHandler = null
     }
     if (this.mouseMoveHandler) {
       map.off('mousemove', this.mouseMoveHandler)
