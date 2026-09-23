@@ -118,6 +118,8 @@ class Map
   validates :private_id, uniqueness: { message: "private_id already taken" },
     format: { without: /\//, message: "private_id cannot contain a '/'" },
     if: :will_save_change_to_private_id?
+  validates :view_permission, inclusion: { in: %w[private link listed] }
+  validates :edit_permission, inclusion: { in: %w[private link] }
 
   # Map ids arrive from URLs, websocket payloads and form params, so they are not
   # always strings. A Hash reaches Mongo as an operator: { "$ne" => nil } matches any map.
