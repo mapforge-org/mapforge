@@ -73,7 +73,9 @@ end
 Capybara.register_driver(:cuprite) do |app|
   Capybara::Cuprite::Driver.new(app, window_size: [ 1024, 860 ],
     headless: "new",
-    process_timeout: 30,
+    # The first browser call of a process launches Chrome. On the CI runner both parallel
+    # processes launch it at once, and a cold start then took longer than 30 seconds.
+    process_timeout: 60,
     # Every example resets the browser, so the next one waits for a fresh tab. Ferrum gives
     # Chrome 5 seconds for that, which a loaded machine misses: parallel_rspec runs two
     # browsers, and then Ferrum::NoSuchTargetError fails the example before it starts.
