@@ -110,7 +110,9 @@ export class IndoorLayer extends Layer {
       e.preventDefault()
     }
 
-    map.on('click', this.getStyleLayerIds(), this.clickHandler)
+    // map.off must get this same list, and getStyleLayerIds() is empty once the style is gone
+    this.clickLayerIds = this.getStyleLayerIds()
+    map.on('click', this.clickLayerIds, this.clickHandler)
 
     this.contextMenuHandler = (e_event) => {
       e_event.preventDefault()
@@ -139,7 +141,7 @@ export class IndoorLayer extends Layer {
     // this layer registers its click handler delegated to style layer ids, which
     // map.off('click', handler) in the base class cannot remove
     if (this.clickHandler) {
-      map.off('click', this.getStyleLayerIds(), this.clickHandler)
+      map.off('click', this.clickLayerIds, this.clickHandler)
       this.clickHandler = null
     }
     super.removeEventHandlers()
@@ -221,10 +223,6 @@ export class IndoorLayer extends Layer {
 
         if (JSON.stringify(newLevels) !== JSON.stringify(this.levels)) {
           this.levels = newLevels
-          // console.log('Indoor layer: detected levels', newLevels)
-          this.updateLevelControl()
-        } else if (this.levels.length > 0 && !this.levelControl) {
-          // Recreate control if it was removed (e.g., layer was hidden then shown)
           this.updateLevelControl()
         }
       }, `indoor-level-${this.id}`, 500)
@@ -235,6 +233,8 @@ export class IndoorLayer extends Layer {
   }
 
   removeLevelDetection() {
+    // a hidden layer drops out of detectLevels(), so the next show must report its levels again
+    this.levels = []
     if (this.initialTimeout) {
       clearTimeout(this.initialTimeout)
       this.initialTimeout = null

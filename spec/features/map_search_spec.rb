@@ -255,18 +255,15 @@ describe "Map places search" do
     # center matches the first result in spec/fixtures/files/photon.json
     let(:map) { create(:map, name: "Search test", center: [ 13.3888599, 52.5170365 ], zoom: 15) }
 
-    let(:last_body) { String.new }
-
     before do
-      CapybaraMock.stub_request(:post, %r{overpass-api\.de/api/interpreter}).to_return do |body:, **|
-        last_body.replace(body)
+      CapybaraMock.stub_request(:get, %r{api\.openstreetmap\.org/api/0\.6/node/240109189\.json}).to_return do |**|
         [ 200,
           { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
           { elements: [ { tags: { "opening_hours" => "Mo-Fr 08:00-18:00" } } ] }.to_json ]
       end
     end
 
-    # photon knows the address fields only, the tags come from overpass on demand
+    # photon knows the address fields only, the tags come from the OSM API on demand
     it "shows the osm tags of the result" do
       find(".maplibregl-ctrl-geocoder--input").set("Berlin")
       expect(page).to have_css(".geocoder-result-title", text: "Berlin")
@@ -277,7 +274,6 @@ describe "Map places search" do
 
       expect(page).to have_css("#feature-details-modal.show", text: "Opening Hours")
       expect(page).to have_css("#feature-details-modal", text: "Mo-Fr 08:00-18:00")
-      expect(last_body).to include("node(240109189);out tags;")
     end
   end
 
@@ -313,7 +309,7 @@ describe "Map places search" do
 
     context "with the tags of the result" do
       before do
-        CapybaraMock.stub_request(:post, %r{overpass-api\.de/api/interpreter}).to_return do |**|
+        CapybaraMock.stub_request(:get, %r{api\.openstreetmap\.org/api/0\.6/node/240109189\.json}).to_return do |**|
           [ 200,
             { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
             { elements: [ { tags: { "opening_hours" => "Mo-Fr 08:00-18:00" } } ] }.to_json ]

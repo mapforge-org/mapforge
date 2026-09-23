@@ -8,6 +8,8 @@ import { defaults } from 'maplibre/styles/defaults'
 // feature gets its own companion source, keyed by the geojson layer id.
 const sourcePrefix = layerId => `image-overlay-source-${layerId}-`
 const layerIdOf = sourceId => `image-overlay-layer_${sourceId}`
+// map.getStyle() would serialize the whole style on every render just to list these
+const overlaySources = new Set()
 
 // An image source takes four corners, no more and no less, so only a quadrangle can carry one.
 // The ring repeats its first point, so four corners are five coordinates.
@@ -29,7 +31,7 @@ export function renderImageOverlays (features, layerId, visible = true) {
     wanted.add(prefix + feature.id)
     upsertImageOverlay(feature, layerId, visible)
   })
-  Object.keys(map.getStyle().sources)
+  Array.from(overlaySources)
     .filter(id => id.startsWith(prefix) && !wanted.has(id))
     .forEach(removeImageOverlay)
 }
@@ -51,6 +53,7 @@ function upsertImageOverlay (feature, layerId, visible) {
   const url = feature.properties['fill-image-url']
   const coordinates = corners(feature)
   const source = map.getSource(sourceId)
+  overlaySources.add(sourceId)
   if (!source) {
     map.addSource(sourceId, { type: 'image', url, coordinates })
     // below the polygon outline of its own layer, sortLayers() keeps it there on a re-sort
@@ -71,6 +74,7 @@ function upsertImageOverlay (feature, layerId, visible) {
 }
 
 function removeImageOverlay (sourceId) {
+  overlaySources.delete(sourceId)
   if (map.getLayer(layerIdOf(sourceId))) { map.removeLayer(layerIdOf(sourceId)) }
   if (map.getSource(sourceId)) { map.removeSource(sourceId) }
 }

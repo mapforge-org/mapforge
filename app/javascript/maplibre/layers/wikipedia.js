@@ -14,7 +14,7 @@ export class WikipediaLayer extends Layer {
 
   initialize() {
     initializeViewStyles(this.sourceId)
-    initializeClusterStyles(this.sourceId, "/icons/wikipedia.png")
+    if (this.clustered) { initializeClusterStyles(this.sourceId, "/icons/wikipedia.png") }
     this.setupEventHandlers()
     return this.loadData()
   }
@@ -47,25 +47,28 @@ export class WikipediaLayer extends Layer {
         // Set empty geojson so layer can still render
         this.layer.geojson = { type: 'FeatureCollection', features: [] }
         this.render()
+        return false
       })
   }
-}
 
-export async function wikipediaFeatureDescription(feature) {
-  const page = encodeURIComponent(feature.properties.title)
-  const api = `https://de.wikipedia.org/api/rest_v1/page/summary/${page}`
-  const url = `https://de.wikipedia.org/wiki/${page}`
+  async description(feature) {
+    const page = encodeURIComponent(feature.properties.title)
+    const api = `https://de.wikipedia.org/api/rest_v1/page/summary/${page}`
+    const url = `https://de.wikipedia.org/wiki/${page}`
 
-  const data = await fetch(api).then(r => r.json())
-  let desc = ''
-  if (data.thumbnail?.source) {
-    desc += `<p><a target="_blank" href="${url}">` +
-      `<img class="w-100" src="${data.thumbnail.source}"></a></p>`
+    const response = await fetch(api)
+    if (!response.ok) { return `<p><a target="_blank" href="${url}">Wikipedia article</a></p>` }
+    const data = await response.json()
+    let desc = ''
+    if (data.thumbnail?.source) {
+      desc += `<p><a target="_blank" href="${url}">` +
+        `<img class="w-100" src="${data.thumbnail.source}"></a></p>`
+    }
+    desc += `<p>${data.extract}</p>`
+    desc += `<p><img src="/icons/wikipedia.png" class="me-1 ms-1 icon"/><a target="_blank" href="${url}">Wikipedia article</a></p>`
+
+    return desc
   }
-  desc += `<p>${data.extract}</p>`
-  desc += `<p><img src="/icons/wikipedia.png" class="me-1 ms-1 icon"/><a target="_blank" href="${url}">Wikipedia article</a></p>`
-
-  return desc
 }
 
 function wikipediatoGeoJSON(data) {

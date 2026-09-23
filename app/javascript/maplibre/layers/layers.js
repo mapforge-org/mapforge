@@ -199,14 +199,14 @@ export async function initializeLayerStyles(id = null) {
 
 // triggered by layer reload in the layers modal
 export function loadLayerData(id) {
-  let layer = layers.find(l => l.id === id)
+  const layer = layers.find(l => l.id === id)
+  if (!layer) { return Promise.resolve() }
   if (layer.show === false) {
     console.log("Skipped loading data for not shown layer", layer)
     return Promise.resolve()
   }
 
   functions.e(`#layer-list-${id} .reload-icon`, e => { e.classList.add('layer-refresh-animate') })
-  functions.e('#layer-loading', e => { e.classList.remove('hidden') })
 
   return layer.loadData().then((result) => {
     functions.e(`#layer-list-${id} .reload-icon`, e => { e.classList.remove('layer-refresh-animate') })
@@ -221,18 +221,8 @@ export async function loadAllLayerData() {
 }
 
 export function getFeature(id, type = null) {
-  const searchLayers = type ? layers.filter(l => l.type === type) : layers
-  for (const layer of searchLayers) {
-    if (layer.geojson) {
-      let feature = layer.geojson.features.find(f => f.id === id)
-      if (feature) { return feature }
-    }
-  }
-  return null
-}
-
-export function getFeatures(type = 'geojson') {
-  return layers.filter(l => l.type === type).flatMap(l => l.geojson?.features || [])
+  const layer = getLayer(id, type)
+  return layer ? layer.geojson.features.find(f => f.id === id) : null
 }
 
 export function hasFeatures(type = 'geojson') {
@@ -240,21 +230,12 @@ export function hasFeatures(type = 'geojson') {
 }
 
 export function getFeatureSource(featureId) {
-  const layer = getLayer(featureId)
-  if (layer) {
-    return layer.sourceId
-  }
-  return null
+  return getLayer(featureId)?.sourceId || null
 }
 
-export function getLayer(featureId) {
-  for (const layer of layers) {
-    if (layer.geojson) {
-      let feature = layer.geojson.features.find(f => f.id === featureId)
-      if (feature) { return layer }
-    }
-  }
-  return null
+// ponytail: linear scan over every feature, an id -> layer Map if animations or big maps show it
+export function getLayer(featureId, type = null) {
+  return layers.find(l => (!type || l.type === type) && l.layer.geojson?.features?.some(f => f.id === featureId)) || null
 }
 
 // Convenience functions for consumers
@@ -345,10 +326,10 @@ function updateFeature (feature, updatedFeature) {
 }
 
 export function destroyFeature (featureId) {
-  const feature = getFeature(featureId)
+  const layer = getLayer(featureId)
+  const feature = layer?.geojson.features.find(f => f.id === featureId)
   if (feature) {
     status(window.__('Deleting %{type}').replace('%{type}', featureLabel(feature)))
-    const layer = getLayer(featureId)
     layer.geojson.features = layer.geojson.features.filter(f => f.id !== featureId)
     // Surgical single-feature remove instead of a full re-render of every geojson layer.
     layer.applyFeatureRemove(feature)

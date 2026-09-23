@@ -20,8 +20,9 @@ import {
   initializeExtrasLabelStyles,
   renderRouteExtras
 } from 'maplibre/layers/geojson/route_extras'
-import { Layer } from 'maplibre/layers/layer'
-import { getFeature, layers } from 'maplibre/layers/layers'
+import { highlightFeature } from 'maplibre/feature'
+import { Layer, queryFeaturesNear } from 'maplibre/layers/layer'
+import { frontFeature, getFeature, layers } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, mapProperties, removeGeoJSONSource } from 'maplibre/map'
 import { pruneShapeImages } from 'maplibre/styles/circle_image'
 import { prunePatternImages } from 'maplibre/styles/pattern_image'
@@ -78,6 +79,38 @@ export class GeoJSONLayer extends Layer {
     addGeoJSONSource(this.extrusionSourceId, false)
   }
 
+  setupClickHandler() {
+    super.setupClickHandler()
+
+    // Double-click opens geometry edit mode directly
+    this.dblClickHandler = (e) => {
+      if (window.gon.map_mode !== 'rw') { return }
+      if (draw && draw.getMode() !== 'simple_select') { return }
+      if (e.defaultPrevented) { return }
+
+      const feature = queryFeaturesNear(e.point, { layers: this.getStyleLayerIds() })
+        .find(f => !f.properties?.cluster)
+      if (!feature) { return }
+
+      highlightFeature(feature, true, this.sourceId)
+      requestAnimationFrame(() => frontFeature(feature))
+      window.dispatchEvent(new CustomEvent('toggle-edit-feature', { detail: { type: 'geometry' } }))
+
+      // Prevent map zoom on double-click
+      e.preventDefault()
+      e.originalEvent.stopPropagation()
+    }
+    map.on('dblclick', this.dblClickHandler)
+  }
+
+  removeEventHandlers() {
+    super.removeEventHandlers()
+    if (this.dblClickHandler) {
+      map.off('dblclick', this.dblClickHandler)
+      this.dblClickHandler = null
+    }
+  }
+
   cleanup() {
     super.cleanup()
     cleanupKmMarkerImages(this.kmMarkerSourceId)
@@ -90,7 +123,7 @@ export class GeoJSONLayer extends Layer {
 
   initialize() {
     initializeViewStyles(this.sourceId, !!this.layer.heatmap)
-    if (this.layer.cluster) { initializeClusterStyles(this.sourceId, null) }
+    if (this.clustered) { initializeClusterStyles(this.sourceId, null) }
     initializeKmMarkerStyles(this.kmMarkerSourceId)
     initializeViewStyles(this.routeExtrasSourceId)
     initializeExtrasLabelStyles(this.routeExtrasSourceId)
@@ -104,6 +137,12 @@ export class GeoJSONLayer extends Layer {
     map.setLayoutProperty(`line-layer_${this.routeExtrasSourceId}`, 'line-cap', 'butt')
 
     this.setupEventHandlers()
+    // Showing a layer runs initialize() again. The source kept its features while hidden (updates
+    // reach it through updateData), unless setStyle replaced it, so only then fetch them again.
+    if (this.renderedSource && this.renderedSource === map.getSource(this.sourceId)) {
+      this.render(true, { sourceLoaded: true })
+      return Promise.resolve(this.layer.geojson)
+    }
     return this.loadData()
   }
 
@@ -129,7 +168,7 @@ export class GeoJSONLayer extends Layer {
       }
     })
 
-    if (this.layer.cluster) {
+    if (this.clustered) {
       clusterStyles(null).forEach(style => {
         const layerId = `${style.id}_${this.sourceId}`
         if (map.getLayer(layerId)) { map.setFilter(layerId, withLevelFilter(style.filter)) }
@@ -221,6 +260,7 @@ export class GeoJSONLayer extends Layer {
       })
     }
 
+    this.renderedSource = source
     this.resetDrawFeatures(resetDraw)
     pruneShapes()
   }
