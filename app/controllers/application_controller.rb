@@ -68,10 +68,11 @@ class ApplicationController < ActionController::Base
   end
 
   def static_pages_data
+    maps_updated_at = @maps.max(:updated_at) || Time.current
     [
       {
         url: root_url,
-        lastmod: @maps.first&.updated_at || Time.current,
+        lastmod: maps_updated_at,
         changefreq: "weekly",
         priority: "1.0"
       },
@@ -83,7 +84,7 @@ class ApplicationController < ActionController::Base
       },
       {
         url: maps_url,
-        lastmod: @maps.first&.updated_at || Time.current,
+        lastmod: maps_updated_at,
         changefreq: "daily",
         priority: "0.7"
       }
