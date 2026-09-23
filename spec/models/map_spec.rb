@@ -57,6 +57,11 @@ describe Map do
           .to raise_error(Mongoid::Errors::Validations, /public_id already taken/)
       end
     end
+
+    it "rejects unknown permission values" do
+      expect(build(:map, view_permission: "public")).not_to be_valid
+      expect(build(:map, edit_permission: "listed")).not_to be_valid
+    end
   end
 
   describe "#properties" do

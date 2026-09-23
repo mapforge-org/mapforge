@@ -192,12 +192,43 @@ describe MapsController do
       end
     end
 
-    context "with view_permission public" do
-      let(:map) { create(:map, view_permission: "public") }
+    context "with view_permission listed" do
+      let(:map) { create(:map, view_permission: "listed") }
 
       it "is accessible via link" do
         get map.public_map_path
         expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with view_permission private, on the data endpoints" do
+      let(:map) { create(:map, view_permission: "private", owners: [ user ]) }
+      let!(:feature) { create(:feature, :point, layer: map.layers.first) }
+
+      it "hides the properties and features from a visitor" do
+        get map_properties_path(id: map.public_id)
+        expect(response).to redirect_to(maps_path)
+        get map_feature_geo_path(id: map.public_id, feature_id: feature.id)
+        expect(response).to redirect_to(maps_path)
+      end
+
+      it "returns the properties and features to the owner" do
+        login
+        get map_properties_path(id: map.public_id)
+        expect(response).to have_http_status(:ok)
+        get map_feature_geo_path(id: map.public_id, feature_id: feature.id)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when copying a private map" do
+      let(:map) { create(:map, view_permission: "private") }
+
+      it "refuses a user who does not own it" do
+        login
+        map
+        expect { post copy_map_path(id: map.public_id) }.not_to change(Map, :count)
+        expect(response).to redirect_to(maps_path)
       end
     end
   end
@@ -225,6 +256,12 @@ describe MapsController do
       get maps_path, params: { search: "user:#{user.id}" }
       expect(response.body).to include("Map2")
       expect(response.body).not_to include("Map1")
+    end
+
+    it "ignores the limit param and a sort column that the list does not offer" do
+      get maps_path, params: { limit: "0", sort: "private_id" }
+      expect(controller.instance_variable_get(:@sort)).to eq "view_count"
+      expect(controller.instance_variable_get(:@maps).options[:limit]).to eq 300
     end
 
     it "lists every map again without a search" do

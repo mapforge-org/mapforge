@@ -22,6 +22,27 @@ RSpec.describe MapChannel, type: :channel do
     end
   end
 
+  describe "#mouse" do
+    let(:map) { create(:map, share_cursor: true) }
+
+    it "broadcasts only the cursor position, never the private id" do
+      subscribe(map_id: map.private_id)
+
+      expect {
+        perform :mouse, lng: 8.1, lat: 47.2, map_id: map.private_id, uuid: "spoofed",
+          user_image: "https://evil.example/pixel.png"
+      }.to have_broadcasted_to("map_channel_#{map.public_id}")
+        .with(event: "mouse", uuid: connection.uuid, lng: 8.1, lat: 47.2)
+    end
+
+    it "broadcasts nothing when the map does not share cursors" do
+      map.update!(share_cursor: false)
+      subscribe(map_id: map.private_id)
+
+      expect { perform :mouse, lng: 8.1, lat: 47.2 }.not_to have_broadcasted_to("map_channel_#{map.public_id}")
+    end
+  end
+
   describe "#new_layer" do
     it "skips invalid features and keeps the valid ones" do
       subscribe(map_id: map.private_id)

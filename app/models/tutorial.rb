@@ -19,7 +19,7 @@ class Tutorial
 
   def title
     headline = markdown.lines.find { |line| line.strip.match?(/^#+\s/) }
-    headline.delete("#")&.strip
+    headline&.delete("#")&.strip
   end
 
   def to_html
