@@ -1,8 +1,10 @@
 module MapListFilters
   extend ActiveSupport::Concern
 
+  SORT_COLUMNS = %w[created_at updated_at view_count].freeze
+
   def filter_and_sort_maps(maps, default_sort: "updated_at")
-    @sort = params[:sort] || default_sort
+    @sort = SORT_COLUMNS.include?(params[:sort]) ? params[:sort] : default_sort
     @direction = params[:direction] || "desc"
     @search = @filter = params[:search].to_s.strip
     if @search.include? "user:"
@@ -17,6 +19,6 @@ module MapListFilters
     end
     maps = maps.search(@filter) unless @filter.empty?
     maps = maps.sorted(@sort, @direction)
-    maps.limit(params[:limit] || 300)
+    maps.limit(300)
   end
 end
