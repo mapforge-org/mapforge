@@ -47,6 +47,15 @@ RSpec.describe MapChannel, type: :channel do
 
       before { stub_connection(uuid: SecureRandom.uuid, current_user: user) }
 
+      it "names the cursor after the user" do
+        subscribe(map_id: map.private_id)
+
+        expect { perform :mouse, lng: 8.1, lat: 47.2 }
+          .to have_broadcasted_to("map_channel_#{map.public_id}")
+          .with(event: "mouse", uuid: connection.uuid, lng: 8.1, lat: 47.2,
+            user_name: user.name, user_image: user.image)
+      end
+
       it "keeps the cursor anonymous on the playground" do
         map.update!(private_id: Map::PLAYGROUND_ID)
         subscribe(map_id: map.private_id)
