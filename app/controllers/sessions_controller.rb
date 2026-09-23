@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
   end
 
   def logout
-    session[:user_id] = nil
+    reset_session
     redirect_to root_path
   end
 
@@ -25,7 +25,9 @@ class SessionsController < ApplicationController
     user.update!(email: user_info.info.email, name: user_info.info.name, image: user_info.info.image)
     # Make first user admin
     user.update!(admin: true) if User.count == 1
+    return_to = session[:return_to]
+    reset_session
     session[:user_id] = user.id
-    redirect_to session.delete(:return_to) || my_path
+    redirect_to return_to || my_path
   end
 end
