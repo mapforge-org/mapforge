@@ -184,6 +184,7 @@ section,
 @media (width <= 640px) {
   .hero h1 {
     font-size: clamp(1.5rem, 9.5vw, 2.3rem);
+    text-align: center;
   }
 }
 
@@ -213,7 +214,6 @@ section,
 
 .featured-maps .recently-viewed-maps .map-preview-title {
   font-size: 1rem;
-  top: 3.4rem;
 }
 
 .featured-maps .gallery-link {

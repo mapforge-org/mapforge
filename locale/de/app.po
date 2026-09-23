@@ -582,7 +582,7 @@ msgid "Full track"
 msgstr "Gesamter Track"
 
 msgid "GPS and compass: The map follows your position and turns with you"
-msgstr "GPS und Kompass: Die Karte folgt deiner Position und dreht sich mit dir"
+msgstr "GPS und Kompass: Die Karte zeigt, wo du bist, und richtet sich nach deiner Blickrichtung aus"
 
 msgid "Gentle downhill (4-6%)"
 msgstr "Leichtes Gefälle (4-6 %)"
