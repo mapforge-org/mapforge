@@ -83,12 +83,12 @@ class MapChannel < ApplicationCable::Channel
   end
 
   def mouse(data)
-    data[:event] = "mouse"
+    return unless @public_id && @share_cursor
+    payload = { event: "mouse", uuid:, lng: data["lng"], lat: data["lat"] }
     if (user = User.find_by(id: data["user_id"]))
-      data[:user_name] = user.name
-      data[:user_image] = user.image
+      payload.merge!(user_name: user.name, user_image: user.image)
     end
-    ActionCable.server.broadcast("map_channel_#{@public_id}", data) if @public_id
+    ActionCable.server.broadcast("map_channel_#{@public_id}", payload)
   end
 
   private
