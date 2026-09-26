@@ -122,6 +122,23 @@ RSpec.describe MapChannel, type: :channel do
     end
   end
 
+  describe "#delete_layer" do
+    before { subscribe(map_id: map.private_id) }
+
+    it "refuses to delete the last geojson layer" do
+      expect { perform :delete_layer, id: layer.id.to_s, map_id: map.private_id }
+        .to raise_error(/last geojson layer/)
+      expect(map.reload.layers.count).to eq 1
+    end
+
+    it "deletes the first geojson layer while another one exists" do
+      create(:layer, map:, type: "geojson")
+      perform :delete_layer, id: layer.id.to_s, map_id: map.private_id
+
+      expect(Layer.find_by(id: layer.id)).to be_nil
+    end
+  end
+
   describe "#new_layer" do
     it "puts the layer first with the first flag" do
       subscribe(map_id: map.private_id)

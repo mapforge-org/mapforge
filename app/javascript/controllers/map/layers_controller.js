@@ -12,7 +12,7 @@ import { createLayerInstance } from 'maplibre/layers/factory'
 import { activeLayer, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, setActiveLayer, upsert } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/overpass/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName } from 'maplibre/map'
-import { addUndoState } from 'maplibre/undo'
+import { addUndoState, layerPlacement } from 'maplibre/undo'
 
 // Browsers report an empty file.type for these when the platform mime database
 // does not know them, so the extension decides as well.
@@ -483,7 +483,8 @@ export default class extends Controller {
     initLayersModal()
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)
-    // the flag stays out of layerData, which is the undo state and gets compared to server layers
+    // the flag stays out of layerData, which is the undo state and gets compared to server layers.
+    // Undo reads the placement from the list position instead, see layerPlacement.
     sendMessage('new_layer', first ? { ...layerData, first: true } : layerData)
     return layerId
   }
@@ -495,7 +496,7 @@ export default class extends Controller {
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
 
-    addUndoState('Layer deleted', { ...layer.toJSON(), geojson: layer.geojson })
+    addUndoState('Layer deleted', { ...layer.toJSON(), geojson: layer.geojson }, true, layerPlacement(layer))
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)

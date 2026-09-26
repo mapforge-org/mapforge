@@ -31,9 +31,10 @@ export function clearUndoHistory() {
   }
 }
 
-export function addUndoState(type, state, clearRedo = true) {
+// meta holds entry data that is not part of the state, e.g. the placement of a removed layer
+export function addUndoState(type, state, clearRedo = true, meta = {}) {
   // Deep clone to avoid mutation
-  undoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
+  undoStack.push({ ...meta, type: type, state: JSON.parse(JSON.stringify(state)) })
   // console.log('Updated undo stack', undoStack)
   showUndoButton()
   if (clearRedo) {
@@ -43,9 +44,9 @@ export function addUndoState(type, state, clearRedo = true) {
   updateTooltips()
 }
 
-function addRedoState(type, state) {
+function addRedoState(type, state, meta = {}) {
   // Deep clone to avoid mutation
-  redoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
+  redoStack.push({ ...meta, type: type, state: JSON.parse(JSON.stringify(state)) })
   console.log('Updated redo stack', redoStack)
   showRedoButton()
   updateTooltips()
@@ -221,11 +222,26 @@ function getFullLayerData(layer) {
   }
 }
 
+// The server can only place a new layer first or last, so that is all a removed layer remembers
+export function layerPlacement(layer) {
+  return { first: layers.indexOf(layer) === 0 }
+}
+
+function restoreLayer(entry) {
+  const newLayer = createLayerInstance(entry.state)
+  newLayer.localData = true // renders from memory, see GeoJSONLayer.loadData
+  if (entry.first) { layers.unshift(newLayer) } else { layers.push(newLayer) }
+  initLayersModal()
+  initializeLayerSources(newLayer.id)
+  initializeLayerStyles(newLayer.id)
+  sendMessage('new_layer', entry.first ? { ...entry.state, first: true } : entry.state)
+}
+
 // Layer operations
 function undoLayerAdded(prevState) {
   const layer = layers.find(l => l.id === prevState.state.id)
   if (layer) {
-    addRedoState(prevState.type, getFullLayerData(layer))
+    addRedoState(prevState.type, getFullLayerData(layer), layerPlacement(layer))
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)
@@ -240,13 +256,7 @@ function redoLayerAdded(nextState) {
   const layer = layers.find(l => l.id === nextState.state.id)
   if (!layer) {
     addUndoState(nextState.type, nextState.state, false)
-    const newLayer = createLayerInstance(nextState.state)
-    newLayer.localData = true // renders from memory, see GeoJSONLayer.loadData
-    layers.push(newLayer)
-    initLayersModal()
-    initializeLayerSources(newLayer.id)
-    initializeLayerStyles(newLayer.id)
-    sendMessage('new_layer', nextState.state)
+    restoreLayer(nextState)
   } else {
     console.warn('Layer with id ' + nextState.state.id + ' already exists')
   }
@@ -256,13 +266,7 @@ function undoLayerDeleted(prevState) {
   const layer = layers.find(l => l.id === prevState.state.id)
   if (!layer) {
     addRedoState(prevState.type, prevState.state)
-    const newLayer = createLayerInstance(prevState.state)
-    newLayer.localData = true // renders from memory, see GeoJSONLayer.loadData
-    layers.push(newLayer)
-    initLayersModal()
-    initializeLayerSources(newLayer.id)
-    initializeLayerStyles(newLayer.id)
-    sendMessage('new_layer', prevState.state)
+    restoreLayer(prevState)
   } else {
     console.warn('Layer with id ' + prevState.state.id + ' still exists')
   }
@@ -271,7 +275,7 @@ function undoLayerDeleted(prevState) {
 function redoLayerDeleted(nextState) {
   const layer = layers.find(l => l.id === nextState.state.id)
   if (layer) {
-    addUndoState(nextState.type, getFullLayerData(layer), false)
+    addUndoState(nextState.type, getFullLayerData(layer), false, layerPlacement(layer))
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)

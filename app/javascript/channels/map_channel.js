@@ -1,4 +1,5 @@
 import consumer from 'channels/consumer'
+import { initLayersModal } from 'maplibre/controls/shared'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { destroyFeature, getLayer, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, upsert } from 'maplibre/layers/layers'
 import {
@@ -174,14 +175,14 @@ export function initializeSocket () {
               console.log('Layer updated on server, reloading layer styles', data.layer)
               layers[index].update(data.layer)
               layers[index].applyFeatureOrder(data.layer.feature_order)
-              initializeLayerStyles(data.layer.id)
+              initializeLayerStyles(data.layer.id).then(() => { initLayersModal() })
               setLayerVisibility(layers[index].sourceId, data.layer.show !== false)
             }
           } else {
             const newLayer = createLayerInstance(data.layer)
             layers.push(newLayer)
             initializeLayerSources(data.layer.id)
-            initializeLayerStyles(data.layer.id)
+            initializeLayerStyles(data.layer.id).then(() => { initLayersModal() })
           }
           break
         case 'delete_layer':
@@ -191,6 +192,7 @@ export function initializeSocket () {
             layers.splice(delIndex, 1)
             // trigger a full map redraw
             setBackgroundMapLayer(mapProperties.base_map, true)
+            initLayersModal()
           }
           break
         case 'mouse':

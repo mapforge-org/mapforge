@@ -111,6 +111,20 @@ describe "Map Undo/Redo" do
       expect(page).to have_text("🍻 Breweries")
     end
 
+    it "keeps a new layer first after undo and redo" do
+      initial_layer_count = map.layers.count
+      find(".maplibregl-ctrl-layers").click
+      click_button "Add layer"
+      within("#query-dropdown") { find("button.dropdown-item", text: "New layer").trigger("click") }
+      wait_for { map.reload.layers.first.name }.to eq("New layer")
+
+      find("button.maplibregl-ctrl-undo").click
+      wait_for { map.reload.layers.count }.to eq(initial_layer_count)
+      find("button.maplibregl-ctrl-redo").click
+      wait_for { map.reload.layers.count }.to eq(initial_layer_count + 1)
+      expect(map.reload.layers.first.name).to eq("New layer")
+    end
+
     it "can undo deleting a layer" do
       # Create a layer first
       layer = create(:layer, name: "Test Layer", map: map)
