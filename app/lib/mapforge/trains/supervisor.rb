@@ -31,6 +31,8 @@ module Mapforge
                           "animating up to #{MAX} of them at a time"
         loop do
           sync
+          # The container health check reads the age of this file, a hung sync stops touching it
+          FileUtils.touch(Rails.root.join("tmp/trains_heartbeat"))
           sleep POLL
         end
       ensure
