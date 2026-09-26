@@ -62,7 +62,9 @@ class MapChannel < ApplicationCable::Channel
   def new_feature(data)
     Yabeda.websocket.messages_received.increment({ action: "new_feature", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
-    @feature = map.layers.geojson.first.features.create!(feature_atts(data).merge({ id: data["id"] }))
+    layer = data["layer_id"] ? map.layers.geojson.find(data["layer_id"]) : map.layers.geojson.first
+    raise "Layer #{data["layer_id"]} not found on map #{data["map_id"]}" unless layer
+    @feature = layer.features.create!(feature_atts(data).merge({ id: data["id"] }))
     associate_image(data["properties"])
   end
 
@@ -70,7 +72,10 @@ class MapChannel < ApplicationCable::Channel
   def new_layer(data)
     Yabeda.websocket.messages_received.increment({ action: "new_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
+    # Layers have no position field, they sort by created_at
+    first_created_at = map.layers.first&.created_at if data["first"]
     layer = map.layers.new(layer_atts(data).merge({ id: data["id"] }))
+    layer.created_at = first_created_at - 1 if first_created_at
     documents = import_documents(layer, data.dig("geojson", "features") || [])
     Feature.collection.insert_many(documents) if documents.any?
     layer.features_count = documents.size

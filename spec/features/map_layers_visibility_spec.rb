@@ -339,6 +339,16 @@ describe "Map layers, visibility and order" do
       # dragging must not select a feature or open its details
       expect(page).not_to have_css("#feature-details-modal.show")
     end
+
+    it "drags a feature by its name and still flies to it on click" do
+      drag_element("li[data-feature-id='#{f1.id}'] .feature-name", "li[data-feature-id='#{f3.id}']")
+
+      expect(feature_ids.first).to eq f1.id.to_s
+      wait_for { map.layers.first.reload.feature_order.last }.to eq f1.id.to_s
+
+      find("li[data-feature-id='#{f2.id}'] .feature-name").click
+      expect(page).to have_css("#feature-details-modal.show")
+    end
   end
 
   context "moving features across layers" do
@@ -363,6 +373,37 @@ describe "Map layers, visibility and order" do
       expect(page).to have_css("#layer-list-#{target.id} .layer-feature-count", text: "(2)")
       wait_for { feature.reload.layer }.to eq target
       wait_for { target.reload.feature_order }.to include(feature.id.to_s)
+      expect(page).to have_css("#layers-modal.show")
+    end
+
+    it "drops a feature onto the name of a collapsed layer" do
+      find("#layer-list-#{target.id} .layer-name").click
+      expect(page).to have_no_css("#layer-list-#{target.id} li[data-feature-id='#{resident.id}']", visible: true)
+
+      drag_element("li[data-feature-id='#{feature.id}'] .feature-drag-handle",
+        "#layer-list-#{target.id} .layer-name")
+
+      expect(page).to have_css("#layer-list-#{target.id} .layer-feature-count", text: "(2)")
+      wait_for { feature.reload.layer }.to eq target
+      expect(page).to have_css("#layers-modal.show")
+    end
+
+    it "highlights the layer name under a feature dragged by its name" do
+      center = ->(selector) {
+        page.evaluate_script("(() => { const r = document.querySelector(#{selector.to_json}).getBoundingClientRect();
+          return [r.x + r.width / 2, r.y + r.height / 2] })()")
+      }
+      from = center.call("li[data-feature-id='#{feature.id}'] .feature-name")
+      to = center.call("#layer-list-#{target.id} .layer-name")
+      mouse = page.driver.browser.mouse
+      mouse.move(x: from[0], y: from[1])
+      mouse.down
+      mouse.move(x: to[0], y: to[1], steps: 12)
+
+      expect(page).to have_css("#layer-list-#{target.id} .layer-item-header.drop-target")
+      mouse.up
+      expect(page).to have_no_css(".drop-target")
+      wait_for { feature.reload.layer }.to eq target
     end
   end
 end

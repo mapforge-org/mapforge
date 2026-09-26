@@ -9,7 +9,7 @@ import { updateElevation } from 'maplibre/routing/openrouteservice'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { importFile } from 'maplibre/import/kml'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, upsert } from 'maplibre/layers/layers'
+import { activeLayer, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, setActiveLayer, upsert } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/overpass/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
@@ -175,8 +175,7 @@ export default class extends Controller {
 
     uploadImageToFeature(file, feature).then( () => {
       upsert(feature)
-      // redraw first geojson layer
-      renderLayer(layers.find(l => l.type === 'geojson').id)
+      renderLayer(activeLayer().id)
       sendMessage('new_feature', { ...feature })
       status(window.__('Added image'))
       flyToFeature(feature)
@@ -358,6 +357,21 @@ export default class extends Controller {
     if (window.gon.map_mode === "rw") { sendMessage('update_layer', layer.toJSON()) }
   }
 
+  activateLayer (event) {
+    event.preventDefault()
+    const layer = layers.find(l => l.id === event.target.closest('.layer-item').getAttribute('data-layer-id'))
+    setActiveLayer(layer.id)
+    initLayersModal()
+    status(window.__('New features go to layer %{name}').replace('%{name}', layer.name || window.__('Layer elements')))
+  }
+
+  createGeojsonLayer() {
+    const layerId = this.createLayer({ type: 'geojson', name: window.__('New layer'),
+      geojson: { type: 'FeatureCollection', features: [] } }, { first: true })
+    setActiveLayer(layerId)
+    initLayersModal()
+  }
+
   createWikipediaLayer() {
     this.createLayer({ type: 'wikipedia', name: 'Wikipedia' })
   }
@@ -416,7 +430,8 @@ export default class extends Controller {
   }
 
   // 'layer' is a layer definition: { type, name, query, geojson, heatmap, cluster, show }
-  createLayer(layer) {
+  // first: the layer becomes the first layer of the map, on the server and in the list
+  createLayer(layer, { first = false } = {}) {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
     let layerData = { "id": layerId, "type": layer.type, "name": layer.name,
@@ -433,13 +448,14 @@ export default class extends Controller {
     }
     const layerInstance = createLayerInstance(layerData)
     layerInstance.localData = true // renders from memory, see GeoJSONLayer.loadData
-    layers.push(layerInstance)
+    if (first) { layers.unshift(layerInstance) } else { layers.push(layerInstance) }
 
     addUndoState('Layer added', layerData)
     initLayersModal()
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)
-    sendMessage('new_layer', layerData)
+    // the flag stays out of layerData, which is the undo state and gets compared to server layers
+    sendMessage('new_layer', first ? { ...layerData, first: true } : layerData)
     return layerId
   }
 

@@ -53,6 +53,15 @@
               %li
                 %button.dropdown-item{
                   type: "button",
+                  data: { action: "click->map--layers#createGeojsonLayer" }
+                }
+                  %i.bi.bi-plus-lg.me-2
+                  = _("New layer")
+              %li
+                %hr.dropdown-divider
+              %li
+                %button.dropdown-item{
+                  type: "button",
                   data: { action: "click->map--layers#createRasterLayer" }
                 }
                   %i.bi.bi-grid-3x3.me-2
@@ -148,6 +157,8 @@
               %span.mapforge-font.layer-name.me-2= _("Layer name")
             -# Desktop (and mobile when there is only one): inline buttons
             %span.text-nowrap.d-none.d-sm-inline.me-2
+              %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-active{ data: { action: "click->map--layers#activateLayer", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: _("Add new features to this layer") }
+                %i.bi.bi-pencil
               %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-visibility{ data: { action: "click->map--layers#toggleLayerVisibility", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: _("Hide layer") }
                 %i.bi.bi-eye
               %button.hidden.btn.btn-secondary.btn-layer-actions.layer-refresh.ms-2{ data: { action: "click->map--layers#refreshLayer", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: _("Refresh layer for current view") }
@@ -162,6 +173,10 @@
               %button.btn.btn-secondary.btn-layer-actions.ms-2.me-2{ type: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false", "data-bs-popper-config": '{"strategy":"fixed"}' }
                 %i.bi.bi-three-dots-vertical
               %ul.dropdown-menu.dropdown-menu-end
+                %li
+                  %button.hidden.dropdown-item.layer-active-mobile{ type: "button", data: { action: "click->map--layers#activateLayer" } }
+                    %i.bi.bi-pencil.me-2
+                    = _("Add new features to this layer")
                 %li
                   %button.hidden.dropdown-item.layer-visibility-mobile{ type: "button", data: { action: "click->map--layers#toggleLayerVisibility" } }
                     %i.bi.bi-eye.me-2

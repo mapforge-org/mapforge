@@ -558,6 +558,11 @@ body.map-mode-rw .ro-only {
   min-height: 1.5rem;
 }
 
+/* the name of a geojson layer is a drop target, also when the layer is collapsed */
+.layer-item-header.drop-target {
+  background-color: var(--bs-tertiary-bg);
+}
+
 .layer-feature-item.sortable-chosen {
   background-color: var(--bs-tertiary-bg);
 }

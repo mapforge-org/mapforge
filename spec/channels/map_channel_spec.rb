@@ -93,7 +93,45 @@ RSpec.describe MapChannel, type: :channel do
     end
   end
 
+  describe "#new_feature" do
+    let(:second) { create(:layer, map: map) }
+
+    # returns the id of the added feature
+    def add(**atts)
+      id = BSON::ObjectId.new.to_s
+      perform :new_feature, id:, map_id: map.private_id, type: "Feature", properties: {},
+        geometry: { "type" => "Point", "coordinates" => [ 8.1, 47.2 ] }, **atts
+      id
+    end
+
+    before { subscribe(map_id: map.private_id) }
+
+    it "adds the feature to the first geojson layer without a layer id" do
+      second
+      expect(Feature.find(add).layer).to eq layer
+    end
+
+    it "adds the feature to the given layer" do
+      expect(Feature.find(add(layer_id: second.id.to_s)).layer).to eq second
+    end
+
+    it "rejects a layer of another map" do
+      other_layer = create(:map).layers.first
+      expect { add(layer_id: other_layer.id.to_s) }.to raise_error(/not found/)
+      expect(other_layer.features.count).to eq 0
+    end
+  end
+
   describe "#new_layer" do
+    it "puts the layer first with the first flag" do
+      subscribe(map_id: map.private_id)
+      layer_id = BSON::ObjectId.new.to_s
+      perform :new_layer, id: layer_id, map_id: map.private_id, type: "geojson", first: true
+
+      expect(map.reload.layers.first.id.to_s).to eq layer_id
+      expect(map.layers.geojson.first.id.to_s).to eq layer_id
+    end
+
     it "skips invalid features and keeps the valid ones" do
       subscribe(map_id: map.private_id)
       layer_id = BSON::ObjectId.new.to_s

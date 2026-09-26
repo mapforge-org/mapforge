@@ -9,7 +9,7 @@ import { initializeGeoLocateControl } from 'maplibre/controls/geolocate'
 import { initializeSearchControl } from 'maplibre/controls/search'
 import { draw, unselect } from 'maplibre/edit'
 import { featureIcon, getFeatureTypeName, resetHighlightedFeature } from 'maplibre/feature'
-import { layers, moveFeature } from 'maplibre/layers/layers'
+import { activeLayer, layers, moveFeature } from 'maplibre/layers/layers'
 import { map, mapProperties } from 'maplibre/map'
 
 export class ControlGroup {
@@ -188,6 +188,35 @@ function updateFeatureCount (ul, layer) {
   layerElement.querySelector('.layer-empty-note')?.classList.toggle('hidden', count > 0)
 }
 
+// Shared by all feature lists: after a drop into another list, the click lands in the target list
+let draggingFeature = false
+
+// The fallback ghost ignores the pointer, so the element under it is the drop target.
+// Only the name of another geojson layer counts.
+function dropHeaderAt (event, fromLayerElement) {
+  const point = event?.changedTouches?.[0] || event
+  if (point?.clientX === undefined) { return null }
+  const header = document.elementFromPoint(point.clientX, point.clientY)?.closest('.layer-item-header')
+  const layerElement = header?.closest('.layer-item[data-layer-type="geojson"]')
+  return layerElement && layerElement !== fromLayerElement ? header : null
+}
+
+// Set from pointer moves, because Chrome keeps :hover frozen while a press that began on text is held
+let dropHeader = null
+function highlightDropHeader (header) {
+  if (header === dropHeader) { return }
+  dropHeader?.classList.remove('drop-target')
+  header?.classList.add('drop-target')
+  dropHeader = header
+}
+
+function moveFeatureToLayer (feature, fromUl, fromLayer, toUl, toLayer) {
+  moveFeature(feature, toLayer.id)
+  sendMessage('update_feature', { ...feature, layer_id: toLayer.id })
+  updateFeatureCount(fromUl, fromLayer)
+  updateFeatureCount(toUl, toLayer)
+}
+
 function renderLayerFeatures (layerElement, layer) {
   // a later initLayersModal() call detaches this element, then the build is obsolete
   if (!layerElement.isConnected) { return }
@@ -226,34 +255,48 @@ function renderLayerFeatures (layerElement, layer) {
   })
   if (window.gon.map_mode === 'rw' && layer.type === 'geojson') {
     ul.classList.add('feature-drop-list')
-    let dragging = false
     // Swallow the click that fires after a drop so reordering never selects a feature
     ul.addEventListener('click', e => {
-      if (dragging) { e.stopPropagation(); e.preventDefault() }
+      if (draggingFeature) { e.stopPropagation(); e.preventDefault() }
     }, true)
+    const onPointerMove = e => highlightDropHeader(dropHeaderAt(e, layerElement))
     // Loaded lazily so the lib is never fetched in read-only mode, where features can't be reordered
     import('sortablejs').then(({ default: Sortable }) => {
       Sortable.create(ul, {
-        handle: '.feature-drag-handle',
+        // A finger on the whole line would block scrolling the list, so touch drags by the handle only
+        handle: window.matchMedia('(pointer: coarse)').matches ? '.feature-drag-handle' : undefined,
+        // below this many pixels of movement, a press stays a click that flies to the feature
+        fallbackTolerance: 3,
         group: 'features',
         animation: 150,
         // Use the JS fallback (pointer events) instead of native HTML5 DnD for
         // consistent touch + mouse behaviour and styling
         forceFallback: true,
-        onStart: () => { dragging = true },
+        onStart: () => {
+          draggingFeature = true
+          document.addEventListener('pointermove', onPointerMove)
+        },
         onEnd: evt => {
-          if (evt.from === evt.to && evt.oldIndex === evt.newIndex) {
-            setTimeout(() => { dragging = false }, 0)
+          document.removeEventListener('pointermove', onPointerMove)
+          highlightDropHeader(null)
+          // reset after the post-drop click has been processed
+          setTimeout(() => { draggingFeature = false }, 0)
+          const feature = layer.geojson.features.find(f => f.id === evt.item.dataset.featureId)
+
+          // A drop on the name of a geojson layer, also a collapsed one
+          const header = dropHeaderAt(evt.originalEvent, layerElement)
+          const headerLayer = header && layers.find(l => l.id === header.closest('.layer-item').dataset.layerId)
+          if (headerLayer) {
+            const toUl = header.closest('.layer-item').querySelector('.layer-content ul')
+            // moveFeature puts it on top of the layer, which lists first
+            toUl.prepend(evt.item)
+            moveFeatureToLayer(feature, evt.from, layer, toUl, headerLayer)
             return
           }
+
+          if (evt.from === evt.to && evt.oldIndex === evt.newIndex) { return }
           const toLayer = layers.find(l => l.id === evt.to.closest('.layer-item').dataset.layerId)
-          if (evt.from !== evt.to) {
-            const feature = layer.geojson.features.find(f => f.id === evt.item.dataset.featureId)
-            moveFeature(feature, toLayer.id)
-            sendMessage('update_feature', { ...feature, layer_id: toLayer.id })
-            updateFeatureCount(evt.from, layer)
-            updateFeatureCount(evt.to, toLayer)
-          }
+          if (evt.from !== evt.to) { moveFeatureToLayer(feature, evt.from, layer, evt.to, toLayer) }
           // The list is shown top-first, so reverse it back to draw order (bottom first)
           const orderedIds = Array.from(evt.to.querySelectorAll('li[data-feature-id]'))
             .map(li => li.getAttribute('data-feature-id'))
@@ -261,8 +304,6 @@ function renderLayerFeatures (layerElement, layer) {
           toLayer.applyFeatureOrder(orderedIds)
           toLayer.render()
           sendMessage('update_layer', { id: toLayer.id, feature_order: orderedIds })
-          // reset after the post-drop click has been processed
-          setTimeout(() => { dragging = false }, 0)
         }
       })
     })
@@ -275,6 +316,7 @@ export function initLayersModal () {
     dom.initTooltips(e)
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')
+    const geojsonLayers = layers.filter(l => l.type === 'geojson')
     layers.forEach(layer => {
       let features = layer?.geojson?.features || []
       const layerElement = template.cloneNode(true)
@@ -333,8 +375,23 @@ export function initLayersModal () {
         visBtn.setAttribute('title', window.__('Hide layer'))
         visBtnMobile.querySelector('.layer-visibility-text').textContent = window.__('Hide layer')
       }
-      const isFirstGeojsonLayer = layer.type === 'geojson' &&
-        layers.filter(l => l.type === 'geojson').indexOf(layer) === 0
+      const isFirstGeojsonLayer = layer.type === 'geojson' && geojsonLayers.indexOf(layer) === 0
+
+      // With one geojson layer there is nothing to choose
+      if (layer.type === 'geojson' && window.gon.map_mode === 'rw' && geojsonLayers.length > 1) {
+        const activeBtn = layerElement.querySelector('button.layer-active')
+        activeBtn.classList.remove('hidden')
+        if (layer === activeLayer()) {
+          activeBtn.classList.replace('btn-secondary', 'btn-blue')
+          activeBtn.querySelector('i').classList.replace('bi-pencil', 'bi-pencil-fill')
+          const activeIcon = document.createElement('i')
+          activeIcon.classList.add('bi', 'bi-pencil-fill', 'small', 'me-2')
+          activeIcon.title = window.__('New features go to this layer')
+          head.parentNode.appendChild(activeIcon)
+        } else {
+          layerElement.querySelector('button.layer-active-mobile').classList.remove('hidden')
+        }
+      }
 
       // Show delete button for all layers except the first geojson layer
       if ((layer.type !== 'geojson' || !isFirstGeojsonLayer) && window.gon.map_mode === "rw") {
