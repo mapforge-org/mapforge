@@ -257,6 +257,37 @@ export default class extends Controller {
     initializeLayerStyles(layerId).then(() => { initLayersModal() })
   }
 
+  renameLayer (event) {
+    event.preventDefault()
+    const layerElement = event.target.closest('.layer-item')
+    const layer = layers.find(f => f.id === layerElement.getAttribute('data-layer-id'))
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.classList.add('form-control', 'd-inline-block', 'me-2', 'mapforge-font', 'layer-name-input')
+    input.placeholder = window.__('Layer elements')
+    input.value = layer.name || ''
+    let cancelled = false
+    // the header toggles the layer list on click, and Escape on window closes the modal
+    input.addEventListener('click', e => e.stopPropagation())
+    input.addEventListener('keydown', e => {
+      e.stopPropagation()
+      if (e.key === 'Escape') { cancelled = true }
+      if (e.key === 'Enter' || e.key === 'Escape') { input.blur() }
+    })
+    input.addEventListener('blur', () => {
+      const name = input.value.trim()
+      if (!cancelled && name && name !== layer.name) {
+        addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
+        layer.name = name
+        sendMessage('update_layer', layer.toJSON())
+      }
+      initLayersModal()
+    })
+    layerElement.querySelector('.layer-name').replaceWith(input)
+    input.focus()
+    input.select()
+  }
+
   refreshLayer (event) {
     event.preventDefault()
     const layerId = event.target.closest('.layer-item').getAttribute('data-layer-id')
@@ -305,23 +336,19 @@ export default class extends Controller {
     layer.show = !wasVisible
     setLayerVisibility(layer.sourceId, layer.show)
 
-    // update UI (both desktop and mobile visibility buttons)
-    layerElement.querySelectorAll('button.layer-visibility i, button.layer-visibility-mobile i').forEach(icon => {
-      if (layer.show) {
-        icon.classList.replace('bi-eye-slash', 'bi-eye')
-      } else {
-        icon.classList.replace('bi-eye', 'bi-eye-slash')
-      }
-    })
     const visBtn = layerElement.querySelector('button.layer-visibility')
-    const visBtnMobile = layerElement.querySelector('button.layer-visibility-mobile')
+    const icon = visBtn.querySelector('i')
+    if (layer.show) {
+      icon.classList.replace('bi-eye-slash', 'bi-eye')
+    } else {
+      icon.classList.replace('bi-eye', 'bi-eye-slash')
+    }
     const newText = layer.show ? window.__('Hide layer') : window.__('Show layer')
 
     // Update tooltip title attributes
     visBtn.setAttribute('title', newText)
     visBtn.setAttribute('data-bs-original-title', newText)
     visBtn.setAttribute('aria-label', newText)
-    visBtnMobile.querySelector('.layer-visibility-text').textContent = newText
 
     // Update Bootstrap tooltip content if it exists
     if (typeof bootstrap !== 'undefined' && visBtn) {
@@ -333,10 +360,10 @@ export default class extends Controller {
     // show/hide refresh and edit buttons based on visibility
     const hideAction = layer.show ? 'remove' : 'add'
     if (layer.type === 'overpass' || layer.type === 'wikipedia') {
-      layerElement.querySelectorAll('button.layer-refresh, button.layer-refresh-mobile').forEach(btn => btn.classList[hideAction]('hidden'))
+      layerElement.querySelector('button.layer-refresh').classList[hideAction]('hidden')
     }
     if ((layer.type === 'overpass' || layer.type === 'raster') && window.gon.map_mode === 'rw') {
-      layerElement.querySelectorAll('button.layer-edit, button.layer-edit-mobile').forEach(btn => btn.classList[hideAction]('hidden'))
+      layerElement.querySelector('button.layer-edit').classList[hideAction]('hidden')
     }
     // hide global "Load for this area" button if no visible overpass/wikipedia layers remain
     if (!layer.show) {
@@ -361,10 +388,10 @@ export default class extends Controller {
 
   activateLayer (event) {
     event.preventDefault()
+    event.stopPropagation()
     const layer = layers.find(l => l.id === event.target.closest('.layer-item').getAttribute('data-layer-id'))
     setActiveLayer(layer.id)
     initLayersModal()
-    status(window.__('New features go to layer %{name}').replace('%{name}', layer.name || window.__('Layer elements')))
   }
 
   createGeojsonLayer() {

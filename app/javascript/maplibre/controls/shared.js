@@ -361,71 +361,62 @@ export function initLayersModal () {
       e.appendChild(layerElement)
       // visibility toggle for all layers
       const visBtn = layerElement.querySelector('button.layer-visibility')
-      const visBtnMobile = layerElement.querySelector('button.layer-visibility-mobile')
       visBtn.classList.remove('hidden')
-      visBtnMobile.classList.remove('hidden')
       // Icon represents the STATE (eye = shown, eye-slash = hidden)
       if (layer.show === false) {
         visBtn.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
-        visBtnMobile.querySelector('i').classList.replace('bi-eye', 'bi-eye-slash')
         visBtn.setAttribute('title', window.__('Show layer'))
-        visBtnMobile.querySelector('.layer-visibility-text').textContent = window.__('Show layer')
         layerElement.classList.add('layer-dimmed')
       } else {
         visBtn.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
-        visBtnMobile.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
         visBtn.setAttribute('title', window.__('Hide layer'))
-        visBtnMobile.querySelector('.layer-visibility-text').textContent = window.__('Hide layer')
       }
       // With one geojson layer there is nothing to choose
       if (layer.type === 'geojson' && window.gon.map_mode === 'rw' && geojsonLayers.length > 1) {
-        const activeBtn = layerElement.querySelector('button.layer-active')
-        activeBtn.classList.remove('hidden')
+        let pen = document.createElement('i')
         if (layer === activeLayer()) {
-          activeBtn.classList.replace('btn-secondary', 'btn-blue')
-          activeBtn.querySelector('i').classList.replace('bi-pencil', 'bi-pencil-fill')
-          const activeIcon = document.createElement('i')
-          activeIcon.classList.add('bi', 'bi-pencil-fill', 'small', 'me-2')
-          activeIcon.title = window.__('New features go to this layer')
-          head.parentNode.appendChild(activeIcon)
+          pen.classList.add('bi', 'bi-pencil-fill', 'small', 'me-2')
+          pen.title = window.__('New features go to this layer')
         } else {
-          layerElement.querySelector('button.layer-active-mobile').classList.remove('hidden')
+          const icon = pen
+          icon.classList.add('bi', 'bi-pencil', 'small')
+          pen = document.createElement('button')
+          pen.type = 'button'
+          pen.classList.add('btn', 'btn-link', 'p-0', 'me-2', 'text-reset', 'opacity-50', 'layer-active')
+          pen.title = window.__('Add new features to this layer')
+          pen.dataset.action = 'click->map--layers#activateLayer'
+          pen.appendChild(icon)
         }
+        pen.dataset.toggle = 'tooltip'
+        pen.dataset.bsTrigger = 'hover'
+        head.parentNode.appendChild(pen)
+      }
+      if (layer.type === 'geojson' && window.gon.map_mode === 'rw') {
+        layerElement.querySelector('button.layer-rename').classList.remove('hidden')
       }
 
       // Show delete button for all layers except the last geojson layer
       if ((layer.type !== 'geojson' || geojsonLayers.length > 1) && window.gon.map_mode === "rw") {
         layerElement.querySelector('button.layer-delete').classList.remove('hidden')
-        layerElement.querySelector('button.layer-delete-mobile').classList.remove('hidden')
       }
 
       // Show refresh button only for overpass and wikipedia layers that are visible
       if ((layer.type === 'overpass' || layer.type === 'wikipedia') && layer.show !== false) {
         layerElement.querySelector('button.layer-refresh').classList.remove('hidden')
-        layerElement.querySelector('button.layer-refresh-mobile').classList.remove('hidden')
       }
       if (layer.type === 'overpass') {
         if (window.gon.map_mode === "rw" && layer.show !== false) {
           layerElement.querySelector('button.layer-edit').classList.remove('hidden')
-          layerElement.querySelector('button.layer-edit-mobile').classList.remove('hidden')
         }
       }
       if (layer.type === 'raster') {
         if (window.gon.map_mode === "rw" && layer.show !== false) {
           layerElement.querySelector('button.layer-edit').classList.remove('hidden')
-          layerElement.querySelector('button.layer-edit-mobile').classList.remove('hidden')
         }
       }
 
-      // Simplify mobile UI when only visibility toggle is available
       const dropdown = layerElement.querySelector('.layer-actions-dropdown')
-      const visibleMobileActions = dropdown.querySelectorAll('.dropdown-item:not(.hidden)').length
-      if (visibleMobileActions <= 1) {
-        dropdown.classList.add('hidden')
-        const inlineButtons = layerElement.querySelector('.text-nowrap')
-        inlineButtons.classList.remove('d-none', 'd-sm-inline')
-        inlineButtons.classList.add('d-inline')
-      }
+      if (!dropdown.querySelector('.dropdown-item:not(.hidden)')) { dropdown.classList.add('hidden') }
 
       // build the feature lists after the modal painted, one task per layer
       setTimeout(() => renderLayerFeatures(layerElement, layer), 0)

@@ -122,8 +122,9 @@ describe "Map Undo/Redo" do
       expect(page).to have_text("Test Layer")
 
       # Delete the layer
+      open_layer_menu(layer.id)
       accept_alert do
-        find("#layer-list-#{layer.id} .btn-layer-actions.layer-delete").click
+        find("#layer-list-#{layer.id} .layer-delete").click
       end
       wait_for { Layer.find_by(id: layer.id) }.to be_nil
 

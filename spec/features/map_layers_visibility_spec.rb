@@ -88,11 +88,10 @@ describe "Map layers, visibility and order" do
     end
   end
 
-  context "layer visibility mobile dropdown", :phone do
+  context "layer visibility on phone", :phone do
     it "toggles layer visibility from show to hidden" do
       layer_id = map.layers.first.id
 
-      # When only visibility toggle is available, it shows inline instead of dropdown
       find(".maplibregl-ctrl-layers").click
       expect(page).to have_css("button.layer-visibility i.bi-eye")
       find("button.layer-visibility").click
