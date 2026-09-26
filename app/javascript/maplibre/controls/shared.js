@@ -292,7 +292,10 @@ function renderLayerFeatures (layerElement, layer) {
             toUl.prepend(evt.item)
             moveFeatureToLayer(feature, evt.from, layer, toUl, headerLayer)
             // Without an order the server sorts by created_at, which a move does not change
-            sendMessage('update_layer', { id: headerLayer.id, feature_order: headerLayer.geojson.features.map(f => f.id) })
+            const order = headerLayer.geojson.features.map(f => f.id)
+            // later layer updates send layer.toJSON(), which must not carry an old order
+            headerLayer.applyFeatureOrder(order)
+            sendMessage('update_layer', { id: headerLayer.id, feature_order: order })
             return
           }
 

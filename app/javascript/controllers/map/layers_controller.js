@@ -12,7 +12,7 @@ import { createLayerInstance } from 'maplibre/layers/factory'
 import { activeLayer, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, setActiveLayer, upsert } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/overpass/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName } from 'maplibre/map'
-import { addUndoState, layerPlacement } from 'maplibre/undo'
+import { addUndoState, layerPlacement, layerSettings } from 'maplibre/undo'
 
 // Browsers report an empty file.type for these when the platform mime database
 // does not know them, so the extension decides as well.
@@ -224,7 +224,7 @@ export default class extends Controller {
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
-    addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
+    addUndoState('Layer updated', layerSettings(layer))
 
     layer.query = layerElement.querySelector('.overpass-query').value
     layer.name = layerElement.querySelector('.overpass-name').value
@@ -245,7 +245,7 @@ export default class extends Controller {
     const layerElement = event.target.closest('.layer-item')
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(f => f.id === layerId)
-    addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
+    addUndoState('Layer updated', layerSettings(layer))
 
     layer.query = layerElement.querySelector('.raster-url').value
     layer.name = layerElement.querySelector('.raster-name').value
@@ -277,7 +277,7 @@ export default class extends Controller {
     input.addEventListener('blur', () => {
       const name = input.value.trim()
       if (!cancelled && name && name !== layer.name) {
-        addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
+        addUndoState('Layer updated', layerSettings(layer))
         layer.name = name
         sendMessage('update_layer', layer.toJSON())
       }
@@ -331,7 +331,7 @@ export default class extends Controller {
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(l => l.id === layerId)
     const wasVisible = layer.show !== false
-    if (window.gon.map_mode === "rw") { addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson }) }
+    if (window.gon.map_mode === "rw") { addUndoState('Layer updated', layerSettings(layer)) }
 
     layer.show = !wasVisible
     setLayerVisibility(layer.sourceId, layer.show)

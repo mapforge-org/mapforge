@@ -18,7 +18,7 @@ import { map, mapProperties, onMapClickAfterLayers } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
 import { getRouteUpdate, updateElevation } from 'maplibre/routing/openrouteservice';
 import { editStyles, initializeEditStyles } from 'maplibre/styles/edit_styles';
-import { addUndoState, redo, undo } from 'maplibre/undo';
+import { addUndoState, featurePlacement, redo, undo } from 'maplibre/undo';
 
 export let draw
 // The route feature that directions currently edits. Only directions sets it.
@@ -473,8 +473,8 @@ async function handleUpdate (e) {
 export function handleDelete (e) {
   selectedRoute = null
   const deletedFeature = e.features[0] // Assuming one feature is deleted at a time
+  addUndoState('Feature deleted', deletedFeature, true, featurePlacement(deletedFeature.id))
   destroyFeature(deletedFeature.id)
-  addUndoState('Feature deleted', deletedFeature)
   resetDirections()
   resetControls()
   status(window.__('%{type} deleted').replace('%{type}', featureLabel(deletedFeature)))

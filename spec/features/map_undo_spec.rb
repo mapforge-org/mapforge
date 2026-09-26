@@ -32,6 +32,29 @@ describe "Map Undo/Redo" do
     wait_for { Feature.count }.to eq(1)
   end
 
+  context "with a feature and a second, active layer" do
+    let!(:polygon) { create(:feature, :polygon_middle, title: "Poly Title") }
+    let(:map) { create(:map, features: [ polygon ]).tap { |m| create(:layer, map: m, name: "Second") } }
+
+    it "restores a deleted feature to its own layer" do
+      own_layer = polygon.reload.layer
+      find(".maplibregl-ctrl-layers").click
+      find("#layer-list-#{map.layers.find_by(name: 'Second').id} button.layer-active").click
+      expect(page).to have_text("New features go to layer Second")
+      find(".maplibregl-ctrl-layers").click
+
+      click_coord("#maplibre-map", 512, 430)
+      accept_alert do
+        find("#edit-button-advanced").click
+        find("#edit-button-trash").click
+      end
+      wait_for { Feature.count }.to eq(0)
+
+      find("button.maplibregl-ctrl-undo").click
+      wait_for { Feature.find_by(id: polygon.id)&.layer }.to eq(own_layer)
+    end
+  end
+
   it "shows undo button after a change and hides it after undoing" do
     # undo button starts hidden
     expect(page).to have_css("button.maplibregl-ctrl-undo.hidden", visible: :all)

@@ -203,6 +203,9 @@ msgstr "Route wird berechnet..."
 msgid "Can Edit"
 msgstr "Bearbeitbar"
 
+msgid "Cannot delete the last layer"
+msgstr "Die letzte Ebene kann nicht gelöscht werden"
+
 msgid "Car"
 msgstr "Auto"
 

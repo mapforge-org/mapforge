@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 17:16+0200\n"
-"PO-Revision-Date: 2026-09-26 17:16+0200\n"
+"POT-Creation-Date: 2026-09-26 23:10+0200\n"
+"PO-Revision-Date: 2026-09-26 23:10+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "%{count} views"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/layers.js:307 ../app/javascript/maplibre/undo.js:59
+#: ../app/javascript/maplibre/layers/layers.js:307 ../app/javascript/maplibre/undo.js:60
 msgid "%{type} added"
 msgstr ""
 
@@ -38,15 +38,15 @@ msgstr ""
 msgid "%{type} copied to clipboard"
 msgstr ""
 
-#: ../app/javascript/maplibre/edit.js:480 ../app/javascript/maplibre/undo.js:60
+#: ../app/javascript/maplibre/edit.js:480 ../app/javascript/maplibre/undo.js:61
 msgid "%{type} deleted"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:58
+#: ../app/javascript/maplibre/undo.js:59
 msgid "%{type} property update"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:57
+#: ../app/javascript/maplibre/undo.js:58
 msgid "%{type} update"
 msgstr ""
 
@@ -94,7 +94,7 @@ msgstr ""
 msgid "Add layer"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/shared.js:386
+#: ../app/javascript/maplibre/controls/shared.js:397
 msgid "Add new features to this layer"
 msgstr ""
 
@@ -264,6 +264,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:37
 msgid "Can Edit"
+msgstr ""
+
+#: ../app/javascript/maplibre/undo.js:245
+msgid "Cannot delete the last layer"
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:233
@@ -834,7 +838,7 @@ msgstr ""
 msgid "Height:"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:160 ../app/javascript/controllers/map/layers_controller.js:346 ../app/javascript/maplibre/controls/shared.js:372
+#: ../app/views/maps/modals/_layers.haml:160 ../app/javascript/controllers/map/layers_controller.js:346 ../app/javascript/maplibre/controls/shared.js:383
 msgid "Hide layer"
 msgstr ""
 
@@ -934,15 +938,15 @@ msgstr ""
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:63
+#: ../app/javascript/maplibre/undo.js:64
 msgid "Layer added"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:64
+#: ../app/javascript/maplibre/undo.js:65
 msgid "Layer deleted"
 msgstr ""
 
-#: ../app/javascript/controllers/map/layers_controller.js:267 ../app/javascript/maplibre/controls/shared.js:330 ../app/javascript/maplibre/layers/layers.js:292
+#: ../app/javascript/controllers/map/layers_controller.js:267 ../app/javascript/maplibre/controls/shared.js:341 ../app/javascript/maplibre/layers/layers.js:292
 msgid "Layer elements"
 msgstr ""
 
@@ -950,7 +954,7 @@ msgstr ""
 msgid "Layer name"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:65
+#: ../app/javascript/maplibre/undo.js:66
 msgid "Layer updated"
 msgstr ""
 
@@ -1026,7 +1030,7 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/shared.js:529
+#: ../app/javascript/maplibre/controls/shared.js:542
 msgid "Location (https only)"
 msgstr ""
 
@@ -1186,7 +1190,7 @@ msgstr ""
 msgid "New features go to layer %{name}"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/shared.js:379
+#: ../app/javascript/maplibre/controls/shared.js:390
 msgid "New features go to this layer"
 msgstr ""
 
@@ -1210,7 +1214,7 @@ msgstr ""
 msgid "No ads, no tracking, no lock-in"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/shared.js:435
+#: ../app/javascript/maplibre/controls/shared.js:446
 msgid "No elements in this layer"
 msgstr ""
 
@@ -1378,7 +1382,7 @@ msgstr ""
 msgid "Really delete this %{type}?"
 msgstr ""
 
-#: ../app/javascript/controllers/map/layers_controller.js:493
+#: ../app/javascript/controllers/map/layers_controller.js:494
 msgid "Really delete this layer?"
 msgstr ""
 
@@ -1390,7 +1394,7 @@ msgstr ""
 msgid "Recently viewed Maps"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:339
+#: ../app/javascript/maplibre/undo.js:364
 msgid "Redo"
 msgstr ""
 
@@ -1398,11 +1402,11 @@ msgstr ""
 msgid "Redo last change"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:339
+#: ../app/javascript/maplibre/undo.js:364
 msgid "Redo: %{type}"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:121
+#: ../app/javascript/maplibre/undo.js:122
 msgid "Redone: %{type}"
 msgstr ""
 
@@ -1434,7 +1438,7 @@ msgstr ""
 msgid "Rotate"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:66
+#: ../app/javascript/maplibre/undo.js:67
 msgid "Route created from GPX"
 msgstr ""
 
@@ -1538,7 +1542,7 @@ msgstr ""
 msgid "Show in public gallery"
 msgstr ""
 
-#: ../app/javascript/controllers/map/layers_controller.js:346 ../app/javascript/maplibre/controls/shared.js:368
+#: ../app/javascript/controllers/map/layers_controller.js:346 ../app/javascript/maplibre/controls/shared.js:379
 msgid "Show layer"
 msgstr ""
 
@@ -1724,7 +1728,7 @@ msgstr ""
 msgid "Tour planning with Mapforge:"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:61
+#: ../app/javascript/maplibre/undo.js:62
 msgid "Track added"
 msgstr ""
 
@@ -1736,7 +1740,7 @@ msgstr ""
 msgid "Track reversed"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:62
+#: ../app/javascript/maplibre/undo.js:63
 msgid "Track update"
 msgstr ""
 
@@ -1756,7 +1760,7 @@ msgstr ""
 msgid "Tutorials"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:332
+#: ../app/javascript/maplibre/undo.js:357
 msgid "Undo"
 msgstr ""
 
@@ -1764,11 +1768,11 @@ msgstr ""
 msgid "Undo last change"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:332
+#: ../app/javascript/maplibre/undo.js:357
 msgid "Undo: %{type}"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:106
+#: ../app/javascript/maplibre/undo.js:107
 msgid "Undone: %{type}"
 msgstr ""
 

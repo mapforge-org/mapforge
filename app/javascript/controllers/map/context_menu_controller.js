@@ -7,7 +7,7 @@ import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { handleDelete } from 'maplibre/edit'
 import { updateElevation } from 'maplibre/routing/openrouteservice'
 import { getFeatureTypeName } from 'maplibre/feature'
-import { addFeature, applyFeatureUpdate, getFeature, renderLayers } from 'maplibre/layers/layers'
+import { addFeature, applyFeatureUpdate, getFeature, getLayer, renderLayers } from 'maplibre/layers/layers'
 import { addUndoState } from 'maplibre/undo'
 
 export default class extends Controller {
@@ -49,7 +49,7 @@ export default class extends Controller {
       properties: JSON.parse(JSON.stringify(feature.properties || {}))
     }
     addUndoState('Feature added', secondFeature)
-    addFeature(secondFeature)
+    addFeature(secondFeature, getLayer(feature.id, 'geojson')?.id)
     sendMessage('new_feature', secondFeature)
 
     status(window.__('Line cut into 2 segments'))
