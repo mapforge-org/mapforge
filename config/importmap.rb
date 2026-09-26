@@ -47,7 +47,7 @@ pin "chart.js", to: "chart-js.js", preload: false # @4.5.1
 # render markdown
 pin "marked", preload: false # @18.0.14
 # https://github.com/cure53/DOMPurify, strips scripts and event handlers from rendered markdown
-pin "dompurify", preload: false # @3.4.15
+pin "dompurify", preload: false # @3.4.16
 
 # https://github.com/mapbox/mapbox-gl-draw
 # Unminified + locally patched, see the header of the vendored file
