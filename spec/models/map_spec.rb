@@ -42,6 +42,16 @@ describe Map do
     end
   end
 
+  describe "#to_gpx" do
+    it "exports one track per linestring" do
+      map = create(:map, features: [
+        create(:feature, :line_string, coordinates: [ [ 11.041, 49.481 ], [ 11.056, 49.463 ] ]),
+        create(:feature, :line_string, coordinates: [ [ 11.056, 49.463 ], [ 11.061, 49.450 ] ])
+      ])
+      expect(map.to_gpx.to_s.scan(/<trk>/i).size).to eq(2)
+    end
+  end
+
   describe "#features_count" do
     it "sums up feature count of all layers" do
       expect(map.features_count).to eq(6)

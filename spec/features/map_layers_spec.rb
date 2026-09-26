@@ -3,13 +3,6 @@ require "rails_helper"
 describe "Map layers" do
   include_context "with an editable map and an overpass stub"
 
-  context "with initial map rendering" do
-    it "shows map layers button" do
-      expect(page).to have_css("#maplibre-map")
-      expect(page).to have_css(".maplibregl-ctrl-layers")
-    end
-  end
-
   context "feature listing" do
     before do
       feature

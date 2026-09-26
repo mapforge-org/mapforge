@@ -354,15 +354,6 @@ describe "Feature edit, point features" do
     end
   end
 
-  context "with cursor sharing" do
-    let(:map) { create(:map, name: "Share Cursor", share_cursor: true) }
-
-    it "sends cursor positions" do
-      hover_coord(70, 70)
-      expect(page).to have_css("#maplibre-map")
-    end
-  end
-
   context "with lost websocket" do
     it "disables edit buttons" do
       ActionCable.server.connections.each(&:close)

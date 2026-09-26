@@ -92,6 +92,8 @@ describe "Feature details" do
     end
   end
 
+  # the export responses are covered by the request spec spec/requests/maps_controller_spec.rb,
+  # these links get the feature id and title from JavaScript
   context "export" do
     let(:feature) { create(:feature, :polygon_middle, title: "Poly Title") }
     let(:map) { create(:map, features: [ feature ]) }
@@ -108,16 +110,6 @@ describe "Feature details" do
 
       it "has share gpx link" do
         expect(page).to have_link("GPX", href: "/m/" + map.public_id + "/feature/" + feature.id + ".gpx" + "/Poly_Title")
-      end
-
-      it "can download feature gpx export" do
-        visit "/m/" + map.public_id + "/feature/" + feature.id + ".gpx" + "/Poly_Title"
-        file = wait_for_download("Poly Title.gpx", timeout: 10)
-        expect(File.read(file).scan(/<gpx/i).size).to eq(1)
-      end
-
-      it "can download feature geojson export" do
-        find("#feature-export-geo").click
       end
     end
   end

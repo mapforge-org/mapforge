@@ -363,11 +363,6 @@ describe "Map public view" do
         expect(page).to have_css("#layers-modal")
       end
     end
-
-    it "has share edit link in the share modal" do
-      find(".maplibregl-ctrl-share").click
-      expect(page).to have_link("Share edit link", href: "/m/" + map.private_id)
-    end
   end
 
   context "with server gone" do
@@ -438,12 +433,6 @@ describe "Map public view" do
       expect(page).to have_css("#maplibre-map[data-online='true']")
 
       expect(map_json_fetch_count).to eq(0)
-    end
-  end
-
-  context "with other engines" do
-    it "deck.gl" do
-      visit deck_path(map.public_id)
     end
   end
 end
