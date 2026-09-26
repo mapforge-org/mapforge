@@ -144,6 +144,7 @@ export function initializeSocket () {
           break
         case 'update_feature':
           upsert(data.feature, data.layer_id)
+          initLayersModal()
           break
         case 'fly_to': {
           // maplibre reads 'pitch' in options, so an undefined key would give it NaN
@@ -155,6 +156,7 @@ export function initializeSocket () {
         }
         case 'delete_feature':
           destroyFeature(data.feature.id)
+          initLayersModal()
           break
         case 'update_map':
           window.gon.map_properties = data.map
@@ -235,7 +237,7 @@ export function sendMessage (event, data) {
   payload.map_id = window.gon.map_id
   payload.uuid = connectionUUID
   // callers add the feature locally first, so its layer is known
-  if (event === 'new_feature') { payload.layer_id ||= getLayer(data.id)?.id }
+  if (event === 'new_feature') { payload.layer_id ||= getLayer(data.id, 'geojson')?.id }
   // dropping properties.id before sending to server
   if (payload.properties && payload.properties.id) {
     payload.properties = { ...payload.properties }

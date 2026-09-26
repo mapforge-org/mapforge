@@ -290,7 +290,7 @@ export function activeLayer () {
 export function setActiveLayer (id) {
   activeLayerId = id
   const name = activeLayer()?.name || window.__('Layer elements')
-  status(window.__('New features go to layer %{name}').replace('%{name}', name))
+  status(window.__('New features go to layer %{name}').replace('%{name}', functions.escapeHtml(name)))
 }
 
 export function addFeature (feature, layerId) {

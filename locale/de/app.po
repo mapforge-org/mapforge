@@ -438,7 +438,7 @@ msgid "Drag or add waypoints to reroute"
 msgstr "Wegpunkte ziehen oder hinzufügen, um die Route neu zu berechnen"
 
 msgid "Drag points to reshape"
-msgstr "Stützpunkte ziehen, um die Form zu ändern"
+msgstr "Punkte ziehen, um die Form zu ändern"
 
 msgid "Drag the line to move it"
 msgstr "Linie ziehen, um sie zu verschieben"

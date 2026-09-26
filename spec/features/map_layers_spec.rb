@@ -16,6 +16,17 @@ describe "Map layers" do
       expect(page).to have_text("Feature 1")
     end
 
+    it "updates the list on remote feature changes" do
+      layer_item = "#layer-list-#{map.layers.first.id}"
+      create(:feature, :point, title: "Feature 2", layer: map.layers.first)
+      expect(page).to have_css("#{layer_item} li", text: "Feature 2")
+      expect(page).to have_css("#{layer_item} .layer-feature-count", text: "(2)")
+
+      feature.destroy
+      expect(page).to have_no_css("#{layer_item} li", text: "Feature 1")
+      expect(page).to have_css("#{layer_item} .layer-feature-count", text: "(1)")
+    end
+
     it "flies to feature on click" do
       find("li[data-feature-id='#{feature.id}']").click
       # flyTo is finished when the feature details are shown

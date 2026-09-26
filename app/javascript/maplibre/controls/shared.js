@@ -116,9 +116,9 @@ export class MapLayersControl {
       } else {
         resetControls()
         if (draw) { resetEditControls() }
-        initLayersModal()
         e.currentTarget.querySelector('button').classList.add('active')
         modal.classList.add('show')
+        initLayersModal()
         window.history.pushState({ modal: 'layers' }, '', `${window.location.pathname}#layers`)
       }
     }
@@ -314,7 +314,15 @@ function renderLayerFeatures (layerElement, layer) {
 
 // create the list of layers + features
 export function initLayersModal () {
+  // opening the modal builds it, so a closed one needs no update
+  if (!document.querySelector('#layers-modal.show')) { return }
   functions.e('#layers', e => {
+    // a rebuild would drop the text of a rename or query edit in progress
+    if (e.querySelector('input:focus, textarea:focus')) { return }
+    const expanded = new Set(Array.from(e.querySelectorAll('.layer-content:not(.hidden)'),
+      c => c.closest('.layer-item').dataset.layerId))
+    const scroller = e.closest('.inline-scroll')
+    const scrollTop = scroller.scrollTop
     dom.initTooltips(e)
     e.innerHTML = ''
     const template = document.querySelector('#layer-item-template')
@@ -422,8 +430,8 @@ export function initLayersModal () {
       setTimeout(() => renderLayerFeatures(layerElement, layer), 0)
 
       // expand layer items when there is only one layer
-      if (layers.length === 1) {
-        e.querySelector('.layer-content').classList.remove('hidden')
+      if (layers.length === 1 || expanded.has(layer.id)) {
+        layerElement.querySelector('.layer-content').classList.remove('hidden')
         layerElement.querySelector('.layer-item-header i').classList.remove('bi-caret-right-fill')
         layerElement.querySelector('.layer-item-header i').classList.add('bi-caret-down-fill')
       }
@@ -436,6 +444,8 @@ export function initLayersModal () {
         layerElement.querySelector('.layer-content').appendChild(newNode)
       }
     })
+    // queued after the feature list tasks, so the lists have their height again
+    setTimeout(() => { scroller.scrollTop = scrollTop }, 0)
   })
 }
 
