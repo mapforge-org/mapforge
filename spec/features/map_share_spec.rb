@@ -3,7 +3,7 @@ require "rails_helper"
 # The share links, the ownership link and the exports are server rendered, see the
 # request spec spec/requests/maps_controller_spec.rb. This file keeps the parts that
 # need a browser: the native share and the gallery toggle.
-describe "Map" do
+describe "Map share" do
   subject(:map) { create(:map, name: "Test Map", owners: [ user ]) }
 
   let(:user) { create(:user, name: "Test User", email: "test@mapforge.org") }

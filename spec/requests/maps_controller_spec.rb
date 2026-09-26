@@ -91,13 +91,13 @@ describe MapsController do
     end
 
     it "offers the ownership link to the owner" do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
       get map.private_map_path
       expect(share_href("#share-ownership-link")).to eq("/m/#{map.private_id}?join=true")
     end
 
     it "offers the edit link to the owner in view mode" do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
       get map.public_map_path
       expect(share_href("#share-edit-link")).to eq("/m/#{map.private_id}")
     end
@@ -137,7 +137,7 @@ describe MapsController do
 
     it "offers the image import to a logged in user" do
       user = create(:user)
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
       get map.private_map_path
       expect(import_tile["data-accept"]).to eq(".gpx,.kml,.kmz,.geojson,.json,image/*")
       expect(import_tile.text).to include("Import data (gpx, kml, image)")
@@ -247,10 +247,6 @@ describe MapsController do
   describe "access control" do
     let(:user) { create(:user) }
 
-    def login
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
-    end
-
     context "with edit_permission private" do
       let(:map) { create(:map, edit_permission: "private", owners: [ user ]) }
 
@@ -260,7 +256,7 @@ describe MapsController do
       end
 
       it "is accessible for the owner" do
-        login
+        sign_in(user)
         get map.private_map_path
         expect(response).to have_http_status(:ok)
       end
@@ -283,7 +279,7 @@ describe MapsController do
       it "shows no bookmark notice to a logged in user or in view mode" do
         get map.public_map_path
         expect(response.body).not_to include("edit-notice")
-        login
+        sign_in(user)
         get map.private_map_path
         expect(response.body).not_to include("edit-notice")
       end
@@ -298,7 +294,7 @@ describe MapsController do
       end
 
       it "is accessible for the owner" do
-        login
+        sign_in(user)
         get map.public_map_path
         expect(response).to have_http_status(:ok)
       end
@@ -334,7 +330,7 @@ describe MapsController do
       end
 
       it "returns the properties and features to the owner" do
-        login
+        sign_in(user)
         get map_properties_path(id: map.public_id)
         expect(response).to have_http_status(:ok)
         get map_feature_geo_path(id: map.public_id, feature_id: feature.id)
@@ -346,7 +342,7 @@ describe MapsController do
       let(:map) { create(:map, view_permission: "private") }
 
       it "refuses a user who does not own it" do
-        login
+        sign_in(user)
         map
         expect { post copy_map_path(id: map.public_id) }.not_to change(Map, :count)
         expect(response).to redirect_to(maps_path)
@@ -398,7 +394,7 @@ describe MapsController do
     let(:user) { create(:user) }
 
     before do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
     end
 
     it "lists the private link of an own map" do
@@ -420,7 +416,7 @@ describe MapsController do
     let(:user) { create(:user) }
 
     before do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
       result = MaxMindDB::Result.new("location" => { "longitude" => 11.0776, "latitude" => 49.4471,
                                                      "accuracy_radius" => 20 })
       stub_const("MAXMIND_DB", instance_double(MaxMindDB::Client, lookup: result))
@@ -485,7 +481,7 @@ describe MapsController do
     end
 
     it "greets logged in users by first name" do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
       post tutorial_path
       labels = Map.tutorial.first.features.pluck(:properties).map { |p| p["label"] }
       expect(labels).to include("Welcome First to the Tutorial")
@@ -500,14 +496,14 @@ describe MapsController do
     end
 
     it "creates persistent tutorial map for each logged in user" do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
       post tutorial_path
       post tutorial_path
       expect(Map.tutorial.count).to eq 1
     end
 
     it "counts only the creation, not the reuse" do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
       counter = -> { Yabeda.maps_created.get(kind: "tutorial", owner: "user", user: user.id.to_s).to_i }
       expect { post tutorial_path }.to change(&counter).by(1)
       expect { post tutorial_path }.not_to change(&counter)
@@ -532,7 +528,7 @@ describe MapsController do
 
     it "cannot be joined by a user" do
       get playground_path
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: create(:user).id })
+      sign_in(create(:user))
       get map_path(id: Map::PLAYGROUND_ID, join: true)
       expect(Map.find_by(private_id: Map::PLAYGROUND_ID).owners).to be_empty
     end
@@ -571,7 +567,7 @@ describe MapsController do
 
   describe "#map" do
     before do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
     end
 
     let(:user) { create(:user) }

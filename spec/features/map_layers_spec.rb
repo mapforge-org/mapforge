@@ -38,32 +38,31 @@ describe "Map layers" do
       expect(map.reload.layers.first.name).to eq "New layer"
     end
 
-    it "adds new features to the active layer" do
-      second = create(:layer, map: map, name: "Second")
-      visit map.private_map_path
-      expect_map_loaded
-      find(".maplibregl-ctrl-layers").click
-      find("#layer-list-#{second.id} button.layer-active").click
-      expect(page).to have_text("New features go to layer Second")
+    context "with a second layer" do
+      let(:map) { create(:map, name: "Layers test").tap { |m| create(:layer, map: m, name: "Second") } }
+      let(:second) { map.layers.find_by(name: "Second") }
 
-      find(".maplibregl-ctrl-layers").click
-      find(".mapbox-gl-draw_point").click
-      click_coord("#maplibre-map", 50, 50)
-      wait_for { Feature.point.last&.layer }.to eq(second)
-    end
+      it "adds new features to the active layer" do
+        find(".maplibregl-ctrl-layers").click
+        find("#layer-list-#{second.id} button.layer-active").click
+        expect(page).to have_text("New features go to layer Second")
 
-    it "can delete a geojson layer, but not the last one" do
-      first = map.layers.geojson.first
-      create(:layer, map: map, name: "Second")
-      visit map.private_map_path
-      expect_map_loaded
-      find(".maplibregl-ctrl-layers").click
-      open_layer_menu(first.id)
-      accept_alert do
-        find("#layer-list-#{first.id} .layer-delete").click
+        find(".maplibregl-ctrl-layers").click
+        find(".mapbox-gl-draw_point").click
+        click_coord("#maplibre-map", 50, 50)
+        wait_for { Feature.point.last&.layer }.to eq(second)
       end
-      wait_for { Layer.find(first.id) }.to be_nil
-      expect(page).to have_no_css(".layer-delete", visible: true)
+
+      it "can delete a geojson layer, but not the last one" do
+        first = map.layers.geojson.first
+        find(".maplibregl-ctrl-layers").click
+        open_layer_menu(first.id)
+        accept_alert do
+          find("#layer-list-#{first.id} .layer-delete").click
+        end
+        wait_for { Layer.find(first.id) }.to be_nil
+        expect(page).to have_no_css(".layer-delete", visible: true)
+      end
     end
 
     it "can rename a geojson layer" do
@@ -78,15 +77,13 @@ describe "Map layers" do
   end
 
   context "overpass layer" do
+    let(:map) { create(:map, name: "Layers test").tap { |m| m.layers << layer } }
+    let(:layer) { create(:layer, :overpass, name: "opass") }
+
     before do
-      map.layers << layer
-      visit map.private_map_path
-      expect_map_loaded
       expect_overpass_loaded
       find(".maplibregl-ctrl-layers").click
     end
-
-    let(:layer) { create(:layer, :overpass, name: "opass") }
 
     it "Shows overpass layer" do
       expect(page).to have_text("opass(1)")

@@ -8,8 +8,7 @@ describe "Admin List" do
 
   before do
     create_list(:map, 3)
-    allow_any_instance_of(ActionController::Base).to receive(:session)
-      .and_return({ user_id: admin.id })
+    sign_in(admin)
 
     visit admin_path
   end

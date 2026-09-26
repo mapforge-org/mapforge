@@ -21,7 +21,7 @@ describe FrontpageController do
 
     it "offers start a map, your maps and the playground to a logged in user" do
       user = create(:user)
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
       get "/"
       expect(response.body).to include(">Start a map</button>")
       expect(response.body).to include(">Your maps</a>")

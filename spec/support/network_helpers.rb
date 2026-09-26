@@ -17,3 +17,11 @@ def wait_for_download(name, timeout: 10)
     end
   end
 end
+
+def stub_fixture(method, url, file)
+  CapybaraMock.stub_request(method, url).to_return(
+    headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
+    status: 200,
+    body: File.read(Rails.root.join("spec", "fixtures", "files", file))
+  )
+end

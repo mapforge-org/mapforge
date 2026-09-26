@@ -5,7 +5,7 @@ describe AdminController do
 
   describe "#index" do
     before do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: admin.id })
+      sign_in(admin)
     end
 
     it "lists the private link of every map" do
@@ -31,7 +31,7 @@ describe AdminController do
 
     it "redirects a logged in non-admin to the login page" do
       user = create(:user)
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
       get "/admin"
       expect(response).to redirect_to(login_path)
     end

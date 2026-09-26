@@ -3,9 +3,11 @@ require "rails_helper"
 describe "Map public view" do
   let(:map) { create(:map) }
   let(:path) { map.public_map_path }
+  let(:current_user) { nil }
 
   before do
     stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
+    sign_in(current_user) if current_user
     visit path
     expect_map_loaded
   end
@@ -233,7 +235,7 @@ describe "Map public view" do
     # feature is created after loading the map, to make sure it's loaded via websocket
     it "receives new features via websocket channel" do
       create(:feature, :polygon_middle, layer: map.layers.first, title: "New Title")
-      sleep 1
+      wait_for_feature("New Title")
       click_center_of_screen
       expect(page).to have_css("#feature-details-modal")
       expect(page).to have_text("New Title")
@@ -258,12 +260,7 @@ describe "Map public view" do
   context "as map owner / admin" do
     let(:map) { create(:map, owners: [ user ]) }
     let(:user) { create(:user) }
-
-    before do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
-      visit path
-      expect_map_loaded
-    end
+    let(:current_user) { user }
 
     # the toggle labels are uppercased by CSS
     it "marks view mode as the active mode" do

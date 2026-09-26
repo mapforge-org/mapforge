@@ -3,7 +3,7 @@ require "rails_helper"
 # The filter results themselves are server rendered, see the request spec
 # spec/requests/maps_controller_spec.rb. This file only covers the parts that
 # need a browser: the live broadcast and the Stimulus filter controls.
-describe "Map List" do
+describe "Public map list" do
   let(:maps) { create_list(:map, 3, view_permission: "listed") }
 
   before do
@@ -14,7 +14,7 @@ describe "Map List" do
   it "receives broadcasts for map changes" do
     # page is already loaded
     expect(page).to have_selector(:xpath, "//a[@href='/m/#{maps[0].public_id}']")
-    sleep(1) # make sure websocket is connected
+    expect(page).to have_css("turbo-cable-stream-source[connected]", visible: :all)
     new_map = create(:map, name: "broadcast", view_permission: "listed")
 
     expect(page).to have_selector(:xpath, "//a[@href='/m/#{new_map.public_id}/broadcast']")

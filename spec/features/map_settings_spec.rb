@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Map" do
+describe "Map settings" do
   subject(:map) { create(:map, name: "Settings Test", center: nil, zoom: nil) }
 
   context "in rw mode" do

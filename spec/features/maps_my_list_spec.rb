@@ -2,11 +2,11 @@ require "rails_helper"
 
 # The list content and the filter are server rendered, see the request spec
 # spec/requests/maps_controller_spec.rb. Only the delete confirmation needs a browser.
-describe "Map List" do
+describe "My map list" do
   let(:user) { create(:user) }
 
   before do
-    allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+    sign_in(user)
     create(:map, owners: [ user ])
     visit my_path
   end
