@@ -351,8 +351,10 @@ export default class extends Controller {
       layerElement.classList.add('layer-dimmed')
     }
 
-    // when showing: initialize styles (and load data for overpass/wikipedia if needed)
-    if (layer.show) { initializeLayerStyles(layerId) }
+    // when showing: initialize styles (and load data for overpass/wikipedia if needed).
+    // A geojson layer keeps its style layers and data while hidden, so a full rebuild is only
+    // needed when they don't exist yet (hidden at page load, or replaced by setStyle).
+    if (layer.show && (layer.type !== 'geojson' || !layer.getStyleLayerIds().length)) { initializeLayerStyles(layerId) }
     // sync to server only in rw mode
     if (window.gon.map_mode === "rw") { sendMessage('update_layer', layer.toJSON()) }
   }
