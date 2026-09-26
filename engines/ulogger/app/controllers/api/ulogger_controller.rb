@@ -62,15 +62,15 @@ module Ulogger
       track = @map.features.line_string.where("properties.title" => track_name).order_by(updated_at: :desc).first
       if track
         layer = track.layer
+        # updated_at is set by hand because update_one skips Mongoid timestamps, and the track lookup sorts by it
+        Feature.collection.update_one({ _id: track.id },
+          { "$push" => { "geometry.coordinates" => coords }, "$set" => { updated_at: Time.now } })
       else
         layer = @map.layers.geojson.find_by(name: track_name) || @map.layers.create(name: track_name)
         track = Feature.new(layer: layer, geometry: { "coordinates" => [] },
                             properties: track_properties(track_name, string_to_color(track_name)))
+        track.update(geometry: { "type" => "LineString", "coordinates" => [ coords ] })
       end
-
-      track_coords = track.geometry["coordinates"] << coords
-      track.update(geometry: { "type" => "LineString",
-                              "coordinates" => track_coords })
 
       # add point with details
       geometry = { "type" => "Point", "coordinates" => coords }
