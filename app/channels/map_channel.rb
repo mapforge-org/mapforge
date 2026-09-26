@@ -96,8 +96,10 @@ class MapChannel < ApplicationCable::Channel
     Yabeda.websocket.messages_received.increment({ action: "delete_layer", channel: "MapChannel" })
     map = get_map_rw!(data["map_id"])
     layer = map.layers.find(data["id"])
-    # new_feature always writes into the first geojson layer
-    raise "Cannot delete the first geojson layer of map '#{map.public_id}'" if layer == map.layers.geojson.first
+    # new_feature needs a geojson layer to write into
+    if layer.type == "geojson" && map.layers.geojson.count == 1
+      raise "Cannot delete the last geojson layer of map '#{map.public_id}'"
+    end
     layer.destroy
   end
 

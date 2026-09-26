@@ -57,6 +57,19 @@ describe "Map layers" do
       click_coord("#maplibre-map", 50, 50)
       wait_for { Feature.point.last&.layer }.to eq(second)
     end
+
+    it "can delete a geojson layer, but not the last one" do
+      first = map.layers.geojson.first
+      create(:layer, map: map, name: "Second")
+      visit map.private_map_path
+      expect_map_loaded
+      find(".maplibregl-ctrl-layers").click
+      accept_alert do
+        find("#layer-list-#{first.id} .btn-layer-actions.layer-delete").click
+      end
+      wait_for { Layer.find(first.id) }.to be_nil
+      expect(page).to have_no_css(".btn-layer-actions.layer-delete", visible: true)
+    end
   end
 
   context "overpass layer" do

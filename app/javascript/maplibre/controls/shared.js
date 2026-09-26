@@ -377,8 +377,6 @@ export function initLayersModal () {
         visBtn.setAttribute('title', window.__('Hide layer'))
         visBtnMobile.querySelector('.layer-visibility-text').textContent = window.__('Hide layer')
       }
-      const isFirstGeojsonLayer = layer.type === 'geojson' && geojsonLayers.indexOf(layer) === 0
-
       // With one geojson layer there is nothing to choose
       if (layer.type === 'geojson' && window.gon.map_mode === 'rw' && geojsonLayers.length > 1) {
         const activeBtn = layerElement.querySelector('button.layer-active')
@@ -395,8 +393,8 @@ export function initLayersModal () {
         }
       }
 
-      // Show delete button for all layers except the first geojson layer
-      if ((layer.type !== 'geojson' || !isFirstGeojsonLayer) && window.gon.map_mode === "rw") {
+      // Show delete button for all layers except the last geojson layer
+      if ((layer.type !== 'geojson' || geojsonLayers.length > 1) && window.gon.map_mode === "rw") {
         layerElement.querySelector('button.layer-delete').classList.remove('hidden')
         layerElement.querySelector('button.layer-delete-mobile').classList.remove('hidden')
       }
