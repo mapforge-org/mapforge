@@ -196,7 +196,7 @@ let draggingFeature = false
 function dropHeaderAt (event, fromLayerElement) {
   const point = event?.changedTouches?.[0] || event
   if (point?.clientX === undefined) { return null }
-  const header = document.elementFromPoint(point.clientX, point.clientY)?.closest('.layer-item-header')
+  const header = document.elementFromPoint(point.clientX, point.clientY)?.closest('.layer-name')?.closest('.layer-item-header')
   const layerElement = header?.closest('.layer-item[data-layer-type="geojson"]')
   return layerElement && layerElement !== fromLayerElement ? header : null
 }
@@ -291,6 +291,8 @@ function renderLayerFeatures (layerElement, layer) {
             // moveFeature puts it on top of the layer, which lists first
             toUl.prepend(evt.item)
             moveFeatureToLayer(feature, evt.from, layer, toUl, headerLayer)
+            // Without an order the server sorts by created_at, which a move does not change
+            sendMessage('update_layer', { id: headerLayer.id, feature_order: headerLayer.geojson.features.map(f => f.id) })
             return
           }
 

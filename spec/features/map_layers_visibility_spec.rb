@@ -385,6 +385,7 @@ describe "Map layers, visibility and order" do
 
       expect(page).to have_css("#layer-list-#{target.id} .layer-feature-count", text: "(2)")
       wait_for { feature.reload.layer }.to eq target
+      wait_for { target.reload.feature_order.last }.to eq feature.id.to_s
       expect(page).to have_css("#layers-modal.show")
     end
 
