@@ -33,6 +33,57 @@ describe "Map layers" do
     end
   end
 
+  context "geojson layer" do
+    it "adds a new layer as first layer" do
+      find(".maplibregl-ctrl-layers").click
+      click_button "Add layer"
+      within("#query-dropdown") do
+        find("button.dropdown-item", text: "New layer").trigger("click")
+      end
+      wait_for { Layer.find_by(name: "New layer") }.not_to be_nil
+      expect(page).to have_text("New features go to layer New layer")
+      expect(map.reload.layers.first.name).to eq "New layer"
+    end
+
+    it "adds new features to the active layer" do
+      second = create(:layer, map: map, name: "Second")
+      visit map.private_map_path
+      expect_map_loaded
+      find(".maplibregl-ctrl-layers").click
+      find("#layer-list-#{second.id} button.layer-active").click
+      expect(page).to have_text("New features go to layer Second")
+
+      find(".maplibregl-ctrl-layers").click
+      find(".mapbox-gl-draw_point").click
+      click_coord("#maplibre-map", 50, 50)
+      wait_for { Feature.point.last&.layer }.to eq(second)
+    end
+
+    it "can delete a geojson layer, but not the last one" do
+      first = map.layers.geojson.first
+      create(:layer, map: map, name: "Second")
+      visit map.private_map_path
+      expect_map_loaded
+      find(".maplibregl-ctrl-layers").click
+      open_layer_menu(first.id)
+      accept_alert do
+        find("#layer-list-#{first.id} .layer-delete").click
+      end
+      wait_for { Layer.find(first.id) }.to be_nil
+      expect(page).to have_no_css(".layer-delete", visible: true)
+    end
+
+    it "can rename a geojson layer" do
+      layer = map.layers.geojson.first
+      find(".maplibregl-ctrl-layers").click
+      open_layer_menu(layer.id)
+      find("#layer-list-#{layer.id} .layer-rename").click
+      find("#layer-list-#{layer.id} .layer-name-input").send_keys("Trails", :enter)
+      wait_for { layer.reload.name }.to eq("Trails")
+      expect(page).to have_css(".layer-name", text: "Trails")
+    end
+  end
+
   context "overpass layer" do
     before do
       map.layers << layer
@@ -59,6 +110,7 @@ describe "Map layers" do
 
     it "can edit overpass layer" do
       expect(page).to have_text("opass")
+      open_layer_menu(layer.id)
       find(".layer-edit").click
       expect(page).to have_field("overpass-query", with: layer.query)
       fill_in "overpass-query", with: "nwr[highway=bus];out center 1;"
@@ -68,8 +120,9 @@ describe "Map layers" do
 
     it "can delete overpass layer" do
       expect(page).to have_text("opass")
+      open_layer_menu(layer.id)
       accept_alert do
-        find('.btn-layer-actions.layer-delete').click
+        find(".layer-delete").click
       end
       wait_for { Layer.find(layer.id) }.to be_nil
     end

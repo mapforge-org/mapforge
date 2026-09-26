@@ -74,6 +74,9 @@ msgstr "Beschreibung hinzufügen"
 msgid "Add layer"
 msgstr "Ebene hinzufügen"
 
+msgid "Add new features to this layer"
+msgstr "Neue Elemente zu dieser Ebene hinzufügen"
+
 msgid "Add pictures, customize colors, symbols, labels"
 msgstr "Füge Bilder hinzu, passe Farben, Symbole und Beschriftungen an"
 
@@ -359,9 +362,6 @@ msgstr "Standardansicht beim Öffnen dieser Karte."
 msgid "Delete"
 msgstr "Löschen"
 
-msgid "Delete Layer"
-msgstr "Ebene löschen"
-
 msgid "Delete feature"
 msgstr "Objekt löschen"
 
@@ -437,14 +437,23 @@ msgstr "Karte herunterladen"
 msgid "Drag or add waypoints to reroute"
 msgstr "Wegpunkte ziehen oder hinzufügen, um die Route neu zu berechnen"
 
+msgid "Drag points to reshape"
+msgstr "Stützpunkte ziehen, um die Form zu ändern"
+
+msgid "Drag the line to move it"
+msgstr "Linie ziehen, um sie zu verschieben"
+
 msgid "Drag the point to move it"
 msgstr "Punkt ziehen, um ihn zu verschieben"
 
+msgid "Drag the polygon to move it"
+msgstr "Polygon ziehen, um es zu verschieben"
+
+msgid "Drag the polygon to rotate it"
+msgstr "Polygon ziehen, um es zu drehen"
+
 msgid "Drag to rotate map, click to reset north"
 msgstr "Ziehen zum Drehen der Karte, klicken für Norden"
-
-msgid "Drag vertices to reshape"
-msgstr "Stützpunkte ziehen, um die Form zu ändern"
 
 msgid "Draw freehand (f)"
 msgstr "Freihand zeichnen (f)"
@@ -863,6 +872,9 @@ msgstr "Mehr Karten in der Galerie"
 msgid "Most viewed"
 msgstr "Meistgesehen"
 
+msgid "Move"
+msgstr "Verschieben"
+
 msgid "Muted Graybeard style with an added wintery, snow-covered terrain effect."
 msgstr "Gedeckter Graybeard-Stil mit winterlichem, schneebedecktem Gelände."
 
@@ -877,6 +889,15 @@ msgstr "Benötigt ein Polygon mit vier Ecken"
 
 msgid "Neutral MapTiler style designed as a clean backdrop for data visualization."
 msgstr "Neutraler MapTiler-Stil als klarer Hintergrund für Datenvisualisierungen."
+
+msgid "New features go to layer %{name}"
+msgstr "Neue Elemente kommen in die Ebene %{name}"
+
+msgid "New features go to this layer"
+msgstr "Neue Elemente kommen in diese Ebene"
+
+msgid "New layer"
+msgstr "Neue Ebene"
 
 msgid "Newest"
 msgstr "Neueste"
@@ -1037,20 +1058,26 @@ msgstr "Wiederherstellen: %{type}"
 msgid "Redone: %{type}"
 msgstr "Wiederhergestellt: %{type}"
 
-msgid "Refresh"
-msgstr "Aktualisieren"
-
 msgid "Refresh layer for current view"
 msgstr "Ebene für aktuellen Kartenausschnitt neu laden"
 
+msgid "Rename"
+msgstr "Umbenennen"
+
 msgid "Report issue"
 msgstr "Fehler melden"
+
+msgid "Reshape"
+msgstr "Form ändern"
 
 msgid "Reverse track"
 msgstr "Track umkehren"
 
 msgid "Road Mode: Click on the map to set waypoints, double click to finish"
 msgstr "Straßen-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklick zum Beenden"
+
+msgid "Rotate"
+msgstr "Drehen"
 
 msgid "Route created from GPX"
 msgstr "Route aus GPX erstellt"
@@ -1290,9 +1317,6 @@ msgstr "Position wird verfolgt"
 
 msgid "Tracking with µlogger"
 msgstr "Aufzeichnen mit µlogger"
-
-msgid "Tutorial map"
-msgstr "Tutorial-Karte"
 
 msgid "Tutorials"
 msgstr "Tutorials"

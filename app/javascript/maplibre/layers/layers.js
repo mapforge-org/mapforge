@@ -8,6 +8,7 @@ import { createLayerInstance } from 'maplibre/layers/factory'
 import { map, setLoadedMapUpdatedAt, sortLayers } from 'maplibre/map'
 
 export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLayer, BasemapLayer
+let activeLayerId = null // geojson layer that receives new features, per browser session
 
 // Cached promise to ensure initializeLayers only runs once
 let initializePromise = null
@@ -36,6 +37,7 @@ export function resetInitializationState() {
     layers.forEach(layer => layer.cleanup())
   }
   resetLevels()
+  activeLayerId = null
   initializePromise = null
   layers = null
   setLoadedMapUpdatedAt(null)
@@ -279,11 +281,22 @@ export function upsert (updatedFeature, layerId) {
   }
 }
 
+// Falls back to the first geojson layer when none was picked or the picked one got deleted
+export function activeLayer () {
+  return layers?.find(l => l.type === 'geojson' && l.id === activeLayerId) ||
+    layers?.find(l => l.type === 'geojson')
+}
+
+export function setActiveLayer (id) {
+  activeLayerId = id
+  const name = activeLayer()?.name || window.__('Layer elements')
+  status(window.__('New features go to layer %{name}').replace('%{name}', name))
+}
+
 export function addFeature (feature, layerId) {
   feature.properties.id = feature.id
-  // A remote feature carries its layer id; local edits have none and go to the first geojson layer
-  const layer = layers?.find(l => l.type === 'geojson' && l.id === layerId) ||
-    layers?.find(l => l.type === 'geojson')
+  // A remote feature carries its layer id; local edits have none and go to the active layer
+  const layer = layers?.find(l => l.type === 'geojson' && l.id === layerId) || activeLayer()
   if (!layer) {
     console.error('No geojson layer to add feature ' + feature.id + ' to')
     return

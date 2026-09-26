@@ -9,7 +9,7 @@ import { updateElevation } from 'maplibre/routing/openrouteservice'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { importFile } from 'maplibre/import/kml'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, upsert } from 'maplibre/layers/layers'
+import { activeLayer, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, setActiveLayer, upsert } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/overpass/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName } from 'maplibre/map'
 import { addUndoState } from 'maplibre/undo'
@@ -175,8 +175,7 @@ export default class extends Controller {
 
     uploadImageToFeature(file, feature).then( () => {
       upsert(feature)
-      // redraw first geojson layer
-      renderLayer(layers.find(l => l.type === 'geojson').id)
+      renderLayer(activeLayer().id)
       sendMessage('new_feature', { ...feature })
       status(window.__('Added image'))
       flyToFeature(feature)
@@ -258,6 +257,37 @@ export default class extends Controller {
     initializeLayerStyles(layerId).then(() => { initLayersModal() })
   }
 
+  renameLayer (event) {
+    event.preventDefault()
+    const layerElement = event.target.closest('.layer-item')
+    const layer = layers.find(f => f.id === layerElement.getAttribute('data-layer-id'))
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.classList.add('form-control', 'd-inline-block', 'me-2', 'mapforge-font', 'layer-name-input')
+    input.placeholder = window.__('Layer elements')
+    input.value = layer.name || ''
+    let cancelled = false
+    // the header toggles the layer list on click, and Escape on window closes the modal
+    input.addEventListener('click', e => e.stopPropagation())
+    input.addEventListener('keydown', e => {
+      e.stopPropagation()
+      if (e.key === 'Escape') { cancelled = true }
+      if (e.key === 'Enter' || e.key === 'Escape') { input.blur() }
+    })
+    input.addEventListener('blur', () => {
+      const name = input.value.trim()
+      if (!cancelled && name && name !== layer.name) {
+        addUndoState('Layer updated', { ...layer.toJSON(), geojson: layer.geojson })
+        layer.name = name
+        sendMessage('update_layer', layer.toJSON())
+      }
+      initLayersModal()
+    })
+    layerElement.querySelector('.layer-name').replaceWith(input)
+    input.focus()
+    input.select()
+  }
+
   refreshLayer (event) {
     event.preventDefault()
     const layerId = event.target.closest('.layer-item').getAttribute('data-layer-id')
@@ -306,23 +336,19 @@ export default class extends Controller {
     layer.show = !wasVisible
     setLayerVisibility(layer.sourceId, layer.show)
 
-    // update UI (both desktop and mobile visibility buttons)
-    layerElement.querySelectorAll('button.layer-visibility i, button.layer-visibility-mobile i').forEach(icon => {
-      if (layer.show) {
-        icon.classList.replace('bi-eye-slash', 'bi-eye')
-      } else {
-        icon.classList.replace('bi-eye', 'bi-eye-slash')
-      }
-    })
     const visBtn = layerElement.querySelector('button.layer-visibility')
-    const visBtnMobile = layerElement.querySelector('button.layer-visibility-mobile')
+    const icon = visBtn.querySelector('i')
+    if (layer.show) {
+      icon.classList.replace('bi-eye-slash', 'bi-eye')
+    } else {
+      icon.classList.replace('bi-eye', 'bi-eye-slash')
+    }
     const newText = layer.show ? window.__('Hide layer') : window.__('Show layer')
 
     // Update tooltip title attributes
     visBtn.setAttribute('title', newText)
     visBtn.setAttribute('data-bs-original-title', newText)
     visBtn.setAttribute('aria-label', newText)
-    visBtnMobile.querySelector('.layer-visibility-text').textContent = newText
 
     // Update Bootstrap tooltip content if it exists
     if (typeof bootstrap !== 'undefined' && visBtn) {
@@ -334,10 +360,10 @@ export default class extends Controller {
     // show/hide refresh and edit buttons based on visibility
     const hideAction = layer.show ? 'remove' : 'add'
     if (layer.type === 'overpass' || layer.type === 'wikipedia') {
-      layerElement.querySelectorAll('button.layer-refresh, button.layer-refresh-mobile').forEach(btn => btn.classList[hideAction]('hidden'))
+      layerElement.querySelector('button.layer-refresh').classList[hideAction]('hidden')
     }
     if ((layer.type === 'overpass' || layer.type === 'raster') && window.gon.map_mode === 'rw') {
-      layerElement.querySelectorAll('button.layer-edit, button.layer-edit-mobile').forEach(btn => btn.classList[hideAction]('hidden'))
+      layerElement.querySelector('button.layer-edit').classList[hideAction]('hidden')
     }
     // hide global "Load for this area" button if no visible overpass/wikipedia layers remain
     if (!layer.show) {
@@ -352,10 +378,27 @@ export default class extends Controller {
       layerElement.classList.add('layer-dimmed')
     }
 
-    // when showing: initialize styles (and load data for overpass/wikipedia if needed)
-    if (layer.show) { initializeLayerStyles(layerId) }
+    // when showing: initialize styles (and load data for overpass/wikipedia if needed).
+    // A geojson layer keeps its style layers and data while hidden, so a full rebuild is only
+    // needed when they don't exist yet (hidden at page load, or replaced by setStyle).
+    if (layer.show && (layer.type !== 'geojson' || !layer.getStyleLayerIds().length)) { initializeLayerStyles(layerId) }
     // sync to server only in rw mode
     if (window.gon.map_mode === "rw") { sendMessage('update_layer', layer.toJSON()) }
+  }
+
+  activateLayer (event) {
+    event.preventDefault()
+    event.stopPropagation()
+    const layer = layers.find(l => l.id === event.target.closest('.layer-item').getAttribute('data-layer-id'))
+    setActiveLayer(layer.id)
+    initLayersModal()
+  }
+
+  createGeojsonLayer() {
+    const layerId = this.createLayer({ type: 'geojson', name: window.__('New layer'),
+      geojson: { type: 'FeatureCollection', features: [] } }, { first: true })
+    setActiveLayer(layerId)
+    initLayersModal()
   }
 
   createWikipediaLayer() {
@@ -416,7 +459,8 @@ export default class extends Controller {
   }
 
   // 'layer' is a layer definition: { type, name, query, geojson, heatmap, cluster, show }
-  createLayer(layer) {
+  // first: the layer becomes the first layer of the map, on the server and in the list
+  createLayer(layer, { first = false } = {}) {
     let layerId = functions.featureId()
     // must match server attribute order, for proper comparison in map_channel
     let layerData = { "id": layerId, "type": layer.type, "name": layer.name,
@@ -433,13 +477,14 @@ export default class extends Controller {
     }
     const layerInstance = createLayerInstance(layerData)
     layerInstance.localData = true // renders from memory, see GeoJSONLayer.loadData
-    layers.push(layerInstance)
+    if (first) { layers.unshift(layerInstance) } else { layers.push(layerInstance) }
 
     addUndoState('Layer added', layerData)
     initLayersModal()
     initializeLayerSources(layerId)
     initializeLayerStyles(layerId)
-    sendMessage('new_layer', layerData)
+    // the flag stays out of layerData, which is the undo state and gets compared to server layers
+    sendMessage('new_layer', first ? { ...layerData, first: true } : layerData)
     return layerId
   }
 

@@ -75,7 +75,7 @@ services:
       - ./volumes:/volumes:z
 
   mongo:
-    image: mongo:8.2
+    image: mongo:8.3
     volumes:
       - ./volumes/mongodb:/data/db:z
     depends_on:

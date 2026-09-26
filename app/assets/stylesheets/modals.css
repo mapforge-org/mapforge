@@ -472,8 +472,9 @@ body.map-mode-rw .ro-only {
   font-weight: 600;
 }
 
-/* dim layer name and content when hidden, but not the action buttons/dropdown */
-.layer-dimmed > h5 .link,
+/* dim the whole hidden layer, but not the open menu */
+.layer-dimmed > h5 > :not(.layer-actions-dropdown),
+.layer-dimmed .layer-actions-dropdown > button,
 .layer-dimmed > .layer-content {
   opacity: 0.5;
 }
@@ -493,6 +494,24 @@ body.map-mode-rw .ro-only {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (hover: hover) {
+  .layer-item-header .layer-active:hover {
+    opacity: 1 !important;
+  }
+}
+
+.layer-name-input {
+  width: 12em;
+  max-width: 60%;
+  padding: 0 0.25rem;
+  font: inherit;
+}
+
+.layer-item-header .text-nowrap {
+  display: inline-flex;
+  align-items: center;
 }
 
 .layer-item-header .btn-layer-actions {
@@ -558,6 +577,11 @@ body.map-mode-rw .ro-only {
   min-height: 1.5rem;
 }
 
+/* the name of a geojson layer is a drop target, also when the layer is collapsed */
+.layer-item-header.drop-target {
+  background-color: var(--bs-tertiary-bg);
+}
+
 .layer-feature-item.sortable-chosen {
   background-color: var(--bs-tertiary-bg);
 }
@@ -601,14 +625,6 @@ body.map-mode-rw .ro-only {
 }
 
 /* Media queries at end to ensure they override defaults */
-
-@media (width > 574px) {
-  /* Keep layer action buttons on one line on desktop */
-  .layer-item-header .text-nowrap {
-    display: inline-flex !important;
-    align-items: center;
-  }
-}
 
 @media (width <= 640px), (height < 410px) {
   .modal-pull-button {

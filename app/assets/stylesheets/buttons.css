@@ -122,6 +122,12 @@
   }
 }
 
+/* .form-control:focus paints a white background, which beats .btn-blue after a dropdown closes */
+.btn-blue.form-control:focus:not(:hover, .show) {
+  background-color: var(--color-mid-steel-blue);
+  border-color: var(--color-mid-steel-blue);
+}
+
 /* same blue as .btn-download in the share modal */
 .btn-layer-actions {
   border-radius: 0.3rem;
@@ -131,4 +137,12 @@
   --bs-btn-bg: var(--color-mid-steel-blue);
   --bs-btn-hover-bg: var(--color-mid-blue-slate);
   --bs-btn-active-bg: var(--color-mid-blue-slate);
+}
+
+.btn-layer-menu {
+  --bs-btn-color: var(--color-mid-steel-blue);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--color-mid-steel-blue);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
 }

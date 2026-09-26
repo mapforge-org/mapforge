@@ -1,6 +1,6 @@
 import consumer from 'channels/consumer'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { destroyFeature, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, upsert } from 'maplibre/layers/layers'
+import { destroyFeature, getLayer, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, upsert } from 'maplibre/layers/layers'
 import {
   initializeMaplibreProperties,
   loadedMapUpdatedAt,
@@ -232,6 +232,8 @@ export function sendMessage (event, data) {
   const payload = { ...data }
   payload.map_id = window.gon.map_id
   payload.uuid = connectionUUID
+  // callers add the feature locally first, so its layer is known
+  if (event === 'new_feature') { payload.layer_id ||= getLayer(data.id)?.id }
   // dropping properties.id before sending to server
   if (payload.properties && payload.properties.id) {
     payload.properties = { ...payload.properties }
