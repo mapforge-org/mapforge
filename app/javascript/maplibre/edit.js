@@ -14,7 +14,7 @@ import { featureLabel, highlightFeature } from 'maplibre/feature';
 import { refreshFeatureMeta } from 'maplibre/feature/details';
 import { CLICK_TOLERANCE } from 'maplibre/layers/layer';
 import { addFeature, applyFeatureUpdate, destroyFeature, getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
-import { map, mapProperties, onMapClickAfterLayers } from 'maplibre/map';
+import { map, mapProperties, noValidate, onMapClickAfterLayers } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
 import { getRouteUpdate, updateElevation } from 'maplibre/routing/openrouteservice';
 import { editStyles, initializeEditStyles } from 'maplibre/styles/edit_styles';
@@ -306,7 +306,7 @@ function setExtrusionOpacity (restoring) {
     .forEach(l => {
       const bucket = parseInt(l.id.match(/^polygon-layer-extrusion-(\d+)_/)?.[1], 10)
       const opacity = restoring ? bucket / 10 : 0.5
-      map.setPaintProperty(l.id, 'fill-extrusion-opacity', opacity)
+      map.setPaintProperty(l.id, 'fill-extrusion-opacity', opacity, noValidate)
     })
 }
 

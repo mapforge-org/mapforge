@@ -29,6 +29,16 @@ export function renderDescBanners (features, layer, visible = layer.show !== fal
     .forEach(removeBanner)
 }
 
+// A level switch or a layer toggle changes only the visibility. A full render parses the markdown
+// and rebuilds every popup, which blocked the main thread long enough to drop the websocket.
+export function showDescBanners (layer, visible = layer.show !== false) {
+  banners.forEach((entry, id) => {
+    if (!id.startsWith(prefix(layer))) { return }
+    entry.visible = visible
+    showBanner(entry)
+  })
+}
+
 export function syncDescBanner (feature, layer, visible = layer.show !== false) {
   if (hasDescBanner(feature)) {
     upsertDescBanner(feature, layer, visible)

@@ -1,4 +1,4 @@
-import { map } from 'maplibre/map'
+import { addLayer } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
 
 export const indoorFillColor = [
@@ -24,7 +24,7 @@ export const indoorFillColor = [
  * @param {Array} levelFilter - MapLibre filter expression array for the current level
  */
 export function addIndoorLayers(sourceId, levelFilter) {
-  map.addLayer({
+  addLayer({
     id: `indoor-area-fill_${sourceId}`,
     type: 'fill',
     source: sourceId,
@@ -41,7 +41,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     }
   })
 
-  map.addLayer({
+  addLayer({
     id: `indoor-area-extrusion_${sourceId}`,
     type: 'fill-extrusion',
     source: sourceId,
@@ -60,7 +60,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     }
   })
 
-  map.addLayer({
+  addLayer({
     id: `indoor-area-line_${sourceId}`,
     type: 'line',
     source: sourceId,
@@ -81,7 +81,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     }
   })
 
-  map.addLayer({
+  addLayer({
     id: `indoor-transportation_${sourceId}`,
     type: 'line',
     source: sourceId,
@@ -95,7 +95,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     }
   })
 
-  map.addLayer({
+  addLayer({
     id: `indoor-poi-circle_${sourceId}`,
     type: 'circle',
     source: sourceId,
@@ -139,7 +139,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     }
   })
 
-  map.addLayer({
+  addLayer({
     id: `indoor-poi-icon_${sourceId}`,
     type: 'symbol',
     source: sourceId,
@@ -173,7 +173,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     }
   })
 
-  map.addLayer({
+  addLayer({
     id: `indoor-poi-label_${sourceId}`,
     type: 'symbol',
     source: sourceId,
@@ -195,7 +195,7 @@ export function addIndoorLayers(sourceId, levelFilter) {
     }
   })
 
-  map.addLayer({
+  addLayer({
     id: `indoor-area-name_${sourceId}`,
     type: 'symbol',
     source: sourceId,

@@ -1,5 +1,5 @@
 import { featureOnLevel } from 'maplibre/controls/levels'
-import { map } from 'maplibre/map'
+import { addLayer, map, noValidate } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
 
 // A polygon with 'fill-image-url' is drawn as a MapLibre image source: its corners are pinned
@@ -36,6 +36,14 @@ export function renderImageOverlays (features, layerId, visible = true) {
     .forEach(removeImageOverlay)
 }
 
+// a level switch changes only the visibility, see showDescBanners
+export function showImageOverlays (features, layerId, visible = true) {
+  features.filter(hasImageOverlay).forEach(feature => {
+    const id = layerIdOf(sourcePrefix(layerId) + feature.id)
+    if (map.getLayer(id)) { map.setLayoutProperty(id, 'visibility', visible && featureOnLevel(feature) ? 'visible' : 'none', noValidate) }
+  })
+}
+
 export function syncImageOverlay (feature, layerId, visible = true) {
   if (hasImageOverlay(feature)) {
     upsertImageOverlay(feature, layerId, visible)
@@ -58,7 +66,7 @@ function upsertImageOverlay (feature, layerId, visible) {
     map.addSource(sourceId, { type: 'image', url, coordinates })
     // below the polygon outline of its own layer, sortLayers() keeps it there on a re-sort
     const outlineId = `polygon-layer-outline_geojson-source-${layerId}`
-    map.addLayer({ id: layerIdOf(sourceId), type: 'raster', source: sourceId, paint: { 'raster-fade-duration': 0 } },
+    addLayer({ id: layerIdOf(sourceId), type: 'raster', source: sourceId, paint: { 'raster-fade-duration': 0 } },
       map.getLayer(outlineId) ? outlineId : undefined)
   } else if (source.options.url !== url) {
     source.updateImage({ url, coordinates })
@@ -68,9 +76,9 @@ function upsertImageOverlay (feature, layerId, visible) {
   // The image covers the fill of its polygon (see the beforeId of addLayer above), so the
   // opacity slider, which writes 'fill-opacity', reads as the opacity of the image.
   map.setPaintProperty(layerIdOf(sourceId), 'raster-opacity',
-    Number(feature.properties['fill-opacity'] ?? defaults.extrusionOpacity))
+    Number(feature.properties['fill-opacity'] ?? defaults.extrusionOpacity), noValidate)
   const shown = visible && featureOnLevel(feature)
-  map.setLayoutProperty(layerIdOf(sourceId), 'visibility', shown ? 'visible' : 'none')
+  map.setLayoutProperty(layerIdOf(sourceId), 'visibility', shown ? 'visible' : 'none', noValidate)
 }
 
 function removeImageOverlay (sourceId) {

@@ -1,9 +1,10 @@
 import { draw, select } from 'maplibre/edit'
-import { removeDescBanner, renderDescBanners, syncDescBanner } from 'maplibre/layers/geojson/desc_banners'
+import { removeDescBanner, renderDescBanners, showDescBanners, syncDescBanner } from 'maplibre/layers/geojson/desc_banners'
 import { bufferLoaded, buildLineExtrusion, loadBuffer } from 'maplibre/layers/geojson/extrusion'
 import {
   removeFeatureImageOverlay,
   renderImageOverlays,
+  showImageOverlays,
   syncImageOverlay
 } from 'maplibre/layers/geojson/image_overlays'
 import {
@@ -23,7 +24,7 @@ import {
 import { highlightFeature } from 'maplibre/feature'
 import { Layer, queryFeaturesNear } from 'maplibre/layers/layer'
 import { frontFeature, getFeature, layers } from 'maplibre/layers/layers'
-import { addGeoJSONSource, map, mapProperties, removeGeoJSONSource } from 'maplibre/map'
+import { addGeoJSONSource, map, mapProperties, noValidate, removeGeoJSONSource } from 'maplibre/map'
 import { pruneShapeImages } from 'maplibre/styles/circle_image'
 import { prunePatternImages } from 'maplibre/styles/pattern_image'
 import { clusterStyles, initializeClusterStyles, initializeViewStyles, styles, viewStyleNames } from 'maplibre/styles/styles'
@@ -129,12 +130,12 @@ export class GeoJSONLayer extends Layer {
     initializeExtrasLabelStyles(this.routeExtrasSourceId)
     initializeViewStyles(this.extrusionSourceId)
 
-    map.setFilter(`line-layer_${this.sourceId}`, withLevelFilter(this.mainLineFilter))
+    map.setFilter(`line-layer_${this.sourceId}`, withLevelFilter(this.mainLineFilter), noValidate)
     // Hide the outline layer for route extras - we only want the colored segments visible
-    map.setLayoutProperty(`line-layer-outline_${this.routeExtrasSourceId}`, 'visibility', 'none')
+    map.setLayoutProperty(`line-layer-outline_${this.routeExtrasSourceId}`, 'visibility', 'none', noValidate)
 
     // Override line-cap to 'butt' for route extras line layer to prevent color overlap at segment junctions
-    map.setLayoutProperty(`line-layer_${this.routeExtrasSourceId}`, 'line-cap', 'butt')
+    map.setLayoutProperty(`line-layer_${this.routeExtrasSourceId}`, 'line-cap', 'butt', noValidate)
 
     this.setupEventHandlers()
     // Showing a layer runs initialize() again. The source kept its features while hidden (updates
@@ -159,26 +160,26 @@ export class GeoJSONLayer extends Layer {
         const baseFilter = (styleName === 'line-layer' && sourceId === this.sourceId)
           ? this.mainLineFilter
           : styleDefs[styleName].filter
-        map.setFilter(layerId, withLevelFilter(baseFilter))
+        map.setFilter(layerId, withLevelFilter(baseFilter), noValidate)
       })
 
       const heatmapLayerId = `heatmap-layer_${sourceId}`
       if (map.getLayer(heatmapLayerId)) {
-        map.setFilter(heatmapLayerId, withLevelFilter(styleDefs['heatmap-layer'].filter))
+        map.setFilter(heatmapLayerId, withLevelFilter(styleDefs['heatmap-layer'].filter), noValidate)
       }
     })
 
     if (this.clustered) {
       clusterStyles(null).forEach(style => {
         const layerId = `${style.id}_${this.sourceId}`
-        if (map.getLayer(layerId)) { map.setFilter(layerId, withLevelFilter(style.filter)) }
+        if (map.getLayer(layerId)) { map.setFilter(layerId, withLevelFilter(style.filter), noValidate) }
       })
     }
 
     applyKmMarkerLevelFilter(this.kmMarkerSourceId)
     applyRouteExtrasLevelFilter(this.routeExtrasSourceId)
-    renderImageOverlays(this.layer.geojson?.features || [], this.id, this.show !== false)
-    renderDescBanners(this.layer.geojson?.features || [], this)
+    showImageOverlays(this.layer.geojson?.features || [], this.id, this.show !== false)
+    showDescBanners(this)
   }
 
   // setData(url) lets MapLibre fetch AND parse the features in its web worker (off the main

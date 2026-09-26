@@ -146,6 +146,20 @@ describe "Map GeoJSON levels" do
     end
   end
 
+  context "with a description banner" do
+    let(:banner) { create(:feature, :point_middle, desc: "Upstairs", properties: { "level" => "1", "show-desc" => "banner" }) }
+    let(:map) { create(:map, features: [ feature_level_0, banner ]) }
+
+    it "shows the banner on its level without rebuilding it" do
+      expect(page).to have_css(".desc-banner.hidden", visible: :all)
+      # a rebuild replaces the rendered markdown, and so drops this marker
+      page.execute_script("document.querySelector('.desc-banner .maplibregl-popup-content p').dataset.kept = 'true'")
+
+      find(".level-control button[data-level='1']").click
+      expect(page).to have_css(".desc-banner:not(.hidden) p[data-kept='true']", text: "Upstairs")
+    end
+  end
+
   context "features without level property" do
     let(:map) { create(:map, features: [ feature_level_0, feature_no_level ]) }
 

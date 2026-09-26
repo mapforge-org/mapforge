@@ -2,7 +2,7 @@ import { along } from "@turf/along"
 import { lineString } from "@turf/helpers"
 import { length } from "@turf/length"
 import { withLevelFilter } from 'maplibre/controls/levels'
-import { map, removeStyleLayers } from 'maplibre/map'
+import { addLayer, map, noValidate, removeStyleLayers } from 'maplibre/map'
 import { circleImage, pruneCircleImages } from 'maplibre/styles/circle_image'
 import { defaults } from 'maplibre/styles/defaults'
 import { setSource } from 'maplibre/styles/styles'
@@ -81,7 +81,7 @@ export function initializeKmMarkerStyles (sourceId) {
 
   kmMarkerStyles().forEach(style => {
     style = setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceId)
-    map.addLayer(style)
+    addLayer(style)
   })
 }
 
@@ -90,7 +90,7 @@ export function initializeKmMarkerStyles (sourceId) {
 export function applyLevelFilter (sourceId) {
   kmMarkerStyles().forEach(style => {
     const layerId = `${style.id}_${sourceId}`
-    if (map.getLayer(layerId)) { map.setFilter(layerId, withLevelFilter(style.filter)) }
+    if (map.getLayer(layerId)) { map.setFilter(layerId, withLevelFilter(style.filter), noValidate) }
   })
 }
 

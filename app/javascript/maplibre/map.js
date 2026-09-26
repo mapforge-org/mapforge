@@ -14,7 +14,7 @@ import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsMo
 import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
 import { highlightFeature } from 'maplibre/feature';
-import { refreshDescBanners, renderDescBanners } from 'maplibre/layers/geojson/desc_banners';
+import { refreshDescBanners, showDescBanners } from 'maplibre/layers/geojson/desc_banners';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
 import { basemaps } from 'maplibre/styles/basemaps';
 import { applyBasemapDefaults, defaults } from 'maplibre/styles/defaults';
@@ -44,6 +44,19 @@ export function setLoadedMapUpdatedAt (value) { loadedMapUpdatedAt = value }
 
 // Above this zoom a clustered source shows every point on its own
 export const clusterMaxZoom = 14
+
+// MapLibre validates each setFilter/setLayoutProperty/setPaintProperty call against a serialization
+// of the whole style, so a loop over the style layers costs layers². A level switch on the
+// playground map took 450 ms of that. Pass this where our own code builds the value.
+// Specs keep the validation, they fail on the console error of an invalid style.
+export const noValidate = { validate: functions.isTestEnvironment() }
+
+// map.addLayer() takes no options in MapLibre 6.11, so it always validates. This is its body
+// with noValidate, re-check it when MapLibre is updated.
+export function addLayer (layer, beforeId) {
+  map.style.addLayer(layer, beforeId, noValidate)
+  map._update(true)
+}
 
 let mapInteracted
 // basemap plus the properties that setStyle bakes into the style, see setBackgroundMapLayer
@@ -369,12 +382,12 @@ export function setLayerVisibility(sourceName, visible) {
     style.layers
       .filter(l => sources.some(s => l.source === s || (s.endsWith('-') && l.source?.startsWith(s))))
       .forEach(l => {
-        if (map.getLayer(l.id)) map.setLayoutProperty(l.id, 'visibility', visible ? 'visible' : 'none')
+        if (map.getLayer(l.id)) map.setLayoutProperty(l.id, 'visibility', visible ? 'visible' : 'none', noValidate)
       })
   }
   // description banners are DOM popups, not style layers, see desc_banners.js
   const layer = layers?.find(l => l.sourceId === sourceName)
-  if (layer?.type === 'geojson') { renderDescBanners(layer.geojson?.features || [], layer, visible) }
+  if (layer?.type === 'geojson') { showDescBanners(layer, visible) }
 }
 
 export function removeGeoJSONSource(sourceName) {
@@ -551,9 +564,9 @@ export function updateBuildingOpacity () {
 
   const opacity = layers?.some(l => l.type === 'indoor' && l.levelControl) ? 0.4 : 0.6
   if (map.getLayer('building-3d')) {
-    map.setPaintProperty('building-3d', 'fill-extrusion-opacity', opacity)
+    map.setPaintProperty('building-3d', 'fill-extrusion-opacity', opacity, noValidate)
   } else if (map.getLayer('Building 3D')) {
-    map.setPaintProperty('Building 3D', 'fill-extrusion-opacity', opacity)
+    map.setPaintProperty('Building 3D', 'fill-extrusion-opacity', opacity, noValidate)
   }
 }
 

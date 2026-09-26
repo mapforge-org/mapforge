@@ -3,7 +3,7 @@ import { draw } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { Layer, selectableFeaturesNear } from 'maplibre/layers/layer'
 import { extractTheme, fetchNearestRoute, fetchRouteDetails } from 'maplibre/layers/raster/waymarkedtrails'
-import { addGeoJSONSource, map, removeStyleLayers } from 'maplibre/map'
+import { addGeoJSONSource, addLayer, map, removeStyleLayers } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
 
 export class RasterLayer extends Layer {
@@ -67,7 +67,7 @@ export class RasterLayer extends Layer {
     }
     this.removeEventHandlers()
 
-    map.addLayer({
+    addLayer({
       id: 'raster-layer_' + this.sourceId,
       type: 'raster',
       source: this.sourceId,
@@ -83,7 +83,7 @@ export class RasterLayer extends Layer {
       const geojsonSourceId = this.sourceId + '-features'
 
       // Outline layer (black border) - rendered first (below)
-      map.addLayer({
+      addLayer({
         id: 'line-outline_' + geojsonSourceId,
         type: 'line',
         source: geojsonSourceId,
@@ -105,7 +105,7 @@ export class RasterLayer extends Layer {
       })
 
       // Main line layer (colored route) - rendered on top
-      map.addLayer({
+      addLayer({
         id: 'line_' + geojsonSourceId,
         type: 'line',
         source: geojsonSourceId,
@@ -127,7 +127,7 @@ export class RasterLayer extends Layer {
       })
 
       // osmc:symbol badge along route (mirrors styles.js stroke-image-url layer)
-      map.addLayer({
+      addLayer({
         id: 'line-symbol_' + geojsonSourceId,
         type: 'symbol',
         source: geojsonSourceId,
@@ -142,7 +142,7 @@ export class RasterLayer extends Layer {
       })
 
       // Label layer for route names
-      map.addLayer({
+      addLayer({
         id: 'line-labels_' + geojsonSourceId,
         type: 'symbol',
         source: geojsonSourceId,

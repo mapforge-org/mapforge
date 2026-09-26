@@ -3,7 +3,7 @@ import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { buildLineExtrusion } from 'maplibre/layers/geojson/extrusion'
-import { map } from 'maplibre/map'
+import { addLayer, map, noValidate } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
 
 const labelsBaseFilter = ['all', ['has', 'route-extras-label'], [">=", ["zoom"], 10]]
@@ -352,7 +352,7 @@ export function initializeExtrasLabelStyles (sourceId) {
   const layerId = `route-extras-labels_${sourceId}`
   if (map.getLayer(layerId)) return
 
-  map.addLayer({
+  addLayer({
     id: layerId,
     source: sourceId,
     type: 'symbol',
@@ -381,5 +381,5 @@ export function initializeExtrasLabelStyles (sourceId) {
 // without rebuilding the companion source (see GeoJSONLayer.applyLevelFilter).
 export function applyLevelFilter (sourceId) {
   const layerId = `route-extras-labels_${sourceId}`
-  if (map.getLayer(layerId)) { map.setFilter(layerId, withLevelFilter(labelsBaseFilter)) }
+  if (map.getLayer(layerId)) { map.setFilter(layerId, withLevelFilter(labelsBaseFilter), noValidate) }
 }

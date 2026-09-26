@@ -4,7 +4,7 @@ import { detectLevels, getActiveLevel } from 'maplibre/controls/levels'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { addIndoorLayers, getIndoorLayerIds, indoorFillColor } from 'maplibre/layers/indoor/styles'
 import { Layer } from 'maplibre/layers/layer'
-import { map, removeStyleLayers, updateBuildingOpacity } from 'maplibre/map'
+import { map, noValidate, removeStyleLayers, updateBuildingOpacity } from 'maplibre/map'
 
 export class IndoorLayer extends Layer {
   constructor(layer) {
@@ -162,7 +162,7 @@ export class IndoorLayer extends Layer {
 
     layerIds.forEach(layerId => {
       if (map.getLayer(layerId)) {
-        map.setFilter(layerId, levelFilter)
+        map.setFilter(layerId, levelFilter, noValidate)
       }
     })
 
@@ -178,15 +178,15 @@ export class IndoorLayer extends Layer {
         'case',
         ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
         'gray'
-      ])
-      map.setPaintProperty(fillLayerId, 'fill-opacity', 0.7)
+      ], noValidate)
+      map.setPaintProperty(fillLayerId, 'fill-opacity', 0.7, noValidate)
     } else {
       map.setPaintProperty(fillLayerId, 'fill-color', [
         'case',
         ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
         indoorFillColor
-      ])
-      map.setPaintProperty(fillLayerId, 'fill-opacity', 0.9)
+      ], noValidate)
+      map.setPaintProperty(fillLayerId, 'fill-opacity', 0.9, noValidate)
     }
   }
 

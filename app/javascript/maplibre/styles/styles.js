@@ -1,6 +1,6 @@
 import { symbolUrl } from 'helpers/functions'
 import { withLevelFilter } from 'maplibre/controls/levels'
-import { map, removeStyleLayers } from 'maplibre/map'
+import { addLayer, map, removeStyleLayers } from 'maplibre/map'
 import { markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
 import { defaults } from 'maplibre/styles/defaults'
 import { patternImage } from 'maplibre/styles/pattern_image'
@@ -35,11 +35,11 @@ export function initializeViewStyles (sourceName, heatmap=false) {
   const styleDefs = styles()
   viewStyleNames.forEach(styleName => {
     const style = styleDefs[styleName]
-    map.addLayer(setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceName))
+    addLayer(setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceName))
   })
   if (heatmap) {
     const heatmapStyle = styleDefs['heatmap-layer']
-    map.addLayer(setSource({ ...heatmapStyle, filter: withLevelFilter(heatmapStyle.filter) }, sourceName))
+    addLayer(setSource({ ...heatmapStyle, filter: withLevelFilter(heatmapStyle.filter) }, sourceName))
   }
   // console.log('View styles added for source ' + sourceName)
 }
@@ -50,7 +50,7 @@ const clusterClickSources = new WeakMap()
 
 export function initializeClusterStyles(sourceName, icon, color=null) {
   clusterStyles(icon, color).forEach(style => {
-    map.addLayer(setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceName))
+    addLayer(setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceName))
   })
 
   if (!clusterClickSources.has(map)) { clusterClickSources.set(map, new Set()) }

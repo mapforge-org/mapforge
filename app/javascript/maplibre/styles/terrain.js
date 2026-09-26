@@ -1,6 +1,6 @@
 import { status } from 'helpers/status';
 import * as maplibregl from 'maplibre-gl';
-import { map } from 'maplibre/map';
+import { addLayer, map } from 'maplibre/map';
 import { demSource, elevationSource } from 'maplibre/styles/basemaps';
 import { defaults } from 'maplibre/styles/defaults';
 
@@ -26,7 +26,7 @@ function addTerrain () {
 
 function addHillshade () {
   map.addSource('map-hillshade', elevationSource)
-  map.addLayer({
+  addLayer({
     id: 'hills',
     type: 'hillshade',
     source: 'map-hillshade',
@@ -63,7 +63,7 @@ function addContours () {
     ],
     maxzoom: 16,
   })
-  map.addLayer({
+  addLayer({
     id: "contours",
     type: "line",
     source: "map-contours",
@@ -76,7 +76,7 @@ function addContours () {
       "line-join": "round",
     },
   })
-  map.addLayer({
+  addLayer({
     id: "contour-text",
     type: "symbol",
     source: "map-contours",
