@@ -3,7 +3,7 @@ import { status } from 'helpers/status'
 import { select, selectedRoute } from 'maplibre/edit'
 import { getFeatureTypeName } from 'maplibre/feature'
 import { showFeatureDetails } from 'maplibre/feature/details'
-import { addFeature, destroyFeature, getFeature, layers, renderLayers } from 'maplibre/layers/layers'
+import { addFeature, destroyFeature, getFeature, getLayer, layers, renderLayers } from 'maplibre/layers/layers'
 import { removeGeoJSONSource, setLayerVisibility } from 'maplibre/map'
 import { resetDirections } from 'maplibre/routing/directions'
 import { initLayersModal } from 'maplibre/controls/shared'
@@ -31,9 +31,10 @@ export function clearUndoHistory() {
   }
 }
 
-export function addUndoState(type, state, clearRedo = true) {
+// meta holds entry data that is not part of the state, e.g. the placement of a removed layer
+export function addUndoState(type, state, clearRedo = true, meta = {}) {
   // Deep clone to avoid mutation
-  undoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
+  undoStack.push({ ...meta, type: type, state: JSON.parse(JSON.stringify(state)) })
   // console.log('Updated undo stack', undoStack)
   showUndoButton()
   if (clearRedo) {
@@ -43,9 +44,9 @@ export function addUndoState(type, state, clearRedo = true) {
   updateTooltips()
 }
 
-function addRedoState(type, state) {
+function addRedoState(type, state, meta = {}) {
   // Deep clone to avoid mutation
-  redoStack.push({ type: type, state: JSON.parse(JSON.stringify(state)) })
+  redoStack.push({ ...meta, type: type, state: JSON.parse(JSON.stringify(state)) })
   console.log('Updated redo stack', redoStack)
   showRedoButton()
   updateTooltips()
@@ -102,7 +103,7 @@ export function undo() {
   // console.log('Undo state: ' + JSON.stringify(prevState))
   const handler = undoHandlers[prevState.type]
   if (!handler) { console.warn('Cannot undo ', prevState); return }
-  handler(prevState)
+  if (handler(prevState) === false) { undoStack.push(prevState); return }
   status(window.__('Undone: %{type}').replace('%{type}', typeLabel(prevState)))
   renderLayers('geojson', true)
   keepSelection()
@@ -117,7 +118,7 @@ export function redo() {
   // console.log('Next state: ' + JSON.stringify(nextState))
   const handler = redoHandlers[nextState.type]
   if (!handler) { console.warn('Cannot redo ', nextState); return }
-  handler(nextState)
+  if (handler(nextState) === false) { redoStack.push(nextState); return }
   status(window.__('Redone: %{type}').replace('%{type}', typeLabel(nextState)))
   renderLayers('geojson', true)
   keepSelection()
@@ -157,11 +158,16 @@ function redoFeatureUpdate(nextState) {
   }
 }
 
+// A feature that comes back goes to its old layer, not to the active one
+export function featurePlacement(featureId) {
+  return { layerId: getLayer(featureId, 'geojson')?.id }
+}
+
 function undoFeatureDelete(prevState) {
   let feature = getFeature(prevState.state.id, 'geojson')
   if (!feature) {
     addRedoState(prevState.type, prevState.state)
-    addFeature(prevState.state)
+    addFeature(prevState.state, prevState.layerId)
     sendMessage('new_feature', prevState.state)
   } else {
     console.warn('Feature with id ' + prevState.state.id + ' still present in layer geojson')
@@ -171,7 +177,7 @@ function undoFeatureDelete(prevState) {
 function redoFeatureDelete(nextState) {
   let feature = getFeature(nextState.state.id, 'geojson')
   if (feature) {
-    addUndoState(nextState.type, feature, false)
+    addUndoState(nextState.type, feature, false, featurePlacement(feature.id))
     destroyFeature(nextState.state.id)
     sendMessage('delete_feature', { id: nextState.state.id })
   } else {
@@ -182,7 +188,7 @@ function redoFeatureDelete(nextState) {
 function undoFeatureAdded(prevState) {
   let feature = getFeature(prevState.state.id, 'geojson')
   if (feature) {
-    addRedoState(prevState.type, feature, false)
+    addRedoState(prevState.type, feature, featurePlacement(feature.id))
     destroyFeature(prevState.state.id)
     sendMessage('delete_feature', { id: prevState.state.id })
   } else {
@@ -194,7 +200,7 @@ function redoFeatureAdded(nextState) {
   let feature = getFeature(nextState.state.id, 'geojson')
   if (!feature) {
     addUndoState(nextState.type, nextState.state, false)
-    addFeature(nextState.state)
+    addFeature(nextState.state, nextState.layerId)
     sendMessage('new_feature', nextState.state)
   } else {
     console.warn('Feature with id ' + nextState.state.id + ' still present in layer geojson')
@@ -204,7 +210,7 @@ function redoFeatureAdded(nextState) {
 function undoTrackAdded(prevState) {
   let feature = getFeature(prevState.state.id, 'geojson')
   if (feature) {
-    addRedoState(prevState.type, feature, false)
+    addRedoState(prevState.type, feature, featurePlacement(feature.id))
     destroyFeature(prevState.state.id)
     resetDirections()
     sendMessage('delete_feature', { id: prevState.state.id })
@@ -221,11 +227,41 @@ function getFullLayerData(layer) {
   }
 }
 
+// The state of a 'Layer updated' entry. Features and their order change without an undo entry,
+// so an undo that restored them would drop later moves and additions.
+export function layerSettings(layer) {
+  const { feature_order: _featureOrder, ...settings } = layer.toJSON()
+  return settings
+}
+
+// The server can only place a new layer first or last, so that is all a removed layer remembers
+export function layerPlacement(layer) {
+  return { first: layers.indexOf(layer) === 0 }
+}
+
+// The server refuses to delete it, because new features need a geojson layer
+function isLastGeojsonLayer(layer) {
+  if (layer.type !== 'geojson' || layers.filter(l => l.type === 'geojson').length > 1) { return false }
+  status(window.__('Cannot delete the last layer'), 'warning')
+  return true
+}
+
+function restoreLayer(entry) {
+  const newLayer = createLayerInstance(entry.state)
+  newLayer.localData = true // renders from memory, see GeoJSONLayer.loadData
+  if (entry.first) { layers.unshift(newLayer) } else { layers.push(newLayer) }
+  initLayersModal()
+  initializeLayerSources(newLayer.id)
+  initializeLayerStyles(newLayer.id)
+  sendMessage('new_layer', entry.first ? { ...entry.state, first: true } : entry.state)
+}
+
 // Layer operations
 function undoLayerAdded(prevState) {
   const layer = layers.find(l => l.id === prevState.state.id)
   if (layer) {
-    addRedoState(prevState.type, getFullLayerData(layer))
+    if (isLastGeojsonLayer(layer)) { return false }
+    addRedoState(prevState.type, getFullLayerData(layer), layerPlacement(layer))
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)
@@ -240,13 +276,7 @@ function redoLayerAdded(nextState) {
   const layer = layers.find(l => l.id === nextState.state.id)
   if (!layer) {
     addUndoState(nextState.type, nextState.state, false)
-    const newLayer = createLayerInstance(nextState.state)
-    newLayer.localData = true // renders from memory, see GeoJSONLayer.loadData
-    layers.push(newLayer)
-    initLayersModal()
-    initializeLayerSources(newLayer.id)
-    initializeLayerStyles(newLayer.id)
-    sendMessage('new_layer', nextState.state)
+    restoreLayer(nextState)
   } else {
     console.warn('Layer with id ' + nextState.state.id + ' already exists')
   }
@@ -256,13 +286,7 @@ function undoLayerDeleted(prevState) {
   const layer = layers.find(l => l.id === prevState.state.id)
   if (!layer) {
     addRedoState(prevState.type, prevState.state)
-    const newLayer = createLayerInstance(prevState.state)
-    newLayer.localData = true // renders from memory, see GeoJSONLayer.loadData
-    layers.push(newLayer)
-    initLayersModal()
-    initializeLayerSources(newLayer.id)
-    initializeLayerStyles(newLayer.id)
-    sendMessage('new_layer', prevState.state)
+    restoreLayer(prevState)
   } else {
     console.warn('Layer with id ' + prevState.state.id + ' still exists')
   }
@@ -271,7 +295,8 @@ function undoLayerDeleted(prevState) {
 function redoLayerDeleted(nextState) {
   const layer = layers.find(l => l.id === nextState.state.id)
   if (layer) {
-    addUndoState(nextState.type, getFullLayerData(layer), false)
+    if (isLastGeojsonLayer(layer)) { return false }
+    addUndoState(nextState.type, getFullLayerData(layer), false, layerPlacement(layer))
     layer.cleanup()
     layers.splice(layers.indexOf(layer), 1)
     removeGeoJSONSource(layer.sourceId)
@@ -285,7 +310,7 @@ function redoLayerDeleted(nextState) {
 function undoLayerUpdated(prevState) {
   const layer = layers.find(l => l.id === prevState.state.id)
   if (layer) {
-    addRedoState(prevState.type, getFullLayerData(layer))
+    addRedoState(prevState.type, layerSettings(layer))
     // Update layer properties using the layer's update method
     layer.update(prevState.state)
     setLayerVisibility(layer.sourceId, layer.show)
@@ -299,7 +324,7 @@ function undoLayerUpdated(prevState) {
 function redoLayerUpdated(nextState) {
   const layer = layers.find(l => l.id === nextState.state.id)
   if (layer) {
-    addUndoState(nextState.type, getFullLayerData(layer), false)
+    addUndoState(nextState.type, layerSettings(layer), false)
     // Update layer properties using the layer's update method
     layer.update(nextState.state)
     setLayerVisibility(layer.sourceId, layer.show)

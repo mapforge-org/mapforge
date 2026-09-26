@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Map" do
+describe "Map settings" do
   subject(:map) { create(:map, name: "Settings Test", center: nil, zoom: nil) }
 
   context "in rw mode" do
@@ -8,11 +8,6 @@ describe "Map" do
       stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
       visit map.private_map_path
       expect_map_loaded
-    end
-
-    it "shows map settings button" do
-      expect(page).to have_css("#maplibre-map")
-      expect(page).to have_css(".maplibregl-ctrl-map")
     end
 
     context "when using map settings modal" do
@@ -121,11 +116,6 @@ describe "Map" do
       stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
       visit map.public_map_path
       expect_map_loaded
-    end
-
-    it "shows map settings button" do
-      expect(page).to have_css("#maplibre-map")
-      expect(page).to have_css(".maplibregl-ctrl-map")
     end
 
     context "when using map settings modal" do

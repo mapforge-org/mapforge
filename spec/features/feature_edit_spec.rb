@@ -4,12 +4,6 @@ describe "Feature edit" do
   include_context "with an editable map and an elevation stub"
 
   context "with empty map" do
-    it "shows feature edit buttons" do
-      expect(page).to have_css(".mapbox-gl-draw_line")
-      expect(page).to have_css(".mapbox-gl-draw_polygon")
-      expect(page).to have_css(".mapbox-gl-draw_point")
-    end
-
     context "when adding features" do
       it "adding a point to the map" do
         find(".mapbox-gl-draw_point").click

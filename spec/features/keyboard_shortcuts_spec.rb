@@ -9,7 +9,7 @@ describe "Keyboard Shortcuts" do
     let(:map) { create(:map, features: [ point ]) }
 
     before do
-      allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
+      sign_in(user)
       visit map.private_map_path
       expect_map_loaded
     end

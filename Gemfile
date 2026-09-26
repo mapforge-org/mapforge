@@ -103,7 +103,6 @@ group :test do
   gem "rspec"
   gem "rspec-rails"
   gem "rspec-wait"
-  gem "selenium-webdriver"
   gem "simplecov"
   gem "database_cleaner-mongoid"
   gem "mongoid-rspec"

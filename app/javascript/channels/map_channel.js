@@ -1,6 +1,7 @@
 import consumer from 'channels/consumer'
+import { initLayersModal } from 'maplibre/controls/shared'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { destroyFeature, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, upsert } from 'maplibre/layers/layers'
+import { destroyFeature, getLayer, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, upsert } from 'maplibre/layers/layers'
 import {
   initializeMaplibreProperties,
   loadedMapUpdatedAt,
@@ -143,6 +144,7 @@ export function initializeSocket () {
           break
         case 'update_feature':
           upsert(data.feature, data.layer_id)
+          initLayersModal()
           break
         case 'fly_to': {
           // maplibre reads 'pitch' in options, so an undefined key would give it NaN
@@ -154,6 +156,7 @@ export function initializeSocket () {
         }
         case 'delete_feature':
           destroyFeature(data.feature.id)
+          initLayersModal()
           break
         case 'update_map':
           window.gon.map_properties = data.map
@@ -174,14 +177,14 @@ export function initializeSocket () {
               console.log('Layer updated on server, reloading layer styles', data.layer)
               layers[index].update(data.layer)
               layers[index].applyFeatureOrder(data.layer.feature_order)
-              initializeLayerStyles(data.layer.id)
+              initializeLayerStyles(data.layer.id).then(() => { initLayersModal() })
               setLayerVisibility(layers[index].sourceId, data.layer.show !== false)
             }
           } else {
             const newLayer = createLayerInstance(data.layer)
             layers.push(newLayer)
             initializeLayerSources(data.layer.id)
-            initializeLayerStyles(data.layer.id)
+            initializeLayerStyles(data.layer.id).then(() => { initLayersModal() })
           }
           break
         case 'delete_layer':
@@ -191,6 +194,7 @@ export function initializeSocket () {
             layers.splice(delIndex, 1)
             // trigger a full map redraw
             setBackgroundMapLayer(mapProperties.base_map, true)
+            initLayersModal()
           }
           break
         case 'mouse':
@@ -232,6 +236,8 @@ export function sendMessage (event, data) {
   const payload = { ...data }
   payload.map_id = window.gon.map_id
   payload.uuid = connectionUUID
+  // callers add the feature locally first, so its layer is known
+  if (event === 'new_feature') { payload.layer_id ||= getLayer(data.id, 'geojson')?.id }
   // dropping properties.id before sending to server
   if (payload.properties && payload.properties.id) {
     payload.properties = { ...payload.properties }

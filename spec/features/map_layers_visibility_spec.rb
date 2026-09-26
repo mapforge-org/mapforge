@@ -4,7 +4,11 @@ describe "Map layers, visibility and order" do
   include_context "with an editable map and an overpass stub"
 
   context "overpass comment styling" do
-    subject(:map) { create(:map, name: "Styling test", center: [ 11.077, 49.447 ], zoom: 15) }
+    subject(:map) do
+      create(:map, name: "Styling test", center: [ 11.077, 49.447 ], zoom: 15).tap { |m| m.layers << layer }
+    end
+
+    let(:overpass_fixture) { "overpass_line_polygon.json" }
 
     let(:layer) do
       create(:layer, :overpass, name: "styled", query: <<~QUERY)
@@ -18,18 +22,6 @@ describe "Map layers, visibility and order" do
     end
 
     before do
-      CapybaraMock.clear_stubs
-      overpass_file = File.read(Rails.root.join("spec", "fixtures", "files", "overpass_line_polygon.json"))
-      CapybaraMock.stub_request(
-        :post, "https://overpass-api.de/api/interpreter"
-      ).to_return(
-        headers: { "Access-Control-Allow-Origin" => "*" },
-        status: 200,
-        body: overpass_file
-      )
-      map.layers << layer
-      visit map.private_map_path
-      expect_map_loaded
       expect_overpass_loaded
     end
 
@@ -88,11 +80,10 @@ describe "Map layers, visibility and order" do
     end
   end
 
-  context "layer visibility mobile dropdown", :phone do
+  context "layer visibility on phone", :phone do
     it "toggles layer visibility from show to hidden" do
       layer_id = map.layers.first.id
 
-      # When only visibility toggle is available, it shows inline instead of dropdown
       find(".maplibregl-ctrl-layers").click
       expect(page).to have_css("button.layer-visibility i.bi-eye")
       find("button.layer-visibility").click
@@ -118,11 +109,10 @@ describe "Map layers, visibility and order" do
   end
 
   context "layer visibility in readonly mode" do
-    it "does not sync visibility change to server" do
-      map.layers.first.update!(show: false)
-      visit map.public_map_path
-      expect_map_loaded
+    let(:map) { create(:map, name: "Layers test").tap { |m| m.layers.first.update!(show: false) } }
+    let(:map_path) { map.public_map_path }
 
+    it "does not sync visibility change to server" do
       find(".maplibregl-ctrl-layers").click
       expect(page).to have_css("button.layer-visibility i.bi-eye-slash")
       find("button.layer-visibility").click
@@ -156,14 +146,12 @@ describe "Map layers, visibility and order" do
   end
 
   context "overpass layer visibility" do
+    let(:map) { create(:map, name: "Layers test").tap { |m| m.layers << layer } }
+    let(:layer) { create(:layer, :overpass, name: "opass") }
+
     before do
-      map.layers << layer
-      visit map.private_map_path
-      expect_map_loaded
       expect_overpass_loaded
     end
-
-    let(:layer) { create(:layer, :overpass, name: "opass") }
 
     it "toggles overpass layer visibility via websocket" do
       layer.update!(show: false)
@@ -184,17 +172,9 @@ describe "Map layers, visibility and order" do
   end
 
   context "wikipedia layer" do
+    # the layer requests the articles only once it is added, so the stub can follow the visit
     before do
-      wikipedia_file = File.read(Rails.root.join("spec", "fixtures", "files", "wikipedia.json"))
-      CapybaraMock.stub_request(
-        :get, /de\.wikipedia\.org\/w\/api\.php/
-      ).to_return(
-        headers: { "Access-Control-Allow-Origin" => "*" },
-        status: 200,
-        body: wikipedia_file
-      )
-      visit map.private_map_path
-      expect_map_loaded
+      stub_fixture(:get, /de\.wikipedia\.org\/w\/api\.php/, "wikipedia.json")
     end
 
     it "can add wikipedia layer" do
@@ -208,14 +188,15 @@ describe "Map layers, visibility and order" do
   end
 
   context "basemap change preserves layers" do
-    before do
-      stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
-      feature
-      visit map.private_map_path
-      expect_map_loaded
+    let(:map) do
+      create(:map, name: "Layers test").tap do |m|
+        create(:feature, :point, title: "Basemap Test Feature", layer: m.layers.first)
+      end
     end
 
-    let(:feature) { create(:feature, :point, title: "Basemap Test Feature", layer: map.layers.first) }
+    before do
+      stub_const("Map::BASE_MAPS", [ "test", "test2" ] + Map::BASE_MAPS)
+    end
 
     it "features remain visible after basemap change" do
       layer_id = map.layers.first.id
@@ -229,21 +210,17 @@ describe "Map layers, visibility and order" do
 
   context "copy to my layer context menu" do
     # center matches the feature in spec/fixtures/files/overpass.json
-    subject(:map) { create(:map, name: 'Copy test', center: [ 12.3651437, 44.9165141 ], zoom: 15) }
+    subject(:map) do
+      create(:map, name: "Copy test", center: [ 12.3651437, 44.9165141 ], zoom: 15).tap { |m| m.layers << layer }
+    end
 
     let(:layer) { create(:layer, :overpass, name: "opass") }
 
     before do
-      map.layers << layer
+      expect_overpass_loaded
     end
 
     context "in read-write mode" do
-      before do
-        visit map.private_map_path
-        expect_map_loaded
-        expect_overpass_loaded
-      end
-
       it "successfully copies overpass feature to user's geojson layer" do
         expect(Feature.count).to eq(0)
 
@@ -266,11 +243,7 @@ describe "Map layers, visibility and order" do
     end
 
     context "in read-only mode" do
-      before do
-        visit map.public_map_path
-        expect_map_loaded
-        expect_overpass_loaded
-      end
+      let(:map_path) { map.public_map_path }
 
       it "does not show copy to my layer option on overpass feature right-click" do
         center = center_of_screen
@@ -283,12 +256,8 @@ describe "Map layers, visibility and order" do
   # MapLibre drops features only when a new load succeeds, so a failed reload leaves them
   # on the map. The list must show the same.
   context "when the layer reload fails after a reconnect" do
-    let(:feature) { create(:feature, :point, title: "Kept Feature", layer: map.layers.first) }
-
-    before do
-      feature
-      visit map.private_map_path
-      expect_map_loaded
+    let(:map) do
+      create(:map, name: "Layers test").tap { |m| create(:feature, :point, title: "Kept Feature", layer: m.layers.first) }
     end
 
     it "keeps the features in the layer list", :skip_console_errors do
@@ -307,14 +276,19 @@ describe "Map layers, visibility and order" do
   end
 
   context "reordering features" do
-    let!(:f1) { create(:feature, :point, title: "Reorder A", layer: map.layers.first) }
-    let!(:f2) { create(:feature, :point_middle, title: "Reorder B", layer: map.layers.first) }
-    let!(:f3) { create(:feature, :polygon_middle, title: "Reorder C", layer: map.layers.first) }
+    # the features exist before the visit, so they render server side in created_at order
+    let(:map) do
+      create(:map, name: "Layers test").tap do |m|
+        create(:feature, :point, title: "Reorder A", layer: m.layers.first)
+        create(:feature, :point_middle, title: "Reorder B", layer: m.layers.first)
+        create(:feature, :polygon_middle, title: "Reorder C", layer: m.layers.first)
+      end
+    end
+    let(:f1) { Feature.find_by("properties.title" => "Reorder A") }
+    let(:f2) { Feature.find_by("properties.title" => "Reorder B") }
+    let(:f3) { Feature.find_by("properties.title" => "Reorder C") }
 
-    # reload after features exist so they render server-side in created_at order
     before do
-      visit map.private_map_path
-      expect_map_loaded
       find(".maplibregl-ctrl-layers").click
       expect(page).to have_css("li[data-feature-id='#{f1.id}'] .feature-drag-handle")
     end
@@ -339,16 +313,30 @@ describe "Map layers, visibility and order" do
       # dragging must not select a feature or open its details
       expect(page).not_to have_css("#feature-details-modal.show")
     end
+
+    it "drags a feature by its name and still flies to it on click" do
+      drag_element("li[data-feature-id='#{f1.id}'] .feature-name", "li[data-feature-id='#{f3.id}']")
+
+      expect(feature_ids.first).to eq f1.id.to_s
+      wait_for { map.layers.first.reload.feature_order.last }.to eq f1.id.to_s
+
+      find("li[data-feature-id='#{f2.id}'] .feature-name").click
+      expect(page).to have_css("#feature-details-modal.show")
+    end
   end
 
   context "moving features across layers" do
-    let!(:feature) { create(:feature, :point, title: "Mover", layer: map.layers.first) }
-    let!(:target) { create(:layer, map: map, name: "Target layer") }
-    let!(:resident) { create(:feature, :point_middle, title: "Resident", layer: target) }
+    let(:map) do
+      create(:map, name: "Layers test").tap do |m|
+        create(:feature, :point, title: "Mover", layer: m.layers.first)
+        create(:feature, :point_middle, title: "Resident", layer: create(:layer, map: m, name: "Target layer"))
+      end
+    end
+    let(:feature) { Feature.find_by("properties.title" => "Mover") }
+    let(:target) { map.layers.find_by(name: "Target layer") }
+    let(:resident) { Feature.find_by("properties.title" => "Resident") }
 
     before do
-      visit map.private_map_path
-      expect_map_loaded
       find(".maplibregl-ctrl-layers").click
       find("#layer-list-#{target.id} .layer-name").click
       find("#layer-list-#{map.layers.first.id} .layer-name").click
@@ -363,6 +351,38 @@ describe "Map layers, visibility and order" do
       expect(page).to have_css("#layer-list-#{target.id} .layer-feature-count", text: "(2)")
       wait_for { feature.reload.layer }.to eq target
       wait_for { target.reload.feature_order }.to include(feature.id.to_s)
+      expect(page).to have_css("#layers-modal.show")
+    end
+
+    it "drops a feature onto the name of a collapsed layer" do
+      find("#layer-list-#{target.id} .layer-name").click
+      expect(page).to have_no_css("#layer-list-#{target.id} li[data-feature-id='#{resident.id}']", visible: true)
+
+      drag_element("li[data-feature-id='#{feature.id}'] .feature-drag-handle",
+        "#layer-list-#{target.id} .layer-name")
+
+      expect(page).to have_css("#layer-list-#{target.id} .layer-feature-count", text: "(2)")
+      wait_for { feature.reload.layer }.to eq target
+      wait_for { target.reload.feature_order.last }.to eq feature.id.to_s
+      expect(page).to have_css("#layers-modal.show")
+    end
+
+    it "highlights the layer name under a feature dragged by its name" do
+      center = ->(selector) {
+        page.evaluate_script("(() => { const r = document.querySelector(#{selector.to_json}).getBoundingClientRect();
+          return [r.x + r.width / 2, r.y + r.height / 2] })()")
+      }
+      from = center.call("li[data-feature-id='#{feature.id}'] .feature-name")
+      to = center.call("#layer-list-#{target.id} .layer-name")
+      mouse = page.driver.browser.mouse
+      mouse.move(x: from[0], y: from[1])
+      mouse.down
+      mouse.move(x: to[0], y: to[1], steps: 12)
+
+      expect(page).to have_css("#layer-list-#{target.id} .layer-item-header.drop-target")
+      mouse.up
+      expect(page).to have_no_css(".drop-target")
+      wait_for { feature.reload.layer }.to eq target
     end
   end
 end

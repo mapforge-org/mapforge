@@ -1,23 +1,9 @@
 require "rails_helper"
 
 describe "Map Undo/Redo" do
-  let(:user) { create(:user) }
+  include_context "with an editable map and an overpass stub"
+
   let(:map) { create(:map, name: "Undo test") }
-
-  before do
-    overpass_file = File.read(Rails.root.join("spec", "fixtures", "files", "overpass.json"))
-    CapybaraMock.stub_request(
-      :post, "https://overpass-api.de/api/interpreter"
-    ).to_return(
-      headers: { "Access-Control-Allow-Origin" => "*" },
-      status: 200,
-      body: overpass_file
-    )
-
-    allow_any_instance_of(ApplicationController).to receive(:session).and_return({ user_id: user.id })
-    visit map.private_map_path
-    expect_map_loaded
-  end
 
   it "can undo adding a point via undo button" do
     find(".mapbox-gl-draw_point").click
@@ -44,6 +30,29 @@ describe "Map Undo/Redo" do
     expect(page).to have_css("button.maplibregl-ctrl-redo.hidden", visible: :all)
 
     wait_for { Feature.count }.to eq(1)
+  end
+
+  context "with a feature and a second, active layer" do
+    let!(:polygon) { create(:feature, :polygon_middle, title: "Poly Title") }
+    let(:map) { create(:map, features: [ polygon ]).tap { |m| create(:layer, map: m, name: "Second") } }
+
+    it "restores a deleted feature to its own layer" do
+      own_layer = polygon.reload.layer
+      find(".maplibregl-ctrl-layers").click
+      find("#layer-list-#{map.layers.find_by(name: 'Second').id} button.layer-active").click
+      expect(page).to have_text("New features go to layer Second")
+      find(".maplibregl-ctrl-layers").click
+
+      click_coord("#maplibre-map", 512, 430)
+      accept_alert do
+        find("#edit-button-advanced").click
+        find("#edit-button-trash").click
+      end
+      wait_for { Feature.count }.to eq(0)
+
+      find("button.maplibregl-ctrl-undo").click
+      wait_for { Feature.find_by(id: polygon.id)&.layer }.to eq(own_layer)
+    end
   end
 
   it "shows undo button after a change and hides it after undoing" do
@@ -111,29 +120,44 @@ describe "Map Undo/Redo" do
       expect(page).to have_text("🍻 Breweries")
     end
 
-    it "can undo deleting a layer" do
-      # Create a layer first
-      layer = create(:layer, name: "Test Layer", map: map)
-      visit map.private_map_path
-      expect_map_loaded
-
-      # Open layers modal and verify layer exists
+    it "keeps a new layer first after undo and redo" do
+      initial_layer_count = map.layers.count
       find(".maplibregl-ctrl-layers").click
-      expect(page).to have_text("Test Layer")
+      click_button "Add layer"
+      within("#query-dropdown") { find("button.dropdown-item", text: "New layer").trigger("click") }
+      wait_for { map.reload.layers.first.name }.to eq("New layer")
 
-      # Delete the layer
-      accept_alert do
-        find('.btn-layer-actions.layer-delete').click
-      end
-      wait_for { Layer.find_by(id: layer.id) }.to be_nil
-
-      # Undo the deletion
       find("button.maplibregl-ctrl-undo").click
-      expect(page).to have_text("Undo")
+      wait_for { map.reload.layers.count }.to eq(initial_layer_count)
+      find("button.maplibregl-ctrl-redo").click
+      wait_for { map.reload.layers.count }.to eq(initial_layer_count + 1)
+      expect(map.reload.layers.first.name).to eq("New layer")
+    end
 
-      # Layer should be restored
-      wait_for { map.reload.layers.find_by(name: "Test Layer") }.not_to be_nil
-      expect(page).to have_text("Test Layer")
+    context "with a second layer" do
+      let(:map) { create(:map, name: "Undo test").tap { |m| create(:layer, name: "Test Layer", map: m) } }
+      let(:layer) { map.layers.find_by(name: "Test Layer") }
+
+      it "can undo deleting a layer" do
+        # Open layers modal and verify layer exists
+        find(".maplibregl-ctrl-layers").click
+        expect(page).to have_text("Test Layer")
+
+        # Delete the layer
+        open_layer_menu(layer.id)
+        accept_alert do
+          find("#layer-list-#{layer.id} .layer-delete").click
+        end
+        wait_for { Layer.find_by(id: layer.id) }.to be_nil
+
+        # Undo the deletion
+        find("button.maplibregl-ctrl-undo").click
+        expect(page).to have_text("Undo")
+
+        # Layer should be restored
+        wait_for { map.reload.layers.find_by(name: "Test Layer") }.not_to be_nil
+        expect(page).to have_text("Test Layer")
+      end
     end
   end
 end

@@ -4,20 +4,18 @@ describe "Feature directions" do
   let(:map) { create(:map, name: "Feature directions test") }
 
   before do
-    ors_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_foot.json"))
-    CapybaraMock.stub_request(
-      :post, /api\.heigit\.org\/openrouteservice\/v2\/directions\/foot-hiking/
-    ).to_return(
-      headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
-      status: 200,
-      body: ors_file
-    )
-
-    visit map.private_map_path
-    expect_map_loaded
+    stub_fixture(:post, /api\.heigit\.org\/openrouteservice\/v2\/directions\/foot-hiking/, "ors_foot.json")
+    stub_fixture(:post, /api\.heigit\.org\/openrouteservice\/v2\/snap\/foot-hiking/, "ors_snap.json")
+    # the elevation api has its own domain, because of CORS
+    stub_fixture(:post, /api\.openrouteservice\.org\/elevation\/line/, "ors_elevation.json")
   end
 
   context "with empty map" do
+    before do
+      visit map.private_map_path
+      expect_map_loaded
+    end
+
     it "can create foot track" do
       find(".mapbox-gl-draw_line").click
       find(".mapbox-gl-draw_foot").click
@@ -64,36 +62,6 @@ describe "Feature directions" do
     let(:map) { create(:map, features: [ gpx_feature ], center: [ 11.048, 49.472 ], zoom: 13) }
 
     before do
-      # Mock ORS Snap API
-      snap_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_snap.json"))
-      CapybaraMock.stub_request(
-        :post, /api\.heigit\.org\/openrouteservice\/v2\/snap\/foot-hiking/
-      ).to_return(
-        headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
-        status: 200,
-        body: snap_file
-      )
-
-      # Mock ORS Directions API (reuse existing fixture)
-      ors_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_foot.json"))
-      CapybaraMock.stub_request(
-        :post, /api\.heigit\.org\/openrouteservice\/v2\/directions\/foot-hiking/
-      ).to_return(
-        headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
-        status: 200,
-        body: ors_file
-      )
-
-      # Mock ORS Elevation API (uses different domain due to CORS)
-      elevation_file = File.read(Rails.root.join("spec", "fixtures", "files", "ors_elevation.json"))
-      CapybaraMock.stub_request(
-        :post, /api\.openrouteservice\.org\/elevation\/line/
-      ).to_return(
-        headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
-        status: 200,
-        body: elevation_file
-      )
-
       # Load map and wait for it to be ready
       visit map.private_map_path
       expect_map_loaded

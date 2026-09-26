@@ -3,9 +3,10 @@ require "rails_helper"
 describe "Feature details" do
   let(:feature) { create(:feature, :polygon_middle, title: "Poly Title") }
   let(:map) { create(:map, features: [ feature ]) }
+  let(:path) { map.private_map_path }
 
   before do
-    visit map.private_map_path
+    visit path
     expect_map_loaded
   end
 
@@ -58,10 +59,14 @@ describe "Feature details" do
   end
 
   context "cycling through overlapping features" do
-    let(:polygon) { create(:feature, :polygon_middle, title: "Poly") }
-    let(:point1) { create(:feature, :point_middle, title: "Point 1") }
-    let(:point2) { create(:feature, :point_middle, title: "Point 2") }
-    let(:map) { create(:map, features: [ polygon, point1, point2, create(:feature, :point_middle, title: "Hidden", properties: { "marker-size" => "150", "onclick" => false }) ]) }
+    let(:map) do
+      create(:map, features: [
+        create(:feature, :polygon_middle, title: "Poly"),
+        create(:feature, :point_middle, title: "Point 1"),
+        create(:feature, :point_middle, title: "Point 2"),
+        create(:feature, :point_middle, title: "Hidden", properties: { "marker-size" => "150", "onclick" => false })
+      ])
+    end
 
     it "cycles through all overlapping features on repeated clicks" do
       titles = []
@@ -74,10 +79,7 @@ describe "Feature details" do
     end
 
     context "in view mode" do
-      before do
-        visit map.public_map_path
-        expect_map_loaded
-      end
+      let(:path) { map.public_map_path }
 
       it "skips features with onclick false" do
         titles = []
@@ -92,6 +94,8 @@ describe "Feature details" do
     end
   end
 
+  # the export responses are covered by the request spec spec/requests/maps_controller_spec.rb,
+  # these links get the feature id and title from JavaScript
   context "export" do
     let(:feature) { create(:feature, :polygon_middle, title: "Poly Title") }
     let(:map) { create(:map, features: [ feature ]) }
@@ -108,16 +112,6 @@ describe "Feature details" do
 
       it "has share gpx link" do
         expect(page).to have_link("GPX", href: "/m/" + map.public_id + "/feature/" + feature.id + ".gpx" + "/Poly_Title")
-      end
-
-      it "can download feature gpx export" do
-        visit "/m/" + map.public_id + "/feature/" + feature.id + ".gpx" + "/Poly_Title"
-        file = wait_for_download("Poly Title.gpx", timeout: 10)
-        expect(File.read(file).scan(/<gpx/i).size).to eq(1)
-      end
-
-      it "can download feature geojson export" do
-        find("#feature-export-geo").click
       end
     end
   end

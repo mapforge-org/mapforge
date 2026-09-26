@@ -56,3 +56,7 @@ def map_json_fetch_count
     "performance.getEntriesByType('resource').filter(e => /\\/m\\/[^\\/]+\\.json/.test(e.name)).length"
   )
 end
+
+def open_layer_menu(layer_id)
+  find("#layer-list-#{layer_id} .layer-actions-dropdown > button").click
+end
