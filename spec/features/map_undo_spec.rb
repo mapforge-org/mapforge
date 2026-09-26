@@ -123,7 +123,7 @@ describe "Map Undo/Redo" do
 
       # Delete the layer
       accept_alert do
-        find('.btn-layer-actions.layer-delete').click
+        find("#layer-list-#{layer.id} .btn-layer-actions.layer-delete").click
       end
       wait_for { Layer.find_by(id: layer.id) }.to be_nil
 
