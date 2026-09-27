@@ -147,8 +147,12 @@ describe "Map GeoJSON levels" do
   end
 
   context "with a description banner" do
-    let(:banner) { create(:feature, :point_middle, desc: "Upstairs", properties: { "level" => "1", "show-desc" => "banner" }) }
-    let(:map) { create(:map, features: [ feature_level_0, banner ]) }
+    let(:map) {
+      create(:map, features: [
+        feature_level_0,
+        create(:feature, :point_middle, desc: "Upstairs", properties: { "level" => "1", "show-desc" => "banner" })
+      ])
+    }
 
     it "shows the banner on its level without rebuilding it" do
       expect(page).to have_css(".desc-banner.hidden", visible: :all)
