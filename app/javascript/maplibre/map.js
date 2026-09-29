@@ -547,6 +547,7 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
     await initializeStyles()
     limitZoom()
   })
+  const fade = backgroundMapLayer && backgroundMapLayer !== mapName
   backgroundMapLayer = mapName
   backgroundStyleKey = styleKey
   applyBasemapDefaults(basemap)
@@ -555,7 +556,17 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
   map.fire('basemap.change')
   // Clear image cache so icons can be re-loaded after basemap change
   clearImageState()
-  map.setStyle(basemap.style, { diff: true, strictMode: true, transformStyle: basemapFontTransform(basemap) })
+  const applyStyle = () => {
+    map.setStyle(basemap.style, { diff: true, strictMode: true, transformStyle: basemapFontTransform(basemap) })
+  }
+  if (!fade) { applyStyle(); return true }
+  const container = map.getContainer()
+  container.classList.add('basemap-fading')
+  // 300ms matches the canvas opacity transition in map.css
+  setTimeout(() => {
+    applyStyle()
+    map.once('idle', () => container.classList.remove('basemap-fading'))
+  }, 300)
   return true
 }
 

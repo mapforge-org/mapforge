@@ -601,3 +601,11 @@ body:has(#map-mode-badge) .layer-popover {
     background-color: rgb(0 0 0 / 10%);
   }
 }
+
+.map .maplibregl-canvas {
+  transition: opacity 0.3s;
+}
+
+.map.basemap-fading .maplibregl-canvas {
+  opacity: 0;
+}
