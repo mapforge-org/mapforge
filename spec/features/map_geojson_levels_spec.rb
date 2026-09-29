@@ -188,9 +188,11 @@ describe "Map GeoJSON levels" do
   end
 
   context "leveled features outside the current view" do
-    let(:feature_far_away) {
-      create(:feature, :point, coordinates: [ 0, 0 ], properties: { title: "Far Feature", level: "3" })
-    }
+    def feature_far_away
+      @feature_far_away ||= create(:feature, :point, coordinates: [ 0, 0 ],
+        properties: { title: "Far Feature", level: "3" })
+    end
+
     let(:map) { create(:map, features: [ feature_level_0, feature_far_away ]) }
 
     it "lists only the levels in view" do

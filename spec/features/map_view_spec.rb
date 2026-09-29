@@ -22,6 +22,20 @@ describe "Map public view" do
     end
   end
 
+  context "maplibre attribution" do
+    let(:maplibre_link) { ".maplibregl-ctrl-attrib-inner a[href='https://maplibre.org/']" }
+
+    it "is left to the logo" do
+      expect(page).to have_css(".maplibregl-ctrl-logo")
+      expect(page).to have_css(".maplibregl-ctrl-attrib")
+      expect(page).not_to have_css(maplibre_link, visible: :all)
+    end
+
+    it "is in the attribution on phones, where the logo is hidden", :phone do
+      expect(page).to have_css(maplibre_link, visible: :all)
+    end
+  end
+
   context "with nocontrols=true" do
     let(:path) { "#{map.public_map_path}?nocontrols=true" }
 

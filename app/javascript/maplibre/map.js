@@ -107,6 +107,21 @@ export function initialView () {
   }
 }
 
+// The MapLibre logo already credits MapLibre, so the attribution names it only
+// where the logo is hidden. The media query must match the one in controls.css.
+const logoHidden = window.matchMedia('(width < 640px), (height < 410px)')
+let attributionControl = null
+logoHidden.addEventListener('change', () => { if (map) { setAttributionControl() } })
+
+function setAttributionControl () {
+  if (attributionControl && map.hasControl(attributionControl)) { map.removeControl(attributionControl) }
+  attributionControl = new maplibregl.AttributionControl({
+    compact: true,
+    customAttribution: logoHidden.matches ? '<a href="https://maplibre.org/" target="_blank">MapLibre</a>' : undefined
+  })
+  map.addControl(attributionControl, 'bottom-right')
+}
+
 export async function initializeMap (divId = 'maplibre-map') {
   backgroundMapLayer = null
   backgroundStyleKey = null
@@ -130,6 +145,7 @@ export async function initializeMap (divId = 'maplibre-map') {
       maxPitch: 65,
       maxZoom: 24, // hard limit of maplibre
       maplibreLogo: true,
+      attributionControl: false, // see setAttributionControl()
       hash: true, // enable hash in URL for map center/zoom
       fadeDuration: 200, // shorter fade
       interactive: (window.gon.map_mode !== 'static'), // can move/zoom map
@@ -182,6 +198,7 @@ export async function initializeMap (divId = 'maplibre-map') {
   }
 
   map.setMissingStyleImageResolver(loadImage)
+  setAttributionControl()
 
   // the level control lists only the GeoJSON levels in view
   map.on('moveend', detectLevels)

@@ -204,7 +204,7 @@ body.map-nocontrols .route-extras-legend {
   display: none;
 }
 
-/* hide search form on mobile */
+/* hide search form on mobile. The logo queries must match logoHidden in map.js */
 @media (width < 640px) {
   .maplibregl-ctrl-top-left .maplibregl-ctrl, .maplibregl-ctrl-bottom-left .maplibregl-ctrl {
     margin-left: 0.3rem;
@@ -413,6 +413,7 @@ body.map-nocontrols .route-extras-legend {
 .maplibregl-ctrl-scale {
   font-size: 0.8rem;
   margin-bottom: 5px;
+  padding: 2px 5px;
 }
 
 /* Level control: mobile */

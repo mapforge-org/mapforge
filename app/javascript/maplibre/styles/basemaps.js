@@ -270,6 +270,7 @@ export function basemaps () {
           'raster-tiles': {
             type: 'raster',
             tiles: ['/layers/test_tile.png'],
+            attribution: 'Test tiles',
             tileSize: 1024
           }
         },
