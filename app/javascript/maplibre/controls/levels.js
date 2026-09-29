@@ -1,5 +1,7 @@
+import { bbox } from '@turf/bbox'
 import { LevelControl } from 'maplibre/controls/level_control'
 import { layers } from 'maplibre/layers/layers'
+import { map } from 'maplibre/map'
 
 // Active level (single selection shared across all layer types)
 let activeLevel = null
@@ -35,6 +37,13 @@ export function getActiveLevel() {
 function parseFeatureLevels(level) {
   if (level === undefined || level === null) return []
   return String(level).split(';').map(s => s.trim()).filter(s => s.length > 0)
+}
+
+function inBounds(feature, bounds) {
+  if (!feature.geometry) return false
+  const [west, south, east, north] = bbox(feature)
+  return west <= bounds.getEast() && east >= bounds.getWest() &&
+    south <= bounds.getNorth() && north >= bounds.getSouth()
 }
 
 /**
@@ -77,18 +86,21 @@ export function detectLevels() {
   if (!layers) return
 
   const levelSet = new Set()
+  const bounds = map?.getBounds()
 
   // Scan all visible layers for level properties
   layers
     .filter(layer => layer.show !== false)
     .forEach(layer => {
       if (layer.type === 'geojson') {
-        // Scan GeoJSON features
+        // Scan GeoJSON features, but list only the levels of features in view
         let hasLevel = false
         layer.geojson?.features?.forEach(feature => {
           const featureLevels = parseFeatureLevels(feature.properties?.level)
+          if (featureLevels.length === 0) return
+          hasLevel = true
+          if (bounds && !inBounds(feature, bounds)) return
           featureLevels.forEach(lvl => levelSet.add(lvl))
-          if (featureLevels.length > 0) hasLevel = true
         })
 
         // Clustering happens at the source level, before any style filter runs, so a
@@ -126,9 +138,13 @@ export function setLevel(level) {
   // Update control UI
   updateLevelControlUI()
 
-  // Update indoor layers (they use map.setFilter)
+  applyActiveLevel()
+}
+
+function applyActiveLevel() {
+  // Update indoor layers (they use map.setFilter), their filter needs a level
   layers
-    .filter(layer => layer.type === 'indoor' && layer.show !== false)
+    .filter(layer => layer.type === 'indoor' && layer.show !== false && activeLevel)
     .forEach(layer => {
       if (typeof layer.setLevel === 'function') {
         layer.setLevel(activeLevel)
@@ -150,14 +166,11 @@ export function setLevel(level) {
  * Creates, updates, or removes the control as needed.
  */
 function updateLevelControl() {
+  const previousLevel = activeLevel
   if (availableLevels.length > 0) {
-    // Ensure we have an active level
-    if (!activeLevel) {
-      // Default to '0' if available, otherwise the first available level
-      activeLevel = availableLevels.includes('0') ? '0' : availableLevels[0]
-      syncLevelToURL()
-    } else if (!availableLevels.includes(activeLevel)) {
-      // Active level from URL is not available, fall back to default
+    // Without an active level, or when it is not in view (anymore), default to
+    // '0' if available, otherwise the first available level
+    if (!activeLevel || !availableLevels.includes(activeLevel)) {
       activeLevel = availableLevels.includes('0') ? '0' : availableLevels[0]
       syncLevelToURL()
     }
@@ -170,6 +183,8 @@ function updateLevelControl() {
     removeLevelControl()
     activeLevel = null
   }
+  // the fallback changes the level without setLevel(), so the layer filters must follow
+  if (activeLevel !== previousLevel) applyActiveLevel()
 }
 
 /**

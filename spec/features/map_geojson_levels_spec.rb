@@ -187,6 +187,23 @@ describe "Map GeoJSON levels" do
     end
   end
 
+  context "leveled features outside the current view" do
+    let(:feature_far_away) {
+      create(:feature, :point, coordinates: [ 0, 0 ], properties: { title: "Far Feature", level: "3" })
+    }
+    let(:map) { create(:map, features: [ feature_level_0, feature_far_away ]) }
+
+    it "lists only the levels in view" do
+      expect(page).to have_css(".level-control button[data-level='0'].active")
+      expect(page).not_to have_css(".level-control button[data-level='3']")
+
+      page.execute_script("map.jumpTo({ center: [0, 0], zoom: 14 })")
+      expect(page).to have_css(".level-control button[data-level='3'].active")
+      expect(page).not_to have_css(".level-control button[data-level='0']")
+      expect(page).to have_current_path("/m/#{map.public_id}?level=3", ignore_query: false)
+    end
+  end
+
   context "switching between levels via url" do
     it "updates the map when url changes" do
       expect(page).to have_css(".level-control button[data-level='0'].active")

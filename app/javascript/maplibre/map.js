@@ -9,7 +9,7 @@ import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromPropertie
 import { hideContextMenu, initContextMenu } from 'maplibre/controls/context_menu';
 import { removeEditControls } from 'maplibre/controls/edit';
 import { isGeolocateFollowModeActive } from 'maplibre/controls/geolocate';
-import { initLevelFromURL } from 'maplibre/controls/levels';
+import { detectLevels, initLevelFromURL } from 'maplibre/controls/levels';
 import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsModal, resetControls } from 'maplibre/controls/shared';
 import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
@@ -182,6 +182,9 @@ export async function initializeMap (divId = 'maplibre-map') {
   }
 
   map.setMissingStyleImageResolver(loadImage)
+
+  // the level control lists only the GeoJSON levels in view
+  map.on('moveend', detectLevels)
 
   // TODO: remove once https://github.com/maplibre/maplibre-gl-js/issues/7752 is fixed (5.25)
   window.addEventListener('error', (event) => {
