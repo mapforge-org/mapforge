@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-29 23:45+0200\n"
-"PO-Revision-Date: 2026-09-29 23:45+0200\n"
+"POT-Creation-Date: 2026-09-30 00:36+0200\n"
+"PO-Revision-Date: 2026-09-30 00:36+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -362,7 +362,7 @@ msgstr ""
 msgid "Compacted gravel"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/geolocate.js:206
+#: ../app/javascript/maplibre/controls/geolocate.js:215
 msgid "Compass mode"
 msgstr ""
 
@@ -526,7 +526,7 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/geolocate.js:81
+#: ../app/javascript/maplibre/controls/geolocate.js:84
 msgid "Device Orientation not supported"
 msgstr ""
 
@@ -1198,6 +1198,14 @@ msgstr ""
 msgid "No ads, no tracking, no lock-in"
 msgstr ""
 
+#: ../app/javascript/maplibre/controls/geolocate.js:105
+msgid "No compass access, allow motion sensors in the browser settings"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/geolocate.js:111
+msgid "No compass data, allow motion sensors in the browser settings"
+msgstr ""
+
 #: ../app/javascript/maplibre/controls/shared.js:446
 msgid "No elements in this layer"
 msgstr ""
@@ -1777,11 +1785,11 @@ msgstr ""
 msgid "Track update"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/geolocate.js:127
+#: ../app/javascript/maplibre/controls/geolocate.js:136
 msgid "Tracking off"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/geolocate.js:137
+#: ../app/javascript/maplibre/controls/geolocate.js:146
 msgid "Tracking position"
 msgstr ""
 

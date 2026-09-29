@@ -74,36 +74,45 @@ export function initializeGeoLocateControl() {
     // Hide cone initially — only show it once valid heading data arrives
     if (cachedDot) cachedDot.style.setProperty('--display-direction-view', 'none')
 
-    const isIOS = typeof DeviceOrientationEvent !== 'undefined'
+    // Chrome also has requestPermission(), so it does not identify iOS.
+    // Only iOS lacks deviceorientationabsolute.
+    const hasPermissionRequest = typeof DeviceOrientationEvent !== 'undefined'
       && typeof DeviceOrientationEvent.requestPermission === 'function'
+    const hasAbsoluteEvent = 'ondeviceorientationabsolute' in window
 
-    if (!isIOS && !('ondeviceorientationabsolute' in window)) {
+    if (!hasAbsoluteEvent && !hasPermissionRequest) {
       status(window.__('Device Orientation not supported'), 'info')
       return
     }
 
+    lastHeading = null
     // Throttle to 20 Hz — device orientation fires at 60-100 Hz,
     // each setBearing triggers a full map re-render
-    orientationListener = (event) => {
+    const listener = (event) => {
       functions.throttle(() => setLocationOrientation(event), 'compass', 50)
     }
-
+    orientationListener = listener
+    // https://developer.mozilla.org/en-US/docs/Web/API/Window/deviceorientationabsolute_event
     // iOS Safari: uses deviceorientation with webkitCompassHeading for absolute heading
-    // (deviceorientationabsolute is not supported on iOS)
-    if (isIOS) {
-      orientationEventName = 'deviceorientation'
-      DeviceOrientationEvent.requestPermission()
-        .then(permissionState => {
-          if (permissionState === 'granted') {
-            window.addEventListener(orientationEventName, orientationListener)
+    orientationEventName = hasAbsoluteEvent ? 'deviceorientationabsolute' : 'deviceorientation'
+
+    const permission = hasPermissionRequest ? DeviceOrientationEvent.requestPermission() : Promise.resolve('granted')
+    permission
+      .then(permissionState => {
+        // tracking was turned off while waiting for the permission
+        if (orientationListener !== listener) return
+        if (permissionState !== 'granted') {
+          status(window.__('No compass access, allow motion sensors in the browser settings'), 'warning')
+          return
+        }
+        window.addEventListener(orientationEventName, listener)
+        setTimeout(() => {
+          if (orientationListener === listener && lastHeading === null) {
+            status(window.__('No compass data, allow motion sensors in the browser settings'), 'warning')
           }
-        })
-        .catch(console.error)
-    } else {
-      // https://developer.mozilla.org/en-US/docs/Web/API/Window/deviceorientationabsolute_event
-      orientationEventName = 'deviceorientationabsolute'
-      window.addEventListener(orientationEventName, orientationListener)
-    }
+        }, 5000)
+      })
+      .catch(console.error)
   })
 
   geolocate.on('trackuserlocationend', () => {

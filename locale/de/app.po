@@ -902,6 +902,12 @@ msgstr "Nein"
 msgid "No ads, no tracking, no lock-in"
 msgstr "Keine Werbung, kein Tracking, kein Lock-in"
 
+msgid "No compass access, allow motion sensors in the browser settings"
+msgstr "Kein Kompasszugriff, erlaube Bewegungssensoren in den Browsereinstellungen"
+
+msgid "No compass data, allow motion sensors in the browser settings"
+msgstr "Keine Kompassdaten, erlaube Bewegungssensoren in den Browsereinstellungen"
+
 msgid "No elements in this layer"
 msgstr "Keine Elemente in dieser Ebene"
 
