@@ -619,12 +619,13 @@ export function sortLayers () {
     styleLayers.filter(e => e.type === 'symbol' &&
       !e.id.startsWith('symbols-layer') && !e.id.startsWith('symbols-border-layer') &&
       !e.id.startsWith('text-layer') && !e.id.startsWith('cluster_labels')),
-    styleLayers.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('cluster_points')),
-    styleLayers.filter(e => e.id.startsWith('heatmap-layer')),
-    styleLayers.filter(e => e.id.startsWith('gl-draw-')),
+    // companion labels of lines stay below the points the user placed
     styleLayers.filter(e => e.id.startsWith('km-marker') && !e.id.startsWith('km-marker-end')),
     styleLayers.filter(e => e.id.startsWith('route-extras-labels')),
     styleLayers.filter(e => e.id.startsWith('km-marker-end')),
+    styleLayers.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('cluster_points')),
+    styleLayers.filter(e => e.id.startsWith('heatmap-layer')),
+    styleLayers.filter(e => e.id.startsWith('gl-draw-')),
     styleLayers.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),
     styleLayers.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
   ]

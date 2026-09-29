@@ -1,6 +1,7 @@
-import { along } from "@turf/along"
-import { lineString } from "@turf/helpers"
-import { length } from "@turf/length"
+import { bearing } from "@turf/bearing"
+import { destination } from "@turf/destination"
+import { distance as segmentDistance } from "@turf/distance"
+import { point as turfPoint } from "@turf/helpers"
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { addLayer, map, noValidate, removeStyleLayers } from 'maplibre/map'
 import { circleImage, pruneCircleImages } from 'maplibre/styles/circle_image'
@@ -30,20 +31,35 @@ export function hasKmMarkers (feature) {
     feature.geometry.coordinates.length >= 2
 }
 
+// One pass over the line. turf along() per km walks the line from its start each time, which
+// blocked the main thread for seconds (and dropped the websocket) on long GPS tracks.
+function walkKilometers (coords) {
+  const kmPoints = []
+  let travelled = 0
+  for (let i = 0; i < coords.length - 1; i++) {
+    const segment = segmentDistance(coords[i], coords[i + 1], { units: 'kilometers' })
+    while (kmPoints.length <= travelled + segment) {
+      const direction = bearing(coords[i], coords[i + 1])
+      kmPoints.push(destination(coords[i], kmPoints.length - travelled, direction, { units: 'kilometers' }))
+    }
+    travelled += segment
+  }
+  return { distance: travelled, kmPoints }
+}
+
 export function renderKmMarkers (features, sourceId) {
   let kmMarkerFeatures = []
   const imageNames = new Set()
   features.filter(hasKmMarkers).forEach((f, index) => {
 
-    const line = lineString(f.geometry.coordinates)
-    const distance = length(line, { units: 'kilometers' })
+    const coords = f.geometry.coordinates
+    const { distance, kmPoints } = walkKilometers(coords)
     const markerColor = f.properties['stroke'] || defaults.featureColor
     const markerImageName = circleImage(imagePrefix(sourceId), markerColor)
     imageNames.add(markerImageName)
 
-    let interval = 1
-    for (let i = 0; i < Math.ceil(distance) + interval; i += interval) {
-      const point = along(line, i, { units: 'kilometers' })
+    for (let i = 0; i <= Math.ceil(distance); i++) {
+      const point = i < Math.ceil(distance) ? kmPoints[i] : turfPoint(coords[coords.length - 1])
       point.properties['marker-color'] = markerColor
       point.properties['marker-image'] = markerImageName
       point.properties['km-text-color'] = kmMarkerTextColor(markerColor)
