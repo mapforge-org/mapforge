@@ -1,5 +1,5 @@
 
-import { addCopyMenuItem, addDeleteMenuItem, addLineMenuItems, addLineVertexMenuItems, addPasteMenuItem } from 'maplibre/controls/context_menu'
+import { addCopyMenuItem, addDeleteMenuItem, addLineMenuItems, addLineVertexMenuItems, addPasteMenuItem, addWaypointMenuItem } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
 import { SELECTABLE_SOURCE_PREFIXES, queryFeaturesNear } from 'maplibre/layers/layer'
@@ -25,7 +25,14 @@ export function initializeEditStyles() {
       // Only show actions for the first vertex found under cursor
       let vertexHandled = false
       let lineHandled = false
+      let waypointHandled = false
       for (const f of features) {
+        if (!waypointHandled && draw.getMode().startsWith('directions_') &&
+          (f.layer.id === 'maplibre-gl-directions-routeline' ||
+          f.layer.id === 'maplibre-gl-directions-routeline-casing')) {
+          addWaypointMenuItem(f.properties.legIndex, e.lngLat)
+          waypointHandled = true
+        }
         // on right-click layer id is .cold, on touch it's .hot
         if (!vertexHandled && (f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.cold' ||
           f.layer.id === 'gl-draw-polygon-and-line-vertex-inactive.hot')

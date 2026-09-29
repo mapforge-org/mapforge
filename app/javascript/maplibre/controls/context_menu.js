@@ -2,6 +2,7 @@ import { getCopiedFeature } from 'helpers/clipboard'
 import * as functions from 'helpers/functions'
 import { getFeatureTypeName, moveFeatureTo } from 'maplibre/feature'
 import { getFeature } from 'maplibre/layers/layers'
+import { addWaypointAt } from 'maplibre/routing/directions'
 
 export function initContextMenu(e) {
   functions.e('#map-context-menu', el => {
@@ -73,6 +74,21 @@ export function addLineMenuItems(f) {
     reverseButton.dataset.action = 'click->map--context-menu#reverseLineString'
     reverseButton.dataset.featureId = f.properties.id
     el.appendChild(reverseButton)
+  })
+}
+
+export function addWaypointMenuItem(legIndex, lngLat) {
+  functions.e('#map-context-menu', el => {
+    el.classList.remove('hidden')
+
+    const addButton = document.createElement('div')
+    addButton.classList.add('context-menu-item')
+    addButton.innerHTML = `<i class="bi bi-plus-circle me-1"></i>${window.__('Add waypoint here')}`
+    addButton.addEventListener('click', () => {
+      addWaypointAt(legIndex, lngLat)
+      hideContextMenu()
+    })
+    el.appendChild(addButton)
   })
 }
 

@@ -292,6 +292,10 @@ export function initDirections (profile, feature) {
   })
 }
 
+export function addWaypointAt (legIndex, lngLat) {
+  directions?.addWaypoint([lngLat.lng, lngLat.lat], legIndex + 1)
+}
+
 function updateTrack(feature) {
   let geojsonFeature = getFeature(feature.id)
   if (geojsonFeature) {

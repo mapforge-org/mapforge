@@ -83,6 +83,9 @@ msgstr "Füge Bilder hinzu, passe Farben, Symbole und Beschriftungen an"
 msgid "Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more"
 msgstr "Füge Bilder hinzu, passe Farben, Symbole, Beschriftungen, (3D-)Polygone, Indoor-Karten und mehr an"
 
+msgid "Add waypoint here"
+msgstr "Wegpunkt hier einfügen"
+
 msgid "Add your own data:"
 msgstr "Füge eigene Daten hinzu:"
 

@@ -162,5 +162,15 @@ describe "Feature directions" do
       draw_mode = page.evaluate_script("window.draw.getMode()")
       expect(draw_mode).to eq("directions_foot")
     end
+
+    it "adds a waypoint via context menu on the route line" do
+      expect(page).to have_css(".maplibregl-canvas.cursor-crosshair")
+      xy = viewport_xy_for_lat_lng(49.472, 11.0485)
+      click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
+
+      find(".context-menu-item", text: "Add waypoint here").click
+      expect(page).to have_no_css(".context-menu-item")
+      wait_for { routed_feature.reload.properties["route"]["waypoints"].length }.to eq(3)
+    end
   end
 end

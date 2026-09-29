@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 23:10+0200\n"
-"PO-Revision-Date: 2026-09-26 23:10+0200\n"
+"POT-Creation-Date: 2026-09-29 22:45+0200\n"
+"PO-Revision-Date: 2026-09-29 22:45+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -104,6 +104,10 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:87
 msgid "Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more"
+msgstr ""
+
+#: ../app/javascript/maplibre/controls/context_menu.js:86
+msgid "Add waypoint here"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:79
@@ -394,11 +398,11 @@ msgstr ""
 msgid "Coordinates copied to clipboard"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/context_menu.js:87
+#: ../app/javascript/maplibre/controls/context_menu.js:103
 msgid "Copy"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/context_menu.js:86
+#: ../app/javascript/maplibre/controls/context_menu.js:102
 msgid "Copy %{type}"
 msgstr ""
 
@@ -418,7 +422,7 @@ msgstr ""
 msgid "Copy map"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/context_menu.js:141
+#: ../app/javascript/maplibre/controls/context_menu.js:157
 msgid "Copy to my layer"
 msgstr ""
 
@@ -478,7 +482,7 @@ msgstr ""
 msgid "Default view when opening this map."
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:180 ../app/views/maps/modals/feature/_edit_ui.haml:256 ../app/javascript/maplibre/controls/context_menu.js:157
+#: ../app/views/maps/modals/_layers.haml:180 ../app/views/maps/modals/feature/_edit_ui.haml:256 ../app/javascript/maplibre/controls/context_menu.js:173
 msgid "Delete"
 msgstr ""
 
@@ -490,7 +494,7 @@ msgstr ""
 msgid "Delete map"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/context_menu.js:43
+#: ../app/javascript/maplibre/controls/context_menu.js:44
 msgid "Delete midpoint"
 msgstr ""
 
@@ -534,7 +538,7 @@ msgstr ""
 msgid "Distance markers:"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/context_menu.js:53
+#: ../app/javascript/maplibre/controls/context_menu.js:54
 msgid "Divide line here"
 msgstr ""
 
@@ -602,7 +606,7 @@ msgstr ""
 msgid "Drag the polygon to rotate it"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:136
+#: ../app/javascript/maplibre/map.js:149
 msgid "Drag to rotate map, click to reset north"
 msgstr ""
 
@@ -750,7 +754,7 @@ msgstr ""
 msgid "Fill color"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:132
+#: ../app/javascript/maplibre/map.js:145
 msgid "Find my location"
 msgstr ""
 
@@ -1010,7 +1014,7 @@ msgstr ""
 msgid "Load for this area"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:531
+#: ../app/javascript/maplibre/map.js:544
 msgid "Loaded base map %{name}"
 msgstr ""
 
@@ -1034,7 +1038,7 @@ msgstr ""
 msgid "Location (https only)"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:133
+#: ../app/javascript/maplibre/map.js:146
 msgid "Location not available"
 msgstr ""
 
@@ -1050,7 +1054,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:82 ../app/javascript/maplibre/map.js:134
+#: ../app/views/maps/modals/_share.haml:82 ../app/javascript/maplibre/map.js:147
 msgid "Map"
 msgstr ""
 
@@ -1074,7 +1078,7 @@ msgstr ""
 msgid "Map layers"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:135
+#: ../app/javascript/maplibre/map.js:148
 msgid "Map marker"
 msgstr ""
 
@@ -1082,7 +1086,7 @@ msgstr ""
 msgid "Map owners have this map listed in their account with full permissions."
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:78
+#: ../app/javascript/maplibre/map.js:91
 msgid "Map properties updated"
 msgstr ""
 
@@ -1122,7 +1126,7 @@ msgstr ""
 msgid "Max. 5MB"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:301
+#: ../app/javascript/maplibre/map.js:314
 msgid "Maximum zoom level %{zoom} reached"
 msgstr ""
 
@@ -1138,7 +1142,7 @@ msgstr ""
 msgid "Minimalist, neutral vector style with subtle colors and light labels."
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:305
+#: ../app/javascript/maplibre/map.js:318
 msgid "Minimum zoom level %{zoom} reached"
 msgstr ""
 
@@ -1290,7 +1294,7 @@ msgstr ""
 msgid "Paint objects on the map"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/context_menu.js:120
+#: ../app/javascript/maplibre/controls/context_menu.js:136
 msgid "Paste %{type}"
 msgstr ""
 
@@ -1426,7 +1430,7 @@ msgstr ""
 msgid "Reshape"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/context_menu.js:72
+#: ../app/javascript/maplibre/controls/context_menu.js:73
 msgid "Reverse track"
 msgstr ""
 
@@ -1712,7 +1716,7 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:131
+#: ../app/javascript/maplibre/map.js:144
 msgid "Toggle attribution"
 msgstr ""
 
@@ -1904,11 +1908,11 @@ msgstr ""
 msgid "Your maps (%{count})"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:137
+#: ../app/javascript/maplibre/map.js:150
 msgid "Zoom in"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:138
+#: ../app/javascript/maplibre/map.js:151
 msgid "Zoom out"
 msgstr ""
 
