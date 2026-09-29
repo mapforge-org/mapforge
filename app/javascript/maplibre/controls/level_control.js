@@ -86,10 +86,12 @@ export class LevelControl {
     numberEl.textContent = level
     info.appendChild(numberEl)
 
-    const labelEl = document.createElement('span')
-    labelEl.className = 'level-control-label'
-    labelEl.textContent = label
-    info.appendChild(labelEl)
+    if (label !== level) {
+      const labelEl = document.createElement('span')
+      labelEl.className = 'level-control-label'
+      labelEl.textContent = label
+      info.appendChild(labelEl)
+    }
 
     button.appendChild(info)
 
