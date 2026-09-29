@@ -146,34 +146,65 @@ details.feature-section-card > summary {
   border: 2px solid #f0f0f0;
 }
 
-.layer-preview {
-  width: 5.3rem;
-  height: 5.3rem;
-  border-radius: 0.7rem;
-  border-width: 2px;
-  border-style: solid;
-  border-color: #fff;
-  margin: 0.2rem;
-  opacity: 0.8;
-  transition:
-    opacity 0.3s linear,
-    border-color 0.3s linear;
-}
-
 /* settings modal */
 
-.layer-preview.active {
-  border-color: var(--color-dark-moss-green);
-  border-width: 0.2rem;
-  opacity: 1;
+.base-map-current,
+.base-map-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  text-align: left;
+  white-space: normal;
 }
 
-@media (hover: hover) {
-  .layer-preview:hover {
-    border-color: var(--color-dark-moss-green);
-    border-width: 0.2rem;
-    opacity: 1;
+.base-map-current {
+  padding: 0.3rem;
+  border: 2px solid var(--color-mid-steel-blue);
+  border-radius: 0.7rem;
+  background: none;
+  color: inherit;
+}
+
+.base-map-preview {
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.base-map-current::after {
+  margin-right: 0.6rem;
+}
+
+.base-map-current .base-map-preview {
+  width: 5.3rem;
+  height: 5.3rem;
+}
+
+.base-map-description {
+  flex-grow: 1;
+  font-size: 0.9em;
+}
+
+/* same breakpoint as the d-sm-* classes of the modal */
+@media (width < 576px) {
+  .base-map-source {
+    display: none;
   }
+}
+
+/* the transformed modal clips any floating menu, so the list opens in the flow and the modal scrolls */
+.base-map-menu {
+  position: static;
+  width: 100%;
+  margin-top: 0.3rem;
+}
+
+.base-map-item.active {
+  color: inherit;
+  background-color: var(--color-light-steel-blue);
 }
 
 .map-settings {
@@ -568,7 +599,8 @@ body.map-mode-rw .ro-only {
 .feature-drag-handle {
   cursor: grab;
   color: var(--bs-secondary-color);
-  padding-right: 0.3rem;
+  font-size: 1.25em;
+  padding: 0.2rem 0.4rem 0.2rem 0;
   touch-action: none;
 }
 
@@ -671,11 +703,6 @@ body.map-mode-rw .ro-only {
       max-height: calc(100vh - 7rem);
   }
 
-  .layer-preview {
-      width: 28%;
-      height: auto;
-  }
-
   /* Larger touch targets on mobile */
   .copy-link {
     min-width: 2rem;
@@ -732,11 +759,6 @@ body.map-mode-rw .ro-only {
 @media (height < 410px) {
   .map-modal-content {
       max-height: calc(100vh - 7rem);
-  }
-
-  .layer-preview {
-      width: 28%;
-      height: auto;
   }
 
   /* Larger touch targets on mobile */

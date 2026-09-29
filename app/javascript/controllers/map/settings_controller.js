@@ -33,20 +33,24 @@ export default class extends Controller {
 
   connect () {
     this.setupCoordinateCopyHandlers()
-    this.setupBaseMapTooltips()
+    this.setupBaseMapDescriptions()
+    dom.initTooltips(this.element)
   }
 
-  setupBaseMapTooltips () {
+  setupBaseMapDescriptions () {
     const maps = basemaps()
-    this.element.querySelectorAll('.layer-preview').forEach(img => {
-      const description = maps[img.dataset.baseMap]?.description
-      if (description) {
-        img.title = description
-        img.dataset.toggle = 'tooltip'
-        img.dataset.bsTrigger = 'hover'
-      }
+    this.element.querySelectorAll('.base-map-item').forEach(item => {
+      this.fillBaseMapDescription(item.querySelector('.base-map-description'), maps, item.dataset.baseMap)
     })
-    dom.initTooltips(this.element)
+  }
+
+  fillBaseMapDescription (element, maps, baseMap) {
+    element.textContent = maps[baseMap]?.description || baseMap
+    if (!maps[baseMap]?.source) { return }
+    const source = document.createElement('span')
+    source.classList.add('base-map-source')
+    source.textContent = ` (${maps[baseMap].source})`
+    element.appendChild(source)
   }
 
   setupCoordinateCopyHandlers () {
@@ -82,8 +86,10 @@ export default class extends Controller {
   mapGlobeValueChanged (value) { this.setChecked('#map-globe', value) }
 
   baseMapValueChanged (value) {
-    functions.e('.layer-preview', e => { e.classList.remove('active') })
-    functions.e('img[data-base-map="' + value + '"]', e => { e.classList.add('active') })
+    const item = this.element.querySelector(`.base-map-item[data-base-map="${value}"]`)
+    this.element.querySelectorAll('.base-map-item').forEach(e => { e.classList.toggle('active', e === item) })
+    if (item) { this.element.querySelector('#base-map-current-image').src = item.querySelector('img').src }
+    this.fillBaseMapDescription(this.element.querySelector('#base-map-current-description'), basemaps(), value)
   }
 
   defaultPitchValueChanged () { this.renderDefaultView() }
@@ -159,7 +165,7 @@ export default class extends Controller {
   }
 
   updateBaseMap (event) {
-    this.baseMapValue = event.target.dataset.baseMap
+    this.baseMapValue = event.currentTarget.dataset.baseMap
     mapProperties.base_map = this.baseMapValue
     setBackgroundMapLayer()
     if (window.gon.map_mode === 'rw') {

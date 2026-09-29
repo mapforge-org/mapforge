@@ -14,8 +14,9 @@ describe "Map settings" do
       it "basemap update gets saved" do
         find(".maplibregl-ctrl-map").click
         expect(page).to have_text("Configure Map")
-        find(".layer-preview[data-base-map='test2']").click
-        expect(page).to have_css('.layer-preview.active[data-base-map="test2"]')
+        find("#base-map-toggle").click
+        find(".base-map-item[data-base-map='test2']").click
+        expect(page).to have_css('.base-map-item.active[data-base-map="test2"]', visible: :all)
         wait_for { map.reload.base_map }.to eq "test2"
       end
 
@@ -59,7 +60,7 @@ describe "Map settings" do
         map.update(base_map: "test2")
         expect(page).to have_text(/Loaded base map test2|Map properties updated|Map view updated/)
         find(".maplibregl-ctrl-map").click
-        expect(page).to have_css('.layer-preview[data-base-map="test2"].active')
+        expect(page).to have_css('.base-map-item.active[data-base-map="test2"]', visible: :all)
       end
 
       it "terrain update" do
@@ -122,8 +123,9 @@ describe "Map settings" do
       it "can change basemap locally" do
         find(".maplibregl-ctrl-map").click
         expect(page).to have_text("Configure Map")
-        find(".layer-preview[data-base-map='test2']").click
-        expect(page).to have_css('.layer-preview.active[data-base-map="test2"]')
+        find("#base-map-toggle").click
+        find(".base-map-item[data-base-map='test2']").click
+        expect(page).to have_css('.base-map-item.active[data-base-map="test2"]', visible: :all)
       end
     end
   end

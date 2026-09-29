@@ -79,12 +79,35 @@
         - maps = (@user&.admin? ? Map::BASE_MAPS + Map::EXPERIMENTAL_MAPS : Map::BASE_MAPS)
         - maps -= Map::PROTOMAPS_MAPS if ENV["PROTOMAPS_KEY"].blank?
         - maps -= Map::THUNDERFOREST_MAPS if ENV["THUNDERFOREST_KEY"].blank?
-        - maps.each do |base_map|
-          - active = (@map_properties[:base_map] == base_map)
-          - map_image = "base_maps/placeholder.jpg"
-          - if Rails.application.assets.find_asset("base_maps/#{base_map}.jpg").present?
-            - map_image = "base_maps/#{base_map}.jpg"
-          = image_tag(map_image, data: { base_map: base_map, action: "click->map--settings#updateBaseMap" }, class: "layer-preview", loading: 'lazy')
+        :ruby
+          map_image = ->(base_map) {
+            Rails.application.assets.find_asset("base_maps/#{base_map}.jpg").present? ? "base_maps/#{base_map}.jpg" : "base_maps/placeholder.jpg"
+          }
+          # maps without a group show under "Default maps", EXPERIMENTAL_MAPS only under "Admin only"
+          groups = { N_("Satellite") => [ "satelliteStreets", "versatilesSatelliteStreets" ],
+            N_("Topic maps") => [ "openTopoTiles", "cyclosmTiles" ],
+            N_("Artistic") => [ "stamenWatercolorTiles", "versatilesGraybeard", "artistic" ] }
+          grouped = maps.group_by do |base_map|
+            next N_("Admin only") if Map::EXPERIMENTAL_MAPS.include?(base_map)
+            groups.find { |_, list| list.include?(base_map) }&.first || N_("Default maps")
+          end
+
+        - # descriptions get filled by the settings controller, they live in maplibre/styles/basemaps.js
+        .dropdown
+          %button#base-map-toggle.base-map-current.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false",
+            "data-bs-display": "static" }
+            = image_tag(map_image.call(@map_properties[:base_map]), id: "base-map-current-image", class: "base-map-preview")
+            %span#base-map-current-description.base-map-description
+          %ul.dropdown-menu.base-map-menu{ "aria-labelledby": "base-map-toggle" }
+            - [ N_("Default maps"), *groups.keys, N_("Admin only") ].each do |group|
+              - next if grouped[group].blank?
+              %li
+                %h6.dropdown-header= _(group)
+              - grouped[group].each do |base_map|
+                %li
+                  %button.dropdown-item.base-map-item{ type: "button", data: { base_map: base_map, action: "click->map--settings#updateBaseMap" } }
+                    = image_tag(map_image.call(base_map), class: "base-map-preview", loading: 'lazy')
+                    %span.base-map-description
 
         .map-settings
           - # Default checkbox state gets set by initSettingsModal()
@@ -130,21 +153,23 @@
                   = _("Fixed view")
                 .view-card-body
                   %span.no-wrap
-                    %i.bi.bi-crosshair.me-1
+                    %i.bi.bi-crosshair.me-1{ title: _("Center"), data: { toggle: "tooltip", "bs-trigger": "hover" } }
                     %span.view-values.selectable#map-center>
 
                   %span.no-wrap
-                    %i.bi.bi-zoom-in.me-1
+                    %i.bi.bi-zoom-in.ms-1.me-1{ title: _("Zoom"), data: { toggle: "tooltip", "bs-trigger": "hover" } }
                     %span.view-values.selectable#map-zoom>
 
                   %span.no-wrap
-                    %i.bi.bi-triangle.me-1
+                    %i.bi.bi-triangle.ms-1.me-1{ title: _("Tilt"), data: { toggle: "tooltip", "bs-trigger": "hover" } }
                     %span.view-values.selectable#map-pitch>
 
                   %span.no-wrap
-                    %i.bi.bi-arrow-counterclockwise.me-1
+                    %i.bi.bi-arrow-counterclockwise.ms-1.me-1{ title: _("Rotation"), data: { toggle: "tooltip", "bs-trigger": "hover" } }
                     %span.view-values.selectable#map-bearing>
 
-                  %button.btn.btn-blue.btn-sm.no-wrap#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
-                    %span.d-none.d-sm-inline= _("Set current view as default")
-                    %span.d-sm-none= _("Set as default")
+                  .w-100.mt-2
+                    %button.btn.btn-blue.btn-sm.no-wrap#save-map-defaults{ data: { action: "click->map--settings#updateDefaultView" } }
+                      %span.d-none.d-sm-inline= _("Set current view as default")
+                      - # the context lets translations pick a shorter text for small screens
+                      %span.d-sm-none= p_("small screen", "Set current view as default")

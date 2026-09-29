@@ -300,8 +300,9 @@ describe "Map public view" do
     it "drops unsaved view mode changes on a switch to edit mode" do
       original = page.evaluate_script("window.gon.map_properties.base_map")
       find(".maplibregl-ctrl-map").click
-      find(".layer-preview[data-base-map='test2']").click
-      expect(page).to have_css('.layer-preview.active[data-base-map="test2"]')
+      find("#base-map-toggle").click
+      find(".base-map-item[data-base-map='test2']").click
+      expect(page).to have_css('.base-map-item.active[data-base-map="test2"]', visible: :all)
       expect_map_loaded
       find(".maplibregl-ctrl-map").click
 

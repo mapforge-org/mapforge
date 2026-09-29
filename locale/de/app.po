@@ -101,6 +101,9 @@ msgstr "Adresse"
 msgid "Admin"
 msgstr "Admin"
 
+msgid "Admin only"
+msgstr "Nur für Admins"
+
 msgid "Advanced"
 msgstr "Erweitert"
 
@@ -113,8 +116,8 @@ msgstr "Zum Self-Hosting verfügbar, mit voller Kontrolle über deine Daten."
 msgid "Are you sure you want to proceed?"
 msgstr "Möchtest du wirklich fortfahren?"
 
-msgid "Artistic, hand-painted watercolor style with soft, muted colors and texture."
-msgstr "Künstlerischer, handgemalter Aquarellstil mit weichen, gedeckten Farben und Textur."
+msgid "Artistic"
+msgstr "Künstlerisch"
 
 msgid "Ascending"
 msgstr "Aufsteigend"
@@ -152,14 +155,23 @@ msgstr "Fahrradtouren mit Mapforge"
 msgid "Bicycle Touring!"
 msgstr "Fahrradtouren!"
 
+msgid "Bicycle map with bike routes and trails"
+msgstr "Fahrradkarte mit Radrouten und Trails"
+
+msgid "Bicycle map with cycle paths and bike routes"
+msgstr "Fahrradkarte mit Radwegen und Radrouten"
+
+msgid "Bicycle map with cycle routes and height lines"
+msgstr "Fahrradkarte mit Radrouten und Höhenlinien"
+
 msgid "Bicycle route"
 msgstr "Fahrradroute"
 
-msgid "Bicycle-focused map highlighting cycle routes, paths and bike infrastructure."
-msgstr "Fahrradkarte mit hervorgehobenen Radrouten, Wegen und Radinfrastruktur."
-
 msgid "Big dots"
 msgstr "Große Punkte"
+
+msgid "Black and white map, good for printing"
+msgstr "Schwarz-weiße Karte, gut zum Drucken"
 
 msgid "Bookmark the edit link of this map, or %{login_link} to add it to your account."
 msgstr "Setze ein Lesezeichen auf den Bearbeitungslink dieser Karte, oder %{login_link}, um sie deinem Konto hinzuzufügen."
@@ -170,8 +182,8 @@ msgstr "Randfarbe:"
 msgid "Border width:"
 msgstr "Randbreite:"
 
-msgid "Bright, colorful vector style with clear roads and readable labels."
-msgstr "Heller, farbenfroher Vektorstil mit klaren Straßen und gut lesbaren Beschriftungen."
+msgid "Bright street map with clear roads and labels"
+msgstr "Helle Straßenkarte mit klaren Straßen und Beschriftungen"
 
 msgid "Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map."
 msgstr "Verwalte %{maps_link}, lerne mehr auf der %{tutorial_link} oder %{create_link} eine neue Karte."
@@ -215,6 +227,9 @@ msgstr "Auto"
 msgid "Car route"
 msgstr "Autoroute"
 
+msgid "Center"
+msgstr "Mittelpunkt"
+
 msgid "Change colors and appearance"
 msgstr "Farben und Aussehen ändern"
 
@@ -232,15 +247,6 @@ msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad, Aqua
 
 msgid "Circle"
 msgstr "Kreis"
-
-msgid "Classic MapTiler street map with roads, labels and points of interest."
-msgstr "Klassische MapTiler-Straßenkarte mit Straßen, Beschriftungen und interessanten Orten."
-
-msgid "Classic OpenStreetMap raster tiles with roads, labels and points of interest."
-msgstr "Klassische OpenStreetMap-Rasterkacheln mit Straßen, Beschriftungen und interessanten Orten."
-
-msgid "Clean, minimal MapTiler style focused on readability and simplicity."
-msgstr "Klarer, minimaler MapTiler-Stil mit Fokus auf Lesbarkeit und Einfachheit."
 
 msgid "Clear filter"
 msgstr "Filter entfernen"
@@ -263,8 +269,8 @@ msgstr "Farbe"
 msgid "Color:"
 msgstr "Farbe:"
 
-msgid "Colorful vector map with vivid colors and a clear road hierarchy."
-msgstr "Farbenfrohe Vektorkarte mit kräftigen Farben und klarer Straßenhierarchie."
+msgid "Colorful street map for everyday use"
+msgstr "Farbige Straßenkarte für jeden Tag"
 
 msgid "Compacted gravel"
 msgstr "Verdichteter Schotter"
@@ -350,17 +356,14 @@ msgstr "Kreuzschraffur"
 msgid "Custom Overpass query"
 msgstr "Eigene Overpass-Abfrage"
 
-msgid "Custom artistic map style with a unique, hand-crafted color palette."
-msgstr "Eigener künstlerischer Kartenstil mit einzigartiger, handgemachter Farbpalette."
-
 msgid "Custom raster layer"
 msgstr "Eigene Rasterebene"
 
-msgid "Cycling-focused MapTiler style highlighting bike routes and trails."
-msgstr "MapTiler-Stil für Radfahrer mit hervorgehobenen Radrouten und Wegen."
+msgid "Dark map, easy on the eyes at night"
+msgstr "Dunkle Karte, angenehm für die Augen bei Nacht"
 
-msgid "Dark mode vector map style, easy on the eyes for night-time viewing."
-msgstr "Dunkler Vektorstil, augenschonend für die Nutzung bei Nacht."
+msgid "Default maps"
+msgstr "Standardkarten"
 
 msgid "Default view when opening this map."
 msgstr "Standardansicht beim Öffnen dieser Karte."
@@ -386,8 +389,11 @@ msgstr "Absteigend"
 msgid "Description"
 msgstr "Beschreibung"
 
-msgid "Detailed vector map with landmarks, buildings and points of interest."
-msgstr "Detaillierte Vektorkarte mit Sehenswürdigkeiten, Gebäuden und interessanten Orten."
+msgid "Detailed street map in the style of official German maps"
+msgstr "Detaillierte Straßenkarte im Stil amtlicher deutscher Karten"
+
+msgid "Detailed street map with buildings and landmarks"
+msgstr "Detaillierte Straßenkarte mit Gebäuden und Sehenswürdigkeiten"
 
 msgid "Details"
 msgstr "Details"
@@ -623,6 +629,9 @@ msgstr "Rasengittersteine"
 msgid "Gravel"
 msgstr "Schotter"
 
+msgid "Gray map in calm colors, your own data stands out"
+msgstr "Graue Karte in ruhigen Farben, deine eigenen Daten fallen auf"
+
 msgid "Grid"
 msgstr "Gitter"
 
@@ -638,17 +647,8 @@ msgstr "Höhe:"
 msgid "Hide layer"
 msgstr "Ebene ausblenden"
 
-msgid "High-contrast Thunderforest style optimized for outdoor and mobile use."
-msgstr "Kontrastreicher Thunderforest-Stil, optimiert für Outdoor und mobile Nutzung."
-
-msgid "High-contrast black and white map, great for print or overlaying data."
-msgstr "Kontrastreiche Schwarzweißkarte, ideal für den Druck oder als Untergrund für eigene Daten."
-
-msgid "High-resolution satellite imagery overlaid with streets and place labels."
-msgstr "Hochauflösende Satellitenbilder mit Straßen und Ortsnamen."
-
-msgid "High-resolution satellite imagery without any labels or overlays."
-msgstr "Hochauflösende Satellitenbilder ohne Beschriftungen oder Überlagerungen."
+msgid "Hiking map with height lines and hill shadows"
+msgstr "Wanderkarte mit Höhenlinien und Schattierung"
 
 msgid "Hiking route"
 msgstr "Wanderroute"
@@ -737,11 +737,8 @@ msgstr "Ebene %{n}"
 msgid "Levels"
 msgstr "Ebenen"
 
-msgid "Light Protomaps vector style with soft colors and clear labels."
-msgstr "Heller Protomaps-Vektorstil mit sanften Farben und klaren Beschriftungen."
-
-msgid "Light, minimal grayscale style ideal for data visualization overlays."
-msgstr "Heller, minimaler Graustufenstil, ideal als Untergrund für Datenvisualisierungen."
+msgid "Light street map with soft colors"
+msgstr "Helle Straßenkarte mit sanften Farben"
 
 msgid "Line"
 msgstr "Linie"
@@ -824,20 +821,20 @@ msgstr "Karteneigenschaften aktualisiert"
 msgid "Map settings"
 msgstr "Karteneinstellungen"
 
+msgid "Map that looks like a watercolor painting"
+msgstr "Karte im Stil eines Aquarells"
+
 msgid "Map tools"
 msgstr "Kartenwerkzeuge"
 
 msgid "Map view updated"
 msgstr "Kartenansicht aktualisiert"
 
+msgid "Map with its own hand-picked colors"
+msgstr "Karte mit eigenen, handverlesenen Farben"
+
 msgid "Map your track: Use %{ulogger_link} to visualize and share your tracks live"
 msgstr "Erfasse deinen Track: Nutze %{ulogger_link} zum Visualisieren und Teilen deiner Strecken in Echtzeit"
-
-msgid "MapTiler streets style with road labels removed for a cleaner look."
-msgstr "MapTiler-Straßenstil ohne Straßenbeschriftungen für ein ruhigeres Bild."
-
-msgid "MapTiler's rendering of OpenStreetMap data in a familiar style."
-msgstr "MapTilers Darstellung der OpenStreetMap-Daten in vertrautem Stil."
 
 msgid "Mapforge is ad-free and respects your privacy."
 msgstr "Mapforge ist werbefrei und respektiert deine Privatsphäre."
@@ -856,9 +853,6 @@ msgstr "Metall"
 
 msgid "Midpoint deleted"
 msgstr "Zwischenpunkt gelöscht"
-
-msgid "Minimalist, neutral vector style with subtle colors and light labels."
-msgstr "Minimalistischer, neutraler Vektorstil mit zurückhaltenden Farben und leichten Beschriftungen."
 
 msgid "Minimum zoom level %{zoom} reached"
 msgstr "Minimale Zoomstufe %{zoom} erreicht"
@@ -881,20 +875,11 @@ msgstr "Meistgesehen"
 msgid "Move"
 msgstr "Verschieben"
 
-msgid "Muted Graybeard style with an added wintery, snow-covered terrain effect."
-msgstr "Gedeckter Graybeard-Stil mit winterlichem, schneebedecktem Gelände."
-
-msgid "Muted, monochrome vector style for a clean, distraction-free look."
-msgstr "Gedeckter, monochromer Vektorstil für ein klares, ablenkungsfreies Bild."
-
 msgid "Name:"
 msgstr "Name:"
 
 msgid "Needs a polygon with four corners"
 msgstr "Benötigt ein Polygon mit vier Ecken"
-
-msgid "Neutral MapTiler style designed as a clean backdrop for data visualization."
-msgstr "Neutraler MapTiler-Stil als klarer Hintergrund für Datenvisualisierungen."
 
 msgid "New features go to layer %{name}"
 msgstr "Neue Elemente kommen in die Ebene %{name}"
@@ -935,9 +920,6 @@ msgstr "Nicht anzeigen"
 msgid "OSM Info (experimental)"
 msgstr "OSM-Info (experimentell)"
 
-msgid "Official German basemap.de style with detailed European cartography."
-msgstr "Offizieller deutscher basemap.de-Stil mit detaillierter europäischer Kartografie."
-
 msgid "One link to view, one to edit"
 msgstr "Ein Link zum Ansehen, einer zum Bearbeiten"
 
@@ -958,6 +940,9 @@ msgstr "OpenStreetMap-Ebenen (Overpass)"
 
 msgid "OpenStreetMap indoor"
 msgstr "OpenStreetMap Indoor"
+
+msgid "Outdoor map with strong colors, easy to read outside"
+msgstr "Outdoorkarte mit kräftigen Farben, draußen gut lesbar"
 
 msgid "Overpass tutorial"
 msgstr "Overpass-Anleitung"
@@ -988,6 +973,18 @@ msgstr "Pflastersteine"
 
 msgid "Pin"
 msgstr "Nadel"
+
+msgid "Plain light gray map, your own data stands out"
+msgstr "Schlichte hellgraue Karte, deine eigenen Daten fallen auf"
+
+msgid "Plain map with soft colors and few labels"
+msgstr "Schlichte Karte mit sanften Farben und wenig Beschriftung"
+
+msgid "Plain map, your own data stands out"
+msgstr "Schlichte Karte, deine eigenen Daten fallen auf"
+
+msgid "Plain, easy to read street map"
+msgstr "Schlichte, gut lesbare Straßenkarte"
 
 msgid "Plan your ride and navigate with compass mode and elevation profile."
 msgstr "Plane deine Tour und navigiere mit Kompassmodus und Höhenprofil."
@@ -1085,6 +1082,9 @@ msgstr "Straßen-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelkli
 msgid "Rotate"
 msgstr "Drehen"
 
+msgid "Rotation"
+msgstr "Drehung"
+
 msgid "Route created from GPX"
 msgstr "Route aus GPX erstellt"
 
@@ -1112,8 +1112,17 @@ msgstr "Starte im Desktop-/Mobil-Browser oder als %{app_link}"
 msgid "Sand"
 msgstr "Sand"
 
-msgid "Satellite imagery combined with street names and road labels overlay."
-msgstr "Satellitenbilder kombiniert mit Straßennamen und Beschriftungen."
+msgid "Satellite"
+msgstr "Satellit"
+
+msgid "Satellite photos with street names"
+msgstr "Satellitenbilder mit Straßennamen"
+
+msgid "Satellite photos with street names and places"
+msgstr "Satellitenbilder mit Straßennamen und Orten"
+
+msgid "Satellite photos without labels"
+msgstr "Satellitenbilder ohne Beschriftung"
 
 msgid "Saving %{type}"
 msgstr "%{type} wird gespeichert"
@@ -1136,11 +1145,12 @@ msgstr "Linien-Zeichenmodus wählen"
 msgid "Select mode"
 msgstr "Auswahlmodus"
 
-msgid "Set as default"
-msgstr "Als Standard"
-
 msgid "Set current view as default"
 msgstr "Aktuelle Ansicht als Standard setzen"
+
+msgctxt "small screen"
+msgid "Set current view as default"
+msgstr "Aktuelle Ansicht verwenden"
 
 msgid "Shape:"
 msgstr "Form:"
@@ -1201,6 +1211,9 @@ msgstr "Wegpunkte werden auf das Straßennetz gesetzt..."
 msgid "Square"
 msgstr "Quadrat"
 
+msgid "Standard OpenStreetMap with roads and places"
+msgstr "Standard-OpenStreetMap mit Straßen und Orten"
+
 msgid "Start a map"
 msgstr "Neue Karte erstellen"
 
@@ -1213,8 +1226,17 @@ msgstr "Starke Steigung (>16 %)"
 msgid "Steepness"
 msgstr "Steigung"
 
-msgid "Streets map highlighting detailed building footprints and 3D shapes."
-msgstr "Straßenkarte mit detaillierten Gebäudegrundrissen und 3D-Formen."
+msgid "Street map in the familiar OpenStreetMap look"
+msgstr "Straßenkarte im bekannten OpenStreetMap-Stil"
+
+msgid "Street map with 3D buildings"
+msgstr "Straßenkarte mit 3D-Gebäuden"
+
+msgid "Street map with roads and places"
+msgstr "Straßenkarte mit Straßen und Orten"
+
+msgid "Street map without street names"
+msgstr "Straßenkarte ohne Straßennamen"
 
 msgid "Style"
 msgstr "Stil"
@@ -1285,8 +1307,8 @@ msgstr "Diese Karte braucht WebGL2"
 msgid "This track is already a routed track"
 msgstr "Dieser Track ist bereits eine berechnete Route"
 
-msgid "Thunderforest Cycle map with elevation contours and cycling infrastructure."
-msgstr "Thunderforest-Fahrradkarte mit Höhenlinien und Radinfrastruktur."
+msgid "Tilt"
+msgstr "Neigung"
 
 msgid "Title"
 msgstr "Titel"
@@ -1297,8 +1319,8 @@ msgstr "Quellenangaben ein-/ausblenden"
 msgid "Toggle fullscreen"
 msgstr "Vollbild ein-/ausschalten"
 
-msgid "Topographic map with contour lines, hillshading and terrain features."
-msgstr "Topografische Karte mit Höhenlinien, Schummerung und Geländeformen."
+msgid "Topic maps"
+msgstr "Themenkarten"
 
 msgid "Tour planning with Mapforge:"
 msgstr "Tourenplanung mit Mapforge:"
@@ -1360,9 +1382,6 @@ msgstr "Steigung (12-15 %)"
 msgid "Users can explore the map but cannot modify it."
 msgstr "Nutzer können die Karte ansehen, aber nicht ändern."
 
-msgid "VersaTiles satellite imagery combined with street and label overlays."
-msgstr "VersaTiles-Satellitenbilder kombiniert mit Straßen und Beschriftungen."
-
 msgid "View"
 msgstr "Ansicht"
 
@@ -1399,8 +1418,11 @@ msgstr "Breite:"
 msgid "Wikipedia articles"
 msgstr "Wikipedia-Artikel"
 
-msgid "Winter-themed MapTiler style with snow-covered terrain and landscapes."
-msgstr "Winterlicher MapTiler-Stil mit schneebedecktem Gelände und Landschaften."
+msgid "Winter map with snow and ski slopes"
+msgstr "Winterkarte mit Schnee und Skipisten"
+
+msgid "Winter map with snow on the mountains"
+msgstr "Winterkarte mit Schnee auf den Bergen"
 
 msgid "With this link, users can modify the map, add layers, and make changes."
 msgstr "Mit diesem Link können Nutzer die Karte bearbeiten, Ebenen hinzufügen und Änderungen vornehmen."
@@ -1434,6 +1456,9 @@ msgstr "Deine Karten"
 
 msgid "Your maps (%{count})"
 msgstr "Deine Karten (%{count})"
+
+msgid "Zoom"
+msgstr "Zoomstufe"
 
 msgid "Zoom in"
 msgstr "Vergrößern"

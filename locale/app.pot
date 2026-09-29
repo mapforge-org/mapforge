@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-29 22:45+0200\n"
-"PO-Revision-Date: 2026-09-29 22:45+0200\n"
+"POT-Creation-Date: 2026-09-29 23:45+0200\n"
+"PO-Revision-Date: 2026-09-29 23:45+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -54,7 +54,7 @@ msgstr ""
 msgid "%{type} updated"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:92
+#: ../app/views/maps/modals/_settings.haml:115
 msgid "3D Terrain:"
 msgstr ""
 
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Add OpenStreetMap layers"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:316 ../app/javascript/controllers/map/settings_controller.js:209
+#: ../app/javascript/controllers/feature/modal_controller.js:316 ../app/javascript/controllers/map/settings_controller.js:215
 msgid "Add a description text"
 msgstr ""
 
@@ -130,6 +130,10 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
+#: ../app/views/maps/modals/_settings.haml:91 ../app/views/maps/modals/_settings.haml:102
+msgid "Admin only"
+msgstr ""
+
 #: ../app/views/maps/modals/_feature.haml:32
 msgid "Advanced"
 msgstr ""
@@ -146,8 +150,8 @@ msgstr ""
 msgid "Are you sure you want to proceed?"
 msgstr ""
 
-#: ../app/javascript/maplibre/styles/basemaps.js:75
-msgid "Artistic, hand-painted watercolor style with soft, muted colors and texture."
+#: ../app/views/maps/modals/_settings.haml:89
+msgid "Artistic"
 msgstr ""
 
 #: ../app/views/maps/_list_filter.haml:50
@@ -158,7 +162,7 @@ msgstr ""
 msgid "Asphalt"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:121
+#: ../app/views/maps/modals/_settings.haml:144
 msgid "Auto"
 msgstr ""
 
@@ -198,16 +202,28 @@ msgstr ""
 msgid "Bicycle Touring!"
 msgstr ""
 
+#: ../app/javascript/maplibre/styles/basemaps.js:260
+msgid "Bicycle map with bike routes and trails"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:164
+msgid "Bicycle map with cycle paths and bike routes"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:184
+msgid "Bicycle map with cycle routes and height lines"
+msgstr ""
+
 #: ../app/views/maps/modals/_settings.haml:58 ../app/javascript/maplibre/feature.js:76
 msgid "Bicycle route"
 msgstr ""
 
-#: ../app/javascript/maplibre/styles/basemaps.js:164
-msgid "Bicycle-focused map highlighting cycle routes, paths and bike infrastructure."
-msgstr ""
-
 #: ../app/javascript/maplibre/feature/edit_ui.js:79
 msgid "Big dots"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:98
+msgid "Black and white map, good for printing"
 msgstr ""
 
 #: ../app/views/maps/maplibre.haml:55
@@ -223,7 +239,7 @@ msgid "Border width:"
 msgstr ""
 
 #: ../app/javascript/maplibre/styles/basemaps.js:228
-msgid "Bright, colorful vector style with clear roads and readable labels."
+msgid "Bright street map with clear roads and labels"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:27
@@ -282,6 +298,10 @@ msgstr ""
 msgid "Car route"
 msgstr ""
 
+#: ../app/views/maps/modals/_settings.haml:156
+msgid "Center"
+msgstr ""
+
 #: ../app/views/maps/modals/_feature.haml:27
 msgid "Change colors and appearance"
 msgstr ""
@@ -304,18 +324,6 @@ msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:159
 msgid "Circle"
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:256
-msgid "Classic MapTiler street map with roads, labels and points of interest."
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:145
-msgid "Classic OpenStreetMap raster tiles with roads, labels and points of interest."
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:252
-msgid "Clean, minimal MapTiler style focused on readability and simplicity."
 msgstr ""
 
 #: ../app/views/maps/_search_filters.haml:7 ../app/views/maps/_search_filters.haml:14
@@ -347,7 +355,7 @@ msgid "Color:"
 msgstr ""
 
 #: ../app/javascript/maplibre/styles/basemaps.js:236
-msgid "Colorful vector map with vivid colors and a clear road hierarchy."
+msgid "Colorful street map for everyday use"
 msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:56
@@ -374,7 +382,7 @@ msgstr ""
 msgid "Contour lines added to map"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:100
+#: ../app/views/maps/modals/_settings.haml:123
 msgid "Contour lines:"
 msgstr ""
 
@@ -394,7 +402,7 @@ msgstr ""
 msgid "Converting track to %{profile} route..."
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:421 ../app/javascript/controllers/map/settings_controller.js:57
+#: ../app/javascript/controllers/feature/modal_controller.js:421 ../app/javascript/controllers/map/settings_controller.js:61
 msgid "Coordinates copied to clipboard"
 msgstr ""
 
@@ -462,23 +470,19 @@ msgstr ""
 msgid "Custom Overpass query"
 msgstr ""
 
-#: ../app/javascript/maplibre/styles/basemaps.js:245
-msgid "Custom artistic map style with a unique, hand-crafted color palette."
-msgstr ""
-
 #: ../app/views/maps/modals/_layers.haml:68
 msgid "Custom raster layer"
 msgstr ""
 
-#: ../app/javascript/maplibre/styles/basemaps.js:260
-msgid "Cycling-focused MapTiler style highlighting bike routes and trails."
-msgstr ""
-
 #: ../app/javascript/maplibre/styles/basemaps.js:240
-msgid "Dark mode vector map style, easy on the eyes for night-time viewing."
+msgid "Dark map, easy on the eyes at night"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:112
+#: ../app/views/maps/modals/_settings.haml:92 ../app/views/maps/modals/_settings.haml:102
+msgid "Default maps"
+msgstr ""
+
+#: ../app/views/maps/modals/_settings.haml:135
 msgid "Default view when opening this map."
 msgstr ""
 
@@ -510,8 +514,12 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+#: ../app/javascript/maplibre/styles/basemaps.js:223
+msgid "Detailed street map in the style of official German maps"
+msgstr ""
+
 #: ../app/javascript/maplibre/styles/basemaps.js:229
-msgid "Detailed vector map with landmarks, buildings and points of interest."
+msgid "Detailed street map with buildings and landmarks"
 msgstr ""
 
 #: ../app/views/maps/modals/_feature.haml:20 ../app/javascript/maplibre/layers/osm_description.js:144
@@ -762,7 +770,7 @@ msgstr ""
 msgid "Fine gravel"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:130
+#: ../app/views/maps/modals/_settings.haml:153
 msgid "Fixed view"
 msgstr ""
 
@@ -810,7 +818,7 @@ msgstr ""
 msgid "Geometry JSON"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:104
+#: ../app/views/maps/modals/_settings.haml:127
 msgid "Globe:"
 msgstr ""
 
@@ -824,6 +832,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:56
 msgid "Gravel"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:237
+msgid "Gray map in calm colors, your own data stands out"
 msgstr ""
 
 #: ../app/javascript/maplibre/feature/edit_ui.js:77
@@ -846,20 +858,8 @@ msgstr ""
 msgid "Hide layer"
 msgstr ""
 
-#: ../app/javascript/maplibre/styles/basemaps.js:202
-msgid "High-contrast Thunderforest style optimized for outdoor and mobile use."
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:98
-msgid "High-contrast black and white map, great for print or overlaying data."
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:219
-msgid "High-resolution satellite imagery overlaid with streets and place labels."
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:258
-msgid "High-resolution satellite imagery without any labels or overlays."
+#: ../app/javascript/maplibre/styles/basemaps.js:121
+msgid "Hiking map with height lines and hill shadows"
 msgstr ""
 
 #: ../app/javascript/maplibre/feature.js:78
@@ -870,7 +870,7 @@ msgstr ""
 msgid "Hillshade added to map"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:96
+#: ../app/views/maps/modals/_settings.haml:119
 msgid "Hillshade:"
 msgstr ""
 
@@ -979,11 +979,7 @@ msgid "Levels"
 msgstr ""
 
 #: ../app/javascript/maplibre/styles/basemaps.js:232
-msgid "Light Protomaps vector style with soft colors and clear labels."
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:227
-msgid "Light, minimal grayscale style ideal for data visualization overlays."
+msgid "Light street map with soft colors"
 msgstr ""
 
 #: ../app/javascript/maplibre/feature.js:83
@@ -1094,6 +1090,10 @@ msgstr ""
 msgid "Map settings"
 msgstr ""
 
+#: ../app/javascript/maplibre/styles/basemaps.js:75
+msgid "Map that looks like a watercolor painting"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:72
 msgid "Map tools"
 msgstr ""
@@ -1102,16 +1102,12 @@ msgstr ""
 msgid "Map view updated"
 msgstr ""
 
+#: ../app/javascript/maplibre/styles/basemaps.js:245
+msgid "Map with its own hand-picked colors"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:129
 msgid "Map your track: Use %{ulogger_link} to visualize and share your tracks live"
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:257
-msgid "MapTiler streets style with road labels removed for a cleaner look."
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:253
-msgid "MapTiler's rendering of OpenStreetMap data in a familiar style."
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:20
@@ -1136,10 +1132,6 @@ msgstr ""
 
 #: ../app/javascript/controllers/map/context_menu_controller.js:25
 msgid "Midpoint deleted"
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:239
-msgid "Minimalist, neutral vector style with subtle colors and light labels."
 msgstr ""
 
 #: ../app/javascript/maplibre/map.js:318
@@ -1170,24 +1162,12 @@ msgstr ""
 msgid "Move"
 msgstr ""
 
-#: ../app/javascript/maplibre/styles/basemaps.js:238
-msgid "Muted Graybeard style with an added wintery, snow-covered terrain effect."
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:237
-msgid "Muted, monochrome vector style for a clean, distraction-free look."
-msgstr ""
-
 #: ../app/views/maps/modals/_settings.haml:22
 msgid "Name:"
 msgstr ""
 
 #: ../app/javascript/maplibre/feature/edit_ui.js:117
 msgid "Needs a polygon with four corners"
-msgstr ""
-
-#: ../app/javascript/maplibre/styles/basemaps.js:255
-msgid "Neutral MapTiler style designed as a clean backdrop for data visualization."
 msgstr ""
 
 #: ../app/javascript/maplibre/layers/layers.js:293
@@ -1242,10 +1222,6 @@ msgstr ""
 msgid "OSM Info (experimental)"
 msgstr ""
 
-#: ../app/javascript/maplibre/styles/basemaps.js:223
-msgid "Official German basemap.de style with detailed European cartography."
-msgstr ""
-
 #: ../app/views/frontpage/index.haml:109
 msgid "One link to view, one to edit"
 msgstr ""
@@ -1272,6 +1248,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:135
 msgid "OpenStreetMap indoor"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:202
+msgid "Outdoor map with strong colors, easy to read outside"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:194
@@ -1312,6 +1292,22 @@ msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:163
 msgid "Pin"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:227
+msgid "Plain light gray map, your own data stands out"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:239
+msgid "Plain map with soft colors and few labels"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:255
+msgid "Plain map, your own data stands out"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:252
+msgid "Plain, easy to read street map"
 msgstr ""
 
 #: ../app/views/docs/tutorials.haml:35
@@ -1442,6 +1438,10 @@ msgstr ""
 msgid "Rotate"
 msgstr ""
 
+#: ../app/views/maps/modals/_settings.haml:168
+msgid "Rotation"
+msgstr ""
+
 #: ../app/javascript/maplibre/undo.js:67
 msgid "Route created from GPX"
 msgstr ""
@@ -1478,8 +1478,20 @@ msgstr ""
 msgid "Sand"
 msgstr ""
 
+#: ../app/views/maps/modals/_settings.haml:87
+msgid "Satellite"
+msgstr ""
+
 #: ../app/javascript/maplibre/styles/basemaps.js:261
-msgid "Satellite imagery combined with street names and road labels overlay."
+msgid "Satellite photos with street names"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:219 ../app/javascript/maplibre/styles/basemaps.js:242
+msgid "Satellite photos with street names and places"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:258
+msgid "Satellite photos without labels"
 msgstr ""
 
 #: ../app/javascript/controllers/feature/modal_controller.js:345
@@ -1510,11 +1522,12 @@ msgstr ""
 msgid "Select mode"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:150
-msgid "Set as default"
+#: ../app/views/maps/modals/_settings.haml:173
+msgid "Set current view as default"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:149
+#: ../app/views/maps/modals/_settings.haml:175
+msgctxt "small screen"
 msgid "Set current view as default"
 msgstr ""
 
@@ -1596,6 +1609,10 @@ msgstr ""
 msgid "Square"
 msgstr ""
 
+#: ../app/javascript/maplibre/styles/basemaps.js:145
+msgid "Standard OpenStreetMap with roads and places"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:34 ../app/views/frontpage/index.haml:39
 msgid "Start a map"
 msgstr ""
@@ -1612,8 +1629,20 @@ msgstr ""
 msgid "Steepness"
 msgstr ""
 
+#: ../app/javascript/maplibre/styles/basemaps.js:253
+msgid "Street map in the familiar OpenStreetMap look"
+msgstr ""
+
 #: ../app/javascript/maplibre/styles/basemaps.js:254
-msgid "Streets map highlighting detailed building footprints and 3D shapes."
+msgid "Street map with 3D buildings"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:256
+msgid "Street map with roads and places"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:257
+msgid "Street map without street names"
 msgstr ""
 
 #: ../app/views/maps/modals/_feature.haml:29
@@ -1680,7 +1709,7 @@ msgstr ""
 msgid "The map goes with you"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:122
+#: ../app/views/maps/modals/_settings.haml:145
 msgid "The map starts centered on your content."
 msgstr ""
 
@@ -1708,8 +1737,8 @@ msgstr ""
 msgid "This track is already a routed track"
 msgstr ""
 
-#: ../app/javascript/maplibre/styles/basemaps.js:184
-msgid "Thunderforest Cycle map with elevation contours and cycling infrastructure."
+#: ../app/views/maps/modals/_settings.haml:164
+msgid "Tilt"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:186 ../app/views/maps/modals/_layers.haml:203 ../app/views/maps/modals/feature/_edit_ui.haml:31
@@ -1724,8 +1753,8 @@ msgstr ""
 msgid "Toggle fullscreen"
 msgstr ""
 
-#: ../app/javascript/maplibre/styles/basemaps.js:121
-msgid "Topographic map with contour lines, hillshading and terrain features."
+#: ../app/views/maps/modals/_settings.haml:88
+msgid "Topic maps"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:50
@@ -1808,11 +1837,7 @@ msgstr ""
 msgid "Users can explore the map but cannot modify it."
 msgstr ""
 
-#: ../app/javascript/maplibre/styles/basemaps.js:242
-msgid "VersaTiles satellite imagery combined with street and label overlays."
-msgstr ""
-
-#: ../app/views/maps/maplibre.haml:36 ../app/views/maps/modals/_settings.haml:110
+#: ../app/views/maps/maplibre.haml:36 ../app/views/maps/modals/_settings.haml:133
 msgid "View"
 msgstr ""
 
@@ -1861,7 +1886,11 @@ msgid "Wikipedia articles"
 msgstr ""
 
 #: ../app/javascript/maplibre/styles/basemaps.js:259
-msgid "Winter-themed MapTiler style with snow-covered terrain and landscapes."
+msgid "Winter map with snow and ski slopes"
+msgstr ""
+
+#: ../app/javascript/maplibre/styles/basemaps.js:238
+msgid "Winter map with snow on the mountains"
 msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:41
@@ -1906,6 +1935,10 @@ msgstr ""
 
 #: ../app/views/shared/_header.html.haml:48 ../app/views/shared/_header.html.haml:95
 msgid "Your maps (%{count})"
+msgstr ""
+
+#: ../app/views/maps/modals/_settings.haml:160
+msgid "Zoom"
 msgstr ""
 
 #: ../app/javascript/maplibre/map.js:150
