@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-09
 
-* Option to organize geojson features into multiple layers
+* Option to organize geojson features into multiple layers, drag&drop features between layers
 * URL parameter `nocontrols=true` hides the map controls
 * Search can find map local geojson results
 * Color picker offers the site and map default colors

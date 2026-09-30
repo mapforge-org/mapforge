@@ -154,7 +154,9 @@
           %h5.layer-item-header.mb-0.ms-1
             %span.w-100.link{ data: { action: "click->map--layers#toggleLayerList" }}
               %i.bi.bi-caret-right-fill
-              %span.mapforge-font.layer-name.me-2= _("Layer name")
+              -# controls/shared.js appends the feature count and the pen next to the name, into this span
+              %span.layer-title
+                %span.mapforge-font.layer-name.me-2= _("Layer name")
             -# Frequent toggles inline, rare actions in the menu
             %span.text-nowrap
               %button.hidden.ms-2.btn.btn-secondary.btn-layer-actions.layer-visibility{ data: { action: "click->map--layers#toggleLayerVisibility", "toggle": 'tooltip', "bs-trigger": 'hover' }, title: _("Hide layer") }
@@ -210,6 +212,6 @@
                   %span.d-none.d-sm-inline= _("Update Layer")
                   %span.d-sm-none= _("Update")
 
-            %ul.list-unstyled
+            %ul.list-unstyled.mb-0
 
       #layers.mt-2

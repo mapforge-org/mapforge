@@ -192,11 +192,11 @@ function updateFeatureCount (ul, layer) {
 let draggingFeature = false
 
 // The fallback ghost ignores the pointer, so the element under it is the drop target.
-// Only the name of another geojson layer counts.
+// Only the header line of another geojson layer counts.
 function dropHeaderAt (event, fromLayerElement) {
   const point = event?.changedTouches?.[0] || event
   if (point?.clientX === undefined) { return null }
-  const header = document.elementFromPoint(point.clientX, point.clientY)?.closest('.layer-name')?.closest('.layer-item-header')
+  const header = document.elementFromPoint(point.clientX, point.clientY)?.closest('.layer-item-header')
   const layerElement = header?.closest('.layer-item[data-layer-type="geojson"]')
   return layerElement && layerElement !== fromLayerElement ? header : null
 }
@@ -263,8 +263,8 @@ function renderLayerFeatures (layerElement, layer) {
     // Loaded lazily so the lib is never fetched in read-only mode, where features can't be reordered
     import('sortablejs').then(({ default: Sortable }) => {
       Sortable.create(ul, {
-        // A finger on the whole line would block scrolling the list, so touch drags by the handle only
-        handle: window.matchMedia('(pointer: coarse)').matches ? '.feature-drag-handle' : undefined,
+        // A finger on the whole line would block scrolling the list, so touch drags by the handle and icon only
+        handle: window.matchMedia('(pointer: coarse)').matches ? '.feature-drag-handle, .feature-icon' : undefined,
         // below this many pixels of movement, a press stays a click that flies to the feature
         fallbackTolerance: 3,
         group: 'features',

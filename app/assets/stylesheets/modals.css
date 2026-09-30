@@ -511,7 +511,6 @@ body.map-mode-rw .ro-only {
 }
 
 .layer-item {
-  padding-top: 0.4rem;
   margin-top: 1rem;
 }
 
@@ -525,6 +524,20 @@ body.map-mode-rw .ro-only {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Bree Serif draws its capitals below the center of the text box */
+.layer-title {
+  position: relative;
+  top: -0.06em;
+}
+
+/* sized and aligned like text: the btn defaults make the line taller than the smaller mobile header
+   and push the name above the center */
+.layer-item-header .layer-active {
+  line-height: inherit;
+  vertical-align: baseline;
+  border: 0;
 }
 
 @media (hover: hover) {
@@ -564,7 +577,6 @@ body.map-mode-rw .ro-only {
   .feature-name {
     flex-grow: 1;
     margin-left: 0.5rem;
-    margin-top: 0.2rem;
     overflow: hidden;
     max-width: calc(100% - 3rem);
     text-overflow: ellipsis;
@@ -583,17 +595,24 @@ body.map-mode-rw .ro-only {
 }
 
 @media (hover: hover) {
-  .layer-feature-item:hover {
+  .layer-feature-item:hover .feature-name {
     text-decoration: underline;
   }
 }
 
+/* as a flex item, the glyph drops its baseline offset and centers like the name */
 .layer-feature-item i.bi {
-  vertical-align: -.125rem;
+  display: flex;
+}
+
+/* one height for glyphs and images. The fs-3 of the glyphs grows with the viewport and is !important. */
+.layer-feature-item .feature-icon i.bi {
+  font-size: 1.75rem !important;
 }
 
 .layer-feature-item .feature-details-icon {
-  margin: 0.3em 0 0;
+  height: 1.75rem;
+  margin: 0;
 }
 
 .feature-drag-handle {
@@ -604,18 +623,57 @@ body.map-mode-rw .ro-only {
   touch-action: none;
 }
 
+/* on touch, the icon is a drag handle too, so a finger on it must not scroll the list */
+@media (pointer: coarse) {
+  .feature-drop-list .feature-icon {
+    touch-action: none;
+  }
+}
+
 /* an empty layer must stay a drop target for features from other layers */
 .feature-drop-list:empty {
   min-height: 1.5rem;
 }
 
-/* the name of a geojson layer is a drop target, also when the layer is collapsed */
-.layer-item-header.drop-target {
-  background-color: var(--bs-tertiary-bg);
+/* the note covers the empty list, which must still get the pointer to take drops */
+.feature-drop-list:empty + .layer-empty-note {
+  display: block;
+  margin-top: -1.5rem;
+  line-height: 1.5rem;
+  pointer-events: none;
+}
+
+/* the header line of a geojson layer is a drop target, also when the layer is collapsed */
+.layer-item-header.drop-target span.link {
+  overflow: visible; /* the clip would cut off the highlight above and below the name */
+}
+
+/* the negative margins cancel the padding, so the highlight moves neither the name nor the count and pen */
+.layer-item-header.drop-target .layer-title {
+  display: inline-block;
+  padding: 0.25rem 0.3rem;
+  margin: -0.25rem -0.3rem;
+  background-color: var(--color-light-steel-blue);
+  outline: 2px dashed var(--color-mid-steel-blue);
+  outline-offset: -2px;
+  border-radius: 0.2rem;
 }
 
 .layer-feature-item.sortable-chosen {
   background-color: var(--bs-tertiary-bg);
+}
+
+/* the ghost is the item in the list, the drag class marks the floating clone under the pointer */
+.layer-feature-item:is(.sortable-ghost, .sortable-drag) {
+  background-color: var(--color-light-steel-blue);
+  outline: 2px solid var(--color-mid-steel-blue);
+  outline-offset: -2px; /* a border would change the item height and make the list jump */
+  border-radius: 0.5rem;
+}
+
+/* SortableJS sets an inline margin of 0 on the clone, and the clone shrinks to its content */
+.layer-feature-item.sortable-drag {
+  padding-right: 1rem;
 }
 
 .layer-refresh-animate {
