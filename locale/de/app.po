@@ -992,6 +992,9 @@ msgstr "Schlichte Karte, deine eigenen Daten fallen auf"
 msgid "Plain, easy to read street map"
 msgstr "Schlichte, gut lesbare Straßenkarte"
 
+msgid "Plan on desktop, run Mapforge on your phone, edit in the field, stream your track live"
+msgstr "Plane am Desktop, nutze Mapforge auf deinem Handy, bearbeite vor Ort, streame deinen Track live"
+
 msgid "Plan your ride and navigate with compass mode and elevation profile."
 msgstr "Plane deine Tour und navigiere mit Kompassmodus und Höhenprofil."
 
@@ -1111,9 +1114,6 @@ msgstr "Abschnitt %{index}/%{total} wird berechnet..."
 
 msgid "Routing: Plan routes for walking, bicycle and car, with elevation profile"
 msgstr "Routing: Plane Routen zu Fuß, mit dem Rad oder Auto, mit Höhenprofil"
-
-msgid "Run Mapforge on your phone, edit in the field, stream your track live"
-msgstr "Nutze Mapforge auf deinem Handy, bearbeite vor Ort, streame deinen Track live"
 
 msgid "Run in desktop/mobile browser or as %{app_link}"
 msgstr "Starte im Desktop-/Mobil-Browser oder als %{app_link}"
