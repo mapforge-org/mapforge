@@ -1052,6 +1052,9 @@ msgstr "Diese Ebene wirklich löschen?"
 msgid "Recently updated"
 msgstr "Kürzlich aktualisiert"
 
+msgid "Recently viewed"
+msgstr "Zuletzt angesehen"
+
 msgid "Recently viewed Maps"
 msgstr "Kürzlich angesehene Karten"
 

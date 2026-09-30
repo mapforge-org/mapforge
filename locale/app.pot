@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 00:36+0200\n"
-"PO-Revision-Date: 2026-09-30 00:36+0200\n"
+"POT-Creation-Date: 2026-10-01 00:01+0200\n"
+"PO-Revision-Date: 2026-10-01 00:01+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -486,7 +486,7 @@ msgstr ""
 msgid "Default view when opening this map."
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:180 ../app/views/maps/modals/feature/_edit_ui.haml:256 ../app/javascript/maplibre/controls/context_menu.js:173
+#: ../app/views/maps/modals/_layers.haml:182 ../app/views/maps/modals/feature/_edit_ui.haml:256 ../app/javascript/maplibre/controls/context_menu.js:173
 msgid "Delete"
 msgstr ""
 
@@ -614,7 +614,7 @@ msgstr ""
 msgid "Drag the polygon to rotate it"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:149
+#: ../app/javascript/maplibre/map.js:165
 msgid "Drag to rotate map, click to reset north"
 msgstr ""
 
@@ -666,7 +666,7 @@ msgstr ""
 msgid "Edit mode"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:176
+#: ../app/views/maps/modals/_layers.haml:178
 msgid "Edit query"
 msgstr ""
 
@@ -694,7 +694,7 @@ msgstr ""
 msgid "Embedding: Include your map on your own web page"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:185
+#: ../app/views/maps/modals/_layers.haml:187
 msgid "Enter name / Search queries"
 msgstr ""
 
@@ -762,7 +762,7 @@ msgstr ""
 msgid "Fill color"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:145
+#: ../app/javascript/maplibre/map.js:161
 msgid "Find my location"
 msgstr ""
 
@@ -854,7 +854,7 @@ msgstr ""
 msgid "Height:"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:160 ../app/javascript/controllers/map/layers_controller.js:346 ../app/javascript/maplibre/controls/shared.js:383
+#: ../app/views/maps/modals/_layers.haml:162 ../app/javascript/controllers/map/layers_controller.js:346 ../app/javascript/maplibre/controls/shared.js:383
 msgid "Hide layer"
 msgstr ""
 
@@ -930,7 +930,7 @@ msgstr ""
 msgid "Import your data from GeoJSON, GPX and KML"
 msgstr ""
 
-#: ../app/views/maps/my.haml:22
+#: ../app/views/maps/my.haml:24
 msgid "In this gallery, your personal maps will be shown."
 msgstr ""
 
@@ -954,7 +954,7 @@ msgstr ""
 msgid "Layer elements"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:157 ../app/views/maps/modals/_layers.haml:202
+#: ../app/views/maps/modals/_layers.haml:159 ../app/views/maps/modals/_layers.haml:204
 msgid "Layer name"
 msgstr ""
 
@@ -1010,7 +1010,7 @@ msgstr ""
 msgid "Load for this area"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:544
+#: ../app/javascript/maplibre/map.js:564
 msgid "Loaded base map %{name}"
 msgstr ""
 
@@ -1034,7 +1034,7 @@ msgstr ""
 msgid "Location (https only)"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:146
+#: ../app/javascript/maplibre/map.js:162
 msgid "Location not available"
 msgstr ""
 
@@ -1050,7 +1050,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:82 ../app/javascript/maplibre/map.js:147
+#: ../app/views/maps/modals/_share.haml:82 ../app/javascript/maplibre/map.js:163
 msgid "Map"
 msgstr ""
 
@@ -1074,7 +1074,7 @@ msgstr ""
 msgid "Map layers"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:148
+#: ../app/javascript/maplibre/map.js:164
 msgid "Map marker"
 msgstr ""
 
@@ -1122,7 +1122,7 @@ msgstr ""
 msgid "Max. 5MB"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:314
+#: ../app/javascript/maplibre/map.js:334
 msgid "Maximum zoom level %{zoom} reached"
 msgstr ""
 
@@ -1134,7 +1134,7 @@ msgstr ""
 msgid "Midpoint deleted"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:318
+#: ../app/javascript/maplibre/map.js:338
 msgid "Minimum zoom level %{zoom} reached"
 msgstr ""
 
@@ -1262,7 +1262,7 @@ msgstr ""
 msgid "Outdoor map with strong colors, easy to read outside"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:194
+#: ../app/views/maps/modals/_layers.haml:196
 msgid "Overpass tutorial"
 msgstr ""
 
@@ -1366,11 +1366,11 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:191
+#: ../app/views/maps/modals/_layers.haml:193
 msgid "Query"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:207
+#: ../app/views/maps/modals/_layers.haml:209
 msgid "Raster URL (https://<host>/{z}/{x}/{y}.png)"
 msgstr ""
 
@@ -1398,7 +1398,11 @@ msgstr ""
 msgid "Recently updated"
 msgstr ""
 
-#: ../app/views/maps/my.haml:6
+#: ../app/views/maps/my.haml:8
+msgid "Recently viewed"
+msgstr ""
+
+#: ../app/views/maps/my.haml:7
 msgid "Recently viewed Maps"
 msgstr ""
 
@@ -1418,11 +1422,11 @@ msgstr ""
 msgid "Redone: %{type}"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:162
+#: ../app/views/maps/modals/_layers.haml:164
 msgid "Refresh layer for current view"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:172
+#: ../app/views/maps/modals/_layers.haml:174
 msgid "Rename"
 msgstr ""
 
@@ -1749,11 +1753,11 @@ msgstr ""
 msgid "Tilt"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:186 ../app/views/maps/modals/_layers.haml:203 ../app/views/maps/modals/feature/_edit_ui.haml:31
+#: ../app/views/maps/modals/_layers.haml:188 ../app/views/maps/modals/_layers.haml:205 ../app/views/maps/modals/feature/_edit_ui.haml:31
 msgid "Title"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:144
+#: ../app/javascript/maplibre/map.js:160
 msgid "Toggle attribution"
 msgstr ""
 
@@ -1825,11 +1829,11 @@ msgstr ""
 msgid "Unpaved"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:198 ../app/views/maps/modals/_layers.haml:211 ../app/views/maps/modals/feature/_edit_raw.haml:7 ../app/views/maps/modals/feature/_edit_raw_geometry.haml:7
+#: ../app/views/maps/modals/_layers.haml:200 ../app/views/maps/modals/_layers.haml:213 ../app/views/maps/modals/feature/_edit_raw.haml:7 ../app/views/maps/modals/feature/_edit_raw_geometry.haml:7
 msgid "Update"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:197 ../app/views/maps/modals/_layers.haml:210
+#: ../app/views/maps/modals/_layers.haml:199 ../app/views/maps/modals/_layers.haml:212
 msgid "Update Layer"
 msgstr ""
 
@@ -1917,11 +1921,11 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: ../app/views/maps/my.haml:26
+#: ../app/views/maps/my.haml:28
 msgid "You can try out the %{tutorial_link} to learn how Mapforge works, or you can %{create_link} your first map right away."
 msgstr ""
 
-#: ../app/views/maps/my.haml:13
+#: ../app/views/maps/my.haml:15
 msgid "Your Maps"
 msgstr ""
 
@@ -1949,11 +1953,11 @@ msgstr ""
 msgid "Zoom"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:150
+#: ../app/javascript/maplibre/map.js:166
 msgid "Zoom in"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:151
+#: ../app/javascript/maplibre/map.js:167
 msgid "Zoom out"
 msgstr ""
 
@@ -2009,7 +2013,7 @@ msgstr ""
 msgid "coffee|coffee_shop"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:26 ../app/views/maps/my.haml:25
+#: ../app/views/frontpage/index.haml:26 ../app/views/maps/my.haml:27
 msgid "create"
 msgstr ""
 
@@ -2157,7 +2161,7 @@ msgstr ""
 msgid "transparent"
 msgstr ""
 
-#: ../app/views/maps/my.haml:24
+#: ../app/views/maps/my.haml:26
 msgid "tutorial map"
 msgstr ""
 

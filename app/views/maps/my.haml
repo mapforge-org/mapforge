@@ -3,7 +3,9 @@
 #maps
 
   - if @recent_maps.present?
-    %h1.mapforge-font= _("Recently viewed Maps")
+    %h1.mapforge-font
+      %span.d-none.d-sm-inline= _("Recently viewed Maps")
+      %span.d-sm-none= _("Recently viewed")
     .maps-list.recently-viewed-maps.mb-4
       - @recent_maps.each do |recent_map, rw|
         = render recent_map, rw: rw

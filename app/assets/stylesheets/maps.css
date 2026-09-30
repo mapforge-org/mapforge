@@ -22,6 +22,14 @@ nav.fixed-top~#maps {
     justify-content: center;
   }
 
+  #maps .recently-viewed-maps {
+    column-gap: 0.5rem;
+  }
+
+  #maps .recently-viewed-maps .map-preview:nth-child(n+4) {
+    display: none;
+  }
+
   #search-filters-container {
     margin-inline: auto;
   }
@@ -72,6 +80,15 @@ nav.fixed-top~#maps {
   margin: 0.5rem 0;
   min-width: 7.5rem;
   max-width: 15rem;
+}
+
+#maps .recently-viewed-maps {
+  flex-wrap: nowrap;
+}
+
+#maps .recently-viewed-maps .map-preview {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 @media (hover: hover) {
