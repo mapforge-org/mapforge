@@ -545,6 +545,9 @@ msgstr "Fehler beim Aktualisieren der Geometrie von %{type}"
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
 
+msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
+msgstr "Jede Karte hat einen Ansichtslink und einen Bearbeitungslink. Teile sie, stelle deine Karte in die Galerie, oder halte sie privat. Binde sie auf anderen Webseiten ein."
+
 msgid "Export your maps as GPX/GeoJSON, or %{deploy_link}"
 msgstr "Exportiere deine Karten als GPX/GeoJSON, oder %{deploy_link}"
 
@@ -913,9 +916,6 @@ msgstr "Keine Elemente in dieser Ebene"
 
 msgid "No route found"
 msgstr "Keine Route gefunden"
-
-msgid "No signup needed. Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
-msgstr "Ohne Anmeldung. Jede Karte hat einen Ansichtslink und einen Bearbeitungslink. Teile sie, stelle deine Karte in die Galerie, oder halte sie privat. Binde sie auf anderen Webseiten ein."
 
 msgid "None"
 msgstr "Ohne"
@@ -1457,8 +1457,8 @@ msgstr "Dein Browser kann keine 3D-Grafik im Web darstellen. Aktualisiere deinen
 msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - draw, style and share in real-time."
 msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - gestalte und teile in Echtzeit."
 
-msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events. No signup needed."
-msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen. Ohne Anmeldung."
+msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events."
+msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen."
 
 msgid "Your maps"
 msgstr "Deine Karten"

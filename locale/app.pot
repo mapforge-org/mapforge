@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 00:14+0200\n"
-"PO-Revision-Date: 2026-10-01 00:14+0200\n"
+"POT-Creation-Date: 2026-10-01 00:18+0200\n"
+"PO-Revision-Date: 2026-10-01 00:18+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -722,6 +722,10 @@ msgstr ""
 msgid "Error uploading image"
 msgstr ""
 
+#: ../app/views/frontpage/index.haml:18
+msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:141
 msgid "Export your maps as GPX/GeoJSON, or %{deploy_link}"
 msgstr ""
@@ -1212,10 +1216,6 @@ msgstr ""
 
 #: ../app/javascript/maplibre/routing/openrouteservice.js:78
 msgid "No route found"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:18
-msgid "No signup needed. Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:177 ../app/views/maps/modals/feature/_edit_ui.haml:181
@@ -1938,7 +1938,7 @@ msgid "Your free, open-source map editor built on OpenStreetMap. Create individu
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:16
-msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events. No signup needed."
+msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events."
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:35
