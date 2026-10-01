@@ -6,10 +6,10 @@
   "display": "standalone",
   "themeColor": "#DAE2C8",
   "themeColorDark": "#000000",
-  "navigationColor": "#000000",
-  "navigationColorDark": "#000000",
-  "navigationDividerColor": "#000000",
-  "navigationDividerColorDark": "#000000",
+  "navigationColor": "#354620",
+  "navigationColorDark": "#354620",
+  "navigationDividerColor": "#354620",
+  "navigationDividerColorDark": "#354620",
   "backgroundColor": "#354620",
   "enableNotifications": true,
   "startUrl": "/",
@@ -20,8 +20,8 @@
     "path": "/space/workspace/mapforge/android/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "21",
-  "appVersionCode": 21,
+  "appVersionName": "v2026.10.01",
+  "appVersionCode": 22,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://mapforge.org/manifest.json",
@@ -38,7 +38,7 @@
   "isChromeOSOnly": false,
   "isMetaQuest": false,
   "fullScopeUrl": "https://mapforge.org/",
-  "minSdkVersion": 21,
+  "minSdkVersion": 24,
   "shareTarget": {
     "action": "https://mapforge.org/",
     "method": "GET",
@@ -56,5 +56,5 @@
   "displayOverride": [
     "standalone"
   ],
-  "appVersion": "21"
+  "appVersion": "v2026.10.01"
 }

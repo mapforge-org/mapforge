@@ -102,7 +102,7 @@ A map URL accepts these parameters. They are useful for embedded maps:
 
 * `bin/importmap outdated` shows outdated dependencies, `bin/importmap update` updates them
 * Updating a single package: `bin/importmap pin <pkg>`
-* Some dependencies in importmap.rb are marked with vX.Y so they don't get picked up automatically, they need a manual upgrade.
+* Some dependencies in importmap.rb are marked with vX.Y so they do not get picked up automatically, they need a manual upgrade.
 
 ### Translations
 
@@ -190,6 +190,14 @@ npm install -D @bubblewrap/cli
 # init is only needed on the first run
 cd android
 npx bubblewrap init --manifest=http://localhost:3000/manifest.json
+npx bubblewrap build
+```
+
+For each new Play Store upload, update the version before you build. Use the release name from the GitHub release as `versionName`. The `update` command adds one to the integer `versionCode`, which Play requires to increase with each upload.
+
+```bash
+cd android
+npx bubblewrap update --appVersionName=v2026.10.01
 npx bubblewrap build
 ```
 

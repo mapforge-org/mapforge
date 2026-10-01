@@ -74,6 +74,11 @@ body {
   color: var(--text-color);
 }
 
+/* Chrome on Android 15+ paints the area behind the system buttons with the html background */
+html {
+  background-color: var(--color-dark-moss-green);
+}
+
 /* View transition */
 ::view-transition-group(root) {
   animation-duration: 0.5s;
