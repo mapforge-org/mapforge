@@ -2,6 +2,7 @@ import { area } from "@turf/area"
 import { length } from "@turf/length"
 import * as dom from 'helpers/dom'
 import * as f from 'helpers/functions'
+import { sanitizeMarkdown } from 'helpers/markdown'
 import { featureIcon, featureTitle } from 'maplibre/feature'
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { showExtrasTotals } from 'maplibre/feature/extras_totals'
@@ -173,5 +174,5 @@ async function featureDescription (feature) {
     desc = marked(markdown || '')
   }
   // every branch builds html from properties or api answers that a stranger can control
-  return f.sanitizeMarkdown(desc)
+  return sanitizeMarkdown(desc)
 }

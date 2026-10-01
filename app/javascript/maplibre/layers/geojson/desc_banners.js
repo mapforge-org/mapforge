@@ -1,4 +1,4 @@
-import { sanitizeMarkdown } from 'helpers/functions'
+import { sanitizeMarkdown } from 'helpers/markdown'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { featureOnLevel } from 'maplibre/controls/levels'
 import { draw } from 'maplibre/edit'

@@ -3,6 +3,7 @@ import { sendMessage } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
+import { sanitizeMarkdown } from 'helpers/markdown'
 import { resetControls } from 'maplibre/controls/shared'
 import { toggleDrawMode } from 'maplibre/edit'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
@@ -196,7 +197,7 @@ export default class extends Controller {
 
   renderDescription() {
     marked.use({ gfm: true, breaks: true })
-    const desc = functions.sanitizeMarkdown(marked(this.mapDescriptionValue || ''))
+    const desc = sanitizeMarkdown(marked(this.mapDescriptionValue || ''))
     // an empty element lets CSS hide the whole card in view mode
     functions.e('#map-description-view', e => { e.innerHTML = desc.trim() })
   }

@@ -2,6 +2,7 @@ import { Controller } from '@hotwired/stimulus'
 import { initializeSocket, sendMessage } from 'channels/map_channel'
 import { parseClipboardFeature, setCopiedFeature } from 'helpers/clipboard'
 import * as functions from 'helpers/functions'
+import { initializeEditMode } from 'maplibre/edit'
 import { moveFeatureTo } from 'maplibre/feature'
 import { addFeature, resetInitializationState } from 'maplibre/layers/layers'
 import {
@@ -29,13 +30,7 @@ export default class extends Controller {
       initializeStaticMode()
     } else {
       if (window.gon.map_mode === 'rw') {
-        // Lazy-load the edit module so read-only viewers don't pay for mapbox-gl-draw,
-        // turf, routing, edit_styles and friends.
-        // initializeEditMode imports the draw modules one after another, so fetch them in
-        // parallel here. The basemap style still waits: edit mode registers a map 'load' handler.
-        const [{ initializeEditMode }] = await Promise.all([
-          import('maplibre/edit'), import('@mapbox/mapbox-gl-draw'), import('mapbox-gl-draw-paint-mode')
-        ])
+        // The basemap style waits: edit mode registers a map 'load' handler.
         await initializeEditMode()
       } else {
         initializeViewMode()

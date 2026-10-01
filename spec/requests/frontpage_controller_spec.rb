@@ -12,9 +12,9 @@ describe FrontpageController do
     end
 
     # An importmap update rewrites the pin line and can drop its preload option
-    it "preloads no turf module" do
+    it "preloads no map module" do
       get "/"
-      expect(response.body).not_to match(%r{rel="modulepreload" href="[^"]*/@turf--})
+      expect(response.body).not_to match(%r{rel="modulepreload" href="[^"]*/(@turf--|maplibre-gl-)})
     end
 
     it "offers the playground, start a map and login to a visitor" do
