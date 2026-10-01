@@ -101,6 +101,7 @@ module Ulogger
         f.properties["marker-size"] = 2
         f.properties["marker-color"] = "#f6f5f4"
         f.properties["stroke"] = "transparent"
+        f.properties.delete("stroke-width")
         f.properties["min-zoom"] = 14
         f.properties.delete("leading")
         f.save!
@@ -141,9 +142,11 @@ module Ulogger
     end
 
     def location_properties
-      { "marker-size": "8",
-        "marker-color": "#ff7800",
-        "stroke": "#000000" }
+      # a transparent ring around the km end marker, so its distance label stays readable
+      { "marker-size" => 16,
+        "marker-color" => "transparent",
+        "stroke" => "#ff7800",
+        "stroke-width" => 4 }
     end
 
     def description
