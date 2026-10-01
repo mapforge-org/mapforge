@@ -2,6 +2,10 @@ name: Make release
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag and release name (default: vYYYY.MM.DD)"
+        required: false
 
 env:
   REGISTRY: ghcr.io
@@ -20,8 +24,10 @@ jobs:
 
       - name: Set tag and release notes
         id: meta
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
         run: |
-          tag="v$(date +%Y.%m.%d)"
+          tag="${INPUT_TAG:-v$(date +%Y.%m.%d)}"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           awk '/^## /{if(n++)exit} n' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
           echo "Container image: \`${REGISTRY}/${IMAGE_NAME}:${tag}\`" >> "$RUNNER_TEMP/notes.md"
