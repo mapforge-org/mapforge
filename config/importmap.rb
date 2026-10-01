@@ -7,12 +7,12 @@ pin "@rails/actioncable", to: "actioncable.esm.js"
 pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 
-pin_all_from "app/javascript/controllers", under: "controllers", preload: false
+pin_all_from "app/javascript/controllers", under: "controllers", preload: "map"
 pin "stimulus-controllers-index", to: "controllers/index.js", preload: false
-pin_all_from "app/javascript/channels", under: "channels", preload: false
+pin_all_from "app/javascript/channels", under: "channels", preload: "map"
 
-pin_all_from "app/javascript/maplibre", under: "maplibre", preload: false
-pin_all_from "app/javascript/helpers", under: "helpers", preload: false
+pin_all_from "app/javascript/maplibre", under: "maplibre", preload: "map"
+pin_all_from "app/javascript/helpers", under: "helpers", preload: "map"
 
 # page initializers
 pin "deck", preload: false
@@ -22,9 +22,9 @@ pin "deck", preload: false
 
 # https://github.com/piraveenankirupakaran/mapbox-gl-draw-paint-mode
 # free hand draw; local download because of removal of css import, latest git version, feature id generation
-pin "mapbox-gl-draw-paint-mode", preload: false
+pin "mapbox-gl-draw-paint-mode", preload: "map-rw"
 pin_all_from "vendor/javascript/mapbox-gl-draw-paint-mode",
-  under: "mapbox-gl-draw-paint-mode", preload: false
+  under: "mapbox-gl-draw-paint-mode", preload: "map-rw"
 
 # https://github.com/maplibre/maplibre-gl-js
 # From https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/
@@ -32,34 +32,34 @@ pin_all_from "vendor/javascript/mapbox-gl-draw-paint-mode",
 # preloaded so the browser fetches during head parse
 pin "maplibre-gl" # v6.11.2
 # https://github.com/maplibre/maplibre-gl-geocoder
-pin "@maplibre/maplibre-gl-geocoder", preload: false, to: "@maplibre--maplibre-gl-geocoder.js" # @1.9.4
+pin "@maplibre/maplibre-gl-geocoder", preload: "map", to: "@maplibre--maplibre-gl-geocoder.js" # @1.9.4
 # https://github.com/GIScience/openrouteservice-js?tab=readme-ov-file
-pin "openrouteservice-js", preload: false # @0.4.1
+pin "openrouteservice-js", preload: "map" # @0.4.1
 # https://github.com/maplibre/maplibre-gl-directions/tree/main
-pin "@maplibre/maplibre-gl-directions", preload: false, to: "@maplibre--maplibre-gl-directions.js" # @0.10.1
+pin "@maplibre/maplibre-gl-directions", preload: "map", to: "@maplibre--maplibre-gl-directions.js" # @0.10.1
 # https://github.com/onthegomap/maplibre-contour
-pin "maplibre-contour", preload: false # @0.1.1
+pin "maplibre-contour", preload: "map" # @0.1.1
 
 # Elevation chart
 # from https://esm.sh/chart.js@4.5.0/es2022/chart.bundle.mjs
 pin "chart.js", to: "chart-js.js", preload: false # @4.5.1
 
 # render markdown
-pin "marked", preload: false # @18.0.14
+pin "marked", preload: "map" # @18.0.14
 # https://github.com/cure53/DOMPurify, strips scripts and event handlers from rendered markdown
-pin "dompurify", preload: false # @3.4.16
+pin "dompurify", preload: "map" # @3.4.16
 # https://github.com/kazuhikoarase/qrcode-generator, from https://esm.sh/qrcode-generator@2.0.4?bundle
 pin "qrcode-generator", preload: false # @2.0.4
 
 # https://github.com/mapbox/mapbox-gl-draw
 # Unminified + locally patched, see the header of the vendored file
-pin "@mapbox/mapbox-gl-draw", to: "@mapbox--mapbox-gl-draw.js", preload: false # @1.5.2
-pin "@mapbox/geojson-area", to: "@mapbox--geojson-area.js", preload: false # @0.2.2
-pin "@mapbox/geojson-normalize", to: "@mapbox--geojson-normalize.js", preload: false # @0.0.1
-pin "@mapbox/point-geometry", to: "@mapbox--point-geometry.js", preload: false # @1.1.0
-pin "fast-deep-equal", preload: false # @3.1.3
-pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: false # v5.1.2, manual download
-pin "wgs84", preload: false # @0.0.0
+pin "@mapbox/mapbox-gl-draw", to: "@mapbox--mapbox-gl-draw.js", preload: "map-rw" # @1.5.2
+pin "@mapbox/geojson-area", to: "@mapbox--geojson-area.js", preload: "map-rw" # @0.2.2
+pin "@mapbox/geojson-normalize", to: "@mapbox--geojson-normalize.js", preload: "map-rw" # @0.0.1
+pin "@mapbox/point-geometry", to: "@mapbox--point-geometry.js", preload: "map-rw" # @1.1.0
+pin "fast-deep-equal", preload: "map" # @3.1.3
+pin "nanoid/non-secure", to: "nanoid--non-secure.js", preload: "map-rw" # v5.1.2, manual download
+pin "wgs84", preload: "map-rw" # @0.0.0
 
 # https://github.com/Ionaru/easy-markdown-editor
 pin "easymde", preload: false # v2.20.0, manual update
@@ -80,25 +80,25 @@ pin "@kurkle/color", to: "@kurkle--color.js", preload: false # @0.6.4
 
 # https://turfjs.org/
 # Turf libs needed by mapbox-gl-draw
-pin "@turf/projection", to: "@turf--projection.js", preload: false # @7.4.0
-pin "@turf/clone", to: "@turf--clone.js", preload: false # @7.4.0
-pin "@turf/helpers", to: "@turf--helpers.js" # @7.4.0
-pin "@turf/meta", to: "@turf--meta.js" # @7.4.0
+pin "@turf/projection", to: "@turf--projection.js", preload: "map" # @7.4.0
+pin "@turf/clone", to: "@turf--clone.js", preload: "map" # @7.4.0
+pin "@turf/helpers", to: "@turf--helpers.js", preload: "map" # @7.4.0
+pin "@turf/meta", to: "@turf--meta.js", preload: "map" # @7.4.0
 # Turf libs needed by app
-pin "@turf/simplify", to: "@turf--simplify.js", preload: false # @7.4.0
-pin "@turf/boolean-point-on-line", to: "@turf--boolean-point-on-line.js", preload: false # @7.4.0
-pin "@turf/clean-coords", to: "@turf--clean-coords.js", preload: false # @7.4.0
-pin "@turf/invariant", to: "@turf--invariant.js", preload: false # @7.4.0
-pin "@turf/centroid", to: "@turf--centroid.js", preload: false # @7.4.0
-pin "@turf/distance", to: "@turf--distance.js", preload: false # @7.4.0
-pin "@turf/along", to: "@turf--along.js", preload: false # @7.4.0
-pin "@turf/bearing", to: "@turf--bearing.js", preload: false # @7.4.0
-pin "@turf/destination", to: "@turf--destination.js", preload: false # @7.4.0
-pin "@turf/length", to: "@turf--length.js", preload: false # @7.4.0
-pin "@turf/area", to: "@turf--area.js", preload: false # @7.4.0
+pin "@turf/simplify", to: "@turf--simplify.js", preload: "map" # @7.4.0
+pin "@turf/boolean-point-on-line", to: "@turf--boolean-point-on-line.js", preload: "map" # @7.4.0
+pin "@turf/clean-coords", to: "@turf--clean-coords.js", preload: "map" # @7.4.0
+pin "@turf/invariant", to: "@turf--invariant.js", preload: "map" # @7.4.0
+pin "@turf/centroid", to: "@turf--centroid.js", preload: "map" # @7.4.0
+pin "@turf/distance", to: "@turf--distance.js", preload: "map" # @7.4.0
+pin "@turf/along", to: "@turf--along.js", preload: "map" # @7.4.0
+pin "@turf/bearing", to: "@turf--bearing.js", preload: "map" # @7.4.0
+pin "@turf/destination", to: "@turf--destination.js", preload: "map" # @7.4.0
+pin "@turf/length", to: "@turf--length.js", preload: "map" # @7.4.0
+pin "@turf/area", to: "@turf--area.js", preload: "map" # @7.4.0
 pin "@turf/buffer", to: "@turf--buffer.js", preload: false # @7.4.0
-pin "@turf/bbox", to: "@turf--bbox.js", preload: false # @7.4.0
-pin "@turf/center", to: "@turf--center.js", preload: false # @7.4.0
+pin "@turf/bbox", to: "@turf--bbox.js", preload: "map" # @7.4.0
+pin "@turf/center", to: "@turf--center.js", preload: "map" # @7.4.0
 pin "@turf/jsts", to: "@turf--jsts.js", preload: false # @2.7.2
 # dependencies of turf/buffer
 pin "d3-array", preload: false # @3.2.4

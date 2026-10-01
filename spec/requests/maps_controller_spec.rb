@@ -68,6 +68,16 @@ describe MapsController do
     end
   end
 
+  describe "#show (preloads)" do
+    it "preloads the map modules, and the draw modules only in edit mode" do
+      get map_path(id: map.public_id)
+      expect(response.body).to match(%r{rel="modulepreload" href="[^"]*/maplibre/map-})
+      expect(response.body).not_to match(%r{rel="modulepreload" href="[^"]*/@mapbox--mapbox-gl-draw-})
+      get map_path(id: map.private_id)
+      expect(response.body).to match(%r{rel="modulepreload" href="[^"]*/@mapbox--mapbox-gl-draw-})
+    end
+  end
+
   describe "#show (share modal)" do
     let(:user) { create(:user) }
     let(:map) { create(:map, owners: [ user ]) }

@@ -12,6 +12,8 @@
   - # Speed up default basemap tile fetches (versatilesColorful uses tiles.versatiles.org)
   %link{ rel: "preconnect", href: "https://tiles.versatiles.org", crossorigin: true }
   %link{ rel: "dns-prefetch", href: "https://tiles.versatiles.org" }
+  = javascript_importmap_module_preload_tags(entry_point: "map")
+  = javascript_importmap_module_preload_tags(entry_point: "map-rw") if @map_mode == "rw"
 
 
 #preloader

@@ -11,6 +11,12 @@ describe FrontpageController do
       expect(response.body).to include("Create your own map")
     end
 
+    # An importmap update rewrites the pin line and can drop its preload option
+    it "preloads no turf module" do
+      get "/"
+      expect(response.body).not_to match(%r{rel="modulepreload" href="[^"]*/@turf--})
+    end
+
     it "offers the playground, start a map and login to a visitor" do
       get "/"
       expect(response.body).to include(">Playground</button>")
