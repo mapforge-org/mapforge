@@ -4,6 +4,14 @@
     .map-modal-header
       %h3.mapforge-font= _("Share Map")
 
+    %dialog#qr-viewer{ 'aria-label': _("QR code"),
+      data: { "map--share-target": "qrViewer",
+        action: "keydown.esc@document:capture->map--share#stopEsc click->map--share#closeQr" } }
+      %button.modal-close-button{ type: "button" } &times;
+      .qr-code{ data: { "map--share-target": "qrCode" } }
+      %p.qr-caption.mapforge-font{ data: { "map--share-target": "qrCaption" } }
+      %p.qr-label{ data: { "map--share-target": "qrLabel" } }
+
     .map-modal-content.inline-scroll
 
       .feature-section-card.pt-3
@@ -11,7 +19,7 @@
           - if map_owner? && !@map.playground?
             .row.mb-3
               .col-12
-                .d-flex.gap-2.align-items-center
+                .d-flex.gap-0.gap-sm-2.align-items-center
                   %button#share-ownership-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
                     =link_to(map_path(@map.private_id, join: true), data: { turbo: false, action: "click->map--share#nativeShare" }) do
                       - if @map.owners.any?
@@ -20,36 +28,45 @@
                             - if owner.image
                               = image_tag avatar_url(owner.image, 24), class: 'map-avatar', title: owner.name || owner.email, data: { "toggle": 'tooltip', 'bs-placement': 'top' }, referrerpolicy: 'no-referrer'
                       %i.bi.bi-shield-fill-check.me-2
-                      = _("Share ownership link")
+                      %span.d-none.d-sm-inline= _("Share ownership link")
+                      %span.d-sm-none= _("Ownership link")
                       %span.permission-badge.badge-owner.ms-2= _("Owner")
                   %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyOwnershipLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: _("Copy link to clipboard") }
-                    %i.bi.bi-copy.me-1
+                    %i.bi.bi-copy.me-sm-1
+                  %a.link.text-muted.copy-link.qr-link{ data: { action: "click->map--share#showQr", url: map_path(@map.private_id, join: true), label: _("Ownership link"), "toggle": 'tooltip', 'bs-placement': 'top' }, title: _("Show QR code") }
+                    %i.bi.bi-qr-code
                 %small.text-muted.mt-2.flex-center.center
                   = _("Map owners have this map listed in their account with full permissions.")
 
           .row.mb-3
             .col-12
-              .d-flex.gap-2.align-items-center
+              .d-flex.gap-0.gap-sm-2.align-items-center
                 %button#share-edit-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
                   =link_to(map_path(@map.private_id), data: { turbo: false, action: "click->map--share#nativeShare" }) do
                     %i.bi.bi-pencil-square.me-2
-                    = _("Share edit link")
+                    %span.d-none.d-sm-inline= _("Share edit link")
+                    %span.d-sm-none= _("Edit link")
                     %span.permission-badge.badge-edit.ms-2= _("Can Edit")
                 %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyEditLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: _("Copy link to clipboard") }
-                  %i.bi.bi-copy.me-1
+                  %i.bi.bi-copy.me-sm-1
+                %a.link.text-muted.copy-link.qr-link{ data: { action: "click->map--share#showQr", url: map_path(@map.private_id), label: _("Edit link"), "toggle": 'tooltip', 'bs-placement': 'top' }, title: _("Show QR code") }
+                  %i.bi.bi-qr-code
               %small.text-muted.mt-2.flex-center.center
                 = _("With this link, users can modify the map, add layers, and make changes.")
 
         .row.mb-3
           .col-12
-            .d-flex.gap-2.align-items-center
+            .d-flex.gap-0.gap-sm-2.align-items-center
               %button#share-view-link.form-button.btn.btn-blue.flex-grow-1{ type: "button" }
                 =link_to(map_path(id: @map.public_id), data: { turbo: false, action: "click->map--share#nativeShare" }) do
                   %i.bi.bi-eye-fill.me-2
-                  = _("Share view link")
+                  %span.d-none.d-sm-inline= _("Share view link")
+                  %span.d-sm-none= _("View link")
                   %span.permission-badge.badge-view.ms-2= _("Read Only")
               %a.link.text-muted.copy-link{ data: { action: "click->map--share#copyViewLink", "toggle": 'tooltip', 'bs-placement': 'top' }, title: _("Copy link to clipboard") }
-                %i.bi.bi-copy.me-1
+                %i.bi.bi-copy.me-sm-1
+              %a.link.text-muted.copy-link.qr-link{ data: { action: "click->map--share#showQr", url: map_path(id: @map.public_id), label: _("View link"), "toggle": 'tooltip', 'bs-placement': 'top' }, title: _("Show QR code") }
+                %i.bi.bi-qr-code
             %small.text-muted.mt-2.flex-center.center
               = _("Users can explore the map but cannot modify it.")
 

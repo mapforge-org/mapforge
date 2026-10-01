@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 00:18+0200\n"
-"PO-Revision-Date: 2026-10-01 00:18+0200\n"
+"POT-Creation-Date: 2026-10-01 23:42+0200\n"
+"PO-Revision-Date: 2026-10-01 23:42+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Add OpenStreetMap layers"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:316 ../app/javascript/controllers/map/settings_controller.js:215
+#: ../app/javascript/controllers/feature/modal_controller.js:316 ../app/javascript/controllers/map/settings_controller.js:217
 msgid "Add a description text"
 msgstr ""
 
@@ -282,7 +282,7 @@ msgstr ""
 msgid "Calculating route..."
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:37
+#: ../app/views/maps/modals/_share.haml:48
 msgid "Can Edit"
 msgstr ""
 
@@ -330,7 +330,7 @@ msgstr ""
 msgid "Clear filter"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:94
+#: ../app/views/maps/modals/_share.haml:110
 msgid "Click to copy html to embed in your website"
 msgstr ""
 
@@ -422,7 +422,7 @@ msgstr ""
 msgid "Copy coordinates to clipboard"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:25 ../app/views/maps/modals/_share.haml:38 ../app/views/maps/modals/_share.haml:51
+#: ../app/views/maps/modals/_share.haml:33 ../app/views/maps/modals/_share.haml:49 ../app/views/maps/modals/_share.haml:65
 msgid "Copy link to clipboard"
 msgstr ""
 
@@ -586,7 +586,7 @@ msgstr ""
 msgid "Download as geoJSON"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:68
+#: ../app/views/maps/modals/_share.haml:84
 msgid "Download map"
 msgstr ""
 
@@ -658,7 +658,11 @@ msgstr ""
 msgid "Edit in OSM"
 msgstr ""
 
-#: ../app/javascript/controllers/map/share_controller.js:56
+#: ../app/views/maps/modals/_share.haml:47
+msgid "Edit link"
+msgstr ""
+
+#: ../app/javascript/controllers/map/share_controller.js:58
 msgid "Edit link copied"
 msgstr ""
 
@@ -682,11 +686,11 @@ msgstr ""
 msgid "Elevation profile"
 msgstr ""
 
-#: ../app/javascript/controllers/map/share_controller.js:80
+#: ../app/javascript/controllers/map/share_controller.js:111
 msgid "Embed code copied"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:88
+#: ../app/views/maps/modals/_share.haml:104
 msgid "Embed map"
 msgstr ""
 
@@ -1054,7 +1058,7 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:82 ../app/javascript/maplibre/map.js:163
+#: ../app/views/maps/modals/_share.haml:98 ../app/javascript/maplibre/map.js:163
 msgid "Map"
 msgstr ""
 
@@ -1070,7 +1074,7 @@ msgstr ""
 msgid "Map data (gpx, kml, geojson)"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:81
+#: ../app/views/maps/modals/_share.haml:97
 msgid "Map export"
 msgstr ""
 
@@ -1082,7 +1086,7 @@ msgstr ""
 msgid "Map marker"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:28
+#: ../app/views/maps/modals/_share.haml:38
 msgid "Map owners have this map listed in their account with full permissions."
 msgstr ""
 
@@ -1266,11 +1270,15 @@ msgstr ""
 msgid "Overpass tutorial"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:24
+#: ../app/views/maps/modals/_share.haml:32
 msgid "Owner"
 msgstr ""
 
-#: ../app/javascript/controllers/map/share_controller.js:50
+#: ../app/views/maps/modals/_share.haml:31
+msgid "Ownership link"
+msgstr ""
+
+#: ../app/javascript/controllers/map/share_controller.js:52
 msgid "Ownership link copied"
 msgstr ""
 
@@ -1370,6 +1378,10 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
+#: ../app/views/maps/modals/_share.haml:7
+msgid "QR code"
+msgstr ""
+
 #: ../app/views/maps/modals/_layers.haml:193
 msgid "Query"
 msgstr ""
@@ -1378,7 +1390,7 @@ msgstr ""
 msgid "Raster URL (https://<host>/{z}/{x}/{y}.png)"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:50
+#: ../app/views/maps/modals/_share.haml:64
 msgid "Read Only"
 msgstr ""
 
@@ -1551,7 +1563,7 @@ msgstr ""
 msgid "Share Map"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:36
+#: ../app/views/maps/modals/_share.haml:46
 msgid "Share edit link"
 msgstr ""
 
@@ -1559,15 +1571,19 @@ msgstr ""
 msgid "Share map"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:23
+#: ../app/views/maps/modals/_share.haml:30
 msgid "Share ownership link"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:49
+#: ../app/views/maps/modals/_share.haml:62
 msgid "Share view link"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:63
+#: ../app/views/maps/modals/_share.haml:35 ../app/views/maps/modals/_share.haml:51 ../app/views/maps/modals/_share.haml:67
+msgid "Show QR code"
+msgstr ""
+
+#: ../app/views/maps/modals/_share.haml:79
 msgid "Show in public gallery"
 msgstr ""
 
@@ -1575,7 +1591,7 @@ msgstr ""
 msgid "Show layer"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:62
+#: ../app/views/maps/modals/_share.haml:78
 msgid "Show map in public Mapforge gallery"
 msgstr ""
 
@@ -1597,7 +1613,7 @@ msgid_plural "Showing %{count} maps"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/views/maps/modals/_share.haml:84
+#: ../app/views/maps/modals/_share.haml:100
 msgid "Single tracks or points of the map can get exported from their details view."
 msgstr ""
 
@@ -1845,7 +1861,7 @@ msgstr ""
 msgid "Uphill (12-15%)"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:54
+#: ../app/views/maps/modals/_share.haml:70
 msgid "Users can explore the map but cannot modify it."
 msgstr ""
 
@@ -1857,7 +1873,11 @@ msgstr ""
 msgid "View feature information"
 msgstr ""
 
-#: ../app/javascript/controllers/map/share_controller.js:62
+#: ../app/views/maps/modals/_share.haml:63
+msgid "View link"
+msgstr ""
+
+#: ../app/javascript/controllers/map/share_controller.js:64
 msgid "View link copied"
 msgstr ""
 
@@ -1905,7 +1925,7 @@ msgstr ""
 msgid "Winter map with snow on the mountains"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:41
+#: ../app/views/maps/modals/_share.haml:54
 msgid "With this link, users can modify the map, add layers, and make changes."
 msgstr ""
 

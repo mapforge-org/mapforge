@@ -22,6 +22,16 @@ describe "Map share" do
       expect(page.evaluate_script("window.shared.url")).to end_with("/m/" + subject.public_id)
     end
 
+    it "shows the view link as qr code" do
+      find("#share-view-link").sibling("[data-action='click->map--share#showQr']").click
+      expect(page).to have_css("#qr-viewer[open] .qr-code svg image")
+      expect(page).to have_css("#qr-viewer .qr-caption", text: "Test Map")
+      expect(page).to have_css("#qr-viewer .qr-label", text: "View link")
+      find("#qr-viewer").click
+      expect(page).to have_no_css("#qr-viewer[open]")
+      expect(page).to have_text("Share Map")
+    end
+
     it "can add the map to the gallery and remove it again" do
       find("#map-gallery-toggle").click
       wait_for { map.reload.view_permission }.to eq("listed")

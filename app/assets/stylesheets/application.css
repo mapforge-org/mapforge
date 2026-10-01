@@ -79,6 +79,12 @@ html {
   background-color: var(--color-dark-moss-green);
 }
 
+/* the body background must cover the viewport, else the html background shows below short pages
+   and below the map while it fades in */
+body {
+  min-height: 100dvh;
+}
+
 /* View transition */
 ::view-transition-group(root) {
   animation-duration: 0.5s;

@@ -497,6 +497,9 @@ msgstr "Bearbeiten"
 msgid "Edit in OSM"
 msgstr "In OSM bearbeiten"
 
+msgid "Edit link"
+msgstr "Bearbeitungslink"
+
 msgid "Edit link copied"
 msgstr "Bearbeitungslink kopiert"
 
@@ -956,6 +959,9 @@ msgstr "Overpass-Anleitung"
 msgid "Owner"
 msgstr "Eigentümer"
 
+msgid "Ownership link"
+msgstr "Eigentümerlink"
+
 msgid "Ownership link copied"
 msgstr "Eigentümerlink kopiert"
 
@@ -1030,6 +1036,9 @@ msgstr "Projekt"
 
 msgid "Properties"
 msgstr "Titel"
+
+msgid "QR code"
+msgstr "QR-Code"
 
 msgid "Query"
 msgstr "Abfrage"
@@ -1178,6 +1187,9 @@ msgstr "Eigentümerlink teilen"
 
 msgid "Share view link"
 msgstr "Ansichtslink teilen"
+
+msgid "Show QR code"
+msgstr "QR-Code anzeigen"
 
 msgid "Show in public gallery"
 msgstr "In der Galerie zeigen"
@@ -1396,6 +1408,9 @@ msgstr "Ansicht"
 
 msgid "View feature information"
 msgstr "Objektinformationen anzeigen"
+
+msgid "View link"
+msgstr "Ansichtslink"
 
 msgid "View link copied"
 msgstr "Ansichtslink kopiert"

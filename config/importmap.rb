@@ -48,6 +48,8 @@ pin "chart.js", to: "chart-js.js", preload: false # @4.5.1
 pin "marked", preload: false # @18.0.14
 # https://github.com/cure53/DOMPurify, strips scripts and event handlers from rendered markdown
 pin "dompurify", preload: false # @3.4.16
+# https://github.com/kazuhikoarase/qrcode-generator, from https://esm.sh/qrcode-generator@2.0.4?bundle
+pin "qrcode-generator", preload: false # @2.0.4
 
 # https://github.com/mapbox/mapbox-gl-draw
 # Unminified + locally patched, see the header of the vendored file

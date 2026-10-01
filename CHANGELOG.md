@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-10
+
+* Share map links with QR code
+
 ## 2026-09
 
 * Option to organize geojson features into multiple layers, drag&drop features between layers
