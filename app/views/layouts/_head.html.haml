@@ -49,7 +49,7 @@
   = stylesheet_link_tag "bootstrap.min.css" # bootstrap@5.3.3
   - # maptiler-sdk.css includes maplibre-gl css and looks better
   - # needs to get loaded before application.css
-  /- # from https://unpkg.com/maplibre-gl@5.20.0/dist/maplibre-gl.css
+  - # from https://cdn.jsdelivr.net/npm/@maptiler/sdk@4.1.0/dist/maptiler-sdk.css (bundles maplibre-gl 5.24 css)
   = stylesheet_link_tag "maptiler-sdk", "data-turbo-track": "reload"
   /= stylesheet_link_tag "maplibre-gl", "data-turbo-track": "reload"
 

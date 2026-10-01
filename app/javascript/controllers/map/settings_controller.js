@@ -120,7 +120,8 @@ export default class extends Controller {
   // alternative to https://maplibre.org/maplibre-gl-js/docs/API/classes/TerrainControl/
   updateTerrain (event) {
     this.mapTerrainValue = event.target.checked
-    // globe and 3d don't work together
+    // globe and 3d don't work together: maplibre (6.11.2) does not lift the globe camera
+    // by terrain elevation, so labels render too large and panning is too sensitive
     if (this.mapTerrainValue) {
       document.querySelector('#map-globe').checked = false
       mapProperties.globe = false
@@ -152,7 +153,8 @@ export default class extends Controller {
 
   updateGlobe (event) {
     this.mapGlobeValue = event.target.checked
-    // globe and 3d don't work together
+    // globe and 3d don't work together: maplibre (6.11.2) does not lift the globe camera
+    // by terrain elevation, so labels render too large and panning is too sensitive
     if (this.mapGlobeValue) {
       document.querySelector('#map-terrain').checked = false
       mapProperties.terrain = false
