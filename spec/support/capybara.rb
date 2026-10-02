@@ -23,6 +23,9 @@ Capybara.register_driver(:cuprite) do |app|
     # Chrome 5 seconds for that, which a loaded machine misses: parallel_rspec runs two
     # browsers, and then Ferrum::NoSuchTargetError fails the example before it starts.
     protocol_timeout: 30,
+    # visit waits until every request of the page completes. A map page in rw mode loads more
+    # than 100 modules, and on a loaded machine that took longer than the default 5 seconds.
+    timeout: 10,
     js_errors: true,
     logger: StringIO.new,
     # Specs must not depend on the network. Chrome resolves no host but the Capybara server,
@@ -57,7 +60,8 @@ Capybara::Screenshot.autosave_on_failure = true
 Capybara.save_path = Rails.root.join("tmp/capybara_downloads")
 
 # Start Puma silently
-Capybara.server = :puma, { Silent: true }
+# Capybara's default of 4 threads queues the module requests of a map page
+Capybara.server = :puma, { Silent: true, Threads: "0:8" }
 
 # Chrome derives Accept-Language/navigator.language from the OS locale (LANG/LC_ALL),
 # not from --lang, so tests would otherwise depend on the machine's locale.
