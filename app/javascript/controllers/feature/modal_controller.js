@@ -113,27 +113,27 @@ export default class extends Controller {
     document.querySelector('#stroke-color-mode')?.classList.add('hidden')
     document.querySelector('#stroke-color')?.classList.remove('hidden')
 
-    // transparent stroke
+    // transparent stroke, hexColor() turns 'transparent' into the default color
+    let default_stroke = defaults.featureOutlineColor
+    if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
+      default_stroke = defaults.featureColor
+    }
+    document.querySelector('#stroke-color').value = functions.hexColor(feature.properties.stroke, default_stroke)
     if (feature.properties.stroke === 'transparent') {
       document.querySelector('#stroke-color').setAttribute('disabled', 'true')
       document.querySelector('#stroke-color-transparent').checked = true
     } else {
       document.querySelector('#stroke-color').removeAttribute('disabled')
-      let default_stroke = defaults.featureOutlineColor
-      if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
-        default_stroke = defaults.featureColor
-      }
-      document.querySelector('#stroke-color').value = functions.hexColor(feature.properties.stroke, default_stroke)
       document.querySelector('#stroke-color-transparent').checked = false
     }
 
     // transparent fill
+    document.querySelector('#fill-color').value = functions.hexColor(feature.properties.fill, defaults.featureColor)
     if (feature.properties.fill === 'transparent' || feature.properties['marker-color'] === 'transparent') {
       document.querySelector('#fill-color').setAttribute('disabled', 'true')
       document.querySelector('#fill-color-transparent').checked = true
     } else {
       document.querySelector('#fill-color').removeAttribute('disabled')
-      document.querySelector('#fill-color').value = functions.hexColor(feature.properties.fill, defaults.featureColor)
       document.querySelector('#fill-color-transparent').checked = false
     }
 

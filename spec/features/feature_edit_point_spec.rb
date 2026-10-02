@@ -34,6 +34,18 @@ describe "Feature edit, point features" do
         wait_for { point.reload.properties["marker-shape"] }.to be_nil
       end
 
+      it "keeps a chosen transparency when the shape changes" do
+        find("#edit-button-style").click
+        find("#fill-color-transparent").check
+        wait_for { point.reload.properties["marker-color"] }.to eq("transparent")
+
+        find("#marker-shape-ui [data-shape='pin']").click
+
+        wait_for { point.reload.properties["marker-shape"] }.to eq("pin")
+        expect(point.properties["marker-color"]).to eq("transparent")
+        expect(find("#fill-color-transparent")).to be_checked
+      end
+
       it "can update title" do
         fill_in "feature-title", with: "New Title"
         wait_for { point.reload.properties["title"] }.to eq("New Title")
@@ -100,6 +112,18 @@ describe "Feature edit, point features" do
         find("#fill-color-transparent").check
 
         wait_for { point.reload.properties["marker-color"] }.to eq("transparent")
+      end
+
+      it "keeps the fill color when transparency is switched off again" do
+        find("#edit-button-style").click
+        color = "#aa00cc"
+        set_color_input("#fill-color", color)
+        wait_for { point.reload.properties["marker-color"] }.to eq(color)
+
+        find("#fill-color-transparent").check
+        wait_for { point.reload.properties["marker-color"] }.to eq("transparent")
+        find("#fill-color-transparent").uncheck
+        wait_for { point.reload.properties["marker-color"] }.to eq(color)
       end
 
       it "can update outline color" do
@@ -210,6 +234,58 @@ describe "Feature edit, point features" do
         wait_for { point.reload.properties["marker-symbol"] }.to be_nil
         # the icon button keeps the preview of the symbol that a click brings back
         expect(page).to have_selector("#emoji img")
+      end
+
+      it "keeps a chosen transparency when the symbol is added and removed" do
+        find("#edit-button-style").click
+        find("#fill-color-transparent").check
+        find("#stroke-color-transparent").check
+        wait_for { point.reload.properties.values_at("marker-color", "stroke") }.to eq(%w[transparent transparent])
+
+        find("#marker-content-ui [data-content='symbol']").click
+        find("em-emoji-picker")
+        page.execute_script(<<~JS)
+          const input = document.querySelector('em-emoji-picker').shadowRoot.querySelector('input[type="search"]');
+          input.value = 'cafe';
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        JS
+        icon = "document.querySelector('em-emoji-picker').shadowRoot" \
+          ".querySelector('.scroll img[src=\"/icon-sets/pinhead/cup_and_saucer.png\"]')"
+        wait_for { page.evaluate_script("!!#{icon}") }.to be true
+        page.execute_script("#{icon}.closest('button').click()")
+        # a white icon turns on the circle that an emoji took away, but not a chosen transparency
+        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/cup_and_saucer.png")
+        expect(point.properties.values_at("marker-color", "stroke")).to eq(%w[transparent transparent])
+        expect(find("#fill-color-transparent")).to be_checked
+
+        find("#marker-content-ui [data-content='none']").click
+
+        wait_for { point.reload.properties["marker-symbol"] }.to be_nil
+        expect(point.properties.values_at("marker-color", "stroke")).to eq(%w[transparent transparent])
+        expect(find("#fill-color-transparent")).to be_checked
+        expect(find("#stroke-color-transparent")).to be_checked
+      end
+
+      it "brings the circle back when an emoji made it transparent" do
+        find("#edit-button-style").click
+        find("#marker-content-ui [data-content='symbol']").click
+        find("em-emoji-picker")
+        page.execute_script(<<~JS)
+          const input = document.querySelector('em-emoji-picker').shadowRoot.querySelector('input[type="search"]');
+          input.value = 'thumbsup';
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        JS
+        emoji = "document.querySelector('em-emoji-picker').shadowRoot" \
+          ".querySelector('.scroll span.emoji-mart-emoji:not(:has(img))')"
+        wait_for { page.evaluate_script("!!#{emoji}") }.to be true
+        page.execute_script("#{emoji}.click()")
+        wait_for { point.reload.properties["marker-color"] }.to eq("transparent")
+
+        find("#marker-content-ui [data-content='none']").click
+
+        wait_for { point.reload.properties["marker-symbol"] }.to be_nil
+        expect(point.properties["marker-color"]).not_to eq("transparent")
+        expect(point.properties["stroke"]).not_to eq("transparent")
       end
     end
 

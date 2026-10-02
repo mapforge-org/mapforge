@@ -14,7 +14,7 @@ import {
 import { confirmImageLocation, uploadImage, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
-import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
+import { defaultPointSize } from 'maplibre/styles/defaults'
 import { patternKeys } from 'maplibre/styles/pattern_image'
 import { addUndoState } from 'maplibre/undo'
 
@@ -203,15 +203,17 @@ export default class extends Controller {
     this.renderFeature({ refreshRouteExtras: true })
   }
 
-  updateStrokeColorTransparent () {
+  // only the owner's own change of the checkbox passes ownerInput
+  updateStrokeColorTransparent (ownerInput) {
     const feature = this.getEditFeature()
+    if (ownerInput) { markerMemory.get(this.featureIdValue)?.autoTransparent?.delete('stroke') }
     let color
     if (document.querySelector('#stroke-color-transparent').checked) {
       color = 'transparent'
       document.querySelector('#stroke-color').setAttribute('disabled', 'true')
     } else {
-      color = defaults.featureOutlineColor
-      document.querySelector('#stroke-color').value = color
+      // the disabled input still holds the color from before it turned transparent
+      color = document.querySelector('#stroke-color').value
       document.querySelector('#stroke-color').removeAttribute('disabled')
     }
     feature.properties.stroke = color
@@ -226,15 +228,16 @@ export default class extends Controller {
     this.renderFeature()
   }
 
-  updateFillColorTransparent () {
+  // only the owner's own change of the checkbox passes ownerInput
+  updateFillColorTransparent (ownerInput) {
     const feature = this.getEditFeature()
+    if (ownerInput) { markerMemory.get(this.featureIdValue)?.autoTransparent?.delete('marker-color') }
     let color
     if (document.querySelector('#fill-color-transparent').checked) {
       color = 'transparent'
       document.querySelector('#fill-color').setAttribute('disabled', 'true')
     } else {
-      color = defaults.featureColor
-      document.querySelector('#fill-color').value = color
+      color = document.querySelector('#fill-color').value
       document.querySelector('#fill-color').removeAttribute('disabled')
     }
     if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') { feature.properties.fill = color }
@@ -271,16 +274,9 @@ export default class extends Controller {
     if (draw && draw.get(this.featureIdValue)) {
       draw.setFeatureProperty(this.featureIdValue, 'marker-shape', feature.properties['marker-shape'] || null)
     }
-    // A shape is the marker itself, so it must be visible. A symbol before it can have turned
-    // the colors transparent (see updateMarkerSymbol).
-    if (feature.properties['marker-shape'] && feature.properties['marker-color'] === 'transparent') {
-      document.querySelector('#fill-color-transparent').checked = false
-      this.updateFillColorTransparent()
-    }
-    if (feature.properties['marker-shape'] && feature.properties.stroke === 'transparent') {
-      document.querySelector('#stroke-color-transparent').checked = false
-      this.updateStrokeColorTransparent()
-    }
+    // A shape is the marker itself. A symbol before it can have turned the colors transparent
+    // (see updateMarkerSymbol), the owner's own transparency stays.
+    if (feature.properties['marker-shape']) { this.showMarkerCircle(feature) }
     syncShapeButtons(feature)
     this.syncPointSizeDefault()
     // the draw overlay keeps its own copy of the properties, a delete does not reach it
@@ -328,6 +324,7 @@ export default class extends Controller {
 
   // An image covers the circle of the marker, so its colors step back (see uploadImageToFeature)
   hideMarkerCircle (feature) {
+    this.markAutoTransparent(feature, 'marker-color', 'stroke')
     feature.properties.stroke = 'transparent'
     feature.properties['marker-color'] = 'transparent'
     document.querySelector('#stroke-color').setAttribute('disabled', 'true')
@@ -337,17 +334,29 @@ export default class extends Controller {
   }
 
   // Picking a symbol or an image can turn the colors transparent (see syncSymbolColors).
-  // Without either of them the point would render as nothing, so it gets its colors back.
-  // A feature with its own colors keeps them, only an actually transparent one is restored.
-  showMarkerCircle (feature) {
-    if (feature.properties['marker-color'] === 'transparent') {
+  // Without either of them the point would render as nothing, so it gets those colors back.
+  // A transparency that the owner chose stays.
+  // ponytail: the memory is per page load, after a reload an auto transparency counts as chosen
+  showMarkerCircle (feature, properties = ['marker-color', 'stroke']) {
+    const auto = markerMemory.get(this.featureIdValue)?.autoTransparent || new Set()
+    if (properties.includes('marker-color') && auto.delete('marker-color') &&
+      feature.properties['marker-color'] === 'transparent') {
       document.querySelector('#fill-color-transparent').checked = false
       this.updateFillColorTransparent()
     }
-    if (feature.properties.stroke === 'transparent') {
+    if (properties.includes('stroke') && auto.delete('stroke') && feature.properties.stroke === 'transparent') {
       document.querySelector('#stroke-color-transparent').checked = false
       this.updateStrokeColorTransparent()
     }
+  }
+
+  // Records the colors that the editor makes transparent, so that showMarkerCircle can undo
+  // them. A color that is already transparent was the owner's choice and is not recorded.
+  markAutoTransparent (feature, ...properties) {
+    const memory = markerMemory.get(this.featureIdValue) || {}
+    markerMemory.set(this.featureIdValue, memory)
+    memory.autoTransparent ||= new Set()
+    properties.filter(p => feature.properties[p] !== 'transparent').forEach(p => memory.autoTransparent.add(p))
   }
 
   syncSymbolColors (feature) {
@@ -356,14 +365,14 @@ export default class extends Controller {
     // has picked no colors of their own.
     if (symbol && !isWhiteSymbol(symbol) && !feature.properties['marker-shape'] &&
       !feature.properties['marker-color'] && !feature.properties.stroke) {
+      this.markAutoTransparent(feature, 'marker-color', 'stroke')
       document.querySelector('#fill-color-transparent').checked = true
       document.querySelector('#stroke-color-transparent').checked = true
       this.updateFillColorTransparent()
       this.updateStrokeColorTransparent()
-    } else if (symbol && isWhiteSymbol(symbol) && feature.properties['marker-color'] === 'transparent') {
+    } else if (symbol && isWhiteSymbol(symbol)) {
       // a white icon is invisible without the circle, an emoji before it can have removed it
-      document.querySelector('#fill-color-transparent').checked = false
-      this.updateFillColorTransparent()
+      this.showMarkerCircle(feature, ['marker-color'])
     }
   }
 
