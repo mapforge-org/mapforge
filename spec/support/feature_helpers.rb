@@ -18,3 +18,18 @@ def set_color_input(selector, color)
   page.execute_script("arguments[0].dispatchEvent(new Event('input', { bubbles: true }))", color_input)
   page.execute_script("arguments[0].dispatchEvent(new Event('change', { bubbles: true }))", color_input)
 end
+
+# Capybara cannot select in the shadow dom of the picker. The picker renders only the rows
+# in view, so the entry gets searched for. Scoped to the grid: while a grid icon waits for
+# its lazy src, a hover preview of the same icon keeps its own src without a click handler.
+def pick_from_emoji_picker(search, selector)
+  find("em-emoji-picker")
+  page.execute_script(<<~JS)
+    const input = document.querySelector('em-emoji-picker').shadowRoot.querySelector('input[type="search"]');
+    input.value = '#{search}';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  JS
+  entry = "document.querySelector('em-emoji-picker').shadowRoot.querySelector('.scroll #{selector}')"
+  wait_for { page.evaluate_script("!!#{entry}") }.to be true
+  page.execute_script("#{entry}.closest('button').click()")
+end
