@@ -128,37 +128,49 @@ export async function getRouteElevation (waypoints) {
   try {
     const allCoordinates = []
     for (const [index, batch] of batches.entries()) {
-      const response = await Elevation.lineElevation({
-        format_in: 'geojson',
-        format_out: 'geojson',
-        geometry: {
-          coordinates: batch,
-          type: 'LineString'
+      let batchCoords
+      try {
+        const response = await Elevation.lineElevation({
+          format_in: 'geojson',
+          format_out: 'geojson',
+          geometry: {
+            coordinates: batch,
+            type: 'LineString'
+          }
+        })
+        console.log(`Openrouteservice elevation response (batch #${index} ${batch.length}/${coords.length}):`, response)
+        batchCoords = response.geometry.coordinates
+      } catch (err) {
+        const errorMessage = await orsErrorMessage(err)
+        if (!isOutsideSrtm(errorMessage)) {
+          if (errorMessage) status(errorMessage, 'error')
+          throw err
         }
-      })
-      console.log(`Openrouteservice elevation response (batch #${index} ${batch.length}/${coords.length}):`, response)
-      const batchCoords = response.geometry.coordinates
+        // ponytail: one sea point zeroes the whole batch, land points included.
+        // Per point lookups would fix that, at one request per point.
+        batchCoords = batch.map(c => [c[0], c[1], 0])
+      }
       // Drop first point of subsequent batches to avoid duplicates from overlap
       allCoordinates.push(...(index === 0 ? batchCoords : batchCoords.slice(1)))
     }
     return allCoordinates.filter(c => c != null)
   } catch (err) {
-    // Extract error details from API response
-    let errorMessage = 'OpenRouteService elevation error'
-    try {
-      if (err.response) {
-        const errorData = await err.response.json()
-        errorMessage = errorData.message || JSON.stringify(errorData)
-        status(errorMessage, 'error')
-      } else {
-        errorMessage = err.message || errorMessage
-      }
-      console.error("Elevation error:", errorMessage)
-    } catch {
-      console.error("OpenRouteService error:", err)
-      errorMessage = err.message || errorMessage
-    }
+    console.error("Elevation error:", err)
   }
+}
+
+// ORS rejects a geometry with any point outside SRTM. SRTM has no data over the sea,
+// so these points get elevation 0.
+function isOutsideSrtm (errorMessage) {
+  return Boolean(errorMessage?.includes('outside the bounds of srtm'))
+}
+
+// openrouteservice-js attaches the fetch response, its body can be read only once
+async function orsErrorMessage (err) {
+  if (!err.response) return null
+  return err.response.json()
+    .then(data => data.message || JSON.stringify(data))
+    .catch(() => null)
 }
 
 // Fetch elevation for specific points only (used when a few points of a large track are moved)
@@ -171,13 +183,18 @@ export async function getPointsElevation (coordinates, changedIndices) {
   const updatedCoords = [...coordinates]
 
   const results = await Promise.all(changedIndices.map(async (idx) => {
-    const response = await Elevation.pointElevation({
-      format_in: 'point',
-      format_out: 'point',
-      geometry: coordinates[idx].slice(0, 2)
-    })
-    console.log(`Openrouteservice elevation response (point #${idx}):`, response)
-    return { idx, coord: response.geometry || coordinates[idx] }
+    try {
+      const response = await Elevation.pointElevation({
+        format_in: 'point',
+        format_out: 'point',
+        geometry: coordinates[idx].slice(0, 2)
+      })
+      console.log(`Openrouteservice elevation response (point #${idx}):`, response)
+      return { idx, coord: response.geometry || coordinates[idx] }
+    } catch (err) {
+      if (!isOutsideSrtm(await orsErrorMessage(err))) throw err
+      return { idx, coord: [coordinates[idx][0], coordinates[idx][1], 0] }
+    }
   }))
 
   for (const { idx, coord } of results) {
