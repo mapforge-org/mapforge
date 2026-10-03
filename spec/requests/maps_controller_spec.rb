@@ -76,6 +76,11 @@ describe MapsController do
       get map_path(id: map.private_id)
       expect(response.body).to match(%r{rel="modulepreload" href="[^"]*/@mapbox--mapbox-gl-draw-})
     end
+
+    it "preloads the maplibre shared chunk" do
+      get map_path(id: map.public_id)
+      expect(response.body).to include('<link href="/assets/maplibre-gl-shared.mjs" rel="modulepreload">')
+    end
   end
 
   describe "#show (share modal)" do

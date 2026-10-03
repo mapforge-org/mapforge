@@ -40,6 +40,11 @@ module ApplicationHelper
 
   def avatar_url(base_url, size)
     uri = URI(base_url)
+    # Google ignores the s parameter and reads the size from a path suffix
+    if uri.host&.end_with?("googleusercontent.com")
+      uri.path = uri.path.sub(/=s\d+(-c)?\z/, "") + "=s#{size}-c"
+      return uri.to_s
+    end
     params = URI.decode_www_form(uri.query.to_s)
     params.reject! { |k, _| k == "s" }
     params << [ "s", size.to_s ]

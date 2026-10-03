@@ -159,18 +159,16 @@ class Map
   end
 
   def properties
-    # Compute the coordinate list once and share it between center/zoom defaults
-    # (each is only needed when its value isn't explicitly set).
-    points = all_points if center.nil? || zoom.nil?
+    default_center, default_zoom = default_view if center.nil? || zoom.nil?
     { name: name,
      description: description,
      public_id: public_id,
      base_map: get_base_map,
      tags: tags,
      center: center,
-     default_center: center ? nil : calculated_center(points), # only set when no center defined
+     default_center: center ? nil : default_center, # only set when no center defined
      zoom: zoom,
-     default_zoom: zoom ? nil : calculated_zoom(points), # only set when no zoom defined
+     default_zoom: zoom ? nil : default_zoom, # only set when no zoom defined
      pitch: pitch || DEFAULT_PITCH,
      bearing: bearing || DEFAULT_BEARING,
      terrain: terrain || DEFAULT_TERRAIN,
@@ -318,6 +316,15 @@ class Map
 
   def create_default_layer
     layers << Layer.create!(map: self, type: "geojson") unless layers.present?
+  end
+
+  # Reading every feature geometry is the slow part of a large map page view. The cache
+  # version is updated_at (nsec), which every feature change bumps through the touch chain.
+  def default_view
+    Rails.cache.fetch([ "map_default_view", self ]) do
+      points = all_points
+      [ calculated_center(points), calculated_zoom(points) ]
+    end
   end
 
   def all_points

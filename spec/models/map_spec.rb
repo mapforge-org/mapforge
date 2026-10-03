@@ -87,6 +87,13 @@ describe Map do
       it "sets default center to midpoint of all features" do
         expect(map.properties[:default_center]).to eq [ 11.0670007125, 49.4592973375 ]
       end
+
+      it "recalculates the cached default center after a feature change" do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+        before = map.properties[:default_center]
+        create(:feature, :point, layer: map.layers.first, geometry: { "type" => "Point", "coordinates" => [ 0, 0 ] })
+        expect(map.reload.properties[:default_center]).not_to eq before
+      end
     end
 
     context "when map has no features" do

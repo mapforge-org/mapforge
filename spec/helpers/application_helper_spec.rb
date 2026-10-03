@@ -21,5 +21,11 @@ describe ApplicationHelper do
       url = "http://example.com/avatar.png?foo=bar&s=75&baz=qux"
       expect(helper.avatar_url(url, 300)).to eq("http://example.com/avatar.png?foo=bar&baz=qux&s=300")
     end
+
+    it "sets the size suffix on a Google avatar" do
+      url = "https://lh3.googleusercontent.com/a/ACg8ocI"
+      expect(helper.avatar_url(url, 72)).to eq("https://lh3.googleusercontent.com/a/ACg8ocI=s72-c")
+      expect(helper.avatar_url("#{url}=s96-c", 24)).to eq("https://lh3.googleusercontent.com/a/ACg8ocI=s24-c")
+    end
   end
 end
