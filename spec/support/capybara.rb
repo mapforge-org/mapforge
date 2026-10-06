@@ -52,6 +52,33 @@ module FerrumSubscriberRescue
 end
 Ferrum::Client::Subscriber.prepend(FerrumSubscriberRescue)
 
+# Cuprite's reset disposes the browser context, and Chrome's HTTP cache with it, so every example
+# downloaded the 100+ modules of a map page again. Swap only the page instead: a new page drops
+# its request handlers (CapybaraMock), headers and scripts, while the context keeps the cache.
+# Cookies and storage live in the context, so clear them explicitly.
+module CupriteKeepCacheOnReset
+  STORAGE_TYPES = "local_storage,session_storage,indexeddb,service_workers,cache_storage"
+
+  def reset
+    return super unless reusable_context?
+
+    old_page = @page
+    origin = targets[old_page.target_id].url.to_s[%r{\Ahttps?://[^/]+}]
+    old_page.command("Storage.clearDataForOrigin", origin:, storageTypes: STORAGE_TYPES) if origin
+    command("Storage.clearCookies", browserContextId: default_context.id)
+    @options.reset_window_size
+    @page = attach_page(default_context.create_target.id)
+    old_page.close
+  end
+
+  private
+
+  def reusable_context?
+    @page.is_a?(Ferrum::Page) && targets[@page.target_id] && targets.values.count(&:page?) == 1
+  end
+end
+Capybara::Cuprite::Browser.prepend(CupriteKeepCacheOnReset)
+
 # https://github.com/rubycdp/cuprite
 Capybara.javascript_driver = :cuprite
 
