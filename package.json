@@ -6,8 +6,6 @@
     "lint:css": "npx --offline stylelint 'app/assets/stylesheets/**/*.css'"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.7",
-    "@eslint/js": "^10.0.0",
     "eslint": "^10.11.0",
     "globals": "^17.12.0",
     "stylelint": "^17.15.0",
