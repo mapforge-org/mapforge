@@ -87,11 +87,7 @@ export function isMobileDevice () {
 }
 
 export function isTouchDevice () {
-  return ('ontouchstart' in window) ||
-         (navigator.maxTouchPoints > 0) ||
-         (navigator.msMaxTouchPoints > 0) ||
-         (window.matchMedia('(pointer: coarse)').matches) ||
-         (!!window.DocumentTouch && document instanceof window.DocumentTouch)
+  return navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches
 }
 
 // Keep in sync with the bottom sheet media queries in feature.css and modals.css
