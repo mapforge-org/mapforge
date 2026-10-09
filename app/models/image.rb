@@ -25,7 +25,6 @@ class Image
   # Resize (if larger than 1024px) and re-encode the image at `path` to lossy
   # WebP, in place. Always re-encodes (PNG is lossless, so `quality` alone would
   # not shrink it) so the stored size stays small regardless of the source format.
-  # Shared by ImagesController#upload and the migrations:dragonfly_to_webp task.
   def self.compress_to_webp!(path)
     # https://github.com/mtgrosser/rszr
     # Do not set Rszr.autorotate: imlib2 >= 1.7.5 already does this
