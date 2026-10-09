@@ -4,6 +4,7 @@ if ENV["COVERAGE"] == "true"
   # minimum applies to the merged report instead, see the coverage job in ci.yml.
   SimpleCov.minimum_coverage 100 unless ENV["CI_PART"]
   SimpleCov.start "rails" do
+    enable_coverage :oneshot_line
     skip "app/jobs/application_job.rb"
     skip "lib/tasks"
   end
