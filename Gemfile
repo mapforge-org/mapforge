@@ -55,7 +55,7 @@ gem "redcarpet" # Markdown parser for docs
 # taking screenshots with "rake maps:screenshots"
 gem "capybara"
 gem "capybara-screenshot"
-gem "puppeteer-ruby"
+gem "ferrum"
 gem "rszr"
 
 # map + coordinates libraries
