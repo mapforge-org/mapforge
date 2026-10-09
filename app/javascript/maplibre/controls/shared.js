@@ -496,7 +496,7 @@ export function initCtrlTooltips () {
 }
 
 // Controls are added hidden and faded in on map load. A mode switch adds them after
-// load, where AOS never animates again, so they are revealed right away instead.
+// load, where 'load' does not fire again, so they are revealed right away instead.
 export function revealControls (selectors) {
   // map.loaded() goes false again while the edit styles load, so use the page marker
   if (document.querySelector('.map')?.getAttribute('data-map-loaded') === 'true') {

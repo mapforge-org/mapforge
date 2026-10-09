@@ -281,6 +281,10 @@ body:has(#map-mode-badge) .layer-popover {
   touch-action: pan-x pan-y; /* Allow panning but prevent browser gestures */
 }
 
+.map[data-animate] {
+  opacity: 1;
+}
+
 .white-shadow {
   text-shadow: -1px 0 1px #eee, 0 1px 1px #eee, 1px 0 1px #eee, 0 1px 1px #eee;
   color: #333;

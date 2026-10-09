@@ -33,14 +33,13 @@ export function deleteElements(selectors) {
   })
 }
 
-// available animations: http://michalsnik.github.io/aos/
+// effects: the [data-animate] rules in application.css. The animation starts when the
+// attribute is set, or again when the element comes back from display: none.
 export function animateElement (selector, effect = 'fade-in', delay = 0) {
   functions.e(selector, e => {
-    e.classList.remove('aos-animate')
-    e.setAttribute('data-aos', effect)
-    e.setAttribute('data-aos-delay', delay)
+    e.style.animationDelay = delay + 'ms'
+    e.setAttribute('data-animate', effect)
     e.classList.remove('hidden')
-    window.AOS.refreshHard()
   })
 }
 

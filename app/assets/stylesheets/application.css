@@ -290,3 +290,55 @@ h1, h2, h3, h4 {
   font-weight: 300;
   margin-bottom: 1rem;
 }
+
+/* entry animations, set in views and by animateElement() in helpers/dom.js */
+[data-animate] {
+  animation: 0.6s ease-in-out backwards fade-in;
+}
+
+[data-animate="fade-up"] { animation-name: fade-up; }
+[data-animate="fade-down"] { animation-name: fade-down; }
+[data-animate="fade-left"] { animation-name: fade-left; }
+[data-animate="fade-right"] { animation-name: fade-right; }
+[data-animate="zoom-out"] { animation-name: zoom-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-animate] { animation: none; }
+}
+
+@keyframes fade-in { from { opacity: 0; } }
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+}
+
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+}
+
+@keyframes fade-left {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+}
+
+@keyframes fade-right {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+}
+
+@keyframes zoom-out {
+  from {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}

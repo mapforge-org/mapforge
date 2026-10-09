@@ -1,14 +1,9 @@
 // Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
 import '@hotwired/turbo-rails'
 
-import AOS from 'aos'
-import * as functions from 'helpers/functions'
 import 'stimulus-controllers-index'
 
 // Note: Don't import map js here for faster frontpage load times
-
-// for debugging
-window.AOS = AOS
 
 // Turbo 8 turns same-page anchor links into a full visit, so the view transition cross-fades
 // the page instead of scrolling. Cancel those, the browser scrolls to the anchor itself.
@@ -16,17 +11,6 @@ document.addEventListener('turbo:click', function (event) {
   const url = new URL(event.detail.url)
   if (url.hash && url.pathname === location.pathname && url.search === location.search) {
     event.preventDefault()
-  }
-})
-
-// https://github.com/michalsnik/aos
-window.addEventListener('turbo:load', function () {
-  if (!functions.isCrawler()) {
-    AOS.init({
-      duration: 600,
-      easing: 'ease-in-out',
-      once: true
-    })
   }
 })
 

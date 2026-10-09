@@ -68,8 +68,6 @@ pin "easymde", preload: false # v2.20.0, manual update
 # Unminified + patched version to resolve the "normal" Pair of a KML StyleMap
 pin "togeojson", to: "togeojson.js", preload: false # @7.1.2
 
-# Animations for frontpage: https://github.com/michalsnik/aos
-pin "aos" # @2.3.4
 # Emoji picker: https://github.com/missive/emoji-mart (alternative: https://www.npmjs.com/package/emoji-picker-element)
 pin "emoji-mart", preload: false # @5.6.0
 # Drag-and-drop reordering: https://github.com/SortableJS/Sortable

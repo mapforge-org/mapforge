@@ -526,7 +526,6 @@ export function initializeSearchControl () {
   map.on('touchstart', () => { geocoderButton.querySelector('.maplibregl-ctrl-geocoder--input').blur() })
 
   map.once('load', function (_e) {
-    // delayed via timeout, the geocoders !important transition overrides data-aos-delay
-    setTimeout(() => { animateElement('.maplibregl-ctrl-geocoder', 'fade-left') }, 500)
+    animateElement('.maplibregl-ctrl-geocoder', 'fade-left', 500)
   })
 }

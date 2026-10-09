@@ -10,8 +10,6 @@ export default class extends Controller {
 
   hideNavBar (_event) {
     functions.e('#map-header nav', e => { e.style.display = 'none' })
-    // aos cannot fade elements out
-    // animateElement('#map-header nav', 'fade-up')
   }
 
   showNavBar (_event) {

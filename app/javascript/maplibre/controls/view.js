@@ -7,7 +7,7 @@ export function initializeViewControls () {
   viewControlGroup = new ControlGroup(
     [new MapSettingsControl(), new MapLayersControl(), new MapShareControl()])
   map.addControl(viewControlGroup, 'top-left')
-  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-layers)').classList.add('hidden') // hide for aos animation
+  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-layers)').classList.add('hidden') // hide for fade-in animation
 
   revealControls(['.maplibregl-ctrl:has(button.maplibregl-ctrl-layers)'])
 }

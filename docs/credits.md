@@ -49,7 +49,6 @@ Mapforge changed some of these files. It converted the Pinhead and Font Awesome 
 | [EasyMDE](https://github.com/Ionaru/easy-markdown-editor) | text editor | MIT |
 | [marked](https://github.com/markedjs/marked) | markdown in js | MIT |
 | [SortableJS](https://github.com/SortableJS/Sortable) | reorder layers | MIT |
-| [AOS](https://github.com/michalsnik/aos) | scroll animations | MIT |
 | [exif-reader](https://github.com/devongovett/exif-reader) | image coordinates | MIT |
 
 `Gemfile` and `config/importmap.rb` in the source of Mapforge list every dependency.

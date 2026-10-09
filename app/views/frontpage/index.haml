@@ -1,15 +1,15 @@
 %main#frontpage.main.selectable{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
   / Hero Section
   #hero.hero.section.dark-background
-    .hero-bg-image{ 'data-aos': "zoom-out", 'data-aos-once': "true" }
+    .hero-bg-image{ 'data-animate': "zoom-out" }
 
     .container
       .row
         .col-lg-6.welcome-text
-          %h1.mapforge-font{ 'data-aos': "fade-up" }= _("Create your own map")
+          %h1.mapforge-font{ 'data-animate': "fade-up" }= _("Create your own map")
 
-          %div{ 'data-aos': "fade-up" }
-            %blockquote{ 'data-aos': "fade-up" }
+          %div{ 'data-animate': "fade-up" }
+            %blockquote{ 'data-animate': "fade-up" }
               %p.d-none.d-sm-block
                 = _("Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - draw, style and share in real-time.")
               %p.d-sm-none
@@ -38,7 +38,7 @@
                 = button_to _("Playground"), playground_path, method: :get, class: 'btn btn-orange btn-lg'
                 = link_to _("Start a map"), create_map_path, class: 'btn btn-secondary btn-green', data: { turbo_method: :post }
 
-        .col-lg-6.featured-maps.d-none.d-lg-block{ 'data-aos': "fade-up" }
+        .col-lg-6.featured-maps.d-none.d-lg-block{ 'data-animate': "fade-up" }
           / News Banner – update the text below to advertise new features or site news.
           / Remove or comment out this block when there is nothing to announce.
           .banner-explorer{ role: "note", 'aria-label': _("News") }
@@ -54,7 +54,7 @@
           - if @featured_maps.present?
             = render "featured_maps"
 
-    .container.feature-tour-col{ 'data-aos': "fade-up", 'data-aos-offset': "0" }
+    .container.feature-tour-col{ 'data-animate': "fade-up" }
       .col-lg-6.d-flex.justify-content-center
         %a.feature-tour-link{ href: "#features" }
           = _("Feature Tour")

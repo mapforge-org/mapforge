@@ -40,7 +40,7 @@ export function initializeEditControls () {
   const controlGroup = new ControlGroup(
     [new MapSettingsControl(), new MapLayersControl(), new MapShareControl()])
   map.addControl(controlGroup, 'top-left')
-  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)').classList.add('hidden') // hide for aos animation
+  document.querySelector('.maplibregl-ctrl:has(button.maplibregl-ctrl-map)').classList.add('hidden') // hide for fade-in animation
 
   // draw stays on the map in view mode. Removing it nulls its store, and every
   // `if (draw)` guard in the code base would then call into a dead control.
