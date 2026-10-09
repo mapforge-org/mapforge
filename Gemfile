@@ -64,7 +64,6 @@ gem "rszr"
 # map + coordinates libraries
 gem "rgeo"
 gem "rgeo-geojson"
-gem "rgeo-proj4"
 gem "gpx", git: "https://github.com/digitaltom/gpx" # Ruby 4.0 fork
 # resolving request IP addresses to coordinates
 gem "maxminddb"

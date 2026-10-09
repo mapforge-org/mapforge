@@ -50,19 +50,10 @@ class Feature
     GPX::GeoJSON.convert_to_gpx(geojson_data: to_geojson.to_json)
   end
 
-  # input file formats are typically gps format EPSG:4326 (WGS 84) or
-  # web_mercator format EPSG:3857
-  def self.from_collection(geojson, collection_format: 4326, db_format: 4326)
-    db_format = RGeo::Cartesian.factory(srid: db_format)
-    collection_format = RGeo::Cartesian.factory(srid: collection_format)
-    feature_collection = RGeo::GeoJSON.decode(geojson, geo_factory: collection_format)
-    feature_collection.map do |feature|
+  # expects EPSG:4326 (WGS 84), the GeoJSON default
+  def self.from_collection(geojson)
+    RGeo::GeoJSON.decode(geojson).map do |feature|
       next unless feature.geometry
-      # transform coords from input to db format
-      if collection_format != db_format
-        transformed_geometry = RGeo::Feature.cast(feature.geometry, factory: db_format, project: true)
-        feature = RGeo::GeoJSON::Feature.new(transformed_geometry, feature.feature_id, feature.properties)
-      end
       Feature.create!(RGeo::GeoJSON.encode(feature).except("id"))
     end
   end

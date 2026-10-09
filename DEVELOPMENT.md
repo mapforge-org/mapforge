@@ -9,8 +9,6 @@ To report a bug or to send a pull request, see [CONTRIBUTING.md](CONTRIBUTING.md
 Example for openSUSE (Debian package names in parentheses):
 
 ```bash
-zypper in proj-devel      # (libproj-dev) for building rgeo-proj4
-zypper in proj            # (proj-bin) for running rgeo-proj4
 zypper in imlib2 imlib2-devel  # (libimlib2, libimlib2-dev) to resize screenshots
 zypper in ImageMagick     # (imagemagick) for dragonfly image processing
 zypper in npm             # for running eslint

@@ -8,13 +8,12 @@ namespace :seed do
     # the public id of the imported map will be the filename without extension
     path = args.fetch(:path)
     map_name = File.basename(path, File.extname(path)).tr(".", "_")
-    collection_format = 4326 # geojson default format is epsg:4326 (WGS84)
     map = Map.find_or_create_by(public_id: map_name)
 
     file = File.read(path)
     geojson = JSON.parse(file)
 
-    map.layers.first.features = Feature.from_collection(geojson, collection_format: collection_format)
+    map.layers.first.features = Feature.from_collection(geojson)
 
     puts "Created map with #{map.features_count} features from #{path}"
     puts "Public id: #{map.public_id}, private id: #{map.private_id}"
@@ -22,6 +21,6 @@ namespace :seed do
 
   desc "Import map from a mapforge export file"
   task :mapforge_file, %i[path] => :environment do |_, args|
-    Map.create_from_file(args.fetch(:path), collection_format: 4326)
+    Map.create_from_file(args.fetch(:path))
   end
 end

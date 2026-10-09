@@ -227,7 +227,7 @@ class Map
     layers.to_a.sum(&:features_count)
   end
 
-  def self.create_from_file(path, collection_format: 4326)
+  def self.create_from_file(path)
     file = File.read(path)
     map_hash = JSON.parse(file)
 
@@ -235,7 +235,7 @@ class Map
     map = Map.create!(map_hash["properties"].except("default_center", "default_zoom", "public_id", "type"))
     map.layers.delete_all
     map_hash["layers"].each do |layer|
-      features = Feature.from_collection(layer["geojson"], collection_format: collection_format)
+      features = Feature.from_collection(layer["geojson"])
       attributes = layer.slice("name", "type", "query", "heatmap", "cluster", "show")
       map.layers << Layer.create!(attributes.merge(features: features))
     end
