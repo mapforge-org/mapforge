@@ -10,10 +10,8 @@ gem "thruster" # https://github.com/basecamp/thruster
 # Rails
 gem "importmap-rails"
 gem "turbo-rails"
-gem "jbuilder"
 gem "bootsnap", require: false
 gem "rack-cache", require: "rack/cache"
-gem "net-pop", github: "ruby/net-pop"
 
 # Monitoring
 gem "yabeda-prometheus"
@@ -42,7 +40,6 @@ gem "rails-i18n" # core Rails i18n strings (date/time, number formatting, etc.) 
 # Action Cable's redis adapter hard-caps redis < 6 (actioncable 8.1.x)
 gem "redis", ">= 4.0.1", "< 6"
 gem "mongoid"
-gem "mongoid_rails_migrations"
 gem "mongoid_includes"
 
 # image uploads
@@ -86,8 +83,6 @@ group :development do
   gem "rubocop-thread_safety", require: false
   gem "rubocop-rails-omakase", require: false
   gem "rubocop-rubycw"
-  gem "rubycritic", require: false
-  gem "standard"
   gem "brakeman"
   gem "bundler-audit"
   gem "dotenv-rails", require: "dotenv/load"
@@ -107,6 +102,5 @@ group :test do
   gem "mongoid-rspec"
   gem "cuprite"
   gem "capybara_mock"
-  gem "table_print"
   gem "webmock"
 end
