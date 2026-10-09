@@ -9,10 +9,30 @@ import { defaults } from 'maplibre/styles/defaults';
 export function addElevationLayers (properties, basemapName) {
   demSource.setupMaplibre(maplibregl)
   const elevation = basemapName !== 'test'
-  if (elevation && properties.terrain) { addTerrain() }
+  if (elevation && properties.terrain) {
+    if (softwareWebGL()) {
+      console.warn('Software WebGL renderer, skipping 3D terrain')
+    } else {
+      addTerrain()
+    }
+  }
   if (elevation && properties.hillshade) { addHillshade() }
   if (properties.globe) { addGlobe() }
   if (elevation && properties.contours) { addContours() }
+}
+
+// Terrain in a software WebGL renderer (headless Chrome, no GPU) blocks the main thread for minutes
+function softwareWebGL () {
+  const gl = map.getCanvas().getContext('webgl2')
+  if (!gl) { return false }
+  let renderer = gl.getParameter(gl.RENDERER)
+  // Firefox reports the real renderer in RENDERER and warns when the extension is requested.
+  // Chrome and Safari mask RENDERER as 'WebKit WebGL' and need the extension.
+  if (renderer === 'WebKit WebGL') {
+    const info = gl.getExtension('WEBGL_debug_renderer_info')
+    if (info) { renderer = gl.getParameter(info.UNMASKED_RENDERER_WEBGL) }
+  }
+  return /swiftshader|llvmpipe|softpipe|software/i.test(renderer)
 }
 
 function addTerrain () {
