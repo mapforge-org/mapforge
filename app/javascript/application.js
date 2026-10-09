@@ -14,6 +14,15 @@ document.addEventListener('turbo:click', function (event) {
   }
 })
 
+// Firefox fires input/change events when it restores form values on reload and session restore.
+// Those handlers then save stale values (map name) or act on a feature that is not selected.
+// A real edit always follows a user activation (click, key press), a restore comes before one.
+for (const type of ['input', 'change']) {
+  document.addEventListener(type, (event) => {
+    if (navigator.userActivation && !navigator.userActivation.hasBeenActive) { event.stopImmediatePropagation() }
+  }, true)
+}
+
 if ('serviceWorker' in navigator) {
   // Register the service worker
   window.addEventListener('load', () => {
