@@ -232,7 +232,7 @@ const pointSizeDefault = plain => [
 const pointSizeMin = () => ['to-number', ['coalesce',
   ...markerSize.slice(1), pointSizeDefault(defaults.pointSize)]]
 
-export const pointSizeMax = () => ['to-number', ['coalesce',
+const pointSizeMax = () => ['to-number', ['coalesce',
   ...markerSize.slice(1), pointSizeDefault(defaults.pointSizePlain)]]
 
 // With 'marker-scaling' the radius doubles per zoom level like shapeIconSize, else it grows
@@ -244,8 +244,9 @@ const pointRadiusAt = zoom => ['case', shouldScale,
   ['+', activeBonus(), pointSizeMin(), ['*', Math.min(1, (zoom - 5) / 12), ['-', pointSizeMax(), pointSizeMin()]]]
 ]
 
-export const pointSize = () => ['interpolate', ['exponential', 2], ['zoom'],
-  ...[5, 8, 11, 14, 17, 21].flatMap(zoom => [zoom, pointRadiusAt(zoom)])
+// 'zoom' must stay the input of the top level interpolate, so a factor goes into every stop
+export const pointSize = (factor = 1) => ['interpolate', ['exponential', 2], ['zoom'],
+  ...[5, 8, 11, 14, 17, 21].flatMap(zoom => [zoom, ['*', factor, pointRadiusAt(zoom)]])
 ]
 
 // A point with a shape or a symbol leaves the circle layer and the symbol layer, and gets

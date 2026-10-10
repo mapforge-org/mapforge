@@ -4,7 +4,7 @@ import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
 import { SELECTABLE_SOURCE_PREFIXES, queryFeaturesNear } from 'maplibre/layers/layer'
 import { editDefaults } from 'maplibre/styles/defaults'
-import { pointSize, pointSizeMax, styles } from 'maplibre/styles/styles'
+import { pointSize, styles } from 'maplibre/styles/styles'
 
 // started from https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
 // Styling Draw: https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#styling-draw
@@ -175,7 +175,7 @@ export function editStyles() {
         ['!=', 'meta', 'midpoint']
       ],
       paint: {
-        'circle-radius': ['*', pointSizeMax(), editDefaults.activePointSizeFactor],
+        'circle-radius': pointSize(editDefaults.activePointSizeFactor),
         'circle-color': editDefaults.activePointColor,
         'circle-opacity': editDefaults.activePointOpacity,
         'circle-stroke-color': editDefaults.highlightColor,
