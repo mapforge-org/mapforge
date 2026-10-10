@@ -587,6 +587,9 @@ msgstr "Meinen Standort finden"
 msgid "Fine gravel"
 msgstr "Feinschotter"
 
+msgid "Fixed size"
+msgstr "Feste Größe"
+
 msgid "Fixed view"
 msgstr "Feste Ansicht"
 

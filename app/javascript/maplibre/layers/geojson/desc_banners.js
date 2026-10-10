@@ -89,6 +89,11 @@ function upsertDescBanner (feature, layer, visible) {
   const el = popup.getElement()
   ;['banner', 'square', 'bubble'].forEach(s => el.classList.toggle(`shape-${s}`, s === shape))
   el.classList.toggle('no-tip', p['marker-color'] === 'transparent' && p.stroke === 'transparent')
+  if (p.stroke && p.stroke !== 'transparent') {
+    el.style.setProperty('--border-color', p.stroke)
+  } else {
+    el.style.removeProperty('--border-color')
+  }
   showBanner(entry)
 }
 

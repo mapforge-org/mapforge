@@ -20,6 +20,15 @@ describe "Feature edit, point features" do
         expect(point.reload.properties["marker-size"]).to eq("15")
       end
 
+      it "can toggle marker scaling" do
+        find("#edit-button-style").click
+        check "Fixed size"
+        wait_for { point.reload.properties["marker-scaling"] }.to be true
+
+        uncheck "Fixed size"
+        wait_for { point.reload.properties["marker-scaling"] }.to be false
+      end
+
       it "can set marker shape" do
         find("#edit-button-style").click
         find("#marker-shape-ui [data-shape='pin']").hover

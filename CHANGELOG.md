@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 2026-10
 
 * Share map links with QR code
+* Feature descriptions can be shown as a banner on the map
 
 ## 2026-09
 

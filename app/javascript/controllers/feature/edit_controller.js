@@ -162,6 +162,10 @@ export default class extends Controller {
     this.updateDrawProperty('#point-size', 'marker-size', { displaySelector: '#point-size-val' })
   }
 
+  updateMarkerScaling () {
+    this.updateDrawProperty('#marker-scaling', 'marker-scaling', { useChecked: true })
+  }
+
   updateLineWidth () {
     this.updateDrawProperty('#line-width', 'stroke-width', { displaySelector: '#line-width-val' })
   }
