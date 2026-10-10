@@ -39,7 +39,7 @@ function addTerrain () {
   map.addSource('map-terrain', elevationSource)
   map.setTerrain({
     source: 'map-terrain',
-    exaggeration: 0.05
+    exaggeration: 1.3
   })
   status(window.__('Terrain added to map'))
 }

@@ -39,7 +39,8 @@ export let demSource = new mlcontour.DemSource({
 
 export let elevationSource = {
   type: 'raster-dem',
-  //encoding: "terrarium",
+  // Without it maplibre decodes the tiles as 'mapbox', which puts the ground ~840 km high
+  encoding: "terrarium",
   tiles: [
     demSource.sharedDemProtocolUrl
   ],
