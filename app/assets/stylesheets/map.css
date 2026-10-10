@@ -509,6 +509,27 @@ body:has(#map-mode-badge) .layer-popover {
   border-width: 0.15rem;
 }
 
+/* Stands in for the km end marker while an animation moves it, see km_markers.js. The map
+   image is a 32 px circle with a 2 px #ccc border, drawn at a scale of 15/14. */
+.km-marker-moving-end {
+  box-sizing: border-box;
+  width: 34px;
+  height: 34px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.km-marker-moving-end small {
+  font-size: 0.7em;
+}
+
 /* Route extras legend overlay */
 .route-extras-legend {
   position: absolute;

@@ -251,10 +251,10 @@ export function renderLayers(type, ...args) {
   layers.filter(l => l.type === type).forEach(l => l.render(...args))
 }
 
-export function updateAnimatedFeature(feature, frameCount) {
+export function updateAnimatedFeature(feature) {
   const layer = getLayer(feature.id)
   if (layer?.updateAnimatedFeature) {
-    layer.updateAnimatedFeature(feature, frameCount)
+    layer.updateAnimatedFeature(feature)
   }
 }
 

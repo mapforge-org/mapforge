@@ -265,21 +265,25 @@ async function onMapLoad () {
 }
 
 function animateFeatureFromUrl () {
-  const featureId = new URLSearchParams(window.location.search).get('a')
+  const params = new URLSearchParams(window.location.search)
+  const featureId = params.get('a')
   const feature = featureId && getFeature(featureId)
   if (!feature) { return }
 
   console.log('Animating ' + feature.id)
   resetControls()
+  const seconds = Number(params.get('duration'))
+  const duration = seconds > 0 ? seconds * 1000 : undefined
   const type = feature.geometry?.type
+  // No animateViewFromProperties() here: the map already opened at the view of the URL hash
+  // (or of the map properties without one), and a flyTo would override the hash.
   if (type === 'LineString') {
-    new AnimateLineAnimation().run(feature)
+    new AnimateLineAnimation().run(feature, { heading: params.get('heading') === '1', duration })
   } else if (type === 'Polygon') {
-    new AnimatePolygonAnimation().run(feature)
+    new AnimatePolygonAnimation().run(feature, { duration })
   } else {
     console.error('Feature ' + featureId + ' has type ' + type + ', which cannot be animated')
   }
-  animateViewFromProperties()
 }
 
 function bindMapEvents () {

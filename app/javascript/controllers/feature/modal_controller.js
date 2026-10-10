@@ -456,7 +456,7 @@ export default class extends Controller {
       new AnimateLineAnimation().run(feature)
     } else if (feature.geometry.type === 'Polygon') {
       new AnimatePolygonAnimation().run(feature)
+      animateViewFromProperties()
     }
-    animateViewFromProperties()
   }
 }

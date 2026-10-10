@@ -294,14 +294,19 @@ export class GeoJSONLayer extends Layer {
   //   no route extras itself (needed when the toggle just removed them).
   // - refreshKmMarkers: rebuild the km-marker companion source (geometry change / toggle).
   // - pruneImages: drop shape and pattern images that no feature uses any more (scans all layers).
-  applyFeatureUpdate(feature, { resetDraw = false, refreshRouteExtras = false, refreshKmMarkers = false, pruneImages = true } = {}) {
+  // - sourceFeatures: what goes into the main source in place of the feature. An animation
+  //   sends its line as a short tail plus frozen chunks.
+  applyFeatureUpdate(feature, {
+    resetDraw = false, refreshRouteExtras = false, refreshKmMarkers = false, pruneImages = true,
+    sourceFeatures = [feature]
+  } = {}) {
     feature.properties = feature.properties || {}
     feature.id = feature.id || feature.properties.id
     feature.properties.id = feature.id
 
     const source = map.getSource(this.sourceId)
     if (!source) { return }
-    source.updateData({ remove: [feature.id], add: [feature] })
+    source.updateData({ remove: [feature.id], add: sourceFeatures })
     this.ensureBuffer([feature])
 
     // Route-extras segments copy the parent's style properties (see inheritedProps) and build
@@ -390,17 +395,17 @@ export class GeoJSONLayer extends Layer {
     this.resetDrawFeatures(true)
   }
 
-  updateAnimatedFeature(feature, frameCount) {
+  updateAnimatedFeature(feature, sourceFeatures = [feature]) {
     // Skip if a full render is in progress (data-geojson-loaded='false')
     if (map.getContainer().getAttribute('data-geojson-loaded') === 'false') {
       return
     }
     // Geometry moves every frame, so companions follow it, but only the ones this feature
     // actually has - an animated marker cannot change the km markers of a route it is not on.
-    // The km rebuild is throttled on top of that because it is the pricier one.
     this.applyFeatureUpdate(feature, {
+      sourceFeatures,
       refreshRouteExtras: hasRouteExtras(feature),
-      refreshKmMarkers: hasKmMarkers(feature) && frameCount % 10 === 0,
+      refreshKmMarkers: hasKmMarkers(feature),
       // a frame moves the geometry only, so no image can go out of use
       pruneImages: false
     })

@@ -19,6 +19,45 @@ function kmMarkerTextColor (color) {
   return r * 0.299 + g * 0.587 + b * 0.114 > 140 ? '#000000' : '#ffffff'
 }
 
+// The total distance on the end marker: meters below 100 m, one decimal below 100 km
+function endDistance (distance) {
+  if (distance < 0.1) { return { km: Math.round(distance * 1000), unit: 'm' } }
+  if (Math.ceil(distance) < 100) { return { km: Math.round(distance * 10) / 10, unit: 'km' } }
+  return { km: Math.round(distance), unit: 'km' }
+}
+
+// An animation moves the end of its line on every update. As a map label, the end marker would
+// count as a new label each time, and maplibre places new labels only every fadeDuration, so it
+// blinked. An html marker stands in for it until the animation ends.
+const movingEnds = new Map()
+
+export function showMovingEndMarker (feature, lngLat, distance) {
+  let marker = movingEnds.get(feature.id)
+  if (!marker) {
+    const color = feature.properties['stroke'] || defaults.featureColor
+    const el = document.createElement('div')
+    el.className = 'km-marker-moving-end'
+    el.style.backgroundColor = color
+    el.style.color = kmMarkerTextColor(color)
+    el.append(document.createElement('span'), document.createElement('small'))
+    marker = new window.maplibregl.Marker({ element: el }).setLngLat(lngLat).addTo(map)
+    movingEnds.set(feature.id, marker)
+  }
+  const { km, unit } = endDistance(distance)
+  const [value, unitLabel] = marker.getElement().children
+  value.textContent = km
+  unitLabel.textContent = unit
+  marker.setLngLat(lngLat)
+}
+
+// The end marker label shows up only once maplibre placed it, so the html marker covers the
+// gap until the map is idle
+export function removeMovingEndMarker (feature) {
+  const marker = movingEnds.get(feature.id)
+  movingEnds.delete(feature.id)
+  if (marker) { map.once('idle', () => marker.remove()) }
+}
+
 // A removed layer renders no km markers again, so its images go with it.
 export function cleanupKmMarkerImages (sourceId) {
   pruneCircleImages(imagePrefix(sourceId))
@@ -58,7 +97,9 @@ export function renderKmMarkers (features, sourceId) {
     const markerImageName = circleImage(imagePrefix(sourceId), markerColor)
     imageNames.add(markerImageName)
 
-    for (let i = 0; i <= Math.ceil(distance); i++) {
+    // a moving end has its html marker instead
+    const last = movingEnds.has(f.id) ? Math.ceil(distance) - 1 : Math.ceil(distance)
+    for (let i = 0; i <= last; i++) {
       const point = i < Math.ceil(distance) ? kmPoints[i] : turfPoint(coords[coords.length - 1])
       point.properties['marker-color'] = markerColor
       point.properties['marker-image'] = markerImageName
@@ -70,17 +111,10 @@ export function renderKmMarkers (features, sourceId) {
       if ('level' in f.properties) point.properties.level = f.properties.level
 
       if (i >= Math.ceil(distance)) {
+        const { km, unit } = endDistance(distance)
         point.properties['marker-size'] = 15
-        if (distance < 0.1) {
-          point.properties['km'] = Math.round(distance * 1000)
-          point.properties['km-unit'] = 'm'
-        } else if (Math.ceil(distance) < 100) {
-          point.properties['km'] = Math.round(distance * 10) / 10
-          point.properties['km-unit'] = 'km'
-        } else {
-          point.properties['km'] = Math.round(distance)
-          point.properties['km-unit'] = 'km'
-        }
+        point.properties['km'] = km
+        point.properties['km-unit'] = unit
         point.properties['km-marker-numbers-end'] = 1
       }
       kmMarkerFeatures.push(point)
