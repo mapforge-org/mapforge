@@ -486,24 +486,67 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
 }
 
 /* the same look as the dropdowns of the layers modal, see #query-dropdown in modals.css */
-#fill-pattern-menu {
+#fill-pattern-menu, .feature-onclick-menu {
   background-color: var(--ctrl-hover-color);
 
   --bs-dropdown-item-padding-y: 0.1rem;
   --bs-dropdown-padding-y: 0.3rem;
 }
 
-#fill-pattern-menu li {
+:is(#fill-pattern-menu, .feature-onclick-menu) li {
   margin: 0.1em 0.5em;
 }
 
-#fill-pattern-menu .dropdown-item {
+:is(#fill-pattern-menu, .feature-onclick-menu) .dropdown-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   border-radius: 0.375rem;
   padding-left: 0.5rem;
   cursor: pointer;
+}
+
+.feature-onclick-dropdown {
+  flex: 1;
+  min-width: 0;
+}
+
+/* looks like a select, which the dropdown replaces */
+.feature-onclick-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  background-color: var(--bs-body-bg);
+  text-align: left;
+}
+
+.feature-onclick-toggle span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feature-onclick-toggle::after {
+  margin-left: auto;
+}
+
+/* a map can have many features */
+.feature-onclick-menu {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+/* one height for glyphs and images. The fs-3 of the glyphs from featureIcon is !important. */
+:is(.feature-onclick-toggle, .feature-onclick-menu) i.bi {
+  font-size: 1.2rem !important;
+  line-height: 1.2rem;
+}
+
+:is(.feature-onclick-toggle, .feature-onclick-menu) .feature-details-icon {
+  height: 1.4rem;
+  margin: 0;
 }
 
 :is(#marker-content-ui, #fill-image-ui) .btn .feature-details-icon {

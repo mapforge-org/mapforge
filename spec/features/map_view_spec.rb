@@ -222,6 +222,47 @@ describe "Map public view" do
     end
   end
 
+  context "with a script link feature" do
+    let(:polygon) {
+      create(:feature, :polygon_middle,
+        properties: { title: "script link", onclick: "link", "onclick-target": "javascript:window.pwned = true" })
+    }
+    let(:map) { create(:map, features: [ polygon ]) }
+
+    it "does not run the script on click" do
+      click_center_of_screen
+      expect(page).to have_css("#feature-details-modal")
+      expect(page.evaluate_script("window.pwned")).to be_nil
+    end
+  end
+
+  context "with description banners" do
+    let(:target) { create(:feature, :point, title: "Target point") }
+    let(:map) { create(:map, features: [ point, target ]) }
+
+    def banner_point(onclick)
+      create(:feature, :point_middle, desc: "Banner text", properties: { "show-desc" => "banner" }.merge(onclick))
+    end
+
+    context "with a feature link" do
+      let(:point) { banner_point("onclick" => "feature", "onclick-target" => target.id.to_s) }
+
+      it "flies to the target feature on a click on the banner" do
+        find(".desc-banner", text: "Banner text").click
+        expect(page).to have_current_path("/m/#{map.public_id}?f=#{target.id}")
+      end
+    end
+
+    context "with no click reaction" do
+      let(:point) { banner_point("onclick" => false) }
+
+      it "ignores a click on the banner" do
+        find(".desc-banner", text: "Banner text").click
+        expect(page).not_to have_css("#feature-details-modal")
+      end
+    end
+  end
+
   context "with feature link features" do
     let(:point) { create(:feature, :point, title: "Target point") }
     let(:polygon) {

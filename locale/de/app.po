@@ -113,6 +113,9 @@ msgstr "Erweiterte Objektgestaltung"
 msgid "Also available for self-hosting, giving you full control over your data."
 msgstr "Zum Self-Hosting verfügbar, mit voller Kontrolle über deine Daten."
 
+msgid "Applies in view mode. In edit mode, a click always selects the feature."
+msgstr "Gilt im Ansichtsmodus. Im Bearbeitungsmodus wählt ein Klick immer das Objekt aus."
+
 msgid "Are you sure you want to proceed?"
 msgstr "Möchtest du wirklich fortfahren?"
 
@@ -416,6 +419,9 @@ msgstr "Distanzen:"
 msgid "Divide line here"
 msgstr "Linie hier teilen"
 
+msgid "Do nothing"
+msgstr "Nichts tun"
+
 msgid "Do you really want to delete this map?"
 msgstr "Möchtest du diese Karte wirklich löschen?"
 
@@ -628,6 +634,9 @@ msgstr "Geometrie-JSON"
 
 msgid "Globe:"
 msgstr "Globus:"
+
+msgid "Go to feature"
+msgstr "Zu Objekt springen"
 
 msgid "Grass"
 msgstr "Gras"
@@ -932,6 +941,9 @@ msgstr "Nicht anzeigen"
 msgid "OSM Info (experimental)"
 msgstr "OSM-Info (experimentell)"
 
+msgid "On click:"
+msgstr "Beim Klick:"
+
 msgid "One link to view, one to edit"
 msgstr "Ein Link zum Ansehen, einer zum Bearbeiten"
 
@@ -943,6 +955,9 @@ msgstr "Deckkraft:"
 
 msgid "Open Source"
 msgstr "Open Source"
+
+msgid "Open link"
+msgstr "Link öffnen"
 
 msgid "Open map '%{name}'"
 msgstr "Karte '%{name}' öffnen"
@@ -1160,6 +1175,9 @@ msgstr "Position wird gesucht"
 msgid "See how it works"
 msgstr "So funktioniert's"
 
+msgid "Select a feature"
+msgstr "Objekt auswählen"
+
 msgid "Select line draw mode"
 msgstr "Linien-Zeichenmodus wählen"
 
@@ -1193,6 +1211,9 @@ msgstr "Ansichtslink teilen"
 
 msgid "Show QR code"
 msgstr "QR-Code anzeigen"
+
+msgid "Show details"
+msgstr "Details anzeigen"
 
 msgid "Show in public gallery"
 msgstr "In der Galerie zeigen"

@@ -9,7 +9,7 @@ import { draw, handleDelete } from 'maplibre/edit'
 import { featureIcon, getFeatureTypeName, resetHighlightedFeature } from 'maplibre/feature'
 import {
   backgroundMode, markerContentMode, markerMemory, syncBackground, syncDescShapeButtons,
-  syncMarkerContent, syncShapeButtons
+  syncMarkerContent, syncFeatureOnclickUi, featureOnclickMode, syncShapeButtons
 } from 'maplibre/feature/edit_ui'
 import { confirmImageLocation, uploadImage, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
@@ -160,6 +160,38 @@ export default class extends Controller {
   // called as preview on slider change
   updatePointSize () {
     this.updateDrawProperty('#point-size', 'marker-size', { displaySelector: '#point-size-val' })
+  }
+
+  // called by the items of both dropdowns and by the url input
+  updateFeatureOnclick (e) {
+    const feature = this.getEditFeature()
+    const props = feature.properties
+    const { featureOnclickMode: mode, featureId } = e.currentTarget.dataset
+    // a new mode starts without a target, a url is no feature id and the other way round
+    if (mode && mode !== featureOnclickMode(feature)) {
+      delete props['onclick-target']
+      if (mode === 'details') {
+        delete props.onclick
+      } else {
+        props.onclick = mode === 'none' ? false : mode
+      }
+    }
+    if (featureId) { props['onclick-target'] = featureId }
+    const link = e.currentTarget.id === 'feature-onclick-link'
+    if (link) {
+      const url = e.currentTarget.value.trim()
+      if (url) {
+        props['onclick-target'] = url
+      } else {
+        delete props['onclick-target']
+      }
+    }
+    syncFeatureOnclickUi(feature)
+    if (link) {
+      functions.debounce(() => { this.saveFeature() }, 'feature-onclick-link')
+    } else {
+      this.saveFeature()
+    }
   }
 
   updateMarkerScaling () {

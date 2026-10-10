@@ -41,6 +41,34 @@ export function selectableFeaturesNear (point) {
     .filter(f => !f.properties?.cluster)
 }
 
+function httpUrl (target) {
+  try {
+    const url = new URL(String(target), window.location.href)
+    return ['http:', 'https:'].includes(url.protocol) ? url.href : null
+  } catch { return null }
+}
+
+// Runs the 'onclick' link or feature jump of a feature in view mode, the description banner
+// shares it. Returns false when the click should select the feature as usual.
+export function runFeatureOnclickAction (feature) {
+  const target = feature.properties?.['onclick-target']
+  // the target comes from any editor of the map, a javascript: url would run in the viewer's session
+  if (feature.properties?.onclick === 'link' && httpUrl(target)) {
+    window.location.href = httpUrl(target)
+    return true
+  }
+  if (feature.properties?.onclick === 'feature' && target) {
+    const targetFeature = getFeature(target)
+    if (targetFeature) {
+      flyToFeature(targetFeature)
+    } else {
+      console.error('Target feature with id ' + target + ' not found')
+    }
+    return true
+  }
+  return false
+}
+
 function selectFeatureOnClick (e) {
   if (draw && draw.getMode() !== 'simple_select') { return }
   if (window.gon.map_mode === 'static') { return }
@@ -73,23 +101,7 @@ function selectFeatureOnClick (e) {
       : clickableStack[currentIdx + 1]
   }
 
-  if (isViewMode) {
-
-    if (feature.properties?.onclick === 'link' && feature.properties?.['onclick-target']) {
-      window.location.href = feature.properties?.['onclick-target']
-      return
-    }
-    if (feature.properties?.onclick === 'feature' && feature.properties?.['onclick-target']) {
-      const targetId = feature.properties?.['onclick-target']
-      const targetFeature = getFeature(targetId)
-      if (targetFeature) {
-        flyToFeature(targetFeature)
-      } else {
-        console.error('Target feature with id ' + targetId + ' not found')
-      }
-      return
-    }
-  }
+  if (isViewMode && runFeatureOnclickAction(feature)) { return }
   hideContextMenu()
   highlightFeature(feature, true, feature.source)
   // Defer the layer re-upload until after the browser paints the selection state —

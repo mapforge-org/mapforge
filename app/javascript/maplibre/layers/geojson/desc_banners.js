@@ -3,6 +3,7 @@ import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { featureOnLevel } from 'maplibre/controls/levels'
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
+import { runFeatureOnclickAction } from 'maplibre/layers/layer'
 import { frontFeature } from 'maplibre/layers/layers'
 import { clusterMaxZoom, map } from 'maplibre/map'
 import { defaultPointSize } from 'maplibre/styles/defaults'
@@ -120,6 +121,10 @@ function bindBannerEvents (el, id) {
     if (window.gon.map_mode === 'static' || (draw && draw.getMode() !== 'simple_select')) { return }
     const feature = banners.get(id)?.feature
     if (!feature) { return }
+    // the same view mode as a click on the marker, see selectFeatureOnClick
+    if (window.gon.map_mode === 'ro' || e.shiftKey) {
+      if (feature.properties.onclick === false || runFeatureOnclickAction(feature)) { return }
+    }
     hideContextMenu()
     highlightFeature(feature, true)
     requestAnimationFrame(() => frontFeature(feature))

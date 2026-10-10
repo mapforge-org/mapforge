@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 21:12+0200\n"
-"PO-Revision-Date: 2026-10-10 21:12+0200\n"
+"POT-Creation-Date: 2026-10-10 22:10+0200\n"
+"PO-Revision-Date: 2026-10-10 22:10+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -34,7 +34,7 @@ msgstr ""
 msgid "%{type} analysis"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:415 ../app/javascript/controllers/map/context_menu_controller.js:125
+#: ../app/javascript/controllers/feature/modal_controller.js:416 ../app/javascript/controllers/map/context_menu_controller.js:125
 msgid "%{type} copied to clipboard"
 msgstr ""
 
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Add OpenStreetMap layers"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:317 ../app/javascript/controllers/map/settings_controller.js:218
+#: ../app/javascript/controllers/feature/modal_controller.js:318 ../app/javascript/controllers/map/settings_controller.js:218
 msgid "Add a description text"
 msgstr ""
 
@@ -146,6 +146,10 @@ msgstr ""
 msgid "Also available for self-hosting, giving you full control over your data."
 msgstr ""
 
+#: ../app/views/maps/modals/feature/_edit_ui.haml:241
+msgid "Applies in view mode. In edit mode, a click always selects the feature."
+msgstr ""
+
 #: ../app/views/maps/modals/_confirmation.haml:8
 msgid "Are you sure you want to proceed?"
 msgstr ""
@@ -186,7 +190,7 @@ msgstr ""
 msgid "Basement %{n}"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:234
+#: ../app/views/maps/modals/feature/_edit_ui.haml:258
 msgid "Bicycle"
 msgstr ""
 
@@ -218,7 +222,7 @@ msgstr ""
 msgid "Bicycle route"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/edit_ui.js:79
+#: ../app/javascript/maplibre/feature/edit_ui.js:115
 msgid "Big dots"
 msgstr ""
 
@@ -290,7 +294,7 @@ msgstr ""
 msgid "Cannot delete the last layer"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:237
+#: ../app/views/maps/modals/feature/_edit_ui.haml:261
 msgid "Car"
 msgstr ""
 
@@ -310,7 +314,7 @@ msgstr ""
 msgid "Changelog"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/edit_ui.js:80
+#: ../app/javascript/maplibre/feature/edit_ui.js:116
 msgid "Checker"
 msgstr ""
 
@@ -390,7 +394,7 @@ msgstr ""
 msgid "Contributing"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:223
+#: ../app/views/maps/modals/feature/_edit_ui.haml:247
 msgid "Convert to route"
 msgstr ""
 
@@ -402,7 +406,7 @@ msgstr ""
 msgid "Converting track to %{profile} route..."
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:422 ../app/javascript/controllers/map/settings_controller.js:62
+#: ../app/javascript/controllers/feature/modal_controller.js:423 ../app/javascript/controllers/map/settings_controller.js:62
 msgid "Coordinates copied to clipboard"
 msgstr ""
 
@@ -414,7 +418,7 @@ msgstr ""
 msgid "Copy %{type}"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:227
+#: ../app/views/maps/modals/feature/_edit_ui.haml:251
 msgid "Copy and transform this line into a routed track with waypoints, elevation and surface info."
 msgstr ""
 
@@ -462,7 +466,7 @@ msgstr ""
 msgid "Cross platform"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/edit_ui.js:74
+#: ../app/javascript/maplibre/feature/edit_ui.js:110
 msgid "Crosshatch"
 msgstr ""
 
@@ -486,11 +490,11 @@ msgstr ""
 msgid "Default view when opening this map."
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:182 ../app/views/maps/modals/feature/_edit_ui.haml:260 ../app/javascript/maplibre/controls/context_menu.js:173
+#: ../app/views/maps/modals/_layers.haml:182 ../app/views/maps/modals/feature/_edit_ui.haml:284 ../app/javascript/maplibre/controls/context_menu.js:173
 msgid "Delete"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:258
+#: ../app/views/maps/modals/feature/_edit_ui.haml:282
 msgid "Delete feature"
 msgstr ""
 
@@ -550,6 +554,10 @@ msgstr ""
 msgid "Divide line here"
 msgstr ""
 
+#: ../app/views/maps/modals/feature/_edit_ui.haml:227
+msgid "Do nothing"
+msgstr ""
+
 #: ../app/views/maps/_map.haml:25
 msgid "Do you really want to delete this map?"
 msgstr ""
@@ -566,7 +574,7 @@ msgstr ""
 msgid "Don't show again for this map"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/edit_ui.js:78
+#: ../app/javascript/maplibre/feature/edit_ui.js:114
 msgid "Dots"
 msgstr ""
 
@@ -714,7 +722,7 @@ msgstr ""
 msgid "Error detecting location: %{message}"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/edit_controller.js:82 ../app/javascript/controllers/feature/modal_controller.js:340
+#: ../app/javascript/controllers/feature/edit_controller.js:82 ../app/javascript/controllers/feature/modal_controller.js:341
 msgid "Error updating %{type}"
 msgstr ""
 
@@ -802,7 +810,7 @@ msgstr ""
 msgid "Following position"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:231
+#: ../app/views/maps/modals/feature/_edit_ui.haml:255
 msgid "Foot"
 msgstr ""
 
@@ -826,12 +834,16 @@ msgstr ""
 msgid "Geometry"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:252
+#: ../app/views/maps/modals/feature/_edit_ui.haml:276
 msgid "Geometry JSON"
 msgstr ""
 
 #: ../app/views/maps/modals/_settings.haml:127
 msgid "Globe:"
+msgstr ""
+
+#: ../app/views/maps/modals/feature/_edit_ui.haml:227
+msgid "Go to feature"
 msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:58
@@ -850,7 +862,7 @@ msgstr ""
 msgid "Gray map in calm colors, your own data stands out"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/edit_ui.js:77
+#: ../app/javascript/maplibre/feature/edit_ui.js:113
 msgid "Grid"
 msgstr ""
 
@@ -858,7 +870,7 @@ msgstr ""
 msgid "Ground"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/edit_ui.js:73
+#: ../app/javascript/maplibre/feature/edit_ui.js:109
 msgid "Hatch"
 msgstr ""
 
@@ -914,7 +926,7 @@ msgstr ""
 msgid "Image"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/edit_controller.js:421 ../app/javascript/controllers/feature/edit_controller.js:493
+#: ../app/javascript/controllers/feature/edit_controller.js:453 ../app/javascript/controllers/feature/edit_controller.js:525
 msgid "Image exceeds 15MB"
 msgstr ""
 
@@ -1010,7 +1022,7 @@ msgstr ""
 msgid "Line cut into 2 segments"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/edit_ui.js:75
+#: ../app/javascript/maplibre/feature/edit_ui.js:111
 msgid "Lines"
 msgstr ""
 
@@ -1130,7 +1142,7 @@ msgstr ""
 msgid "Mapforge: Create and share your own maps online"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:192 ../app/javascript/maplibre/feature/edit_ui.js:117
+#: ../app/views/maps/modals/feature/_edit_ui.haml:192 ../app/javascript/maplibre/feature/edit_ui.js:153
 msgid "Max. 5MB"
 msgstr ""
 
@@ -1178,7 +1190,7 @@ msgstr ""
 msgid "Name:"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/edit_ui.js:117
+#: ../app/javascript/maplibre/feature/edit_ui.js:153
 msgid "Needs a polygon with four corners"
 msgstr ""
 
@@ -1238,6 +1250,10 @@ msgstr ""
 msgid "OSM Info (experimental)"
 msgstr ""
 
+#: ../app/views/maps/modals/feature/_edit_ui.haml:222
+msgid "On click:"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:109
 msgid "One link to view, one to edit"
 msgstr ""
@@ -1252,6 +1268,10 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:132 ../app/views/frontpage/index.haml:135
 msgid "Open Source"
+msgstr ""
+
+#: ../app/views/maps/modals/feature/_edit_ui.haml:227
+msgid "Open link"
 msgstr ""
 
 #: ../app/views/maps/_map.haml:29
@@ -1346,7 +1366,7 @@ msgstr ""
 msgid "Please confirm"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:32 ../app/views/maps/modals/_settings.haml:73 ../app/views/maps/modals/feature/_edit_ui.haml:192 ../app/javascript/maplibre/feature/edit_ui.js:116
+#: ../app/views/maps/modals/_layers.haml:32 ../app/views/maps/modals/_settings.haml:73 ../app/views/maps/modals/feature/_edit_ui.haml:192 ../app/javascript/maplibre/feature/edit_ui.js:152
 msgid "Please log in to upload images"
 msgstr ""
 
@@ -1522,7 +1542,7 @@ msgstr ""
 msgid "Satellite photos without labels"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:346
+#: ../app/javascript/controllers/feature/modal_controller.js:347
 msgid "Saving %{type}"
 msgstr ""
 
@@ -1540,6 +1560,10 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:52
 msgid "See how it works"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/edit_ui.js:57
+msgid "Select a feature"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/buttons/lines.js:14
@@ -1585,6 +1609,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:36 ../app/views/maps/modals/_share.haml:52 ../app/views/maps/modals/_share.haml:68
 msgid "Show QR code"
+msgstr ""
+
+#: ../app/views/maps/modals/feature/_edit_ui.haml:227
+msgid "Show details"
 msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:80
@@ -1685,7 +1713,7 @@ msgstr ""
 msgid "Style Help"
 msgstr ""
 
-#: ../app/views/maps/modals/feature/_edit_ui.haml:243
+#: ../app/views/maps/modals/feature/_edit_ui.haml:267
 msgid "Style JSON"
 msgstr ""
 
@@ -1745,7 +1773,7 @@ msgstr ""
 msgid "The map starts centered on your content."
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/edit_ui.js:76
+#: ../app/javascript/maplibre/feature/edit_ui.js:112
 msgid "Thick lines"
 msgstr ""
 
@@ -1753,7 +1781,7 @@ msgstr ""
 msgid "This browser cannot read KMZ archives. Please unzip it and import the .kml"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/edit_controller.js:678
+#: ../app/javascript/controllers/feature/edit_controller.js:710
 msgid "This feature no longer exists"
 msgstr ""
 

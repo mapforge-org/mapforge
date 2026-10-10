@@ -216,6 +216,30 @@
         %input#show-km-markers{type: "checkbox", data: { action: "input->feature--edit#addUndo input->feature--edit#updateShowKmMarkers change->feature--edit#saveFeature"} }
 
   .feature-edit-section.hidden{ 'data-edit-section': "advanced" }
+    .feature-section-card.pt-2
+      -# dropdowns, not selects: an option of a select shows no icon
+      #feature-onclick-ui.edit-ui
+        %label.left-label= _("On click:")
+        .dropdown.feature-onclick-dropdown
+          %button#feature-onclick.btn.feature-onclick-toggle.dropdown-toggle{ type: "button",
+            data: { 'bs-toggle': "dropdown", 'bs-popper-config': '{"strategy":"fixed"}' } }
+          %ul.dropdown-menu.feature-onclick-menu
+            - [ [ "details", "bi-card-text", _("Show details") ], [ "none", "bi-slash-circle", _("Do nothing") ],
+                [ "link", "bi-box-arrow-up-right", _("Open link") ], [ "feature", "bi-geo-alt-fill", _("Go to feature") ] ].each do |mode, icon, label|
+              %li
+                %button.dropdown-item{ type: "button",
+                  data: { 'feature-onclick-mode': mode, action: "click->feature--edit#addUndo click->feature--edit#updateFeatureOnclick" } }
+                  %i.bi{ class: icon }
+                  %span= label
+      %input#feature-onclick-link.form-control.form-control-sm.mt-1.hidden{ type: "url", placeholder: "https://",
+        data: { action: "input->feature--edit#addUndo input->feature--edit#updateFeatureOnclick" } }
+      #feature-onclick-feature-ui.dropdown.feature-onclick-dropdown.mt-1.hidden
+        %button#feature-onclick-feature.btn.feature-onclick-toggle.dropdown-toggle{ type: "button",
+          data: { 'bs-toggle': "dropdown", 'bs-popper-config': '{"strategy":"fixed"}' } }
+        -# filled by syncFeatureOnclickUi with the other features of the map
+        %ul#feature-onclick-feature-menu.dropdown-menu.feature-onclick-menu
+      %p.text-muted.small.mt-1.mb-0= _("Applies in view mode. In edit mode, a click always selects the feature.")
+
     #convert-to-route-section.feature-section-card.hidden
       .feature-details-card-header#convert-to-route-header
         %h5

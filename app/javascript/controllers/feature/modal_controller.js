@@ -11,7 +11,7 @@ import { draw, select, unselect } from 'maplibre/edit'
 import { getFeatureTypeName, highlightedFeatureId } from 'maplibre/feature'
 import { refreshFeatureMeta, showFeatureDetails } from 'maplibre/feature/details'
 import {
-  syncBackground, syncDescShapeButtons, syncMarkerContent, syncShapeButtons
+  syncBackground, syncDescShapeButtons, syncMarkerContent, syncFeatureOnclickUi, syncShapeButtons
 } from 'maplibre/feature/edit_ui'
 import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { applyFeatureUpdate, getFeature, layers } from 'maplibre/layers/layers'
@@ -106,6 +106,7 @@ export default class extends Controller {
     document.querySelector('#feature-title-input input').value = feature.properties.title || null
     document.querySelector('#feature-show-title-on-map').checked = !!feature.properties.label
     syncDescShapeButtons(feature)
+    syncFeatureOnclickUi(feature)
 
     dom.hideElements(['.edit-point', '.edit-line', '.edit-polygon'])
 

@@ -1,8 +1,9 @@
 import * as dom from 'helpers/dom'
 import * as f from 'helpers/functions'
-import { featureIcon } from 'maplibre/feature'
+import { featureIcon, getFeatureTypeName } from 'maplibre/feature'
 import { descShape } from 'maplibre/layers/geojson/desc_banners'
 import { canPinImage } from 'maplibre/layers/geojson/image_overlays'
+import { layers } from 'maplibre/layers/layers'
 import { defaults } from 'maplibre/styles/defaults'
 import { patternDataUrl, patternKeys } from 'maplibre/styles/pattern_image'
 
@@ -19,6 +20,41 @@ export function syncDescShapeButtons (feature) {
   document.querySelectorAll('#desc-shape-ui [data-desc-shape]').forEach(button => {
     button.classList.toggle('active', button.dataset.descShape === shape)
   })
+}
+
+// 'onclick' false is a boolean in the geojson, the menu needs a name for it
+export const featureOnclickMode = feature => {
+  const onclick = feature.properties.onclick
+  if (onclick === false) { return 'none' }
+  return ['link', 'feature'].includes(onclick) ? onclick : 'details'
+}
+
+const featureItem = feature =>
+  `${featureIcon(feature, { link: false })}<span>${f.escapeHtml(feature.properties.title ||
+    feature.properties.label || getFeatureTypeName(feature))}</span>`
+
+// The toggle of a dropdown shows the chosen item, the same as a select does
+export function syncFeatureOnclickUi (feature) {
+  const mode = featureOnclickMode(feature)
+  const target = feature.properties['onclick-target'] || ''
+  const item = document.querySelector(`#feature-onclick-ui [data-feature-onclick-mode='${mode}']`)
+  document.querySelector('#feature-onclick').innerHTML = item.innerHTML
+  const link = document.querySelector('#feature-onclick-link')
+  link.classList.toggle('hidden', mode !== 'link')
+  if (mode === 'link' && document.activeElement !== link) { link.value = target }
+  document.querySelector('#feature-onclick-feature-ui').classList.toggle('hidden', mode !== 'feature')
+  if (mode !== 'feature') { return }
+  const others = layers.filter(l => l.type === 'geojson')
+    .flatMap(l => l.geojson?.features || [])
+    .filter(other => other.id !== feature.id)
+  document.querySelector('#feature-onclick-feature-menu').innerHTML = others.map(other =>
+    `<li><button type='button' class='dropdown-item' data-feature-id='${f.escapeHtml(other.id)}'
+      data-action='click->feature--edit#addUndo click->feature--edit#updateFeatureOnclick'>${featureItem(other)}</button></li>`
+  ).join('')
+  const chosen = others.find(other => other.id === target)
+  document.querySelector('#feature-onclick-feature').innerHTML = chosen
+    ? featureItem(chosen)
+    : `<span>${window.__('Select a feature')}</span>`
 }
 
 // An image covers a symbol, so a point that carries both reads as an image.

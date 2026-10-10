@@ -78,6 +78,41 @@ describe "Feature edit" do
     end
   end
 
+  context "with polygon and target point on map" do
+    let!(:polygon) { create(:feature, :polygon_middle, title: "Poly Title") }
+    let!(:target) { create(:feature, :point, title: "Target point") }
+    let(:map) { create(:map, features: [ polygon, target ]) }
+
+    before do
+      click_coord("#maplibre-map", 512, 430)
+      find("#edit-button-advanced").click
+    end
+
+    def choose_feature_onclick(label)
+      find("#feature-onclick").click
+      find("#feature-onclick-ui .dropdown-item", text: label).click
+    end
+
+    it "can set the click behavior" do
+      choose_feature_onclick("Open link")
+      find("#feature-onclick-link").fill_in(with: "https://example.org")
+      wait_for { polygon.reload.properties.values_at("onclick", "onclick-target") }.to eq([ "link", "https://example.org" ])
+
+      choose_feature_onclick("Go to feature")
+      wait_for { polygon.reload.properties.values_at("onclick", "onclick-target") }.to eq([ "feature", nil ])
+      find("#feature-onclick-feature").click
+      find("#feature-onclick-feature-menu .dropdown-item", text: "Target point").click
+      wait_for { polygon.reload.properties["onclick-target"] }.to eq(target.id.to_s)
+      expect(page).to have_css("#feature-onclick-feature", text: "Target point")
+
+      choose_feature_onclick("Do nothing")
+      wait_for { polygon.reload.properties.values_at("onclick", "onclick-target") }.to eq([ false, nil ])
+
+      choose_feature_onclick("Show details")
+      wait_for { polygon.reload.properties.key?("onclick") }.to be false
+    end
+  end
+
   context "with polygon on map" do
     let!(:polygon) { create(:feature, :polygon_middle, title: "Poly Title") }
     let(:map) { create(:map, features: [ polygon ]) }
