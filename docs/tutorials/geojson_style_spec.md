@@ -11,7 +11,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 
 * `label`: Label to show on the map (no emoji support)
 * `label-title`: heading line above `label`, at 1.3 times `label-size`. It works without a `label`. It takes the same color, font, anchor and offset as the label.
-* `label-size`: font size (default 16, max. 254). With `marker-scaling`, this is the size at zoom 14. The label then doubles with every zoom level up to zoom 17, so values above 31 have no further effect.
+* `label-size`: font size (max. 254). The default is 16. A point with a `marker-size` above 20 adds 0.25 px per px of size, with `marker-scaling` 0.4 px at zoom 16. With `marker-scaling`, a `label-size` you set is the size at zoom 14. The label then doubles with every zoom level up to zoom 17, so values above 31 have no further effect.
 * `label-font`: label font array (default depends on base map, like `["noto_sans_regular"]`), see *[Label fonts](#label-fonts)* below
 * `label-color`: font color in format "#000000" (default)
 * `label-justify`: alignment: auto (default), left, center, right

@@ -321,31 +321,62 @@ const iconSize = () => [
 // const iconSizeActive = ['*', 1.1, iconSize] // icon-size is not a paint property
 // This is the size for zoom=14. With each zoom level the size doubles when marker-scaling=true
 const userLabelSize = styleProp(['user_label-size', 'label-size'])
-const scaledLabelSize = () => ['coalesce', ...userLabelSize.slice(1), ['*', 2, pointSizeMax()]] // fallback to 2*pointSizeMax
-const staticLabelSize = () => ['coalesce', ...userLabelSize.slice(1), defaults.labelSize]
-// Label offset based on marker size, with geometry-aware handling
-const labelOffsetBySize = () => [
+// A marker above size 20 gets a bigger label, by 'growth' px per px of size. A scaled marker has
+// its 'marker-size' at zoom 16, and its label grows a bit faster than the unscaled one.
+const defaultLabelSize = growth => ['max', defaults.labelSize,
+  ['+', defaults.labelSize, ['*', growth, ['-', pointSizeMax(), 20]]]]
+const scaledLabelSize = () => ['coalesce', ...userLabelSize.slice(1), ['/', defaultLabelSize(0.4), 4]]
+const staticLabelSize = () => ['coalesce', ...userLabelSize.slice(1), defaultLabelSize(0.25)]
+
+// text-offset is in ems and takes no expression for an array, but an interpolation of two
+// literal arrays builds [0, y] for any y up to 10000. The text box starts half of the extra line
+// height, plus 0.1 em of the font, above the capitals, which y takes back.
+const capsInset = (defaults.labelLineHeight - 1) / 2 + 0.1
+const offsetY = y => ['interpolate', ['linear'], ['-', y, capsInset],
+  -10000, ['literal', [0, -10000]], 10000, ['literal', [0, 10000]]]
+
+// The distance from the center of a point to its lower edge, in px. A shape canvas is
+// 2 * size / FILL wide (see circle_image.js), its outline ends at 1.14 * size. A plain circle
+// gets its stroke on top of the radius. An image without a shape has an unknown aspect, the
+// factor keeps the distance it always had. A pin stands on its tip, see 'icon-anchor'.
+const pointEdge = () => ['case',
+  ['==', markerShape(), 'pin'], 0,
+  shapedPoint(), ['*', 1.14, pointSizeMax()],
+  ['has', 'marker-image-url'], ['+', 2, ['*', 1.38, pointSizeMax()]],
+  ['+', pointSizeMax(), pointOutlineSize()]
+]
+
+// Label offset based on marker size, with geometry-aware handling. The label starts 16px below
+// the edge of the point. Without scaling the point has a fixed size in px. With scaling, the edge
+// and the label both double per zoom level up to zoom 17, so one em value holds there.
+// Above 17 the label stops growing, see labelFontSizeMax, and the em value has to follow the
+// zoom with zoomFactor, see labelOffset.
+const labelOffsetBySize = zoomFactor => [
   'case',
   ['any',
     ['==', ['geometry-type'], 'Polygon'],
     ['==', ['geometry-type'], 'MultiPolygon']
   ],
   ['literal', [0, 0]],  // Zero offset for polygons
-  // For points with marker-image-url: steeper offset curve
-  ['has', 'marker-image-url'],
-  ['interpolate', ['linear'],
-    ['to-number', pointSizeMax()],
-    0, ['literal', [0, 0]],
-    10, ['literal', [0, 1]],
-    300, ['literal', [0, 26]]
-  ],
-  // For other points (emoji, plain): original offset curve
-  ['interpolate', ['linear'],
-    ['to-number', pointSizeMax()],
-    0, ['literal', [0, 0]],
-    10, ['literal', [0, 0.4]],
-    300, ['literal', [0, 18]]
-  ]
+  ['!', shouldScale],
+  offsetY(['/', ['+', 16, pointEdge()], ['to-number', staticLabelSize()]]),
+  // the edge is pointEdge() at zoom 16, the label is labelFontSizeMax() at zoom 17
+  offsetY(['/', ['*', 2, zoomFactor, ['+', 16, pointEdge()]], labelFontSizeMax()])
+]
+
+// A zoom dependent layout property gets evaluated at the integer zoom of the tile, so between
+// two levels the offset stands still while a scaled marker keeps growing. The value of the
+// next level keeps the label clear of the marker, at the cost of a gap of up to one radius.
+const labelOffset = () => ['interpolate', ['exponential', 2], ['zoom'],
+  16, textOffset(1),
+  22, textOffset(64)
+]
+
+const textOffset = zoomFactor => [
+  'case',
+  ['has', 'label-offset'], ['get', 'label-offset'],
+  ['==', styleProp(['user_label-anchor', 'label-anchor'], defaults.labelAnchor), 'top'], labelOffsetBySize(zoomFactor),
+  ['literal', [0, 0]]
 ]
 
 export const labelFontSize = () => [
@@ -505,12 +536,7 @@ function textLayerStyles(mode) {
     'text-anchor': styleProp(['user_label-anchor', 'label-anchor'], defaults.labelAnchor),
     // labelOffset is now geometry-aware: 0 for polygons, scaled for points
     // default to dynamic labelOffset if not set
-    'text-offset': [
-      'case',
-      ['has', 'label-offset'], ['get', 'label-offset'],
-      ['==', styleProp(['user_label-anchor', 'label-anchor'], defaults.labelAnchor), 'top'], labelOffsetBySize(),
-      ['literal', [0, 0]]
-    ],
+    'text-offset': labelOffset(),
     'text-justify': ['coalesce', ['get', 'label-justify'], 'auto'],
     'text-max-width': ['coalesce', ['get', 'label-max-width'], defaults.labelMaxWidth],
     'text-line-height': defaults.labelLineHeight, // no dynamic value possible
