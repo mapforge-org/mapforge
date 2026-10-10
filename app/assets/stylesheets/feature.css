@@ -637,6 +637,9 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
   line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .stepper-btn:active {

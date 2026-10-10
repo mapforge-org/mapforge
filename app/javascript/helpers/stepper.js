@@ -1,4 +1,4 @@
-import { isTouchDevice } from 'helpers/functions'
+import { isTouchDevice, debounce } from 'helpers/functions'
 
 const formatters = {
   opacity: v => (v * 10) + '%',
@@ -28,9 +28,29 @@ export function initSteppers () {
     const decBtn = stepper.querySelector('.stepper-btn-dec')
     const incBtn = stepper.querySelector('.stepper-btn-inc')
 
-    decBtn.addEventListener('click', () => adjustValue(input, -step, stepper))
-    incBtn.addEventListener('click', () => adjustValue(input, step, stepper))
+    initRepeatButton(decBtn, () => adjustValue(input, -step, stepper))
+    initRepeatButton(incBtn, () => adjustValue(input, step, stepper))
   })
+}
+
+function initRepeatButton (button, action) {
+  let timer
+  const stop = () => clearTimeout(timer)
+  const repeat = (delay) => {
+    action()
+    timer = setTimeout(() => repeat(80), delay)
+  }
+  button.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0) return
+    button.setPointerCapture(event.pointerId)
+    repeat(400)
+  })
+  button.addEventListener('pointerup', stop)
+  button.addEventListener('pointercancel', stop)
+  button.addEventListener('lostpointercapture', stop)
+  // pointerdown already handled mouse and touch, only keyboard activation (detail 0) is left
+  button.addEventListener('click', (event) => { if (event.detail === 0) action() })
+  button.addEventListener('contextmenu', (event) => event.preventDefault())
 }
 
 function adjustValue (input, delta, stepper) {
@@ -43,7 +63,8 @@ function adjustValue (input, delta, stepper) {
   input.value = newValue
   stepper.querySelector('.stepper-val').textContent = formatValue(input.id, newValue)
   input.dispatchEvent(new Event('input', { bubbles: true }))
-  input.dispatchEvent(new Event('change', { bubbles: true }))
+  // change handlers save to the server, so send only the final value of a click series
+  debounce(() => input.dispatchEvent(new Event('change', { bubbles: true })), 'stepper-' + input.id, 500)
 }
 
 export function syncStepperValues () {
