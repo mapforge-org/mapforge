@@ -1,6 +1,6 @@
 import { draw, select } from 'maplibre/edit'
 import { removeDescBanner, renderDescBanners, showDescBanners, syncDescBanner } from 'maplibre/layers/geojson/desc_banners'
-import { bufferLoaded, buildLineExtrusion, loadBuffer } from 'maplibre/layers/geojson/extrusion'
+import { buildLineExtrusion } from 'maplibre/layers/geojson/extrusion'
 import {
   removeFeatureImageOverlay,
   renderImageOverlays,
@@ -24,10 +24,10 @@ import {
 import { highlightFeature } from 'maplibre/feature'
 import { Layer, queryFeaturesNear } from 'maplibre/layers/layer'
 import { frontFeature, getFeature, layers } from 'maplibre/layers/layers'
-import { addGeoJSONSource, map, mapProperties, noValidate, removeGeoJSONSource } from 'maplibre/map'
+import { addGeoJSONSource, map, noValidate, removeGeoJSONSource } from 'maplibre/map'
 import { pruneShapeImages } from 'maplibre/styles/circle_image'
 import { prunePatternImages } from 'maplibre/styles/pattern_image'
-import { clusterStyles, initializeClusterStyles, initializeViewStyles, styles, viewStyleNames } from 'maplibre/styles/styles'
+import { clusterStyles, extrusionOpacityBuckets, initializeClusterStyles, initializeViewStyles, styles, viewStyleNames } from 'maplibre/styles/styles'
 
 // Every layer counts, so that the render of one layer never drops the shape images of another
 function pruneShapes() {
@@ -36,13 +36,12 @@ function pruneShapes() {
   prunePatternImages(features)
 }
 
-// Whether a feature needs a buffered extrusion polygon: a LineString with a height set, not
-// already rendered as a route-extras segment (which builds its own extrusion), and not hidden by 3D terrain.
+// Whether a feature needs an extrusion polygon: a LineString with a height set, not
+// already rendered as a route-extras segment (which builds its own extrusion).
 function needsExtrusionPolygon(feature) {
   return feature.geometry?.type === 'LineString' &&
     !!feature.properties?.['fill-extrusion-height'] &&
-    !feature.properties?.['show-route-extras'] &&
-    !mapProperties.terrain
+    !feature.properties?.['show-route-extras']
 }
 
 export class GeoJSONLayer extends Layer {
@@ -76,8 +75,10 @@ export class GeoJSONLayer extends Layer {
   createSource() {
     super.createSource()
     addGeoJSONSource(this.kmMarkerSourceId, false)
-    addGeoJSONSource(this.routeExtrasSourceId, false)
-    addGeoJSONSource(this.extrusionSourceId, false)
+    // Wall pieces are 0.5 m quads. Simplification below the source maxzoom drops them or
+    // collapses them to two points, which MapLibre draws as thin vertical sticks.
+    addGeoJSONSource(this.routeExtrasSourceId, false, null, 0)
+    addGeoJSONSource(this.extrusionSourceId, false, null, 0)
   }
 
   setupClickHandler() {
@@ -129,6 +130,15 @@ export class GeoJSONLayer extends Layer {
     initializeViewStyles(this.routeExtrasSourceId)
     initializeExtrasLabelStyles(this.routeExtrasSourceId)
     initializeViewStyles(this.extrusionSourceId)
+    // Walls are built from short quads (see extrusion.js). Rounded corners and the vertical
+    // gradient shade every quad on its own, which shows each seam as a dark band.
+    for (const sourceId of [this.routeExtrasSourceId, this.extrusionSourceId]) {
+      extrusionOpacityBuckets.forEach((_, i) => {
+        const id = `polygon-layer-extrusion-${i + 1}_${sourceId}`
+        map.setLayoutProperty(id, 'fill-extrusion-rounded-corner-distance', 0, noValidate)
+        map.setPaintProperty(id, 'fill-extrusion-vertical-gradient', false, noValidate)
+      })
+    }
 
     map.setFilter(`line-layer_${this.sourceId}`, withLevelFilter(this.mainLineFilter), noValidate)
     // Hide the outline layer for route extras - we only want the colored segments visible
@@ -240,7 +250,6 @@ export class GeoJSONLayer extends Layer {
     detectLevels()
 
     const features = this.layer.geojson.features
-    this.ensureBuffer(features)
 
     renderKmMarkers(features, this.kmMarkerSourceId)
     renderRouteExtras(features, this.routeExtrasSourceId)
@@ -307,7 +316,6 @@ export class GeoJSONLayer extends Layer {
     const source = map.getSource(this.sourceId)
     if (!source) { return }
     source.updateData({ remove: [feature.id], add: sourceFeatures })
-    this.ensureBuffer([feature])
 
     // Route-extras segments copy the parent's style properties (see inheritedProps) and build
     // their own extrusion, so ANY property edit on a route feature leaves them stale.
@@ -317,7 +325,7 @@ export class GeoJSONLayer extends Layer {
 
     // Extrusion polygon lives in a separate source (only LineStrings ever have one): upsert it
     // for a non-route extrusion line, otherwise remove any stale polygon (height cleared,
-    // route-extras enabled, terrain on, …).
+    // route-extras enabled, …).
     const extrusionSource = map.getSource(this.extrusionSourceId)
     if (extrusionSource && feature.geometry?.type === 'LineString') {
       const polygon = needsExtrusionPolygon(feature) ? buildLineExtrusion(feature) : null
@@ -347,7 +355,6 @@ export class GeoJSONLayer extends Layer {
     const source = map.getSource(this.sourceId)
     if (!source) { return }
     source.updateData({ add: [feature] })
-    this.ensureBuffer([feature])
 
     if (hasRouteExtras(feature)) {
       renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
@@ -429,26 +436,11 @@ export class GeoJSONLayer extends Layer {
     }
   }
 
-  // buildLineExtrusion() returns null until @turf/buffer is loaded, so the extrusions render again then
-  ensureBuffer(features) {
-    if (bufferLoaded() || !features.some(f => needsExtrusionPolygon(f) || hasRouteExtras(f))) { return }
-    loadBuffer().then(() => {
-      if (!this.layer?.geojson?.features) { return }
-      renderRouteExtras(this.layer.geojson.features, this.routeExtrasSourceId)
-      this.renderExtrusionLines(this.layer.geojson.features)
-    })
-  }
-
   renderExtrusionLines(features) {
     const source = map.getSource(this.extrusionSourceId)
     if (!source) { return }
 
-    if (mapProperties.terrain) {
-      source.setData({ type: 'FeatureCollection', features: [] })
-      return
-    }
-
-    // LineStrings with fill-extrusion-height are buffered into polygons for MapLibre's fill-extrusion layer.
+    // LineStrings with fill-extrusion-height are turned into polygons for MapLibre's fill-extrusion layer.
     // Placed in a separate non-selectable source so the polygons are never clickable.
     // Skipped when 'show-route-extras' renders its own extrusion.
     const extrusionFeatures = features

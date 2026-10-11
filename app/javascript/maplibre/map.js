@@ -122,10 +122,46 @@ function setAttributionControl () {
   map.addControl(attributionControl, 'bottom-right')
 }
 
+// ?fps=<n> caps every requestAnimationFrame user, MapLibre included, for screen recordings:
+// evenly spaced frames, and half the GPU work of a 60Hz screen at 30fps.
+// ponytail: frames snap to the vsync grid, so 144Hz gives every 5th vsync (~28.8fps).
+let frameCapInstalled = false
+function capFrameRate () {
+  const fps = Number(new URLSearchParams(window.location.search).get('fps'))
+  if (!(fps > 0) || frameCapInstalled) { return }
+  frameCapInstalled = true
+  const request = window.requestAnimationFrame.bind(window)
+  const cancel = window.cancelAnimationFrame.bind(window)
+  // The 2ms slack keeps a 60Hz screen on every second vsync despite timestamp jitter
+  const interval = 1000 / fps - 2
+  // Our id -> the native id of the vsync the callback currently waits for
+  const pending = new Map()
+  let lastId = 0
+  let frame = null
+  let next = 0
+  window.requestAnimationFrame = callback => {
+    const id = ++lastId
+    const tick = time => {
+      // All callbacks of one vsync get the same time, so they run or wait together
+      if (time !== frame && time >= next) { frame = time; next = time + interval }
+      if (time !== frame) { pending.set(id, request(tick)); return }
+      pending.delete(id)
+      callback(time)
+    }
+    pending.set(id, request(tick))
+    return id
+  }
+  window.cancelAnimationFrame = id => {
+    cancel(pending.get(id))
+    pending.delete(id)
+  }
+}
+
 export async function initializeMap (divId = 'maplibre-map') {
   backgroundMapLayer = null
   backgroundStyleKey = null
   rasterZoomLimits = {}
+  capFrameRate()
 
   // Initialize level from URL FIRST, before any layer initialization
   // This ensures the level is set before style.load triggers initializeLayers
@@ -148,6 +184,8 @@ export async function initializeMap (divId = 'maplibre-map') {
       attributionControl: false, // see setAttributionControl()
       hash: true, // enable hash in URL for map center/zoom
       fadeDuration: 200, // shorter fade
+      // A 2x screen draws 4x the pixels and drops frames in pitched camera flights
+      pixelRatio: Math.min(window.devicePixelRatio, 1.5),
       interactive: (window.gon.map_mode !== 'static'), // can move/zoom map
       // The static styles in public/layers/ must not carry an api key, so add the
       // configured one to every maptiler request that comes out of them
@@ -355,7 +393,7 @@ function updateCursorPosition(e) {
 
 // Each map layer has its own source, so different style layers can be applied
 // sourceName convention: layer.type + '-source-' + layer.id
-export function addGeoJSONSource(sourceName, cluster=false, attribution=null) {
+export function addGeoJSONSource(sourceName, cluster=false, attribution=null, tolerance=null) {
   // https://maplibre.org/maplibre-style-spec/sources/#geojson
   // console.log("Adding source: " + sourceName)
   if (map.getSource(sourceName)) {
@@ -371,7 +409,8 @@ export function addGeoJSONSource(sourceName, cluster=false, attribution=null) {
     clusterRadius: 50,
     // the attribution control drops a null and de-duplicates the rest, so layers of the
     // same type credit their data source only once
-    ...(attribution && { attribution })
+    ...(attribution && { attribution }),
+    ...(tolerance !== null && { tolerance })
   })
 }
 

@@ -3,7 +3,7 @@ require "net/http"
 namespace :demo do
   desc "Draw on an existing map in three scenes, for screen recording (Elba, La Zanca)"
   task draw: :environment do
-    fps = 25
+    fps = 30
     pace = 0.75                                    # every cursor action runs 25% faster
 
     # Opening and closing shot: all three scenes in one frame
@@ -66,7 +66,7 @@ namespace :demo do
     abort "No map with private_id #{private_id}" unless map
     # Printed before the slow setup below, so the page is open by the time the first
     # broadcast goes out. A cursor is a broadcast, so it needs a connected client.
-    puts "Open #{ENV.fetch("MAPFORGE_HOST", "http://localhost:3000")}/m/#{map.private_id}"
+    puts "Open #{ENV.fetch("MAPFORGE_HOST", "http://localhost:3000")}/m/#{map.private_id}?fps=30"
 
     hiker  = { uuid: "demo-hiker", name: "Cleo", image: "/images/frontpage/avatar2.jpeg" }
     scout  = { uuid: "demo-scout", name: "Ben", image: "/images/frontpage/avatar3.jpeg" }
@@ -204,7 +204,7 @@ namespace :demo do
     track_properties = ->(upto) {
       { "title" => "Coast walk", "stroke" => "#e8590c", "stroke-width" => 5,
         "stroke-opacity" => 0.65, "stroke-dasharray" => true,
-        "fill-extrusion-height" => 8, "fill-extrusion-width" => 3, "fill-extrusion-opacity" => 0.6,
+        "fill-extrusion-height" => 8, "fill-extrusion-width" => 3, "fill-extrusion-opacity" => 1,
         "show-route-extras" => "steepness",
         "route" => { "provider" => "ors", "profile" => "foot",
                      "waypoints" => stops[0..upto].map { |stop| track[stop].first(2) },
@@ -297,7 +297,7 @@ namespace :demo do
                       "desc" => "Steel hull at 22 m, groupers inside\n\n" \
                                 "<img src=\"/images/frontpage/shipwreck.jpg\" width=\"150\">\n",
                       "marker-color" => "#000000", "stroke" => "transparent",
-                      "show-desc" => "banner", "marker-size" => 14,
+                      "show-desc" => "banner", "marker-size" => 5,
                       "marker-symbol" => "/icon-sets/fontawesome/ship.png" })
     }
 

@@ -336,7 +336,7 @@ export function renderRouteExtras (features, sourceId) {
 
   showExtrasLegend(activeExtrasType, activeValues, mergeBboxes(legendFeatures))
 
-  // Buffer LineString segments into polygons for 3D extrusion
+  // Turn LineString segments into polygons for 3D extrusion
   const extrusionFeatures = extrasFeatures
     .filter(f => f.properties['fill-extrusion-height'])
     .map(buildLineExtrusion)

@@ -94,11 +94,5 @@ pin "@turf/bearing", to: "@turf--bearing.js", preload: "map" # @7.4.0
 pin "@turf/destination", to: "@turf--destination.js", preload: "map" # @7.4.0
 pin "@turf/length", to: "@turf--length.js", preload: "map" # @7.4.0
 pin "@turf/area", to: "@turf--area.js", preload: "map" # @7.4.0
-pin "@turf/buffer", to: "@turf--buffer.js", preload: false # @7.4.0
 pin "@turf/bbox", to: "@turf--bbox.js", preload: "map" # @7.4.0
 pin "@turf/center", to: "@turf--center.js", preload: "map" # @7.4.0
-pin "@turf/jsts", to: "@turf--jsts.js", preload: false # @2.7.2
-# dependencies of turf/buffer
-pin "d3-array", preload: false # @3.2.4
-pin "d3-geo", preload: false # @3.1.1
-pin "internmap", preload: false # @2.0.3
