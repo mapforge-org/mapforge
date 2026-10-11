@@ -36,6 +36,8 @@ export function descriptionHiddenKey () {
 const localOnlyProperties = [ 'base_map', 'terrain', 'hillshade', 'contours', 'globe' ]
 let serverProperties = {}
 
+const TERRAIN_CLEARANCE = 50 // meters
+
 // Server `updated_at` of the map data currently held in memory. Compared on socket
 // reconnect (against the freshly fetched value) to decide whether a full, main-thread
 // -blocking reload is actually needed. Set on every full (re)load of the map data.
@@ -179,6 +181,14 @@ export async function initializeMap (divId = 'maplibre-map') {
       // Above ~70°, the top of the canvas shows sky. MapLibre 6.11 then computes a negative
       // maxPitchScaleFactor, and queryRenderedFeatures returns nothing, so no feature is selectable.
       maxPitch: 65,
+      // MapLibre only lifts the camera to exactly ground level, so the near plane still cuts into slopes.
+      // Lifting the camera ourselves makes it jump, so refuse further zoom in and pitch up instead.
+      transformCameraUpdate: (tr) => {
+        if (!map?.terrain) { return {} }
+        const ground = map.terrain.getElevationForLngLatZoom(tr.getCameraLngLat(), tr.zoom)
+        if (tr.getCameraAltitude() >= ground + TERRAIN_CLEARANCE) { return {} }
+        return { zoom: Math.min(tr.zoom, map.getZoom()), pitch: Math.min(tr.pitch, map.getPitch()) }
+      },
       maxZoom: 24, // hard limit of maplibre
       maplibreLogo: true,
       attributionControl: false, // see setAttributionControl()
