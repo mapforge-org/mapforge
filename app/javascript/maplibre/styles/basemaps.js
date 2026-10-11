@@ -31,7 +31,7 @@ const host = new URL(window.location.href).origin
 export let demSource = new mlcontour.DemSource({
   url: "https://tiles.versatiles.org/tiles/elevation/{z}/{x}/{y}",
   encoding: "terrarium",
-  maxzoom: 13,
+  maxzoom: 12,
   worker: true, // offload isoline computation to a web worker to reduce jank
   cacheSize: 100, // number of most-recent tiles to cache
   timeoutMs: 10_000, // timeout on fetch requests
@@ -45,7 +45,7 @@ export let elevationSource = {
     demSource.sharedDemProtocolUrl
   ],
   tileSize: 512,
-  maxzoom: 13,
+  maxzoom: 12,
   attribution: '© <a href="https://mapterhorn.com" target="_blank">Mapterhorn</a>'
 }
 
