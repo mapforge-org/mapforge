@@ -103,8 +103,9 @@ export const editDefaults = { ...baseEditDefaults }
 export function defaultPointSize (feature) {
   // a pin or a square at the plain default is too small to recognize
   if ((feature.properties['marker-shape'] || 'circle') !== 'circle') { return defaults.pointSizeEmoji }
-  if (feature.properties['marker-symbol']) { return defaults.pointSizeEmoji }
+  // an image covers a symbol
   if (feature.properties['marker-image-url']) { return defaults.pointSizeImage }
+  if (feature.properties['marker-symbol']) { return defaults.pointSizeEmoji }
   return defaults.pointSizePlain
 }
 

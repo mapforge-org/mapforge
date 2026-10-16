@@ -29,9 +29,11 @@ export const featureOnclickMode = feature => {
   return ['link', 'feature'].includes(onclick) ? onclick : 'details'
 }
 
-const featureItem = feature =>
-  `${featureIcon(feature, { link: false })}<span>${f.escapeHtml(feature.properties.title ||
-    feature.properties.label || getFeatureTypeName(feature))}</span>`
+const featureItem = feature => {
+  const name = String(feature.properties.title || feature.properties.label || getFeatureTypeName(feature))
+  const short = name.length > 35 ? `${name.slice(0, 35).trimEnd()}…` : name
+  return `${featureIcon(feature, { link: false })}<span title='${f.escapeHtml(name)}'>${f.escapeHtml(short)}</span>`
+}
 
 // The toggle of a dropdown shows the chosen item, the same as a select does
 export function syncFeatureOnclickUi (feature) {

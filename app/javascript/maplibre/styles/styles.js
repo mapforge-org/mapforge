@@ -212,6 +212,8 @@ const pointColor = () => styleProp(['user_marker-color', 'marker-color'], defaul
 const markerSize = styleProp(['user_marker-size', 'marker-size'])
 const markerShape = () => styleProp(['user_marker-shape', 'marker-shape'], 'circle')
 const markerSymbol = () => styleProp(['user_marker-symbol', 'marker-symbol'], '')
+// An image covers a symbol, so a symbol next to an image must not change how the point looks.
+const showsSymbol = () => ['all', ['!=', markerSymbol(), ''], ['!', ['has', 'marker-image-url']]]
 const minZoomFilter = () => [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], defaults.minZoom]]]
 const maxZoomFilter = () => ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], defaults.maxZoom]]]
 
@@ -222,7 +224,7 @@ const maxZoomFilter = () => ["<=", ["zoom"], ["to-number", ["coalesce", ["get", 
 const pointSizeDefault = plain => [
   'case',
   // a pin or a square at the plain default is too small to recognize
-  ['any', ['!=', markerShape(), 'circle'], hasProp('marker-symbol')],
+  ['any', ['!=', markerShape(), 'circle'], showsSymbol()],
   defaults.pointSizeEmoji,
   hasProp('marker-image-url'),
   defaults.pointSizeImage,
@@ -255,7 +257,7 @@ export const pointSize = (factor = 1) => ['interpolate', ['exponential', 2], ['z
 // KEEP IN SYNC with isShapedPoint() in circle_image.js, which is what the prune reads.
 const shapedPoint = () => ['all',
   ['==', ['geometry-type'], 'Point'],
-  ['any', ['!=', markerShape(), 'circle'], ['!=', markerSymbol(), '']]
+  ['any', ['!=', markerShape(), 'circle'], showsSymbol()]
 ]
 const plainPoint = () => ['!', shapedPoint()]
 

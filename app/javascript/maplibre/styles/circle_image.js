@@ -121,7 +121,7 @@ export function shapeImageName (properties) {
 
 // Which points the map draws as one image. KEEP IN SYNC with shapedPoint() in styles.js.
 const isShapedPoint = feature => feature.geometry?.type === 'Point' &&
-  ((feature.properties?.['marker-shape'] || 'circle') !== 'circle' || !!feature.properties?.['marker-symbol'])
+  ((feature.properties?.['marker-shape'] || 'circle') !== 'circle' || (!!feature.properties?.['marker-symbol'] && !feature.properties?.['marker-image-url']))
 
 // Drops the shape images that no feature uses any more. A missing image is drawn again by the
 // resolver of maplibre (see loadImage), so a prune that goes too far repairs itself.
