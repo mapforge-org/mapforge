@@ -47,7 +47,7 @@ pin "chart.js", to: "chart-js.js", preload: false # @4.5.1
 # render markdown
 pin "marked", preload: "map" # @18.1.0
 # https://github.com/cure53/DOMPurify, strips scripts and event handlers from rendered markdown
-pin "dompurify", preload: "map" # @3.4.16
+pin "dompurify", preload: "map" # @3.4.17
 # https://github.com/kazuhikoarase/qrcode-generator, from https://esm.sh/qrcode-generator@2.0.4?bundle
 pin "qrcode-generator", preload: false # @2.0.4
 
