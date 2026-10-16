@@ -351,10 +351,8 @@ const pointEdge = () => ['case',
 
 // Label offset based on marker size, with geometry-aware handling. The label starts 16px below
 // the edge of the point. Without scaling the point has a fixed size in px. With scaling, the edge
-// and the label both double per zoom level up to zoom 17, so one em value holds there.
-// Above 17 the label stops growing, see labelFontSizeMax, and the em value has to follow the
-// zoom with zoomFactor, see labelOffset.
-const labelOffsetBySize = zoomFactor => [
+// and the label both double per zoom level, so one em value holds at every zoom, see labelSize.
+const labelOffsetBySize = zoom => [
   'case',
   ['any',
     ['==', ['geometry-type'], 'Polygon'],
@@ -363,22 +361,22 @@ const labelOffsetBySize = zoomFactor => [
   ['literal', [0, 0]],  // Zero offset for polygons
   ['!', shouldScale],
   offsetY(['/', ['+', 16, pointEdge()], ['to-number', staticLabelSize()]]),
-  // the edge is pointEdge() at zoom 16, the label is labelFontSizeMax() at zoom 17
-  offsetY(['/', ['*', 2, zoomFactor, ['+', 16, pointEdge()]], labelFontSizeMax()])
+  // the edge is pointEdge() at zoom 16
+  offsetY(['/', ['*', 2 ** (zoom - 16), ['+', 16, pointEdge()]], labelSizeAt(zoom)])
 ]
 
 // A zoom dependent layout property gets evaluated at the integer zoom of the tile, so between
-// two levels the offset stands still while a scaled marker keeps growing. The value of the
-// next level keeps the label clear of the marker, at the cost of a gap of up to one radius.
-const labelOffset = () => ['interpolate', ['exponential', 2], ['zoom'],
-  16, textOffset(1),
-  22, textOffset(64)
+// two levels the offset stands still. That only shows once the label hits its maximum size and
+// stops growing with the marker. The value of the next level then keeps the label clear of
+// the marker, at the cost of a gap of up to one radius.
+const labelOffset = () => ['step', ['zoom'], textOffset(17),
+  ...[17, 18, 19, 20, 21, 22, 23].flatMap(zoom => [zoom, textOffset(zoom + 1)])
 ]
 
-const textOffset = zoomFactor => [
+const textOffset = zoom => [
   'case',
   ['has', 'label-offset'], ['get', 'label-offset'],
-  ['==', styleProp(['user_label-anchor', 'label-anchor'], defaults.labelAnchor), 'top'], labelOffsetBySize(zoomFactor),
+  ['==', styleProp(['user_label-anchor', 'label-anchor'], defaults.labelAnchor), 'top'], labelOffsetBySize(zoom),
   ['literal', [0, 0]]
 ]
 
@@ -391,13 +389,14 @@ export const labelFontSizeMin = () => [
   'case', shouldScale,
   0, labelFontSize() ]
 
-// The 254 caps the last stop, so it scales the whole curve down instead of only flattening its
-// top: every 'label-size' from 254/factor upwards then renders the same. Stopping the growth at
-// zoom 17 keeps that factor at 8, which leaves 'label-size' usable up to 31.
-export const labelFontSizeMax = () => [
+// A scaled label renders 'label-size' at zoom 14 and doubles per level, like its marker.
+// The 254 caps the stop at zoom 17, so it scales the curve below 17 down instead of only
+// flattening its top: every 'label-size' from 254/8 upwards then renders the same up to 17.
+// Above 17 the cap flattens the curve, so the label of a big marker stops growing there.
+const labelSizeAt = zoom => [
   "min",
   ['case', shouldScale,
-    ['*', 8, labelFontSize()], labelFontSize()],
+    ['*', 2 ** (zoom - 14), labelFontSize()], labelFontSize()],
   254 // max map font size
 ]
 
@@ -407,7 +406,7 @@ const labelSize = () => [
   ["exponential", 2],
   ['zoom'],
   0, labelFontSizeMin(), // At zoom 0
-  17, labelFontSizeMax() // zoom 14 renders the label at 'label-size', above zoom 17 it stops growing
+  ...[17, 18, 19, 20, 21, 22, 23, 24].flatMap(zoom => [zoom, labelSizeAt(zoom)])
 ]
 
 // Shared configuration for symbols layers
