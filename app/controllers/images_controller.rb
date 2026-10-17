@@ -51,16 +51,17 @@ class ImagesController < ApplicationController
     uploaded_file = params.require(:image)
     tempfile = uploaded_file.tempfile
     # Avoid duplicate files by identifying uploaded files by <name>-<size>.
-    # Always stored as WebP, so the public_id ends in .webp regardless of source format.
+    # Stored as WebP, except GIFs: the WebP encoder keeps only the first frame of an animation.
+    gif = File.binread(tempfile.path, 4) == "GIF8"
     filename = uploaded_file.original_filename.gsub(/[^0-9A-Za-z.\-_]/, "_")
     filename = filename.sub(/\.[^.]*$/, "")
-    filename = "#{filename}-#{tempfile.size}.webp"
+    filename = "#{filename}-#{tempfile.size}.#{gif ? 'gif' : 'webp'}"
 
     # use existing image if already uploaded
     if (img = Image.find_by(public_id: filename))
       Rails.logger.info "Re-using existing image '#{filename}'"
     else
-      Image.compress_to_webp!(tempfile.path)
+      Image.compress_to_webp!(tempfile.path) unless gif
       uid = Dragonfly.app.store(tempfile, "name" => filename) # name needs to be a string here
       img = Image.create!(img_uid: uid, public_id: filename, user: @user)
     end

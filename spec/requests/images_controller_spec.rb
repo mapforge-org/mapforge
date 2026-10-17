@@ -39,6 +39,15 @@ describe ImagesController do
       expect(response.parsed_body["image"]).to eq public_id
     end
 
+    it "stores a GIF unchanged, so an animation keeps its frames" do
+      gif = Rails.root.join("tmp/animated.gif")
+      File.binwrite(gif, "GIF89a\x01\x00\x01\x00\x00\x00\x00;")
+      post upload_path, params: { map_id: map.private_id, image: Rack::Test::UploadedFile.new(gif, "image/gif") }
+
+      expect(response.parsed_body["image"]).to match(%r{/image/animated-\d+\.gif})
+      expect(Image.last.img.data).to eq File.binread(gif)
+    end
+
     it "counts every upload, also a re-used one" do
       expect { 2.times { upload } }.to change { Yabeda.images_uploaded.get(user: "").to_i }.by(2)
     end
