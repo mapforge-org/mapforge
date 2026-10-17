@@ -62,11 +62,8 @@ describe "Map GeoJSON levels" do
       # Click level 1 button
       find(".level-control button[data-level='1']").click
 
-      # Wait for UI to update AND for GeoJSON layer to re-render with filtered features
       wait_for { page.has_css?(".level-control button[data-level='1'].active") }.to be true
-      wait_for {
-        page.evaluate_script("document.querySelector('#maplibre-map').dataset.geojsonLoaded")
-      }.to eq('true')
+      wait_for_map_rendered
 
       # Hover at center - level 0 polygon should be gone
       hover_center_of_screen
@@ -336,6 +333,7 @@ describe "Map GeoJSON levels" do
     it "is not visible at level 1 (guards against '1' matching inside '10')" do
       find(".level-control button[data-level='1']").click
       wait_for { page.has_css?(".level-control button[data-level='1'].active") }.to be true
+      wait_for_map_rendered
 
       coords = level_10_coords
       hover_coord(coords[:x], coords[:y])

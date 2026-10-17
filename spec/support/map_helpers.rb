@@ -35,6 +35,11 @@ def wait_for_geojson_render
   }.to eq('true')
 end
 
+# map.setFilter() reloads the tiles async, until then hovers still find the features of the old filter
+def wait_for_map_rendered
+  wait_for { page.evaluate_script("window.map.loaded()") }.to be true
+end
+
 # Wait until a geojson feature with the given title has been applied on the client.
 def wait_for_feature(title)
   wait_for {
