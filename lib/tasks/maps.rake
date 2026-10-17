@@ -24,6 +24,7 @@ namespace :maps do
 
       begin
         page = browser.create_page
+        page.set_viewport(width: 800, height: 600)
         # Use private id, because map might be private
         map_url = base_url + ERB::Util.url_encode(map.private_id) + "?static=true&viewcount=false"
 
