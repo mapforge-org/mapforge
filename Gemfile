@@ -36,9 +36,6 @@ gem "gettext_i18n_rails_js"
 gem "gettext", require: false # needed at build time by rake gettext:find / gettext:po_to_json
 gem "rails-i18n" # core Rails i18n strings (date/time, number formatting, etc.) for non-English locales
 
-# json 3 removed the create_additions keyword that sprockets and multi_json still pass to JSON.parse
-gem "json", "< 3"
-
 # Databases
 # Action Cable's redis adapter hard-caps redis < 6 (actioncable 8.1.x)
 gem "redis", ">= 4.0.1", "< 6"
