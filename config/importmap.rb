@@ -74,7 +74,7 @@ pin "emoji-mart", preload: false # @5.6.0
 pin "sortablejs", preload: false # @1.15.7
 # Extract coords from uploaded images
 pin "exif-reader", preload: false # @2.3.0
-pin "@kurkle/color", to: "@kurkle--color.js", preload: false # @0.6.4
+pin "@kurkle/color", to: "@kurkle--color.js", preload: false # @0.6.5
 
 # https://turfjs.org/
 # Turf libs needed by mapbox-gl-draw
