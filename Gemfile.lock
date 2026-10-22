@@ -129,9 +129,9 @@ GEM
       rexml
     crass (1.0.7)
     csv (3.3.5)
-    cuprite (0.18)
+    cuprite (0.19)
       capybara (~> 3.0)
-      ferrum (~> 0.18.0)
+      ferrum (~> 0.19.1)
     database_cleaner-core (2.0.1)
     database_cleaner-mongoid (2.0.1)
       database_cleaner-core (~> 2.0.0)
@@ -168,7 +168,7 @@ GEM
     fast_gettext (4.1.1)
       prime
       racc
-    ferrum (0.18.0)
+    ferrum (0.19.1)
       addressable (~> 2.5)
       base64 (~> 0.2)
       concurrent-ruby (~> 1.1)
