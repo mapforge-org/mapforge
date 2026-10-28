@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <Style id="ylw-circle">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/ylw-circle.png</href></Icon></IconStyle>
+    </Style>
+    <Style id="letter">
+      <IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/A.png</href></Icon></IconStyle>
+    </Style>
+    <Placemark>
+      <name>Yellow circle</name>
+      <styleUrl>#ylw-circle</styleUrl>
+      <Point><coordinates>-1.511918,52.408490</coordinates></Point>
+    </Placemark>
+    <Placemark>
+      <name>Letter A</name>
+      <styleUrl>#letter</styleUrl>
+      <Point><coordinates>-1.521918,52.418490</coordinates></Point>
+    </Placemark>
+  </Document>
+</kml>
