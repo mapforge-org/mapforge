@@ -36,22 +36,6 @@ Capybara.register_driver(:cuprite) do |app|
                       "download.default_directory": Capybara.save_path })
 end
 
-# Ferrum dispatches CDP events on one thread without a rescue, so a callback that raises kills
-# it. No event reaches Ruby after that, and every following example fails with
-# Ferrum::NoSuchTargetError once protocol_timeout expires. Callbacks do issue synchronous
-# commands (Page.getFrameTree, Target.detachFromTarget for the service worker), and those
-# time out on a loaded machine.
-module FerrumSubscriberRescue
-  private
-
-  def call(message)
-    super
-  rescue StandardError => e
-    warn "Ferrum event callback raised #{e.class}: #{e.message}"
-  end
-end
-Ferrum::Client::Subscriber.prepend(FerrumSubscriberRescue)
-
 # Cuprite's reset disposes the browser context, and Chrome's HTTP cache with it, so every example
 # downloaded the 100+ modules of a map page again. Swap only the page instead: a new page drops
 # its request handlers (CapybaraMock), headers and scripts, while the context keeps the cache.
