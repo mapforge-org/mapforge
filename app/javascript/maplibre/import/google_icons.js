@@ -1,7 +1,8 @@
 // G**gle My Maps keeps the marker icon only in the style id, 'icon-<id>-<color>'. The <Icon><href>
 // of every colorable icon is the same blank pin, so the id is the only thing that identifies it.
 // This maps the id to a symbol of public/icon-sets. An id with no good counterpart in pinhead
-// is left out, and its marker keeps the plain circle in the color of the feature.
+// is left out, and its marker keeps the plain circle in the color of the feature. That is also
+// how My Maps draws its small dot, 1739, so that id is left out on purpose (see GOOGLE_DOT).
 export const GOOGLE_ICONS = {
   1498: 'pinhead/square',
   1499: 'pinhead/circle',
@@ -182,7 +183,6 @@ export const GOOGLE_ICONS = {
   1733: 'pinhead/womens_and_mens_restroom_symbol',
   1734: 'pinhead/womens_and_mens_restroom_symbol',
   1735: 'pinhead/person_in_wheelchair',
-  1739: 'pinhead/circle',
   1740: 'pinhead/square_academic_cap',
   1741: 'pinhead/car_and_key',
   1743: 'pinhead/lion',
@@ -198,6 +198,7 @@ export const GOOGLE_ICONS = {
   1763: 'pinhead/camper_trailer',
   1764: 'pinhead/campfire',
   1765: 'pinhead/campsite',
+  1769: 'pinhead/checkmark',
   1770: 'pinhead/classical_building_with_clock',
   1771: 'pinhead/person_wearing_backpack_scrambling_up_cliff',
   1772: 'pinhead/person_wearing_backpack_scrambling_up_cliff',
@@ -223,6 +224,7 @@ export const GOOGLE_ICONS = {
   1835: 'pinhead/sushi',
   1841: 'pinhead/mortar_and_pestle_with_greek_cross',
   1842: 'pinhead/jp_police',
+  1846: 'fontawesome/quote-right',
   1850: 'pinhead/recycling_symbol',
   1853: 'pinhead/traffic_cone',
   1856: 'pinhead/rocketship',

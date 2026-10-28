@@ -14,6 +14,19 @@ const BLANK_PIN = /-blank_maps\.png$/
 const GOOGLE_STYLE = /^#?icon-(\d+)-([0-9a-f]{6})?/i
 // the plain pin of My Maps, which is the pin shape of mapforge
 const GOOGLE_PIN = '1899'
+// the small dot of My Maps, which is the plain mapforge circle. A KMZ packs it as an image too,
+// which must not replace the circle.
+const GOOGLE_DOT = '1739'
+
+// The stock pins of G**gle Earth: 'paddle/<color>-<shape>.png', 'paddle/<letter or number>.png'
+// (always red) and 'pushpin/<color>-pushpin.png', each with an optional small '-lv' variant.
+// They become a mapforge pin in the paddle color, with the pinhead symbol of the shape.
+const EARTH_ICON = /\/mapfiles\/kml\/(?:paddle|pushpin)\/(?:([a-z]+)-)?([a-z0-9]+?)(?:-lv)?\.png$/i
+// sampled from the images. White is left out, so <IconStyle><color> can tint a white paddle.
+const EARTH_COLORS = { ylw: '#fff76a', blu: '#557ffc', blue: '#557ffc', grn: '#6aff8a', ltblu: '#8effea',
+  orange: '#ffc357', pink: '#fc659e', purple: '#8f6aff', red: '#ff766a' }
+const EARTH_SYMBOLS = { circle: 'circle', square: 'square', diamond: 'diamond', stars: 'star',
+  1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven', 8: 'eight', 9: 'nine', 10: 'ten' }
 
 // Consumed by the mapping below, or deliberately dropped. Everything else (ExtendedData
 // fields, timestamp, timespan, stroke, fill, sym, ...) is copied through untouched.
@@ -122,24 +135,25 @@ export function mapforgeProperties (props = {}) {
   if (labelScale > 0 && labelScale !== 1) { out['label-size'] = Math.round(16 * labelScale) }
 
   const [, googleId, googleColor] = GOOGLE_STYLE.exec(props.styleUrl || '') || []
-  const pin = googleId === GOOGLE_PIN
+  const earth = earthIcon(icon)
+  const pin = googleId === GOOGLE_PIN || !!earth
   if (pin) { out['marker-shape'] = 'pin' }
   // A KMZ packs a white pictogram next to doc.kml, and <IconStyle><color> tints it. Mapforge
   // draws such a symbol on a circle in the marker color, like a pinhead icon, so the color
   // survives. uploadPackedIcons swaps the packed path for the uploaded copy.
   const tinted = icon && !isOverlay && !pin && props['icon-color'] && !/^\w+:/.test(icon)
-  const symbol = googleIconSymbol(googleId) || (tinted ? icon : undefined)
+  const symbol = googleIconSymbol(googleId) || earth?.symbol || (tinted ? icon : undefined)
   if (symbol) { out['marker-symbol'] = symbol }
   // a pinhead icon is white, so it needs a white border to stand out from the marker color
   if (symbol || pin) { out.stroke = '#ffffff' }
 
-  const color = props['icon-color'] || (googleColor && `#${googleColor.toLowerCase()}`)
+  const color = earth?.color || props['icon-color'] || (googleColor && `#${googleColor.toLowerCase()}`)
   if (color) { out['marker-color'] = color }
   if (props['icon-opacity'] !== undefined && props['icon-opacity'] !== 1) { out['marker-opacity'] = props['icon-opacity'] }
   if (props['icon-heading']) { out['marker-rotate'] = props['icon-heading'] }
   // The style draws marker-image-url over marker-symbol, so a packed KMZ copy of a known
   // G**gle icon must not replace the pinhead symbol.
-  if (icon && !isOverlay && !symbol && !pin && !BLANK_PIN.test(icon)) { out['marker-image-url'] = icon }
+  if (icon && !isOverlay && !symbol && !pin && googleId !== GOOGLE_DOT && !BLANK_PIN.test(icon)) { out['marker-image-url'] = icon }
   // A linked KML icon is a small pictogram, so the mapforge default of 20 for an image marker
   // blows it up. A packed icon becomes a 160px mapforge icon, so it keeps that default.
   // A pinhead icon or a pin keeps a base of 13, which matches the size of a My Maps marker.
@@ -167,6 +181,17 @@ export function mapforgeProperties (props = {}) {
 function googleIconSymbol (googleId) {
   const icon = googleId && GOOGLE_ICONS[googleId]
   return icon ? `/icon-sets/${icon}.png` : undefined
+}
+
+function earthIcon (icon) {
+  const [, color, shape] = EARTH_ICON.exec(icon || '') || []
+  if (!shape) { return undefined }
+  // a bare letter or number is a red paddle
+  const name = EARTH_SYMBOLS[shape] || (/^[a-z]$/i.test(shape) ? shape.toLowerCase() : undefined)
+  return {
+    color: EARTH_COLORS[(color || 'red').toLowerCase()],
+    symbol: name && `/icon-sets/pinhead/${name}.png`
+  }
 }
 
 // <Document> name, description and view. Read straight off the DOM: the converter only

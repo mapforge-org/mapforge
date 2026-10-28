@@ -162,6 +162,18 @@ describe "Map import" do
     expect(map.features.first.properties["title"]).to eq "KML Point"
   end
 
+  it "imports the stock paddles of google earth as pin" do
+    page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+    attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "earth_paddles.kml"))
+    wait_for { map.reload.features.count }.to eq 2
+    circle = map.features.find { |f| f.properties["title"] == "Yellow circle" }
+    expect(circle.properties).to include("marker-shape" => "pin", "marker-color" => "#fff76a",
+                                         "marker-symbol" => "/icon-sets/pinhead/circle.png")
+    expect(circle.properties["marker-image-url"]).to be_nil
+    letter = map.features.find { |f| f.properties["title"] == "Letter A" }
+    expect(letter.properties).to include("marker-color" => "#ff766a", "marker-symbol" => "/icon-sets/pinhead/a.png")
+  end
+
   it "import gpx" do
     page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
     attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "track.gpx"))
