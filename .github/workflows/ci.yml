@@ -76,7 +76,7 @@ jobs:
     #  image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     services:
       mongodb:
-        image: mongo:8.3
+        image: mongo:9.0.4
         ports:
         - 27017:27017
         # Without a health check, steps start before mongod listens
