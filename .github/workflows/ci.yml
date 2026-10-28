@@ -76,9 +76,15 @@ jobs:
     #  image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     services:
       mongodb:
-        image: mongo:8.3
+        image: mongo:9.0.4
         ports:
         - 27017:27017
+        # Without a health check, steps start before mongod listens
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ping: 1})'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
         # credentials are only needed when not running on ubuntu-latest VM
         # credentials:
         #  username: ${{ secrets.DOCKER_USERNAME }}

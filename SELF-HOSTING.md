@@ -22,6 +22,18 @@ To sign in, either add [OAuth credentials](#login) to `.env`, or use the local d
 
 Uploaded images are stored in `deploy/volumes/storage/`, the database in `deploy/volumes/mongodb/`. To update to the latest version: `docker compose pull`
 
+### Upgrade from MongoDB 8.x to 9.0
+
+MongoDB 9.0 does not start on a database with a feature compatibility version (FCV) of 8.2. Older setups of this compose file used `mongo:8.2`, so their database can still be at FCV 8.2. In that case, the `mongo` container stops with exit code 62 and the message "Wrong mongod version".
+
+Before you pull the 9.0 image, raise the FCV on the running MongoDB 8.3 container:
+
+```bash
+docker compose exec mongo mongosh --quiet --eval 'db.adminCommand({ setFeatureCompatibilityVersion: "8.3", confirm: true })'
+```
+
+Then run `docker compose pull` and `docker compose up --detach`. After MongoDB 9.0 runs, you can set the FCV to `"9.0"` with the same command. If you set the FCV to 9.0, you cannot go back to MongoDB 8.3.
+
 ## Environment Variables
 
 ### Required in production
