@@ -168,7 +168,7 @@ GEM
     fast_gettext (4.1.1)
       prime
       racc
-    ferrum (0.19.1)
+    ferrum (0.19.2)
       addressable (~> 2.5)
       base64 (~> 0.2)
       concurrent-ruby (~> 1.1)

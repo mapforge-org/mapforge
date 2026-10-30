@@ -53,6 +53,11 @@ module CupriteKeepCacheOnReset
     @options.reset_window_size
     @page = attach_page(default_context.create_target.id)
     old_page.close
+  # Cuprite restarts a dead browser only in its own commands, so without this the example
+  # that killed Chrome fails every example after it too.
+  rescue Ferrum::DeadBrowserError
+    restart
+    @page = nil
   end
 
   private
