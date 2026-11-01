@@ -647,14 +647,16 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
 }
 
 export function updateBuildingOpacity () {
-  if (!map || !map.isStyleLoaded()) return
+  // isStyleLoaded() is false until all basemap tiles loaded, which is when sortLayers() runs
+  if (!map?.style) return
 
-  const opacity = layers?.some(l => l.type === 'indoor' && l.levelControl) ? 0.4 : 0.6
-  if (map.getLayer('building-3d')) {
-    map.setPaintProperty('building-3d', 'fill-extrusion-opacity', opacity, noValidate)
-  } else if (map.getLayer('Building 3D')) {
-    map.setPaintProperty('Building 3D', 'fill-extrusion-opacity', opacity, noValidate)
-  }
+  const opacity = layers?.some(l => l.type === 'indoor' && l.levelControl) ? 0.3 : 0.5
+  // basemaps name their building layers differently, e.g. 'building-3d' or 'wrGebaeude3D_nicht_oeffentlich'
+  map.getStyle().layers.filter(l => l.type === 'fill-extrusion' &&
+    !l.id.startsWith('polygon-layer-extrusion') && !l.id.startsWith('indoor-area-extrusion_')).forEach(l => {
+    map.setPaintProperty(l.id, 'fill-extrusion-opacity', opacity, noValidate)
+    map.setLayoutProperty(l.id, 'fill-extrusion-rounded-corner-distance', defaults.extrusionCornerRadius, noValidate)
+  })
 }
 
 // re-sort layers to overlay geojson layers with labels & extrusion objects
