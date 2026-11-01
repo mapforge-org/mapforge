@@ -90,20 +90,19 @@ describe "Map selection" do
     let(:point) { create(:feature, :point, coordinates: [ 11.0557, 49.4732 ]) }
     let(:map) { create(:map, features: [ point ], center: [ 11.0557, 49.4732 ], zoom: 16) }
 
-    it "draws the point on top of all labels until the hover ends" do
-      front = "map.queryRenderedFeatures({ layers: ['points-layer-front_geojson-source-#{map.layers.first.id}'] })" \
-        ".map(f => f.properties.id)"
-      expect(page.evaluate_script(front)).to be_empty
-
-      xy = viewport_xy_for_lat_lng(49.4732, 11.0557)
-      page.driver.browser.mouse.move(x: xy[:x], y: xy[:y])
-      wait_for { page.evaluate_script(front) }.to eq [ point.id.to_s ]
+    # the front copy shows the point through feature-state, which queryRenderedFeatures does not see
+    it "draws the point in a front layer on top of all labels while it is hovered" do
       ids = page.evaluate_script("map.getStyle().layers.map(l => l.id)")
       expect(ids.index { |id| id.start_with?("points-layer-front_") })
         .to be > ids.rindex { |id| id.start_with?("text-layer") }
 
+      state = "map.getFeatureState({ source: 'geojson-source-#{map.layers.first.id}', id: '#{point.id}' })"
+      xy = viewport_xy_for_lat_lng(49.4732, 11.0557)
+      page.driver.browser.mouse.move(x: xy[:x], y: xy[:y])
+      wait_for { page.evaluate_script(state) }.to eq("hover" => true)
+
       page.driver.browser.mouse.move(x: xy[:x] + 300, y: xy[:y])
-      wait_for { page.evaluate_script(front) }.to be_empty
+      wait_for { page.evaluate_script(state) }.to eq("hover" => false)
     end
   end
 

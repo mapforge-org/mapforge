@@ -9,9 +9,10 @@ import { patternImage } from 'maplibre/styles/pattern_image'
 // is emulated by stacking one fill-extrusion layer per bucket (0.1 … 1.0)
 export const extrusionOpacityBuckets = Array.from({ length: 10 }, (_, i) => (i + 1) / 10)
 
-// Copies of the point layers for the hovered or selected point, which sortLayers() puts on top of
-// all others, labels included. The point stays in its own layer below, so nothing blinks when the
-// copy fades in, and the original order is back once the copy matches no feature.
+// Copies of the point layers, which sortLayers() puts on top of all others, labels included. They
+// hold every point, but only the hovered or selected one is visible, through feature-state in its
+// opacity. A copy filtered to that point would place a new symbol on each hover, and MapLibre fades
+// a new symbol in. The point stays in its own layer below, so the original order comes back.
 const frontStyleNames = ['points-layer-halo', 'points-layer', 'shapes-layer-halo', 'shapes-layer',
   'symbols-layer-halo', 'symbols-layer'].map(id => `${id}-front`)
 
@@ -250,7 +251,7 @@ const showsSymbol = () => ['all', ['!=', markerSymbol(), ''], ['!', ['has', 'mar
 // The expression reads the 'id' property: in the worker, ['id'] is not the promoteId value.
 // ['has', 'id']: without it, a feature without an id would match while nothing is selected (null == null)
 const isSelected = () => ['all', ['has', 'id'], ['==', ['get', 'id'], ['global-state', 'selectedFeatureId']]]
-// set by setHoveredFeature(), read by the label sort keys and the front layers
+// set by setHoveredFeature(), only the label sort keys read it
 const isHovered = () => ['all', ['has', 'id'], ['==', ['get', 'id'], ['global-state', 'hoveredFeatureId']]]
 // the selected feature shows at every zoom level
 export const minZoomFilter = () => ['any', isSelected(),
@@ -1106,9 +1107,12 @@ export function styles () {
     ...textLayerStyles('flat'),
     ...textLayerStyles('viewport')
   }
+  const inFront = ['any', ['boolean', ['feature-state', 'active'], false], ['boolean', ['feature-state', 'hover'], false]]
   for (const id of frontStyleNames) {
     const style = styleDefs[id.replace(/-front$/, '')]
-    styleDefs[id] = { ...style, id, filter: ['all', style.filter, ['any', isSelected(), isHovered()]] }
+    const paint = Object.fromEntries(Object.entries(style.paint)
+      .map(([key, value]) => [key, key.endsWith('-opacity') ? ['case', inFront, value, 0] : value]))
+    styleDefs[id] = { ...style, id, paint }
   }
   return styleDefs
 }

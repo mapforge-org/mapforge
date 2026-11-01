@@ -145,8 +145,7 @@ export function setHoveredFeature (source, feature) {
   hoveredFeature = id === null ? null : { source, id }
   if (hoveredFeature) { map.setFeatureState(hoveredFeature, { hover: true }) }
   map.getCanvas().style.cursor = hoveredFeature ? 'pointer' : ''
-  // puts its label first and the point on top (see the label sort keys and the front layers),
-  // which rebuilds the tiles
+  // puts its label first (see the symbol-sort-key of the labels), which rebuilds the tiles
   map.setGlobalStateProperty('hoveredFeatureId', id)
 }
 
