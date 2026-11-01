@@ -147,14 +147,34 @@ export function applyLevelFilter (sourceId) {
 function kmMarkerStyles () {
   let styleLayers = []
 
-  // Combined marker layers (icon + text in one symbol layer)
-  styleLayers.push(makeKmMarkerLayer(1, 14))
-  styleLayers.push(makeKmMarkerLayer(2, 12, 14))
-  styleLayers.push(makeKmMarkerLayer(5, 10, 12))
-  styleLayers.push(makeKmMarkerLayer(10, 9, 10))
-  styleLayers.push(makeKmMarkerLayer(25, 8, 9))
-  styleLayers.push(makeKmMarkerLayer(50, 7, 8))
-  styleLayers.push(makeKmMarkerLayer(100, 5, 7))
+  // One layer with a zoom-dependent step instead of one layer per minzoom/maxzoom range:
+  // filters evaluate at the tile's zoom, so pitched maps that use lower-zoom tiles for the
+  // distance still get (sparser) markers there instead of none.
+  styleLayers.push({
+    id: 'km-marker',
+    type: 'symbol',
+    filter: ['==', ['%', ['get', 'km'],
+      ['step', ['zoom'], 100, 7, 50, 8, 25, 9, 10, 10, 5, 12, 2, 14, 1]], 0],
+    minzoom: 5,
+    layout: {
+      'icon-image': ['get', 'marker-image'],
+      'icon-size': ['/', ['get', 'marker-size'], 14],
+      'icon-allow-overlap': false,
+      'icon-padding': 0,
+      'text-allow-overlap': false,
+      'text-padding': 0,
+      'text-field': ['get', 'km'],
+      'text-size': 11,
+      'text-font': [defaults.font],
+      'text-justify': 'center',
+      'text-anchor': 'center',
+      // Negate feature-order so selected feature (higher index) gets lower sort-key and renders on top
+      'symbol-sort-key': ['-', 10, ['*', ['get', 'feature-order'], 100]]
+    },
+    paint: {
+      'text-color': ['coalesce', ['get', 'km-text-color'], '#ffffff']
+    }
+  })
 
   // End marker (total distance) - combined icon + text
   styleLayers.push({
@@ -187,32 +207,4 @@ function kmMarkerStyles () {
   })
 
   return styleLayers
-}
-
-function makeKmMarkerLayer (divisor, minzoom, maxzoom = 24) {
-  return {
-    id: `km-marker-${divisor}`,
-    type: 'symbol',
-    filter: ["==", ["%", ["get", "km"], divisor], 0],
-    minzoom,
-    maxzoom,
-    layout: {
-      'icon-image': ['get', 'marker-image'],
-      'icon-size': ['/', ['get', 'marker-size'], 14],
-      'icon-allow-overlap': false,
-      'icon-padding': 0,
-      'text-allow-overlap': false,
-      'text-padding': 0,
-      'text-field': ['get', 'km'],
-      'text-size': 11,
-      'text-font': [defaults.font],
-      'text-justify': 'center',
-      'text-anchor': 'center',
-      // Negate feature-order so selected feature (higher index) gets lower sort-key and renders on top
-      'symbol-sort-key': ['-', 10, ['*', ['get', 'feature-order'], 100]]
-    },
-    paint: {
-      'text-color': ['coalesce', ['get', 'km-text-color'], '#ffffff']
-    }
-  }
 }
