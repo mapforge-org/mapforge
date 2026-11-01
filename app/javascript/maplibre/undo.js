@@ -4,7 +4,7 @@ import { select, selectedRoute } from 'maplibre/edit'
 import { getFeatureTypeName } from 'maplibre/feature'
 import { showFeatureDetails } from 'maplibre/feature/details'
 import { addFeature, destroyFeature, getFeature, getLayer, layers, renderLayers } from 'maplibre/layers/layers'
-import { removeGeoJSONSource, setLayerVisibility } from 'maplibre/map'
+import { removeGeoJSONSource, setLayerVisibility, sortLayers } from 'maplibre/map'
 import { resetDirections } from 'maplibre/routing/directions'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { createLayerInstance } from 'maplibre/layers/factory'
@@ -314,7 +314,7 @@ function undoLayerUpdated(prevState) {
     // Update layer properties using the layer's update method
     layer.update(prevState.state)
     setLayerVisibility(layer.sourceId, layer.show)
-    layer.initialize().then(() => { initLayersModal() })
+    layer.initialize().then(() => { sortLayers(); initLayersModal() })
     sendMessage('update_layer', prevState.state)
   } else {
     console.warn('Layer with id ' + prevState.state.id + ' not found')
@@ -328,7 +328,7 @@ function redoLayerUpdated(nextState) {
     // Update layer properties using the layer's update method
     layer.update(nextState.state)
     setLayerVisibility(layer.sourceId, layer.show)
-    layer.initialize().then(() => { initLayersModal() })
+    layer.initialize().then(() => { sortLayers(); initLayersModal() })
     sendMessage('update_layer', nextState.state)
   } else {
     console.warn('Layer with id ' + nextState.state.id + ' not found')

@@ -23,12 +23,13 @@ describe "Map km markers" do
     wait_for { marker_kms }.to eq [ 0, 1, 2, 2.3 ]
   end
 
-  it "renders the markers below user points" do
+  it "renders the markers below user features" do
     wait_for { marker_kms }.to eq [ 0, 1, 2, 2.3 ]
     ids = page.evaluate_script("map.getStyle().layers.map(l => l.id)")
-    points = ids.index { |id| id.start_with?("points-layer") }
+    user_layers = %w[line-label points-layer shapes-layer symbols-layer text-layer]
+    lowest = ids.index { |id| id.include?("_geojson-source") && id.start_with?(*user_layers) }
     ids.each_with_index.select { |id, _| id.start_with?("km-marker") }.each do |id, index|
-      expect(index).to be < points, "#{id} is above the points layer"
+      expect(index).to be < lowest, "#{id} is above #{ids[lowest]}"
     end
   end
 end

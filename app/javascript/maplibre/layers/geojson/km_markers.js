@@ -163,11 +163,16 @@ function kmMarkerStyles () {
       'icon-padding': 0,
       'text-allow-overlap': false,
       'text-padding': 0,
-      'text-field': ['get', 'km'],
+      'text-field': ['format',
+        ['get', 'km'], { 'font-scale': 1.0 },
+        '\nkm', { 'font-scale': 0.7 }
+      ],
       'text-size': 11,
-      'text-font': [defaults.font],
+      'text-font': [defaults.fontBold],
       'text-justify': 'center',
       'text-anchor': 'center',
+      'text-line-height': 1.0,
+      'text-offset': [0, 0.3],
       // Negate feature-order so selected feature (higher index) gets lower sort-key and renders on top
       'symbol-sort-key': ['-', 10, ['*', ['get', 'feature-order'], 100]]
     },
@@ -193,7 +198,7 @@ function kmMarkerStyles () {
         ['concat', '\n', ['get', 'km-unit']], { 'font-scale': 0.7 }
       ],
       'text-size': 12,
-      'text-font': [defaults.font],
+      'text-font': [defaults.fontBold],
       'text-justify': 'center',
       'text-anchor': 'center',
       'text-line-height': 1.0,

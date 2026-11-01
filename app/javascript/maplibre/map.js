@@ -699,7 +699,9 @@ export function sortLayers () {
     styleLayers.filter(e => e.id.startsWith('km-marker') && !e.id.startsWith('km-marker-end')),
     styleLayers.filter(e => e.id.startsWith('route-extras-labels')),
     styleLayers.filter(e => e.id.startsWith('km-marker-end')),
-    styleLayers.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('cluster_points')),
+    styleLayers.filter(e => e.id.startsWith('line-label') && e.id.includes('_geojson-source')),
+    styleLayers.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('shapes-layer') ||
+      e.id.startsWith('cluster_points')),
     styleLayers.filter(e => e.id.startsWith('heatmap-layer')),
     styleLayers.filter(e => e.id.startsWith('gl-draw-')),
     styleLayers.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),

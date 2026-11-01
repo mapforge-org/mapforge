@@ -11,7 +11,7 @@ import { importFile } from 'maplibre/import/kml'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { activeLayer, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, setActiveLayer, upsert } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/overpass/queries'
-import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, updateMapName } from 'maplibre/map'
+import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, sortLayers, updateMapName } from 'maplibre/map'
 import { addUndoState, layerPlacement, layerSettings } from 'maplibre/undo'
 
 // Browsers report an empty file.type for these when the platform mime database
@@ -237,7 +237,7 @@ export default class extends Controller {
     event.target.closest('.layer-item').querySelector('.layer-name').textContent = layer.name
     sendMessage('update_layer', layer.toJSON())
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
-    layer.initialize().then(() => { initLayersModal() })
+    layer.initialize().then(() => { sortLayers(); initLayersModal() })
   }
 
   updateRasterLayer (event) {
