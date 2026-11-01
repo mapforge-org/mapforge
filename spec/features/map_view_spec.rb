@@ -196,6 +196,34 @@ describe "Map public view" do
     end
   end
 
+  context "with a selected shape point" do
+    let(:point) { create(:feature, :point, properties: { "marker-shape" => "pin" }) }
+    let(:map) { create(:map, features: [ point ]) }
+    let(:path) { map_path(id: map.public_id, f: point.id) }
+
+    it "draws the shape with a halo" do
+      images = "map.listImages().filter(name => name.startsWith('shape-pin'))"
+      wait_for { page.evaluate_script(images).any? { |name| name.end_with?("|1") } }.to be true
+    end
+  end
+
+  context "with a selected image point" do
+    let(:point) { create(:feature, :point, properties: { "marker-image-url" => "/icons/hydrant.png" }) }
+    let(:map) { create(:map, features: [ point ]) }
+    let(:path) { map_path(id: map.public_id, f: point.id) }
+
+    it "draws the image with a halo around its outline" do
+      halo = <<~JS
+        (() => {
+          const image = map.getImage(map.listImages().find(name => name.startsWith('halo|')))
+          return image ? [image.data.width, map.getImage('/icons/hydrant.png')?.data.width] : null
+        })()
+      JS
+      # the halo adds its width on both sides
+      wait_for { page.evaluate_script(halo)&.then { |halo_width, width| width && halo_width > width } }.to be true
+    end
+  end
+
   context "with a selected feature outside its zoom range" do
     let(:point) { create(:feature, :point, properties: { "label" => "close up", "min-zoom" => 22 }) }
     let(:map) { create(:map, features: [ point ]) }

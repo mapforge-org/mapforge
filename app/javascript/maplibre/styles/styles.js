@@ -1,7 +1,7 @@
 import { symbolUrl } from 'helpers/functions'
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { addLayer, map, removeStyleLayers } from 'maplibre/map'
-import { labelImage, markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
+import { haloImage, labelImage, markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
 import { defaults, glyphShift } from 'maplibre/styles/defaults'
 import { patternImage } from 'maplibre/styles/pattern_image'
 
@@ -13,11 +13,15 @@ export const viewStyleNames = [
   'polygon-layer',
   'polygon-layer-pattern', // the pattern draws on the fill color, so it goes above the fill
   'polygon-layer-outline',
+  'polygon-layer-halo',
   'line-layer-outline', // casing beside the line, drawn below it
+  'line-layer-halo',
   'line-layer',
   'line-label-symbol',
   'line-labels',
+  'points-layer-halo-flat',
   'points-layer-flat',
+  'points-layer-halo',
   'points-layer',
   'shapes-layer-flat',
   'shapes-layer',
@@ -85,8 +89,8 @@ export async function loadImage (id) {
   // re-check of MapLibre finds the image at once. imageState does not apply: a prune can
   // drop the image, and then MapLibre asks for it again.
   if (id.startsWith('shape-')) {
-    const [ shape, color, border, symbol, size ] = id.slice('shape-'.length).split('|')
-    markerImage(id, { shape, color, border, symbol, size: shapeCanvasSize(Number(size)) })
+    const [ shape, color, border, symbol, size, selected ] = id.slice('shape-'.length).split('|')
+    markerImage(id, { shape, color, border, symbol, size: shapeCanvasSize(Number(size)), halo: selected === '1' })
     return
   }
 
@@ -98,6 +102,11 @@ export async function loadImage (id) {
 
   if (id.startsWith('label-')) {
     labelImage(id)
+    return
+  }
+
+  if (id.startsWith('halo|')) {
+    haloImage(id)
     return
   }
 
@@ -187,18 +196,8 @@ const lineWidth = () => [
   'interpolate',
   ['linear'],
   ['zoom'],
-  8, [
-    'case',
-    ['boolean', ['feature-state', 'active'], false],
-    ['+', 1, lineWidthMin()],
-    lineWidthMin()
-  ], // At zoom level 8, the line width is min
-  17, [
-    'case',
-    ['boolean', ['feature-state', 'active'], false],
-    ['+', 1, lineWidthMax()],
-    lineWidthMax()
-  ] // At zoom level 13, the line width is max
+  8, lineWidthMin(), // At zoom level 8, the line width is min
+  17, lineWidthMax() // At zoom level 17, the line width is max
 ]
 
 const lineOpacity = () => ['to-number', styleProp(['stroke-opacity', 'user_stroke-opacity'], defaults.lineOpacity)]
@@ -212,9 +211,20 @@ const outlineWidth = () => [
   'interpolate',
   ['linear'],
   ['zoom'],
-  8, cappedToStroke(['case', ['boolean', ['feature-state', 'active'], false], 2, 1.5]),
-  17, cappedToStroke(['case', ['boolean', ['feature-state', 'active'], false], 4, 3])
+  8, cappedToStroke(1.5),
+  17, cappedToStroke(3)
 ]
+
+// The halo of a selected line runs outside its casing
+const lineHaloGap = () => [
+  'interpolate',
+  ['linear'],
+  ['zoom'],
+  8, ['+', lineWidthMin(), ['*', 2, cappedToStroke(1.5)]],
+  17, ['+', lineWidthMax(), ['*', 2, cappedToStroke(3)]]
+]
+
+const haloOpacity = () => ['case', ['boolean', ['feature-state', 'active'], false], 1, 0]
 
 const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
 const pointColor = () => styleProp(['user_marker-color', 'marker-color'], defaults.featureColor)
@@ -255,15 +265,21 @@ const pointSizeMax = () => ['to-number', ['coalesce',
 // With 'marker-scaling' the radius doubles per zoom level like shapeIconSize, else it grows
 // linearly from min at zoom 5 to max at zoom 17. One 'interpolate' has one curve, so the
 // exponential one serves both: the extra stops keep the linear case within 0.2px of a line.
-const activeBonus = () => ['case', ['boolean', ['feature-state', 'active'], false], 1, 0]
 const pointRadiusAt = zoom => ['case', shouldScale,
-  ['*', 2 ** (zoom - 16), ['+', activeBonus(), pointSizeMax()]],
-  ['+', activeBonus(), pointSizeMin(), ['*', Math.min(1, (zoom - 5) / 12), ['-', pointSizeMax(), pointSizeMin()]]]
+  ['*', 2 ** (zoom - 16), pointSizeMax()],
+  ['+', pointSizeMin(), ['*', Math.min(1, (zoom - 5) / 12), ['-', pointSizeMax(), pointSizeMin()]]]
 ]
 
 // 'zoom' must stay the input of the top level interpolate, so a factor goes into every stop
 export const pointSize = (factor = 1) => ['interpolate', ['exponential', 2], ['zoom'],
   ...[5, 8, 11, 14, 17, 21].flatMap(zoom => [zoom, ['*', factor, pointRadiusAt(zoom)]])
+]
+
+// The halo of a plain circle starts at its radius, and the stroke of the circle covers the inner
+// part. A constant added to both stops stays constant in an interpolation, so the halo keeps its width.
+const pointHaloWidth = () => ['interpolate', ['exponential', 2], ['zoom'],
+  0, ['+', defaults.haloWidth, ['case', shouldScale, 0, pointOutlineSize()]],
+  21, ['+', defaults.haloWidth, ['case', shouldScale, ['*', 32, pointOutlineSize()], pointOutlineSize()]]
 ]
 
 // A point with a shape or a symbol leaves the circle layer and the symbol layer, and gets
@@ -283,12 +299,12 @@ const shapeImage = () => ['concat',
   '|', pointColor(),
   '|', pointOutlineColor(),
   '|', ['coalesce', ['get', 'marker-image-url'], markerSymbol()],
-  '|', ['to-string', pointSizeMax()]
+  '|', ['to-string', pointSizeMax()],
+  '|', ['case', isSelected(), '1', '0']
 ]
 
 // The image is drawn at the size of the marker (see shapeCanvasSize), so it needs no scaling.
-// A selected shape does not grow: icon-size is a layout property, and a layout property takes
-// no feature-state. The opacity marks the selection instead (see icon-opacity below).
+// A selected shape keeps its size, its image carries a halo instead (see markerImage).
 // Same structure as iconSizeMin/iconSizeMax, so that 'marker-scaling' keeps working
 const shapeIconSize = () => ['interpolate', ['exponential', 2], ['zoom'],
   0, ['case', shouldScale, 0, 1],
@@ -296,17 +312,11 @@ const shapeIconSize = () => ['interpolate', ['exponential', 2], ['zoom'],
 ]
 
 export const pointOutlineSize = () => ['to-number', styleProp(['user_stroke-width', 'stroke-width'], defaults.pointOutlineSize)]
-export const pointOutlineSizeActive = () => ['+', 1, pointOutlineSize()]
 
 // The outline of a scaled circle shrinks with it, else it would keep a 2px dot at low zoom
 const pointOutlineWidth = () => ['interpolate', ['exponential', 2], ['zoom'],
-  0, ['case', shouldScale, 0, pointOutlineSizeCurrent()],
-  21, ['case', shouldScale, ['*', 32, pointOutlineSizeCurrent()], pointOutlineSizeCurrent()]
-]
-const pointOutlineSizeCurrent = () => ['case',
-  ['boolean', ['feature-state', 'active'], false],
-  pointOutlineSizeActive(),
-  pointOutlineSize()
+  0, ['case', shouldScale, 0, pointOutlineSize()],
+  21, ['case', shouldScale, ['*', 32, pointOutlineSize()], pointOutlineSize()]
 ]
 const pointOutlineColor = () => styleProp(['user_stroke', 'stroke'], defaults.featureOutlineColor)
 const defaultPointOpacity = () => ['case',
@@ -315,9 +325,6 @@ const defaultPointOpacity = () => ['case',
   defaults.pointOpacity
 ]
 const pointOpacity = () => ['to-number', ['coalesce', ['get', 'marker-opacity'], defaultPointOpacity()]]
-const pointOpacityActive = () => ['to-number',
-  ['min', ['+', ['coalesce', ['get', 'marker-opacity'], defaultPointOpacity()], 0.2], 1]
-]
 
 // factor of the original icon size (200x200)
 // in case of external icon url, we don't know the size
@@ -457,17 +464,22 @@ function symbolsLayerStyles(mode) {
   const flatMode = mode === 'flat'
   const layerId = flatMode ? 'symbols-layer-flat' : 'symbols-layer'
 
+  const image = ['coalesce',
+    ['get', 'marker-image-url'],
+    // replacing marker-symbol value with path to emoji png
+    ['case',
+      ['!=', ['get', 'marker-symbol'], ''],
+      symbolUrlExpression('marker-symbol'),
+      '']
+  ]
+
   // Shared layout properties
   const sharedLayout = {
     'symbol-sort-key': sortKey(),
-    'icon-image': ['coalesce',
-      ['get', 'marker-image-url'],
-      // replacing marker-symbol value with path to emoji png
-      ['case',
-        ['!=', ['get', 'marker-symbol'], ''],
-        symbolUrlExpression('marker-symbol'),
-        '']
-    ],
+    // a selected image gets a copy with a halo around its outline, see haloImage
+    'icon-image': ['case', isSelected(),
+      ['concat', 'halo|', ['to-string', styleProp(['user_marker-size', 'marker-size'], defaults.markerSize)], '|', image],
+      image],
     'icon-size': iconSize(),
     'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
     'icon-rotate': ['coalesce', ['get', 'marker-rotate'], 0],
@@ -488,11 +500,7 @@ function symbolsLayerStyles(mode) {
 
   // Shared paint properties
   const sharedPaint = {
-    'icon-opacity': ['case',
-      ['boolean', ['feature-state', 'active'], false],
-      pointOpacityActive(),
-      pointOpacity()
-    ]
+    'icon-opacity': pointOpacity()
   }
 
   return {
@@ -547,11 +555,40 @@ function shapesLayerStyles(mode) {
         } : { 'icon-pitch-alignment': 'viewport' })
       },
       paint: {
-        'icon-opacity': ['case',
-          ['boolean', ['feature-state', 'active'], false],
-          pointOpacityActive(),
-          pointOpacity()
-        ]
+        'icon-opacity': pointOpacity()
+      }
+    }
+  }
+}
+
+// A ring around a selected plain circle. The circle stays transparent, the point covers it.
+function pointHaloStyles(mode) {
+  const flatMode = mode === 'flat'
+  const layerId = flatMode ? 'points-layer-halo-flat' : 'points-layer-halo'
+
+  return {
+    [layerId]: {
+      id: layerId,
+      type: 'circle',
+      filter: ['all',
+        ['==', ['geometry-type'], 'Point'],
+        ['!=', ['get', 'meta'], 'midpoint'],
+        ['!=', ['get', 'meta'], 'vertex'],
+        flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
+        ['!', ['has', 'point_count']],
+        ['!', ['has', 'marker-image-url']],
+        ['!', ['has', 'route-extras-label']],
+        plainPoint(),
+        minZoomFilter(),
+        maxZoomFilter()],
+      paint: {
+        ...(flatMode ? { 'circle-pitch-alignment': 'map' } : {}),
+        'circle-pitch-scale': 'map',
+        'circle-radius': pointSize(),
+        'circle-color': 'transparent',
+        'circle-stroke-color': defaults.haloColor,
+        'circle-stroke-width': pointHaloWidth(),
+        'circle-stroke-opacity': haloOpacity()
       }
     }
   }
@@ -784,15 +821,30 @@ export function styles () {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': [
-          'case', ['boolean', ['feature-state', 'active'], false],
-          defaults.featureOutlineColorActive, polygonOutlineColor()
-        ],
-        'line-width': [
-          'case', ['boolean', ['feature-state', 'active'], false],
-          ['+', outlineWidthPolygon(), 1], outlineWidthPolygon()
-        ],
+        'line-color': polygonOutlineColor(),
+        'line-width': outlineWidthPolygon(),
         'line-opacity': lineOpacity()
+      }
+    },
+    // runs outside the outline of a selected polygon, so the outline keeps its color
+    'polygon-layer-halo': {
+      id: 'polygon-layer-halo',
+      type: 'line',
+      filter: ['all',
+        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
+        minZoomFilter(),
+        maxZoomFilter()],
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      paint: {
+        'line-color': defaults.haloColor,
+        // the tiles of a geojson source rewind every ring, so the outside of the polygon is
+        // always on the same side of the line, including the inside of a hole
+        'line-offset': ['-', 0, ['+', ['/', outlineWidthPolygon(), 2], defaults.haloWidth / 2]],
+        'line-width': defaults.haloWidth,
+        'line-opacity': haloOpacity()
       }
     },
     // line outlines
@@ -808,14 +860,29 @@ export function styles () {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': [
-          'case', ['boolean', ['feature-state', 'active'], false],
-          defaults.featureOutlineColorActive, defaults.featureOutlineColor
-        ],
+        'line-color': defaults.featureOutlineColor,
         // casing: only the two strips beside the line are drawn, the line itself covers the gap
         'line-gap-width': lineWidth(),
         'line-width': outlineWidth(),
         'line-opacity': lineOpacity()
+      }
+    },
+    'line-layer-halo': {
+      id: 'line-layer-halo',
+      type: 'line',
+      filter: ['all',
+        ['==', ['geometry-type'], 'LineString'],
+        minZoomFilter(),
+        maxZoomFilter()],
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      paint: {
+        'line-color': defaults.haloColor,
+        'line-gap-width': lineHaloGap(),
+        'line-width': defaults.haloWidth,
+        'line-opacity': haloOpacity()
       }
     },
     // lines
@@ -834,10 +901,7 @@ export function styles () {
       paint: {
         'line-color': lineColor(),
         'line-width': lineWidth(),
-        'line-opacity': [
-          'case', ['boolean', ['feature-state', 'active'], false],
-          defaults.lineOpacityActive, lineOpacity()
-        ],
+        'line-opacity': lineOpacity(),
         'line-dasharray': [
           "case",
           ["==", ["get", "stroke-dasharray"], true], ["literal", defaults.lineDashArray],
@@ -845,6 +909,8 @@ export function styles () {
         ]
       }
     },
+    ...pointHaloStyles('flat'),
+    ...pointHaloStyles('viewport'),
     'points-layer-flat': {
       id: 'points-layer-flat',
       type: 'circle',
@@ -865,21 +931,9 @@ export function styles () {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': pointSize(),
         'circle-color': pointColor(),
-        'circle-opacity': ['case',
-          ['boolean', ['feature-state', 'active'], false],
-          pointOpacityActive(),
-          pointOpacity()
-        ],
+        'circle-opacity': pointOpacity(),
         'circle-blur': defaults.pointBlur,
-        // a transparent outline makes the selection invisible, use the active outline color
-        'circle-stroke-color': ["case",
-          ["all",
-            ['boolean', ['feature-state', 'active'], false],
-            ["==", pointOutlineColor(), "transparent"]
-          ],
-          defaults.featureOutlineColorActive,
-          pointOutlineColor()
-        ],
+        'circle-stroke-color': pointOutlineColor(),
         'circle-stroke-width': pointOutlineWidth(),
         'circle-stroke-opacity': ['to-number', ["min", 1, ['+', pointOpacity(), 0.2]]]
       },
@@ -907,21 +961,9 @@ export function styles () {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': pointSize(),
         'circle-color': pointColor(),
-        'circle-opacity': ['case',
-          ['boolean', ['feature-state', 'active'], false],
-          pointOpacityActive(),
-          pointOpacity()
-        ],
+        'circle-opacity': pointOpacity(),
         'circle-blur': defaults.pointBlur,
-        // a transparent outline makes the selection invisible, use the active outline color
-        'circle-stroke-color': ["case",
-          ["all",
-            ['boolean', ['feature-state', 'active'], false],
-            ["==", pointOutlineColor(), "transparent"]
-          ],
-          defaults.featureOutlineColorActive,
-          pointOutlineColor()
-        ],
+        'circle-stroke-color': pointOutlineColor(),
         'circle-stroke-width': pointOutlineWidth(),
         'circle-stroke-opacity': ["min", 1, ['+', pointOpacity(), 0.2]]
       },

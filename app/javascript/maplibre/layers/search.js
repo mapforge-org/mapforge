@@ -6,7 +6,7 @@ import { initializeViewStyles } from 'maplibre/styles/styles'
 
 const OSM_TYPES = { N: 'node', W: 'way', R: 'relation' }
 
-// the active result goes up to 1, see pointOpacityActive in styles.js
+// the active result gets a halo, see the halo styles in styles.js
 export const MARKER_OPACITY = 0.8
 export const MARKER_OUTLINE = '#ffffff'
 // the colors tell a result of the search apart from a feature of the map. a copy to a layer

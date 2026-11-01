@@ -69,10 +69,10 @@ function shapePath (ctx, shape, size, inset) {
   }
 }
 
-// Draws a shape in the given color, with a border and an optional emoji on it, and adds it as
-// a map image under the given name. The size is in css pixels, the style layer scales the
-// image from there.
-export function markerImage (name, { shape = 'circle', color, border = '#CCC', symbol = '', size = 36 } = {}) {
+// Draws a shape in the given color, with a border, an optional emoji on it and an optional halo
+// around it, and adds it as a map image under the given name. The size is in css pixels, the
+// style layer scales the image from there.
+export function markerImage (name, { shape = 'circle', color, border = '#CCC', symbol = '', size = 36, halo = false } = {}) {
   if (map.hasImage(name)) { return name }
 
   const ratio = pixelRatio()
@@ -84,6 +84,16 @@ export function markerImage (name, { shape = 'circle', color, border = '#CCC', s
 
   const borderWidth = size * BORDER
   const margin = size * MARGIN
+
+  // ponytail: the halo fills the margin outside the border, which is thinner than haloWidth for
+  // a marker below size 20. A wider canvas would move the anchor and pointEdge() in styles.js.
+  if (halo) {
+    const haloWidth = Math.min(defaults.haloWidth, margin - borderWidth / 2)
+    ctx.strokeStyle = defaults.haloColor
+    ctx.lineWidth = haloWidth
+    shapePath(ctx, shape, size, margin - borderWidth / 2 - haloWidth / 2)
+    ctx.stroke()
+  }
 
   if (border !== 'transparent') {
     ctx.strokeStyle = border
@@ -111,12 +121,13 @@ export function circleImage (prefix, color, { size = 36, symbol = '', border = '
 // The name of the image of a shaped marker. It carries every style that goes into the image,
 // so that two markers share one image only while they look the same.
 // KEEP IN SYNC with shapeImage() in styles.js, which is what the map renders.
-export function shapeImageName (properties) {
+export function shapeImageName (properties, selected = false) {
   return [ 'shape-' + (properties['marker-shape'] || 'circle'),
     properties['marker-color'] || defaults.featureColor,
     properties.stroke || defaults.featureOutlineColor,
     properties['marker-image-url'] || properties['marker-symbol'] || '',
-    Number(properties['marker-size']) || defaultPointSize({ properties }) ].join('|')
+    Number(properties['marker-size']) || defaultPointSize({ properties }),
+    selected ? '1' : '0' ].join('|')
 }
 
 // Which points the map draws as one image. KEEP IN SYNC with shapedPoint() in styles.js.
@@ -126,7 +137,9 @@ const isShapedPoint = feature => feature.geometry?.type === 'Point' &&
 // Drops the shape images that no feature uses any more. A missing image is drawn again by the
 // resolver of maplibre (see loadImage), so a prune that goes too far repairs itself.
 export function pruneShapeImages (features) {
-  const keep = new Set(features.filter(isShapedPoint).map(feature => shapeImageName(feature.properties)))
+  // the selected variant stays as well, else every render would draw the halo of a selection again
+  const keep = new Set(features.filter(isShapedPoint)
+    .flatMap(feature => [shapeImageName(feature.properties), shapeImageName(feature.properties, true)]))
   pruneCircleImages('shape', keep)
 }
 
@@ -182,4 +195,39 @@ export function labelImage (name) {
     stretchY: [[px(edge), px(size - edge)]],
     content: [px(LABEL_MARGIN), px(LABEL_MARGIN), px(size - LABEL_MARGIN), px(size - LABEL_MARGIN)]
   })
+}
+
+// Draws the image of a 'halo|<marker-size>|<url>' name: the image with a halo around its outline,
+// so a rounded icon (see ImagesController#icon) and a transparent png get a halo of their shape.
+// The silhouette of the image, moved around in a circle, covers the outline. The canvas grows by
+// the halo, so the image keeps its size. The map draws an image at 'marker-size' / 60, so the
+// halo gets that much wider in image pixels.
+export async function haloImage (name) {
+  const [, size, ...url] = name.split('|')
+  // MapLibre checks for the image right after the resolver, see the placeholder in loadImage
+  map.addImage(name, { width: 1, height: 1, data: new Uint8Array(4) })
+  let image
+  try {
+    image = (await map.loadImage(url.join('|'))).data
+  } catch (error) {
+    console.error(`Failed to load image ${url.join('|')}: ` + error)
+    return
+  }
+  const pad = Math.ceil(defaults.haloWidth * 60 / Number(size))
+  const canvas = document.createElement('canvas')
+  canvas.width = image.width + 2 * pad
+  canvas.height = image.height + 2 * pad
+  const ctx = canvas.getContext('2d')
+  for (let i = 0; i < 16; i++) {
+    const angle = i * Math.PI / 8
+    ctx.drawImage(image, pad + pad * Math.cos(angle), pad + pad * Math.sin(angle))
+  }
+  ctx.globalCompositeOperation = 'source-in'
+  ctx.fillStyle = defaults.haloColor
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  ctx.globalCompositeOperation = 'source-over'
+  ctx.drawImage(image, pad, pad)
+  // the image can be gone after a style change, and the placeholder has another size
+  if (map.hasImage(name)) { map.removeImage(name) }
+  map.addImage(name, ctx.getImageData(0, 0, canvas.width, canvas.height))
 }

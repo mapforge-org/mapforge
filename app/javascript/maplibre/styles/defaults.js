@@ -30,7 +30,9 @@ const baseDefaults = {
 
   featureColor: '#0A870A', // green
   featureOutlineColor: '#444444',
-  featureOutlineColorActive: '#000',
+  // ring outside a selected feature, which leaves its own size, color and opacity as they are
+  haloColor: '#000',
+  haloWidth: 3,
 
   extrusionOpacity: 0.9,
   extrusionCornerRadius: 0.5, // meters
@@ -43,7 +45,6 @@ const baseDefaults = {
   lineWidth: 2,
   routeWidth: 3,
   lineOpacity: 0.8,
-  lineOpacityActive: 1,
   polygonOutlineWidth: 2,
   lineDashArray: [1, 1.5],
 

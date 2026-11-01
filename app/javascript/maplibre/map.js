@@ -686,8 +686,10 @@ export function sortLayers () {
     styleLayers.filter(e => e.id.startsWith('polygon-layer-pattern_geojson-source')), // pattern on the fill
     styleLayers.filter(e => e.id.startsWith('image-overlay-layer_')),
     styleLayers.filter(e => e.id.startsWith('polygon-layer-outline_geojson-source')),
+    styleLayers.filter(e => e.id.startsWith('polygon-layer-halo_geojson-source')),
     styleLayers.filter(e => e.id.includes('-flat')), // keep flat layers behind houses
     styleLayers.filter(e => e.id.startsWith('line-layer-outline_geojson-source')),
+    styleLayers.filter(e => e.id.startsWith('line-layer-halo_geojson-source')),
     styleLayers.filter(e => e.id.startsWith('line-layer_geojson-source') && !e.id.includes('outline')),
     styleLayers.filter(e => e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')),
     styleLayers.filter(e => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion')),
