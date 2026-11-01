@@ -74,7 +74,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `fill-pattern`: a pattern drawn on the fill color, in the `stroke` color. One of `hatch`, `cross`, `lines`, `lines-bold`, `grid`, `dots`, `dots-big`, `checker`.
 * `fill-extrusion-color`: color of the extrusion (default: green, a 'transparent' `fill` is ignored here)
 * `fill-extrusion-height`: height in m
-* `fill-extrusion-base`: ground distance in m (default: 0)
+* `fill-extrusion-base`: ground distance in m (default: 0). The label of an extruded polygon floats halfway between `fill-extrusion-base` and `fill-extrusion-height`.
 * `fill-extrusion-opacity`: opacity of the extrusion, rounded to nearest 0.1 (defaults to `fill-opacity`, else 0.9)
 * `fill-extrusion-shadow`: true/false for the ground below the extrusion (default: true with a base, else false)
 

@@ -583,6 +583,16 @@ function textLayerStyles(mode) {
     'icon-text-fit': 'both',
     'icon-text-fit-padding': [0, 8, 0, 8],
     'icon-offset': labelBoxOffset(),
+    // The label of an extruded polygon floats in the middle of the extrusion. 'fill-extrusion-height'
+    // is the height of its top above the ground, not its size, see extrusionBucketLayers.
+    'symbol-height-offset': ['case',
+      ['all',
+        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
+        ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0]],
+      ['/', ['+',
+        ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0), 0],
+        ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0), 0]], 2],
+      0],
     // TODO: sort keys on text are ascending, on symbols descending???
     'symbol-sort-key': ['-', 1000, sortKey()]
   }
