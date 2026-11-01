@@ -95,6 +95,10 @@ const baseEditDefaults = {
   vertexOutlineWidth: 2
 }
 
+// How far the glyphs of a font sit above those of the fontnik build, in em. VersaTiles builds
+// its glyphs higher (the top of an 'H' at -6 of 24 instead of -9), the 1/16 em is measured.
+export const glyphShift = font => (font.startsWith('noto_sans_') ? 1 / 16 : 0)
+
 export const defaults = { ...baseDefaults }
 export const editDefaults = { ...baseEditDefaults }
 

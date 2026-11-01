@@ -138,3 +138,48 @@ export function pruneCircleImages (prefix, keep = new Set()) {
     if (name.startsWith(`${prefix}-`) && !keep.has(name)) { map.removeImage(name) }
   })
 }
+
+// The background of a label: a rounded box with a soft shadow, which maplibre stretches to the
+// text (see 'icon-text-fit'). Only the middle row and column stretch, so the corners keep their
+// radius. 'content' leaves the shadow out, so the box ends where the fit padding ends.
+const LABEL_MARGIN = 5
+// the outline of the map title and the mode toggle, see map.css
+const LABEL_BORDER = 1.5
+const LABEL_BORDER_COLOR = '#BBB'
+
+// Draws the image of a 'label-<color>|<radius>' name and adds it as a map image.
+export function labelImage (name) {
+  const [ color, radius ] = name.slice('label-'.length).split('|')
+  const ratio = pixelRatio()
+  const edge = LABEL_MARGIN + Number(radius)
+  const size = 2 * edge + 2
+  const canvas = document.createElement('canvas')
+  canvas.width = canvas.height = size * ratio
+  const ctx = canvas.getContext('2d')
+  ctx.scale(ratio, ratio)
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)'
+  ctx.shadowBlur = 4
+  ctx.shadowOffsetY = 1
+  ctx.fillStyle = color
+  ctx.beginPath()
+  ctx.roundRect(LABEL_MARGIN, LABEL_MARGIN, size - 2 * LABEL_MARGIN, size - 2 * LABEL_MARGIN, Number(radius))
+  ctx.fill()
+
+  // like a box-shadow ring, the border lies outside of the box
+  const outset = LABEL_BORDER / 2
+  ctx.shadowColor = 'transparent'
+  ctx.strokeStyle = LABEL_BORDER_COLOR
+  ctx.lineWidth = LABEL_BORDER
+  ctx.beginPath()
+  ctx.roundRect(LABEL_MARGIN - outset, LABEL_MARGIN - outset,
+    size - 2 * (LABEL_MARGIN - outset), size - 2 * (LABEL_MARGIN - outset), Number(radius) + outset)
+  ctx.stroke()
+
+  const px = value => value * ratio
+  map.addImage(name, ctx.getImageData(0, 0, canvas.width, canvas.height), {
+    pixelRatio: ratio,
+    stretchX: [[px(edge), px(size - edge)]],
+    stretchY: [[px(edge), px(size - edge)]],
+    content: [px(LABEL_MARGIN), px(LABEL_MARGIN), px(size - LABEL_MARGIN), px(size - LABEL_MARGIN)]
+  })
+}

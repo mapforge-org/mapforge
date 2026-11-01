@@ -95,6 +95,12 @@ function upsertDescBanner (feature, layer, visible) {
   } else {
     el.style.removeProperty('--border-color')
   }
+  // bold words take the weight of the label, the map sets the one of the basemap font
+  if (p['label-font-weight'] === 'bold') {
+    el.style.setProperty('--label-weight', 700)
+  } else {
+    el.style.removeProperty('--label-weight')
+  }
   showBanner(entry)
 }
 

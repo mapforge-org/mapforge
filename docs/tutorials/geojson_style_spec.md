@@ -17,7 +17,9 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `label-justify`: alignment: auto (default), left, center, right
 * `label-max-width`: line width (default 10)
 * `label-letter-spacing`: space between letters (default 0)
-* `label-shadow`: font shadow in format "#ffffff" (default)
+* `label-font-weight`: `normal` (default) or `bold`. It picks the regular or the bold font of the base map. A `label-font` overrides it.
+* `label-background`: `badge` (default) draws a rounded box in the `label-shadow` color behind the label. `shadow` draws only the halo around the letters. A label with `marker-scaling` always gets `shadow`.
+* `label-shadow`: font shadow and background color of the label box in format "#ffffff" (default)
 * `label-shadow-width`: shadow width/halo width in pixels (default 2, max. 5)
 * `label-anchor`: text anchor position relative to the feature: top (default), bottom, left, right, center, top-left, top-right, bottom-left, bottom-right
 * `label-offset`: label position offset from the anchor as `[x, y]` in em units (default: depends on marker size for `label-anchor: top`, otherwise `[0, 0]`)
@@ -85,7 +87,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 
 #### Weight and style
 
-There is no separate weight property. The **first** entry of the array decides weight and style, the entries after it are the family the browser actually resolves:
+For the default font of the base map, `label-font-weight` switches between regular and bold. For a `label-font`, the **first** entry of the array decides weight and style, the entries after it are the family the browser actually resolves:
 
 ```json
 { "label": "Hello", "label-font": ["SUSE Bold", "SUSE"] }

@@ -624,6 +624,9 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
   backgroundMapLayer = mapName
   backgroundStyleKey = styleKey
   applyBasemapDefaults(basemap)
+  // description banners take the size and the weight of the labels, see map.css
+  map.getContainer().style.setProperty('--label-size', `${defaults.labelSize}px`)
+  map.getContainer().style.setProperty('--label-weight', /bold/i.test(defaults.font) ? 700 : 400)
   // Edit styles are built once when MapboxDraw is created, so they need to get
   // rebuilt from the new defaults before setStyle makes draw re-add its layers
   map.fire('basemap.change')

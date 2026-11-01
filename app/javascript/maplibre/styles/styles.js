@@ -1,8 +1,8 @@
 import { symbolUrl } from 'helpers/functions'
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { addLayer, map, removeStyleLayers } from 'maplibre/map'
-import { markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
-import { defaults } from 'maplibre/styles/defaults'
+import { labelImage, markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
+import { defaults, glyphShift } from 'maplibre/styles/defaults'
 import { patternImage } from 'maplibre/styles/pattern_image'
 
 // fill-extrusion-opacity is not data-driven in MapLibre, so per-feature opacity
@@ -94,6 +94,11 @@ export async function loadImage (id) {
     return
   }
 
+  if (id.startsWith('label-')) {
+    labelImage(id)
+    return
+  }
+
   // Skip if already loading, loaded, or failed
   if (imageState[id]) {
     // console.log(`Skipped loading image '${id}'`, imageState[id])
@@ -154,7 +159,9 @@ const sortKey = () => ['to-number', styleProp(['user_sort-key', 'sort-key'], def
 const labelColor = () => styleProp(['user_label-color', 'label-color'], defaults.labelColor)
 const labelShadow = () => styleProp(['user_label-shadow', 'label-shadow'], defaults.labelShadow)
 const labelShadowWidth = () => styleProp(['user_label-shadow-width', 'label-shadow-width'], defaults.labelShadowWidth)
-const labelFont = () => ['coalesce', ['get', 'label-font'], ['literal', [defaults.font]]]
+const labelFont = () => ['coalesce', ['get', 'label-font'],
+  ['case', ['==', styleProp(['user_label-font-weight', 'label-font-weight'], 'normal'), 'bold'],
+    ['literal', [defaults.fontBold]], ['literal', [defaults.font]]]]
 
 const fillColor = () => styleProp(['fill', 'user_fill'], defaults.featureColor)
 const fillOpacity = () => ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaults.extrusionOpacity)]
@@ -335,8 +342,9 @@ const staticLabelSize = () => ['coalesce', ...userLabelSize.slice(1), defaultLab
 // literal arrays builds [0, y] for any y up to 10000. The text box starts half of the extra line
 // height, plus 0.1 em of the font, above the capitals, which y takes back.
 const capsInset = (defaults.labelLineHeight - 1) / 2 + 0.1
-const offsetY = y => ['interpolate', ['linear'], ['-', y, capsInset],
+const vectorY = y => ['interpolate', ['linear'], y,
   -10000, ['literal', [0, -10000]], 10000, ['literal', [0, 10000]]]
+const offsetY = y => vectorY(['-', y, capsInset])
 
 // The distance from the center of a point to its lower edge, in px. A shape canvas is
 // 2 * size / FILL wide (see circle_image.js), its outline ends at 1.14 * size. A plain circle
@@ -360,15 +368,31 @@ const labelOffsetBySize = zoom => [
   ],
   ['literal', [0, 0]],  // Zero offset for polygons
   ['!', shouldScale],
-  offsetY(['/', ['+', 16, pointEdge()], ['to-number', staticLabelSize()]]),
+  offsetY(['/', ['+', 16, pointEdge()], labelFontSize()]),
   // the edge is pointEdge() at zoom 16
   offsetY(['/', ['*', 2 ** (zoom - 16), ['+', 16, pointEdge()]], labelSizeAt(zoom)])
 ]
+
+// MapLibre fits the box to the text size of the next integer zoom and does not resize it with
+// a zoom dependent text size, so a scaled label gets no box.
+const labelBoxImage = () => ['case',
+  ['any', shouldScale, ['==', styleProp(['user_label-background', 'label-background'], 'badge'), 'shadow']], '',
+  // the radius is a quarter of the line height, like the 8px corners of the 2rem controls
+  ['concat', 'label-', labelShadow(), '|',
+    ['to-string', ['round', ['*', defaults.labelLineHeight / 4, labelFontSize()]]]]]
+
+// The glyphs of some fonts sit higher in their line than others (see glyphShift), so the box
+// behind the label moves up by that much, in px of the text size.
+const labelBoxOffset = () => {
+  const shift = glyphShift(defaults.font)
+  return shift ? vectorY(['*', -shift, labelFontSize()]) : ['literal', [0, 0]]
+}
 
 // A zoom dependent layout property gets evaluated at the integer zoom of the tile, so between
 // two levels the offset stands still. That only shows once the label hits its maximum size and
 // stops growing with the marker. The value of the next level then keeps the label clear of
 // the marker, at the cost of a gap of up to one radius.
+
 const labelOffset = () => ['step', ['zoom'], textOffset(17),
   ...[17, 18, 19, 20, 21, 22, 23].flatMap(zoom => [zoom, textOffset(zoom + 1)])
 ]
@@ -380,10 +404,16 @@ const textOffset = zoom => [
   ['literal', [0, 0]]
 ]
 
-export const labelFontSize = () => [
+const labelText = () => ['coalesce', ['get', 'label'], ['get', 'room'], '']
+// MapLibre centers a line with a font-scale other than 1 higher in its box than a plain line.
+// A title without a label is one line, so it gets the size of the title and no font-scale.
+const titleOnly = () => ['all', ['has', 'label-title'], ['==', labelText(), '']]
+const titleOnlyFactor = () => ['case', titleOnly(), defaults.labelTitleScale, 1]
+
+export const labelFontSize = () => ['*', titleOnlyFactor(), [
   'case', shouldScale,
   ['to-number', scaledLabelSize()],
-  ['to-number', staticLabelSize()]]
+  ['to-number', staticLabelSize()]]]
 
 export const labelFontSizeMin = () => [
   'case', shouldScale,
@@ -528,8 +558,8 @@ function textLayerStyles(mode) {
     'text-field': [
       'format',
       ['case', ['has', 'label-title'], ['concat', ['get', 'label-title'], '\n'], ''],
-      { ...textFont, 'font-scale': defaults.labelTitleScale },
-      ['coalesce', ['get', 'label'], ['get', 'room'], ''],
+      { ...textFont, 'font-scale': ['case', titleOnly(), 1, defaults.labelTitleScale] },
+      labelText(),
       textFont
     ],
     'text-size': labelSize(),
@@ -540,8 +570,14 @@ function textLayerStyles(mode) {
     // default to dynamic labelOffset if not set
     'text-offset': labelOffset(),
     'text-justify': ['coalesce', ['get', 'label-justify'], 'auto'],
-    'text-max-width': ['coalesce', ['get', 'label-max-width'], defaults.labelMaxWidth],
+    // in ems of the text-size, which is bigger for a title without a label
+    'text-max-width': ['/', ['coalesce', ['get', 'label-max-width'], defaults.labelMaxWidth], titleOnlyFactor()],
     'text-line-height': defaults.labelLineHeight, // no dynamic value possible
+    // a box in the shadow color behind the text, drawn on demand (see loadImage)
+    'icon-image': labelBoxImage(),
+    'icon-text-fit': 'both',
+    'icon-text-fit-padding': [0, 8, 0, 8],
+    'icon-offset': labelBoxOffset(),
     // TODO: sort keys on text are ascending, on symbols descending???
     'symbol-sort-key': ['-', 1000, sortKey()]
   }
@@ -551,7 +587,11 @@ function textLayerStyles(mode) {
     // make sure 'flat' text is always shown
     'text-ignore-placement': true, // show on collision
     'text-allow-overlap': true,
-    'text-rotation-alignment': 'map'
+    'text-rotation-alignment': 'map',
+    'icon-ignore-placement': true,
+    'icon-allow-overlap': true,
+    'icon-rotation-alignment': 'map',
+    'icon-pitch-alignment': 'map'
   } : {
     'text-ignore-placement': false, // hide on collision, no data-driven styling
     'text-rotation-alignment': 'viewport',
@@ -560,6 +600,7 @@ function textLayerStyles(mode) {
 
   // Shared paint properties
   const sharedPaint = {
+    'icon-opacity': 0.8, // same as the background of a description banner, see map.css
     'text-color': labelColor(),
     'text-halo-color': labelShadow(),
     'text-halo-width': labelShadowWidth()
