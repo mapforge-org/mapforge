@@ -411,11 +411,14 @@ const labelOffsetBySize = zoom => [
 
 // MapLibre fits the box to the text size of the next integer zoom and does not resize it with
 // a zoom dependent text size, so a scaled label gets no box.
+const hasLabelBox = () => ['!', ['any', shouldScale,
+  ['==', styleProp(['user_label-background', 'label-background'], 'badge'), 'shadow']]]
 const labelBoxImage = () => ['case',
-  ['any', shouldScale, ['==', styleProp(['user_label-background', 'label-background'], 'badge'), 'shadow']], '',
+  hasLabelBox(),
   // the radius is a quarter of the line height, like the 8px corners of the 2rem controls
   ['concat', 'label-', labelShadow(), '|',
-    ['to-string', ['round', ['*', defaults.labelLineHeight / 4, labelFontSize()]]]]]
+    ['to-string', ['round', ['*', defaults.labelLineHeight / 4, labelFontSize()]]]],
+  '']
 
 // The glyphs of some fonts sit higher in their line than others (see glyphShift), so the box
 // behind the label moves up by that much, in px of the text size.
@@ -715,7 +718,7 @@ function textLayerStyles(mode) {
     'icon-opacity': 0.8, // same as the background of a description banner, see map.css
     'text-color': labelColor(),
     'text-halo-color': labelShadow(),
-    'text-halo-width': labelShadowWidth()
+    'text-halo-width': ['case', hasLabelBox(), 0, labelShadowWidth()]
   }
 
   return {

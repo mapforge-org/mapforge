@@ -18,7 +18,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `label-max-width`: line width (default 10)
 * `label-letter-spacing`: space between letters (default 0)
 * `label-font-weight`: `normal` (default) or `bold`. It picks the regular or the bold font of the base map. A `label-font` overrides it.
-* `label-background`: `badge` (default) draws a rounded box in the `label-shadow` color behind the label. `shadow` draws only the halo around the letters. A label with `marker-scaling` always gets `shadow`.
+* `label-background`: `badge` (default) draws a rounded box in the `label-shadow` color behind the label, and the letters get no halo. `shadow` draws only the halo around the letters. A label with `marker-scaling` always gets `shadow`.
 * `label-shadow`: font shadow and background color of the label box in format "#ffffff" (default)
 * `label-shadow-width`: shadow width/halo width in pixels (default 2, max. 5)
 * `label-anchor`: text anchor position relative to the feature: top (default), bottom, left, right, center, top-left, top-right, bottom-left, bottom-right
