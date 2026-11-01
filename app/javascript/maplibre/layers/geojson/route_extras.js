@@ -32,6 +32,19 @@ function computeCumulativeDistances (coords) {
   return cumulative
 }
 
+// The point at the given cumulative distance between coords[from] and coords[to], interpolated
+// linearly inside the piece that holds it.
+function pointAlong (coords, cumulative, from, to, target) {
+  let i = from
+  while (i < to - 1 && cumulative[i + 1] < target) { i++ }
+  const piece = cumulative[i + 1] - cumulative[i]
+  const t = piece > 0 ? (target - cumulative[i]) / piece : 0
+  return [
+    coords[i][0] + t * (coords[i + 1][0] - coords[i][0]),
+    coords[i][1] + t * (coords[i + 1][1] - coords[i][1])
+  ]
+}
+
 // ORS route extras color configurations
 // Each type maps values to colors and labels for data-driven styling
 export const EXTRAS_COLOR_CONFIGS = {
@@ -106,8 +119,6 @@ function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulative
     if (endIdx <= startIdx || startIdx >= coords.length) return
 
     const end = Math.min(endIdx, coords.length - 1)
-    const firstCoord = coords[startIdx]
-    const lastCoord = coords[end]
 
     // O(1) segment length lookup using precomputed cumulative distances
     const segmentLength = cumulativeDistances[end] - cumulativeDistances[startIdx]
@@ -115,11 +126,9 @@ function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulative
     // Skip very short segments
     if (segmentLength < 50) return
 
-    // Compute midpoint by averaging first and last coordinates
-    const midpoint = [
-      (firstCoord[0] + lastCoord[0]) / 2,
-      (firstCoord[1] + lastCoord[1]) / 2
-    ]
+    // halfway along the track: the average of the two end points lies off a winding segment
+    const midpoint = pointAlong(coords, cumulativeDistances, startIdx, end,
+      cumulativeDistances[startIdx] + segmentLength / 2)
 
     // Format distance label
     let distanceLabel
@@ -359,8 +368,13 @@ export function initializeExtrasLabelStyles (sourceId) {
     filter: withLevelFilter(labelsBaseFilter),
     layout: {
       'text-field': ['get', 'route-extras-label'],
-      'text-font': [defaults.font],
-      'text-size': 11,
+      // small white text reads best in bold, on a box in the color of the segment
+      'text-font': [defaults.fontBold],
+      'text-size': 12,
+      // the box of the feature labels (see labelImage), its radius a quarter of the line height
+      'icon-image': ['concat', 'label-', ['get', 'route-extras-color'], '|4'],
+      'icon-text-fit': 'both',
+      'icon-text-fit-padding': [1, 4, 1, 4],
       'text-allow-overlap': false,
       'text-ignore-placement': false,
       'text-anchor': 'center',
@@ -370,9 +384,7 @@ export function initializeExtrasLabelStyles (sourceId) {
       'symbol-sort-key': ['-', ['-', 10, ['get', 'route-extras-priority']], ['*', ['get', 'feature-order'], 100000]]
     },
     paint: {
-      'text-color': '#ffffff',
-      'text-halo-color': ['get', 'route-extras-color'],
-      'text-halo-width': 2
+      'text-color': '#ffffff'
     }
   })
 }
