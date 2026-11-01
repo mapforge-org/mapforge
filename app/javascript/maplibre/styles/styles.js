@@ -404,10 +404,15 @@ const textOffset = zoom => [
   ['literal', [0, 0]]
 ]
 
-const labelText = () => ['coalesce', ['get', 'label'], ['get', 'room'], '']
+// MapLibre has no trim, but 'to-number' converts a string like JavaScript does, so an empty or
+// whitespace string becomes 0. Any other string that becomes 0 contains the digit 0.
+const blank = text => ['all', ['==', ['to-number', text, 1], 0], ['!', ['in', '0', text]]]
+const present = key => ['!', blank(['to-string', ['coalesce', ['get', key], '']])]
+
+const labelText = () => ['to-string', ['coalesce', ['get', 'label'], ['get', 'room'], '']]
 // MapLibre centers a line with a font-scale other than 1 higher in its box than a plain line.
 // A title without a label is one line, so it gets the size of the title and no font-scale.
-const titleOnly = () => ['all', ['has', 'label-title'], ['==', labelText(), '']]
+const titleOnly = () => ['all', present('label-title'), blank(labelText())]
 const titleOnlyFactor = () => ['case', titleOnly(), defaults.labelTitleScale, 1]
 
 export const labelFontSize = () => ['*', titleOnlyFactor(), [
@@ -557,7 +562,7 @@ function textLayerStyles(mode) {
     // has one text-size and only a section can scale off it. Empty section = no heading, no change.
     'text-field': [
       'format',
-      ['case', ['has', 'label-title'], ['concat', ['get', 'label-title'], '\n'], ''],
+      ['case', present('label-title'), ['concat', ['get', 'label-title'], '\n'], ''],
       { ...textFont, 'font-scale': ['case', titleOnly(), 1, defaults.labelTitleScale] },
       labelText(),
       textFont
@@ -613,7 +618,8 @@ function textLayerStyles(mode) {
       filter: ['all',
         ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
         ['!=', ['geometry-type'], 'MultiLineString'], // line labels are in 'line-labels'
-        ['any', ['has', 'label'], ['has', 'label-title']],
+        // a blank label would still show its box
+        ['any', present('label'), present('label-title')],
         flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
         minZoomFilter(),
         maxZoomFilter()

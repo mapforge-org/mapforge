@@ -218,7 +218,7 @@ export function basemaps () {
         glyphs: versatilesGlyphs
       }
     },
-    satelliteStreets: { description: window.__('Satellite photos with street names and places'), source: 'Esri', style: host + '/layers/satellite_with_streets.json', defaults: { labelColor: '#fff', labelShadow: '#000', font: versatilesFont } },
+    satelliteStreets: { description: window.__('Satellite photos with street names and places'), source: 'Esri', style: host + '/layers/satellite_with_streets.json', defaults: { labelColor: '#000', labelShadow: '#fff', font: versatilesFont } },
 
     // basemap.de
     basemapWorld: {
