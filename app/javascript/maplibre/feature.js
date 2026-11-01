@@ -114,6 +114,7 @@ export function resetHighlightedFeature () {
     setActive(highlightedFeatureSource, highlightedFeatureId, highlightedSourceLayer, false)
   }
   if (highlightedFeatureId) {
+    map.setGlobalStateProperty('selectedFeatureId', null)
     highlightedFeatureSource = null
     highlightedFeatureId = null
     highlightedSourceLayer = null
@@ -160,6 +161,7 @@ export function highlightFeature (feature, sticky = false, source, sourceLayer =
 
   // Set feature state for both GeoJSON and vector tile features
   if (feature.id != null) { setActive(source, feature.id, sourceLayer, true) }
+  map.setGlobalStateProperty('selectedFeatureId', feature.id ?? null)
 
   // URL persistence only for GeoJSON features (vector tile IDs are not stable across sessions)
   if (sourceFeature && sticky) {

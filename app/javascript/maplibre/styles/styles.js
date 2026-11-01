@@ -25,6 +25,8 @@ export const viewStyleNames = [
   'symbols-layer',
   'text-layer-flat',
   'text-layer',
+  'line-labels-selected',
+  'text-layer-selected',
   'polygon-layer-extruded-shadow',
   ...extrusionOpacityBuckets.map((_, i) => `polygon-layer-extrusion-${i + 1}`)
 ]
@@ -221,8 +223,14 @@ const markerShape = () => styleProp(['user_marker-shape', 'marker-shape'], 'circ
 const markerSymbol = () => styleProp(['user_marker-symbol', 'marker-symbol'], '')
 // An image covers a symbol, so a symbol next to an image must not change how the point looks.
 const showsSymbol = () => ['all', ['!=', markerSymbol(), ''], ['!', ['has', 'marker-image-url']]]
-const minZoomFilter = () => [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], defaults.minZoom]]]
-const maxZoomFilter = () => ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], defaults.maxZoom]]]
+// A layout property takes no feature-state, but a filter takes global state, see highlightFeature().
+// The filter reads the 'id' property: in the worker, ['id'] is not the promoteId value.
+const isSelected = () => ['==', ['get', 'id'], ['global-state', 'selectedFeatureId']]
+// the selected feature shows at every zoom level
+export const minZoomFilter = () => ['any', isSelected(),
+  [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], defaults.minZoom]]]]
+export const maxZoomFilter = () => ['any', isSelected(),
+  ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], defaults.maxZoom]]]]
 
 // set default size of point depending on if there is an emoji, a shape or a marker image.
 // Only a plain point gets a smaller value at low zoom: an emoji or image does not scale with
@@ -700,8 +708,18 @@ function extrusionBucketLayers () {
   }))
 }
 
+// The label of the selected feature as its own layer, which sortLayers() puts on top of all
+// others. The label shows on every collision, and the collision hides the same label in the
+// original layer.
+const selectedLabelStyle = style => ({
+  ...style,
+  id: `${style.id}-selected`,
+  filter: ['all', style.filter, isSelected()],
+  layout: { ...style.layout, 'text-allow-overlap': true, 'icon-allow-overlap': true }
+})
+
 export function styles () {
-  return {
+  const styleDefs = {
     // ground below an extruded polygon, darker when selected
     'polygon-layer-extruded-shadow': {
       id: 'polygon-layer-extruded-shadow',
@@ -1003,6 +1021,10 @@ export function styles () {
     ...textLayerStyles('flat'),
     ...textLayerStyles('viewport')
   }
+  for (const id of ['line-labels', 'text-layer']) {
+    styleDefs[`${id}-selected`] = selectedLabelStyle(styleDefs[id])
+  }
+  return styleDefs
 }
 
 export function clusterStyles(icon, color=null) {

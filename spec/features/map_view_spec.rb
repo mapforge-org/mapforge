@@ -180,6 +180,33 @@ describe "Map public view" do
     end
   end
 
+  context "with a selected feature whose label collides" do
+    let(:first) { create(:feature, :point, properties: { "label" => "first" }) }
+    let(:second) { create(:feature, :point, properties: { "label" => "second" }) }
+    let(:map) { create(:map, features: [ first, second ]) }
+    let(:path) { map_path(id: map.public_id, f: second.id) }
+
+    it "shows the label of the selected feature" do
+      labels = <<~JS
+        [...new Set(map.queryRenderedFeatures({
+          layers: map.getStyle().layers.map(l => l.id).filter(id => id.startsWith('text-layer'))
+        }).map(f => f.properties.label))]
+      JS
+      wait_for { page.evaluate_script(labels) }.to eq [ "second" ]
+    end
+  end
+
+  context "with a selected feature outside its zoom range" do
+    let(:point) { create(:feature, :point, properties: { "label" => "close up", "min-zoom" => 22 }) }
+    let(:map) { create(:map, features: [ point ]) }
+    let(:path) { map_path(id: map.public_id, f: point.id) }
+
+    it "shows the feature" do
+      ids = "[...new Set(map.queryRenderedFeatures().map(f => f.properties.id))]"
+      wait_for { page.evaluate_script(ids) }.to include(point.id.to_s)
+    end
+  end
+
   context "with features that don't have properties" do
     # this polygon is in the middle of nbg (default view)
     let(:polygon) { create(:feature, :polygon_middle, properties: nil) }

@@ -27,7 +27,10 @@ import { frontFeature, getFeature, layers } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, noValidate, removeGeoJSONSource } from 'maplibre/map'
 import { pruneShapeImages } from 'maplibre/styles/circle_image'
 import { prunePatternImages } from 'maplibre/styles/pattern_image'
-import { clusterStyles, extrusionOpacityBuckets, initializeClusterStyles, initializeViewStyles, styles, viewStyleNames } from 'maplibre/styles/styles'
+import {
+  clusterStyles, extrusionOpacityBuckets, initializeClusterStyles, initializeViewStyles, maxZoomFilter, minZoomFilter, styles,
+  viewStyleNames
+} from 'maplibre/styles/styles'
 
 // Every layer counts, so that the render of one layer never drops the shape images of another
 function pruneShapes() {
@@ -63,8 +66,8 @@ export class GeoJSONLayer extends Layer {
     return ['all',
       ['==', ['geometry-type'], 'LineString'],
       ['!', ['has', 'show-route-extras']],
-      [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], 0]]],
-      ["<=", ["zoom"], ["to-number", ["coalesce", ["get", "max-zoom"], 24]]]
+      minZoomFilter(),
+      maxZoomFilter()
     ]
   }
 
