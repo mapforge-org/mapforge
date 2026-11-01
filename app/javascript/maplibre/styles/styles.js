@@ -659,6 +659,13 @@ const extrusionColor = () => {
   return ['case', ['==', color, 'transparent'], defaults.featureColor, color]
 }
 
+// A selected extrusion turns darker as a whole. MapLibre has no darken(), so the channels of the
+// color get scaled down.
+const activeExtrusionColor = () => {
+  const rgba = ['to-rgba', ['to-color', extrusionColor()]]
+  return ['rgba', ...[0, 1, 2].map(i => ['*', defaults.extrusionActiveShade, ['at', i, rgba]]), ['at', 3, rgba]]
+}
+
 // Draws the ground below the extrusion. Without the attribute, only a based
 // extrusion gets one. On the ground the extrusion covers its own shadow.
 const extrusionShadow = () => ['boolean',
@@ -683,7 +690,8 @@ function extrusionBucketLayers () {
         'fill-extrusion-rounded-corner-distance': defaults.extrusionCornerRadius
       },
       paint: {
-        'fill-extrusion-color': extrusionColor(),
+        'fill-extrusion-color': ['case', ['boolean', ['feature-state', 'active'], false],
+          activeExtrusionColor(), extrusionColor()],
         'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
         'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)],
         'fill-extrusion-opacity': opacity

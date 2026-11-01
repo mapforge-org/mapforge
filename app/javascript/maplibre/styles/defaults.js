@@ -38,6 +38,7 @@ const baseDefaults = {
   extrudedShadowColor: 'gray',
   extrudedShadowOpacity: 0.7,
   extrudedShadowOpacityActive: 0.4,
+  extrusionActiveShade: 0.6, // factor on the color channels of a selected extrusion
 
   lineWidth: 2,
   routeWidth: 3,

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 * Share map links with QR code
 * Feature descriptions can be shown as a banner on the map
 * Set feature click options: Show details, web link, center another feature
+* Improved feature banner display
 
 ## 2026-09
 
