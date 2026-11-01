@@ -121,14 +121,19 @@ export function circleImage (prefix, color, { size = 36, symbol = '', border = '
 // The name of the image of a shaped marker. It carries every style that goes into the image,
 // so that two markers share one image only while they look the same.
 // KEEP IN SYNC with shapeImage() in styles.js, which is what the map renders.
-export function shapeImageName (properties, selected = false) {
+export function shapeImageName (properties) {
   return [ 'shape-' + (properties['marker-shape'] || 'circle'),
     properties['marker-color'] || defaults.featureColor,
     properties.stroke || defaults.featureOutlineColor,
     properties['marker-image-url'] || properties['marker-symbol'] || '',
     Number(properties['marker-size']) || defaultPointSize({ properties }),
-    selected ? '1' : '0' ].join('|')
+    '0' ].join('|')
 }
+
+// The name of the halo ring of a shaped marker. KEEP IN SYNC with shapeHaloImage() in styles.js.
+const shapeHaloImageName = properties => [ 'shape-' + (properties['marker-shape'] || 'circle'),
+  'transparent', 'transparent', '',
+  Number(properties['marker-size']) || defaultPointSize({ properties }), '1' ].join('|')
 
 // Which points the map draws as one image. KEEP IN SYNC with shapedPoint() in styles.js.
 const isShapedPoint = feature => feature.geometry?.type === 'Point' &&
@@ -137,9 +142,8 @@ const isShapedPoint = feature => feature.geometry?.type === 'Point' &&
 // Drops the shape images that no feature uses any more. A missing image is drawn again by the
 // resolver of maplibre (see loadImage), so a prune that goes too far repairs itself.
 export function pruneShapeImages (features) {
-  // the selected variant stays as well, else every render would draw the halo of a selection again
   const keep = new Set(features.filter(isShapedPoint)
-    .flatMap(feature => [shapeImageName(feature.properties), shapeImageName(feature.properties, true)]))
+    .flatMap(feature => [shapeImageName(feature.properties), shapeHaloImageName(feature.properties)]))
   pruneCircleImages('shape', keep)
 }
 
@@ -197,11 +201,11 @@ export function labelImage (name) {
   })
 }
 
-// Draws the image of a 'halo|<marker-size>|<url>' name: the image with a halo around its outline,
+// Draws the image of a 'halo|<marker-size>|<url>' name: a ring around the outline of the image,
 // so a rounded icon (see ImagesController#icon) and a transparent png get a halo of their shape.
-// The silhouette of the image, moved around in a circle, covers the outline. The canvas grows by
-// the halo, so the image keeps its size. The map draws an image at 'marker-size' / 60, so the
-// halo gets that much wider in image pixels.
+// The silhouette of the image, moved around in a circle, covers the outline, and the image itself
+// gets cut out of it. The canvas grows by the halo, so the image on top keeps its size. The map
+// draws an image at 'marker-size' / 60, so the halo gets that much wider in image pixels.
 export async function haloImage (name) {
   const [, size, ...url] = name.split('|')
   // MapLibre checks for the image right after the resolver, see the placeholder in loadImage
@@ -225,7 +229,7 @@ export async function haloImage (name) {
   ctx.globalCompositeOperation = 'source-in'
   ctx.fillStyle = defaults.haloColor
   ctx.fillRect(0, 0, canvas.width, canvas.height)
-  ctx.globalCompositeOperation = 'source-over'
+  ctx.globalCompositeOperation = 'destination-out'
   ctx.drawImage(image, pad, pad)
   // the image can be gone after a style change, and the placeholder has another size
   if (map.hasImage(name)) { map.removeImage(name) }

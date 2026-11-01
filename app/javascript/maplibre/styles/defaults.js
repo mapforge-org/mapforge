@@ -31,8 +31,9 @@ const baseDefaults = {
   featureColor: '#0A870A', // green
   featureOutlineColor: '#444444',
   // ring outside a selected feature, which leaves its own size, color and opacity as they are
-  haloColor: '#000',
+  haloColor: '#fbb03b',
   haloWidth: 3,
+  haloOpacityHover: 0.4, // the feature under the mouse, a click shows the full halo
 
   extrusionOpacity: 0.9,
   extrusionCornerRadius: 0.5, // meters

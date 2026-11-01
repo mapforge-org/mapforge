@@ -11,6 +11,8 @@ export let highlightedFeatureId
 export let highlightedFeatureSource
 let highlightedSourceLayer = null
 export let stickyFeatureHighlight = false
+// the feature under the mouse, in every map mode: a lighter halo and the pointer cursor
+let hoveredFeature = null
 
 export function featureTitle (feature) {
   const title = feature?.properties?.title || feature?.properties?.user_title ||
@@ -133,6 +135,21 @@ export function resetHighlightedFeature () {
 }
 
 // For highlighting features from vector layers, we need to track their sourceLayer.
+// The feature under the mouse gets the 'hover' state, see the halo styles. A feature of no layer
+// clears the hover of the given source only, so the layers do not clear each other.
+export function setHoveredFeature (source, feature) {
+  const id = feature?.id ?? null
+  if (id === null && hoveredFeature?.source !== source) { return }
+  if (hoveredFeature?.source === source && hoveredFeature.id === id) { return }
+  if (hoveredFeature && map.getSource(hoveredFeature.source)) { map.setFeatureState(hoveredFeature, { hover: false }) }
+  hoveredFeature = id === null ? null : { source, id }
+  if (hoveredFeature) { map.setFeatureState(hoveredFeature, { hover: true }) }
+  map.getCanvas().style.cursor = hoveredFeature ? 'pointer' : ''
+  // puts its label first and the point on top (see the label sort keys and the front layers),
+  // which rebuilds the tiles
+  map.setGlobalStateProperty('hoveredFeatureId', id)
+}
+
 export function highlightFeature (feature, sticky = false, source, sourceLayer = null) {
   // Only reset if there's a different feature currently highlighted
   if (highlightedFeatureId && highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
@@ -161,7 +178,8 @@ export function highlightFeature (feature, sticky = false, source, sourceLayer =
 
   // Set feature state for both GeoJSON and vector tile features
   if (feature.id != null) { setActive(source, feature.id, sourceLayer, true) }
-  map.setGlobalStateProperty('selectedFeatureId', feature.id ?? null)
+  // A change rebuilds the tiles of every geojson source, which hover must not do on every move
+  if (sticky) { map.setGlobalStateProperty('selectedFeatureId', feature.id ?? null) }
 
   // URL persistence only for GeoJSON features (vector tile IDs are not stable across sessions)
   if (sourceFeature && sticky) {

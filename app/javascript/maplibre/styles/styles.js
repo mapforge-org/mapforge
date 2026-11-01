@@ -9,6 +9,12 @@ import { patternImage } from 'maplibre/styles/pattern_image'
 // is emulated by stacking one fill-extrusion layer per bucket (0.1 … 1.0)
 export const extrusionOpacityBuckets = Array.from({ length: 10 }, (_, i) => (i + 1) / 10)
 
+// Copies of the point layers for the hovered or selected point, which sortLayers() puts on top of
+// all others, labels included. The point stays in its own layer below, so nothing blinks when the
+// copy fades in, and the original order is back once the copy matches no feature.
+const frontStyleNames = ['points-layer-halo', 'points-layer', 'shapes-layer-halo', 'shapes-layer',
+  'symbols-layer-halo', 'symbols-layer'].map(id => `${id}-front`)
+
 export const viewStyleNames = [
   'polygon-layer',
   'polygon-layer-pattern', // the pattern draws on the fill color, so it goes above the fill
@@ -23,14 +29,17 @@ export const viewStyleNames = [
   'points-layer-flat',
   'points-layer-halo',
   'points-layer',
+  'shapes-layer-halo-flat',
   'shapes-layer-flat',
+  'shapes-layer-halo',
   'shapes-layer',
+  'symbols-layer-halo-flat',
   'symbols-layer-flat',
+  'symbols-layer-halo',
   'symbols-layer',
   'text-layer-flat',
   'text-layer',
-  'line-labels-selected',
-  'text-layer-selected',
+  ...frontStyleNames,
   'polygon-layer-extruded-shadow',
   ...extrusionOpacityBuckets.map((_, i) => `polygon-layer-extrusion-${i + 1}`)
 ]
@@ -224,7 +233,10 @@ const lineHaloGap = () => [
   17, ['+', lineWidthMax(), ['*', 2, cappedToStroke(3)]]
 ]
 
-const haloOpacity = () => ['case', ['boolean', ['feature-state', 'active'], false], 1, 0]
+const haloOpacity = () => ['case',
+  ['boolean', ['feature-state', 'active'], false], 1,
+  ['boolean', ['feature-state', 'hover'], false], defaults.haloOpacityHover,
+  0]
 
 const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
 const pointColor = () => styleProp(['user_marker-color', 'marker-color'], defaults.featureColor)
@@ -233,9 +245,13 @@ const markerShape = () => styleProp(['user_marker-shape', 'marker-shape'], 'circ
 const markerSymbol = () => styleProp(['user_marker-symbol', 'marker-symbol'], '')
 // An image covers a symbol, so a symbol next to an image must not change how the point looks.
 const showsSymbol = () => ['all', ['!=', markerSymbol(), ''], ['!', ['has', 'marker-image-url']]]
-// A layout property takes no feature-state, but a filter takes global state, see highlightFeature().
-// The filter reads the 'id' property: in the worker, ['id'] is not the promoteId value.
-const isSelected = () => ['==', ['get', 'id'], ['global-state', 'selectedFeatureId']]
+// A layout property or a filter takes no feature-state, but global state, see highlightFeature().
+// Only a sticky selection sets it: a change rebuilds the tiles, so a halo uses feature-state.
+// The expression reads the 'id' property: in the worker, ['id'] is not the promoteId value.
+// ['has', 'id']: without it, a feature without an id would match while nothing is selected (null == null)
+const isSelected = () => ['all', ['has', 'id'], ['==', ['get', 'id'], ['global-state', 'selectedFeatureId']]]
+// set by setHoveredFeature(), read by the label sort keys and the front layers
+const isHovered = () => ['all', ['has', 'id'], ['==', ['get', 'id'], ['global-state', 'hoveredFeatureId']]]
 // the selected feature shows at every zoom level
 export const minZoomFilter = () => ['any', isSelected(),
   [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], defaults.minZoom]]]]
@@ -300,11 +316,15 @@ const shapeImage = () => ['concat',
   '|', pointOutlineColor(),
   '|', ['coalesce', ['get', 'marker-image-url'], markerSymbol()],
   '|', ['to-string', pointSizeMax()],
-  '|', ['case', isSelected(), '1', '0']
+  '|0'
 ]
+// Only the halo ring of a shape, which shapes-layer-halo shows below a selected shape.
+// KEEP IN SYNC with shapeHaloImageName() in circle_image.js.
+const shapeHaloImage = () => ['concat',
+  'shape-', markerShape(), '|transparent|transparent||', ['to-string', pointSizeMax()], '|1']
 
 // The image is drawn at the size of the marker (see shapeCanvasSize), so it needs no scaling.
-// A selected shape keeps its size, its image carries a halo instead (see markerImage).
+// A selected shape keeps its size, shapes-layer-halo draws the ring below it.
 // Same structure as iconSizeMin/iconSizeMax, so that 'marker-scaling' keeps working
 const shapeIconSize = () => ['interpolate', ['exponential', 2], ['zoom'],
   0, ['case', shouldScale, 0, 1],
@@ -463,6 +483,7 @@ const labelSize = () => [
 function symbolsLayerStyles(mode) {
   const flatMode = mode === 'flat'
   const layerId = flatMode ? 'symbols-layer-flat' : 'symbols-layer'
+  const haloId = flatMode ? 'symbols-layer-halo-flat' : 'symbols-layer-halo'
 
   const image = ['coalesce',
     ['get', 'marker-image-url'],
@@ -476,10 +497,7 @@ function symbolsLayerStyles(mode) {
   // Shared layout properties
   const sharedLayout = {
     'symbol-sort-key': sortKey(),
-    // a selected image gets a copy with a halo around its outline, see haloImage
-    'icon-image': ['case', isSelected(),
-      ['concat', 'halo|', ['to-string', styleProp(['user_marker-size', 'marker-size'], defaults.markerSize)], '|', image],
-      image],
+    'icon-image': image,
     'icon-size': iconSize(),
     'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
     'icon-rotate': ['coalesce', ['get', 'marker-rotate'], 0],
@@ -503,7 +521,26 @@ function symbolsLayerStyles(mode) {
     'icon-opacity': pointOpacity()
   }
 
+  const zoomAndMode = [
+    flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
+    minZoomFilter(),
+    maxZoomFilter()
+  ]
+
   return {
+    // the ring around the outline of a selected image, see haloImage
+    [haloId]: {
+      id: haloId,
+      type: 'symbol',
+      filter: ['all', ['has', 'marker-image-url'], plainPoint(), ...zoomAndMode],
+      layout: {
+        ...sharedLayout,
+        ...modeSpecificLayout,
+        'icon-image': ['concat', 'halo|',
+          ['to-string', styleProp(['user_marker-size', 'marker-size'], defaults.markerSize)], '|', image]
+      },
+      paint: { 'icon-opacity': haloOpacity() }
+    },
     [layerId]: {
       id: layerId,
       type: 'symbol',
@@ -528,32 +565,43 @@ function symbolsLayerStyles(mode) {
 function shapesLayerStyles(mode) {
   const flatMode = mode === 'flat'
   const layerId = flatMode ? 'shapes-layer-flat' : 'shapes-layer'
+  const haloId = flatMode ? 'shapes-layer-halo-flat' : 'shapes-layer-halo'
+
+  const filter = ['all',
+    shapedPoint(),
+    flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
+    minZoomFilter(),
+    maxZoomFilter()
+  ]
+  const layout = {
+    'symbol-sort-key': sortKey(),
+    'icon-image': shapeImage(),
+    'icon-size': shapeIconSize(),
+    // the tip of a pin marks the coordinate, the other shapes sit on it
+    'icon-anchor': ['case', ['==', markerShape(), 'pin'], 'bottom', 'center'],
+    'icon-overlap': 'always',
+    'icon-rotate': ['coalesce', ['get', 'marker-rotate'], 0],
+    'icon-ignore-placement': true,
+    ...(flatMode ? {
+      'icon-pitch-alignment': 'map',
+      'icon-rotation-alignment': 'map',
+      'icon-allow-overlap': true
+    } : { 'icon-pitch-alignment': 'viewport' })
+  }
 
   return {
+    [haloId]: {
+      id: haloId,
+      type: 'symbol',
+      filter,
+      layout: { ...layout, 'icon-image': shapeHaloImage() },
+      paint: { 'icon-opacity': haloOpacity() }
+    },
     [layerId]: {
       id: layerId,
       type: 'symbol',
-      filter: ['all',
-        shapedPoint(),
-        flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
-        minZoomFilter(),
-        maxZoomFilter()
-      ],
-      layout: {
-        'symbol-sort-key': sortKey(),
-        'icon-image': shapeImage(),
-        'icon-size': shapeIconSize(),
-        // the tip of a pin marks the coordinate, the other shapes sit on it
-        'icon-anchor': ['case', ['==', markerShape(), 'pin'], 'bottom', 'center'],
-        'icon-overlap': 'always',
-        'icon-rotate': ['coalesce', ['get', 'marker-rotate'], 0],
-        'icon-ignore-placement': true,
-        ...(flatMode ? {
-          'icon-pitch-alignment': 'map',
-          'icon-rotation-alignment': 'map',
-          'icon-allow-overlap': true
-        } : { 'icon-pitch-alignment': 'viewport' })
-      },
+      filter,
+      layout,
       paint: {
         'icon-opacity': pointOpacity()
       }
@@ -639,7 +687,10 @@ function textLayerStyles(mode) {
         ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0), 0]], 2],
       0],
     // TODO: sort keys on text are ascending, on symbols descending???
-    'symbol-sort-key': ['-', 1000, sortKey()]
+    // The lowest key gets placed first, so the label of the selected, then of the hovered feature
+    // wins a collision. A copy of the label in a layer on top would fade in while the original
+    // fades out.
+    'symbol-sort-key': ['case', isSelected(), -200000, isHovered(), -100000, ['-', 1000, sortKey()]]
   }
 
   // Mode-specific layout properties
@@ -744,16 +795,6 @@ function extrusionBucketLayers () {
     }]
   }))
 }
-
-// The label of the selected feature as its own layer, which sortLayers() puts on top of all
-// others. The label shows on every collision, and the collision hides the same label in the
-// original layer.
-const selectedLabelStyle = style => ({
-  ...style,
-  id: `${style.id}-selected`,
-  filter: ['all', style.filter, isSelected()],
-  layout: { ...style.layout, 'text-allow-overlap': true, 'icon-allow-overlap': true }
-})
 
 export function styles () {
   const styleDefs = {
@@ -1014,7 +1055,9 @@ export function styles () {
         'text-max-angle': defaults.lineLabelMaxAngle,
         'text-keep-upright': true,
         'text-rotation-alignment': 'map',
-        'symbol-spacing': defaults.lineLabelSpacing
+        'symbol-spacing': defaults.lineLabelSpacing,
+        // the label of the selected, then of the hovered line wins a collision
+        'symbol-sort-key': ['case', isSelected(), 0, isHovered(), 1, 2]
       },
       paint: {
         'text-color': labelColor(),
@@ -1063,8 +1106,9 @@ export function styles () {
     ...textLayerStyles('flat'),
     ...textLayerStyles('viewport')
   }
-  for (const id of ['line-labels', 'text-layer']) {
-    styleDefs[`${id}-selected`] = selectedLabelStyle(styleDefs[id])
+  for (const id of frontStyleNames) {
+    const style = styleDefs[id.replace(/-front$/, '')]
+    styleDefs[id] = { ...style, id, filter: ['all', style.filter, ['any', isSelected(), isHovered()]] }
   }
   return styleDefs
 }

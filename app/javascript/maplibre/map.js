@@ -710,7 +710,8 @@ export function sortLayers () {
     styleLayers.filter(e => e.id.startsWith('gl-draw-')),
     styleLayers.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),
     styleLayers.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
-    styleLayers.filter(e => e.id.includes('-selected_'))
+    // the hovered or selected point, see frontStyleNames in styles.js
+    styleLayers.filter(e => e.id.includes('-front_'))
   ]
 
   // moveLayer(id) with no second arg moves the layer to the top. Iterating

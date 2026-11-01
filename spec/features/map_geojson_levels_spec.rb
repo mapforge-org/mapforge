@@ -21,19 +21,17 @@ describe "Map GeoJSON levels" do
     expect_map_loaded
   end
 
+  def rendered?(title)
+    page.evaluate_script("map.queryRenderedFeatures().some(f => f.properties?.title === #{title.to_json})")
+  end
+
   context "initial map load" do
     it "renders level 0 by default" do
       # Level 0 feature should be visible (polygon_middle covers center)
-      hover_center_of_screen
-      expect(page).to have_text("Level 0 Feature")
+      wait_for { rendered?("Level 0 Feature") }.to be true
 
       # Feature without level should be visible (point at specific location)
-      point_coords = viewport_xy_for_lat_lng(
-        feature_no_level.geometry["coordinates"][1],
-        feature_no_level.geometry["coordinates"][0]
-      )
-      hover_coord(point_coords[:x], point_coords[:y])
-      expect(page).to have_text("No Level Feature")
+      wait_for { rendered?("No Level Feature") }.to be true
     end
 
     it "shows level control" do
@@ -65,17 +63,11 @@ describe "Map GeoJSON levels" do
       wait_for { page.has_css?(".level-control button[data-level='1'].active") }.to be true
       wait_for_map_rendered
 
-      # Hover at center - level 0 polygon should be gone
-      hover_center_of_screen
-      expect(page).not_to have_text("Level 0 Feature")
+      # level 0 polygon should be gone
+      wait_for { rendered?("Level 0 Feature") }.to be false
 
-      # Hover on level 1 point to verify it IS visible
-      point_coords = viewport_xy_for_lat_lng(
-        feature_level_1.geometry["coordinates"][1],
-        feature_level_1.geometry["coordinates"][0]
-      )
-      hover_coord(point_coords[:x], point_coords[:y])
-      expect(page).to have_text("Level 1 Feature")
+      # level 1 point should be visible
+      wait_for { rendered?("Level 1 Feature") }.to be true
     end
 
     it "updates url level attribute" do
@@ -108,16 +100,10 @@ describe "Map GeoJSON levels" do
       expect(page).to have_css(".level-control button[data-level='1'].active")
 
       # Level 0 polygon should not be visible
-      hover_center_of_screen
-      expect(page).not_to have_text("Level 0 Feature")
+      wait_for { rendered?("Level 0 Feature") }.to be false
 
       # Level 1 point should be visible
-      point_coords = viewport_xy_for_lat_lng(
-        feature_level_1.geometry["coordinates"][1],
-        feature_level_1.geometry["coordinates"][0]
-      )
-      hover_coord(point_coords[:x], point_coords[:y])
-      expect(page).to have_text("Level 1 Feature")
+      wait_for { rendered?("Level 1 Feature") }.to be true
     end
   end
 
@@ -167,12 +153,7 @@ describe "Map GeoJSON levels" do
     it "are always visible regardless of active level" do
       # At level 0
       expect(page).to have_css(".level-control button[data-level='0'].active")
-      point_coords = viewport_xy_for_lat_lng(
-        feature_no_level.geometry["coordinates"][1],
-        feature_no_level.geometry["coordinates"][0]
-      )
-      hover_coord(point_coords[:x], point_coords[:y])
-      expect(page).to have_text("No Level Feature")
+      wait_for { rendered?("No Level Feature") }.to be true
     end
   end
 
@@ -214,33 +195,18 @@ describe "Map GeoJSON levels" do
       expect(page).to have_css(".level-control button[data-level='1'].active")
 
       # Level 0 polygon should not be visible anymore
-      hover_center_of_screen
-      expect(page).not_to have_text("Level 0 Feature")
+      wait_for { rendered?("Level 0 Feature") }.to be false
 
       # Level 1 point should be visible
-      point_coords = viewport_xy_for_lat_lng(
-        feature_level_1.geometry["coordinates"][1],
-        feature_level_1.geometry["coordinates"][0]
-      )
-      hover_coord(point_coords[:x], point_coords[:y])
-      expect(page).to have_text("Level 1 Feature")
+      wait_for { rendered?("Level 1 Feature") }.to be true
     end
   end
 
   context "features with multiple levels (OSM-style semicolon list)" do
-    # Place the multi-level point above the polygon_middle bbox so hovering it
-    # doesn't also pick up the level-0 polygon.
     def feature_multi
       @feature_multi ||= create(:feature, :point,
         coordinates: [ 11.06, 49.475 ],
         properties: { title: "Multi Level Feature", level: "0;1", "marker-size" => "150" })
-    end
-
-    def multi_coords
-      @multi_coords ||= viewport_xy_for_lat_lng(
-        feature_multi.geometry["coordinates"][1],
-        feature_multi.geometry["coordinates"][0]
-      )
     end
 
     context "with multi-level + single-level peers" do
@@ -253,16 +219,14 @@ describe "Map GeoJSON levels" do
 
       it "is visible at level 0" do
         expect(page).to have_css(".level-control button[data-level='0'].active")
-        hover_coord(multi_coords[:x], multi_coords[:y])
-        expect(page).to have_text("Multi Level Feature")
+        wait_for { rendered?("Multi Level Feature") }.to be true
       end
 
       it "is still visible after switching to level 1" do
         find(".level-control button[data-level='1']").click
         wait_for { page.has_css?(".level-control button[data-level='1'].active") }.to be true
 
-        hover_coord(multi_coords[:x], multi_coords[:y])
-        expect(page).to have_text("Multi Level Feature")
+        wait_for { rendered?("Multi Level Feature") }.to be true
       end
     end
 
@@ -314,20 +278,11 @@ describe "Map GeoJSON levels" do
 
     let(:map) { create(:map, features: [ feature_level_1, feature_level_10 ]) }
 
-    def level_10_coords
-      viewport_xy_for_lat_lng(
-        feature_level_10.geometry["coordinates"][1],
-        feature_level_10.geometry["coordinates"][0]
-      )
-    end
-
     it "is visible at level 10" do
       find(".level-control button[data-level='10']").click
       wait_for { page.has_css?(".level-control button[data-level='10'].active") }.to be true
 
-      coords = level_10_coords
-      hover_coord(coords[:x], coords[:y])
-      expect(page).to have_text("Level 10 Feature")
+      wait_for { rendered?("Level 10 Feature") }.to be true
     end
 
     it "is not visible at level 1 (guards against '1' matching inside '10')" do
@@ -335,9 +290,7 @@ describe "Map GeoJSON levels" do
       wait_for { page.has_css?(".level-control button[data-level='1'].active") }.to be true
       wait_for_map_rendered
 
-      coords = level_10_coords
-      hover_coord(coords[:x], coords[:y])
-      expect(page).not_to have_text("Level 10 Feature")
+      wait_for { rendered?("Level 10 Feature") }.to be false
     end
   end
 end

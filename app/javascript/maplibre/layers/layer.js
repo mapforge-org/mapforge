@@ -5,8 +5,7 @@ import { draw } from 'maplibre/edit'
 import {
   highlightFeature,
   highlightedFeatureId,
-  highlightedFeatureSource,
-  resetHighlightedFeature,
+  setHoveredFeature,
   stickyFeatureHighlight
 } from 'maplibre/feature'
 import { frontFeature, getFeature } from 'maplibre/layers/layers'
@@ -300,32 +299,24 @@ export class Layer {
   }
 
   /**
-   * Sets up mousemove handler for hover highlighting (read-only mode only).
-   * Override to customize hover behavior.
+   * Sets up mousemove handler for hover highlighting: the hover state, in every map mode.
+   * The details only show on a click. Override to customize hover behavior.
    */
   setupMouseMoveHandler() {
-    if (!functions.isTouchDevice()) {
-      this.mouseMoveHandler = functions.perFrame((e) => {
-        // switchMapMode() keeps the layers and their handlers, so the mode is read per event
-        if (window.gon.map_mode !== 'ro') { return }
-        if (stickyFeatureHighlight && highlightedFeatureId) { return }
-        if (document.querySelector('.show > .map-modal')) { return }
-        if (!map.getSource(this.sourceId)) { return }
+    // a touch laptop with a mouse still hovers, see dom.js
+    if (functions.isTouchDevice() && !window.matchMedia('(hover: hover)').matches) { return }
+    this.mouseMoveHandler = functions.perFrame((e) => {
+      if (!map.getSource(this.sourceId)) { return }
+      // a drawing mode keeps its own cursor
+      const drawing = draw && draw.getMode() !== 'simple_select'
+      const features = drawing ? [] : queryFeaturesNear(e.point, { layers: this.getStyleLayerIds() })
+      // like a click, a feature that does nothing on click reacts only in edit mode
+      const feature = features.find(f => !f.properties?.cluster &&
+        (window.gon.map_mode !== 'ro' || f.properties?.onclick !== false))
+      setHoveredFeature(this.sourceId, feature?.id ? feature : null)
+    })
 
-        const features = queryFeaturesNear(e.point, { layers: this.getStyleLayerIds() })
-        const feature = features.find(f => !f.properties?.cluster && f.properties?.onclick !== false)
-
-        if (feature?.id) {
-          if (feature.id === highlightedFeatureId) { return }
-          highlightFeature(feature, false, this.sourceId)
-          requestAnimationFrame(() => frontFeature(feature))
-        } else if (highlightedFeatureSource === this.sourceId) {
-          resetHighlightedFeature()
-        }
-      })
-
-      map.on('mousemove', this.mouseMoveHandler)
-    }
+    map.on('mousemove', this.mouseMoveHandler)
   }
 
   /**

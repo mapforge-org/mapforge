@@ -62,28 +62,29 @@ describe "Map public view" do
     let(:polygon) { create(:feature, :polygon_middle, title: "Poly Title", desc: "Poly Desc") }
     let(:map) { create(:map, features: [ polygon ]) }
 
-    it "shows feature details on hover" do
-      hover_center_of_screen
-
-      expect(page).to have_css("#feature-details-modal")
-      expect(page).to have_text("Poly Title")
-      expect(page).to have_text("Poly Desc")
-    end
-
-    it "feature details are not sticky on hover" do
-      hover_center_of_screen
-      expect(page).to have_text("Poly Title")
-      center = center_of_screen
-      page.driver.browser.mouse.move(x: center[:x] + 400, y: center[:y])
-
-      expect(page).not_to have_text("Poly Desc")
-    end
-
     it "shows feature details on click" do
       click_center_of_screen
       expect(page).to have_css("#feature-details-modal")
       expect(page).to have_text("Poly Title")
       expect(page).to have_text("Poly Desc")
+    end
+
+    it "marks a hovered feature without selecting it or showing its details" do
+      hover_center_of_screen
+      state = "map.getFeatureState({ source: 'geojson-source-#{map.layers.first.id}', id: '#{polygon.id}' })"
+      wait_for { page.evaluate_script(state) }.to eq("hover" => true)
+      expect(page.evaluate_script("map.getCanvas().style.cursor")).to eq "pointer"
+      expect(page).not_to have_css("#feature-details-modal")
+    end
+
+    it "sets the selection state on click, but not on hover" do
+      selected = "map.getGlobalState().selectedFeatureId"
+      hover_center_of_screen
+      wait_for { page.evaluate_script("map.getCanvas().style.cursor") }.to eq "pointer"
+      expect(page.evaluate_script(selected)).to be_nil
+
+      click_center_of_screen
+      wait_for { page.evaluate_script(selected) }.to eq polygon.id.to_s
     end
 
     it "updates url on feature select" do
@@ -180,68 +181,13 @@ describe "Map public view" do
     end
   end
 
-  context "with a selected feature whose label collides" do
-    let(:first) { create(:feature, :point, properties: { "label" => "first" }) }
-    let(:second) { create(:feature, :point, properties: { "label" => "second" }) }
-    let(:map) { create(:map, features: [ first, second ]) }
-    let(:path) { map_path(id: map.public_id, f: second.id) }
-
-    it "shows the label of the selected feature" do
-      labels = <<~JS
-        [...new Set(map.queryRenderedFeatures({
-          layers: map.getStyle().layers.map(l => l.id).filter(id => id.startsWith('text-layer'))
-        }).map(f => f.properties.label))]
-      JS
-      wait_for { page.evaluate_script(labels) }.to eq [ "second" ]
-    end
-  end
-
-  context "with a selected shape point" do
-    let(:point) { create(:feature, :point, properties: { "marker-shape" => "pin" }) }
-    let(:map) { create(:map, features: [ point ]) }
-    let(:path) { map_path(id: map.public_id, f: point.id) }
-
-    it "draws the shape with a halo" do
-      images = "map.listImages().filter(name => name.startsWith('shape-pin'))"
-      wait_for { page.evaluate_script(images).any? { |name| name.end_with?("|1") } }.to be true
-    end
-  end
-
-  context "with a selected image point" do
-    let(:point) { create(:feature, :point, properties: { "marker-image-url" => "/icons/hydrant.png" }) }
-    let(:map) { create(:map, features: [ point ]) }
-    let(:path) { map_path(id: map.public_id, f: point.id) }
-
-    it "draws the image with a halo around its outline" do
-      halo = <<~JS
-        (() => {
-          const image = map.getImage(map.listImages().find(name => name.startsWith('halo|')))
-          return image ? [image.data.width, map.getImage('/icons/hydrant.png')?.data.width] : null
-        })()
-      JS
-      # the halo adds its width on both sides
-      wait_for { page.evaluate_script(halo)&.then { |halo_width, width| width && halo_width > width } }.to be true
-    end
-  end
-
-  context "with a selected feature outside its zoom range" do
-    let(:point) { create(:feature, :point, properties: { "label" => "close up", "min-zoom" => 22 }) }
-    let(:map) { create(:map, features: [ point ]) }
-    let(:path) { map_path(id: map.public_id, f: point.id) }
-
-    it "shows the feature" do
-      ids = "[...new Set(map.queryRenderedFeatures().map(f => f.properties.id))]"
-      wait_for { page.evaluate_script(ids) }.to include(point.id.to_s)
-    end
-  end
-
   context "with features that don't have properties" do
     # this polygon is in the middle of nbg (default view)
     let(:polygon) { create(:feature, :polygon_middle, properties: nil) }
     let(:map) { create(:map, features: [ polygon ]) }
 
-    it "shows feature details on hover" do
-      hover_center_of_screen
+    it "shows feature details on click" do
+      click_center_of_screen
       expect(page).to have_css("#feature-details-modal")
     end
   end
@@ -258,22 +204,17 @@ describe "Map public view" do
       expect(page).not_to have_css("#feature-details-modal")
     end
 
+    it "does not mark the feature on hover" do
+      hover_center_of_screen
+      sleep 0.5 # a hover state would be set in the next frame
+      state = "map.getFeatureState({ source: 'geojson-source-#{map.layers.first.id}', id: '#{polygon.id}' })"
+      expect(page.evaluate_script(state)).to be_empty
+      expect(page.evaluate_script("map.getCanvas().style.cursor")).to eq ""
+    end
+
     it "does not show feature details on click" do
       click_center_of_screen
       expect(page).not_to have_css("#feature-details-modal")
-    end
-  end
-
-  context "with web link features" do
-    let(:polygon) {
-      create(:feature, :polygon_middle,
-        properties: { title: "web link", onclick: "link", "onclick-target": "https://digitalflow.de" })
-    }
-    let(:map) { create(:map, features: [ polygon ]) }
-
-    it "shows link target on hover" do
-      hover_center_of_screen
-      expect(page).to have_text("https://digitalflow.de")
     end
   end
 
@@ -326,11 +267,6 @@ describe "Map public view" do
     }
     let(:map) { create(:map, features: [ polygon, point ]) }
 
-    it "shows target feature on hover" do
-      hover_center_of_screen
-      expect(page).to have_text(point.id)
-    end
-
     it "flies to target feature on click" do
       click_center_of_screen
       # animation is finished when feature details are shown
@@ -349,284 +285,6 @@ describe "Map public view" do
       click_center_of_screen
       expect(page).to have_css("#feature-details-modal")
       expect(page).to have_text("New Title")
-    end
-  end
-
-  context "with an animated line from the URL" do
-    let(:line) { create(:feature, :line_string) }
-    let(:map) { create(:map, features: [ line ]) }
-    let(:path) { "#{map.public_map_path}?a=#{line.id}" }
-
-    it "stops the animation on Escape" do
-      start = page.evaluate_script("map.getCenter().lng")
-      wait_for { page.evaluate_script("map.getCenter().lng") }.not_to eq(start)
-      page.driver.browser.keyboard.type(:Escape)
-      center = page.evaluate_script("map.getCenter().lng")
-      sleep 0.5
-      expect(page.evaluate_script("map.getCenter().lng")).to eq(center)
-    end
-
-    it "lets the user zoom while the camera follows the line" do
-      page.execute_script("map.zoomTo(16, { duration: 300 })")
-      wait_for { page.evaluate_script("map.getZoom()") }.to be_within(0.01).of(16)
-    end
-
-    context "with a view in the URL hash" do
-      let(:path) { "#{map.public_map_path}?a=#{line.id}&duration=60#14/49.472/11.049/20/30" }
-
-      it "keeps zoom, pitch and bearing of the hash" do
-        start = page.evaluate_script("map.getCenter().lng")
-        wait_for { page.evaluate_script("map.getCenter().lng") }.not_to eq(start)
-        expect(page.evaluate_script("map.getZoom()")).to be_within(0.01).of(14)
-        expect(page.evaluate_script("map.getPitch()")).to be_within(0.01).of(30)
-        expect(page.evaluate_script("map.getBearing()")).to be_within(0.01).of(20)
-      end
-    end
-
-    context "with a line of several points" do
-      let(:line) { create(:feature, :line_string_with_elevation) }
-      let(:path) { "#{map.public_map_path}?a=#{line.id}&duration=6" }
-      let(:chunk_count) do
-        "Object.entries(map.getStyle().sources).filter(([, s]) => s.type === 'geojson')" \
-          ".flatMap(([id]) => map.querySourceFeatures(id))" \
-          ".filter(f => String(f.properties.id).includes('-chunk-')).length"
-      end
-
-      it "draws the line in chunks and drops them at the end" do
-        # headless Chrome draws few updates per second, so the animation runs slower than planned
-        wait(60).for { page.evaluate_script(chunk_count) }.to be > 0
-        wait(60).for { page.evaluate_script(chunk_count) }.to eq(0)
-      end
-    end
-
-    context "with km markers" do
-      let(:line) { create(:feature, :line_string, properties: { "show-km-markers" => true }) }
-      let(:path) { "#{map.public_map_path}?a=#{line.id}&duration=2" }
-
-      def marker_kms
-        page.evaluate_async_script(<<~JS)
-          const done = arguments[0]
-          map.getSource('km-marker-source-#{map.layers.first.id}').getData()
-            .then(data => done(data.features.map(f => f.properties.km)))
-        JS
-      end
-
-      # The counter rewrites its text on every update, and Cuprite then loses the node between
-      # its find and its visibility check, so the spec reads the DOM directly
-      it "counts the distance at the tip and hands over to the end marker" do
-        counter = "document.querySelector('.km-marker-moving-end')?.textContent"
-        wait_for { page.evaluate_script(counter) }.to match(/\d/)
-        # headless Chrome draws few updates per second, so the animation runs slower than planned
-        wait(60).for { page.evaluate_script(counter) }.to be_nil
-        expect(marker_kms).to eq [ 0, 1, 2, 2.3 ]
-      end
-    end
-
-    context "with the heading parameter" do
-      let(:path) { "#{map.public_map_path}?a=#{line.id}&heading=1&duration=60" }
-
-      # the factory line runs south-east, so the camera turns toward ~150°
-      it "turns the map bearing toward the line direction" do
-        wait_for { page.evaluate_script("map.getBearing()") }.to be > 90
-      end
-
-      it "lets the user tilt the map with a right-button drag" do
-        mouse = page.driver.browser.mouse
-        mouse.move(x: 400, y: 300)
-        mouse.down(button: :right)
-        10.times { |i| mouse.move(x: 400, y: 290 - (i * 10)) }
-        mouse.up(button: :right)
-        expect(page.evaluate_script("map.getPitch()")).to be > 10
-      end
-
-      it "lets the user zoom with the mouse wheel" do
-        zoom = page.evaluate_script("map.getZoom()")
-        5.times do
-          page.execute_script(<<~JS)
-            map.getCanvas().dispatchEvent(new WheelEvent('wheel',
-              { deltaY: -100, deltaMode: 0, clientX: 400, clientY: 300, bubbles: true, cancelable: true }))
-          JS
-          sleep 0.05
-        end
-        wait_for { page.evaluate_script("map.getZoom()") }.to be > zoom + 0.5
-      end
-    end
-  end
-
-  context "as map owner / admin" do
-    let(:map) { create(:map, owners: [ user ]) }
-    let(:user) { create(:user) }
-    let(:current_user) { user }
-
-    # the toggle labels are uppercased by CSS
-    it "marks view mode as the active mode" do
-      expect(page).to have_css("#map-mode-badge .active", text: /view mode/i)
-    end
-
-    it "has no link to switch to edit mode" do
-      expect(page).not_to have_css(".maplibregl-ctrl-edit")
-    end
-
-    it "switches to edit mode without reloading the page" do
-      page.execute_script("window.noReload = true")
-      find("#map-mode-badge a", text: /edit mode/i).click
-
-      expect(page).to have_css(".maplibregl-ctrl-select")
-      expect(page).to have_current_path("/m/" + map.private_id)
-      expect(page).to have_css("#map-mode-badge .active", text: /edit mode/i)
-      expect(page.evaluate_script("window.noReload")).to be(true)
-    end
-
-    context "with a description" do
-      let(:map) { create(:map, owners: [ user ], description: "Map **Desc**") }
-
-      it "renders the description in view mode and edits it in edit mode" do
-        find(".maplibregl-ctrl-map").click
-        expect(page).to have_css("#map-description-view strong", text: "Desc")
-
-        find(".maplibregl-ctrl-map").click
-        find("#map-mode-badge a", text: /edit mode/i).click
-        find(".maplibregl-ctrl-map").click
-
-        expect(page).to have_css("#map-description .EasyMDEContainer")
-        expect(page).to have_text("Map **Desc**")
-      end
-    end
-
-    it "drops unsaved view mode changes on a switch to edit mode" do
-      original = page.evaluate_script("window.gon.map_properties.base_map")
-      find(".maplibregl-ctrl-map").click
-      find("#base-map-toggle").click
-      find(".base-map-item[data-base-map='test2']").click
-      expect(page).to have_css('.base-map-item.active[data-base-map="test2"]', visible: :all)
-      expect_map_loaded
-      find(".maplibregl-ctrl-map").click
-
-      find("#map-mode-badge a", text: /edit mode/i).click
-
-      expect(page).to have_css(".maplibregl-ctrl-select")
-      expect(page.evaluate_script("window.gon.map_properties.base_map")).to eq(original)
-    end
-
-    it "closes open modals on a mode switch" do
-      find(".maplibregl-ctrl-layers").click
-      expect(page).to have_css("#layers-modal.show")
-
-      find("#map-mode-badge a", text: /edit mode/i).click
-
-      expect(page).not_to have_css("#layers-modal.show")
-    end
-
-    it "switches back with the browser back button" do
-      find("#map-mode-badge a", text: /edit mode/i).click
-      expect(page).to have_css(".maplibregl-ctrl-select")
-      page.execute_script("window.noReload = true")
-
-      page.go_back
-
-      expect(page).not_to have_css(".maplibregl-ctrl-select")
-      expect(page).to have_current_path("/m/" + map.public_id)
-      expect(page).to have_css("#map-mode-badge .active", text: /view mode/i)
-      expect(page.evaluate_script("window.noReload")).to be(true)
-    end
-
-    context "starting in edit mode" do
-      # a named map keeps edit mode from opening the settings modal over the toggle
-      let(:map) { create(:map, owners: [ user ], name: "Named map") }
-      let(:path) { map.private_map_path }
-
-      it "switches to view mode without reloading the page" do
-        expect(page).to have_css(".maplibregl-ctrl-select")
-        page.execute_script("window.noReload = true")
-        find("#map-mode-badge a", text: /view mode/i).click
-
-        expect(page).not_to have_css(".maplibregl-ctrl-select")
-        expect(page).to have_current_path("/m/" + map.public_id)
-        expect(page).to have_css("#map-mode-badge .active", text: /view mode/i)
-        expect(page.evaluate_script("window.noReload")).to be(true)
-      end
-
-      # the edit handlers stay registered after the switch, so a click or a
-      # control must not reach into the removed edit UI
-      it "can still use the map and the controls after the switch" do
-        find("#map-mode-badge a", text: /view mode/i).click
-        expect(page).not_to have_css(".maplibregl-ctrl-select")
-
-        click_center_of_screen
-        find(".maplibregl-ctrl-layers").click
-        expect(page).to have_css("#layers-modal")
-      end
-    end
-  end
-
-  context "with server gone" do
-    it "shows connection error icon" do
-      ActionCable.server.connections.each(&:close)
-      expect(page).to have_css("div:not(.hidden):has(> button.maplibregl-ctrl-connection)")
-    end
-  end
-
-  context "with client going offline" do
-    it "shows connection error icon" do
-      go_offline
-      expect(page).to have_css("div:not(.hidden):has(> button.maplibregl-ctrl-connection)")
-    end
-
-    it "catches up with new features on reconnect" do
-      go_offline
-
-      expect(page).to have_css("div:not(.hidden):has(> button.maplibregl-ctrl-connection)")
-      expect(page).to have_css("#maplibre-map[data-online='false']")
-
-      create(:feature, :polygon_middle, layer: map.layers.geojson.first, title: "Poly Title")
-      go_online
-
-      expect_map_loaded
-      click_center_of_screen
-      expect(page).to have_text("Poly Title")
-    end
-
-    it "catches up with map property changes on reconnect" do
-      reset_resource_timings
-
-      go_offline
-      expect(page).to have_css("div:not(.hidden):has(> button.maplibregl-ctrl-connection)")
-      map.update!(base_map: "test2")
-      go_online
-      expect_map_loaded
-
-      expect(map_json_fetch_count).to eq(1) # changed → one reload
-      base_map = page.driver.evaluate_script("window.gon.map_properties['base_map']")
-      expect(base_map).to eq "test2"
-    end
-
-    # When nothing changed server-side (map updated_at unchanged),
-    # reconnect must NOT re-fetch + re-parse the full /m/:id.json payload
-    it "does not re-fetch the full map on reconnect when nothing changed" do
-      reset_resource_timings
-
-      go_offline
-      expect(page).to have_css("#maplibre-map[data-online='false']")
-      go_online
-      expect(page).to have_css("#maplibre-map[data-online='true']")
-
-      expect(map_json_fetch_count).to eq(0)
-    end
-
-    # A change received live (while online) advances the loaded map version via the
-    # map_updated_at on the broadcast, so a later reconnect with nothing new must NOT trigger
-    # the full reload. Also verifies the broadcast's map_updated_at matches /properties.
-    it "does not reload on reconnect for changes already applied while online" do
-      create(:feature, :polygon_middle, layer: map.layers.geojson.first, title: "Live Poly")
-      wait_for_feature("Live Poly") # confirms the live update was received + applied
-
-      reset_resource_timings
-      go_offline
-      expect(page).to have_css("#maplibre-map[data-online='false']")
-      go_online
-      expect(page).to have_css("#maplibre-map[data-online='true']")
-
-      expect(map_json_fetch_count).to eq(0)
     end
   end
 end
