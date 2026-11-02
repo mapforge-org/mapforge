@@ -5,6 +5,8 @@ import { draw } from 'maplibre/edit'
 import {
   highlightFeature,
   highlightedFeatureId,
+  highlightedFeatureSource,
+  hoveredFeature,
   setHoveredFeature,
   stickyFeatureHighlight
 } from 'maplibre/feature'
@@ -34,10 +36,16 @@ export function queryFeaturesNear (point, options, keep = () => true) {
   return map.queryRenderedFeatures(box, options).filter(keep)
 }
 
+// The front layers draw the hovered and the selected point on top, but they hold copies of all
+// points in the original order, so the query still ranks these two at their old place.
+const drawnInFront = f => (f.source === hoveredFeature?.source && f.id === hoveredFeature.id) ||
+  (f.source === highlightedFeatureSource && f.id === highlightedFeatureId)
+
 // Features of every selectable source near the point, top-most first
 export function selectableFeaturesNear (point) {
-  return queryFeaturesNear(point, { filter: ['!', ['has', 'cluster']] }, isSelectable)
+  const features = queryFeaturesNear(point, { filter: ['!', ['has', 'cluster']] }, isSelectable)
     .filter(f => !f.properties?.cluster)
+  return [...features.filter(drawnInFront), ...features.filter(f => !drawnInFront(f))]
 }
 
 function httpUrl (target) {

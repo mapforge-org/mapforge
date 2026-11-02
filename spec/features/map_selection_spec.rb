@@ -88,6 +88,31 @@ describe "Map selection" do
     end
   end
 
+  context "with a hovered point that overlaps a point above it" do
+    let(:below) { create(:feature, :point, coordinates: [ 11.0557, 49.4732 ], properties: { "marker-size" => 40 }) }
+    let(:above) { create(:feature, :point, coordinates: [ 11.0563, 49.4732 ], properties: { "marker-size" => 40 }) }
+    let(:map) { create(:map, features: [ below, above ], center: [ 11.056, 49.4732 ], zoom: 16) }
+
+    # the hovered point is drawn in front, so it stays hovered until the pointer leaves it
+    it "keeps the hover on the point until the pointer leaves it" do
+      hovered = <<~JS
+        [#{below.id.to_s.to_json}, #{above.id.to_s.to_json}].filter(id =>
+          map.getFeatureState({ source: 'geojson-source-#{map.layers.first.id}', id }).hover)
+      JS
+      below_xy = viewport_xy_for_lat_lng(49.4732, 11.0557)
+      above_xy = viewport_xy_for_lat_lng(49.4732, 11.0563)
+      mouse = page.driver.browser.mouse
+
+      mouse.move(x: below_xy[:x] - 20, y: below_xy[:y])
+      wait_for { page.evaluate_script(hovered) }.to eq [ below.id.to_s ]
+      mouse.move(x: (below_xy[:x] + above_xy[:x]) / 2, y: below_xy[:y])
+      sleep 0.3
+      expect(page.evaluate_script(hovered)).to eq [ below.id.to_s ]
+      mouse.move(x: above_xy[:x] + 20, y: above_xy[:y])
+      wait_for { page.evaluate_script(hovered) }.to eq [ above.id.to_s ]
+    end
+  end
+
   context "with route extras" do
     let(:route) {
       create(:feature, :line_string_with_route_extras).tap { |feature|

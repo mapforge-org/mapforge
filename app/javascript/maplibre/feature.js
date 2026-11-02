@@ -12,7 +12,7 @@ export let highlightedFeatureSource
 let highlightedSourceLayer = null
 export let stickyFeatureHighlight = false
 // the feature under the mouse, in every map mode: a lighter halo and the pointer cursor
-let hoveredFeature = null
+export let hoveredFeature = null
 
 export function featureTitle (feature) {
   const title = feature?.properties?.title || feature?.properties?.user_title ||
