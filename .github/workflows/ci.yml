@@ -45,7 +45,9 @@ jobs:
           cache: 'npm'
       - name: Install npm dependencies
         run: npm ci --ignore-scripts
+      # New advisories must not block unrelated changes. audit.yml fails daily to notify.
       - name: Security audit dependencies
+        continue-on-error: true
         run: bin/bundler-audit --update
       - name: Security audit application code
         run: bin/brakeman -q -w2

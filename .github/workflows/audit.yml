@@ -1,0 +1,22 @@
+# GitHub emails a failed scheduled run to the user who last changed the cron line.
+name: "Dependency Audit"
+permissions:
+  contents: read
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libimlib2-dev
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Security audit dependencies
+        run: bin/bundler-audit --update
