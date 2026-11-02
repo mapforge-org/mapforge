@@ -164,6 +164,22 @@ const LABEL_MARGIN = 5
 const LABEL_BORDER = 1.5
 const LABEL_BORDER_COLOR = '#BBB'
 
+// MapLibre draws an image inside a label text at the size of the image, so the pixel ratio
+// scales the icon to the label text.
+const INLINE_ICON_SIZE = 14
+
+// Loads the icon of an 'inline-icon|<url>' name, for use in a 'format' text-field. A transparent
+// placeholder stands in until it loads, so that MapLibre does not ask for it again.
+export function inlineIconImage (name) {
+  if (map.hasImage(name)) { return }
+  map.addImage(name, { width: 1, height: 1, data: new Uint8Array(4) })
+  map.loadImage(name.slice('inline-icon|'.length)).then(({ data }) => {
+    if (!map.hasImage(name)) { return }
+    map.removeImage(name)
+    map.addImage(name, data, { pixelRatio: data.width / INLINE_ICON_SIZE })
+  }).catch(error => console.error(`Failed to load image ${name}: ` + error))
+}
+
 // Draws the image of a 'label-<color>|<radius>' name and adds it as a map image.
 export function labelImage (name) {
   const [ color, radius ] = name.slice('label-'.length).split('|')

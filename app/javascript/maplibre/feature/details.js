@@ -104,7 +104,7 @@ export function showFeatureDetails (feature) {
   modal.getBoundingClientRect()
   modal.classList.add('modal-pull-transition')
   modal.classList.add('show')
-  modal.scrollTo(0, 0)
+  modal.querySelector('.feature-modal-scroll').scrollTo(0, 0)
   modal.setAttribute('data-feature--modal-feature-id-value', feature.id)
   // Only set edit feature id for geojson features to avoid Stimulus controller errors
   const featureLayer = getLayer(feature.id)

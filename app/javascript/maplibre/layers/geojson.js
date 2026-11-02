@@ -448,7 +448,7 @@ export class GeoJSONLayer extends Layer {
     // Skipped when 'show-route-extras' renders its own extrusion.
     const extrusionFeatures = features
       .filter(needsExtrusionPolygon)
-      .map(buildLineExtrusion)
+      .map(feature => buildLineExtrusion(feature))
       .filter(Boolean)
 
     source.setData({ type: 'FeatureCollection', features: extrusionFeatures })

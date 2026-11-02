@@ -1,7 +1,7 @@
 import { symbolUrl } from 'helpers/functions'
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { addLayer, map, removeStyleLayers } from 'maplibre/map'
-import { haloImage, labelImage, markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
+import { haloImage, inlineIconImage, labelImage, markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
 import { defaults, glyphShift } from 'maplibre/styles/defaults'
 import { patternImage } from 'maplibre/styles/pattern_image'
 
@@ -107,6 +107,11 @@ export async function loadImage (id) {
   // the tile of a polygon pattern, drawn on demand as well (see pattern_image.js)
   if (id.startsWith('pattern-')) {
     patternImage(id)
+    return
+  }
+
+  if (id.startsWith('inline-icon|')) {
+    inlineIconImage(id)
     return
   }
 

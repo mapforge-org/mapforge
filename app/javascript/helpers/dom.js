@@ -106,7 +106,8 @@ export function fitModalToContent (modal) {
   // sections that the reader can scroll to, they must not open the sheet on their own
   const ignored = [...modal.querySelectorAll('[data-fit-ignore]')]
     .reduce((sum, e) => sum + e.offsetHeight, 0)
-  const wanted = Math.min(modal.scrollHeight - ignored, window.innerHeight * 0.75)
+  const scroller = modal.querySelector('.feature-modal-scroll') || modal
+  const wanted = Math.min(scroller.scrollHeight - ignored, window.innerHeight * 0.75)
   if (modal.offsetHeight >= wanted) { return }
   modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-up')
   modal.classList.add('modal-pull-transition')

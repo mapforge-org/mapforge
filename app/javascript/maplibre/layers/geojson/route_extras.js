@@ -2,7 +2,7 @@ import { bbox } from "@turf/bbox"
 import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import { withLevelFilter } from 'maplibre/controls/levels'
-import { buildLineExtrusion } from 'maplibre/layers/geojson/extrusion'
+import { buildLineExtrusion, groundRanges, offTerrainRanges, wallPieceLength } from 'maplibre/layers/geojson/extrusion'
 import { addLayer, map, noValidate } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
 
@@ -130,13 +130,7 @@ function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulative
     const midpoint = pointAlong(coords, cumulativeDistances, startIdx, end,
       cumulativeDistances[startIdx] + segmentLength / 2)
 
-    // Format distance label
-    let distanceLabel
-    if (segmentLength >= 1000) {
-      distanceLabel = `${(segmentLength / 1000).toFixed(1)} km`
-    } else {
-      distanceLabel = `${Math.round(segmentLength)} m`
-    }
+    const distanceLabel = formatLength(segmentLength)
 
     // Type-specific label formatting
     let label, priority
@@ -167,6 +161,33 @@ function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulative
   })
 
   return labelFeatures
+}
+
+function formatLength (meters) {
+  return meters >= 1000 ? `${(meters / 1000).toFixed(1)} km` : `${Math.round(meters)} m`
+}
+
+const OFF_TERRAIN_LABEL_COLOR = '#555555'
+
+// A tunnel or a bridge has no wall (see offTerrainRanges), so a label with an icon marks it
+function createOffTerrainLabelFeatures (coords, offTerrain, cumulativeDistances, featureIndex, level) {
+  return offTerrain.filter(([from, to]) => from < to && to < coords.length).map(([from, to, value]) => {
+    const length = cumulativeDistances[to] - cumulativeDistances[from]
+    return {
+      type: 'Feature',
+      geometry: { type: 'Point',
+        coordinates: pointAlong(coords, cumulativeDistances, from, to, cumulativeDistances[from] + length / 2) },
+      properties: {
+        'route-extras-label': formatLength(length),
+        'route-extras-icon': value < 0 ? 'tunnel' : 'bridge',
+        'route-extras-color': OFF_TERRAIN_LABEL_COLOR,
+        // placed before the steepness labels, whose priority goes up to 5
+        'route-extras-priority': 10,
+        'feature-order': featureIndex,
+        ...(level !== undefined ? { level } : {})
+      }
+    }
+  })
 }
 
 // Bounding box of the routes the legend describes, [w, s, e, n], or null when there are none
@@ -269,45 +290,66 @@ export function showExtrasLegend (extrasType, activeValues, extrasBbox = null) {
 }
 
 // Whether a feature currently contributes route extras, i.e. needs renderRouteExtras to run.
+// The tunnel and bridge labels show without 'show-route-extras'.
 export function hasRouteExtras (feature) {
   return feature.geometry.type === 'LineString' &&
-    !!feature.properties['show-route-extras'] &&
-    !!feature.properties.route?.extras
+    ((!!feature.properties['show-route-extras'] && !!feature.properties.route?.extras) ||
+      offTerrainRanges(feature.properties.route).length > 0)
 }
 
 export function renderRouteExtras (features, sourceId) {
   const extrasFeatures = []
+  const extrusionFeatures = []
   let activeExtrasType = null
   const activeValues = new Set()
 
   features.filter(hasRouteExtras).forEach((feature, featureIndex) => {
-    const extrasType = feature.properties['show-route-extras']
-    activeExtrasType = extrasType
-    const extrasData = feature.properties.route.extras[extrasType]
-    if (!extrasData?.values) return
-
     const coords = feature.geometry.coordinates
 
     // Precompute cumulative distances once for O(1) segment length lookups in label creation
-    const cumulativeDistances = (extrasType === 'steepness' || extrasType === 'surface')
-      ? computeCumulativeDistances(coords)
-      : null
+    const cumulativeDistances = computeCumulativeDistances(coords)
+
+    const offTerrain = offTerrainRanges(feature.properties.route)
+    const tunnels = offTerrain.filter(([, , value]) => value < 0)
+    extrasFeatures.push(...createOffTerrainLabelFeatures(coords, offTerrain, cumulativeDistances, featureIndex,
+      feature.properties.level))
+
+    const extrasType = feature.properties['show-route-extras']
+    if (!extrasType) return
+    activeExtrasType = extrasType
+    const extrasData = feature.properties.route.extras[extrasType]
+    if (!extrasData?.values) return
+    const pieceLength = wallPieceLength(coords)
 
     extrasData.values.forEach(([startIdx, endIdx, value]) => {
       if (endIdx <= startIdx || startIdx >= coords.length) return
-      const segment = coords.slice(startIdx, Math.min(endIdx + 1, coords.length))
-      if (segment.length < 2) return
+      const end = Math.min(endIdx, coords.length - 1)
+      if (end <= startIdx) return
       activeValues.add(value)
-      extrasFeatures.push({
+      const properties = {
+        ...Object.fromEntries(inheritedProps
+          .filter(key => key in feature.properties)
+          .map(key => [key, feature.properties[key]])),
+        'stroke': resolveExtrasColor(extrasType, value),
+        'stroke-width': feature.properties['stroke-width'] || defaults.routeWidth
+      }
+      const segment = (from, to, extraProperties = {}) => ({
         type: 'Feature',
-        geometry: { type: 'LineString', coordinates: segment },
-        properties: {
-          ...Object.fromEntries(inheritedProps
-            .filter(key => key in feature.properties)
-            .map(key => [key, feature.properties[key]])),
-          'stroke': resolveExtrasColor(extrasType, value),
-          'stroke-width': feature.properties['stroke-width'] || defaults.routeWidth
-        }
+        geometry: { type: 'LineString', coordinates: coords.slice(from, to + 1) },
+        properties: { ...properties, ...extraProperties }
+      })
+
+      // The part of the segment in a tunnel is dashed
+      groundRanges(startIdx, end, tunnels).forEach(([from, to]) => extrasFeatures.push(segment(from, to)))
+      tunnels.filter(([from, to]) => to > startIdx && from < end).forEach(([from, to]) => {
+        extrasFeatures.push(segment(Math.max(from, startIdx), Math.min(to, end), { 'stroke-dasharray': true }))
+      })
+
+      // Turn the segment into polygons for 3D extrusion, without its tunnel and bridge parts
+      if (!properties['fill-extrusion-height']) return
+      groundRanges(startIdx, end, offTerrain).forEach(([from, to]) => {
+        const wall = buildLineExtrusion(segment(from, to), pieceLength)
+        if (wall) extrusionFeatures.push(wall)
       })
     })
 
@@ -345,12 +387,6 @@ export function renderRouteExtras (features, sourceId) {
 
   showExtrasLegend(activeExtrasType, activeValues, mergeBboxes(legendFeatures))
 
-  // Turn LineString segments into polygons for 3D extrusion
-  const extrusionFeatures = extrasFeatures
-    .filter(f => f.properties['fill-extrusion-height'])
-    .map(buildLineExtrusion)
-    .filter(Boolean)
-
   map.getSource(sourceId).setData({
     type: 'FeatureCollection',
     features: extrasFeatures.concat(extrusionFeatures)
@@ -367,7 +403,11 @@ export function initializeExtrasLabelStyles (sourceId) {
     type: 'symbol',
     filter: withLevelFilter(labelsBaseFilter),
     layout: {
-      'text-field': ['get', 'route-extras-label'],
+      // the white icon of a tunnel or bridge label goes in front of the text (see inlineIconImage)
+      'text-field': ['case', ['has', 'route-extras-icon'],
+        ['format', ['image', ['concat', 'inline-icon|/icon-sets/pinhead/', ['get', 'route-extras-icon'], '.png']], {},
+          ['concat', ' ', ['get', 'route-extras-label']], {}],
+        ['get', 'route-extras-label']],
       // small white text reads best in bold, on a box in the color of the segment
       'text-font': [defaults.fontBold],
       'text-size': 12,

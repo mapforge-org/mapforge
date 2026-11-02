@@ -646,7 +646,7 @@ function initializeFeatureTouchScroll() {
     }
 
     // When dragging down, at first scroll up, then lower modal
-    if (y < 0 || modal.scrollTop === 0) {
+    if (y < 0 || modal.querySelector('.feature-modal-scroll').scrollTop === 0) {
       modal.classList.remove('modal-pull-transition')
       modal.style.height = newHeight + 'px'
       // a tap also starts a drag, so only a real move counts as a manual resize

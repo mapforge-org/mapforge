@@ -1,13 +1,21 @@
+/* border-radius + overflow: hidden avoid the scrollbar to stick out */
 #feature-details-modal {
   position: absolute;
+  display: flex;
+  flex-direction: column;
   padding: 0;
-  overflow-y: auto;
+  overflow: hidden;
   margin: 0.4rem 1rem 1.5rem;
   border: 1px solid #d9dde5;
   border-radius: 1rem;
+}
 
-  /* the border-radius does not clip the scrollbar, a clip-path does, but it cuts off a box-shadow */
-  clip-path: inset(0 round 1rem);
+/* positioned, so the close button and the fullscreen JSON editor scroll with the content */
+.feature-modal-scroll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .feature-modal-header {
@@ -140,7 +148,6 @@
     left: calc(50% - 1rem);
     transform: translate(-50%);
     max-height: calc(100% - 15px); /* px here for easier calculation of scroll behavior */
-    overflow-y: auto;
     width: calc(100% - 0.6rem);
     max-width: 25rem;
     margin: 0.5rem 1rem;
@@ -308,7 +315,7 @@ img[src*="/icon-sets/fontawesome/"] {
   max-height: 1rem;
 }
 
-/* covers the rest of the modal, #feature-details-modal stays the nearest positioned
+/* covers the rest of the modal, .feature-modal-scroll stays the nearest positioned
    ancestor so this needs no viewport-fixed position, and no fight with its mobile transform */
 .raw-json-editor.fullscreen {
   position: absolute;

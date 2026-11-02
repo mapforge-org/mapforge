@@ -1,3 +1,5 @@
+import { lineString } from "@turf/helpers"
+import { length } from "@turf/length"
 import * as functions from 'helpers/functions'
 import { decodePolyline, encodePolyline } from 'helpers/polyline'
 import { status } from 'helpers/status'
@@ -80,6 +82,7 @@ export async function orsFetch ({ method: _method, url, payload }) {
 
   // Build waypoints from route geometry + way_points indices for maplibre-gl-directions
   const routeCoords = decodePolyline(data.routes[0].geometry, ORS_ELEVATION_IN_ROUTE)
+  const offTerrain = await offTerrainExtra(routeCoords)
 
   const waypoints = payload.coordinates.map((coord, i) => {
     const wpIndex = data.routes[0].way_points[i]
@@ -100,7 +103,7 @@ export async function orsFetch ({ method: _method, url, payload }) {
       // Pass decoded coordinates (with elevation) so directions.js can use them directly
       decodedCoordinates: routeCoords,
       legs: [],
-      extras: route.extras,
+      extras: { ...route.extras, off_terrain: offTerrain },
       way_points: route.way_points
     }))
   }
@@ -157,6 +160,38 @@ export async function getRouteElevation (waypoints) {
   } catch (err) {
     console.error("Elevation error:", err)
   }
+}
+
+// The route elevation and the SRTM terrain disagree by 40 m and more on some open mountain roads. A small
+// bridge or a shallow tunnel stays below this height, but its wall is only a little off.
+// ponytail: a fixed height, compare against the terrain at the vertices too if false positives remain
+const OFF_TERRAIN_HEIGHT = 40
+// A shorter tunnel or bridge is a mismatch of the elevation data
+const OFF_TERRAIN_MIN_LENGTH = 25
+
+// ORS interpolates the route elevation through tunnels and over bridges, the Elevation API returns the SRTM
+// terrain. Where the two differ at the middle of an edge, the route leaves the terrain: -1 below it (tunnel),
+// 1 above it (bridge). The result has the format of an ORS extra, so the route walls can skip it (see
+// extrusion.js) and a reversed route keeps it.
+export async function offTerrainExtra (coords) {
+  if (coords.length < 2 || coords[0].length < 3) return { values: [] }
+  const midpoints = coords.slice(1).map((c, i) => [(coords[i][0] + c[0]) / 2, (coords[i][1] + c[1]) / 2])
+  const terrain = await getRouteElevation(midpoints)
+  if (terrain?.length !== midpoints.length) return { values: [] }
+  return { values: offTerrainValues(coords, terrain.map(c => c[2])) }
+}
+
+export function offTerrainValues (coords, midpointTerrain) {
+  const values = []
+  midpointTerrain.forEach((terrain, i) => {
+    const route = (coords[i][2] + coords[i + 1][2]) / 2
+    if (Math.abs(route - terrain) < OFF_TERRAIN_HEIGHT) return
+    const value = Math.sign(route - terrain)
+    const last = values.at(-1)
+    if (last?.[1] === i && last[2] === value) { last[1] = i + 1 } else { values.push([i, i + 1, value]) }
+  })
+  return values.filter(([from, to]) =>
+    length(lineString(coords.slice(from, to + 1)), { units: 'meters' }) >= OFF_TERRAIN_MIN_LENGTH)
 }
 
 // ORS rejects a geometry with any point outside SRTM. SRTM has no data over the sea,
@@ -294,7 +329,8 @@ export async function getRouteUpdate (originalFeature, updatedFeature) {
     updatedFeature.geometry.coordinates = routeLocations
 
     updatedFeature.properties.route.waypoints = waypoints
-    updatedFeature.properties.route.extras = routeResponse.routes[0].extras
+    updatedFeature.properties.route.extras = { ...routeResponse.routes[0].extras,
+      off_terrain: await offTerrainExtra(routeLocations) }
   } catch (err) {
     console.error('An error occurred: ' + err)
     status(window.__('Error building route'), 'error')

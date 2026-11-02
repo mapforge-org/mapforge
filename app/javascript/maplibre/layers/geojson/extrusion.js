@@ -8,14 +8,38 @@ const minPieceLength = 0.5
 const maxPieces = 5000
 const metersPerDegree = 111320
 
+// Index ranges [from, to, value] of the route coordinates in a tunnel (-1) or on a bridge (1), see offTerrainExtra.
+// A wall ignores the coordinate elevation and sits on the terrain, so there it would climb over the
+// mountain or drop into the valley.
+export function offTerrainRanges(route) {
+  return route?.extras?.off_terrain?.values || []
+}
+
+// The parts of the index range [from, to] on the terrain. The off terrain ranges are in route order.
+export function groundRanges(from, to, offTerrain) {
+  const ranges = []
+  let start = from
+  for (const [offFrom, offTo] of offTerrain) {
+    if (offTo <= start || offFrom >= to) { continue }
+    if (offFrom > start) { ranges.push([start, offFrom]) }
+    start = offTo
+  }
+  if (start < to) { ranges.push([start, to]) }
+  return ranges
+}
+
 // Turn a LineString into a wall polygon for MapLibre's fill-extrusion layer, which has no line support.
 // Returns null for geometry that can't be extruded (non-line, <2 coords, or degenerate).
-export function buildLineExtrusion(feature) {
+// A part of a longer line passes the pieceLength of the whole line (see wallPieceLength).
+export function buildLineExtrusion(feature, pieceLength) {
   if (feature.geometry?.type !== 'LineString' || feature.geometry.coordinates.length < 2) {
     return null
   }
   const width = feature.properties['fill-extrusion-width'] || feature.properties['stroke-width'] || defaultLineWidth(feature)
-  const pieces = wallPieces(feature.geometry.coordinates, width / 2)
+  const coords = feature.geometry.coordinates
+  pieceLength ??= wallPieceLength(coords)
+  const pieces = groundRanges(0, coords.length - 1, offTerrainRanges(feature.properties.route))
+    .flatMap(([from, to]) => wallPieces(coords.slice(from, to + 1), width / 2, pieceLength))
   if (!pieces.length) { return null }
   const extrusionLine = { type: 'Feature', geometry: { type: 'MultiPolygon', coordinates: pieces } }
   // Route-extras segments are anonymous slices of a route, so they stay id-less.
@@ -38,9 +62,7 @@ export function buildLineExtrusion(feature) {
   return extrusionLine
 }
 
-// One quad per piece, in local metres around each segment, plus a disc on every vertex.
-// The discs round the joins on the outside of a bend and the caps at both ends.
-function wallPieces(coords, halfWidth) {
+function wallSegments(coords) {
   const segments = []
   for (let i = 1; i < coords.length; i++) {
     const [lng0, lat0] = coords[i - 1]
@@ -51,13 +73,25 @@ function wallPieces(coords, halfWidth) {
     const length = Math.hypot(dx, dy)
     if (length > 0) { segments.push({ lng0, lat0, lng1, lat1, mx, ux: dx / length, uy: dy / length, length }) }
   }
-  if (!segments.length) { return [] }
+  return segments
+}
+
+// The piece length that keeps the wall of a whole line within maxPieces. The parts of one line (between
+// tunnels and bridges, or the route extras segments) must share it, else each part gets the full budget.
+export function wallPieceLength(coords) {
+  if (!mapProperties.terrain) { return Infinity }
+  const segments = wallSegments(coords)
   const total = segments.reduce((sum, s) => sum + s.length, 0)
   // Math.ceil adds at most one piece per segment and every vertex adds a disc, so those are
   // kept out of the budget. A line with too many segments still gets one piece per segment.
-  const pieceLength = mapProperties.terrain
-    ? Math.max(minPieceLength, total / Math.max(1, maxPieces - 2 * segments.length - 1))
-    : Infinity
+  return Math.max(minPieceLength, total / Math.max(1, maxPieces - 2 * segments.length - 1))
+}
+
+// One quad per piece, in local metres around each segment, plus a disc on every vertex.
+// The discs round the joins on the outside of a bend and the caps at both ends.
+function wallPieces(coords, halfWidth, pieceLength) {
+  const segments = wallSegments(coords)
+  if (!segments.length) { return [] }
   const pieces = []
   for (const { lng0, lat0, mx, ux, uy, length } of segments) {
     const toLngLat = (along, side) => [

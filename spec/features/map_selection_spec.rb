@@ -136,5 +136,52 @@ describe "Map selection" do
         expect(page.evaluate_script(segments)).to eq 0
       end
     end
+
+    context "with a tunnel" do
+      let(:min_zoom) { 0 }
+      let(:route) {
+        create(:feature, :line_string_with_route_extras).tap { |feature|
+          route = feature.properties["route"]
+          route["extras"]["off_terrain"] = { "values" => [ [ 2, 4, -1 ] ] }
+          feature.update!(properties: feature.properties.merge("route" => route, "show-route-extras" => "steepness",
+            "fill-extrusion-height" => 20))
+        }
+      }
+
+      def source_count(filter)
+        page.evaluate_async_script(<<~JS)
+          const done = arguments[0]
+          map.getSource('route-extras-source-#{map.layers.first.id}').getData()
+            .then(data => done(data.features.filter(#{filter}).length))
+        JS
+      end
+
+      def wall_count
+        source_count("f => f.geometry.type === 'MultiPolygon'")
+      end
+
+      def tunnel_labels
+        "map.queryRenderedFeatures({ layers: ['route-extras-labels_route-extras-source-#{map.layers.first.id}'] })" \
+          ".filter(f => f.properties['route-extras-icon'] === 'tunnel').length"
+      end
+
+      def tunnel_icon_width
+        "map.getImage('inline-icon|/icon-sets/pinhead/tunnel.png')?.data.width"
+      end
+
+      it "draws no wall for the tunnel segment" do
+        wait_for { wall_count }.to eq 2
+      end
+
+      it "dashes the line of the tunnel segment" do
+        dashed = "f => f.geometry.type === 'LineString' && f.properties['stroke-dasharray'] === true"
+        wait_for { source_count(dashed) }.to eq 1
+      end
+
+      it "labels the tunnel with its icon" do
+        wait_for { page.evaluate_script(tunnel_labels) }.to eq 1
+        wait_for { page.evaluate_script(tunnel_icon_width) }.to be > 1
+      end
+    end
   end
 end
