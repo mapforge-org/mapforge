@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-11
+* Tunnel and bridge detection for routed tracks
+
 ## 2026-10
 
 * Share map links with QR code

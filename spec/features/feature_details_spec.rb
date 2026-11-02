@@ -17,12 +17,10 @@ describe "Feature details" do
         expect(page).to have_css("#feature-details-modal")
       end
 
-      it "opens at the height of its content" do
+      it "opens a feature without description at modal-pull-down" do
         viewport = page.evaluate_script("window.innerHeight")
-        # a feature without a description used to open at the 25% of modal-pull-down
-        wait_for { element_offset_height("#feature-details-modal") }.to be > (viewport * 0.25)
-        # the map of the feature stays visible above the sheet
-        expect(element_offset_height("#feature-details-modal")).to be < (viewport * 0.8)
+        expect(page).to have_css("#feature-details-modal.modal-pull-down")
+        wait_for { element_offset_height("#feature-details-modal") }.to be_within(5).of(viewport * 0.25)
       end
 
       it "can enlarge modal with pull-up button" do
@@ -76,6 +74,25 @@ describe "Feature details" do
         titles << find("#feature-title").text
       end
       expect(titles.uniq).to contain_exactly("Poly", "Point 1", "Point 2", "Hidden")
+    end
+
+    context "mobile", :phone do
+      it "keeps a manual sheet height for the next feature" do
+        click_center_of_screen
+        expect(page).to have_css("#feature-details-modal.show")
+        first_title = find("#feature-title").text
+        # the state that a drag of the sheet leaves behind
+        page.execute_script(<<~JS)
+          const modal = document.querySelector('#feature-details-modal')
+          modal.dataset.userSized = 'true'
+          modal.style.height = '35vh'
+        JS
+        viewport = page.evaluate_script("window.innerHeight")
+
+        click_center_of_screen
+        expect(page).not_to have_css("#feature-title", text: first_title, exact_text: true)
+        expect(element_offset_height("#feature-details-modal")).to be_within(5).of(viewport * 0.35)
+      end
     end
 
     context "in view mode" do

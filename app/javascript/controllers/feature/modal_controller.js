@@ -199,11 +199,8 @@ export default class extends Controller {
     initSteppers()
     dom.initTooltips(this.element)
 
-    // scrollHeight is only correct after the sections of this tab are visible
     if (tab === 'geometry' && !this.element.dataset.userSized) {
       this.pullDownModal(this.element)
-    } else {
-      this.fitModalToContent()
     }
   }
 
@@ -297,7 +294,6 @@ export default class extends Controller {
         content.classList.toggle('hidden')
         chevron?.classList.toggle('bi-chevron-down')
         chevron?.classList.toggle('bi-chevron-up')
-        this.fitModalToContent()
       })
     }
   }
@@ -325,7 +321,6 @@ export default class extends Controller {
         onUpdate: () => { this.updateDesc() }
       }]
     })
-    this.fitModalToContent()
   }
 
   updateDesc () {
@@ -359,10 +354,6 @@ export default class extends Controller {
     }
     modal.dataset.userSized = 'true'
     e.preventDefault()
-  }
-
-  fitModalToContent () {
-    dom.fitModalToContent(this.element)
   }
 
   pullDownModal (modal) {

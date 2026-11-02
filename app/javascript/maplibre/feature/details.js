@@ -134,9 +134,6 @@ export function showFeatureDetails (feature) {
   document.querySelector('#feature-details-description').innerHTML = window.__('Loading description...')
   featureDescription(feature).then(desc => {
     document.querySelector('#feature-details-description').innerHTML = desc
-    // the sheet only takes its height once the description is in, an empty one still
-    // needs more room than the 25% of modal-pull-down
-    dom.fitModalToContent(modal)
   })
 
   showExtrasTotals(feature)

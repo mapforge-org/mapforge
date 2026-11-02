@@ -150,6 +150,9 @@ export function setHoveredFeature (source, feature) {
 }
 
 export function highlightFeature (feature, sticky = false, source, sourceLayer = null) {
+  const modal = document.querySelector('#feature-details-modal')
+  // resetControls() below drops the manual sheet height, but it must stay from feature to feature
+  const userSized = highlightedFeatureId && modal?.dataset.userSized
   // Only reset if there's a different feature currently highlighted
   if (highlightedFeatureId && highlightedFeatureId !== feature.id) { resetHighlightedFeature() }
 
@@ -160,6 +163,7 @@ export function highlightFeature (feature, sticky = false, source, sourceLayer =
   const contextMenuVisible = !document.querySelector('#map-context-menu')?.classList.contains('hidden')
   if (!highlightedFeatureId && !contextMenuVisible) {
     resetControls()
+    if (userSized) { modal.dataset.userSized = userSized }
   }
 
   if (!source) { source = getFeatureSource(feature.id) }
