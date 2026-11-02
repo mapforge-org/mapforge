@@ -97,7 +97,7 @@ export default class extends Controller {
     if (tab === 'properties') { document.querySelector('#edit-button-edit')?.classList.add('active') }
     if (tab === 'style') { document.querySelector('#edit-button-style')?.classList.add('active') }
     if (tab === 'advanced') { document.querySelector('#edit-button-advanced')?.classList.add('active') }
-    // the coordinates of a point show up in the geometry tab only
+    // the coordinates of a point show up in the geometry tab only, its map links in the details tab
     refreshFeatureMeta(feature)
 
     this.updateColorPresets()

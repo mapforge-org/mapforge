@@ -5,7 +5,9 @@
   margin: 0.4rem 1rem 1.5rem;
   border: 1px solid #d9dde5;
   border-radius: 1rem;
-  box-shadow: 0 24px 40px rgb(15 23 42 / 15%);
+
+  /* the border-radius does not clip the scrollbar, a clip-path does, but it cuts off a box-shadow */
+  clip-path: inset(0 round 1rem);
 }
 
 .feature-modal-header {
