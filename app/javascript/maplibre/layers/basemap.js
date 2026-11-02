@@ -70,6 +70,10 @@ export class BasemapLayer extends Layer {
       map.off('touchstart', this.touchStartHandler)
       this.touchStartHandler = null
     }
+    if (this.mouseMoveHandler) {
+      map.off('mousemove', this.mouseMoveHandler)
+      this.mouseMoveHandler = null
+    }
   }
 
   /**

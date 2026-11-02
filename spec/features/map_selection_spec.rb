@@ -68,24 +68,6 @@ describe "Map selection" do
   end
 
 
-  context "with a hovered feature whose label collides" do
-    let(:first) { create(:feature, :point, coordinates: [ 11.0557, 49.4732 ], properties: { "label" => "first label" }) }
-    let(:second) { create(:feature, :point, coordinates: [ 11.0559, 49.4732 ], properties: { "label" => "second label" }) }
-    let(:map) { create(:map, features: [ first, second ], center: [ 11.0558, 49.4732 ], zoom: 16) }
-
-    it "shows the label of the hovered feature" do
-      labels = <<~JS
-        [...new Set(map.queryRenderedFeatures({
-          layers: map.getStyle().layers.map(l => l.id).filter(id => id.startsWith('text-layer'))
-        }).map(f => f.properties.label))]
-      JS
-      wait_for { page.evaluate_script(labels) }.to eq [ "first label" ]
-      xy = viewport_xy_for_lat_lng(49.4732, 11.0559)
-      page.driver.browser.mouse.move(x: xy[:x], y: xy[:y])
-      wait_for { page.evaluate_script(labels) }.to eq [ "second label" ]
-    end
-  end
-
   context "with a hovered point" do
     let(:point) { create(:feature, :point, coordinates: [ 11.0557, 49.4732 ]) }
     let(:map) { create(:map, features: [ point ], center: [ 11.0557, 49.4732 ], zoom: 16) }

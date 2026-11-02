@@ -109,8 +109,23 @@ function selectFeatureOnClick (e) {
   e.preventDefault()
 }
 
+// One query for all layers: a query per layer ran the full queryRenderedFeatures once per layer.
+// No 'layers' option, like the click: MapLibre sorts 3D hits by depth only among the queried
+// layers, so a query of some layers alone ignores the basemap buildings and picks another top.
+const hoverFeatureOnMove = functions.perFrame((e) => {
+  // a frame queued by perFrame() can run after a page visit replaced the map
+  if (e.target !== map) { return }
+  // a drawing mode keeps its own cursor
+  const drawing = draw && draw.getMode() !== 'simple_select'
+  // like a click, a feature that does nothing on click reacts only in edit mode
+  const feature = drawing ? null : selectableFeaturesNear(e.point)
+    .find(f => window.gon.map_mode !== 'ro' || f.properties?.onclick !== false)
+  setHoveredFeature(feature)
+})
+
 // maps that already have selectFeatureOnClick, a new map comes with each page visit
 const selectClickMaps = new WeakSet()
+const hoverMoveMaps = new WeakSet()
 
 /**
  * Base class for map layers. Subclass to create new layer types.
@@ -132,7 +147,6 @@ export class Layer {
   constructor(layer) {
     this.layer = layer
     this.clickHandler = null
-    this.mouseMoveHandler = null
   }
 
   get id() {
@@ -305,20 +319,9 @@ export class Layer {
   setupMouseMoveHandler() {
     // a touch laptop with a mouse still hovers, see dom.js
     if (functions.isTouchDevice() && !window.matchMedia('(hover: hover)').matches) { return }
-    this.mouseMoveHandler = functions.perFrame((e) => {
-      if (!map.getSource(this.sourceId)) { return }
-      // a drawing mode keeps its own cursor
-      const drawing = draw && draw.getMode() !== 'simple_select'
-      // No 'layers' option, like the click: MapLibre sorts 3D hits by depth only among the queried
-      // layers, so a query of this source alone ignores the basemap buildings and picks another top.
-      const features = drawing ? [] : queryFeaturesNear(e.point, {}, f => f.source === this.sourceId)
-      // like a click, a feature that does nothing on click reacts only in edit mode
-      const feature = features.find(f => !f.properties?.cluster &&
-        (window.gon.map_mode !== 'ro' || f.properties?.onclick !== false))
-      setHoveredFeature(this.sourceId, feature?.id ? feature : null)
-    })
-
-    map.on('mousemove', this.mouseMoveHandler)
+    if (hoverMoveMaps.has(map)) { return }
+    hoverMoveMaps.add(map)
+    map.on('mousemove', hoverFeatureOnMove)
   }
 
   /**
@@ -340,10 +343,6 @@ export class Layer {
     if (this.clickHandler) {
       map.off('click', this.clickHandler)
       this.clickHandler = null
-    }
-    if (this.mouseMoveHandler) {
-      map.off('mousemove', this.mouseMoveHandler)
-      this.mouseMoveHandler = null
     }
   }
 

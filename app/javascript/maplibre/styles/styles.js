@@ -256,8 +256,6 @@ const showsSymbol = () => ['all', ['!=', markerSymbol(), ''], ['!', ['has', 'mar
 // The expression reads the 'id' property: in the worker, ['id'] is not the promoteId value.
 // ['has', 'id']: without it, a feature without an id would match while nothing is selected (null == null)
 const isSelected = () => ['all', ['has', 'id'], ['==', ['get', 'id'], ['global-state', 'selectedFeatureId']]]
-// set by setHoveredFeature(), only the label sort keys read it
-const isHovered = () => ['all', ['has', 'id'], ['==', ['get', 'id'], ['global-state', 'hoveredFeatureId']]]
 // the selected feature shows at every zoom level
 export const minZoomFilter = () => ['any', isSelected(),
   [">=", ["zoom"], ["to-number", ["coalesce", ["get", "min-zoom"], defaults.minZoom]]]]
@@ -696,10 +694,9 @@ function textLayerStyles(mode) {
         ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0), 0]], 2],
       0],
     // TODO: sort keys on text are ascending, on symbols descending???
-    // The lowest key gets placed first, so the label of the selected, then of the hovered feature
-    // wins a collision. A copy of the label in a layer on top would fade in while the original
-    // fades out.
-    'symbol-sort-key': ['case', isSelected(), -200000, isHovered(), -100000, ['-', 1000, sortKey()]]
+    // The lowest key gets placed first, so the label of the selected feature wins a collision.
+    // A copy of the label in a layer on top would fade in while the original fades out.
+    'symbol-sort-key': ['case', isSelected(), -200000, ['-', 1000, sortKey()]]
   }
 
   // Mode-specific layout properties
@@ -1065,8 +1062,8 @@ export function styles () {
         'text-keep-upright': true,
         'text-rotation-alignment': 'map',
         'symbol-spacing': defaults.lineLabelSpacing,
-        // the label of the selected, then of the hovered line wins a collision
-        'symbol-sort-key': ['case', isSelected(), 0, isHovered(), 1, 2]
+        // the label of the selected line wins a collision
+        'symbol-sort-key': ['case', isSelected(), 0, 1]
       },
       paint: {
         'text-color': labelColor(),
