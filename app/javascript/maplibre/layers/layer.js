@@ -309,7 +309,9 @@ export class Layer {
       if (!map.getSource(this.sourceId)) { return }
       // a drawing mode keeps its own cursor
       const drawing = draw && draw.getMode() !== 'simple_select'
-      const features = drawing ? [] : queryFeaturesNear(e.point, { layers: this.getStyleLayerIds() })
+      // No 'layers' option, like the click: MapLibre sorts 3D hits by depth only among the queried
+      // layers, so a query of this source alone ignores the basemap buildings and picks another top.
+      const features = drawing ? [] : queryFeaturesNear(e.point, {}, f => f.source === this.sourceId)
       // like a click, a feature that does nothing on click reacts only in edit mode
       const feature = features.find(f => !f.properties?.cluster &&
         (window.gon.map_mode !== 'ro' || f.properties?.onclick !== false))
