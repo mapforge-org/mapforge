@@ -6,7 +6,7 @@ import { status } from 'helpers/status'
 import { setSelectedRoute, unselect } from 'maplibre/edit'
 import { refreshFeatureMeta, showFeatureDetails } from 'maplibre/feature/details'
 import { getFeature, upsert } from 'maplibre/layers/layers'
-import { map } from 'maplibre/map'
+import { addLayer, map, noValidate } from 'maplibre/map'
 import { ORS_EXTRA_INFO, orsBuildRequest, orsFetch, orsProfiles, updateElevation } from 'maplibre/routing/openrouteservice'
 import { defaults, editDefaults } from 'maplibre/styles/defaults'
 import { styles } from 'maplibre/styles/styles'
@@ -51,6 +51,14 @@ class CustomMapLibreGlDirections extends MapLibreGlDirections {
       }))
       return routelines
     }
+  }
+
+  // the base init validates each layer against a serialized copy of the whole style, which
+  // made the geometry tab of a routed track lag by ~300 ms
+  init() {
+    this.map.style.addSource(this.configuration.sourceName,
+      { type: 'geojson', data: { type: 'FeatureCollection', features: [] } }, noValidate)
+    this.configuration.layers.forEach(layer => addLayer(layer))
   }
 
   // Override onMove to be defensive - check if layer exists before querying
