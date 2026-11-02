@@ -161,7 +161,8 @@ async function featureDescription (feature) {
   let desc = ''
   // show link target if onclick is link
   if (feature?.properties?.onclick === 'link' && feature?.properties?.['onclick-target']) {
-    desc = `<p><i class="bi bi-box-arrow-up-right"></i> ${feature.properties['onclick-target']}</p>`
+    const target = f.escapeHtml(feature.properties['onclick-target'])
+    desc = `<p><i class="bi bi-box-arrow-up-right"></i> <a href="${target}">${target}</a></p>`
   } else if (feature?.properties?.onclick === 'feature' && feature?.properties?.['onclick-target']) {
     // show feature target if onclick is feature
     desc = `<p><i class="bi bi-geo-alt-fill"></i> ${feature.properties['onclick-target']}</p>`

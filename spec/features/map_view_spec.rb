@@ -218,6 +218,28 @@ describe "Map public view" do
     end
   end
 
+  context "with a link feature" do
+    let(:polygon) {
+      create(:feature, :polygon_middle,
+        properties: { title: "link", onclick: "link", "onclick-target": "https://example.com/" })
+    }
+    let(:map) { create(:map, features: [ polygon ]) }
+
+    it "opens the link in a new tab" do
+      page.execute_script("window.open = (...args) => { window.opened = args }")
+      click_center_of_screen
+      expect(page.evaluate_script("window.opened")).to eq([ "https://example.com/", "_blank", "noopener" ])
+    end
+
+    context "with the feature details open" do
+      let(:path) { map_path(id: map.public_id, f: polygon.id) }
+
+      it "shows the link target as a link" do
+        expect(page).to have_css("#feature-details-modal a[href='https://example.com/'][target='_blank']")
+      end
+    end
+  end
+
   context "with a script link feature" do
     let(:polygon) {
       create(:feature, :polygon_middle,
@@ -229,6 +251,7 @@ describe "Map public view" do
       click_center_of_screen
       expect(page).to have_css("#feature-details-modal")
       expect(page.evaluate_script("window.pwned")).to be_nil
+      expect(page).not_to have_css("#feature-details-modal a[href^='javascript']")
     end
   end
 

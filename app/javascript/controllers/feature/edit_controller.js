@@ -187,6 +187,9 @@ export default class extends Controller {
       }
     }
     syncFeatureOnclickUi(feature)
+    // view mode clicks read the rendered properties, and the server echo of the save
+    // matches the already changed feature, so it does not refresh them
+    this.renderFeature()
     if (link) {
       functions.debounce(() => { this.saveFeature() }, 'feature-onclick-link')
     } else {

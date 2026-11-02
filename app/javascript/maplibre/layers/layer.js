@@ -53,7 +53,7 @@ export function runFeatureOnclickAction (feature) {
   const target = feature.properties?.['onclick-target']
   // the target comes from any editor of the map, a javascript: url would run in the viewer's session
   if (feature.properties?.onclick === 'link' && httpUrl(target)) {
-    window.location.href = httpUrl(target)
+    window.open(httpUrl(target), '_blank', 'noopener')
     return true
   }
   if (feature.properties?.onclick === 'feature' && target) {
