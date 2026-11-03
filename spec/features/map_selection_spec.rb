@@ -180,14 +180,31 @@ describe "Map selection" do
         wait_for { wall_count }.to eq 2
       end
 
-      it "dashes the line of the tunnel segment" do
-        dashed = "f => f.geometry.type === 'LineString' && f.properties['stroke-dasharray'] === true"
+      it "dashes the line of the tunnel segment black" do
+        dashed = "f => f.geometry.type === 'LineString' && f.properties['stroke-dasharray'] === true " \
+          "&& f.properties.stroke === '#000000'"
         wait_for { source_count(dashed) }.to eq 1
       end
 
       it "labels the tunnel with its icon" do
         wait_for { page.evaluate_script(tunnel_labels) }.to eq 1
         wait_for { page.evaluate_script(tunnel_icon_width) }.to be > 1
+      end
+
+      context "on a dashed route without route extras coloring" do
+        let(:route) {
+          create(:feature, :line_string_with_route_extras).tap { |feature|
+            route = feature.properties["route"]
+            route["extras"]["off_terrain"] = { "values" => [ [ 2, 4, -1 ] ] }
+            feature.update!(properties: feature.properties.except("show-route-extras")
+              .merge("route" => route, "stroke" => "#ff0000", "stroke-dasharray" => true))
+          }
+        }
+
+        it "puts black dashes on the route color in the tunnel" do
+          wait_for { source_count("f => f.properties.stroke === '#000000'") }.to eq 1
+          expect(source_count("f => f.properties.stroke === '#ff0000' && !f.properties['stroke-dasharray']")).to eq 1
+        end
       end
     end
   end

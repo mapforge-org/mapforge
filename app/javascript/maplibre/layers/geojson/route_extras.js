@@ -163,11 +163,16 @@ function createExtrasLabelFeatures (coords, extrasValues, extrasType, cumulative
   return labelFeatures
 }
 
+function pick (properties, keys) {
+  return Object.fromEntries(keys.filter(key => key in properties).map(key => [key, properties[key]]))
+}
+
 function formatLength (meters) {
   return meters >= 1000 ? `${(meters / 1000).toFixed(1)} km` : `${Math.round(meters)} m`
 }
 
 const OFF_TERRAIN_LABEL_COLOR = '#555555'
+const OFF_TERRAIN_LINE_COLOR = '#000000'
 
 // A tunnel or a bridge has no wall (see offTerrainRanges), so a label with an icon marks it
 function createOffTerrainLabelFeatures (coords, offTerrain, cumulativeDistances, featureIndex, level) {
@@ -310,12 +315,35 @@ export function renderRouteExtras (features, sourceId) {
     const cumulativeDistances = computeCumulativeDistances(coords)
 
     const offTerrain = offTerrainRanges(feature.properties.route)
-    const tunnels = offTerrain.filter(([, , value]) => value < 0)
     extrasFeatures.push(...createOffTerrainLabelFeatures(coords, offTerrain, cumulativeDistances, featureIndex,
       feature.properties.level))
 
+    const routeProperties = {
+      ...pick(feature.properties, inheritedProps),
+      'stroke-width': feature.properties['stroke-width'] || defaults.routeWidth
+    }
+    const line = (from, to, properties) => ({
+      type: 'Feature',
+      geometry: { type: 'LineString', coordinates: coords.slice(from, to + 1) },
+      properties: { ...routeProperties, ...properties }
+    })
+    const offTerrainWithin = (from, to) => offTerrain
+      .filter(([offFrom, offTo]) => offTo > from && offFrom < to)
+      .map(([offFrom, offTo]) => [Math.max(offFrom, from), Math.min(offTo, to)])
+    // pushed after the colored line, so they draw on top of it and its color shows between them
+    const pushOffTerrainDashes = (from, to) => offTerrainWithin(from, to).forEach(([dashFrom, dashTo]) =>
+      extrasFeatures.push(line(dashFrom, dashTo, { 'stroke': OFF_TERRAIN_LINE_COLOR, 'stroke-dasharray': true })))
+
     const extrasType = feature.properties['show-route-extras']
-    if (!extrasType) return
+    if (!extrasType) {
+      // The main line layer draws the route. A dashed route gets its color back between the black dashes.
+      const color = pick(feature.properties, ['stroke', 'stroke-opacity'])
+      if (feature.properties['stroke-dasharray']) {
+        offTerrainWithin(0, coords.length - 1).forEach(([from, to]) => extrasFeatures.push(line(from, to, color)))
+      }
+      pushOffTerrainDashes(0, coords.length - 1)
+      return
+    }
     activeExtrasType = extrasType
     const extrasData = feature.properties.route.extras[extrasType]
     if (!extrasData?.values) return
@@ -326,29 +354,14 @@ export function renderRouteExtras (features, sourceId) {
       const end = Math.min(endIdx, coords.length - 1)
       if (end <= startIdx) return
       activeValues.add(value)
-      const properties = {
-        ...Object.fromEntries(inheritedProps
-          .filter(key => key in feature.properties)
-          .map(key => [key, feature.properties[key]])),
-        'stroke': resolveExtrasColor(extrasType, value),
-        'stroke-width': feature.properties['stroke-width'] || defaults.routeWidth
-      }
-      const segment = (from, to, extraProperties = {}) => ({
-        type: 'Feature',
-        geometry: { type: 'LineString', coordinates: coords.slice(from, to + 1) },
-        properties: { ...properties, ...extraProperties }
-      })
-
-      // The part of the segment in a tunnel is dashed
-      groundRanges(startIdx, end, tunnels).forEach(([from, to]) => extrasFeatures.push(segment(from, to)))
-      tunnels.filter(([from, to]) => to > startIdx && from < end).forEach(([from, to]) => {
-        extrasFeatures.push(segment(Math.max(from, startIdx), Math.min(to, end), { 'stroke-dasharray': true }))
-      })
+      const color = { 'stroke': resolveExtrasColor(extrasType, value) }
+      extrasFeatures.push(line(startIdx, end, color))
+      pushOffTerrainDashes(startIdx, end)
 
       // Turn the segment into polygons for 3D extrusion, without its tunnel and bridge parts
-      if (!properties['fill-extrusion-height']) return
+      if (!routeProperties['fill-extrusion-height']) return
       groundRanges(startIdx, end, offTerrain).forEach(([from, to]) => {
-        const wall = buildLineExtrusion(segment(from, to), pieceLength)
+        const wall = buildLineExtrusion(line(from, to, color), pieceLength)
         if (wall) extrusionFeatures.push(wall)
       })
     })

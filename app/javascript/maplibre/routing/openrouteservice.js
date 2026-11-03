@@ -111,14 +111,18 @@ export async function orsFetch ({ method: _method, url, payload }) {
 
 // --- Elevation APIs ---
 
+// openrouteservice-js defaults the service to 'elevation/line' and 'elevation/point', which this host
+// does not have, so every request passes service 'line' or 'point'
+// Upstream fix, not merged yet: https://github.com/GIScience/openrouteservice-js/pull/113
+const ELEVATION_HOST = 'https://api.heigit.org/openelevationservice/v0'
+
 // Return route points including elevation
 // The API restricts to 2000 vertexes per request: https://openrouteservice.org/restrictions/
 export async function getRouteElevation (waypoints) {
   const BATCH_SIZE = 2000
-  // Note: elevation uses api.openrouteservice.org due to CORS setup
   const Elevation = new Openrouteservice.Elevation({
     api_key: window.gon.map_keys.openrouteservice,
-    host: 'https://api.openrouteservice.org'
+    host: ELEVATION_HOST
   })
   const coords = functions.removeElevation(waypoints)
 
@@ -134,6 +138,7 @@ export async function getRouteElevation (waypoints) {
       let batchCoords
       try {
         const response = await Elevation.lineElevation({
+          service: 'line',
           format_in: 'geojson',
           format_out: 'geojson',
           geometry: {
@@ -210,16 +215,16 @@ async function orsErrorMessage (err) {
 
 // Fetch elevation for specific points only (used when a few points of a large track are moved)
 export async function getPointsElevation (coordinates, changedIndices) {
-  // Note: elevation uses api.openrouteservice.org due to CORS setup
   const Elevation = new Openrouteservice.Elevation({
     api_key: window.gon.map_keys.openrouteservice,
-    host: 'https://api.openrouteservice.org'
+    host: ELEVATION_HOST
   })
   const updatedCoords = [...coordinates]
 
   const results = await Promise.all(changedIndices.map(async (idx) => {
     try {
       const response = await Elevation.pointElevation({
+        service: 'point',
         format_in: 'point',
         format_out: 'point',
         geometry: coordinates[idx].slice(0, 2)

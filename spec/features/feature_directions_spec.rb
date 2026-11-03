@@ -7,7 +7,7 @@ describe "Feature directions" do
     stub_fixture(:post, /api\.heigit\.org\/openrouteservice\/v2\/directions\/foot-hiking/, "ors_foot.json")
     stub_fixture(:post, /api\.heigit\.org\/openrouteservice\/v2\/snap\/foot-hiking/, "ors_snap.json")
     # the elevation api has its own domain, because of CORS
-    stub_fixture(:post, /api\.openrouteservice\.org\/elevation\/line/, "ors_elevation.json")
+    stub_fixture(:post, /api\.heigit\.org\/openelevationservice\/v0\/line/, "ors_elevation.json")
   end
 
   context "with empty map" do
