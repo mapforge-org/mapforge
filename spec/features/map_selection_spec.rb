@@ -126,6 +126,14 @@ describe "Map selection" do
         ".filter(id => id.startsWith('line-layer_route-extras-source')) }).length"
     end
 
+    def source_count(filter)
+      page.evaluate_async_script(<<~JS)
+        const done = arguments[0]
+        map.getSource('route-extras-source-#{map.layers.first.id}').getData()
+          .then(data => done(data.features.filter(#{filter}).length))
+      JS
+    end
+
     context "inside their zoom range" do
       let(:min_zoom) { 0 }
 
@@ -155,14 +163,6 @@ describe "Map selection" do
         }
       }
 
-      def source_count(filter)
-        page.evaluate_async_script(<<~JS)
-          const done = arguments[0]
-          map.getSource('route-extras-source-#{map.layers.first.id}').getData()
-            .then(data => done(data.features.filter(#{filter}).length))
-        JS
-      end
-
       def wall_count
         source_count("f => f.geometry.type === 'MultiPolygon'")
       end
@@ -190,21 +190,21 @@ describe "Map selection" do
         wait_for { page.evaluate_script(tunnel_labels) }.to eq 1
         wait_for { page.evaluate_script(tunnel_icon_width) }.to be > 1
       end
+    end
 
-      context "on a dashed route without route extras coloring" do
-        let(:route) {
-          create(:feature, :line_string_with_route_extras).tap { |feature|
-            route = feature.properties["route"]
-            route["extras"]["off_terrain"] = { "values" => [ [ 2, 4, -1 ] ] }
-            feature.update!(properties: feature.properties.except("show-route-extras")
-              .merge("route" => route, "stroke" => "#ff0000", "stroke-dasharray" => true))
-          }
+    context "with a tunnel on a dashed route without route extras coloring" do
+      let(:route) {
+        create(:feature, :line_string_with_route_extras).tap { |feature|
+          route = feature.properties["route"]
+          route["extras"]["off_terrain"] = { "values" => [ [ 2, 4, -1 ] ] }
+          feature.update!(properties: feature.properties.except("show-route-extras")
+            .merge("route" => route, "stroke" => "#ff0000", "stroke-dasharray" => true))
         }
+      }
 
-        it "puts black dashes on the route color in the tunnel" do
-          wait_for { source_count("f => f.properties.stroke === '#000000'") }.to eq 1
-          expect(source_count("f => f.properties.stroke === '#ff0000' && !f.properties['stroke-dasharray']")).to eq 1
-        end
+      it "puts black dashes on the route color in the tunnel" do
+        wait_for { source_count("f => f.properties.stroke === '#000000'") }.to eq 1
+        expect(source_count("f => f.properties.stroke === '#ff0000' && !f.properties['stroke-dasharray']")).to eq 1
       end
     end
   end

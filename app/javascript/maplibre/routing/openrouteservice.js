@@ -170,7 +170,7 @@ export async function getRouteElevation (waypoints) {
 // The route elevation and the SRTM terrain disagree by 40 m and more on some open mountain roads. A small
 // bridge or a shallow tunnel stays below this height, but its wall is only a little off.
 // ponytail: a fixed height, compare against the terrain at the vertices too if false positives remain
-const OFF_TERRAIN_HEIGHT = 40
+const OFF_TERRAIN_HEIGHT = 20
 // A shorter tunnel or bridge is a mismatch of the elevation data
 const OFF_TERRAIN_MIN_LENGTH = 25
 
