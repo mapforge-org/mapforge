@@ -81,7 +81,7 @@
         - maps -= Map::THUNDERFOREST_MAPS if ENV["THUNDERFOREST_KEY"].blank?
         :ruby
           map_image = ->(base_map) {
-            Rails.application.assets.find_asset("base_maps/#{base_map}.jpg").present? ? "base_maps/#{base_map}.jpg" : "base_maps/placeholder.jpg"
+            Rails.application.assets.find_asset("base_maps/#{base_map}.webp").present? ? "base_maps/#{base_map}.webp" : "base_maps/placeholder.webp"
           }
           # maps without a group show under "Default maps", EXPERIMENTAL_MAPS only under "Admin only"
           groups = { N_("Satellite") => [ "satelliteStreets", "versatilesSatelliteStreets" ],
@@ -96,7 +96,8 @@
         .dropdown
           %button#base-map-toggle.base-map-current.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false",
             "data-bs-display": "static" }
-            = image_tag(map_image.call(@map_properties[:base_map]), id: "base-map-current-image", class: "base-map-preview")
+            - # lazy: the modal is hidden on every map page, so the image only loads when it opens
+            = image_tag(map_image.call(@map_properties[:base_map]), id: "base-map-current-image", class: "base-map-preview", loading: 'lazy')
             %span#base-map-current-description.base-map-description
           %ul.dropdown-menu.base-map-menu{ "aria-labelledby": "base-map-toggle" }
             - [ N_("Default maps"), *groups.keys, N_("Admin only") ].each do |group|

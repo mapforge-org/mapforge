@@ -286,14 +286,17 @@ const pointSizeMax = () => ['to-number', ['coalesce',
 // linearly from min at zoom 5 to max at zoom 17. One 'interpolate' has one curve, so the
 // exponential one serves both: the extra stops keep the linear case within 0.2px of a line.
 const pointRadiusAt = zoom => ['case', shouldScale,
-  ['*', 2 ** (zoom - 16), pointSizeMax()],
-  ['+', pointSizeMin(), ['*', Math.min(1, (zoom - 5) / 12), ['-', pointSizeMax(), pointSizeMin()]]]
+  ['*', 2 ** (zoom - 16), ['var', 'sizeMax']],
+  ['+', ['var', 'sizeMin'], ['*', Math.min(1, (zoom - 5) / 12), ['-', ['var', 'sizeMax'], ['var', 'sizeMin']]]]
 ]
 
-// 'zoom' must stay the input of the top level interpolate, so a factor goes into every stop
-export const pointSize = (factor = 1) => ['interpolate', ['exponential', 2], ['zoom'],
-  ...[5, 8, 11, 14, 17, 21].flatMap(zoom => [zoom, ['*', factor, pointRadiusAt(zoom)]])
-]
+// 'zoom' must stay the input of the top level interpolate, so a factor goes into every stop.
+// Each stop repeats the size expressions. With 'let' MapLibre parses them once per layer and not
+// once per stop, in the main thread and in the worker. labelOffset and labelSize do the same.
+export const pointSize = (factor = 1) => ['let', 'sizeMin', pointSizeMin(), 'sizeMax', pointSizeMax(),
+  ['interpolate', ['exponential', 2], ['zoom'],
+    ...[5, 8, 11, 14, 17, 21].flatMap(zoom => [zoom, ['*', factor, pointRadiusAt(zoom)]])
+  ]]
 
 // The halo of a plain circle starts at its radius, and the stroke of the circle covers the inner
 // part. A constant added to both stops stays constant in an interpolation, so the halo keeps its width.
@@ -407,9 +410,9 @@ const labelOffsetBySize = zoom => [
   ],
   ['literal', [0, 0]],  // Zero offset for polygons
   ['!', shouldScale],
-  offsetY(['/', ['+', 16, pointEdge()], labelFontSize()]),
+  offsetY(['/', ['+', 16, ['var', 'edge']], ['var', 'fontSize']]),
   // the edge is pointEdge() at zoom 16
-  offsetY(['/', ['*', 2 ** (zoom - 16), ['+', 16, pointEdge()]], labelSizeAt(zoom)])
+  offsetY(['/', ['*', 2 ** (zoom - 16), ['+', 16, ['var', 'edge']]], labelSizeAt(zoom)])
 ]
 
 // MapLibre fits the box to the text size of the next integer zoom and does not resize it with
@@ -435,9 +438,10 @@ const labelBoxOffset = () => {
 // stops growing with the marker. The value of the next level then keeps the label clear of
 // the marker, at the cost of a gap of up to one radius.
 
-const labelOffset = () => ['step', ['zoom'], textOffset(17),
-  ...[17, 18, 19, 20, 21, 22, 23].flatMap(zoom => [zoom, textOffset(zoom + 1)])
-]
+const labelOffset = () => ['let', 'edge', pointEdge(), 'fontSize', labelFontSize(),
+  ['step', ['zoom'], textOffset(17),
+    ...[17, 18, 19, 20, 21, 22, 23].flatMap(zoom => [zoom, textOffset(zoom + 1)])
+  ]]
 
 const textOffset = zoom => [
   'case',
@@ -462,29 +466,26 @@ export const labelFontSize = () => ['*', titleOnlyFactor(), [
   ['to-number', scaledLabelSize()],
   ['to-number', staticLabelSize()]]]
 
-export const labelFontSizeMin = () => [
-  'case', shouldScale,
-  0, labelFontSize() ]
-
 // A scaled label renders 'label-size' at zoom 14 and doubles per level, like its marker.
 // The 254 caps the stop at zoom 17, so it scales the curve below 17 down instead of only
 // flattening its top: every 'label-size' from 254/8 upwards then renders the same up to 17.
 // Above 17 the cap flattens the curve, so the label of a big marker stops growing there.
+// Only valid inside a 'let' that binds 'fontSize' to labelFontSize().
 const labelSizeAt = zoom => [
   "min",
   ['case', shouldScale,
-    ['*', 2 ** (zoom - 14), labelFontSize()], labelFontSize()],
+    ['*', 2 ** (zoom - 14), ['var', 'fontSize']], ['var', 'fontSize']],
   254 // max map font size
 ]
 
 // Cannot move 'shouldScale' condition above 'interpolate' due to maplibre style restriction
-const labelSize = () => [
+const labelSize = () => ['let', 'fontSize', labelFontSize(), [
   'interpolate',
   ["exponential", 2],
   ['zoom'],
-  0, labelFontSizeMin(), // At zoom 0
+  0, ['case', shouldScale, 0, ['var', 'fontSize']], // At zoom 0
   ...[17, 18, 19, 20, 21, 22, 23, 24].flatMap(zoom => [zoom, labelSizeAt(zoom)])
-]
+]]
 
 // Shared configuration for symbols layers
 function symbolsLayerStyles(mode) {
