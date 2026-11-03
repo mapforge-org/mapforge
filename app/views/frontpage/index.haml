@@ -7,7 +7,7 @@
 %main#frontpage.main.selectable{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
   %section.landing-hero
     .landing-wrap.landing-hero-grid
-      .landing-hero-text
+      .landing-hero-text{ 'data-animate': "fade-up" }
         / News badge – update the text below to advertise new features or site news.
         / Remove or comment out this block when there is nothing to announce.
         %a.landing-badge{ href: doc_path(id: 'bike_touring') }
@@ -38,7 +38,7 @@
             = _("Self-hostable")
 
       - # demo.webp is 3 MB and plays on its own, so it only loads on request
-      %figure.landing-video{ data: { controller: "hero-video" } }
+      %figure.landing-video{ data: { controller: "hero-video", animate: "fade-up" } }
         .landing-video-frame
           %img{ src: "/images/frontpage/demo_poster.webp", width: 1200, height: 732, alt: _("Demo: a map with routes, photos and 3D buildings takes shape"),
                 data: { 'hero-video-target': "image", src: "/images/frontpage/demo.webp?v2" } }

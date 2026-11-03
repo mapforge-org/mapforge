@@ -182,6 +182,18 @@ section,
   text-decoration: none;
 }
 
+/* the global a:hover and a:active colors are for bright backgrounds */
+.landing-badge:active {
+  color: inherit;
+}
+
+@media (hover: hover) {
+  .landing-badge:hover {
+    background: rgb(255 255 255 / 18%);
+    color: inherit;
+  }
+}
+
 .landing-badge-label {
   padding: 0.1rem 0.6rem;
   border-radius: 999px;

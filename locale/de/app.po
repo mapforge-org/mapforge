@@ -1023,7 +1023,7 @@ msgid "Play video"
 msgstr "Video abspielen"
 
 msgid "Playground"
-msgstr "Demo-Karte ansehen"
+msgstr "Demo-Karte"
 
 msgid "Please confirm"
 msgstr "Bitte bestätigen"
@@ -1503,7 +1503,7 @@ msgid "Your browser cannot render 3D graphics on the web. Update your browser, o
 msgstr "Dein Browser kann keine 3D-Grafik im Web darstellen. Aktualisiere deinen Browser, oder schalte die Hardwarebeschleunigung in den Browser-Einstellungen ein."
 
 msgid "Your free map editor built on OpenStreetMap."
-msgstr "Der freie Karteneditor auf Basis von OpenStreetMap."
+msgstr "Dein freier Karteneditor auf Basis von OpenStreetMap."
 
 msgid "Your maps"
 msgstr "Deine Karten"
