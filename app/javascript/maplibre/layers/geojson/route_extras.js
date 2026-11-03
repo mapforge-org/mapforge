@@ -172,7 +172,8 @@ function formatLength (meters) {
 }
 
 const OFF_TERRAIN_LABEL_COLOR = '#555555'
-const OFF_TERRAIN_LINE_COLOR = '#000000'
+const TUNNEL_LINE_COLOR = '#000000'
+const BRIDGE_LINE_COLOR = '#cccccc'
 
 // A tunnel or a bridge has no wall (see offTerrainRanges), so a label with an icon marks it
 function createOffTerrainLabelFeatures (coords, offTerrain, cumulativeDistances, featureIndex, level) {
@@ -329,14 +330,15 @@ export function renderRouteExtras (features, sourceId) {
     })
     const offTerrainWithin = (from, to) => offTerrain
       .filter(([offFrom, offTo]) => offTo > from && offFrom < to)
-      .map(([offFrom, offTo]) => [Math.max(offFrom, from), Math.min(offTo, to)])
+      .map(([offFrom, offTo, value]) => [Math.max(offFrom, from), Math.min(offTo, to), value])
     // pushed after the colored line, so they draw on top of it and its color shows between them
-    const pushOffTerrainDashes = (from, to) => offTerrainWithin(from, to).forEach(([dashFrom, dashTo]) =>
-      extrasFeatures.push(line(dashFrom, dashTo, { 'stroke': OFF_TERRAIN_LINE_COLOR, 'stroke-dasharray': true })))
+    const pushOffTerrainDashes = (from, to) => offTerrainWithin(from, to).forEach(([dashFrom, dashTo, value]) =>
+      extrasFeatures.push(line(dashFrom, dashTo,
+        { 'stroke': value < 0 ? TUNNEL_LINE_COLOR : BRIDGE_LINE_COLOR, 'stroke-dasharray': true })))
 
     const extrasType = feature.properties['show-route-extras']
     if (!extrasType) {
-      // The main line layer draws the route. A dashed route gets its color back between the black dashes.
+      // The main line layer draws the route. A dashed route gets its color back between the tunnel or bridge dashes.
       const color = pick(feature.properties, ['stroke', 'stroke-opacity'])
       if (feature.properties['stroke-dasharray']) {
         offTerrainWithin(0, coords.length - 1).forEach(([from, to]) => extrasFeatures.push(line(from, to, color)))

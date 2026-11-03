@@ -701,9 +701,10 @@ export function sortLayers () {
       !e.id.startsWith('text-layer') && !e.id.startsWith('cluster_labels')),
     // companion labels of lines stay below the points the user placed
     ordered.filter(e => e.id.startsWith('km-marker') && !e.id.startsWith('km-marker-end')),
-    ordered.filter(e => e.id.startsWith('route-extras-labels')),
     ordered.filter(e => e.id.startsWith('km-marker-end')),
     ordered.filter(e => e.id.startsWith('line-label') && e.id.includes('_geojson-source')),
+    // placed before the repeated line labels, which would otherwise take their spot on the line
+    ordered.filter(e => e.id.startsWith('route-extras-labels')),
     ordered.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('shapes-layer') ||
       e.id.startsWith('cluster_points')),
     ordered.filter(e => e.id.startsWith('heatmap-layer')),
