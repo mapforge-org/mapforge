@@ -11,7 +11,7 @@ import {
   stickyFeatureHighlight
 } from 'maplibre/feature'
 import { frontFeature, getFeature } from 'maplibre/layers/layers'
-import { addGeoJSONSource, map } from 'maplibre/map'
+import { addGeoJSONSource, map, noValidate } from 'maplibre/map'
 
 // Source prefixes whose features are selectable via click. Excludes basemap
 // vector features and raster layers (which handle their own clicks).
@@ -43,7 +43,7 @@ const drawnInFront = f => (f.source === hoveredFeature?.source && f.id === hover
 
 // Features of every selectable source near the point, top-most first
 export function selectableFeaturesNear (point) {
-  const features = queryFeaturesNear(point, { filter: ['!', ['has', 'cluster']] }, isSelectable)
+  const features = queryFeaturesNear(point, { filter: ['!', ['has', 'cluster']], ...noValidate }, isSelectable)
     .filter(f => !f.properties?.cluster)
   return [...features.filter(drawnInFront), ...features.filter(f => !drawnInFront(f))]
 }
@@ -347,7 +347,7 @@ export class Layer {
    * Called before re-initialization and during cleanup.
    */
   removeEventHandlers() {
-    if (!map || !map.getStyle()) { return }
+    if (!map?.style) { return }
     if (this.clickHandler) {
       map.off('click', this.clickHandler)
       this.clickHandler = null

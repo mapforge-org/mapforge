@@ -53,7 +53,7 @@ export const clusterMaxZoom = 14
 // Specs keep the validation, they fail on the console error of an invalid style.
 export const noValidate = { validate: functions.isTestEnvironment() }
 
-// map.addLayer() takes no options in MapLibre 6.11, so it always validates. This is its body
+// map.addLayer() takes no options in MapLibre 6.16, so it always validates. This is its body
 // with noValidate, re-check it when MapLibre is updated.
 export function addLayer (layer, beforeId) {
   map.style.addLayer(layer, beforeId, noValidate)
@@ -227,6 +227,10 @@ export async function initializeMap (divId = 'maplibre-map') {
   }
 
   if (!functions.isTestEnvironment()) { map.setZoom(map.getZoom() - 1) } // will zoom in on map:load
+
+  // mapbox-gl-draw adds its edit layers with map.addLayer on the load event. With all view layers
+  // in place, that validation took 1.5 s of the map load.
+  map.addLayer = (layer, beforeId) => { addLayer(layer, beforeId); return map }
 
   // for console debugging
   window.map = map
@@ -424,21 +428,18 @@ export function addGeoJSONSource(sourceName, cluster=false, attribution=null, to
   })
 }
 
+// getStyle() serializes a deep copy of the whole style, this reads the live style layers
+function styleLayers () {
+  return map.getLayersOrder().map(id => map.getLayer(id))
+}
+
 export function removeStyleLayers(sourceName) {
-  const style = map.getStyle()
-  if (style?.layers) {
-    // Remove all layers that use this source
-    style.layers
-      .filter(l => l.source === sourceName)
-      .forEach(l => {
-        if (map.getLayer(l.id)) map.removeLayer(l.id)
-      })
-  }
+  // Remove all layers that use this source
+  styleLayers().filter(l => l.source === sourceName).forEach(l => map.removeLayer(l.id))
 }
 
 export function setLayerVisibility(sourceName, visible) {
-  const style = map.getStyle()
-  if (style?.layers) {
+  if (map.style) {
     const sources = [sourceName]
     // geojson layers have companion sources for km-markers and route extras
     if (sourceName.startsWith('geojson-source-')) {
@@ -452,7 +453,7 @@ export function setLayerVisibility(sourceName, visible) {
     if (sourceName.startsWith('raster-source-')) {
       sources.push(sourceName + '-features')
     }
-    style.layers
+    styleLayers()
       .filter(l => sources.some(s => l.source === s || (s.endsWith('-') && l.source?.startsWith(s))))
       .forEach(l => {
         if (map.getLayer(l.id)) map.setLayoutProperty(l.id, 'visibility', visible ? 'visible' : 'none', noValidate)
@@ -652,7 +653,7 @@ export function updateBuildingOpacity () {
 
   const opacity = layers?.some(l => l.type === 'indoor' && l.levelControl) ? 0.3 : 0.5
   // basemaps name their building layers differently, e.g. 'building-3d' or 'wrGebaeude3D_nicht_oeffentlich'
-  map.getStyle().layers.filter(l => l.type === 'fill-extrusion' &&
+  styleLayers().filter(l => l.type === 'fill-extrusion' &&
     !l.id.startsWith('polygon-layer-extrusion') && !l.id.startsWith('indoor-area-extrusion_')).forEach(l => {
     map.setPaintProperty(l.id, 'fill-extrusion-opacity', opacity, noValidate)
     map.setLayoutProperty(l.id, 'fill-extrusion-rounded-corner-distance', defaults.extrusionCornerRadius, noValidate)
@@ -673,45 +674,44 @@ export function updateBuildingOpacity () {
 // here on top of the basemap setStyle in setBackgroundMapLayer left interaction
 // handlers attached to a stale canvas after a reconnect/background restore.
 export function sortLayers () {
-  const styleLayers = map.getStyle().layers
-
   updateBuildingOpacity()
+  const ordered = styleLayers()
 
   // Each entry is a layer group; groups are listed bottom-to-top. mapSymbols
   // excludes user symbol/label layers since the original mutating logic pulled
   // those out before computing mapSymbols.
   const groups = [
-    styleLayers.filter(e => e.id.startsWith('raster-layer_')), // raster overlays below all geojson layers
-    styleLayers.filter(e => e.id.startsWith('polygon-layer_geojson-source') && !e.id.includes('extrusion') && !e.id.includes('shadow')),
-    styleLayers.filter(e => e.id.startsWith('polygon-layer-pattern_geojson-source')), // pattern on the fill
-    styleLayers.filter(e => e.id.startsWith('image-overlay-layer_')),
-    styleLayers.filter(e => e.id.startsWith('polygon-layer-outline_geojson-source')),
-    styleLayers.filter(e => e.id.startsWith('polygon-layer-halo_geojson-source')),
-    styleLayers.filter(e => e.id.includes('-flat')), // keep flat layers behind houses
-    styleLayers.filter(e => e.id.startsWith('line-layer-outline_geojson-source')),
-    styleLayers.filter(e => e.id.startsWith('line-layer-halo_geojson-source')),
-    styleLayers.filter(e => e.id.startsWith('line-layer_geojson-source') && !e.id.includes('outline')),
-    styleLayers.filter(e => e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')),
-    styleLayers.filter(e => e.paint && e.paint['fill-extrusion-height'] && e.id.startsWith('polygon-layer-extrusion')),
-    // styleLayers.filter(e => e.id.startsWith('indoor-area-extrusion_')),
-    styleLayers.filter(e => e.paint && e.paint['fill-extrusion-height'] && !e.id.startsWith('polygon-layer-extrusion') && !e.id.startsWith('indoor-area-extrusion_')),
-    styleLayers.filter(e => e.id.startsWith('maplibre-gl-directions')),
-    styleLayers.filter(e => e.type === 'symbol' &&
+    ordered.filter(e => e.id.startsWith('raster-layer_')), // raster overlays below all geojson layers
+    ordered.filter(e => e.id.startsWith('polygon-layer_geojson-source') && !e.id.includes('extrusion') && !e.id.includes('shadow')),
+    ordered.filter(e => e.id.startsWith('polygon-layer-pattern_geojson-source')), // pattern on the fill
+    ordered.filter(e => e.id.startsWith('image-overlay-layer_')),
+    ordered.filter(e => e.id.startsWith('polygon-layer-outline_geojson-source')),
+    ordered.filter(e => e.id.startsWith('polygon-layer-halo_geojson-source')),
+    ordered.filter(e => e.id.includes('-flat')), // keep flat layers behind houses
+    ordered.filter(e => e.id.startsWith('line-layer-outline_geojson-source')),
+    ordered.filter(e => e.id.startsWith('line-layer-halo_geojson-source')),
+    ordered.filter(e => e.id.startsWith('line-layer_geojson-source') && !e.id.includes('outline')),
+    ordered.filter(e => e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')),
+    ordered.filter(e => e.type === 'fill-extrusion' && e.getPaintProperty('fill-extrusion-height') && e.id.startsWith('polygon-layer-extrusion')),
+    // ordered.filter(e => e.id.startsWith('indoor-area-extrusion_')),
+    ordered.filter(e => e.type === 'fill-extrusion' && e.getPaintProperty('fill-extrusion-height') && !e.id.startsWith('polygon-layer-extrusion') && !e.id.startsWith('indoor-area-extrusion_')),
+    ordered.filter(e => e.id.startsWith('maplibre-gl-directions')),
+    ordered.filter(e => e.type === 'symbol' &&
       !e.id.startsWith('symbols-layer') && !e.id.startsWith('symbols-border-layer') &&
       !e.id.startsWith('text-layer') && !e.id.startsWith('cluster_labels')),
     // companion labels of lines stay below the points the user placed
-    styleLayers.filter(e => e.id.startsWith('km-marker') && !e.id.startsWith('km-marker-end')),
-    styleLayers.filter(e => e.id.startsWith('route-extras-labels')),
-    styleLayers.filter(e => e.id.startsWith('km-marker-end')),
-    styleLayers.filter(e => e.id.startsWith('line-label') && e.id.includes('_geojson-source')),
-    styleLayers.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('shapes-layer') ||
+    ordered.filter(e => e.id.startsWith('km-marker') && !e.id.startsWith('km-marker-end')),
+    ordered.filter(e => e.id.startsWith('route-extras-labels')),
+    ordered.filter(e => e.id.startsWith('km-marker-end')),
+    ordered.filter(e => e.id.startsWith('line-label') && e.id.includes('_geojson-source')),
+    ordered.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('shapes-layer') ||
       e.id.startsWith('cluster_points')),
-    styleLayers.filter(e => e.id.startsWith('heatmap-layer')),
-    styleLayers.filter(e => e.id.startsWith('gl-draw-')),
-    styleLayers.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),
-    styleLayers.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
+    ordered.filter(e => e.id.startsWith('heatmap-layer')),
+    ordered.filter(e => e.id.startsWith('gl-draw-')),
+    ordered.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),
+    ordered.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
     // the hovered or selected point, see frontStyleNames in styles.js
-    styleLayers.filter(e => e.id.includes('-front_'))
+    ordered.filter(e => e.id.includes('-front_'))
   ]
 
   // moveLayer(id) with no second arg moves the layer to the top. Iterating

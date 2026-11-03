@@ -45,11 +45,11 @@ export const viewStyleNames = [
   ...extrusionOpacityBuckets.map((_, i) => `polygon-layer-extrusion-${i + 1}`)
 ]
 
-export function initializeViewStyles (sourceName, heatmap=false) {
+export function initializeViewStyles (sourceName, heatmap=false, styleNames=viewStyleNames) {
   // console.log('Initializing view styles for source ' + sourceName)
   removeStyleLayers(sourceName)
   const styleDefs = styles()
-  viewStyleNames.forEach(styleName => {
+  styleNames.forEach(styleName => {
     const style = styleDefs[styleName]
     addLayer(setSource({ ...style, filter: withLevelFilter(style.filter) }, sourceName))
   })

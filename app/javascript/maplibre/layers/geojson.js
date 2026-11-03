@@ -47,6 +47,13 @@ function needsExtrusionPolygon(feature) {
     !feature.properties?.['show-route-extras']
 }
 
+// A style layer costs parsing in the main thread and in the worker, also when its filter never
+// matches. Route extras hold lines, label points and walls with only the route properties. The
+// extrusion polygons carry all properties of their line, so symbols and labels can match them.
+const routeExtrasStyleNames = viewStyleNames.filter(name => /^(line-layer|polygon-layer-(outline|halo|extru))/.test(name))
+const extrusionStyleNames = viewStyleNames.filter(name =>
+  /^(polygon-layer-(outline|halo|extru)|symbols-layer|text-layer)/.test(name))
+
 export class GeoJSONLayer extends Layer {
   get kmMarkerSourceId() {
     return `km-marker-source-${this.id}`
@@ -130,9 +137,9 @@ export class GeoJSONLayer extends Layer {
     initializeViewStyles(this.sourceId, !!this.layer.heatmap)
     if (this.clustered) { initializeClusterStyles(this.sourceId, null) }
     initializeKmMarkerStyles(this.kmMarkerSourceId)
-    initializeViewStyles(this.routeExtrasSourceId)
+    initializeViewStyles(this.routeExtrasSourceId, false, routeExtrasStyleNames)
     initializeExtrasLabelStyles(this.routeExtrasSourceId)
-    initializeViewStyles(this.extrusionSourceId)
+    initializeViewStyles(this.extrusionSourceId, false, extrusionStyleNames)
     // Walls are built from short quads (see extrusion.js). Rounded corners and the vertical
     // gradient shade every quad on its own, which shows each seam as a dark band.
     for (const sourceId of [this.routeExtrasSourceId, this.extrusionSourceId]) {

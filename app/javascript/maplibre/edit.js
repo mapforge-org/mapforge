@@ -300,13 +300,12 @@ function syncGeometryModeUi (mode) {
 // bucket layer goes back to its own opacity (encoded as the trailing number in
 // the layer id, e.g. polygon-layer-extrusion-7_... → 0.7).
 function setExtrusionOpacity (restoring) {
-  if (!map.getStyle || !map.getStyle().layers) { return }
-  map.getStyle().layers
-    .filter(l => l.id.startsWith('polygon-layer-extrusion-'))
-    .forEach(l => {
-      const bucket = parseInt(l.id.match(/^polygon-layer-extrusion-(\d+)_/)?.[1], 10)
+  map.getLayersOrder()
+    .filter(id => id.startsWith('polygon-layer-extrusion-'))
+    .forEach(id => {
+      const bucket = parseInt(id.match(/^polygon-layer-extrusion-(\d+)_/)?.[1], 10)
       const opacity = restoring ? bucket / 10 : 0.5
-      map.setPaintProperty(l.id, 'fill-extrusion-opacity', opacity, noValidate)
+      map.setPaintProperty(id, 'fill-extrusion-opacity', opacity, noValidate)
     })
 }
 

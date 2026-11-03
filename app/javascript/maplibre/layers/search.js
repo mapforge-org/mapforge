@@ -64,7 +64,7 @@ export class SearchLayer extends Layer {
   removeEventHandlers() {
     super.removeEventHandlers()
     if (this.contextMenuHandler) {
-      if (map?.getStyle()) { map.off('contextmenu', this.contextMenuHandler) }
+      if (map?.style) { map.off('contextmenu', this.contextMenuHandler) }
       this.contextMenuHandler = null
     }
   }
