@@ -70,9 +70,10 @@
   }
 }
 
+/* white text needs the rust shade: on --color-orange it only reaches 3.1:1 */
 .btn-orange {
-  background-color: var(--color-orange);
-  border-color: var(--color-orange);
+  background-color: var(--color-mid-rust);
+  border-color: var(--color-mid-rust);
   color: #fff !important;
 
   --text-color: #fff;
@@ -80,19 +81,19 @@
 
   /* reset hover effect for browsers without hover support */
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: var(--color-orange);
-  --bs-btn-hover-border-color: var(--color-orange);
+  --bs-btn-hover-bg: var(--color-mid-rust);
+  --bs-btn-hover-border-color: var(--color-mid-rust);
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: var(--color-mid-rust);
-  --bs-btn-active-border-color: var(--color-mid-rust);
+  --bs-btn-active-bg: var(--color-mid-brown);
+  --bs-btn-active-border-color: var(--color-mid-brown);
 }
 
 /* only add hover effects to supported browsers */
 @media (hover: hover) {
   .btn-orange:hover {
     --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: var(--color-mid-rust);
-    --bs-btn-hover-border-color: var(--color-mid-rust);
+    --bs-btn-hover-bg: var(--color-mid-brown);
+    --bs-btn-hover-border-color: var(--color-mid-brown);
   }
 }
 

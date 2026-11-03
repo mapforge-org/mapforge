@@ -110,8 +110,8 @@ msgstr "Erweitert"
 msgid "Advanced feature styling"
 msgstr "Erweiterte Objektgestaltung"
 
-msgid "Also available for self-hosting, giving you full control over your data."
-msgstr "Zum Self-Hosting verfügbar, mit voller Kontrolle über deine Daten."
+msgid "Animation of the map editor: a photo gets added to a map"
+msgstr "Animation des Karteneditors: Ein Foto wird zu einer Karte hinzugefügt"
 
 msgid "Applies in view mode. In edit mode, a click always selects the feature."
 msgstr "Gilt im Ansichtsmodus. Im Bearbeitungsmodus wählt ein Klick immer das Objekt aus."
@@ -188,14 +188,8 @@ msgstr "Randbreite:"
 msgid "Bright street map with clear roads and labels"
 msgstr "Helle Straßenkarte mit klaren Straßen und Beschriftungen"
 
-msgid "Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map."
-msgstr "Verwalte %{maps_link}, lerne mehr auf der %{tutorial_link} oder %{create_link} eine neue Karte."
-
 msgid "Browse maps by user %{email}"
 msgstr "Durchstöbere Karten von Benutzer %{email}"
-
-msgid "Browse the %{gallery_link}, learn how to use Mapforge on the %{tutorial_link} or %{login_link} to create your own maps."
-msgstr "Durchstöbere die %{gallery_link}, lerne auf der %{tutorial_link} wie du Mapforge nutzt, oder %{login_link} um eigene Karten zu erstellen."
 
 msgid "Build the map you have in mind"
 msgstr "Erstelle deine Karten-Idee"
@@ -262,9 +256,6 @@ msgstr "Format wechseln"
 
 msgid "Cobblestone"
 msgstr "Kopfsteinpflaster"
-
-msgid "Collaboration"
-msgstr "Zusammenarbeit"
 
 msgid "Color"
 msgstr "Farbe"
@@ -349,9 +340,6 @@ msgstr "Gestalte deine eigene Karte"
 
 msgid "Credits"
 msgstr "Credits"
-
-msgid "Cross platform"
-msgstr "Plattformübergreifend"
 
 msgid "Crosshatch"
 msgstr "Kreuzschraffur"
@@ -554,9 +542,6 @@ msgstr "Fehler beim Aktualisieren der Geometrie von %{type}"
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
 
-msgid "Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites."
-msgstr "Jede Karte hat einen Ansichtslink und einen Bearbeitungslink. Teile sie, stelle deine Karte in die Galerie, oder halte sie privat. Binde sie auf anderen Webseiten ein."
-
 msgid "Export your maps as GPX/GeoJSON, or %{deploy_link}"
 msgstr "Exportiere deine Karten als GPX/GeoJSON, oder %{deploy_link}"
 
@@ -631,6 +616,9 @@ msgstr "Geometrie"
 
 msgid "Geometry JSON"
 msgstr "Geometrie-JSON"
+
+msgid "Globe with a heart over Central Europe"
+msgstr "Globus mit einem Herz über Mitteleuropa"
 
 msgid "Globe:"
 msgstr "Globus:"
@@ -728,6 +716,9 @@ msgstr "Die Mapforge-App installieren"
 msgid "Keyboard Shortcuts"
 msgstr "Tastenkürzel"
 
+msgid "Language"
+msgstr "Sprache"
+
 msgid "Layer added"
 msgstr "Ebene hinzugefügt"
 
@@ -816,7 +807,7 @@ msgid "Map '%{name}'"
 msgstr "Karte '%{name}'"
 
 msgid "Map Gallery"
-msgstr "Kartengalerie"
+msgstr "Galerie"
 
 msgid "Map data (gpx, kml, geojson)"
 msgstr "Kartendaten (gpx, kml, geojson)"
@@ -842,9 +833,6 @@ msgstr "Karteneinstellungen"
 msgid "Map that looks like a watercolor painting"
 msgstr "Karte im Stil eines Aquarells"
 
-msgid "Map tools"
-msgstr "Kartenwerkzeuge"
-
 msgid "Map view updated"
 msgstr "Kartenansicht aktualisiert"
 
@@ -853,9 +841,6 @@ msgstr "Karte mit eigenen, handverlesenen Farben"
 
 msgid "Map your track: Use %{ulogger_link} to visualize and share your tracks live"
 msgstr "Erfasse deinen Track: Nutze %{ulogger_link} zum Visualisieren und Teilen deiner Strecken in Echtzeit"
-
-msgid "Mapforge is ad-free and respects your privacy."
-msgstr "Mapforge ist werbefrei und respektiert deine Privatsphäre."
 
 msgid "Mapforge: Create and share your own maps online"
 msgstr "Mapforge: Erstelle und teile deine eigenen Karten online"
@@ -1197,6 +1182,9 @@ msgstr "Form:"
 msgid "Share Map"
 msgstr "Karte teilen"
 
+msgid "Share dialog with an edit link and a view link over a 3D map"
+msgstr "Teilen-Dialog mit Bearbeitungslink und Ansichtslink über einer 3D-Karte"
+
 msgid "Share edit link"
 msgstr "Bearbeitungslink teilen"
 
@@ -1333,6 +1321,9 @@ msgstr "Die Karte kommt mit"
 
 msgid "The map starts centered on your content."
 msgstr "Die Karte startet zentriert auf deinen Inhalten."
+
+msgid "The same map on a laptop, a tablet and a phone"
+msgstr "Dieselbe Karte auf Laptop, Tablet und Handy"
 
 msgid "Thick lines"
 msgstr "Dicke Linien"
@@ -1577,9 +1568,6 @@ msgstr "Museum|Ausstellung"
 msgid "falls|cascade"
 msgstr "Wasserfall|Wasserfaelle|Wasserfälle"
 
-msgid "gallery"
-msgstr "Galerie"
-
 msgid "garage|mechanic|car_workshop"
 msgstr "Werkstatt|Autowerkstatt|Kfz|Mechaniker"
 
@@ -1621,9 +1609,6 @@ msgstr "Picknick|Picknickplatz|Rastplatz"
 
 msgid "play_area"
 msgstr "Spielplatz|Spielplaetze|Spielplätze"
-
-msgid "playground"
-msgstr "Demo-Karte"
 
 msgid "police_station"
 msgstr "Polizei|Polizeiwache|Revier"
@@ -1678,9 +1663,6 @@ msgstr "Trinkwasser|Wasserhahn|Brunnen|Wasser"
 
 msgid "worship|prayer_room"
 msgstr "Kirche|Gotteshaus|Andacht|Gebetsraum"
-
-msgid "your maps"
-msgstr "deine Karten"
 
 msgid "🍻 Breweries"
 msgstr "🍻 Brauereien"

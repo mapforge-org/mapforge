@@ -52,6 +52,11 @@
   text-decoration-color: var(--color-dark-charcoal);
 }
 
+.footer .footer-links ul a[aria-current] {
+  font-weight: 600;
+  text-decoration-line: none;
+}
+
 @media (hover: hover) {
   .footer .footer-links ul a:hover {
     color: var(--hover-color);

@@ -31,10 +31,6 @@
   = csrf_meta_tags
   = csp_meta_tag
 
-  / fonts
-  - # https://icons.getbootstrap.com/
-  = stylesheet_link_tag "bootstrap-icons", "data-turbo-track": "reload"
-
   / Logo font
   - #%link{ href: "https://fonts.googleapis.com", rel: "preconnect" }
   - #%link{ href: "https://fonts.gstatic.com", rel: "preconnect", crossorigin: true }
@@ -46,13 +42,10 @@
   =# stylesheet_link_tag google_fonts_url
 
   / css
-  = stylesheet_link_tag "bootstrap.min.css" # bootstrap@5.3.3
+  - # application.css bundles vendor/assets/stylesheets ahead of our own css, do not link those files again:
+  - # bootstrap@5.3.3, https://icons.getbootstrap.com/ and maptiler-sdk
   - # maptiler-sdk.css includes maplibre-gl css and looks better
-  - # needs to get loaded before application.css
   - # from https://cdn.jsdelivr.net/npm/@maptiler/sdk@4.1.0/dist/maptiler-sdk.css (bundles maplibre-gl 5.24 css)
-  = stylesheet_link_tag "maptiler-sdk", "data-turbo-track": "reload"
-  /= stylesheet_link_tag "maplibre-gl", "data-turbo-track": "reload"
-
   = stylesheet_link_tag "application", "data-turbo-track": "reload"
 
   - # JS imports

@@ -1,3 +1,9 @@
+- content_for :head do
+  %link{ rel: "canonical", href: localized_root_url(I18n.locale) }
+  - ApplicationHelper::LANGUAGES.each_key do |locale|
+    %link{ rel: "alternate", hreflang: locale, href: localized_root_url(locale) }
+  %link{ rel: "alternate", hreflang: "x-default", href: localized_root_url(I18n.default_locale) }
+
 %main#frontpage.main.selectable{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
   / Hero Section
   #hero.hero.section.dark-background
@@ -14,22 +20,7 @@
                 = _("Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - draw, style and share in real-time.")
               %p.d-sm-none
                 = _("Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events.")
-              %p.d-none.d-sm-block
-                = _("Every map has a view link and an edit link. Share them with anyone, list your map in the gallery, or keep it private. Embed it on other sites.")
-              %p.d-none.d-sm-block
-                = _("Mapforge is ad-free and respects your privacy.")
-                = _("Also available for self-hosting, giving you full control over your data.")
-              %p.d-sm-none
-                - tutorial_link = link_to(_('playground'), playground_path, class: 'btn btn-orange call-to-action')
-                - if @user
-                  - maps_link = link_to(_('your maps'), my_path, class: 'btn btn-orange call-to-action')
-                  - create_link = link_to(_('create'), create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
-                  = raw(_("Browse %{maps_link}, learn more on the %{tutorial_link} or %{create_link} a new map.") % { maps_link: maps_link, tutorial_link: tutorial_link, create_link: create_link })
-                - else
-                  - gallery_link = link_to(_('gallery'), maps_path, class: 'btn btn-orange call-to-action')
-                  - login_link = link_to(_('log in'), login_path, class: 'btn btn-orange call-to-action')
-                  = raw(_("Browse the %{gallery_link}, learn how to use Mapforge on the %{tutorial_link} or %{login_link} to create your own maps.") % { gallery_link: gallery_link, tutorial_link: tutorial_link, login_link: login_link })
-            .hero-actions.d-none.d-sm-flex
+            .hero-actions
               - if @user
                 = button_to _("Start a map"), create_map_path, class: 'btn btn-orange btn-lg'
                 = link_to _("Your maps"), my_path, class: 'btn btn-secondary btn-green'
@@ -69,11 +60,11 @@
   %section#features.why-us.section
     .row.g-0
       .col-lg-5.img-bg
-        %img{ src: "/images/frontpage/demo.webp?v2", alt: _("Map tools"), loading: 'lazy' }
+        %img{ src: "/images/frontpage/demo.webp?v2", alt: _("Animation of the map editor: a photo gets added to a map"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
           %h2.mb-3.mapforge-font= _("Build the map you have in mind")
-          %h4.mb-3= _("A bicycle tour, the floor plan for your conference, a guide for your wedding guests")
+          %h3.mb-3= _("A bicycle tour, the floor plan for your conference, a guide for your wedding guests")
           %ul
             %li
               = _("Add your own data:")
@@ -103,22 +94,22 @@
                 = _("3D Terrain: View your map with elevation")
     .row.g-0
       .col-lg-5.img-bg.order-lg-last
-        %img{ src: "/images/frontpage/feature1.png", alt: _("Collaboration"), loading: 'lazy' }
+        %img{ src: "/images/frontpage/share.webp", alt: _("Share dialog with an edit link and a view link over a 3D map"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
           %h2.mb-3.mapforge-font= _("One link to view, one to edit")
-          %h4.mb-3= _("Listed in the gallery, or shared privately")
+          %h3.mb-3= _("Listed in the gallery, or shared privately")
           %ul
             %li= _("Embedding: Include your map on your own web page")
             %li= _("Real-time: Map changes are synchronized to all users")
             %li= _("Login: Have your maps assigned to your account")
     .row.g-0
       .col-lg-5.img-bg
-        %img{ src: "/images/frontpage/feature2.png", alt: _("Cross platform"), loading: 'lazy' }
+        %img{ src: "/images/frontpage/feature2.png", alt: _("The same map on a laptop, a tablet and a phone"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
           %h2.mb-3.mapforge-font= _("The map goes with you")
-          %h4.mb-3= _("Plan on desktop, run Mapforge on your phone, edit in the field, stream your track live")
+          %h3.mb-3= _("Plan on desktop, run Mapforge on your phone, edit in the field, stream your track live")
           %ul
             %li= _("GPS and compass: The map follows your position and turns with you")
             %li
@@ -129,11 +120,11 @@
               = raw(_("Map your track: Use %{ulogger_link} to visualize and share your tracks live") % { ulogger_link: ulogger_link })
     .row.g-0
       .col-lg-5.img-bg.order-lg-last
-        %img{ src: "/images/frontpage/feature3.png", alt: _("Open Source"), loading: 'lazy' }
+        %img{ src: "/images/frontpage/feature3.png", alt: _("Globe with a heart over Central Europe"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
           %h2.mb-3.mapforge-font= _("Open Source")
-          %h4.mb-3= _("The code is public, map data is owned by you")
+          %h3.mb-3= _("The code is public, map data is owned by you")
           %ul
             %li= _("No ads, no tracking, no lock-in")
             %li

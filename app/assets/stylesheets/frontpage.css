@@ -39,49 +39,15 @@ section,
   color: var(--default-color);
   background-color: var(--background-color);
   padding: 0;
-  scroll-margin-top: 100px;
+  scroll-margin-top: 3.4rem;
   overflow: clip;
 }
 
-@media (width <= 992px) {
+@media (width < 576px) {
   section,
   .section {
-    scroll-margin-top: 66px;
+    scroll-margin-top: 3.1rem;
   }
-}
-
-/* --------------------------------------------------------------
-# Global Section Titles
--------------------------------------------------------------- */
-.section-title {
-  text-align: center;
-  padding-bottom: 60px;
-  position: relative;
-}
-
-.section-title h2 {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  position: relative;
-}
-
-.section-title h2::after {
-  content: "";
-  position: absolute;
-  display: block;
-  width: 50px;
-  height: 3px;
-  background: var(--accent-color);
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-}
-
-.section-title p {
-  margin-bottom: 0;
 }
 
 /* --------------------------------------------------------------
@@ -89,7 +55,7 @@ section,
 -------------------------------------------------------------- */
 .hero {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100svh;
   position: relative;
   padding: 100px 0 60px;
   display: flex;
@@ -196,6 +162,12 @@ section,
   margin-bottom: 2rem;
 }
 
+@media (width <= 640px) {
+  .hero-actions {
+    justify-content: center;
+  }
+}
+
 /* maps.css loads after this file, so the selectors below carry one class more to win */
 .featured-maps {
   z-index: 3;
@@ -266,6 +238,13 @@ section,
   16% { transform: translateY(0); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .banner-explorer,
+  .feature-tour-link .bi-chevron-double-down {
+    animation: none;
+  }
+}
+
 /* only add hover effects to supported browsers */
 @media (hover: hover) {
   .feature-tour-link:hover {
@@ -317,11 +296,11 @@ section,
 
 .banner-explorer-content {
   text-align: center;
-  color: var(--color-mid-rust);
+  color: var(--color-mid-brown);
 }
 
 .banner-explorer-content a {
-  color: var(--color-mid-rust) !important;
+  color: var(--color-mid-brown) !important;
   font-weight: 600;
   text-decoration: underline;
 }
@@ -378,11 +357,6 @@ section,
 }
 
 #features h3 {
-  font-size: 24px;
-  font-weight: 700;
-}
-
-#features h4 {
   font-size: 18px;
   font-weight: 300;
   color: color-mix(in srgb, var(--default-color), transparent 30%);

@@ -1,6 +1,13 @@
 require "redcarpet/render_strip"
 
 module ApplicationHelper
+  LANGUAGES = { "en" => "English", "de" => "Deutsch" }.freeze
+
+  # Crawlers send no Accept-Language, so they find the default language on the bare URL
+  def localized_root_url(locale)
+    root_url(locale: (locale unless locale.to_s == I18n.default_locale.to_s))
+  end
+
   # Loads the compiled JS translations for the current locale
   # plus the gettext.js runtime. The locale file is
   # skipped when it doesn't exist yet (e.g. "en", which has no locale/en/app.po).

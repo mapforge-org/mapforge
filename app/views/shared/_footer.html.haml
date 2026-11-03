@@ -1,9 +1,17 @@
 %footer#footer.footer.light-background.pb-2{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
   .container
     .row.gy-4
-      - # empty block on the left on lg screen
+      - # language block is on the left on lg screen, below the links on smaller screens
       - # screen < sm, contact moves below links
-      .col-lg-5.col-0.footer-about.d-none.d-lg-block
+      .col-lg-5.col-12.order-last.order-lg-first.footer-links
+        %nav{ 'aria-label': _("Language") }
+          %ul.d-flex.justify-content-center.justify-content-lg-start.gap-3
+            - ApplicationHelper::LANGUAGES.each do |locale, name|
+              %li.pt-0
+                - # The gettext JS in the head differs per language, so this needs a full page load
+                %a{ href: "?#{request.query_parameters.merge(locale: locale).to_query}", lang: locale, hreflang: locale, data: { turbo: false }, 'aria-current': ('true' if I18n.locale.to_s == locale) }
+                  %i.bi.bi-translate.me-1>
+                  = name
 
       .col-lg-2.col-sm-4.col-6.footer-links.footer-links-left.mb-sm-2
         %h3.mapforge-font.white-shadow= _("Docs")

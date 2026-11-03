@@ -17,11 +17,10 @@ describe FrontpageController do
       expect(response.body).not_to match(%r{rel="modulepreload" href="[^"]*/(@turf--|maplibre-gl-)})
     end
 
-    it "offers the playground, start a map and login to a visitor" do
+    it "offers the playground and start a map to a visitor" do
       get "/"
       expect(response.body).to include(">Playground</button>")
       expect(response.body).to include(">Start a map</a>")
-      expect(response.body).to include("href=\"/login\">log in</a>")
       expect(response.body).not_to include(">Your maps</a>")
     end
 
@@ -32,7 +31,26 @@ describe FrontpageController do
       expect(response.body).to include(">Start a map</button>")
       expect(response.body).to include(">Your maps</a>")
       expect(response.body).to include(">Playground</a>")
-      expect(response.body).not_to include("href=\"/login\">log in</a>")
+    end
+
+    it "links canonical and hreflang URLs" do
+      get "/"
+      expect(response.body).to include(%(<link href="http://www.example.com/" rel="canonical">))
+      expect(response.body).to include(%(<link href="http://www.example.com/" hreflang="en" rel="alternate">))
+      expect(response.body).to include(%(<link href="http://www.example.com/?locale=de" hreflang="de" rel="alternate">))
+      expect(response.body).to include(%(<link href="http://www.example.com/" hreflang="x-default" rel="alternate">))
+    end
+
+    it "points the canonical URL of a translated page at that language" do
+      get "/", params: { locale: "de" }
+      expect(response.body).to include(%(<link href="http://www.example.com/?locale=de" rel="canonical">))
+      expect(response.body).to include(%(<link href="http://www.example.com/" hreflang="en" rel="alternate">))
+    end
+
+    it "keeps the query params in the language switcher and marks the current language" do
+      get "/", params: { locale: "de", foo: "bar" }
+      expect(response.body).to include('href="?foo=bar&amp;locale=en"')
+      expect(response.body).to match(/aria-current="true"[^>]*href="\?foo=bar&amp;locale=de"/)
     end
 
     it "shows the three most viewed listed maps that have a screenshot" do
