@@ -50,6 +50,10 @@ module CupriteKeepCacheOnReset
     origin = targets[old_page.target_id].url.to_s[%r{\Ahttps?://[^/]+}]
     old_page.command("Storage.clearDataForOrigin", origin:, storageTypes: STORAGE_TYPES) if origin
     command("Storage.clearCookies", browserContextId: default_context.id)
+    # The new page hides the old one, and Chrome then aborts a running Turbo view transition with
+    # an InvalidStateError. Ferrum raises page errors into the main thread, so that error failed
+    # the reset of an example that passed. Mute the old page before it gets hidden.
+    old_page.command("Runtime.disable")
     @options.reset_window_size
     @page = attach_page(default_context.create_target.id)
     old_page.close
