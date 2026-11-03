@@ -15,14 +15,6 @@ Mongoid.configure do
   # whatever else is set here.
 end
 
-# Enable Mongo driver query cache for Rack
-# Rails.application.config.middleware.use(Mongo::QueryCache::Middleware)
-
-# Enable Mongo driver query cache for ActiveJob
-# ActiveSupport.on_load(:active_job) do
-#   include Mongo::QueryCache::Middleware::ActiveJob
-# end
-
 # Fail application boot if mongodb is not available
 begin
   Mongoid.load!(File.join(Rails.root, "config", "mongoid.yml"))

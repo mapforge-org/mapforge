@@ -101,10 +101,7 @@ export function isApp () {
 
 // takes a css selector and callback method
 export function e (selector, callback) {
-  const elements = document.querySelectorAll(selector)
-  elements.forEach(element => {
-    callback(element)
-  })
+  document.querySelectorAll(selector).forEach(callback)
 }
 
 export function addEventListeners (element, events, callback) {
@@ -132,12 +129,6 @@ export function findCoordinate (coordinates, coordinate) {
 
 export function featureId () {
   return Math.random().toString(36).substring(2, 18)
-}
-
-export function isFormFieldFocused() {
-  const el = document.activeElement
-  // Check if the currently focused element is an input, textarea, select, or button
-  return el && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(el.tagName)
 }
 
 // Text from OSM and from other outside sources can carry markup. The quotes are escaped

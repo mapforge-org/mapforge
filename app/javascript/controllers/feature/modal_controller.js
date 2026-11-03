@@ -395,7 +395,7 @@ export default class extends Controller {
   }
 
   async copy(event) {
-    if (functions.isFormFieldFocused()) { return }
+    if (dom.isInputElement(document.activeElement)) { return }
     if (!highlightedFeatureId) { return }
 
     const feature = this.getSelectedFeature()

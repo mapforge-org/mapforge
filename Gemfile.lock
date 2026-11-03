@@ -266,8 +266,6 @@ GEM
     mongoid-rspec (4.4.0)
       mongoid (>= 3.0, < 10.0)
       mongoid-compatibility (>= 0.5.1)
-    mongoid_includes (4.0.0)
-      mongoid (>= 8.0.0, < 10.0.0)
     msgpack (1.8.7)
     multi_json (1.21.2)
     multi_xml (0.9.1)
@@ -578,12 +576,10 @@ DEPENDENCIES
   mongo_logs_on_roids
   mongoid
   mongoid-rspec
-  mongoid_includes
   omniauth
   omniauth-github
   omniauth-google-oauth2
   omniauth-osm-oauth2
-  ostruct
   parallel_tests
   puma
   rack-cache

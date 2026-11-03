@@ -4,6 +4,7 @@ import { toMercator, toWgs84 } from "@turf/projection";
 import { simplify } from "@turf/simplify";
 import { sendMessage } from 'channels/map_channel';
 import equal from 'fast-deep-equal'; // https://github.com/epoberezkin/fast-deep-equal
+import * as dom from 'helpers/dom';
 import * as functions from 'helpers/functions';
 import { hideInfoStatus, status } from 'helpers/status';
 import { hideContextMenu } from 'maplibre/controls/context_menu';
@@ -160,7 +161,7 @@ export async function initializeEditMode () {
   document.addEventListener('keydown', function (event) {
     // console.log('key', event)
     if (!inEditMode()) { return }
-    if (functions.isFormFieldFocused()) { return }
+    if (dom.isInputElement(document.activeElement)) { return }
     if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
       event.preventDefault()
       undo()

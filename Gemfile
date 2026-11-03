@@ -26,7 +26,6 @@ gem "omniauth-osm-oauth2"
 
 # Javascript
 gem "gon"
-gem "ostruct" # needed by 'gon', but not included in Ruby 3.5
 gem "stimulus-rails"
 
 # Translations (see README.md#translations)
@@ -40,7 +39,6 @@ gem "rails-i18n" # core Rails i18n strings (date/time, number formatting, etc.) 
 # Action Cable's redis adapter hard-caps redis < 6 (actioncable 8.1.x)
 gem "redis", ">= 4.0.1", "< 6"
 gem "mongoid"
-gem "mongoid_includes"
 
 # image uploads
 # https://github.com/markevans/dragonfly (rdoc: https://rubydoc.info/github/markevans/dragonfly/)

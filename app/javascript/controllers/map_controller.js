@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 import { initializeSocket, sendMessage } from 'channels/map_channel'
 import { parseClipboardFeature, setCopiedFeature } from 'helpers/clipboard'
+import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { initializeEditMode } from 'maplibre/edit'
 import { moveFeatureTo } from 'maplibre/feature'
@@ -60,7 +61,7 @@ export default class extends Controller {
 
   // paste feature from clipboard
   paste(event) {
-    if (functions.isFormFieldFocused()) { return }
+    if (dom.isInputElement(document.activeElement)) { return }
     if (window.gon.map_mode !== 'rw') { return }
 
     // the paste event carries the data, the clipboard API would ask the user for permission

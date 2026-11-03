@@ -3,6 +3,7 @@ import { centroid } from "@turf/centroid"
 import distance from "@turf/distance"
 import { point } from "@turf/helpers"
 import { simplify } from "@turf/simplify"
+import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { resetControls } from 'maplibre/controls/shared'
@@ -20,7 +21,7 @@ export class AnimationManager {
   // Escape runs the same cleanup as a completed animation.
   cancelOnEscape (cleanup) {
     this.escapeHandler = (event) => {
-      if (event.key !== 'Escape' || functions.isFormFieldFocused()) { return }
+      if (event.key !== 'Escape' || dom.isInputElement(document.activeElement)) { return }
       cleanup()
     }
     document.addEventListener('keydown', this.escapeHandler)
