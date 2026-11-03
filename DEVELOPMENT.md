@@ -42,6 +42,12 @@ HTTP_PORT=3001 bin/thrust rails server
 
 In development, environment variables (see [SELF-HOSTING.md](SELF-HOSTING.md#environment-variables)) can be set in `.env.development`.
 
+#### HTTP/2 for local profiling
+
+Puma serves HTTP/1.1 only, so the browser queues the many JavaScript files. Production gets HTTP/2 and compression from Traefik. To measure load times like in production, install [Caddy](https://caddyserver.com) and start the app with `bin/dev`. If Caddy is installed, `bin/dev` starts it next to Rails with `Caddyfile.dev` and writes its log to `log/caddy.log`.
+
+Then open https://localhost:3443. On the first run, Caddy installs its local root certificate. If Firefox still shows a certificate warning, install the NSS tools (`mozilla-nss-tools` on openSUSE) and run `caddy trust`.
+
 
 ### Base Maps
 

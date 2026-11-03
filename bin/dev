@@ -1,2 +1,19 @@
 #!/usr/bin/env ruby
-exec "./bin/rails", "server", *ARGV
+# With Caddy installed, it runs next to Rails and serves https://localhost:3443 with HTTP/2 (see Caddyfile.dev)
+caddy = if system("command -v caddy > /dev/null")
+  puts "Caddy: https://localhost:3443 (log/caddy.log)"
+  spawn("caddy", "run", "--config", "Caddyfile.dev", out: "log/caddy.log", err: [ :child, :out ])
+end
+
+begin
+  system("./bin/rails", "server", *ARGV)
+ensure
+  if caddy
+    begin
+      Process.kill("TERM", caddy)
+    rescue Errno::ESRCH
+      # Ctrl-C already reached Caddy, it is in the same process group
+    end
+    Process.wait(caddy)
+  end
+end

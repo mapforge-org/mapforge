@@ -96,8 +96,7 @@
         .dropdown
           %button#base-map-toggle.base-map-current.dropdown-toggle{ type: "button", "data-bs-toggle": "dropdown", "aria-expanded": "false",
             "data-bs-display": "static" }
-            - # lazy: the modal is hidden on every map page, so the image only loads when it opens
-            = image_tag(map_image.call(@map_properties[:base_map]), id: "base-map-current-image", class: "base-map-preview", loading: 'lazy')
+            = image_tag(map_image.call(@map_properties[:base_map]), id: "base-map-current-image", class: "base-map-preview")
             %span#base-map-current-description.base-map-description
           %ul.dropdown-menu.base-map-menu{ "aria-labelledby": "base-map-toggle" }
             - [ N_("Default maps"), *groups.keys, N_("Admin only") ].each do |group|

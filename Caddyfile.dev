@@ -1,0 +1,12 @@
+# Local TLS proxy, so the browser gets HTTP/2 and compression like in production (Traefik).
+# Puma speaks only HTTP/1.1, where the browser queues the many importmap files on 6 connections.
+# Usage: caddy run --config Caddyfile.dev, then open https://localhost:3443
+{
+	# the HTTP->HTTPS redirect listens on port 80, which needs root
+	auto_https disable_redirects
+}
+
+localhost:3443 {
+	encode zstd gzip
+	reverse_proxy localhost:3000
+}
