@@ -15,7 +15,7 @@ describe ApplicationController do
     it "translates the page into a requested locale" do
       get root_path(locale: "de")
       expect(response.body).to include('lang="de"')
-      expect(response.body).to include("Gestalte deine eigene Karte")
+      expect(response.body).to include("Gestalte deine Karte")
     end
 
     it "falls back to the default locale on an unknown locale" do

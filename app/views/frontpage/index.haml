@@ -5,57 +5,63 @@
   %link{ rel: "alternate", hreflang: "x-default", href: localized_root_url(I18n.default_locale) }
 
 %main#frontpage.main.selectable{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
-  / Hero Section
-  #hero.hero.section.dark-background
-    .hero-bg-image{ 'data-animate': "zoom-out" }
+  %section.landing-hero
+    .landing-wrap.landing-hero-grid
+      .landing-hero-text
+        / News badge – update the text below to advertise new features or site news.
+        / Remove or comment out this block when there is nothing to announce.
+        %a.landing-badge{ href: doc_path(id: 'bike_touring') }
+          %span.landing-badge-label= _("New")
+          = _("Bicycle tour planning: how it works →")
 
-    .container
-      .row
-        .col-lg-6.welcome-text
-          %h1.mapforge-font{ 'data-animate': "fade-up" }= _("Create your own map")
+        %h1.mapforge-font= _("Create your own map")
+        %p.landing-lead
+          = _("Your free map editor built on OpenStreetMap.")
+          %br
+          = _("Create individual maps for your places, tracks and events - draw, style and share in real-time.")
 
-          %div{ 'data-animate': "fade-up" }
-            %blockquote{ 'data-animate': "fade-up" }
-              %p.d-none.d-sm-block
-                = _("Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - draw, style and share in real-time.")
-              %p.d-sm-none
-                = _("Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events.")
-            .hero-actions
-              - if @user
-                = button_to _("Start a map"), create_map_path, class: 'btn btn-orange btn-lg'
-                = link_to _("Your maps"), my_path, class: 'btn btn-secondary btn-green'
-                = link_to _("Playground"), playground_path, class: 'btn btn-secondary btn-green'
-              - else
-                = button_to _("Playground"), playground_path, method: :get, class: 'btn btn-orange btn-lg'
-                = link_to _("Start a map"), create_map_path, class: 'btn btn-secondary btn-green', data: { turbo_method: :post }
+        .landing-actions
+          = button_to (@user ? _("Start a map") : _("Start for free")), create_map_path, class: 'btn btn-orange btn-lg'
+          - if @user
+            = link_to _("Your maps"), my_path, class: 'btn btn-outline-light btn-lg'
+          = link_to _("Playground"), playground_path, class: 'btn btn-outline-light btn-lg'
 
-        .col-lg-6.featured-maps.d-none.d-lg-block{ 'data-animate': "fade-up" }
-          / News Banner – update the text below to advertise new features or site news.
-          / Remove or comment out this block when there is nothing to announce.
-          .banner-explorer{ role: "note", 'aria-label': _("News") }
-            .banner-explorer-inner
-              .banner-explorer-content
-                %p.banner-title= _("Bicycle Touring!")
-                .divider
-                %p
-                  = _("Tour planning with Mapforge:")
-                  %br
-                  =link_to _('See how it works'), '/doc/bike_touring'
+        %ul.landing-checks
+          %li
+            %i.bi.bi-check-lg
+            = _("Open Source")
+          %li
+            %i.bi.bi-check-lg
+            = _("Ad-free and no tracking")
+          %li
+            %i.bi.bi-check-lg
+            = _("Self-hostable")
 
-          - if @featured_maps.present?
-            = render "featured_maps"
+      - # demo.webp is 3 MB and plays on its own, so it only loads on request
+      %figure.landing-video{ data: { controller: "hero-video" } }
+        .landing-video-frame
+          %img{ src: "/images/frontpage/demo_poster.webp", width: 1200, height: 732, alt: _("Demo: a map with routes, photos and 3D buildings takes shape"),
+                data: { 'hero-video-target': "image", src: "/images/frontpage/demo.webp?v2" } }
+          %button.landing-video-play{ type: "button", 'aria-label': _("Play video"),
+                                      data: { 'hero-video-target': "overlay", action: "click->hero-video#play" } }
+            %i.bi.bi-play-fill
+          %span.landing-video-length{ data: { 'hero-video-target': "overlay" } } 0:51
+        %figcaption= _("Watch a map take shape: routes, photos, areas and 3D buildings.")
 
-    .container.feature-tour-col{ 'data-animate': "fade-up" }
-      .col-lg-6.d-flex.justify-content-center
-        %a.feature-tour-link{ href: "#features" }
-          = _("Feature Tour")
-          %i.bi.bi-chevron-double-down
-
-  / Below lg the hero must stay one screen tall with the feature tour link at its bottom,
-  / so the featured maps get their own section there.
-  - if @featured_maps.present?
-    %section.featured-maps.featured-maps-mobile.section.background-bright.d-lg-none
-      = render "featured_maps"
+  %section.landing-stats.background-bright
+    .landing-wrap.landing-stats-grid
+      %div
+        .landing-stat-value.mapforge-font= number_with_delimiter(@stats[:maps])
+        .landing-stat-label= _("maps created")
+      %div
+        .landing-stat-value.mapforge-font= number_with_delimiter(@stats[:users])
+        .landing-stat-label= _("registered users")
+      %div
+        .landing-stat-value.mapforge-font AGPL-3.0
+        = link_to _("Code on GitHub →"), "https://github.com/mapforge-org/mapforge/", class: 'landing-stat-label'
+      %div
+        .landing-stat-value.mapforge-font= @stats[:updated]
+        = link_to _("Latest update · Changelog →"), doc_path(id: 'CHANGELOG'), class: 'landing-stat-label'
 
   %section#features.why-us.section
     .row.g-0
@@ -140,3 +146,7 @@
               - pinhead_link = link_to "Pinhead", "https://github.com/waysidemapping/pinhead"
               - ors_link = link_to "Openrouteservice", "https://openrouteservice.org/"
               = raw(_("Built with %{rails_link}, %{mongodb_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link}, %{pinhead_link} and %{ors_link}") % { rails_link: rails_link, mongodb_link: mongodb_link, maplibre_link: maplibre_link, osm_link: osm_link, draw_link: draw_link, turf_link: turf_link, pinhead_link: pinhead_link, ors_link: ors_link })
+
+  - if @featured_maps.present?
+    %section.featured-maps.section.background-bright
+      = render "featured_maps"

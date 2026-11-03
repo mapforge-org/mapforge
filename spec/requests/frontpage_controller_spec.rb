@@ -17,10 +17,10 @@ describe FrontpageController do
       expect(response.body).not_to match(%r{rel="modulepreload" href="[^"]*/(@turf--|maplibre-gl-)})
     end
 
-    it "offers the playground and start a map to a visitor" do
+    it "offers start for free and the playground to a visitor" do
       get "/"
-      expect(response.body).to include(">Playground</button>")
-      expect(response.body).to include(">Start a map</a>")
+      expect(response.body).to include(">Start for free</button>")
+      expect(response.body).to include(">Playground</a>")
       expect(response.body).not_to include(">Your maps</a>")
     end
 
@@ -31,6 +31,15 @@ describe FrontpageController do
       expect(response.body).to include(">Start a map</button>")
       expect(response.body).to include(">Your maps</a>")
       expect(response.body).to include(">Playground</a>")
+    end
+
+    it "shows the map and user counts and the latest changelog month" do
+      create(:map)
+      create(:user)
+      get "/"
+      month = Rails.root.join("CHANGELOG.md").read[/^## (\S+)/, 1]
+      expect(response.body).to include(">#{month}</div>")
+      expect(response.body).to include("maps created", "registered users")
     end
 
     it "links canonical and hreflang URLs" do

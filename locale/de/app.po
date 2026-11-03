@@ -59,6 +59,9 @@ msgstr "Eine Radtour, der Raumplan deiner Konferenz, ein Wegweiser für deine Ho
 msgid "About"
 msgstr "Über"
 
+msgid "Ad-free and no tracking"
+msgstr "Werbefrei & ohne Tracking"
+
 msgid "Add"
 msgstr "Hinzufügen"
 
@@ -155,9 +158,6 @@ msgstr "Fahrrad-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklic
 msgid "Bicycle Touring with Mapforge"
 msgstr "Fahrradtouren mit Mapforge"
 
-msgid "Bicycle Touring!"
-msgstr "Fahrradtouren!"
-
 msgid "Bicycle map with bike routes and trails"
 msgstr "Fahrradkarte mit Radrouten und Trails"
 
@@ -169,6 +169,9 @@ msgstr "Fahrradkarte mit Radrouten und Höhenlinien"
 
 msgid "Bicycle route"
 msgstr "Fahrradroute"
+
+msgid "Bicycle tour planning: how it works →"
+msgstr "Tourenplanung fürs Fahrrad – so funktioniert’s →"
 
 msgid "Big dots"
 msgstr "Große Punkte"
@@ -257,6 +260,9 @@ msgstr "Format wechseln"
 msgid "Cobblestone"
 msgstr "Kopfsteinpflaster"
 
+msgid "Code on GitHub →"
+msgstr "Code auf GitHub →"
+
 msgid "Color"
 msgstr "Farbe"
 
@@ -329,6 +335,9 @@ msgstr "Datei konnte nicht gelesen werden: %{error}"
 msgid "Create a route"
 msgstr "Route erstellen"
 
+msgid "Create individual maps for your places, tracks and events - draw, style and share in real-time."
+msgstr "Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - gestalte und teile in Echtzeit."
+
 msgid "Create individual maps for your places, tracks and events. Share your maps in real-time."
 msgstr "Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen. Teile deine Karten in Echtzeit."
 
@@ -336,7 +345,7 @@ msgid "Create map"
 msgstr "Karte erstellen"
 
 msgid "Create your own map"
-msgstr "Gestalte deine eigene Karte"
+msgstr "Gestalte deine Karte"
 
 msgid "Credits"
 msgstr "Credits"
@@ -373,6 +382,9 @@ msgstr "Zwischenpunkt löschen"
 
 msgid "Deleting %{type}"
 msgstr "%{type} wird gelöscht"
+
+msgid "Demo: a map with routes, photos and 3D buildings takes shape"
+msgstr "Demo: Eine Karte mit Routen, Fotos und 3D-Gebäuden entsteht"
 
 msgid "Descending"
 msgstr "Absteigend"
@@ -554,9 +566,6 @@ msgstr "Ebene %{name} konnte nicht geladen werden"
 msgid "Feature"
 msgstr "Objekt"
 
-msgid "Feature Tour"
-msgstr "Feature Tour"
-
 msgid "Fetching elevation data..."
 msgstr "Höhendaten werden geladen..."
 
@@ -718,6 +727,9 @@ msgstr "Tastenkürzel"
 
 msgid "Language"
 msgstr "Sprache"
+
+msgid "Latest update · Changelog →"
+msgstr "Letztes Update · Changelog →"
 
 msgid "Layer added"
 msgstr "Ebene hinzugefügt"
@@ -884,6 +896,9 @@ msgstr "Name:"
 msgid "Needs a polygon with four corners"
 msgstr "Benötigt ein Polygon mit vier Ecken"
 
+msgid "New"
+msgstr "Neu"
+
 msgid "New features go to layer %{name}"
 msgstr "Neue Elemente kommen in die Ebene %{name}"
 
@@ -895,9 +910,6 @@ msgstr "Neue Ebene"
 
 msgid "Newest"
 msgstr "Neueste"
-
-msgid "News"
-msgstr "Neuigkeiten"
 
 msgid "No"
 msgstr "Nein"
@@ -1007,8 +1019,11 @@ msgstr "Plane am Desktop, nutze Mapforge auf deinem Handy, bearbeite vor Ort, st
 msgid "Plan your ride and navigate with compass mode and elevation profile."
 msgstr "Plane deine Tour und navigiere mit Kompassmodus und Höhenprofil."
 
+msgid "Play video"
+msgstr "Video abspielen"
+
 msgid "Playground"
-msgstr "Demo-Karte"
+msgstr "Demo-Karte ansehen"
 
 msgid "Please confirm"
 msgstr "Bitte bestätigen"
@@ -1157,9 +1172,6 @@ msgstr "Karten suchen"
 msgid "Searching position"
 msgstr "Position wird gesucht"
 
-msgid "See how it works"
-msgstr "So funktioniert's"
-
 msgid "Select a feature"
 msgstr "Objekt auswählen"
 
@@ -1168,6 +1180,9 @@ msgstr "Linien-Zeichenmodus wählen"
 
 msgid "Select mode"
 msgstr "Auswahlmodus"
+
+msgid "Self-hostable"
+msgstr "Selbst hostbar"
 
 msgid "Set current view as default"
 msgstr "Aktuelle Ansicht als Standard setzen"
@@ -1248,7 +1263,10 @@ msgid "Standard OpenStreetMap with roads and places"
 msgstr "Standard-OpenStreetMap mit Straßen und Orten"
 
 msgid "Start a map"
-msgstr "Neue Karte erstellen"
+msgstr "Karte erstellen"
+
+msgid "Start for free"
+msgstr "Kostenlos loslegen"
 
 msgid "Steep downhill (>16%)"
 msgstr "Starkes Gefälle (>16 %)"
@@ -1358,9 +1376,6 @@ msgstr "Vollbild ein-/ausschalten"
 msgid "Topic maps"
 msgstr "Themenkarten"
 
-msgid "Tour planning with Mapforge:"
-msgstr "Tourenplanung mit Mapforge:"
-
 msgid "Track added"
 msgstr "Track hinzugefügt"
 
@@ -1442,6 +1457,9 @@ msgstr "Fußweg-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklic
 msgid "Walking route"
 msgstr "Wanderroute"
 
+msgid "Watch a map take shape: routes, photos, areas and 3D buildings."
+msgstr "Sieh zu, wie eine Karte entsteht: Routen, Fotos, Flächen und 3D-Gebäude."
+
 msgid "Waypoint added"
 msgstr "Wegpunkt hinzugefügt"
 
@@ -1484,11 +1502,8 @@ msgstr "Deine Karten"
 msgid "Your browser cannot render 3D graphics on the web. Update your browser, or turn on hardware acceleration in the browser settings."
 msgstr "Dein Browser kann keine 3D-Grafik im Web darstellen. Aktualisiere deinen Browser, oder schalte die Hardwarebeschleunigung in den Browser-Einstellungen ein."
 
-msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events - draw, style and share in real-time."
-msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - gestalte und teile in Echtzeit."
-
-msgid "Your free, open-source map editor built on OpenStreetMap. Create individual maps for your places, tracks and events."
-msgstr "Dein kostenloser, Open-Source Karteneditor auf Basis von OpenStreetMap. Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen."
+msgid "Your free map editor built on OpenStreetMap."
+msgstr "Der freie Karteneditor auf Basis von OpenStreetMap."
 
 msgid "Your maps"
 msgstr "Deine Karten"
@@ -1598,6 +1613,9 @@ msgstr "Waescherei|Wäscherei|Waschsalon|Waschen"
 msgid "log in"
 msgstr "melde dich an"
 
+msgid "maps created"
+msgstr "erstellte Karten"
+
 msgid "movies|movie_theater"
 msgstr "Kino|Filmtheater"
 
@@ -1624,6 +1642,9 @@ msgstr "öffentliche ID:"
 
 msgid "public_library"
 msgstr "Bibliothek|Buecherei|Bücherei|Stadtbibliothek"
+
+msgid "registered users"
+msgstr "registrierte Nutzer"
 
 msgid "run Mapforge on your own server"
 msgstr "betreibe Mapforge auf deinem eigenen Server"
