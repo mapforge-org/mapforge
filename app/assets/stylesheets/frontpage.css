@@ -135,7 +135,7 @@ section,
 }
 
 .landing-hero {
-  padding: 6.5rem 0 3.5rem;
+  padding: 6.5rem 0 2.5rem;
   background-color: var(--color-dark-moss-green);
   color: var(--color-light-sand);
 }
@@ -150,7 +150,7 @@ section,
 .landing-hero-text {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 2rem;
   min-width: 0;
   container-type: inline-size;
 }
@@ -166,8 +166,9 @@ section,
 .landing-lead {
   margin: 0;
   max-width: 32.5rem;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   line-height: 1.55;
+  text-wrap: balance;
 }
 
 .landing-badge {
@@ -286,6 +287,7 @@ section,
    A 1em square box matches the glyph box, which centers the triangle in its box. */
 .landing-video-play .bi {
   line-height: 1;
+  padding-left: 0.3rem;
 }
 
 .landing-video-play .bi::before {
@@ -317,7 +319,11 @@ section,
 }
 
 /* The 1px gap shows the grid background as cell dividers, in every column count */
+
+/* Above .landing-route, the route passes behind the card */
 .landing-stats-grid {
+  position: relative;
+  z-index: 2;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
@@ -379,6 +385,124 @@ section,
   opacity: 0.6;
 }
 
+.landing-features {
+  padding: 1rem 0 6rem;
+  background-color: var(--color-light-sand);
+  color: var(--text-color);
+}
+
+.landing-features h2 {
+  margin: 0.5rem 0 0.9rem;
+  font-size: 2.75rem;
+  line-height: 1.15;
+}
+
+.landing-features-eyebrow {
+  color: var(--color-mid-rust);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.landing-features-lead {
+  margin: 0 0 3.5rem;
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+.landing-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.landing-feature {
+  position: relative;
+  padding: 1.25rem 1.75rem 1.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-dark-moss-green) 12%, transparent);
+  border-radius: 1rem;
+  background-color: #FBF9F3;
+}
+
+.landing-feature-art {
+  position: relative;
+  max-width: 20rem;
+  margin: 0 0 1rem auto;
+}
+
+.landing-feature-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+#frontpage {
+  position: relative;
+}
+
+.landing-route {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.landing-route path {
+  fill: none;
+  stroke: var(--color-orange);
+  stroke-dasharray: 9 7;
+  stroke-linecap: round;
+  stroke-width: 2.5;
+}
+
+/* The static position keeps a row pin next to its headline, in the padding of the column */
+.landing-route-pin {
+  position: absolute;
+  z-index: 2;
+  margin-left: -2.5rem;
+  color: var(--color-mid-rust);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+/* The percentages are positions in the 320x130 drawing, the pin tip stands on them */
+.landing-feature .landing-route-pin {
+  margin-left: 0;
+  transform: translate(-50%, -100%);
+}
+
+.landing-route-pin-import {
+  top: 70.8%;
+  left: 36.9%;
+}
+
+.landing-route-pin-routing {
+  top: 65.4%;
+  left: 66.25%;
+}
+
+.landing-feature h3 {
+  font-family: inherit;
+  margin: 0 0 0.4rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.landing-feature p {
+  margin: 0;
+  opacity: 0.8;
+}
+
+@media (width < 992px) {
+  .landing-route, .landing-route-pin {
+    display: none;
+  }
+}
+
 @media (width <= 860px) {
   .landing-hero {
     padding: 4.5rem 0 3.5rem;
@@ -393,6 +517,10 @@ section,
   }
 
   .landing-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .landing-features-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -417,6 +545,10 @@ section,
   }
 
   .landing-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-features-grid {
     grid-template-columns: 1fr;
   }
 }

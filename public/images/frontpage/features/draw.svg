@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 130" fill="none" stroke="#33502a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" font-family="sans-serif" font-weight="700"><filter id="hand"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="8"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter><g filter="url(#hand)">
+<path d="M96 66l32-50 84 8 12 44z" fill="#dfe8d3"/>
+<path d="M112 66l26-46M136 66l24-44M160 66l24-42M184 66l20-40"/>
+<circle cx="96" cy="66" r="3.5" fill="#fff"/><circle cx="128" cy="16" r="3.5" fill="#fff"/><circle cx="212" cy="24" r="3.5" fill="#fff"/><circle cx="224" cy="68" r="3.5" fill="#fff"/>
+<path d="M240 72l6-20 40-40 15 14-41 41z" fill="#fff"/><path d="M246 52l14 15M240 72l11-3-6-7"/>
+<path d="M134 88l4 12h13l-10 8 4 12-11-7-11 7 4-12-10-8h13z"/>
+<circle cx="182" cy="104" r="7.5" fill="#b85e1e" stroke="none"/><circle cx="206" cy="104" r="7.5" fill="#2f6fb0" stroke="none"/><circle cx="230" cy="104" r="7.5" fill="#33502a" stroke="none"/><circle cx="254" cy="104" r="7.5" fill="#e6aa68" stroke="none"/>
+</g></svg>

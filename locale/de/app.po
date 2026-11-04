@@ -335,8 +335,8 @@ msgstr "Datei konnte nicht gelesen werden: %{error}"
 msgid "Create a route"
 msgstr "Route erstellen"
 
-msgid "Create individual maps for your places, tracks and events - draw, style and share in real-time."
-msgstr "Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen - gestalte und teile in Echtzeit."
+msgid "Create individual maps for your places, tracks and events."
+msgstr "Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen."
 
 msgid "Create individual maps for your places, tracks and events. Share your maps in real-time."
 msgstr "Erstelle individuelle Karten deiner Orte, Tracks und Veranstaltungen. Teile deine Karten in Echtzeit."
@@ -710,8 +710,8 @@ msgstr "Daten importieren (gpx, kml)"
 msgid "Import data (gpx, kml, image)"
 msgstr "Daten importieren (gpx, kml, Bild)"
 
-msgid "Import from GeoJSON, GPX and KML"
-msgstr "Importiere GeoJSON, GPX und KML"
+msgid "Import from GeoJSON, GPX and KML/KMZ"
+msgstr "Importiere GeoJSON, GPX und KML/KMZ"
 
 msgid "Import your data from GeoJSON, GPX and KML"
 msgstr "Importiere deine Daten aus GeoJSON, GPX und KML"
@@ -1723,3 +1723,36 @@ msgstr "🚻 Öffentliche Toiletten"
 
 msgid "🛜 Wifi"
 msgstr "🛜 WLAN"
+
+msgid "Features"
+msgstr "Funktionen"
+
+msgid "Import your data"
+msgstr "Daten importieren"
+
+msgid "Draw and style"
+msgstr "Zeichnen & gestalten"
+
+msgid "Routing with elevation profile"
+msgstr "Routing mit Höhenprofil"
+
+msgid "Plan routes for walking, bicycle and car"
+msgstr "Routen zu Fuß, mit dem Rad oder Auto planen"
+
+msgid "Dynamic layers"
+msgstr "Dynamische Ebenen"
+
+msgid "Show live OpenStreetMap data with %{overpass_link}"
+msgstr "OpenStreetMap-Daten live per %{overpass_link} einblenden"
+
+msgid "Base maps"
+msgstr "Basiskarten"
+
+msgid "Streets, Satellite, Topographic, Biking, Watercolor, 3D houses"
+msgstr "Straße, Satellit, Topo, Fahrrad, Aquarell, 3D-Gebäude"
+
+msgid "3D Terrain"
+msgstr "3D-Gelände"
+
+msgid "View your map with mountains and valleys"
+msgstr "Betrachte deine Karte mitsamt Bergen und Tälern"

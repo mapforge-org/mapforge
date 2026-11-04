@@ -4,10 +4,10 @@
     %link{ rel: "alternate", hreflang: locale, href: localized_root_url(locale) }
   %link{ rel: "alternate", hreflang: "x-default", href: localized_root_url(I18n.default_locale) }
 
-%main#frontpage.main.selectable{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
+%main#frontpage.main.selectable{ data: { 'controller': "header frontpage-route", 'action': "click->header#hideNavDropdown" } }
   %section.landing-hero
     .landing-wrap.landing-hero-grid
-      .landing-hero-text{ 'data-animate': "fade-up" }
+      .landing-hero-text
         / News badge – update the text below to advertise new features or site news.
         / Remove or comment out this block when there is nothing to announce.
         %a.landing-badge{ href: doc_path(id: 'bike_touring') }
@@ -18,7 +18,7 @@
         %p.landing-lead
           = _("Your free map editor built on OpenStreetMap.")
           %br
-          = _("Create individual maps for your places, tracks and events - draw, style and share in real-time.")
+          = _("Create individual maps for your places, tracks and events.")
 
         .landing-actions
           = button_to (@user ? _("Start a map") : _("Start for free")), create_map_path, class: 'btn btn-orange btn-lg'
@@ -28,17 +28,17 @@
 
         %ul.landing-checks
           %li
-            %i.bi.bi-check-lg
+            %i.bi.bi-geo-alt-fill{ data: { 'frontpage-route-target': "hero" } }
             = _("Open Source")
           %li
-            %i.bi.bi-check-lg
+            %i.bi.bi-geo-alt-fill{ data: { 'frontpage-route-target': "hero" } }
             = _("Ad-free and no tracking")
           %li
-            %i.bi.bi-check-lg
+            %i.bi.bi-geo-alt-fill{ data: { 'frontpage-route-target': "hero" } }
             = _("Self-hostable")
 
       - # demo.webp is 3 MB and plays on its own, so it only loads on request
-      %figure.landing-video{ data: { controller: "hero-video", animate: "fade-up" } }
+      %figure.landing-video{ data: { controller: "hero-video" } }
         .landing-video-frame
           %img{ src: "/images/frontpage/demo_poster.webp", width: 1200, height: 732, alt: _("Demo: a map with routes, photos and 3D buildings takes shape"),
                 data: { 'hero-video-target': "image", src: "/images/frontpage/demo.webp?v2" } }
@@ -48,9 +48,9 @@
           %span.landing-video-length{ data: { 'hero-video-target': "overlay" } } 0:51
         %figcaption= _("Watch a map take shape: routes, photos, areas and 3D buildings.")
 
-  %section.landing-stats
+  %section.landing-stats{ data: { 'frontpage-route-target': "stats" } }
     .landing-wrap
-      .landing-stats-grid
+      .landing-stats-grid{ 'data-animate': "fade-up" }
         .landing-stat
           %span.landing-stat-icon
             %i.bi.bi-map
@@ -78,46 +78,34 @@
             .landing-stat-label= _("Latest changes")
           %i.bi.bi-arrow-up-right.landing-stat-link
 
+  %section.landing-features
+    .landing-wrap
+      .landing-features-eyebrow= _("Features")
+      %h2.mapforge-font= _("Build the map you have in mind")
+      %p.landing-features-lead= _("A bicycle tour, the floor plan for your conference, a guide for your wedding guests")
+      .landing-features-grid{ data: { 'frontpage-route-target': "grid" } }
+        - overpass_link = link_to 'Overpass', doc_path(id: 'overpass_layers')
+        - [["import", _("Import your data"), _("Import from GeoJSON, GPX and KML/KMZ")],
+           ["draw", _("Draw and style"), _("Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more")],
+           ["routing", _("Routing with elevation profile"), _("Plan routes for walking, bicycle and car")],
+           ["layers", _("Dynamic layers"), raw(_("Show live OpenStreetMap data with %{overpass_link}") % { overpass_link: overpass_link })],
+           ["basemaps", _("Base maps"), _("Streets, Satellite, Topographic, Biking, Watercolor, 3D houses")],
+           ["terrain", _("3D Terrain"), _("View your map with mountains and valleys")]].each do |art, title, text|
+          %article.landing-feature
+            .landing-feature-art
+              %img{ src: "/images/frontpage/features/#{art}.svg", width: 320, height: 130, alt: "", loading: 'lazy' }
+              - if %w[import routing].include?(art)
+                %i.bi.bi-geo-alt-fill.landing-route-pin{ class: "landing-route-pin-#{art}", data: { 'frontpage-route-target': "feature" } }
+            %h3= title
+            %p= text
+
   %section#features.why-us.section
-    .row.g-0
-      .col-lg-5.img-bg
-        %img{ src: "/images/frontpage/demo.webp?v2", alt: _("Animation of the map editor: a photo gets added to a map"), loading: 'lazy' }
-      .col-lg-7.background-bright.slides
-        .item
-          %h2.mb-3.mapforge-font= _("Build the map you have in mind")
-          %h3.mb-3= _("A bicycle tour, the floor plan for your conference, a guide for your wedding guests")
-          %ul
-            %li
-              = _("Add your own data:")
-              %span.d-none.d-sm-inline
-                = _("Import your data from GeoJSON, GPX and KML")
-              %span.d-sm-none
-                = _("Import from GeoJSON, GPX and KML")
-            %li
-              = _("Draw shapes and style them:")
-              %span.d-none.d-sm-inline<
-                = _("Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more")
-              %span.d-sm-none
-                = _("Add pictures, customize colors, symbols, labels")
-            %li= _("Routing: Plan routes for walking, bicycle and car, with elevation profile")
-            %li
-              - overpass_link = link_to 'Overpass', doc_path(id: 'overpass_layers')
-              = raw(_("Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data") % { overpass_link: overpass_link })
-            %li
-              %span.d-none.d-sm-inline><
-                = _("Choose your base map: Streets, Satellite, Topographic, Biking, Watercolor, 3D houses etc.")
-              %span.d-sm-none><
-                = _("Choose your base map: Streets, Satellite, Topographic, Biking")
-            %li
-              %span.d-none.d-sm-inline
-                = _("3D Terrain: View your map with mountains")
-              %span.d-sm-none
-                = _("3D Terrain: View your map with elevation")
     .row.g-0
       .col-lg-5.img-bg.order-lg-last
         %img{ src: "/images/frontpage/share.webp", alt: _("Share dialog with an edit link and a view link over a 3D map"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
+          %i.bi.bi-geo-alt-fill.landing-route-pin{ data: { 'frontpage-route-target': "row" } }
           %h2.mb-3.mapforge-font= _("One link to view, one to edit")
           %h3.mb-3= _("Listed in the gallery, or shared privately")
           %ul
@@ -129,6 +117,7 @@
         %img{ src: "/images/frontpage/feature2.png", alt: _("The same map on a laptop, a tablet and a phone"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
+          %i.bi.bi-geo-alt-fill.landing-route-pin{ data: { 'frontpage-route-target': "row" } }
           %h2.mb-3.mapforge-font= _("The map goes with you")
           %h3.mb-3= _("Plan on desktop, run Mapforge on your phone, edit in the field, stream your track live")
           %ul
@@ -144,6 +133,7 @@
         %img{ src: "/images/frontpage/feature3.png", alt: _("Globe with a heart over Central Europe"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
+          %i.bi.bi-geo-alt-fill.landing-route-pin{ data: { 'frontpage-route-target': "row" } }
           %h2.mb-3.mapforge-font= _("Open Source")
           %h3.mb-3= _("The code is public, map data is owned by you")
           %ul
@@ -165,3 +155,6 @@
   - if @featured_maps.present?
     %section.featured-maps.section.background-bright
       = render "featured_maps"
+
+  %svg.landing-route{ 'aria-hidden': "true" }
+    %path{ data: { 'frontpage-route-target': "path" } }

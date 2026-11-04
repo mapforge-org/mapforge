@@ -10,4 +10,9 @@ describe "Frontpage" do
     expect(page).to have_css(".landing-video img[src*='demo.webp']")
     expect(page).to have_no_css(".landing-video-play")
   end
+
+  it "draws the route through the feature pins" do
+    expect(page).to have_css(".landing-route-pin", visible: :all, count: 5)
+    expect(find(".landing-route path", visible: :all)[:d]).to match(/\AM[\d.-]+ [\d.-]+ C/)
+  end
 end

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 130" fill="none" stroke="#33502a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" font-family="sans-serif" font-weight="700"><filter id="hand"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter><g filter="url(#hand)">
+<path d="M92 12c3 12 8 24 14 36M106 48l-10-4M106 48l1-11"/>
+<g transform="translate(0 -4)"><path d="M126 6h34l13 13v30h-47z" fill="#fff"/><path d="M160 6v13h13"/>
+<text x="149" y="36" font-size="11" text-anchor="middle" fill="#33502a" stroke="none">GPX</text>
+<path d="M178 16h35l11 11v25h-46z" fill="#fff"/><path d="M213 16v11h11"/>
+<text x="201" y="41" font-size="8.5" text-anchor="middle" fill="#33502a" stroke="none">KML/KMZ</text>
+<path d="M235 22h25l10 10v22h-35z" fill="#fff"/><path d="M260 22v10h10"/>
+<text x="252" y="45" font-size="8.5" text-anchor="middle" fill="#33502a" stroke="none">JSON</text></g>
+<circle cx="118" cy="92" r="3.5" fill="#33502a"/>
+<path d="M126 91c30-8 50 6 80 3s36-16 58-14 16 10 24 15" stroke-dasharray="1.5 5"/>
+</g></svg>

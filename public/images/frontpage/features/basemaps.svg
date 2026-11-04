@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 130" fill="none" stroke="#33502a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" font-family="sans-serif" font-weight="700"><filter id="hand"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="6"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter><g filter="url(#hand)">
+<path d="M96 14l58 16v96l-58-16z" fill="#dfe8d3"/>
+<path d="M154 30l50-16v96l-50 16z" fill="#cfe1dc"/>
+<path d="M204 14l58 16v96l-58-16z" fill="#e6e4cf"/>
+<path d="M106 54c16-6 30 4 44 0M134 22l-20 60"/>
+<path d="M164 50c8-6 14 6 22 0s8 2 12 0M164 86c8-6 14 6 22 0s8 2 12 0"/>
+<path d="M216 44c14-14 28-8 36 4M216 84c12-12 26-8 34 2"/>
+</g></svg>

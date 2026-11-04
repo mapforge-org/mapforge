@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 130" fill="none" stroke="#33502a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" font-family="sans-serif" font-weight="700"><filter id="hand"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter><g filter="url(#hand)">
+<path d="M78 92l64-20h128l-60 20z" fill="#fff"/>
+<path d="M78 72l64-20h128l-60 20z" fill="#fff"/>
+<path d="M78 52l64-20h128l-60 20z" fill="#cfe1dc"/>
+<circle cx="146" cy="44" r="3.5" fill="#b85e1e" stroke="none"/><circle cx="182" cy="40" r="3.5" fill="#b85e1e" stroke="none"/><circle cx="214" cy="46" r="3.5" fill="#b85e1e" stroke="none"/>
+<circle cx="134" cy="114" r="9"/><path d="M141 121l9 8"/>
+<text x="160" y="118" font-size="10.5" fill="#33502a" stroke="none">Overpass</text>
+</g></svg>

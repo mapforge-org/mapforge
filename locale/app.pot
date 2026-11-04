@@ -443,7 +443,7 @@ msgid "Create a route"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:21
-msgid "Create individual maps for your places, tracks and events - draw, style and share in real-time."
+msgid "Create individual maps for your places, tracks and events."
 msgstr ""
 
 #: ../app/views/layouts/_head.html.haml:20
@@ -943,7 +943,7 @@ msgid "Import data (gpx, kml, image)"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:80
-msgid "Import from GeoJSON, GPX and KML"
+msgid "Import from GeoJSON, GPX and KML/KMZ"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:78
@@ -2291,4 +2291,37 @@ msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:111
 msgid "🛜 Wifi"
+msgstr ""
+
+msgid "Features"
+msgstr ""
+
+msgid "Import your data"
+msgstr ""
+
+msgid "Draw and style"
+msgstr ""
+
+msgid "Routing with elevation profile"
+msgstr ""
+
+msgid "Plan routes for walking, bicycle and car"
+msgstr ""
+
+msgid "Dynamic layers"
+msgstr ""
+
+msgid "Show live OpenStreetMap data with %{overpass_link}"
+msgstr ""
+
+msgid "Base maps"
+msgstr ""
+
+msgid "Streets, Satellite, Topographic, Biking, Watercolor, 3D houses"
+msgstr ""
+
+msgid "3D Terrain"
+msgstr ""
+
+msgid "View your map with mountains and valleys"
 msgstr ""
