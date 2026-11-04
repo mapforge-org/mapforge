@@ -135,7 +135,7 @@ section,
 }
 
 .landing-hero {
-  padding: 6.5rem 0 5rem;
+  padding: 6.5rem 0 3.5rem;
   background-color: var(--color-dark-moss-green);
   color: var(--color-light-sand);
 }
@@ -280,6 +280,16 @@ section,
   color: #fff;
   font-size: 3rem;
   transition: transform 0.15s ease;
+}
+
+/* Bootstrap Icons shifts the glyph with vertical-align and the inherited line height.
+   A 1em square box matches the glyph box, which centers the triangle in its box. */
+.landing-video-play .bi {
+  line-height: 1;
+}
+
+.landing-video-play .bi::before {
+  display: block;
 }
 
 @media (hover: hover) {
