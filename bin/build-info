@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Writes config/build_info.json for the frontpage. CI runs it before the container build.
+set -euo pipefail
+
+repo="${GITHUB_REPOSITORY:-mapforge-org/mapforge}"
+release="${RELEASE:-$(gh api "repos/$repo/releases/latest" --jq .tag_name 2>/dev/null || true)}"
+
+jq -n \
+  --argjson stars "$(gh api "repos/$repo" --jq .stargazers_count)" \
+  --arg release "$release" \
+  --arg sha "$(git rev-parse HEAD)" \
+  --arg date "$(git log -1 --format=%cI)" \
+  '{stars: $stars, release: ($release | select(. != "") // null), sha: $sha, date: $date}' \
+  > config/build_info.json

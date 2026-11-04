@@ -343,7 +343,7 @@ msgid "Cobblestone"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:61
-msgid "Code on GitHub →"
+msgid "Stars on GitHub"
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:105
@@ -966,8 +966,8 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:64
-msgid "Latest update · Changelog →"
+#: ../app/views/frontpage/index.haml:76
+msgid "Latest changes"
 msgstr ""
 
 #: ../app/javascript/maplibre/undo.js:64

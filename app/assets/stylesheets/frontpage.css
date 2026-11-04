@@ -152,11 +152,14 @@ section,
   flex-direction: column;
   gap: 1.75rem;
   min-width: 0;
+  container-type: inline-size;
 }
 
+/* The headline is about 9.7em wide, so 10cqi keeps it on one line in the column.
+   The minimum keeps it larger than the lead text and wraps it on phones instead. */
 .landing-hero h1 {
   margin: 0;
-  font-size: min(4.2vw, 3.5rem);
+  font-size: clamp(2.25rem, 10cqi, 3.5rem);
   line-height: 1.08;
 }
 
@@ -297,26 +300,73 @@ section,
   font-weight: 700;
 }
 
+/* The hard color stop puts the card half over the hero */
 .landing-stats {
-  padding: 2.5rem 0;
-  color: var(--text-color);
+  padding: 0 0 2.5rem;
+  background: linear-gradient(var(--color-dark-moss-green) 2.5rem, var(--color-light-sand) 0);
 }
 
+/* The 1px gap shows the grid background as cell dividers, in every column count */
 .landing-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  gap: 1px;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background-color: color-mix(in srgb, var(--color-dark-moss-green) 12%, transparent);
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 15%);
+}
+
+.landing-stat {
+  position: relative;
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+  padding: 1.1rem 1.25rem;
+  background-color: #FBF9F3;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  a.landing-stat:hover {
+    background-color: #F4F1E6;
+  }
+}
+
+.landing-stat-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  background-color: color-mix(in srgb, var(--color-dark-moss-green) 12%, transparent);
+  color: var(--color-dark-moss-green);
+}
+
+.landing-stat-icon-accent {
+  background-color: color-mix(in srgb, var(--color-orange) 18%, transparent);
+  color: var(--color-mid-rust);
 }
 
 .landing-stat-value {
   color: var(--color-dark-moss-green);
-  font-size: 2.1rem;
+  font-size: 1.6rem;
+  line-height: 1.15;
 }
 
 .landing-stat-label {
-  color: inherit;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.landing-stat-link {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  font-size: 0.75rem;
+  opacity: 0.6;
 }
 
 @media (width <= 860px) {
@@ -328,16 +378,36 @@ section,
     padding: 0 1.25rem;
   }
 
-  .landing-hero h1 {
-    font-size: min(9vw, 3.5rem);
-  }
-
   .landing-hero-grid {
     grid-template-columns: 1fr;
   }
 
   .landing-stats-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width <= 520px) {
+  .landing-badge {
+    display: none;
+  }
+
+  .landing-lead {
+    font-size: 1.05rem;
+  }
+
+  .landing-hero-text {
+    align-items: center;
+    text-align: center;
+  }
+
+  .landing-actions,
+  .landing-checks {
+    justify-content: center;
+  }
+
+  .landing-stats-grid {
+    grid-template-columns: 1fr;
   }
 }
 

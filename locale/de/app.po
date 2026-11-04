@@ -260,8 +260,8 @@ msgstr "Format wechseln"
 msgid "Cobblestone"
 msgstr "Kopfsteinpflaster"
 
-msgid "Code on GitHub →"
-msgstr "Code auf GitHub →"
+msgid "Stars on GitHub"
+msgstr "Sterne auf GitHub"
 
 msgid "Color"
 msgstr "Farbe"
@@ -725,11 +725,11 @@ msgstr "Die Mapforge-App installieren"
 msgid "Keyboard Shortcuts"
 msgstr "Tastenkürzel"
 
+msgid "Latest changes"
+msgstr "Letzte Änderungen"
+
 msgid "Language"
 msgstr "Sprache"
-
-msgid "Latest update · Changelog →"
-msgstr "Letztes Update · Changelog →"
 
 msgid "Layer added"
 msgstr "Ebene hinzugefügt"

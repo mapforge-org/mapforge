@@ -52,6 +52,11 @@ jobs:
         with:
           ref: refs/pull/${{ github.event.inputs.pr_number }}/merge
 
+      - name: Write build info
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bin/build-info
+
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign

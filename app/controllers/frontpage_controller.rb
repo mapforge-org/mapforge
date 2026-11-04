@@ -1,6 +1,12 @@
 class FrontpageController < ApplicationController
   layout "frontpage"
 
+  BUILD_INFO = begin
+    JSON.parse(Rails.root.join("config/build_info.json").read, symbolize_names: true)
+  rescue Errno::ENOENT
+    { stars: "**", sha: `git rev-parse HEAD 2>/dev/null`.strip.presence }
+  end
+
   def index
     path = shared_link_path
     return redirect_to path if path
@@ -9,6 +15,7 @@ class FrontpageController < ApplicationController
     @featured_maps = Map.unscoped.listed.where(tags: "featured").to_a.shuffle.select(&:screenshot).first(3).presence ||
       Map.unscoped.listed.sorted("view_count", "desc").limit(20).to_a.select(&:screenshot).first(3)
     @stats = stats
+    @build = BUILD_INFO
   end
 
   private

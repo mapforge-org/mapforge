@@ -35,6 +35,9 @@
 
 /public/assets
 
+# Written by bin/build-info in CI
+/config/build_info.json
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 

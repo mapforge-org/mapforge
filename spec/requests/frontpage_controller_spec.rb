@@ -33,13 +33,24 @@ describe FrontpageController do
       expect(response.body).to include(">Playground</a>")
     end
 
-    it "shows the map and user counts and the latest changelog month" do
+    it "shows the map and user counts" do
       create(:map)
       create(:user)
       get "/"
-      month = Rails.root.join("CHANGELOG.md").read[/^## (\S+)/, 1]
-      expect(response.body).to include(">#{month}</div>")
       expect(response.body).to include("maps created", "registered users")
+    end
+
+    it "shows the stars and the release from the build info" do
+      stub_const("FrontpageController::BUILD_INFO", { stars: 1234, release: "v2026.11.01", sha: "abcdef123456" })
+      get "/"
+      expect(response.body).to include("1,234", ">v2026.11.01</div>")
+      expect(response.body).not_to include("abcdef1")
+    end
+
+    it "shows the git sha and no star count without build info" do
+      stub_const("FrontpageController::BUILD_INFO", { stars: "**", sha: "abcdef123456" })
+      get "/"
+      expect(response.body).to include("**", ">abcdef1</div>")
     end
 
     it "links canonical and hreflang URLs" do

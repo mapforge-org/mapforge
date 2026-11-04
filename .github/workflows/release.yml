@@ -32,6 +32,13 @@ jobs:
           awk '/^## /{if(n++)exit} n' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
           echo "Container image: \`${REGISTRY}/${IMAGE_NAME}:${tag}\`" >> "$RUNNER_TEMP/notes.md"
 
+      # The image is built before the release exists, so pass the new tag
+      - name: Write build info
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE: ${{ steps.meta.outputs.tag }}
+        run: bin/build-info
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
 

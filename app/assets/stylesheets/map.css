@@ -7,6 +7,14 @@ html:has(.map), body:has(.map) {
   }
 }
 
+/* The map controls are sized in rem around 2rem buttons. On touch screens the root
+   scale takes them to about 42px, near the 44px touch target, and keeps them aligned. */
+@media (pointer: coarse) {
+  html:has(.map) {
+    font-size: 130%;
+  }
+}
+
 #map-head {
   z-index: 1;
   display: flex;
