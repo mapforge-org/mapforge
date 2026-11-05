@@ -177,7 +177,11 @@ export function resetDirections () {
 export async function initDirections (profile, feature) {
   resetDirections()
   const initGeneration = generation
-  const { CustomMapLibreGlDirections, layersFactory } = await loadDirectionsLib()
+  // The route buttons react at once, so the first clicks can land before the plugin is there
+  const earlyClicks = []
+  const collectClick = (e) => earlyClicks.push(e.lngLat)
+  map.on('click', collectClick)
+  const { CustomMapLibreGlDirections, layersFactory } = await loadDirectionsLib().finally(() => map.off('click', collectClick))
   if (initGeneration !== generation) { return }
   console.log("Initializing directions ('" + profile + "') with", feature || "new route")
   currentFeature = feature
@@ -302,6 +306,8 @@ export async function initDirections (profile, feature) {
   directions.on('removewaypoint', (e) => {
     console.log('Waypoint removed', e)
   })
+
+  earlyClicks.forEach(({ lng, lat }) => directions.addWaypoint([lng, lat]))
 }
 
 export function addWaypointAt (legIndex, lngLat) {

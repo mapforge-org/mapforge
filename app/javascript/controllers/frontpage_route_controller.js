@@ -1,8 +1,9 @@
 import { Controller } from '@hotwired/stimulus'
 
-const POINT_SPACING = 90
-const STRAIGHT_LENGTH = 280
-const WOBBLE = 5
+// All values are in pixels
+const POINT_SPACING = 90 // distance between the extra points on a long segment
+const STRAIGHT_LENGTH = 280 // shorter segments are bends and stay unchanged
+const WOBBLE = 5 // largest sideways shift of an extra point
 
 export default class extends Controller {
   static targets = ['path', 'actions', 'hero', 'feature', 'row', 'stats', 'grid']

@@ -48,7 +48,7 @@ msgid "3D Terrain:"
 msgstr "3D-Gelände:"
 
 msgid "A bicycle tour, the floor plan for your conference, a guide for your wedding guests"
-msgstr "Eine Radtour, der Raumplan deiner Konferenz, ein Wegweiser für deine Hochzeitsgäste"
+msgstr "Erstelle eine Radtour, den Raumplan einer Konferenz, oder einen Wegweiser für deine Hochzeitsgäste"
 
 msgid "About"
 msgstr "Über"
