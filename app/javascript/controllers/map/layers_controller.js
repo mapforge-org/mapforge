@@ -319,6 +319,7 @@ export default class extends Controller {
     const layerId = layerElement.getAttribute('data-layer-id')
     const layer = layers.find(l => l.id === layerId)
     const wasVisible = layer.show !== false
+    const previousActiveLayer = activeLayer()
     if (window.gon.map_mode === "rw") { addUndoState('Layer updated', layerSettings(layer)) }
 
     layer.show = !wasVisible
@@ -371,6 +372,11 @@ export default class extends Controller {
     // needed when they don't exist yet (hidden at page load, or replaced by setStyle).
     if (layer.show && (layer.type !== 'geojson' || !layer.getStyleLayerIds().length)) { initializeLayerStyles(layerId) }
     sendMessage('update_layer', layer.toJSON())
+
+    if (window.gon.map_mode === 'rw' && layer.type === 'geojson') {
+      if (activeLayer() !== previousActiveLayer) { setActiveLayer(activeLayer().id) }
+      initLayersModal()
+    }
   }
 
   activateLayer (event) {

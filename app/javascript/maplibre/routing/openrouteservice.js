@@ -82,7 +82,7 @@ export async function orsFetch ({ method: _method, url, payload }) {
 
   // Build waypoints from route geometry + way_points indices for maplibre-gl-directions
   const routeCoords = decodePolyline(data.routes[0].geometry, ORS_ELEVATION_IN_ROUTE)
-  const offTerrain = await offTerrainExtra(routeCoords)
+  const offTerrain = await offTerrainExtra(routeCoords, data.routes[0].extras)
 
   const waypoints = payload.coordinates.map((coord, i) => {
     const wpIndex = data.routes[0].way_points[i]
@@ -169,34 +169,99 @@ export async function getRouteElevation (waypoints) {
 
 // The route elevation and the SRTM terrain disagree by 40 m and more on some open mountain roads. A small
 // bridge or a shallow tunnel stays below this height, but its wall is only a little off.
-// ponytail: a fixed height, compare against the terrain at the vertices too if false positives remain
 const OFF_TERRAIN_HEIGHT = 20
 // A shorter tunnel or bridge is a mismatch of the elevation data
 const OFF_TERRAIN_MIN_LENGTH = 25
+// ORS interpolates between the ends of a bridge or tunnel, so its inner vertices stay on a straight line. The
+// share of the length allows for the bends of a long tunnel that consists of several OSM ways.
+const STRAIGHT_TOLERANCE = 2
+const STRAIGHT_TOLERANCE_SHARE = 0.01
+// ORS surface values: Dirt, Ground, Ice, Sand, Grass
+const NATURAL_SURFACES = [11, 12, 13, 15, 17]
+// ORS traildifficulty value of sac_scale=mountain_hiking and mtb:scale=1
+const MOUNTAIN_TRAIL_DIFFICULTY = 2
+// ORS waytype values: Path, Track, Footway
+const TRAIL_WAY_TYPES = [4, 5, 7]
+// ORS surface values: Paved, Asphalt, Concrete, Cobblestone, Metal, Wood, Paving Stones
+const BUILT_SURFACES = [1, 3, 4, 5, 6, 7, 14]
+// On steep trails the two elevations differ by more than 30 m without a structure. A higher global height
+// is no option, because it drops the shallow tunnels of paved cycleways. The values separate 2 hikes from
+// a car and a bike route, measured in November 2026.
+const TRAIL_MIN_HEIGHT = 40
+const TRAIL_MIN_LENGTH = 50
 
 // ORS interpolates the route elevation through tunnels and over bridges, the Elevation API returns the SRTM
 // terrain. Where the two differ at the middle of an edge, the route leaves the terrain: -1 below it (tunnel),
 // 1 above it (bridge). The result has the format of an ORS extra, so the route walls can skip it (see
 // extrusion.js) and a reversed route keeps it.
-export async function offTerrainExtra (coords) {
+// On steep ground the two elevations also differ without a bridge or tunnel, so a difference is only a candidate.
+// ORS has no bridge or tunnel extra for the foot profiles, see onStraightLine, onNaturalTrail and onTrail for the filters.
+export async function offTerrainExtra (coords, extras) {
   if (coords.length < 2 || coords[0].length < 3) return { values: [] }
   const midpoints = coords.slice(1).map((c, i) => [(coords[i][0] + c[0]) / 2, (coords[i][1] + c[1]) / 2])
   const terrain = await getRouteElevation(midpoints)
   if (terrain?.length !== midpoints.length) return { values: [] }
-  return { values: offTerrainValues(coords, terrain.map(c => c[2])) }
+  return { values: offTerrainValues(coords, terrain.map(c => c[2]), extras) }
 }
 
-export function offTerrainValues (coords, midpointTerrain) {
+export function offTerrainValues (coords, midpointTerrain, extras) {
   const values = []
+  const heights = []
   midpointTerrain.forEach((terrain, i) => {
     const route = (coords[i][2] + coords[i + 1][2]) / 2
-    if (Math.abs(route - terrain) < OFF_TERRAIN_HEIGHT) return
+    heights.push(Math.abs(route - terrain))
+    if (heights[i] < OFF_TERRAIN_HEIGHT) return
     const value = Math.sign(route - terrain)
     const last = values.at(-1)
     if (last?.[1] === i && last[2] === value) { last[1] = i + 1 } else { values.push([i, i + 1, value]) }
   })
-  return values.filter(([from, to]) =>
-    length(lineString(coords.slice(from, to + 1)), { units: 'meters' }) >= OFF_TERRAIN_MIN_LENGTH)
+  return values.filter(([from, to]) => {
+    const meters = length(lineString(coords.slice(from, to + 1)), { units: 'meters' })
+    const edge = Math.floor((from + to) / 2)
+    const trail = onTrail(extras, edge)
+    return meters >= (trail ? TRAIL_MIN_LENGTH : OFF_TERRAIN_MIN_LENGTH) &&
+      (!trail || Math.max(...heights.slice(from, to)) >= TRAIL_MIN_HEIGHT) &&
+      onStraightLine(coords, from, to) && !onNaturalTrail(extras, edge)
+  })
+}
+
+// A range often starts inside its bridge or tunnel, so the check runs from portal to portal. ORS returns a whole
+// meter at the end of a way and smoothed decimals inside it. This is measured on route data, ORS does not document it.
+// ponytail: if ORS changes this, a range runs to the route ends and no bridge or tunnel passes. A way boundary extra
+// from a self-hosted ORS instance is the upgrade path.
+function onStraightLine (coords, rangeFrom, rangeTo) {
+  let from = rangeFrom
+  let to = rangeTo
+  while (from > 0 && !Number.isInteger(coords[from][2])) { from-- }
+  while (to < coords.length - 1 && !Number.isInteger(coords[to][2])) { to++ }
+  const range = coords.slice(from, to + 1)
+  const distances = [0]
+  for (let i = 1; i < range.length; i++) {
+    distances.push(distances[i - 1] + length(lineString(range.slice(i - 1, i + 1)), { units: 'meters' }))
+  }
+  const total = distances.at(-1)
+  const tolerance = Math.max(STRAIGHT_TOLERANCE, total * STRAIGHT_TOLERANCE_SHARE)
+  const start = range[0][2]
+  const climb = range.at(-1)[2] - start
+  return range.every((c, i) => Math.abs(c[2] - (start + climb * distances[i] / total)) <= tolerance)
+}
+
+// A bridge or tunnel is normally its own OSM way, so the tags of the middle edge are the tags of the structure.
+// ponytail: this and the trail limits also drop a real tunnel on a dirt path. It then gets a wall on the terrain
+// and no label. Cross-route terrain samples from the Elevation API can tell these apart, if that becomes a problem.
+function onNaturalTrail (extras, edge) {
+  return NATURAL_SURFACES.includes(extraAtEdge(extras?.surface, edge)) ||
+    extraAtEdge(extras?.traildifficulty, edge) >= MOUNTAIN_TRAIL_DIFFICULTY
+}
+
+function onTrail (extras, edge) {
+  return TRAIL_WAY_TYPES.includes(extraAtEdge(extras?.waytype, edge)) &&
+    !BUILT_SURFACES.includes(extraAtEdge(extras?.surface, edge))
+}
+
+// An edge starts at the vertex with its index, so a segment [from, to, value] holds the edges from to to - 1
+function extraAtEdge (extra, edge) {
+  return extra?.values?.find(([from, to]) => edge >= from && edge < to)?.[2]
 }
 
 // ORS rejects a geometry with any point outside SRTM. SRTM has no data over the sea,
@@ -335,7 +400,7 @@ export async function getRouteUpdate (originalFeature, updatedFeature) {
 
     updatedFeature.properties.route.waypoints = waypoints
     updatedFeature.properties.route.extras = { ...routeResponse.routes[0].extras,
-      off_terrain: await offTerrainExtra(routeLocations) }
+      off_terrain: await offTerrainExtra(routeLocations, routeResponse.routes[0].extras) }
   } catch (err) {
     console.error('An error occurred: ' + err)
     status(window.__('Error building route'), 'error')

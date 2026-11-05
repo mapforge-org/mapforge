@@ -37,6 +37,80 @@ describe "Feature directions" do
     end
   end
 
+  context "with a route that leaves the terrain" do
+    let(:straight) { [ 1000, 1010, 1020, 1030, 1040 ] }
+
+    before do
+      visit map.private_map_path
+      expect_map_loaded
+    end
+
+    # The vertices are about 33 m apart, the terrain is above the route by the offsets of the edges
+    def off_terrain(elevations, extras = nil, offsets = Array.new(elevations.size - 1, 30))
+      page.evaluate_async_script(<<~JS, elevations, extras, offsets)
+        const [elevations, extras, offsets, done] = arguments
+        import('maplibre/routing/openrouteservice').then(({ offTerrainValues }) => {
+          const coords = elevations.map((e, i) => [11, 47 + i * 0.0003, e])
+          const terrain = offsets.map((offset, i) => (coords[i][2] + coords[i + 1][2]) / 2 + offset)
+          done(offTerrainValues(coords, terrain, extras))
+        })
+      JS
+    end
+
+    it "keeps a straight range" do
+      expect(off_terrain(straight)).to eq([ [ 0, 4, -1 ] ])
+      expect(off_terrain(straight, { surface: { values: [ [ 0, 4, 0 ] ] } })).to eq([ [ 0, 4, -1 ] ])
+    end
+
+    it "drops a range with a bent elevation" do
+      expect(off_terrain([ 1000, 1015, 1000, 1015, 1000 ])).to eq([])
+    end
+
+    it "checks the elevation from way end to way end" do
+      offsets = [ 0, 30, 0, 0 ]
+      expect(off_terrain([ 1000, 1010.01, 1020.02, 1030.01, 1040 ], nil, offsets)).to eq([ [ 1, 2, -1 ] ])
+      expect(off_terrain([ 1000, 1013.3, 1023.4, 1033.3, 1040 ], nil, offsets)).to eq([])
+    end
+
+    it "drops a straight range on a natural surface" do
+      expect(off_terrain(straight, { surface: { values: [ [ 0, 4, 12 ] ] } })).to eq([])
+    end
+
+    it "drops a straight range on a mountain trail" do
+      expect(off_terrain(straight, { traildifficulty: { values: [ [ 0, 4, 3 ] ] } })).to eq([])
+    end
+
+    context "with a trail" do
+      let(:path) { { values: [ [ 0, 4, 4 ] ] } }
+
+      it "drops a straight range below the trail height" do
+        expect(off_terrain(straight, { waytype: path })).to eq([])
+      end
+
+      it "drops a range below the trail length" do
+        expect(off_terrain(straight.first(2), { waytype: path }, [ 45 ])).to eq([])
+      end
+
+      it "keeps a range above both trail limits" do
+        expect(off_terrain(straight, { waytype: path }, [ 45 ] * 4)).to eq([ [ 0, 4, -1 ] ])
+      end
+
+      it "keeps a shallow range on a built surface" do
+        extras = { waytype: path, surface: { values: [ [ 0, 4, 7 ] ] } }
+        expect(off_terrain(straight, extras)).to eq([ [ 0, 4, -1 ] ])
+      end
+
+      it "keeps a shallow range on a road" do
+        expect(off_terrain(straight, { waytype: { values: [ [ 0, 4, 1 ] ] } })).to eq([ [ 0, 4, -1 ] ])
+      end
+    end
+
+    it "keeps a bridge way of one edge inside a natural trail" do
+      extras = { surface: { values: [ [ 0, 1, 12 ], [ 1, 2, 7 ], [ 2, 3, 12 ] ] } }
+      expect(off_terrain([ 1000, 1010, 1020, 1030 ], extras, [ 0, 30, 0 ])).to eq([ [ 1, 2, -1 ] ])
+    end
+  end
+
   context "without an openrouteservice key" do
     before do
       allow(Map).to receive(:provider_keys).and_return(Map.provider_keys.merge(openrouteservice: nil))

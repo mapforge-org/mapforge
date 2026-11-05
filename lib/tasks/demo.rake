@@ -7,7 +7,7 @@ namespace :demo do
     pace = 0.75                                    # every cursor action runs 25% faster
 
     # Opening and closing shot: all three scenes in one frame
-    wide_view = { center: [ 10.13148, 42.80478 ], zoom: 14.4, bearing: 0, pitch: 0 }
+    wide_view = { center: [ 10.2734, 42.7854 ], zoom: 10.99, bearing: 0, pitch: 0 }
 
     # Scene 1: Cleo's walk on the coast path west of Sant'Andrea
     walk_view = { center: [ 10.141389, 42.806839 ], zoom: 16.89, bearing: 36.8, pitch: 63 }

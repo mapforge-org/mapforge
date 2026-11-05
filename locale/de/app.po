@@ -44,6 +44,9 @@ msgstr "%{type} geändert"
 msgid "%{type} updated"
 msgstr "%{type} aktualisiert"
 
+msgid "3D Terrain"
+msgstr "3D-Gelände"
+
 msgid "3D Terrain:"
 msgstr "3D-Gelände:"
 
@@ -127,6 +130,9 @@ msgstr "Hintergrund:"
 
 msgid "Banner"
 msgstr "Banner"
+
+msgid "Base maps"
+msgstr "Basiskarten"
 
 msgid "Basemap Info (experimental)"
 msgstr "Basiskarten-Info (experimentell)"
@@ -238,9 +244,6 @@ msgstr "Format wechseln"
 
 msgid "Cobblestone"
 msgstr "Kopfsteinpflaster"
-
-msgid "Stars on GitHub"
-msgstr "Sterne auf GitHub"
 
 msgid "Color"
 msgstr "Farbe"
@@ -452,6 +455,9 @@ msgstr "Polygon ziehen, um es zu drehen"
 msgid "Drag to rotate map, click to reset north"
 msgstr "Ziehen zum Drehen der Karte, klicken für Norden"
 
+msgid "Draw and style"
+msgstr "Zeichnen & gestalten"
+
 msgid "Draw freehand (f)"
 msgstr "Freihand zeichnen (f)"
 
@@ -469,6 +475,9 @@ msgstr "Polygon zeichnen"
 
 msgid "Draw polygon (o)"
 msgstr "Polygon zeichnen (o)"
+
+msgid "Dynamic layers"
+msgstr "Dynamische Ebenen"
 
 msgid "Edit"
 msgstr "Bearbeiten"
@@ -538,6 +547,9 @@ msgstr "Ebene %{name} konnte nicht geladen werden"
 
 msgid "Feature"
 msgstr "Objekt"
+
+msgid "Features"
+msgstr "Funktionen"
 
 msgid "Fetching elevation data..."
 msgstr "Höhendaten werden geladen..."
@@ -686,6 +698,9 @@ msgstr "Daten importieren (gpx, kml, Bild)"
 msgid "Import from GeoJSON, GPX and KML/KMZ"
 msgstr "Importiere GeoJSON, GPX und KML/KMZ"
 
+msgid "Import your data"
+msgstr "Daten importieren"
+
 msgid "In this gallery, your personal maps will be shown."
 msgstr "In dieser Galerie werden deine persönlichen Karten angezeigt."
 
@@ -695,11 +710,14 @@ msgstr "Die Mapforge-App installieren"
 msgid "Keyboard Shortcuts"
 msgstr "Tastenkürzel"
 
+msgid "Language"
+msgstr "Sprache"
+
 msgid "Latest changes"
 msgstr "Letzte Änderungen"
 
-msgid "Language"
-msgstr "Sprache"
+msgid "Layer %{name} is hidden, so the new element is not visible"
+msgstr "Die Ebene %{name} ist ausgeblendet, das neue Element ist deshalb nicht sichtbar"
 
 msgid "Layer added"
 msgstr "Ebene hinzugefügt"
@@ -986,6 +1004,9 @@ msgstr "Schlichte, gut lesbare Straßenkarte"
 msgid "Plan on desktop, run Mapforge on your phone, edit in the field, stream your track live"
 msgstr "Plane am Desktop, nutze Mapforge auf deinem Handy, bearbeite vor Ort, streame deinen Track live"
 
+msgid "Plan routes for walking, bicycle and car"
+msgstr "Routen zu Fuß, mit dem Rad oder Auto planen"
+
 msgid "Plan your ride and navigate with compass mode and elevation profile."
 msgstr "Plane deine Tour und navigiere mit Kompassmodus und Höhenprofil."
 
@@ -1109,6 +1130,9 @@ msgstr "Route weicht deutlich vom ursprünglichen Track ab (%{original} km -> %{
 msgid "Routing segment %{index}/%{total}..."
 msgstr "Abschnitt %{index}/%{total} wird berechnet..."
 
+msgid "Routing with elevation profile"
+msgstr "Routing mit Höhenprofil"
+
 msgid "Run in desktop/mobile browser or as %{app_link}"
 msgstr "Starte im Desktop-/Mobil-Browser oder als %{app_link}"
 
@@ -1191,6 +1215,9 @@ msgstr "In der Galerie zeigen"
 msgid "Show layer"
 msgstr "Ebene einblenden"
 
+msgid "Show live OpenStreetMap data with %{overpass_link}"
+msgstr "OpenStreetMap-Daten live per %{overpass_link} einblenden"
+
 msgid "Show map in public Mapforge gallery"
 msgstr "Karte in der öffentlichen Mapforge-Galerie zeigen"
 
@@ -1229,6 +1256,9 @@ msgstr "Quadrat"
 msgid "Standard OpenStreetMap with roads and places"
 msgstr "Standard-OpenStreetMap mit Straßen und Orten"
 
+msgid "Stars on GitHub"
+msgstr "Sterne auf GitHub"
+
 msgid "Start a map"
 msgstr "Karte erstellen"
 
@@ -1255,6 +1285,9 @@ msgstr "Straßenkarte mit Straßen und Orten"
 
 msgid "Street map without street names"
 msgstr "Straßenkarte ohne Straßennamen"
+
+msgid "Streets, Satellite, Topographic, Biking, Watercolor, 3D houses"
+msgstr "Straße, Satellit, Topo, Fahrrad, Aquarell, 3D-Gebäude"
 
 msgid "Style"
 msgstr "Stil"
@@ -1414,6 +1447,9 @@ msgstr "Ansichtslink kopiert"
 
 msgid "View mode"
 msgstr "Ansichtsmodus"
+
+msgid "View your map with mountains and valleys"
+msgstr "Betrachte deine Karte mitsamt Bergen und Tälern"
 
 msgid "Visible section"
 msgstr "Sichtbarer Abschnitt"
@@ -1690,36 +1726,3 @@ msgstr "🚻 Öffentliche Toiletten"
 
 msgid "🛜 Wifi"
 msgstr "🛜 WLAN"
-
-msgid "Features"
-msgstr "Funktionen"
-
-msgid "Import your data"
-msgstr "Daten importieren"
-
-msgid "Draw and style"
-msgstr "Zeichnen & gestalten"
-
-msgid "Routing with elevation profile"
-msgstr "Routing mit Höhenprofil"
-
-msgid "Plan routes for walking, bicycle and car"
-msgstr "Routen zu Fuß, mit dem Rad oder Auto planen"
-
-msgid "Dynamic layers"
-msgstr "Dynamische Ebenen"
-
-msgid "Show live OpenStreetMap data with %{overpass_link}"
-msgstr "OpenStreetMap-Daten live per %{overpass_link} einblenden"
-
-msgid "Base maps"
-msgstr "Basiskarten"
-
-msgid "Streets, Satellite, Topographic, Biking, Watercolor, 3D houses"
-msgstr "Straße, Satellit, Topo, Fahrrad, Aquarell, 3D-Gebäude"
-
-msgid "3D Terrain"
-msgstr "3D-Gelände"
-
-msgid "View your map with mountains and valleys"
-msgstr "Betrachte deine Karte mitsamt Bergen und Tälern"

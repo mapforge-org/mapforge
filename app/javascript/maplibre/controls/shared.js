@@ -380,8 +380,9 @@ export function initLayersModal () {
         visBtn.querySelector('i').classList.replace('bi-eye-slash', 'bi-eye')
         visBtn.setAttribute('title', window.__('Hide layer'))
       }
-      // With one geojson layer there is nothing to choose
-      if (layer.type === 'geojson' && window.gon.map_mode === 'rw' && geojsonLayers.length > 1) {
+      // With one geojson layer there is nothing to choose, and a hidden layer cannot be active
+      if (layer.type === 'geojson' && window.gon.map_mode === 'rw' && geojsonLayers.length > 1 &&
+        layer.show !== false) {
         let pen = document.createElement('i')
         if (layer === activeLayer()) {
           pen.classList.add('bi', 'bi-pencil-fill', 'small', 'me-2')

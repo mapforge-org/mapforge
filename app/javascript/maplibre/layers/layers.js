@@ -281,10 +281,12 @@ export function upsert (updatedFeature, layerId) {
   }
 }
 
-// Falls back to the first geojson layer when none was picked or the picked one got deleted
+// A feature on a hidden layer looks lost, so a hidden layer is only the last resort. The fallback
+// also applies when none was picked or the picked one got deleted.
 export function activeLayer () {
-  return layers?.find(l => l.type === 'geojson' && l.id === activeLayerId) ||
-    layers?.find(l => l.type === 'geojson')
+  const geojsonLayers = layers?.filter(l => l.type === 'geojson') || []
+  const visible = geojsonLayers.filter(l => l.show !== false)
+  return visible.find(l => l.id === activeLayerId) || visible[0] || geojsonLayers[0]
 }
 
 export function setActiveLayer (id) {
@@ -304,6 +306,11 @@ export function addFeature (feature, layerId) {
   layer.geojson.features.push(feature)
   // Surgical single-feature add instead of a full re-render of every geojson layer.
   layer.applyFeatureAdd(feature)
+  if (!layerId && layer.show === false) {
+    status(window.__('Layer %{name} is hidden, so the new element is not visible')
+      .replace('%{name}', functions.escapeHtml(layer.name)), 'warning')
+    return
+  }
   status(window.__('%{type} added').replace('%{type}', featureLabel(feature)))
 }
 

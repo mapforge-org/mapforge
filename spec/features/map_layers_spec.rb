@@ -49,6 +49,40 @@ describe "Map layers" do
       expect(map.reload.layers.first.name).to eq "New layer"
     end
 
+    context "with a hidden first layer" do
+      let(:first) { map.layers.geojson.first }
+      let(:second) { map.layers.find_by(name: "Second") }
+      let(:map) do
+        create(:map, name: "Layers test").tap do |m|
+          create(:layer, map: m, name: "Second")
+          m.layers.geojson.first.update!(show: false)
+        end
+      end
+
+      it "adds new features to the visible layer" do
+        find(".mapbox-gl-draw_point").click
+        click_coord("#maplibre-map", 50, 50)
+        wait_for { Feature.point.last&.layer }.to eq(second)
+        expect(page).to have_no_text("is hidden")
+      end
+
+      it "offers no hidden layer as active layer" do
+        find(".maplibregl-ctrl-layers").click
+        expect(page).to have_css("#layer-list-#{second.id}")
+        expect(page).to have_no_css("#layer-list-#{first.id} button.layer-active", visible: :all)
+      end
+
+      it "warns when all geojson layers are hidden" do
+        find(".maplibregl-ctrl-layers").click
+        find("#layer-list-#{second.id} button.layer-visibility").click
+        wait_for { second.reload.show }.to be(false)
+        find(".maplibregl-ctrl-layers").click
+        find(".mapbox-gl-draw_point").click
+        click_coord("#maplibre-map", 50, 50)
+        expect(page).to have_text("is hidden, so the new element is not visible")
+      end
+    end
+
     context "with a second layer" do
       let(:map) { create(:map, name: "Layers test").tap { |m| create(:layer, map: m, name: "Second") } }
       let(:second) { map.layers.find_by(name: "Second") }
@@ -62,6 +96,13 @@ describe "Map layers" do
         find(".mapbox-gl-draw_point").click
         click_coord("#maplibre-map", 50, 50)
         wait_for { Feature.point.last&.layer }.to eq(second)
+      end
+
+      it "moves new features to another layer when the active layer gets hidden" do
+        first = map.layers.geojson.first
+        find(".maplibregl-ctrl-layers").click
+        find("#layer-list-#{first.id} button.layer-visibility").click
+        expect(page).to have_text("New features go to layer Second")
       end
 
       it "can delete a geojson layer, but not the last one" do
