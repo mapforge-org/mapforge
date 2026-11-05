@@ -498,7 +498,7 @@ export function initCtrlTooltips () {
 export function revealControls (selectors) {
   // map.loaded() goes false again while the edit styles load, so use the page marker
   if (document.querySelector('.map')?.getAttribute('data-map-loaded') === 'true') {
-    selectors.forEach(selector => functions.e(selector, e => { e.classList.remove('hidden') }))
+    dom.showElements(selectors)
     return
   }
   map.once('load', () => {

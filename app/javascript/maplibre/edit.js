@@ -354,7 +354,7 @@ export function resetEditMode() {
 }
 
 // draw.changeMode() does not fire 'draw.modechange' itself
-function changeMode (mode, options) {
+export function changeMode (mode, options) {
   draw.changeMode(mode, options)
   map.fire('draw.modechange')
 }

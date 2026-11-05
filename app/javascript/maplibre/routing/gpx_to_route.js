@@ -310,7 +310,7 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
 
     // Rate limiting: wait 1 second between requests
     if (index < segments.length - 1) {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await functions.sleep(1000)
     }
   }
 

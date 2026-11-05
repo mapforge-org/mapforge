@@ -1,7 +1,7 @@
 import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import * as functions from 'helpers/functions'
-import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
+import { EXTRAS_COLOR_CONFIGS, computeCumulativeDistances } from 'maplibre/layers/geojson/route_extras'
 import { map } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
 
@@ -42,7 +42,7 @@ export async function showElevationChart (feature) {
 
   // Compute cumulative distance along the track for each coordinate
   const allCoords = feature.geometry.coordinates
-  const allLabels = computeDistances(allCoords)
+  const allLabels = computeCumulativeDistances(allCoords).map(Math.round)
   const allValues = allCoords.map(c => c[2])
 
   const chartLineColor = (feature.properties['fill-extrusion-color'] ||
@@ -354,18 +354,6 @@ function updateGpsIndex (chart, active, allCoords) {
   }
 }
 
-// Compute cumulative distances (meters) along a coordinate array
-function computeDistances (coords) {
-  const distances = []
-  coords.reduce((total, coord, i) => {
-    if (i === 0) { distances.push(0); return 0 }
-    total += distance(point(coords[i - 1]), point(coord), { units: 'meters' })
-    distances.push(Math.round(total))
-    return total
-  }, 0)
-  return distances
-}
-
 // Euclidean approx instead of Haversine — avoids thousands of trig calls per GPS update,
 // accurate enough for nearest-neighbor comparison
 function approxDistSq (lngLat, coord) {
@@ -459,9 +447,7 @@ function segmentColor (ctx, active, baseColor) {
 function buildSteepnessColorMap () {
   const colors = []
   for (const [value, hex] of EXTRAS_COLOR_CONFIGS.steepness.colors) {
-    const r = parseInt(hex.slice(1, 3), 16)
-    const g = parseInt(hex.slice(3, 5), 16)
-    const b = parseInt(hex.slice(5, 7), 16)
+    const [r, g, b] = functions.hexToRgb(hex)
     colors[value + 5] = `rgba(${r}, ${g}, ${b}, 0.5)`
   }
   return colors

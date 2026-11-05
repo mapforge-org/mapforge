@@ -9,7 +9,7 @@ import { updateElevation } from 'maplibre/routing/openrouteservice'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { importFile } from 'maplibre/import/kml'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { activeLayer, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, setActiveLayer, upsert } from 'maplibre/layers/layers'
+import { activeLayer, getFeature, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, setActiveLayer, upsert } from 'maplibre/layers/layers'
 import { queries } from 'maplibre/layers/overpass/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, sortLayers, updateMapName } from 'maplibre/map'
 import { addUndoState, layerPlacement, layerSettings } from 'maplibre/undo'
@@ -186,8 +186,7 @@ export default class extends Controller {
     // Ignore clicks on the drag handle so reordering never selects/flies to a feature
     if (event?.target?.closest('.feature-drag-handle')) { return }
     const id = this.element.getAttribute('data-feature-id')
-    const layer = layers.find(l => l?.geojson?.features?.some(f => f.id === id))
-    const feature = layer.geojson.features.find(f => f.id === id)
+    const feature = getFeature(id)
     // flyToFeature highlights + opens details on moveend, once the animation settles
     flyToFeature(feature)
   }
@@ -407,7 +406,7 @@ export default class extends Controller {
 
   createRasterLayer() {
     const layerId = this.createLayer({ type: 'raster', name: 'Raster layer', query: '' })
-    new Promise(resolve => setTimeout(resolve, 50)).then(() => {
+    functions.sleep(50).then(() => {
       document.querySelector('#layer-list-' + layerId + ' button.layer-edit').click()
     })
   }
@@ -440,7 +439,7 @@ export default class extends Controller {
     let layerId = this.createLayer({ type: 'overpass', name: queryName, query: query })
     // open edit form for new custom queries
     if (query === '') {
-      new Promise(resolve => setTimeout(resolve, 50)).then(() => {
+      functions.sleep(50).then(() => {
         document.querySelector('#layer-list-' + layerId + ' button.layer-edit').click()
       })
     }

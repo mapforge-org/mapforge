@@ -1,9 +1,4 @@
-import { EXTRAS_COLOR_CONFIGS, computeExtrasTotals } from 'maplibre/layers/geojson/route_extras'
-
-function formatDistance (meters) {
-  if (meters >= 1000) return (meters / 1000).toFixed(1) + ' km'
-  return Math.round(meters) + ' m'
-}
+import { EXTRAS_COLOR_CONFIGS, computeExtrasTotals, formatLength } from 'maplibre/layers/geojson/route_extras'
 
 export function showExtrasTotals (feature) {
   const container = document.getElementById('feature-details-extras')
@@ -74,7 +69,7 @@ function buildExtrasSection ({ config, totals, totalDistance }) {
     segment.className = 'extras-totals-bar-segment'
     segment.style.width = pct + '%'
     segment.style.backgroundColor = color ? color[1] : '#888888'
-    segment.title = (config.labels[value] || value) + ': ' + formatDistance(dist) + ' (' + Math.round(pct) + '%)'
+    segment.title = (config.labels[value] || value) + ': ' + formatLength(dist) + ' (' + Math.round(pct) + '%)'
     bar.appendChild(segment)
   })
   section.appendChild(bar)
@@ -101,7 +96,7 @@ function buildExtrasSection ({ config, totals, totalDistance }) {
 
     const stats = document.createElement('span')
     stats.className = 'extras-totals-stats'
-    stats.textContent = formatDistance(dist) + ' (' + Math.round(pct) + '%)'
+    stats.textContent = formatLength(dist) + ' (' + Math.round(pct) + '%)'
     row.appendChild(stats)
 
     list.appendChild(row)

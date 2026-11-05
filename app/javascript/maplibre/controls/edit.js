@@ -5,7 +5,7 @@ import { PolygonControl } from 'maplibre/controls/buttons/polygon'
 import { MapSelectControl } from 'maplibre/controls/buttons/select'
 import { MapRedoControl, MapUndoControl } from 'maplibre/controls/buttons/undo'
 import { ControlGroup, MapLayersControl, MapSettingsControl, MapShareControl, revealControls } from 'maplibre/controls/shared'
-import { draw } from 'maplibre/edit'
+import { changeMode, draw } from 'maplibre/edit'
 import { map } from 'maplibre/map'
 import { resetDirections } from 'maplibre/routing/directions'
 
@@ -13,8 +13,7 @@ let editControls = []
 
 export function resetEditControls () {
   resetDirections()
-  draw.changeMode('simple_select')
-  map.fire('draw.modechange')
+  changeMode('simple_select')
 }
 
 export function initializeEditControls () {
