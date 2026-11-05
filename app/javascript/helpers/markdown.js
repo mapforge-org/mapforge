@@ -20,12 +20,17 @@ export function renderMarkdown (text) {
 }
 
 // https://github.com/Ionaru/easy-markdown-editor
-export async function markdownEditor (element, onUpdate) {
+// Callers must await this before tearing down an old editor, then tear down and call
+// markdownEditor() without another await in between, or two calls can create duplicate editors.
+export async function loadMarkdownEditor () {
   await import('easymde') // import EasyMDE UMD bundle
   // EasyMDE defaults to a broken font-awesome build from bootstrapcdn; load a working one ourselves
   // (v4-shims maps EasyMDE's old "fa fa-*" classes to FA6 icons)
   loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css')
   loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/v4-shims.min.css')
+}
+
+export function markdownEditor (element, onUpdate) {
   return new window.EasyMDE({
     element,
     placeholder: window.__('Add a description text'),

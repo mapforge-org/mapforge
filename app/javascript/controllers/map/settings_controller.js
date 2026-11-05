@@ -3,7 +3,7 @@ import { sendMessage } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
-import { markdownEditor, renderMarkdown } from 'helpers/markdown'
+import { loadMarkdownEditor, markdownEditor, renderMarkdown } from 'helpers/markdown'
 import { resetControls } from 'maplibre/controls/shared'
 import { toggleDrawMode } from 'maplibre/edit'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
@@ -182,11 +182,12 @@ export default class extends Controller {
 
   async showDescriptionEditor (event) {
     event?.preventDefault()
-    dom.deleteElements('#map-description .EasyMDEContainer')
     dom.hideElements(['#map-description-toggle'])
     dom.showElements(['#map-description'])
 
-    descEasyMDE = await markdownEditor(document.getElementById('map-description-input'), () => { this.updateDescription() })
+    await loadMarkdownEditor()
+    dom.deleteElements('#map-description .EasyMDEContainer')
+    descEasyMDE = markdownEditor(document.getElementById('map-description-input'), () => { this.updateDescription() })
     document.querySelector('#map-description-input')?.focus()
   }
 

@@ -192,10 +192,11 @@ export async function initializeLayerStyles(id = null) {
   })
 }
 
-// keeps the reload frame open on failure so the user can retry
+// keeps the reload frame open on failure so the user can retry. Success leaves it alone,
+// because a drag during the request reopens it for the new viewport.
 export function setLayerLoading (busy, failed = false) {
   functions.e('#layer-loading', e => { e.classList.toggle('hidden', !busy) })
-  functions.e('#layer-reload', e => { e.classList.toggle('hidden', busy || !failed) })
+  if (busy || failed) { functions.e('#layer-reload', e => { e.classList.toggle('hidden', busy) }) }
 }
 
 // triggered by layer reload in the layers modal

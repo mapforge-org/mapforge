@@ -3,7 +3,7 @@ import { sendMessage } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
-import { markdownEditor } from 'helpers/markdown'
+import { loadMarkdownEditor, markdownEditor } from 'helpers/markdown'
 import { status } from 'helpers/status'
 import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
@@ -301,9 +301,10 @@ export default class extends Controller {
   async show_add_desc () {
     dom.hideElements(['#button-add-desc'])
     dom.showElements(['#feature-desc-section', '#feature-desc'])
+    await loadMarkdownEditor()
     if (easyMDE) { easyMDE.toTextArea() }
     document.querySelector('#feature-desc-input').value = this.getSelectedFeature().properties.desc || ''
-    easyMDE = await markdownEditor(document.getElementById('feature-desc-input'), () => { this.updateDesc() })
+    easyMDE = markdownEditor(document.getElementById('feature-desc-input'), () => { this.updateDesc() })
   }
 
   updateDesc () {
