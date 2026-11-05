@@ -20,14 +20,14 @@ export default class extends Controller {
   draw () {
     const origin = this.element.getBoundingClientRect()
     const box = (element) => {
-      const { left, right, top, bottom } = element.getBoundingClientRect()
-      return { left: left - origin.left, right: right - origin.left, top: top - origin.top, bottom: bottom - origin.top }
+      const { x, y, width, height } = element.getBoundingClientRect()
+      return new DOMRect(x - origin.x, y - origin.y, width, height)
     }
     const tip = (element) => {
       const { left, right, bottom } = box(element)
       return { x: (left + right) / 2, y: bottom }
     }
-    const between = (a, b, dip) => ({ x: (a.x + b.x) / 2, y: a.y + dip })
+    const between = (a, b) => ({ x: (a.x + b.x) / 2, y: a.y + 6 })
 
     const [open, free, host] = this.heroTargets.map(tip)
     const [importData, routing] = this.featureTargets.map(tip)
@@ -38,14 +38,14 @@ export default class extends Controller {
     const cards = [...this.gridTarget.children].map(box)
     // Bends scale with their card, the fractions can reach outside of it into the page gutter
     const bends = (card, ...fractions) => fractions.map(([x, y]) => ({
-      x: Math.min(origin.width - 8, Math.max(8, card.left + (card.right - card.left) * x)),
-      y: card.top + (card.bottom - card.top) * y
+      x: Math.min(origin.width - 8, Math.max(8, card.left + card.width * x)),
+      y: card.top + card.height * y
     }))
-    const descent = cards[2].left + (cards[2].right - cards[2].left) * 0.6
+    const descent = cards[2].left + cards[2].width * 0.6
 
     const points = [
       { x: 0, y: open.y - 70 }, { x: open.x - 40, y: open.y - 40 },
-      open, between(open, free, 6), free, between(free, host, 6), host,
+      open, between(open, free), free, between(free, host), host,
       { x: host.x + 90, y: aboveStats }, { x: descent - 50, y: aboveStats }, { x: descent, y: aboveStats + 30 },
       ...bends(cards[2], [0.62, -0.6], [0.72, -0.2], [0.7, 0.15]),
       routing,

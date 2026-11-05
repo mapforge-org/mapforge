@@ -58,14 +58,6 @@ msgstr ""
 msgid "3D Terrain:"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:100
-msgid "3D Terrain: View your map with elevation"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:98
-msgid "3D Terrain: View your map with mountains"
-msgstr ""
-
 #: ../app/views/frontpage/index.haml:73
 msgid "A bicycle tour, the floor plan for your conference, a guide for your wedding guests"
 msgstr ""
@@ -102,20 +94,12 @@ msgstr ""
 msgid "Add new features to this layer"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:86
-msgid "Add pictures, customize colors, symbols, labels"
-msgstr ""
-
 #: ../app/views/frontpage/index.haml:84
 msgid "Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/context_menu.js:86
 msgid "Add waypoint here"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:76
-msgid "Add your own data:"
 msgstr ""
 
 #: ../app/javascript/controllers/map/layers_controller.js:113
@@ -144,10 +128,6 @@ msgstr ""
 
 #: ../app/views/docs/tutorials.haml:48
 msgid "Advanced feature styling"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:69
-msgid "Animation of the map editor: a photo gets added to a map"
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:241
@@ -312,14 +292,6 @@ msgstr ""
 
 #: ../app/javascript/maplibre/feature/edit_ui.js:118
 msgid "Checker"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:95
-msgid "Choose your base map: Streets, Satellite, Topographic, Biking"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:93
-msgid "Choose your base map: Streets, Satellite, Topographic, Biking, Watercolor, 3D houses etc."
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:163
@@ -650,14 +622,6 @@ msgstr ""
 msgid "Draw polygon (o)"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:82
-msgid "Draw shapes and style them:"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:90
-msgid "Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data"
-msgstr ""
-
 #: ../app/views/maps/maplibre.haml:41
 msgid "Edit"
 msgstr ""
@@ -944,10 +908,6 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:80
 msgid "Import from GeoJSON, GPX and KML/KMZ"
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:78
-msgid "Import your data from GeoJSON, GPX and KML"
 msgstr ""
 
 #: ../app/views/maps/my.haml:24
@@ -1512,10 +1472,6 @@ msgstr ""
 
 #: ../app/javascript/maplibre/routing/gpx_to_route.js:273
 msgid "Routing segment %{index}/%{total}..."
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:87
-msgid "Routing: Plan routes for walking, bicycle and car, with elevation profile"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:123

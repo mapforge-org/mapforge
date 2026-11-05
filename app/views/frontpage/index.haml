@@ -27,15 +27,10 @@
           = link_to _("Playground"), playground_path, class: 'btn btn-outline-light btn-lg'
 
         %ul.landing-checks
-          %li
-            %i.bi.bi-geo-alt-fill{ data: { 'frontpage-route-target': "hero" } }
-            = _("Open Source")
-          %li
-            %i.bi.bi-geo-alt-fill{ data: { 'frontpage-route-target': "hero" } }
-            = _("Ad-free and no tracking")
-          %li
-            %i.bi.bi-geo-alt-fill{ data: { 'frontpage-route-target': "hero" } }
-            = _("Self-hostable")
+          - [_("Open Source"), _("Ad-free and no tracking"), _("Self-hostable")].each do |check|
+            %li
+              %i.bi.bi-geo-alt-fill{ data: { 'frontpage-route-target': "hero" } }
+              = check
 
       - # demo.webp is 3 MB and plays on its own, so it only loads on request
       %figure.landing-video{ data: { controller: "hero-video" } }
@@ -78,28 +73,29 @@
             .landing-stat-label= _("Latest changes")
           %i.bi.bi-arrow-up-right.landing-stat-link
 
-  %section.landing-features
+  %section.landing-features.background-bright
     .landing-wrap
       .landing-features-eyebrow= _("Features")
       %h2.mapforge-font= _("Build the map you have in mind")
       %p.landing-features-lead= _("A bicycle tour, the floor plan for your conference, a guide for your wedding guests")
       .landing-features-grid{ data: { 'frontpage-route-target': "grid" } }
         - overpass_link = link_to 'Overpass', doc_path(id: 'overpass_layers')
-        - [["import", _("Import your data"), _("Import from GeoJSON, GPX and KML/KMZ")],
+        - # The pin is a point in the 320x130 SVG drawing
+        - [["import", _("Import your data"), _("Import from GeoJSON, GPX and KML/KMZ"), [118, 92]],
            ["draw", _("Draw and style"), _("Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more")],
-           ["routing", _("Routing with elevation profile"), _("Plan routes for walking, bicycle and car")],
+           ["routing", _("Routing with elevation profile"), _("Plan routes for walking, bicycle and car"), [212, 85]],
            ["layers", _("Dynamic layers"), raw(_("Show live OpenStreetMap data with %{overpass_link}") % { overpass_link: overpass_link })],
            ["basemaps", _("Base maps"), _("Streets, Satellite, Topographic, Biking, Watercolor, 3D houses")],
-           ["terrain", _("3D Terrain"), _("View your map with mountains and valleys")]].each do |art, title, text|
+           ["terrain", _("3D Terrain"), _("View your map with mountains and valleys")]].each do |art, title, text, pin|
           %article.landing-feature
             .landing-feature-art
-              %img{ src: "/images/frontpage/features/#{art}.svg", width: 320, height: 130, alt: "", loading: 'lazy' }
-              - if %w[import routing].include?(art)
-                %i.bi.bi-geo-alt-fill.landing-route-pin{ class: "landing-route-pin-#{art}", data: { 'frontpage-route-target': "feature" } }
+              %img{ src: "/images/frontpage/features/#{art}.svg", width: 320, height: 130, alt: "" }
+              - if pin
+                %i.bi.bi-geo-alt-fill.landing-route-pin{ style: "--x: #{pin[0]}; --y: #{pin[1]}", data: { 'frontpage-route-target': "feature" } }
             %h3= title
             %p= text
 
-  %section#features.why-us.section
+  %section#features.section
     .row.g-0
       .col-lg-5.img-bg.order-lg-last
         %img{ src: "/images/frontpage/share.webp", alt: _("Share dialog with an edit link and a view link over a 3D map"), loading: 'lazy' }

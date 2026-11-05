@@ -47,12 +47,6 @@ msgstr "%{type} aktualisiert"
 msgid "3D Terrain:"
 msgstr "3D-Gelände:"
 
-msgid "3D Terrain: View your map with elevation"
-msgstr "3D-Gelände: Betrachte deine Karte mit Höhendaten"
-
-msgid "3D Terrain: View your map with mountains"
-msgstr "3D-Gelände: Betrachte deine Karte mit Bergen"
-
 msgid "A bicycle tour, the floor plan for your conference, a guide for your wedding guests"
 msgstr "Eine Radtour, der Raumplan deiner Konferenz, ein Wegweiser für deine Hochzeitsgäste"
 
@@ -80,17 +74,11 @@ msgstr "Ebene hinzufügen"
 msgid "Add new features to this layer"
 msgstr "Neue Elemente zu dieser Ebene hinzufügen"
 
-msgid "Add pictures, customize colors, symbols, labels"
-msgstr "Füge Bilder hinzu, passe Farben, Symbole und Beschriftungen an"
-
 msgid "Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more"
 msgstr "Füge Bilder hinzu, passe Farben, Symbole, Beschriftungen, (3D-)Polygone, Indoor-Karten und mehr an"
 
 msgid "Add waypoint here"
 msgstr "Wegpunkt hier einfügen"
-
-msgid "Add your own data:"
-msgstr "Füge eigene Daten hinzu:"
 
 msgid "Added feature %{index}/%{total}"
 msgstr "Objekt %{index}/%{total} hinzugefügt"
@@ -112,9 +100,6 @@ msgstr "Erweitert"
 
 msgid "Advanced feature styling"
 msgstr "Erweiterte Objektgestaltung"
-
-msgid "Animation of the map editor: a photo gets added to a map"
-msgstr "Animation des Karteneditors: Ein Foto wird zu einer Karte hinzugefügt"
 
 msgid "Applies in view mode. In edit mode, a click always selects the feature."
 msgstr "Gilt im Ansichtsmodus. Im Bearbeitungsmodus wählt ein Klick immer das Objekt aus."
@@ -238,12 +223,6 @@ msgstr "Changelog"
 
 msgid "Checker"
 msgstr "Schachbrett"
-
-msgid "Choose your base map: Streets, Satellite, Topographic, Biking"
-msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad"
-
-msgid "Choose your base map: Streets, Satellite, Topographic, Biking, Watercolor, 3D houses etc."
-msgstr "Wähle deine Basiskarte: Straßen, Satellit, Topografisch, Fahrrad, Aquarell, 3D-Gebäude usw."
 
 msgid "Circle"
 msgstr "Kreis"
@@ -491,12 +470,6 @@ msgstr "Polygon zeichnen"
 msgid "Draw polygon (o)"
 msgstr "Polygon zeichnen (o)"
 
-msgid "Draw shapes and style them:"
-msgstr "Zeichne Objekte und gestalte sie:"
-
-msgid "Dynamic layers: Use %{overpass_link} to add custom layers from OpenStreetMap data"
-msgstr "Dynamische Ebenen: Nutze %{overpass_link}, um Ebenen aus OpenStreetMap-Daten hinzuzufügen"
-
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -712,9 +685,6 @@ msgstr "Daten importieren (gpx, kml, Bild)"
 
 msgid "Import from GeoJSON, GPX and KML/KMZ"
 msgstr "Importiere GeoJSON, GPX und KML/KMZ"
-
-msgid "Import your data from GeoJSON, GPX and KML"
-msgstr "Importiere deine Daten aus GeoJSON, GPX und KML"
 
 msgid "In this gallery, your personal maps will be shown."
 msgstr "In dieser Galerie werden deine persönlichen Karten angezeigt."
@@ -1138,9 +1108,6 @@ msgstr "Route weicht deutlich vom ursprünglichen Track ab (%{original} km -> %{
 
 msgid "Routing segment %{index}/%{total}..."
 msgstr "Abschnitt %{index}/%{total} wird berechnet..."
-
-msgid "Routing: Plan routes for walking, bicycle and car, with elevation profile"
-msgstr "Routing: Plane Routen zu Fuß, mit dem Rad oder Auto, mit Höhenprofil"
 
 msgid "Run in desktop/mobile browser or as %{app_link}"
 msgstr "Starte im Desktop-/Mobil-Browser oder als %{app_link}"

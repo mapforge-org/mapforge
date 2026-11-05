@@ -318,9 +318,8 @@ section,
   background: linear-gradient(var(--color-dark-moss-green) 2.5rem, var(--color-light-sand) 0);
 }
 
-/* The 1px gap shows the grid background as cell dividers, in every column count */
-
-/* Above .landing-route, the route passes behind the card */
+/* The 1px gap shows the grid background as cell dividers, in every column count.
+   Above .landing-route, the route passes behind the card */
 .landing-stats-grid {
   position: relative;
   z-index: 2;
@@ -387,8 +386,6 @@ section,
 
 .landing-features {
   padding: 1rem 0 6rem;
-  background-color: var(--color-light-sand);
-  color: var(--text-color);
 }
 
 .landing-features h2 {
@@ -418,7 +415,6 @@ section,
 }
 
 .landing-feature {
-  position: relative;
   padding: 1.25rem 1.75rem 1.75rem;
   border: 1px solid color-mix(in srgb, var(--color-dark-moss-green) 12%, transparent);
   border-radius: 1rem;
@@ -459,30 +455,24 @@ section,
   stroke-width: 2.5;
 }
 
-/* The static position keeps a row pin next to its headline, in the padding of the column */
 .landing-route-pin {
   position: absolute;
   z-index: 2;
-  margin-left: -2.5rem;
   color: var(--color-mid-rust);
   font-size: 1.25rem;
   line-height: 1;
 }
 
-/* The percentages are positions in the 320x130 drawing, the pin tip stands on them */
+/* The static position keeps a row pin next to its headline, in the padding of the column */
+.slides .landing-route-pin {
+  margin-left: -2.5rem;
+}
+
+/* --x and --y are a position in the 320x130 drawing, the pin tip stands on it */
 .landing-feature .landing-route-pin {
-  margin-left: 0;
+  top: calc(var(--y) / 130 * 100%);
+  left: calc(var(--x) / 320 * 100%);
   transform: translate(-50%, -100%);
-}
-
-.landing-route-pin-import {
-  top: 70.8%;
-  left: 36.9%;
-}
-
-.landing-route-pin-routing {
-  top: 65.4%;
-  left: 66.25%;
 }
 
 .landing-feature h3 {
@@ -495,12 +485,6 @@ section,
 .landing-feature p {
   margin: 0;
   opacity: 0.8;
-}
-
-@media (width < 992px) {
-  .landing-route, .landing-route-pin {
-    display: none;
-  }
 }
 
 @media (width <= 860px) {
@@ -641,6 +625,10 @@ section,
   #features .img-bg, #features .img-bg img {
     height: 10rem;
     min-height: 0;
+  }
+
+  .landing-route, .landing-route-pin {
+    display: none;
   }
 }
 
