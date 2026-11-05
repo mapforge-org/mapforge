@@ -5,6 +5,8 @@ import { AnimatePointAnimation } from 'maplibre/animations'
 import { resetLevels } from 'maplibre/controls/levels'
 import { featureLabel, resetHighlightedFeature } from 'maplibre/feature'
 import { createLayerInstance } from 'maplibre/layers/factory'
+import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
+import { hasRouteExtras } from 'maplibre/layers/geojson/route_extras'
 import { map, setLoadedMapUpdatedAt, sortLayers } from 'maplibre/map'
 
 export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLayer, BasemapLayer
@@ -313,6 +315,8 @@ function updateFeature (feature, updatedFeature) {
   const animateFrom = feature.geometry.type === 'Point' && !equal(feature.geometry.coordinates, newCoords)
     ? feature.geometry.coordinates
     : null
+  const hadRouteExtras = hasRouteExtras(feature)
+  const hadKmMarkers = hasKmMarkers(feature)
 
   feature.geometry = updatedFeature.geometry
   feature.properties = updatedFeature.properties
@@ -331,9 +335,13 @@ function updateFeature (feature, updatedFeature) {
 
   status(window.__('%{type} updated').replace('%{type}', featureLabel(feature)))
   // Surgical single-feature update instead of a full re-render of every geojson layer.
-  // A remote update may have changed geometry or toggled companions, so refresh them.
+  // A remote update may have changed geometry or toggled companions, so refresh them when the
+  // feature had or has them. A GPS tracker point has none, and a rebuild walks every route.
   // (A remote change to a feature's level won't re-filter here — that needs a full render.)
-  applyFeatureUpdate(feature, { refreshRouteExtras: true, refreshKmMarkers: true })
+  applyFeatureUpdate(feature, {
+    refreshRouteExtras: hadRouteExtras || hasRouteExtras(feature),
+    refreshKmMarkers: hadKmMarkers || hasKmMarkers(feature)
+  })
 }
 
 export function moveFeature (feature, layerId) {
