@@ -1,9 +1,3 @@
-= javascript_include_tag "osmtogeojson.js", async: true
-
-- if map_editable?
-  - # https://github.com/Ionaru/easy-markdown-editor
-  = stylesheet_link_tag "easymde.min.css" # v2.20.0, manual update
-
 - content_for :title, "Mapforge map: #{@map.name.presence}" if @map.name.presence
 - content_for :og_title, @map.name if @map.name
 - content_for :og_description, markdown_to_text(@map.description) if @map.description

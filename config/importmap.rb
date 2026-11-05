@@ -50,6 +50,8 @@ pin "marked", preload: "map" # @18.1.3
 pin "dompurify", preload: "map" # @3.4.17
 # https://github.com/kazuhikoarase/qrcode-generator, from https://esm.sh/qrcode-generator@2.0.4?bundle
 pin "qrcode-generator", preload: false # @2.0.4
+# https://github.com/tyrasd/osmtogeojson, UMD bundle that sets window.osmtogeojson
+pin "osmtogeojson", preload: false
 
 # https://github.com/mapbox/mapbox-gl-draw
 # Unminified + locally patched, see the header of the vendored file

@@ -110,8 +110,9 @@ export class OverpassLayer extends Layer {
       }
       return response.json()
      } )
-    .then( data => {
-      let geojson = osmtogeojson(data)
+    .then( async data => {
+      await import('osmtogeojson')
+      let geojson = window.osmtogeojson(data)
       geojson = applyOverpassStyle(geojson, query)
       this.layer.geojson = applyOverpassQueryStyle(geojson, this.layer.name)
       this.render()

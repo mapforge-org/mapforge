@@ -1,7 +1,6 @@
 // Converts KML/KMZ/GPX into the property names of Mapforge.
 import { uploadImage } from 'maplibre/feature/image_upload'
 import { GOOGLE_ICONS } from 'maplibre/import/google_icons'
-import { gpx, kmlWithFolders } from 'togeojson'
 
 // G**gle My Maps points every colored pin at the same white silhouette. The real color rides
 // in <IconStyle><color>, so using the href as marker image would paint every marker white.
@@ -59,6 +58,7 @@ export async function importFile (file, content) {
 
   const xmlDoc = new DOMParser().parseFromString(text, 'application/xml')
   if (xmlDoc.querySelector('parsererror')) { throw new Error(window.__('The file is not valid XML')) }
+  const { gpx, kmlWithFolders } = await import('togeojson')
 
   if (file.type === 'application/gpx+xml' || name.endsWith('.gpx')) {
     const geojson = gpx(xmlDoc)
