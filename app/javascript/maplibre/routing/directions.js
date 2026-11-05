@@ -1,4 +1,3 @@
-import MapLibreGlDirections, { MapLibreGlDirectionsNonCancelableEvent, layersFactory } from "@maplibre/maplibre-gl-directions"
 import { sendMessage } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { decodePolyline, encodePolyline } from 'helpers/polyline'
@@ -27,127 +26,142 @@ const routingBackend = 'ors'
 
 // https://giscience.github.io/openrouteservice/api-reference/endpoints/directions/routing-options
 
-// CustomMapLibreGlDirections extends the base library to support ORS as a routing backend
-// and to customize waypoint/snappoint/routeline feature handling.
-// Based on https://github.com/maplibre/maplibre-gl-directions/blob/main/demo/src/assets/map/custom-directions.ts
-class CustomMapLibreGlDirections extends MapLibreGlDirections {
-  constructor(map, configuration) {
-    super(map, configuration)
+// The plugin loads on demand, so the subclass is built after its import.
+function customDirectionsClass (MapLibreGlDirections, MapLibreGlDirectionsNonCancelableEvent) {
+  // CustomMapLibreGlDirections extends the base library to support ORS as a routing backend
+  // and to customize waypoint/snappoint/routeline feature handling.
+  // Based on https://github.com/maplibre/maplibre-gl-directions/blob/main/demo/src/assets/map/custom-directions.ts
+  return class CustomMapLibreGlDirections extends MapLibreGlDirections {
+    constructor(map, configuration) {
+      super(map, configuration)
 
-    // Override buildRequest/fetch for ORS backend; OSRM uses base class defaults
-    if (configuration.adapter === 'ors') {
-      this.buildRequest = orsBuildRequest
-      this.fetch = orsFetch.bind(this)
-    }
+      // Override buildRequest/fetch for ORS backend; OSRM uses base class defaults
+      if (configuration.adapter === 'ors') {
+        this.buildRequest = orsBuildRequest
+        this.fetch = orsFetch.bind(this)
+      }
 
-    // queryRenderedFeatures only supports string/number properties; object-valued ones come
-    // back mangled, breaking the library's JSON.parse in onMove (hover-insert never fires).
-    const buildRoutelines = this.buildRoutelines
-    this.buildRoutelines = (...args) => {
-      const routelines = buildRoutelines(...args)
-      routelines.forEach(group => group.forEach(routeline => {
-        routeline.properties.departSnappointProperties = JSON.stringify(routeline.properties.departSnappointProperties)
-        routeline.properties.arriveSnappointProperties = JSON.stringify(routeline.properties.arriveSnappointProperties)
-      }))
-      return routelines
-    }
-  }
-
-  // the base init validates each layer against a serialized copy of the whole style, which
-  // made the geometry tab of a routed track lag by ~300 ms
-  init() {
-    this.map.style.addSource(this.configuration.sourceName,
-      { type: 'geojson', data: { type: 'FeatureCollection', features: [] } }, noValidate)
-    this.configuration.layers.forEach(layer => addLayer(layer))
-  }
-
-  // Override onMove to be defensive - check if layer exists before querying
-  onMove(e) {
-    if (!this.map.getLayer('maplibre-gl-directions-waypoint')) {
-      return
-    }
-    super.onMove(e)
-  }
-
-  getWaypointsFeatures() {
-    return this._waypoints
-  }
-
-  createWaypointfeature (coords, index) {
-    return {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": coords
-      },
-      "properties": {
-        "type": "WAYPOINT",
-        "id": functions.featureId(),
-        "index": index,
-        "label": index < 26
-          ? String.fromCharCode(65 + index)      // A-Z
-          : String.fromCharCode(97 + index - 26), // a-z
-        "highlight": false
+      // queryRenderedFeatures only supports string/number properties; object-valued ones come
+      // back mangled, breaking the library's JSON.parse in onMove (hover-insert never fires).
+      const buildRoutelines = this.buildRoutelines
+      this.buildRoutelines = (...args) => {
+        const routelines = buildRoutelines(...args)
+        routelines.forEach(group => group.forEach(routeline => {
+          routeline.properties.departSnappointProperties = JSON.stringify(routeline.properties.departSnappointProperties)
+          routeline.properties.arriveSnappointProperties = JSON.stringify(routeline.properties.arriveSnappointProperties)
+        }))
+        return routelines
       }
     }
-  }
 
-  setWaypointsFeatures(waypointsFeatures) {
-    this._waypoints = waypointsFeatures
+    // the base init validates each layer against a serialized copy of the whole style, which
+    // made the geometry tab of a routed track lag by ~300 ms
+    init() {
+      this.map.style.addSource(this.configuration.sourceName,
+        { type: 'geojson', data: { type: 'FeatureCollection', features: [] } }, noValidate)
+      this.configuration.layers.forEach(layer => addLayer(layer))
+    }
 
-    // assignWaypointsCategories() assigns "undefined" to midpoints.
-    // this breaks maplibre-gl 5.13 (https://github.com/maplibre/maplibre-gl-js/issues/6730)
-    // this.assignWaypointsCategories()
+    // Override onMove to be defensive - check if layer exists before querying
+    onMove(e) {
+      if (!this.map.getLayer('maplibre-gl-directions-waypoint')) {
+        return
+      }
+      super.onMove(e)
+    }
 
-    const waypointEvent = new MapLibreGlDirectionsNonCancelableEvent("setwaypoints", undefined)
-    this.fire(waypointEvent)
+    getWaypointsFeatures() {
+      return this._waypoints
+    }
 
-    this.draw()
-  }
+    createWaypointfeature (coords, index) {
+      return {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": coords
+        },
+        "properties": {
+          "type": "WAYPOINT",
+          "id": functions.featureId(),
+          "index": index,
+          "label": index < 26
+            ? String.fromCharCode(65 + index)      // A-Z
+            : String.fromCharCode(97 + index - 26), // a-z
+          "highlight": false
+        }
+      }
+    }
 
-  getSnappointsFeatures() {
-    return this.snappoints
-  }
+    setWaypointsFeatures(waypointsFeatures) {
+      this._waypoints = waypointsFeatures
 
-  createSnappointsFeatures() {
-    return this.getWaypointsFeatures().map((waypoint, _i) =>
-      this.buildPoint(waypoint.geometry.coordinates, "SNAPPOINT",
-        waypoint.properties)
-    )
-  }
+      // assignWaypointsCategories() assigns "undefined" to midpoints.
+      // this breaks maplibre-gl 5.13 (https://github.com/maplibre/maplibre-gl-js/issues/6730)
+      // this.assignWaypointsCategories()
 
-  setSnappointsFeatures(snappointsFeatures) {
-    this.snappoints = snappointsFeatures
-    this.draw()
-  }
+      const waypointEvent = new MapLibreGlDirectionsNonCancelableEvent("setwaypoints", undefined)
+      this.fire(waypointEvent)
 
-  // Recreate Routelines, to enable midpoint changes
-  // see https://github.com/maplibre/maplibre-gl-directions/blob/main/src/directions/main.ts#L230
-  createRoutelinesFeatures(feature) {
-    const routeLines = this.buildRoutelines(
-      this.configuration.requestOptions,
-      [{
-        geometry: encodePolyline(feature.geometry.coordinates),
-        "legs": [],
-      }],
-      0,
-      this.getSnappointsFeatures()
-    )
-    return routeLines
-  }
+      this.draw()
+    }
 
-  setRoutelinesFeatures(routeLinesFeatures) {
-    // console.log('routeLinesFeatures', routeLinesFeatures)
-    // console.log('directions', this)
-    this.routelines = routeLinesFeatures
-    this.draw()
+    getSnappointsFeatures() {
+      return this.snappoints
+    }
+
+    createSnappointsFeatures() {
+      return this.getWaypointsFeatures().map((waypoint, _i) =>
+        this.buildPoint(waypoint.geometry.coordinates, "SNAPPOINT",
+          waypoint.properties)
+      )
+    }
+
+    setSnappointsFeatures(snappointsFeatures) {
+      this.snappoints = snappointsFeatures
+      this.draw()
+    }
+
+    // Recreate Routelines, to enable midpoint changes
+    // see https://github.com/maplibre/maplibre-gl-directions/blob/main/src/directions/main.ts#L230
+    createRoutelinesFeatures(feature) {
+      const routeLines = this.buildRoutelines(
+        this.configuration.requestOptions,
+        [{
+          geometry: encodePolyline(feature.geometry.coordinates),
+          "legs": [],
+        }],
+        0,
+        this.getSnappointsFeatures()
+      )
+      return routeLines
+    }
+
+    setRoutelinesFeatures(routeLinesFeatures) {
+      // console.log('routeLinesFeatures', routeLinesFeatures)
+      // console.log('directions', this)
+      this.routelines = routeLinesFeatures
+      this.draw()
+    }
   }
 }
 
 let directions
 let currentFeature
+let directionsLib
+// bumped by every reset, so an init that waited for the plugin import knows it is stale
+let generation = 0
+
+function loadDirectionsLib () {
+  directionsLib ??= import('@maplibre/maplibre-gl-directions').then(lib => ({
+    CustomMapLibreGlDirections: customDirectionsClass(lib.default, lib.MapLibreGlDirectionsNonCancelableEvent),
+    layersFactory: lib.layersFactory
+  }))
+  return directionsLib
+}
 
 export function resetDirections () {
+  generation++
   if (directions) {
     console.log("Resetting directions")
     directions.interactive = false
@@ -160,8 +174,11 @@ export function resetDirections () {
   }
 }
 
-export function initDirections (profile, feature) {
+export async function initDirections (profile, feature) {
   resetDirections()
+  const initGeneration = generation
+  const { CustomMapLibreGlDirections, layersFactory } = await loadDirectionsLib()
+  if (initGeneration !== generation) { return }
   console.log("Initializing directions ('" + profile + "') with", feature || "new route")
   currentFeature = feature
 
@@ -198,7 +215,7 @@ export function initDirections (profile, feature) {
 
   directions = new CustomMapLibreGlDirections(map, {
     ...config,
-    layers: getDirectionsLayers()
+    layers: getDirectionsLayers(layersFactory)
   })
 
   if (currentFeature) {
@@ -305,7 +322,7 @@ function updateTrack(feature) {
   }
 }
 
-export function getDirectionsLayers () {
+function getDirectionsLayers (layersFactory) {
   let layers = layersFactory(1.2)
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline")
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline-casing")

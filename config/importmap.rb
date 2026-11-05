@@ -36,7 +36,7 @@ pin "@maplibre/maplibre-gl-geocoder", preload: "map", to: "@maplibre--maplibre-g
 # https://github.com/GIScience/openrouteservice-js?tab=readme-ov-file
 pin "openrouteservice-js", preload: "map" # @0.4.1
 # https://github.com/maplibre/maplibre-gl-directions/tree/main
-pin "@maplibre/maplibre-gl-directions", preload: "map", to: "@maplibre--maplibre-gl-directions.js" # @0.10.1
+pin "@maplibre/maplibre-gl-directions", preload: false, to: "@maplibre--maplibre-gl-directions.js" # @0.10.1
 # https://github.com/onthegomap/maplibre-contour
 pin "maplibre-contour", preload: "map" # @0.1.1
 
