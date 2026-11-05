@@ -1,8 +1,7 @@
 import { resetControls } from 'maplibre/controls/shared'
 import { resetEditControls } from 'maplibre/controls/edit'
 import { resetHighlightedFeature } from 'maplibre/feature'
-import { draw, toggleDrawMode } from 'maplibre/edit'
-import { map } from 'maplibre/map'
+import { changeMode, toggleDrawMode } from 'maplibre/edit'
 import { routingEnabled } from 'maplibre/routing/openrouteservice'
 import * as dom from 'helpers/dom'
 
@@ -21,8 +20,7 @@ export class LineMenuControl {
         lineMenu.classList.remove('hidden')
       } else {
         e.currentTarget.querySelector('button').classList.remove('active')
-        draw.changeMode('simple_select')
-        map.fire('draw.modechange')
+        changeMode('simple_select')
       }
     }
   }

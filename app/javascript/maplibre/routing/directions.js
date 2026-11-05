@@ -121,10 +121,6 @@ class CustomMapLibreGlDirections extends MapLibreGlDirections {
     this.draw()
   }
 
-  getRoutelinesFeatures() {
-    return this.routelines
-  }
-
   // Recreate Routelines, to enable midpoint changes
   // see https://github.com/maplibre/maplibre-gl-directions/blob/main/src/directions/main.ts#L230
   createRoutelinesFeatures(feature) {
@@ -256,22 +252,7 @@ export function initDirections (profile, feature) {
     setSelectedRoute(currentFeature)
     const isExisting = !!getFeature(currentFeature.id)
 
-    // add elevation from openrouteservice (when not included in route response)
-    if (coords[0].length === 2) {
-      updateElevation(currentFeature).finally(() => {
-        updateTrack(currentFeature)
-        if (!isExisting) {
-          showFeatureDetails(currentFeature)
-          // Defer unselect to avoid destroying directions while event is still being processed
-          setTimeout(() => {
-            unselect()
-            window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
-          }, 10)
-        } else {
-          refreshFeatureMeta(currentFeature)
-        }
-      })
-    } else {
+    const done = () => {
       updateTrack(currentFeature)
       if (!isExisting) {
         showFeatureDetails(currentFeature)
@@ -283,6 +264,12 @@ export function initDirections (profile, feature) {
       } else {
         refreshFeatureMeta(currentFeature)
       }
+    }
+    // add elevation from openrouteservice (when not included in route response)
+    if (coords[0].length === 2) {
+      updateElevation(currentFeature).finally(done)
+    } else {
+      done()
     }
   })
 

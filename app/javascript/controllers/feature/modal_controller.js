@@ -3,7 +3,7 @@ import { sendMessage } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
-import { toDegreesMinutes } from 'helpers/functions'
+import { loadMarkdownEditor, markdownEditor } from 'helpers/markdown'
 import { status } from 'helpers/status'
 import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
@@ -301,26 +301,10 @@ export default class extends Controller {
   async show_add_desc () {
     dom.hideElements(['#button-add-desc'])
     dom.showElements(['#feature-desc-section', '#feature-desc'])
-    // https://github.com/Ionaru/easy-markdown-editor
-    await import('easymde') // import EasyMDE UMD bundle
-    // EasyMDE defaults to a broken font-awesome build from bootstrapcdn; load a working one ourselves
-    // (v4-shims maps EasyMDE's old "fa fa-*" classes to FA6 icons)
-    dom.loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css')
-    dom.loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/v4-shims.min.css')
+    await loadMarkdownEditor()
     if (easyMDE) { easyMDE.toTextArea() }
     document.querySelector('#feature-desc-input').value = this.getSelectedFeature().properties.desc || ''
-    easyMDE = new window.EasyMDE({
-      element: document.getElementById('feature-desc-input'),
-      placeholder: window.__('Add a description text'),
-      toolbar: ["bold", "italic", "heading", "code", "table", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
-      minHeight: '4em',
-      spellChecker: false,
-      autoDownloadFontAwesome: false,
-      status: [{
-        className: 'autosave',
-        onUpdate: () => { this.updateDesc() }
-      }]
-    })
+    easyMDE = markdownEditor(document.getElementById('feature-desc-input'), () => { this.updateDesc() })
   }
 
   updateDesc () {
@@ -428,7 +412,7 @@ export default class extends Controller {
     // Compute new display string (toggle to the opposite format)
     const newCoords = isDegreesMinutes
       ? `${lat.toFixed(6)}, ${lng.toFixed(6)}`
-      : `${toDegreesMinutes(lat, true)}, ${toDegreesMinutes(lng, false)}`
+      : `${functions.toDegreesMinutes(lat, true)}, ${functions.toDegreesMinutes(lng, false)}`
 
     // Update displayed text
     span.textContent = newCoords

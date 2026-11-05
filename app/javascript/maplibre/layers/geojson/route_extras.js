@@ -22,7 +22,7 @@ const STEEPNESS_RANGES = {
 }
 
 // Precompute cumulative distances for a coordinate array to enable O(1) segment length lookups
-function computeCumulativeDistances (coords) {
+export function computeCumulativeDistances (coords) {
   const cumulative = new Array(coords.length)
   cumulative[0] = 0
   for (let i = 1; i < coords.length; i++) {
@@ -167,7 +167,7 @@ function pick (properties, keys) {
   return Object.fromEntries(keys.filter(key => key in properties).map(key => [key, properties[key]]))
 }
 
-function formatLength (meters) {
+export function formatLength (meters) {
   return meters >= 1000 ? `${(meters / 1000).toFixed(1)} km` : `${Math.round(meters)} m`
 }
 

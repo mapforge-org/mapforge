@@ -5,6 +5,8 @@ import { AnimatePointAnimation } from 'maplibre/animations'
 import { resetLevels } from 'maplibre/controls/levels'
 import { featureLabel, resetHighlightedFeature } from 'maplibre/feature'
 import { createLayerInstance } from 'maplibre/layers/factory'
+import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
+import { hasRouteExtras } from 'maplibre/layers/geojson/route_extras'
 import { map, setLoadedMapUpdatedAt, sortLayers } from 'maplibre/map'
 
 export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLayer, BasemapLayer
@@ -170,10 +172,7 @@ export async function initializeLayerStyles(id = null) {
   const hasLiveLayers = initLayers.some(l => l.type === 'overpass' || l.type === 'wikipedia')
   // On the initial load the preloader covers the map, so the badge would only flicker there.
   const mapLoaded = document.querySelector('.map')?.getAttribute('data-map-loaded') === 'true'
-  if (hasLiveLayers && mapLoaded) {
-    functions.e('#layer-reload', e => { e.classList.add('hidden') })
-    functions.e('#layer-loading', e => { e.classList.remove('hidden') })
-  }
+  if (hasLiveLayers && mapLoaded) { setLayerLoading(true) }
 
   const promises = initLayers.map(layer => layer.initialize())
 
@@ -189,14 +188,15 @@ export async function initializeLayerStyles(id = null) {
     console.log('geojson source + styles loaded')
     // re-sort layers after style changes
     sortLayers()
-    if (hasLiveLayers) {
-      functions.e('#layer-loading', e => { e.classList.add('hidden') })
-      // keep the reload frame open on failure so the user can retry
-      if (results.some(result => result === false)) {
-        functions.e('#layer-reload', e => { e.classList.remove('hidden') })
-      }
-    }
+    if (hasLiveLayers) { setLayerLoading(false, results.some(result => result === false)) }
   })
+}
+
+// keeps the reload frame open on failure so the user can retry. Success leaves it alone,
+// because a drag during the request reopens it for the new viewport.
+export function setLayerLoading (busy, failed = false) {
+  functions.e('#layer-loading', e => { e.classList.toggle('hidden', !busy) })
+  if (busy || failed) { functions.e('#layer-reload', e => { e.classList.toggle('hidden', busy) }) }
 }
 
 // triggered by layer reload in the layers modal
@@ -316,6 +316,8 @@ function updateFeature (feature, updatedFeature) {
   const animateFrom = feature.geometry.type === 'Point' && !equal(feature.geometry.coordinates, newCoords)
     ? feature.geometry.coordinates
     : null
+  const hadRouteExtras = hasRouteExtras(feature)
+  const hadKmMarkers = hasKmMarkers(feature)
 
   feature.geometry = updatedFeature.geometry
   feature.properties = updatedFeature.properties
@@ -334,9 +336,13 @@ function updateFeature (feature, updatedFeature) {
 
   status(window.__('%{type} updated').replace('%{type}', featureLabel(feature)))
   // Surgical single-feature update instead of a full re-render of every geojson layer.
-  // A remote update may have changed geometry or toggled companions, so refresh them.
+  // A remote update may have changed geometry or toggled companions, so refresh them when the
+  // feature had or has them. A GPS tracker point has none, and a rebuild walks every route.
   // (A remote change to a feature's level won't re-filter here — that needs a full render.)
-  applyFeatureUpdate(feature, { refreshRouteExtras: true, refreshKmMarkers: true })
+  applyFeatureUpdate(feature, {
+    refreshRouteExtras: hadRouteExtras || hasRouteExtras(feature),
+    refreshKmMarkers: hadKmMarkers || hasKmMarkers(feature)
+  })
 }
 
 export function moveFeature (feature, layerId) {

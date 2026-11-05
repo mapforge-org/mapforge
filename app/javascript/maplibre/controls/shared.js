@@ -1,7 +1,5 @@
 import { sendMessage } from 'channels/map_channel'
 import * as dom from 'helpers/dom'
-import { animateElement, initTooltips } from 'helpers/dom'
-import * as f from 'helpers/functions'
 import * as functions from 'helpers/functions'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { resetEditControls } from 'maplibre/controls/edit'
@@ -343,7 +341,7 @@ export function initLayersModal () {
       const emojiRegex = /^(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*)/u
       const match = layerName.match(emojiRegex)
       if (match) {
-        head.innerHTML = f.escapeHtml(layerName).replace(emojiRegex, `<span class='fst-normal'>$1</span>`)
+        head.innerHTML = functions.escapeHtml(layerName).replace(emojiRegex, `<span class='fst-normal'>$1</span>`)
       } else {
         head.textContent = layerName
       }
@@ -492,7 +490,7 @@ export function initCtrlTooltips () {
     e.setAttribute('data-toggle', 'tooltip')
     e.setAttribute('data-bs-trigger', 'hover')
   })
-  initTooltips()
+  dom.initTooltips()
 }
 
 // Controls are added hidden and faded in on map load. A mode switch adds them after
@@ -500,11 +498,11 @@ export function initCtrlTooltips () {
 export function revealControls (selectors) {
   // map.loaded() goes false again while the edit styles load, so use the page marker
   if (document.querySelector('.map')?.getAttribute('data-map-loaded') === 'true') {
-    selectors.forEach(selector => functions.e(selector, e => { e.classList.remove('hidden') }))
+    dom.showElements(selectors)
     return
   }
   map.once('load', () => {
-    selectors.forEach(selector => animateElement(selector, 'fade-right', 500))
+    selectors.forEach(selector => dom.animateElement(selector, 'fade-right', 500))
   })
 }
 
@@ -541,8 +539,8 @@ export function initializeDefaultControls () {
       document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('disabled', '1')
       document.querySelector('button.maplibregl-ctrl-geolocate').setAttribute('data-bs-original-title', window.__('Location (https only)'))
     }
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)', 'fade-left', 500)
-    animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
+    dom.animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-zoom-in)', 'fade-left', 500)
+    dom.animateElement('.maplibregl-ctrl:has(button.maplibregl-ctrl-geolocate)', 'fade-left', 500)
   })
 
   map.on('online', (_e) => {
@@ -594,12 +592,12 @@ function initializeFeatureTouchScroll() {
     })
   }).observe(modal)
 
-  f.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
-    if (!f.isTouchDevice()) return
+  functions.addEventListeners(modal, ['mousedown', 'touchstart', 'dragstart'], (event) => {
+    if (!functions.isTouchDevice()) return
     if (event.target.tagName.toLowerCase() === 'em-emoji-picker') return
 
     // only enable bottom sheet behavior on small screens
-    if (!f.isBottomSheet()) return
+    if (!functions.isBottomSheet()) return
 
     // Allow form elements to work normally
     if (dom.isInputElement(event.target)) return
@@ -613,7 +611,7 @@ function initializeFeatureTouchScroll() {
 
   // Allow to drag up/down modal on touch devices
   // Simulating a native bottom sheet behavior with momentum
-  f.addEventListeners(modal, ['mousemove', 'touchmove', 'drag'], (event) => {
+  functions.addEventListeners(modal, ['mousemove', 'touchmove', 'drag'], (event) => {
     if (!isDragging) { return }
 
     const dragY = event.clientY || event.touches[0].clientY
@@ -663,7 +661,7 @@ function initializeFeatureTouchScroll() {
     }
   })
 
-  f.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend', 'mouseleave'], (_event) => {
+  functions.addEventListeners(modal, ['mouseout', 'mouseup', 'touchend', 'mouseleave'], (_event) => {
     if (!isDragging) return
     isDragging = false
     modal.style.cursor = 'default'

@@ -2,12 +2,11 @@ import { area } from "@turf/area"
 import { length } from "@turf/length"
 import * as dom from 'helpers/dom'
 import * as f from 'helpers/functions'
-import { sanitizeMarkdown } from 'helpers/markdown'
+import { marked, sanitizeMarkdown } from 'helpers/markdown'
 import { featureIcon, featureTitle } from 'maplibre/feature'
 import { showElevationChart } from 'maplibre/feature/elevation'
 import { showExtrasTotals } from 'maplibre/feature/extras_totals'
 import { getFeature, getLayer } from "maplibre/layers/layers"
-import { marked } from 'marked'
 
 // a modal without tabs (read only map, or a feature of a non geojson layer) has no
 // geometry tab, so it keeps the coordinates and the map links in the meta line
@@ -155,7 +154,6 @@ function setExportHref (selector, feature, ext, nameExt) {
 }
 
 async function featureDescription (feature) {
-  marked.use({ gfm: true, breaks: true })
   let desc = ''
   // show link target if onclick is link
   if (feature?.properties?.onclick === 'link' && feature?.properties?.['onclick-target']) {

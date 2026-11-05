@@ -59,24 +59,6 @@ export function sleep (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-export function arrayRemove (arr, value) {
-  return arr.filter(function (ele) {
-    return ele !== value
-  })
-}
-
-// takes array, and reduces it with condition function
-// returns reduced array, and array of filtered elements
-export function reduceArray (array, condition) {
-  const filtered = array.filter(condition)
-  filtered.forEach(e => array.splice(array.indexOf(e), 1))
-  return filtered
-}
-
-export function roundedCoords (coords, precision = 3) {
-  return coords.map(coord => parseFloat(coord.toFixed(precision)))
-}
-
 export function removeElevation (coords) {
   return coords.map(coord => coord.slice(0, 2))
 }
@@ -117,16 +99,6 @@ export function hasCoordinate (coordinates, coordinate) {
     coord[1].toFixed(5) === coordinate[1].toFixed(5))
 }
 
-export function findCoordinate (coordinates, coordinate) {
-  for (let i = 0; i < coordinates.length; i++) {
-    if (coordinates[i][0].toFixed(5) === coordinate[0].toFixed(5) &&
-          coordinates[i][1].toFixed(5) === coordinate[1].toFixed(5)) {
-      return i
-    }
-  }
-  return -1
-}
-
 export function featureId () {
   return Math.random().toString(36).substring(2, 18)
 }
@@ -148,12 +120,6 @@ export function symbolUrl (symbol) {
 
 export function isTestEnvironment() {
   return (window.gon.rails_env === "test")
-}
-
-export function waitForEvent(emitter, eventName) {
-  return new Promise((resolve) => {
-    emitter.once(eventName, (data) => resolve(data))
-  })
 }
 
 export function toDegreesMinutes (decimal, isLatitude) {

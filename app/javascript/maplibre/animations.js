@@ -4,7 +4,6 @@ import distance from "@turf/distance"
 import { point } from "@turf/helpers"
 import { simplify } from "@turf/simplify"
 import * as dom from 'helpers/dom'
-import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { resetControls } from 'maplibre/controls/shared'
 import { highlightFeature } from 'maplibre/feature'
@@ -36,18 +35,6 @@ export class AnimationManager {
       document.removeEventListener('keydown', this.escapeHandler)
       this.escapeHandler = null
     }
-  }
-}
-
-export class RotateCameraAnimation extends AnimationManager {
-  // Using arrow function because they do not have their own this context,
-  // they inherit this from the enclosing AnimationManager instance,
-  // so that 'this' keeps pointing to the class instance
-  run = (timestamp = 0) => {
-    // clamp the rotation between 0-360 degrees
-    // Divide timestamp by 100 to slow rotation to ~10 degrees / sec
-    map.rotateTo((timestamp / 400) % 360, { duration: 0 })
-    this.animationId = requestAnimationFrame(this.run)
   }
 }
 
@@ -92,22 +79,6 @@ export class AnimatePointAnimation extends AnimationManager {
       if (progress < 1) { this.animationId = requestAnimationFrame(animate) }
     }
     this.animationId = requestAnimationFrame(animate)
-  }
-
-  async animatePointPath (feature, path) {
-    const coordinates = path.geometry.coordinates
-    console.log('Animating ' + feature.id + ' along ' + path.id)
-    // Loop over the coordinates
-    for (let i = 0; i < coordinates.length - 1; i++) {
-      const pointDistance = distance(point(coordinates[i]),
-        point(coordinates[i + 1]), { units: 'meters' })
-      const speed = 0.6 // ~ 500m/s
-      const duration = Math.round(pointDistance) / speed
-      this.animatePoint(feature, coordinates[i + 1], duration)
-      await functions.sleep(duration)
-      // if the animation was cancelled break path loop
-      if (this.animationId === null) { break }
-    }
   }
 }
 
