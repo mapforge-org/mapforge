@@ -1,4 +1,4 @@
-import { sanitizeMarkdown } from 'helpers/markdown'
+import { renderMarkdown } from 'helpers/markdown'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { featureOnLevel } from 'maplibre/controls/levels'
 import { draw } from 'maplibre/edit'
@@ -7,7 +7,6 @@ import { runFeatureOnclickAction } from 'maplibre/layers/layer'
 import { frontFeature } from 'maplibre/layers/layers'
 import { clusterMaxZoom, map } from 'maplibre/map'
 import { defaultPointSize } from 'maplibre/styles/defaults'
-import { marked } from 'marked'
 
 // A point with 'show-desc' carries its markdown description as an HTML popup pinned above the
 // marker. Popups are DOM elements, not style layers, so this module keeps them by hand, keyed
@@ -63,8 +62,7 @@ export function refreshDescBanners () {
 export const descShape = feature => feature.properties['show-desc'] || 'none'
 
 function upsertDescBanner (feature, layer, visible) {
-  marked.use({ gfm: true, breaks: true })
-  const html = sanitizeMarkdown(marked(feature.properties.desc))
+  const html = renderMarkdown(feature.properties.desc)
   const shape = descShape(feature)
   // the tail of a bubble sits at its corner, and maplibre puts the tip where the anchor is
   const anchor = shape === 'bubble' ? 'bottom-left' : 'bottom'

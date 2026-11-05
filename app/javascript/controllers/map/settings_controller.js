@@ -3,12 +3,11 @@ import { sendMessage } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
-import { sanitizeMarkdown } from 'helpers/markdown'
+import { markdownEditor, renderMarkdown } from 'helpers/markdown'
 import { resetControls } from 'maplibre/controls/shared'
 import { toggleDrawMode } from 'maplibre/edit'
 import { mapProperties, setBackgroundMapLayer, updateMapName } from 'maplibre/map'
 import { basemaps } from 'maplibre/styles/basemaps'
-import { marked } from 'marked'
 
 let descEasyMDE
 
@@ -118,62 +117,42 @@ export default class extends Controller {
     functions.e('#map-view-fixed', e => { e.checked = fixed })
   }
 
+  applyMapSettings (changes) {
+    Object.assign(mapProperties, changes)
+    setBackgroundMapLayer()
+    sendMessage('update_map', changes)
+  }
+
   // alternative to https://maplibre.org/maplibre-gl-js/docs/API/classes/TerrainControl/
   updateTerrain (event) {
     this.mapTerrainValue = event.target.checked
     // globe and 3d don't work together: maplibre (6.11.2) does not lift the globe camera
     // by terrain elevation, so labels render too large and panning is too sensitive
-    if (this.mapTerrainValue) {
-      document.querySelector('#map-globe').checked = false
-      mapProperties.globe = false
-    }
-    mapProperties.terrain = this.mapTerrainValue
-    setBackgroundMapLayer()
-    if (window.gon.map_mode === 'rw') {
-      sendMessage('update_map', { terrain: mapProperties.terrain, globe: mapProperties.globe })
-    }
+    if (this.mapTerrainValue) { document.querySelector('#map-globe').checked = false }
+    this.applyMapSettings({ terrain: this.mapTerrainValue, globe: this.mapTerrainValue ? false : mapProperties.globe })
   }
 
   updateHillshade (event) {
     this.mapHillshadeValue = event.target.checked
-    mapProperties.hillshade = this.mapHillshadeValue
-    setBackgroundMapLayer()
-    if (window.gon.map_mode === 'rw') {
-      sendMessage('update_map', { hillshade: mapProperties.hillshade })
-    }
+    this.applyMapSettings({ hillshade: this.mapHillshadeValue })
   }
 
   updateContours (event) {
     this.mapContoursValue = event.target.checked
-    mapProperties.contours = this.mapContoursValue
-    setBackgroundMapLayer()
-    if (window.gon.map_mode === 'rw') {
-      sendMessage('update_map', { contours: mapProperties.contours })
-    }
+    this.applyMapSettings({ contours: this.mapContoursValue })
   }
 
   updateGlobe (event) {
     this.mapGlobeValue = event.target.checked
     // globe and 3d don't work together: maplibre (6.11.2) does not lift the globe camera
     // by terrain elevation, so labels render too large and panning is too sensitive
-    if (this.mapGlobeValue) {
-      document.querySelector('#map-terrain').checked = false
-      mapProperties.terrain = false
-    }
-    mapProperties.globe = this.mapGlobeValue
-    setBackgroundMapLayer()
-    if (window.gon.map_mode === 'rw') {
-      sendMessage('update_map', { globe: mapProperties.globe, terrain: mapProperties.terrain })
-    }
+    if (this.mapGlobeValue) { document.querySelector('#map-terrain').checked = false }
+    this.applyMapSettings({ globe: this.mapGlobeValue, terrain: this.mapGlobeValue ? false : mapProperties.terrain })
   }
 
   updateBaseMap (event) {
     this.baseMapValue = event.currentTarget.dataset.baseMap
-    mapProperties.base_map = this.baseMapValue
-    setBackgroundMapLayer()
-    if (window.gon.map_mode === 'rw') {
-      sendMessage('update_map', { base_map: mapProperties.base_map })
-    }
+    this.applyMapSettings({ base_map: this.baseMapValue })
   }
 
   updateName (event) {
@@ -196,8 +175,7 @@ export default class extends Controller {
   }
 
   renderDescription() {
-    marked.use({ gfm: true, breaks: true })
-    const desc = sanitizeMarkdown(marked(this.mapDescriptionValue || ''))
+    const desc = renderMarkdown(this.mapDescriptionValue)
     // an empty element lets CSS hide the whole card in view mode
     functions.e('#map-description-view', e => { e.innerHTML = desc.trim() })
   }
@@ -208,23 +186,7 @@ export default class extends Controller {
     dom.hideElements(['#map-description-toggle'])
     dom.showElements(['#map-description'])
 
-    await import('easymde') // import EasyMDE UMD bundle
-    // EasyMDE defaults to a broken font-awesome build from bootstrapcdn; load a working one ourselves
-    // (v4-shims maps EasyMDE's old "fa fa-*" classes to FA6 icons)
-    dom.loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css')
-    dom.loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/v4-shims.min.css')
-    descEasyMDE = new window.EasyMDE({
-      element: document.getElementById('map-description-input'),
-      placeholder: window.__('Add a description text'),
-      toolbar: ["bold", "italic", "heading", "code", "table", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
-      minHeight: '4em',
-      spellChecker: false,
-      autoDownloadFontAwesome: false,
-      status: [{
-        className: 'autosave',
-        onUpdate: () => { this.updateDescription() }
-      }]
-    })
+    descEasyMDE = await markdownEditor(document.getElementById('map-description-input'), () => { this.updateDescription() })
     document.querySelector('#map-description-input')?.focus()
   }
 

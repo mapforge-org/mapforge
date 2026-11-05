@@ -1,13 +1,19 @@
 import * as functions from 'helpers/functions'
-import { status } from 'helpers/status'
 import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { Layer } from 'maplibre/layers/layer'
-import { layers } from 'maplibre/layers/layers'
 import { applyOverpassQueryStyle } from 'maplibre/layers/overpass/queries'
 import { map } from 'maplibre/map'
 import { overpassDescription } from 'maplibre/layers/osm_description'
 import { osmAttribution } from 'maplibre/styles/basemaps'
 import { initializeClusterStyles, initializeViewStyles } from 'maplibre/styles/styles'
+
+// TODO: move cluster + heatmap to layer checkboxes
+export function overpassClusterSettings (query) {
+  const heatmap = query.includes('heatmap=true')
+  // clustering breaks lines & geometries
+  const cluster = !heatmap && !query.includes('cluster=false') && !query.includes('geom')
+  return { cluster, heatmap }
+}
 
 export class OverpassLayer extends Layer {
   constructor(layer) {
@@ -24,10 +30,7 @@ export class OverpassLayer extends Layer {
     if (!this.layer.query) { return Promise.resolve() }
 
     initializeViewStyles(this.sourceId, this.layer.heatmap)
-    const clustered = !this.layer.query.includes("heatmap=true") &&
-      !this.layer.query.includes("cluster=false") &&
-      !this.layer.query.includes("geom") // clustering breaks lines & geometries
-    if (clustered) {
+    if (overpassClusterSettings(this.layer.query).cluster) {
       const clusterIcon = getCommentValue(this.layer.query, 'cluster-symbol') || getCommentValue(this.layer.query, 'cluster-image-url') ||
         getCommentValue(this.layer.query, 'marker-symbol') || getCommentValue(this.layer.query, 'marker-image-url')
       const clusterColor = getCommentValue(this.layer.query, 'cluster-color') || getCommentValue(this.layer.query, 'marker-color')
@@ -116,13 +119,7 @@ export class OverpassLayer extends Layer {
     })
     .catch(error => {
       console.error('Failed to fetch overpass for ' + this.id, this.layer.query, error.message)
-      // return if layer is gone (likely page change)
-      if (!layers || !layers.includes(this)) { return }
-      status(window.__('Failed to load layer %{name}').replace('%{name}', functions.escapeHtml(this.layer.name)), 'error')
-      // Set empty geojson so layer can still render
-      this.layer.geojson = { type: 'FeatureCollection', features: [] }
-      this.render()
-      return false
+      return this.loadFailed()
     })
   }
 }

@@ -19,13 +19,9 @@ let mapChannel
 let channelStatus
 let reloadInProgress = false
 let connectionUUID
-let remoteCursors = {};
+let remoteCursors = {}
 
-['turbo:before-visit'].forEach(function (e) {
-  window.addEventListener(e, function () {
-    unload()
-  })
-})
+window.addEventListener('turbo:before-visit', () => unload())
 
 function cursorColor (uuid) {
   let hash = 0
@@ -228,6 +224,8 @@ export function initializeSocket () {
 }
 
 export function sendMessage (event, data) {
+  // the server accepts writes and cursor positions only from the private (rw) link
+  if (window.gon.map_mode !== 'rw') { return }
   if (!mapChannel) {
     console.warn(`Cannot send '${event}': map_channel not connected`)
     return

@@ -1,4 +1,5 @@
 import * as functions from 'helpers/functions'
+import { status } from 'helpers/status'
 import { flyToFeature } from 'maplibre/animations'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
@@ -10,7 +11,7 @@ import {
   setHoveredFeature,
   stickyFeatureHighlight
 } from 'maplibre/feature'
-import { frontFeature, getFeature } from 'maplibre/layers/layers'
+import { frontFeature, getFeature, layers } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, noValidate } from 'maplibre/map'
 
 // Source prefixes whose features are selectable via click. Excludes basemap
@@ -257,6 +258,17 @@ export class Layer {
    */
   loadData() {
     return Promise.resolve(this.layer?.geojson)
+  }
+
+  // For the catch of a failed loadData(). Returns false, so the reload button stays open.
+  loadFailed() {
+    // return if layer is gone (likely page change)
+    if (!layers || !layers.includes(this)) { return }
+    status(window.__('Failed to load layer %{name}').replace('%{name}', functions.escapeHtml(this.layer.name)), 'error')
+    // Set empty geojson so layer can still render
+    this.layer.geojson = { type: 'FeatureCollection', features: [] }
+    this.render()
+    return false
   }
 
   /**

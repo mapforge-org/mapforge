@@ -397,7 +397,7 @@ function limitZoom() {
 
 function updateCursorPosition(e) {
   lastMousePosition = e.lngLat
-  if (window.gon.map_mode === 'rw' && window.gon.map_properties.share_cursor) {
+  if (window.gon.map_properties.share_cursor) {
     const coords = e.lngLat
     functions.throttle(() => {
       sendMessage('mouse', { lng: coords.lng, lat: coords.lat })

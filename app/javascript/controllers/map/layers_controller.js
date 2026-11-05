@@ -9,7 +9,8 @@ import { updateElevation } from 'maplibre/routing/openrouteservice'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { importFile } from 'maplibre/import/kml'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { activeLayer, getFeature, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, setActiveLayer, upsert } from 'maplibre/layers/layers'
+import { activeLayer, getFeature, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, setActiveLayer, setLayerLoading, upsert } from 'maplibre/layers/layers'
+import { overpassClusterSettings } from 'maplibre/layers/overpass/overpass'
 import { queries } from 'maplibre/layers/overpass/queries'
 import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, sortLayers, updateMapName } from 'maplibre/map'
 import { addUndoState, layerPlacement, layerSettings } from 'maplibre/undo'
@@ -227,12 +228,7 @@ export default class extends Controller {
 
     layer.query = layerElement.querySelector('.overpass-query').value
     layer.name = layerElement.querySelector('.overpass-name').value
-    // TODO: move cluster + heatmap to layer checkboxes
-    const clustered = !layer.query.includes("heatmap=true") &&
-      !layer.query.includes("cluster=false") &&
-      !layer.query.includes("geom") // clustering breaks lines & geometries
-    layer["cluster"] = clustered
-    layer["heatmap"] = layer.query.includes("heatmap=true")
+    Object.assign(layer, overpassClusterSettings(layer.query))
     event.target.closest('.layer-item').querySelector('.layer-name').textContent = layer.name
     sendMessage('update_layer', layer.toJSON())
     event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
@@ -290,24 +286,17 @@ export default class extends Controller {
   refreshLayer (event) {
     event.preventDefault()
     const layerId = event.target.closest('.layer-item').getAttribute('data-layer-id')
-    functions.e('#layer-reload', e => { e.classList.add('hidden') })
-    functions.e('#layer-loading', e => { e.classList.remove('hidden') })
+    setLayerLoading(true)
     loadLayerData(layerId).then( (result) => {
       initLayersModal()
-      functions.e('#layer-loading', e => { e.classList.add('hidden') })
-      // keep the reload frame open on failure so the user can retry
-      if (result === false) { functions.e('#layer-reload', e => { e.classList.remove('hidden') }) }
+      setLayerLoading(false, result === false)
     })
   }
 
   async refreshLayers(event) {
     event.preventDefault()
-    functions.e('#layer-reload', e => { e.classList.add('hidden') })
-    functions.e('#layer-loading', e => { e.classList.remove('hidden') })
-    const anyFailed = await loadAllLayerData()
-    functions.e('#layer-loading', e => { e.classList.add('hidden') })
-    // keep the reload frame open on failure so the user can retry
-    if (anyFailed) { functions.e('#layer-reload', e => { e.classList.remove('hidden') }) }
+    setLayerLoading(true)
+    setLayerLoading(false, await loadAllLayerData())
   }
 
   toggleLayerList (event) {
@@ -381,8 +370,7 @@ export default class extends Controller {
     // A geojson layer keeps its style layers and data while hidden, so a full rebuild is only
     // needed when they don't exist yet (hidden at page load, or replaced by setStyle).
     if (layer.show && (layer.type !== 'geojson' || !layer.getStyleLayerIds().length)) { initializeLayerStyles(layerId) }
-    // sync to server only in rw mode
-    if (window.gon.map_mode === "rw") { sendMessage('update_layer', layer.toJSON()) }
+    sendMessage('update_layer', layer.toJSON())
   }
 
   activateLayer (event) {
@@ -466,14 +454,7 @@ export default class extends Controller {
       "heatmap": layer.heatmap ?? false, "cluster": layer.cluster ?? false,
       "show": layer.show ?? true, "geojson": layer.geojson ?? null }
     if (layer.query != null) { layerData.query = layer.query }
-    if (layer.type == 'overpass') {
-      // TODO: move cluster + heatmap to layer checkboxes
-      const clustered = !layerData.query.includes("heatmap=true") &&
-        !layerData.query.includes("cluster=false") &&
-        !layerData.query.includes("geom") // clustering breaks lines & geometries
-      layerData["cluster"] = clustered
-      layerData["heatmap"] = layerData.query.includes("heatmap=true")
-    }
+    if (layer.type == 'overpass') { Object.assign(layerData, overpassClusterSettings(layerData.query)) }
     const layerInstance = createLayerInstance(layerData)
     layerInstance.localData = true // renders from memory, see GeoJSONLayer.loadData
     if (first) { layers.unshift(layerInstance) } else { layers.push(layerInstance) }

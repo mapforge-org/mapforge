@@ -170,10 +170,7 @@ export async function initializeLayerStyles(id = null) {
   const hasLiveLayers = initLayers.some(l => l.type === 'overpass' || l.type === 'wikipedia')
   // On the initial load the preloader covers the map, so the badge would only flicker there.
   const mapLoaded = document.querySelector('.map')?.getAttribute('data-map-loaded') === 'true'
-  if (hasLiveLayers && mapLoaded) {
-    functions.e('#layer-reload', e => { e.classList.add('hidden') })
-    functions.e('#layer-loading', e => { e.classList.remove('hidden') })
-  }
+  if (hasLiveLayers && mapLoaded) { setLayerLoading(true) }
 
   const promises = initLayers.map(layer => layer.initialize())
 
@@ -189,14 +186,14 @@ export async function initializeLayerStyles(id = null) {
     console.log('geojson source + styles loaded')
     // re-sort layers after style changes
     sortLayers()
-    if (hasLiveLayers) {
-      functions.e('#layer-loading', e => { e.classList.add('hidden') })
-      // keep the reload frame open on failure so the user can retry
-      if (results.some(result => result === false)) {
-        functions.e('#layer-reload', e => { e.classList.remove('hidden') })
-      }
-    }
+    if (hasLiveLayers) { setLayerLoading(false, results.some(result => result === false)) }
   })
+}
+
+// keeps the reload frame open on failure so the user can retry
+export function setLayerLoading (busy, failed = false) {
+  functions.e('#layer-loading', e => { e.classList.toggle('hidden', !busy) })
+  functions.e('#layer-reload', e => { e.classList.toggle('hidden', busy || !failed) })
 }
 
 // triggered by layer reload in the layers modal
