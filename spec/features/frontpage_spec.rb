@@ -15,4 +15,13 @@ describe "Frontpage" do
     expect(page).to have_css(".landing-route-pin", visible: :all, count: 5)
     expect(find(".landing-route path", visible: :all)[:d]).to match(/\AM[\d.-]+ [\d.-]+ C/)
   end
+
+  it "keeps the route inside the page on phones", :phone do
+    expect(page).to have_css(".landing-route path[d]")
+    expect(page).to have_no_css(".landing-checks")
+    expect(find(".landing-route path")[:d]).not_to include("NaN")
+
+    right = page.evaluate_script("(b => b.x + b.width)(document.querySelector('.landing-route path').getBBox())")
+    expect(right).to be <= page.evaluate_script("document.querySelector('#frontpage').clientWidth")
+  end
 end

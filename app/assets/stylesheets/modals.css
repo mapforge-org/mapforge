@@ -756,7 +756,7 @@ body.map-mode-rw .ro-only {
   }
 }
 
-@media (width <= 574px) {
+@media (width < 576px) {
   .map-modal-content {
       max-height: calc(100vh - 7rem);
   }

@@ -19,14 +19,13 @@
 
 /* Screen width breakpoints:
  *  380px  extra-narrow   small phones
- *  574px  mobile         general mobile-portrait styles
- *  640px  small/tablet   feature modal flips to bottom-sheet
+ *  576px  mobile         general mobile-portrait styles, must match the d-sm-* classes
+ *  640px  small/tablet   top nav collapses, feature modal flips to bottom-sheet, map controls and lists adapt
  *  860px  medium         (frontpage only)
  *  992px  large          (frontpage only)
- * 1024px  desktop        (feature modal inner tweak)
  *
  * Height-based:
- *  410px  short viewport (modals)
+ *  410px  short viewport (modals, map, controls)
  */
 
 

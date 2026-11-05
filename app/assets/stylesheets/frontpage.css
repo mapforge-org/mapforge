@@ -219,6 +219,28 @@ section,
   font-weight: 700;
 }
 
+.landing-actions .btn-outline-light {
+  --bs-btn-color: var(--color-light-sand);
+  --bs-btn-border-color: color-mix(in srgb, var(--color-light-sand) 60%, transparent);
+  --bs-btn-focus-shadow-rgb: 229, 229, 215;
+
+  /* reset hover effect for browsers without hover support */
+  --bs-btn-hover-color: var(--color-light-sand);
+  --bs-btn-hover-bg: transparent;
+  --bs-btn-hover-border-color: color-mix(in srgb, var(--color-light-sand) 60%, transparent);
+  --bs-btn-active-color: var(--color-dark-moss-green);
+  --bs-btn-active-bg: var(--color-light-sand);
+  --bs-btn-active-border-color: var(--color-light-sand);
+}
+
+/* only add hover effects to supported browsers */
+@media (hover: hover) {
+  .landing-actions .btn-outline-light {
+    --bs-btn-hover-bg: color-mix(in srgb, var(--color-light-sand) 18%, transparent);
+    --bs-btn-hover-border-color: var(--color-light-sand);
+  }
+}
+
 .landing-checks {
   display: flex;
   flex-wrap: wrap;
@@ -449,7 +471,7 @@ section,
 
 .landing-route path {
   fill: none;
-  stroke: var(--color-orange);
+  stroke: var(--color-mid-brown);
   stroke-dasharray: 9 7;
   stroke-linecap: round;
   stroke-width: 2.5;
@@ -509,7 +531,7 @@ section,
   }
 }
 
-@media (width <= 520px) {
+@media (width < 576px) {
   .landing-badge {
     display: none;
   }
@@ -523,8 +545,7 @@ section,
     text-align: center;
   }
 
-  .landing-actions,
-  .landing-checks {
+  .landing-actions {
     justify-content: center;
   }
 
@@ -627,15 +648,19 @@ section,
     min-height: 0;
   }
 
-  .landing-route, .landing-route-pin {
+  .landing-checks {
     display: none;
   }
 }
 
-@media (width <= 574px) {
+@media (width < 576px) {
   .landing-actions .btn {
     padding: 0.5rem;
     font-size: 0.95rem;
+  }
+
+  .slides .landing-route-pin {
+    margin-left: -1.5rem;
   }
 
   .hero h1 {

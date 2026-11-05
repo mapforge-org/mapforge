@@ -127,10 +127,40 @@ img.profile-image {
     background-color: var(--color-light-sand) !important;
 }
 
-/* make max space on small screen < sm */
+/* Bootstrap has no 640px tier, so these rules replace navbar-expand-sm and the d-sm-* classes */
+@media (width >= 640px) {
+  .navbar {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+
+  .navbar .navbar-nav {
+    flex-direction: row;
+  }
+
+  .navbar .navbar-nav .nav-link {
+    padding-inline: var(--bs-navbar-nav-link-padding-x);
+  }
+
+  .navbar .navbar-collapse {
+    display: flex !important;
+    flex-basis: auto;
+  }
+
+  .navbar .navbar-toggler,
+  .navbar .nav-mobile {
+    display: none;
+  }
+}
+
+/* make max space on small screen < 640px */
 
 /* Show burger menu and dropdown for nav items */
-@media (width <= 574px) {
+@media (width < 640px) {
+  .navbar .nav-desktop {
+    display: none;
+  }
+
   .mapforge-logo {
     width: auto;
     height: 2.7rem;

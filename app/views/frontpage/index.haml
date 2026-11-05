@@ -20,7 +20,7 @@
           %br
           = _("Create individual maps for your places, tracks and events.")
 
-        .landing-actions
+        .landing-actions{ data: { 'frontpage-route-target': "actions" } }
           = button_to (@user ? _("Start a map") : _("Start for free")), create_map_path, class: 'btn btn-orange btn-lg'
           - if @user
             = link_to _("Your maps"), my_path, class: 'btn btn-outline-light btn-lg'

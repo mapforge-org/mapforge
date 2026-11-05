@@ -5,7 +5,7 @@ const STRAIGHT_LENGTH = 280
 const WOBBLE = 5
 
 export default class extends Controller {
-  static targets = ['path', 'hero', 'feature', 'row', 'stats', 'grid']
+  static targets = ['path', 'actions', 'hero', 'feature', 'row', 'stats', 'grid']
 
   connect () {
     this.observer = new ResizeObserver(() => this.draw())
@@ -29,11 +29,13 @@ export default class extends Controller {
     }
     const between = (a, b) => ({ x: (a.x + b.x) / 2, y: a.y + 6 })
 
-    const [open, free, host] = this.heroTargets.map(tip)
+    const [open, , host] = this.heroTargets.map(tip)
     const [importData, routing] = this.featureTargets.map(tip)
     const [share, mobile, code] = this.rowTargets.map(tip)
     const [shareBottom, mobileBottom] = this.rowTargets.map(e => box(e.closest('.row')).bottom - 12)
     const aboveStats = box(this.statsTarget).top - 14
+    const actions = box(this.actionsTarget)
+    const start = { x: 0, y: actions.bottom + 16 }
     const grid = box(this.gridTarget)
     const cards = [...this.gridTarget.children].map(box)
     // Bends scale with their card, the fractions can reach outside of it into the page gutter
@@ -43,25 +45,49 @@ export default class extends Controller {
     }))
     const descent = cards[2].left + cards[2].width * 0.6
 
+    // The middle pin stays out of the route: the pins can wrap to several lines
+    const hero = this.heroTargets[0].offsetParent
+      ? [start, open, between(open, host), host, { x: host.x + 90, y: aboveStats }]
+      : [start, { x: actions.right, y: start.y }]
+
+    const features = cards[2].top === cards[0].top
+      ? [
+          { x: descent - 50, y: aboveStats }, { x: descent, y: aboveStats + 30 },
+          ...bends(cards[2], [0.62, -0.6], [0.72, -0.2], [0.7, 0.15]),
+          routing,
+          ...bends(cards[2], [0.42, 0.37], [0.12, 0.24]),
+          ...bends(cards[1], [0.87, 0.1], [0.6, 0.02], [0.3, 0.1], [0.05, 0.2]),
+          ...bends(cards[0], [0.91, 0.33], [0.62, 0.4]),
+          importData,
+          ...bends(cards[0], [0.2, 0.3], [-0.05, 0.2], [-0.1, 0.6]),
+          { x: Math.max(8, grid.left - 30), y: (grid.top + grid.bottom * 3) / 4 }
+        ]
+      : this.stackedFeatures(origin, start, grid, cards, importData, routing)
+
     const points = [
-      { x: 0, y: open.y - 70 }, { x: open.x - 40, y: open.y - 40 },
-      open, between(open, free), free, between(free, host), host,
-      { x: host.x + 90, y: aboveStats }, { x: descent - 50, y: aboveStats }, { x: descent, y: aboveStats + 30 },
-      ...bends(cards[2], [0.62, -0.6], [0.72, -0.2], [0.7, 0.15]),
-      routing,
-      ...bends(cards[2], [0.42, 0.37], [0.12, 0.24]),
-      ...bends(cards[1], [0.87, 0.1], [0.6, 0.02], [0.3, 0.1], [0.05, 0.2]),
-      ...bends(cards[0], [0.91, 0.33], [0.62, 0.4]),
-      importData,
-      ...bends(cards[0], [0.2, 0.3], [-0.05, 0.2], [-0.1, 0.6]),
-      { x: Math.max(8, grid.left - 30), y: (grid.top + grid.bottom * 3) / 4 },
+      ...hero,
+      ...features,
       { x: share.x, y: grid.bottom + 70 },
       share, { x: share.x, y: shareBottom }, { x: mobile.x, y: shareBottom },
       mobile, { x: mobile.x, y: mobileBottom }, { x: code.x, y: mobileBottom },
       code
     ]
 
-    this.pathTarget.setAttribute('d', this.smoothPath(this.addWobble(points)))
+    this.pathTarget.setAttribute('d', this.smoothPath(this.addWobble(points), origin.width - 4))
+  }
+
+  // In a wrapped grid the route stays in the gaps next to the cards, away from their text
+  stackedFeatures (origin, start, grid, cards, importData, routing) {
+    const edge = origin.width - 10
+    const gap = cards[0].right + 10
+    const gapBelow = cards[2].right + 10
+    return [
+      { x: edge, y: start.y }, { x: edge, y: grid.top - 20 }, { x: importData.x, y: grid.top - 20 },
+      importData,
+      { x: gap, y: importData.y }, { x: gap, y: cards[2].top + 10 },
+      routing,
+      { x: gapBelow, y: routing.y }, { x: gapBelow, y: grid.bottom + 30 }
+    ]
   }
 
   addWobble (points) {
@@ -84,7 +110,7 @@ export default class extends Controller {
   }
 
   // Catmull-Rom spline as bezier curves, it passes through all points
-  smoothPath (points) {
+  smoothPath (points, maxX) {
     const curves = points.slice(1).map((point, index) => {
       const start = points[index]
       const before = points[index - 1] || start
@@ -93,7 +119,8 @@ export default class extends Controller {
         start[axis] + (point[axis] - before[axis]) / 6,
         point[axis] - (after[axis] - start[axis]) / 6
       ]
-      const [x1, x2] = handle('x')
+      // Long segments push the handles out of the page at sharp bends
+      const [x1, x2] = handle('x').map(x => Math.min(x, maxX))
       const [y1, y2] = handle('y')
       return `C${x1} ${y1} ${x2} ${y2} ${point.x} ${point.y}`
     })

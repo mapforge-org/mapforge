@@ -68,7 +68,7 @@
 }
 
 /* improve alignment on small screen */
-@media (width <= 574px) {
+@media (width < 576px) {
   .footer-links-left {
     padding-left: 17vw;
   }

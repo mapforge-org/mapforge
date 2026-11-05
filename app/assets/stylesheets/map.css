@@ -561,7 +561,7 @@ body:has(#map-mode-badge) .layer-popover {
   z-index: 1;
 }
 
-@media (width <= 574px) {
+@media (width < 576px) {
   .route-extras-legend {
     display: none;
   }
