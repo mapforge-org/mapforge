@@ -3,7 +3,6 @@ import { sendMessage } from 'channels/map_channel'
 import { copyToClipboard } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
-import { toDegreesMinutes } from 'helpers/functions'
 import { status } from 'helpers/status'
 import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
@@ -428,7 +427,7 @@ export default class extends Controller {
     // Compute new display string (toggle to the opposite format)
     const newCoords = isDegreesMinutes
       ? `${lat.toFixed(6)}, ${lng.toFixed(6)}`
-      : `${toDegreesMinutes(lat, true)}, ${toDegreesMinutes(lng, false)}`
+      : `${functions.toDegreesMinutes(lat, true)}, ${functions.toDegreesMinutes(lng, false)}`
 
     // Update displayed text
     span.textContent = newCoords

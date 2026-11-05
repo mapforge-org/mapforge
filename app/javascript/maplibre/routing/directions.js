@@ -121,10 +121,6 @@ class CustomMapLibreGlDirections extends MapLibreGlDirections {
     this.draw()
   }
 
-  getRoutelinesFeatures() {
-    return this.routelines
-  }
-
   // Recreate Routelines, to enable midpoint changes
   // see https://github.com/maplibre/maplibre-gl-directions/blob/main/src/directions/main.ts#L230
   createRoutelinesFeatures(feature) {

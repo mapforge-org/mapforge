@@ -4,7 +4,6 @@ export default class extends Controller {
 
   static values = {
     search: String,
-    user: String,
     sort: String,
     sortLabel: String,
     direction: String

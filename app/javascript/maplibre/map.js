@@ -92,7 +92,7 @@ export function initializeMaplibreProperties () {
     initSettingsModal()
     status(window.__('Map properties updated'))
     // initial load
-    if (Object.keys(lastProperties).length === 0 || !mapProperties) { return }
+    if (Object.keys(lastProperties).length === 0) { return }
     // animate to new view if map had no interaction yet and not in geolocate follow mode
     if (!mapInteracted && !isGeolocateFollowModeActive()) { animateViewFromProperties() }
     return true
@@ -730,13 +730,4 @@ export function updateMapName (name) {
     document.title = 'Mapforge map: ' + mapProperties.name
   }
   functions.e('#map-title', e => { e.textContent = mapProperties.name })
-}
-
-export function viewUnchanged() {
-  const tolerance = 0.01
-  const mapInitCenter = initialView().center
-  const lngMatch = Math.abs(map.getCenter().lng - mapInitCenter[0]) < tolerance
-  const latMatch = Math.abs(map.getCenter().lat - mapInitCenter[1]) < tolerance
-  // console.log(lngMatch && latMatch)
-  return lngMatch && latMatch
 }
