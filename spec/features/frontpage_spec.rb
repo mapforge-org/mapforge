@@ -4,11 +4,11 @@ describe "Frontpage" do
   before { visit root_path }
 
   it "loads the demo only when the visitor plays it" do
-    expect(page).to have_css("img[src*='demo_poster.webp']")
+    expect(page).to have_css(".landing-video video[preload='none'][poster*='demo_poster.webp']")
     find(".landing-video-play").click
 
-    expect(page).to have_css(".landing-video img[src*='demo.webp']")
     expect(page).to have_no_css(".landing-video-play")
+    wait_for { page.evaluate_script("document.querySelector('.landing-video video').paused") }.to be false
   end
 
   it "draws the route through the feature pins" do

@@ -1,19 +1,20 @@
-require "net/http"
-
 namespace :demo do
   desc "Draw on an existing map in three scenes, for screen recording (Elba, La Zanca)"
-  task draw: :environment do
+  task :draw, [ :private_id, :open_page, :start_recording ] => :environment do |_task, args|
     fps = 30
     pace = 0.75                                    # every cursor action runs 25% faster
 
     # Opening and closing shot: all three scenes in one frame
-    wide_view = { center: [ 10.2734, 42.7854 ], zoom: 10.99, bearing: 0, pitch: 0 }
+    wide_view = { center: [ 10.2734, 42.7854 ], zoom: 10.2, bearing: 0, pitch: 0 }
 
-    # Scene 1: Cleo's walk on the coast path west of Sant'Andrea
-    walk_view = { center: [ 10.141389, 42.806839 ], zoom: 16.89, bearing: 36.8, pitch: 63 }
-    walk = [ [ 10.141065, 42.805958 ], [ 10.137624, 42.806340 ],
-             [ 10.132795, 42.803512 ], [ 10.130609, 42.804515 ] ]
-    snake = [ 10.133219, 42.804052 ]
+    # Scene 1: Cleo's hike across the mountains of Elba. The route is stored, so a recording needs
+    # no ORS key. The stops cut its 10.8 km into three equal legs, and the zoom fits the widest one.
+    hike = JSON.parse(Rails.root.join("lib/tasks/demo_hike.geojson").read).dig("features", 0)
+    track = hike["geometry"]["coordinates"]
+    stops = [ 0, 150, 291, track.size - 1 ]        # index of every waypoint inside track
+    walk_view = { center: track.first.first(2), zoom: 14.2, bearing: 65, pitch: 65 }
+    snake = track[270].first(2)
+    snake_view = { center: [ 10.1625, 42.76452 ], zoom: 14.63, bearing: 0, pitch: 54 }
 
     # Scene 2: Ben maps the shore at Punta della Zanca, then the water in front of it
     shore_view = { center: [ 10.122640, 42.802750 ], zoom: 16.4, bearing: 122.7, pitch: 55 }
@@ -58,15 +59,18 @@ namespace :demo do
     # The neighbour house, from its real footprint in OpenStreetMap (way 169710115).
     annex = [ [ 10.1339432, 42.8015571 ], [ 10.1339970, 42.8015012 ],
               [ 10.1338775, 42.8014393 ], [ 10.1338237, 42.8014952 ] ]
-    house_view = { center: [ 10.1338054, 42.8015461 ], zoom: 18.49, bearing: 0, pitch: 44 }
+    house_view = { center: [ 10.134938, 42.801694 ], zoom: 17.34, bearing: 15.4, pitch: 40 }
 
-    print "Private map id (browser should be open): "
-    private_id = $stdin.gets.to_s.strip
+    private_id = args[:private_id] || begin
+      print "Private map id (browser should be open): "
+      $stdin.gets.to_s.strip
+    end
     map = Map.find_by(private_id: private_id)
     abort "No map with private_id #{private_id}" unless map
     # Printed before the slow setup below, so the page is open by the time the first
     # broadcast goes out. A cursor is a broadcast, so it needs a connected client.
-    puts "Open #{ENV.fetch("MAPFORGE_HOST", "http://localhost:3000")}/m/#{map.private_id}?fps=30"
+    map_url = "#{ENV.fetch("MAPFORGE_HOST", "http://localhost:3000")}/m/#{map.private_id}?fps=30"
+    puts "Open #{map_url}"
 
     hiker  = { uuid: "demo-hiker", name: "Cleo", image: "/images/frontpage/avatar2.jpeg" }
     scout  = { uuid: "demo-scout", name: "Ben", image: "/images/frontpage/avatar3.jpeg" }
@@ -80,22 +84,18 @@ namespace :demo do
       cursor[:layer].features.destroy_all
     end
 
+    add_sticker = -> {
+      hiker[:layer].features.create!(
+        geometry: { "type" => "Point", "coordinates" => wide_view[:center] },
+        properties: { "title" => "Mapforge", "marker-image-url" => "/logo/sticker/mapforge-sticker.png",
+                      "marker-size" => 9, "marker-opacity" => 0.85 })
+    }
+    sticker = add_sticker.call
+
     # The opening shot is stored on the map itself, so a fresh page load already shows the
-    # wide view with the title on it. An open page gets the same view broadcast below.
+    # wide view. An open page gets the same view broadcast below.
     map.update!(center: wide_view[:center], zoom: wide_view[:zoom],
                 pitch: wide_view[:pitch], bearing: wide_view[:bearing])
-    word = "MAPFORGE"
-    # The logo stays up for the whole recording. It is flat, so it lies on the ground and
-    # turns with the camera instead of covering the scene.
-    artist[:layer].features.create!(
-      geometry: { "type" => "Point", "coordinates" => [ 10.132244, 42.802396 ] },
-      properties: { "title" => word, "label" => word,
-                    "label-font" => [ "Bold", "Bree Serif" ], "label-letter-spacing" => 0.08,
-                    "label-size" => 500, "label-color" => "#fff",
-                    "label-shadow" => "#d9d9a5", "label-shadow-width" => 4,
-                    "stroke" => "transparent", "marker-color" => "transparent",
-                    "marker-size" => 40, "sort-key" => 2,
-                    "flat" => true, "marker-scaling" => true })
 
     # Store the photos the way ImagesController#upload does, so the markers point at a
     # stored image. Done before the recording starts, because compression is slow.
@@ -112,23 +112,6 @@ namespace :demo do
       end
     }
     photos = (1..4).map { |i| store_photo.call(Rails.root.join("public/images/frontpage/photo#{i}.jpeg")) }
-
-    # Route the walk before the recording starts, because the API call is slow.
-    key = ENV["OPENROUTESERVICE_KEY"].to_s
-    abort "Set OPENROUTESERVICE_KEY to route the walk" if key.empty?
-    uri = URI("https://api.heigit.org/openrouteservice/v2/directions/foot-hiking/geojson" \
-              "?api_key=#{CGI.escape(key)}")
-    reply = Net::HTTP.post(uri, { coordinates: walk, elevation: true,
-      extra_info: %w[steepness surface waycategory waytype suitability traildifficulty],
-      options: { profile_params: { weightings: { green: 0.6, quiet: 0.3 } } } }.to_json,
-      "Content-Type" => "application/json")
-    abort "Routing failed (#{reply.code}): #{reply.body}" unless reply.is_a?(Net::HTTPSuccess)
-    routed = JSON.parse(reply.body).dig("features", 0)
-    track = routed["geometry"]["coordinates"]
-    stops = routed["properties"]["way_points"]     # index of every waypoint inside track
-    # The same list the app requests (ORS_EXTRA_INFO). Without it there is no steepness
-    # colouring and the colour mode dropdown on the feature stays hidden.
-    extras = routed["properties"]["extras"]
 
     stream = "map_channel_#{map.public_id}"
     fly = ->(view, wait = 2.5) {
@@ -198,17 +181,13 @@ namespace :demo do
       feature
     }
 
-    # Scene 1: Cleo walks the routed coast path and pins a photo on every waypoint.
+    # Scene 1: Cleo walks the stored route and pins a photo on every waypoint.
     # The track grows under her cursor, so it is drawn while she moves.
     track_feature = nil
     track_properties = ->(upto) {
-      { "title" => "Coast walk", "stroke" => "#e8590c", "stroke-width" => 5,
-        "stroke-opacity" => 0.65, "stroke-dasharray" => true,
-        "fill-extrusion-height" => 8, "fill-extrusion-width" => 3, "fill-extrusion-opacity" => 1,
-        "show-route-extras" => "steepness",
-        "route" => { "provider" => "ors", "profile" => "foot",
-                     "waypoints" => stops[0..upto].map { |stop| track[stop].first(2) },
-                     "extras" => extras } }
+      hike["properties"].except("id").merge("title" => "Elba hike",
+        "route" => hike["properties"]["route"].merge(
+          "waypoints" => stops[0..upto].map { |stop| track[stop].first(2) }))
     }
     grow_track = ->(upto, waypoint) {
       return if upto < 1                             # one point is not a line
@@ -221,16 +200,17 @@ namespace :demo do
       end
     }
     walk_scene = -> {
+      sticker.destroy
       stops.each_with_index do |stop, i|
         if i.positive?
           from = stops[i - 1]
           leg = track[from..stop]
-          # The camera leads Cleo. It settles on the middle of the leg, then flies on to the
-          # next waypoint while she is only halfway, so the track never leaves the frame.
-          fly.call(walk_view.merge(center: leg[leg.size / 2].first(2)), 1.2)
+          # The camera leaves just before Cleo. Each 2s flight covers half of the leg, the first
+          # one to its middle, the second one to the next waypoint, so it keeps pace with her.
+          fly.call(walk_view.merge(center: leg[leg.size / 2].first(2)), 0.2)
           drawn = Time.now
           ahead = false
-          follow.call(hiker, leg, 3.0) do |j|
+          follow.call(hiker, leg, 5.5) do |j|
             if !ahead && j >= leg.size / 2
               ahead = true
               fly.call(walk_view.merge(center: leg.last.first(2)), 0)
@@ -242,18 +222,23 @@ namespace :demo do
           grow_track.call(stop, i)                   # snap the end onto the waypoint
         end
         photo = photos[i % photos.size]
-        hiker[:layer].features.create!(
-          geometry: { "type" => "Point", "coordinates" => track[stop].first(2) }, image: photo,
-          properties: { "title" => "Photo #{i + 1}", "marker-size" => 22, "min-zoom" => 14,
-                        "marker-image-url" => "/icon/#{photo.public_id}",
-                        "desc" => "[![image](/image/#{photo.public_id})](/image/#{photo.public_id})\n" })
+        # Below zoom 14 a half size copy takes over, so the photos stay in the wide view.
+        # Both zoom filters include their limit, so the copy ends just below it.
+        [ { "marker-size" => 22, "min-zoom" => 14 }, { "marker-size" => 11, "max-zoom" => 13.99 } ].each do |size|
+          hiker[:layer].features.create!(
+            geometry: { "type" => "Point", "coordinates" => track[stop].first(2) }, image: photo,
+            properties: size.merge("title" => "Photo #{i + 1}",
+                                   "marker-image-url" => "/icon/#{photo.public_id}",
+                                   "desc" => "[![image](/image/#{photo.public_id})](/image/#{photo.public_id})\n"))
+        end
         if i == 2
           hiker[:layer].features.create!(
             geometry: { "type" => "Point", "coordinates" => snake },
             properties: { "desc" => "#### Saw a snake here!", "show-desc" => "bubble",
                           "marker-shape" => "pin", "marker-symbol" => "🐍",
-                          "marker-color" => "#5c940d", "marker-size" => 11,
+                          "marker-color" => "#5c940d", "marker-size" => 24,
                           "marker-scaling" => true })
+          fly.call(snake_view)
         end
         # Hold on the waypoint, long enough for the camera to settle on it. The client only
         # fetches a marker image when MapLibre renders the marker and misses it
@@ -297,7 +282,7 @@ namespace :demo do
                       "desc" => "Steel hull at 22 m, groupers inside\n\n" \
                                 "<img src=\"/images/frontpage/shipwreck.jpg\" width=\"150\">\n",
                       "marker-color" => "#000000", "stroke" => "transparent",
-                      "show-desc" => "banner", "marker-size" => 5,
+                      "show-desc" => "banner", "marker-size" => 8,
                       "marker-symbol" => "/icon-sets/fontawesome/ship.png" })
     }
 
@@ -308,8 +293,6 @@ namespace :demo do
       sleep 0.3
       annex_outline = trace.call(artist, annex, wall.merge("title" => "Casa Piccola"))
       sleep 0.3
-      # The walls rise as the camera starts to tilt, not after it has landed.
-      fly.call(house_view.merge(pitch: 60, bearing: -30), 0)
       # The walls take their colour from 'fill'. It stays transparent while the outline is
       # traced, because the flat polygon only renders until the extrusion height is set.
       risers = [ [ outline, 9 ], [ annex_outline, 6 ] ]
@@ -324,6 +307,7 @@ namespace :demo do
         end
       }
       # Both houses grow one step per garden point, so they are still rising while Ada draws.
+      add_sticker.call
       rise.call
       trace.call(artist, garden, { "title" => "Garden", "stroke" => "#5c940d",
                                    "fill" => "transparent", "fill-opacity" => 1,
@@ -349,6 +333,22 @@ namespace :demo do
     scenes = [ [ walk_view, walk_scene, hiker, track[stops.first].first(2) ],
                [ shore_view, shore_scene, scout, beach.first ],
                [ house_view, house_scene, artist, house.first ] ]
+    # demo:record opens its page here: the map data is complete, so no new layer reaches an open page.
+    args[:open_page]&.call(map_url)
+    # demo:record flies the whole route first, so the recording finds the tiles in the cache. Ground
+    # without tiles shows as black patches. The long flight from the hike to the beach takes 10s,
+    # because MapLibre cancels the tile requests of a fast flight.
+    if args[:start_recording]
+      legs = stops.each_cons(2).flat_map do |from, to|
+        leg = track[from..to]
+        [ leg[leg.size / 2], leg.last ].map { |point| walk_view.merge(center: point.first(2)) }
+      end
+      route = [ walk_view, *legs.insert(4, snake_view), shore_view, sea_view, house_view, wide_view ]
+      route.each do |view|
+        seconds = view == shore_view ? 10 : 2
+        fly.call(view.merge(duration: seconds * 1000), seconds)
+      end
+    end
     # A page that was already open kept its own view, and a stored view only reaches it when
     # nobody touched the map. Broadcast the opening shot instead. The recorder is not running yet.
     fly.call(wide_view)
@@ -356,8 +356,12 @@ namespace :demo do
     # the camera always flies towards a visible person.
     scenes.each { |_view, _scene, cursor, start| move.call(cursor, *start) }
 
-    print "Start the recorder, then press Enter: "
-    $stdin.gets
+    if args[:start_recording]
+      args[:start_recording].call
+    else
+      print "Start the recorder, then press Enter: "
+      $stdin.gets
+    end
 
     fly.call(scenes.first.first, 1.6)              # the first scene starts 0.4s before the camera lands
     scenes.each_with_index do |(view, scene, cursor, _start), n|
@@ -376,6 +380,7 @@ namespace :demo do
       end
     end
     sleep 1.0                                      # the rest of the hold on the last scene
+    track_feature.update!(properties: track_properties.call(stops.size - 1).merge("stroke-width" => 4))
     fly.call(wide_view, 3.0)
     # The three cursors stay on the work they just did, so the closing frame shows who made what.
     [ [ hiker, track[track.size / 2].first(2) ],
@@ -384,5 +389,70 @@ namespace :demo do
     sleep 2.0
 
     puts "Done: /m/#{map.private_id}"
+  end
+
+  desc "Record demo:draw to tmp/demo.mp4. Needs a running server on MAPFORGE_HOST, Chrome and ffmpeg"
+  task record: :environment do
+    frames_dir = Rails.root.join("tmp/demo_frames")
+    FileUtils.rm_rf(frames_dir)
+    frames_dir.mkpath
+    map = Map.create!(name: "Frontpage demo", base_map: "satelliteStreets", terrain: true)
+    # H.264 needs an even height, so the view is 436 and not 435
+    browser = Ferrum::Browser.new(headless: false, window_size: [ 700, 436 ], timeout: 90)
+    browser.set_viewport(width: 700, height: 436, scale_factor: 2)
+    frames = []
+
+    open_page = ->(url) {
+      # The public url shows no login warning. ?static=true would hide everything, but a static
+      # page opens no websocket, and ?nocontrols=true keeps the title and attribution.
+      browser.go_to("#{url.sub(map.private_id, map.public_id)}&nocontrols=true")
+      browser.add_style_tag(content: "#map-head, #status-container, .maplibregl-ctrl-attrib { display: none }")
+      # The same wait as maps:screenshots, plus data-online for the websocket
+      %w[map-loaded geojson-loaded map-idle online].each do |attribute|
+        deadline = Time.current + 60
+        until browser.at_css("#maplibre-map[data-#{attribute}='true']")
+          abort "Timeout waiting for data-#{attribute}" if Time.current > deadline
+          sleep 0.2
+        end
+      end
+    }
+    start_recording = -> {
+      browser.page.start_screencast(format: :jpeg, quality: 90) do |data, _metadata, _session|
+        name = format("%06d.jpg", frames.size)
+        File.binwrite(frames_dir.join(name), Base64.decode64(data))
+        frames << [ name, Time.now.to_f ]
+      end
+      sleep 1.5                                    # the opening hold, with the sticker in view
+    }
+
+    Rake::Task["demo:draw"].invoke(map.private_id, open_page, start_recording)
+    browser.page.stop_screencast
+    abort "Chrome sent no frames" if frames.empty?
+
+    times = frames.map(&:last) << Time.now.to_f
+    holds = times.each_cons(2).map { |from, to| to - from }
+    # Chrome sends a frame only when the page changes, and ffmpeg holds a frame until the time of
+    # the next file. These copies cover the closing hold. It takes two, because ffmpeg adds the
+    # gap before the last frame once more at the end.
+    2.times { |i| FileUtils.cp(frames_dir.join(frames.last.first), frames_dir.join(format("%06d.jpg", frames.size + i))) }
+
+    # The longest hold in demo:draw is below 3 seconds, a longer one means that Chrome stopped painting
+    if holds.max > 5
+      at = times[holds.index(holds.max)] - times.first
+      abort "No frame for #{holds.max.round(1)}s, #{at.round(1)}s into the recording. Keep the Chrome window on screen."
+    end
+    Rake::Task["demo:encode"].invoke
+  ensure
+    browser&.quit
+  end
+
+  desc "Encode tmp/demo_frames to tmp/demo.mp4. A higher CRF gives a smaller file (default: 26)"
+  task :encode do
+    output = Rails.root.join("tmp/demo.mp4")
+    # The frame times are the file times, so a copy of the folder must keep them (cp -p)
+    system(*%W[ffmpeg -y -loglevel error -f image2 -ts_from_file 2 -i #{Rails.root.join("tmp/demo_frames/%06d.jpg")}
+      -vf fps=30,scale=700:436:out_range=tv,format=yuv420p -c:v libx264 -preset slow
+      -crf #{ENV.fetch("CRF", "26")} -movflags +faststart -an #{output}], exception: true)
+    puts "Stored #{output} (#{(output.size / 1_000_000.0).round(1)} MB)"
   end
 end

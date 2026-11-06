@@ -32,16 +32,18 @@
               %i.bi.bi-geo-alt-fill{ data: { 'frontpage-route-target': "hero" } }
               = check
 
-      - # demo.webp is 3 MB and plays on its own, so it only loads on request
+      - # preload none: the file only loads when the visitor presses play
       %figure.landing-video{ data: { controller: "hero-video" } }
         .landing-video-frame
-          %img{ src: "/images/frontpage/demo_poster.webp", width: 1200, height: 732, alt: _("Demo: a map with routes, photos and 3D buildings takes shape"),
-                data: { 'hero-video-target': "image", src: "/images/frontpage/demo.webp?v2" } }
+          %video{ src: "/images/frontpage/demo.mp4", poster: "/images/frontpage/demo_poster.webp", width: 700, height: 436,
+                  preload: "none", muted: true, loop: true, playsinline: true,
+                  'aria-label': _("Demo: a map with routes, photos and 3D buildings takes shape"),
+                  data: { 'hero-video-target': "video" } }
           %button.landing-video-play{ type: "button", 'aria-label': _("Play video"),
                                       data: { 'hero-video-target': "overlay", action: "click->hero-video#play" } }
             %i.bi.bi-play-fill
           %span.landing-video-length{ data: { 'hero-video-target': "overlay" } } 0:51
-        %figcaption= _("Watch a map take shape: routes, photos, areas and 3D buildings.")
+        %figcaption= _("Watch 3 friends mapping their favorite places on an island.")
 
   %section.landing-stats{ data: { 'frontpage-route-target': "stats" } }
     .landing-wrap

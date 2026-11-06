@@ -1457,8 +1457,8 @@ msgstr "Fußweg-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklic
 msgid "Walking route"
 msgstr "Wanderroute"
 
-msgid "Watch a map take shape: routes, photos, areas and 3D buildings."
-msgstr "Sieh zu, wie eine Karte entsteht: Routen, Fotos, Flächen und 3D-Gebäude."
+msgid "Watch 3 friends mapping their favorite places on an island."
+msgstr "Sieh drei Freunden zu, wie sie ihre Lieblingsorte auf einer Insel kartieren."
 
 msgid "Waypoint added"
 msgstr "Wegpunkt hinzugefügt"
