@@ -35,14 +35,15 @@
       - # preload none: the file only loads when the visitor presses play
       %figure.landing-video{ data: { controller: "hero-video" } }
         .landing-video-frame
-          %video{ src: "/images/frontpage/demo.mp4", poster: "/images/frontpage/demo_poster.webp", width: 700, height: 436,
-                  preload: "none", muted: true, loop: true, playsinline: true,
+          %video{ src: "/images/frontpage/demo.mp4", poster: "/images/frontpage/demo_poster.webp?v2", width: 700, height: 436,
+                  preload: "none", muted: true, playsinline: true, tabindex: 0,
                   'aria-label': _("Demo: a map with routes, photos and 3D buildings takes shape"),
-                  data: { 'hero-video-target': "video" } }
+                  data: { 'hero-video-target': "video",
+                          action: "click->hero-video#toggle keydown.enter->hero-video#toggle keydown.space->hero-video#toggle:prevent play->hero-video#syncOverlay pause->hero-video#syncOverlay" } }
           %button.landing-video-play{ type: "button", 'aria-label': _("Play video"),
-                                      data: { 'hero-video-target': "overlay", action: "click->hero-video#play" } }
+                                      data: { 'hero-video-target': "overlay", action: "click->hero-video#toggle" } }
             %i.bi.bi-play-fill
-          %span.landing-video-length{ data: { 'hero-video-target': "overlay" } } 0:51
+          %span.landing-video-length{ data: { 'hero-video-target': "overlay" } } 0:57
         %figcaption= _("Watch 3 friends mapping their favorite places on an island.")
 
   %section.landing-stats{ data: { 'frontpage-route-target': "stats" } }

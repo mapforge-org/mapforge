@@ -8,12 +8,12 @@ namespace :demo do
     wide_view = { center: [ 10.2734, 42.7854 ], zoom: 10.2, bearing: 0, pitch: 0 }
 
     # Scene 1: Cleo's hike across the mountains of Elba. The route is stored, so a recording needs
-    # no ORS key. The stops cut its 10.8 km into three equal legs, and the zoom fits the widest one.
+    # no ORS key. The stops cut its 9.3 km into three legs, and the zoom fits the widest one.
     hike = JSON.parse(Rails.root.join("lib/tasks/demo_hike.geojson").read).dig("features", 0)
     track = hike["geometry"]["coordinates"]
-    stops = [ 0, 150, 291, track.size - 1 ]        # index of every waypoint inside track
+    stops = [ 0, 83, 224, track.size - 1 ]         # index of every waypoint inside track
     walk_view = { center: track.first.first(2), zoom: 14.2, bearing: 65, pitch: 65 }
-    snake = track[270].first(2)
+    snake = track[203].first(2)
     snake_view = { center: [ 10.1625, 42.76452 ], zoom: 14.63, bearing: 0, pitch: 54 }
 
     # Scene 2: Ben maps the shore at Punta della Zanca, then the water in front of it
@@ -111,7 +111,17 @@ namespace :demo do
         Image.create!(img_uid: uid, public_id: filename)
       end
     }
-    photos = (1..4).map { |i| store_photo.call(Rails.root.join("public/images/frontpage/photo#{i}.jpeg")) }
+    photos = %w[coast.jpg photo2.jpeg summit.jpg dorf.jpg].map do |file|
+      store_photo.call(Rails.root.join("public/images/frontpage/#{file}"))
+    end
+    utm = "utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+    photo_credit = ->(slug) {
+      %(Foto von <a href="https://unsplash.com/de/@dariobroe?#{utm}">Dario Brönnimann</a> auf ) +
+        %(<a href="https://unsplash.com/de/fotos/#{slug}?#{utm}">Unsplash</a>)
+    }
+    credits = [ "meereswellen-die-tagsuber-auf-felsen-sturzen-debHhXOUpLc", nil,
+                "gelbe-seilbahn-tagsuber-uber-grune-baume-und-berge-W3XMVQQOdIM",
+                "grune-und-weisse-betonhauser-tagsuber-y8OUdheztII" ]  # one entry per photo
 
     stream = "map_channel_#{map.public_id}"
     fly = ->(view, wait = 2.5) {
@@ -222,6 +232,8 @@ namespace :demo do
           grow_track.call(stop, i)                   # snap the end onto the waypoint
         end
         photo = photos[i % photos.size]
+        desc = "[![image](/image/#{photo.public_id})](/image/#{photo.public_id})\n"
+        desc += "\n#{photo_credit.call(credits[i])}\n" if credits[i]
         # Below zoom 14 a half size copy takes over, so the photos stay in the wide view.
         # Both zoom filters include their limit, so the copy ends just below it.
         [ { "marker-size" => 22, "min-zoom" => 14 }, { "marker-size" => 11, "max-zoom" => 13.99 } ].each do |size|
@@ -229,7 +241,7 @@ namespace :demo do
             geometry: { "type" => "Point", "coordinates" => track[stop].first(2) }, image: photo,
             properties: size.merge("title" => "Photo #{i + 1}",
                                    "marker-image-url" => "/icon/#{photo.public_id}",
-                                   "desc" => "[![image](/image/#{photo.public_id})](/image/#{photo.public_id})\n"))
+                                   "desc" => desc))
         end
         if i == 2
           hiker[:layer].features.create!(

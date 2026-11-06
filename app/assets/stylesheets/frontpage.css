@@ -320,6 +320,13 @@ section,
   width: 100%;
   height: 100%;
   object-fit: cover;
+  cursor: pointer;
+}
+
+/* The frame clips anything outside of it */
+.landing-video-frame video:focus-visible {
+  outline: 3px solid var(--color-mid-rust);
+  outline-offset: -3px;
 }
 
 .landing-video-play {
