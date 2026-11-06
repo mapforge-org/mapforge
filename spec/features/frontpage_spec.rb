@@ -54,8 +54,27 @@ describe "Frontpage" do
     expect(video_paused?).to be true
   end
 
+  context "when logged in" do
+    before do
+      sign_in(create(:user))
+      visit root_path
+    end
+
+    it "leaves the start button to the header" do
+      expect(page).to have_css(".navbar .btn-create-map")
+      within("[data-frontpage-route-target='actions']") do
+        expect(page).to have_link("Your maps")
+        expect(page).to have_no_button("Start a map")
+      end
+    end
+
+    it "keeps the start button while the header is folded", :phone do
+      within("[data-frontpage-route-target='actions']") { expect(page).to have_button("Start a map") }
+    end
+  end
+
   it "draws the route through the feature pins" do
-    expect(page).to have_css(".landing-route-pin", visible: :all, count: 5)
+    expect(page).to have_css(".landing-route-pin", visible: :all, count: 9)
     expect(find("[data-frontpage-route-target='path'][d]", visible: :all)[:d]).to match(/\AM[\d.-]+ [\d.-]+ C/)
   end
 

@@ -21,9 +21,14 @@
           = _("Create individual maps for your places, tracks and events.")
 
         .landing-actions{ data: { 'frontpage-route-target': "actions" } }
-          = button_to (@user ? _("Start a map") : _("Start for free")), create_map_path, class: 'btn btn-orange btn-lg'
           - if @user
-            = link_to _("Your maps"), my_path, class: 'btn btn-outline-light btn-lg'
+            = button_to _("Start a map"), create_map_path, class: 'btn btn-orange btn-lg', form_class: 'button_to landing-start-map'
+            = link_to my_path, class: 'btn btn-outline-light btn-lg' do
+              = _("Your maps")
+              - if owned_maps_count.positive?
+                %span.landing-count= owned_maps_count
+          - else
+            = button_to _("Start for free"), create_map_path, class: 'btn btn-orange btn-lg'
           = link_to _("Playground"), playground_path, class: 'btn btn-outline-light btn-lg'
 
         %ul.landing-checks
@@ -91,6 +96,7 @@
            ["terrain", _("3D Terrain"), _("View your map with mountains and valleys")]].each do |art, title, text, pin|
           %article.landing-feature
             .landing-feature-art
+              %img.landing-feature-photo{ class: "landing-feature-photo-#{art}", src: "/images/frontpage/features/#{art}.webp", alt: "", loading: 'lazy' }
               %img{ src: "/images/frontpage/features/#{art}.svg", width: 320, height: 130, alt: "" }
               - if pin
                 %i.bi.bi-geo-alt-fill.landing-route-pin{ style: "--x: #{pin[0]}; --y: #{pin[1]}", data: { 'frontpage-route-target': "feature" } }
@@ -98,63 +104,73 @@
             %p= text
 
   %section#features.section
-    .row.g-0
-      .col-lg-5.img-bg.order-lg-last
-        %img{ src: "/images/frontpage/share.webp", alt: _("Share dialog with an edit link and a view link over a 3D map"), loading: 'lazy' }
-      .col-lg-7.background-bright.slides
-        .item
-          %i.bi.bi-geo-alt-fill.landing-route-pin{ data: { 'frontpage-route-target': "row" } }
-          %h2.mb-3.mapforge-font= _("One link to view, one to edit")
-          %h3.mb-3= _("Listed in the gallery, or shared privately")
-          %ul
-            %li= _("Embedding: Include your map on your own web page")
-            %li= _("Real-time: Map changes are synchronized to all users")
-            %li= _("Login: Have your maps assigned to your account")
-    .row.g-0
-      .col-lg-5.img-bg
-        %img{ src: "/images/frontpage/feature2.png", alt: _("The same map on a laptop, a tablet and a phone"), loading: 'lazy' }
-      .col-lg-7.background-bright.slides
-        .item
-          %i.bi.bi-geo-alt-fill.landing-route-pin{ data: { 'frontpage-route-target': "row" } }
-          %h2.mb-3.mapforge-font= _("The map goes with you")
-          %h3.mb-3= _("Plan on desktop, run Mapforge on your phone, edit in the field, stream your track live")
-          %ul
-            %li= _("GPS and compass: The map follows your position and turns with you")
-            %li
-              - app_link = link_to _('app on your phone'), doc_path(id: 'app')
-              = raw(_("Run in desktop/mobile browser or as %{app_link}") % { app_link: app_link })
-            %li
-              - ulogger_link = link_to "µlogger", "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md"
-              = raw(_("Map your track: Use %{ulogger_link} to visualize and share your tracks live") % { ulogger_link: ulogger_link })
-    .row.g-0
-      .col-lg-5.img-bg.order-lg-last
-        %img{ src: "/images/frontpage/feature3.png", alt: _("Globe with a heart over Central Europe"), loading: 'lazy' }
-      .col-lg-7.background-bright.slides
-        .item
-          %i.bi.bi-flag-fill.landing-route-pin{ data: { 'frontpage-route-target': "row" } }
-          %h2.mb-3.mapforge-font= _("Open Source")
-          %h3.mb-3= _("The code is public, map data is owned by you")
-          %ul
-            %li= _("No ads, no tracking, no lock-in")
-            %li
-              - deploy_link = link_to _('run Mapforge on your own server'), "https://github.com/mapforge-org/mapforge/blob/main/SELF-HOSTING.md"
-              = raw(_("Export your maps as GPX/GeoJSON, or %{deploy_link}") % { deploy_link: deploy_link })
-            %li
-              - rails_link = link_to "Ruby on Rails", "https://rubyonrails.org/"
-              - mongodb_link = link_to "MongoDB", "https://www.mongodb.com/"
-              - maplibre_link = link_to "MapLibre GL JS", "https://github.com/maplibre/maplibre-gl-js"
-              - osm_link = link_to "OpenStreetMap", "https://www.openstreetmap.org"
-              - draw_link = link_to "mapbox-gl-draw", "https://github.com/mapbox/mapbox-gl-draw"
-              - turf_link = link_to "Turf.js", "https://turfjs.org/"
-              - pinhead_link = link_to "Pinhead", "https://github.com/waysidemapping/pinhead"
-              - ors_link = link_to "Openrouteservice", "https://openrouteservice.org/"
-              = raw(_("Built with %{rails_link}, %{mongodb_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link}, %{pinhead_link} and %{ors_link}") % { rails_link: rails_link, mongodb_link: mongodb_link, maplibre_link: maplibre_link, osm_link: osm_link, draw_link: draw_link, turf_link: turf_link, pinhead_link: pinhead_link, ors_link: ors_link })
-
-  - if @featured_maps.present?
-    %section.featured-maps.section.background-bright
+    - ulogger_link = link_to "µlogger", "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md"
+    - [["share.webp", _("Share dialog with an edit link and a view link over a 3D map"), _("Share"),
+        _("One link to view, one to edit"), _("Publish in the gallery or share privately – you decide."),
+        [[_("Embedding"), _("your map on any web page.")],
+         [_("Real-time"), _("changes are visible to everyone right away.")],
+         [_("Account"), _("all your maps in one place.")]]],
+       ["feature2.png", _("The same map on a laptop, a tablet and a phone"), _("On the go"),
+        _("The map goes with you"), _("Plan on desktop, edit in the field on your phone."),
+        [[_("GPS & compass"), _("the map shows where you are.")],
+         [link_to(_("Install as an app"), doc_path(id: 'app')), _("right from the browser.")],
+         [_("Live tracking"), raw(_("share your track in real time with %{ulogger_link}.") % { ulogger_link: ulogger_link })]]]].each do |image, alt, eyebrow, title, lead, stops|
+      .landing-showcase.background-bright{ data: { 'frontpage-route-target': "showcase" } }
+        .landing-wrap.landing-showcase-grid
+          %img{ src: "/images/frontpage/#{image}", alt: alt, loading: 'lazy' }
+          %div
+            .landing-eyebrow= eyebrow
+            %h2.mapforge-font= title
+            %p.landing-showcase-lead= lead
+            %ul.landing-stops
+              - stops.each do |term, text|
+                %li
+                  %i.bi.bi-geo-alt-fill.landing-route-pin{ data: { 'frontpage-route-target': "stop" } }
+                  %strong= term
+                  &ndash;
+                  = text
+    - if @featured_maps.present?
       = render "featured_maps"
 
+    .landing-showcase.background-bright
+      .landing-wrap
+        .landing-showcase-grid
+          %div
+            .landing-eyebrow= _("Open Source")
+            %h2.mapforge-font= _("The code is open. Your data is yours.")
+            %p.landing-showcase-lead= _("No ads, no tracking, no lock-in. Export anytime as GPX or GeoJSON – or run Mapforge on your own server.")
+            .landing-actions
+              = link_to "https://github.com/mapforge-org/mapforge", class: 'btn btn-outline-light btn-lg' do
+                = _("View on GitHub")
+                %i.bi.bi-box-arrow-up-right.ms-1
+              = link_to _("Self-hosting guide"), "https://github.com/mapforge-org/mapforge/blob/main/SELF-HOSTING.md", class: 'nav-link'
+          .landing-built-with
+            .landing-built-with-title= _("Built with")
+            .landing-chips
+              - [["Ruby on Rails", "https://rubyonrails.org/"],
+                 ["MongoDB", "https://www.mongodb.com/"],
+                 ["MapLibre GL JS", "https://github.com/maplibre/maplibre-gl-js"],
+                 ["OpenStreetMap", "https://www.openstreetmap.org"],
+                 ["mapbox-gl-draw", "https://github.com/mapbox/mapbox-gl-draw"],
+                 ["Turf.js", "https://turfjs.org/"],
+                 ["Pinhead", "https://github.com/waysidemapping/pinhead"],
+                 ["Openrouteservice", "https://openrouteservice.org/"]].each do |name, url|
+                = link_to name, url, class: 'landing-chip'
+
+        .landing-cta{ data: { 'frontpage-route-target': "cta" } }
+          %h2.mapforge-font= @user ? _("Ready for your next map?") : _("Ready for your first map?")
+          - unless @user
+            %p= _("Free to try, no signup needed.")
+          .landing-cta-action
+            %i.bi.bi-flag-fill.landing-route-pin{ data: { 'frontpage-route-target': "flag" } }
+            = button_to _("Create a new map"), create_map_path, class: 'btn btn-orange btn-lg'
+
   %svg.landing-route{ 'aria-hidden': "true" }
-    %path{ data: { 'frontpage-route-target': "path" } }
+    %defs
+      - # The route is light on the dark card, the controller moves the color change to the card
+      %linearGradient#landing-route-line{ gradientUnits: "userSpaceOnUse", x1: 0, x2: 0, data: { 'frontpage-route-target': "line" } }
+        %stop{ offset: 0 }
+        %stop{ offset: 1 }
+    %path{ stroke: "url(#landing-route-line)", data: { 'frontpage-route-target': "path" } }
     %path.landing-route-chevrons{ data: { 'frontpage-route-target': "chevrons" } }
     %circle{ r: 6, data: { 'frontpage-route-target': "start" } }

@@ -53,6 +53,9 @@ msgstr "3D-Gelände:"
 msgid "About"
 msgstr "Über"
 
+msgid "Account"
+msgstr "Konto"
+
 msgid "Ad-free and no tracking"
 msgstr "Werbefrei & ohne Tracking"
 
@@ -185,8 +188,8 @@ msgstr "Durchstöbere Karten von Benutzer %{email}"
 msgid "Build the map you have in mind"
 msgstr "Erstelle deine Karten-Idee"
 
-msgid "Built with %{rails_link}, %{mongodb_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link}, %{pinhead_link} and %{ors_link}"
-msgstr "Gebaut mit %{rails_link}, %{mongodb_link}, %{maplibre_link}, %{osm_link}, %{draw_link}, %{turf_link}, %{pinhead_link} und %{ors_link}"
+msgid "Built with"
+msgstr "Gebaut mit"
 
 msgid "Buy me a coffee"
 msgstr "Spende mir einen Kaffee"
@@ -310,6 +313,9 @@ msgstr "In meine Ebene kopieren"
 
 msgid "Could not read the file: %{error}"
 msgstr "Datei konnte nicht gelesen werden: %{error}"
+
+msgid "Create a new map"
+msgstr "Neue Karte erstellen"
 
 msgid "Create a route"
 msgstr "Route erstellen"
@@ -509,8 +515,8 @@ msgstr "Einbettungscode kopiert"
 msgid "Embed map"
 msgstr "Karte einbetten"
 
-msgid "Embedding: Include your map on your own web page"
-msgstr "Einbetten: Binde deine Karte in deine eigene Webseite ein"
+msgid "Embedding"
+msgstr "Einbetten"
 
 msgid "Enter name / Search queries"
 msgstr "Name eingeben / Abfragen suchen"
@@ -532,9 +538,6 @@ msgstr "Fehler beim Aktualisieren der Geometrie von %{type}"
 
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
-
-msgid "Export your maps as GPX/GeoJSON, or %{deploy_link}"
-msgstr "Exportiere deine Karten als GPX/GeoJSON, oder %{deploy_link}"
 
 msgid "Failed to copy"
 msgstr "Kopieren fehlgeschlagen"
@@ -587,11 +590,17 @@ msgstr "Position wird verfolgt"
 msgid "Foot"
 msgstr "Zu Fuß"
 
+msgid "Free to try, no signup needed."
+msgstr "Kostenlos, ohne Anmeldung ausprobieren."
+
 msgid "Full track"
 msgstr "Gesamter Track"
 
-msgid "GPS and compass: The map follows your position and turns with you"
-msgstr "GPS und Kompass: Die Karte zeigt, wo du bist, und richtet sich nach deiner Blickrichtung aus"
+msgid "GPS & compass"
+msgstr "GPS & Kompass"
+
+msgid "Gallery"
+msgstr "Galerie"
 
 msgid "Gentle downhill (4-6%)"
 msgstr "Leichtes Gefälle (4-6 %)"
@@ -604,9 +613,6 @@ msgstr "Geometrie"
 
 msgid "Geometry JSON"
 msgstr "Geometrie-JSON"
-
-msgid "Globe with a heart over Central Europe"
-msgstr "Globus mit einem Herz über Mitteleuropa"
 
 msgid "Globe:"
 msgstr "Globus:"
@@ -698,6 +704,9 @@ msgstr "Daten importieren"
 msgid "In this gallery, your personal maps will be shown."
 msgstr "In dieser Galerie werden deine persönlichen Karten angezeigt."
 
+msgid "Install as an app"
+msgstr "Als App installieren"
+
 msgid "Install the Mapforge App"
 msgstr "Die Mapforge-App installieren"
 
@@ -758,8 +767,8 @@ msgstr "Linie in 2 Abschnitte geteilt"
 msgid "Lines"
 msgstr "Linien"
 
-msgid "Listed in the gallery, or shared privately"
-msgstr "In der Galerie gelistet, oder privat geteilt"
+msgid "Live tracking"
+msgstr "Live-Tracking"
 
 msgid "Load for this area"
 msgstr "Für diesen Bereich laden"
@@ -788,11 +797,11 @@ msgstr "Standort nicht verfügbar"
 msgid "Login"
 msgstr "Anmelden"
 
-msgid "Login: Have your maps assigned to your account"
-msgstr "Login: Ordne deine Karten deinem Konto zu"
-
 msgid "Logout"
 msgstr "Abmelden"
+
+msgid "Made with Mapforge"
+msgstr "Gemacht mit Mapforge"
 
 msgid "Map"
 msgstr "Karte"
@@ -833,9 +842,6 @@ msgstr "Kartenansicht aktualisiert"
 msgid "Map with its own hand-picked colors"
 msgstr "Karte mit eigenen, handverlesenen Farben"
 
-msgid "Map your track: Use %{ulogger_link} to visualize and share your tracks live"
-msgstr "Erfasse deinen Track: Nutze %{ulogger_link} zum Visualisieren und Teilen deiner Strecken in Echtzeit"
-
 msgid "Mapforge: Create and share your own maps online"
 msgstr "Mapforge: Erstelle und teile deine eigenen Karten online"
 
@@ -862,9 +868,6 @@ msgstr "Mittlere Steigung (7-11 %)"
 
 msgid "More about WebGL"
 msgstr "Mehr über WebGL"
-
-msgid "More maps in the gallery"
-msgstr "Mehr Karten in der Galerie"
 
 msgid "Most viewed"
 msgstr "Meistgesehen"
@@ -896,8 +899,8 @@ msgstr "Neueste"
 msgid "No"
 msgstr "Nein"
 
-msgid "No ads, no tracking, no lock-in"
-msgstr "Keine Werbung, kein Tracking, kein Lock-in"
+msgid "No ads, no tracking, no lock-in. Export anytime as GPX or GeoJSON – or run Mapforge on your own server."
+msgstr "Keine Werbung, kein Tracking, kein Lock-in. Exportiere jederzeit als GPX oder GeoJSON – oder betreibe Mapforge auf deinem eigenen Server."
 
 msgid "No compass access, allow motion sensors in the browser settings"
 msgstr "Kein Kompasszugriff, erlaube Bewegungssensoren in den Browsereinstellungen"
@@ -922,6 +925,9 @@ msgstr "OSM-Info (experimentell)"
 
 msgid "On click:"
 msgstr "Beim Klick:"
+
+msgid "On the go"
+msgstr "Unterwegs"
 
 msgid "One link to view, one to edit"
 msgstr "Ein Link zum Ansehen, einer zum Bearbeiten"
@@ -998,8 +1004,8 @@ msgstr "Schlichte, gut lesbare Straßenkarte"
 msgid "Plan a bicycle tour, map the floor plan for your conference, or create a guide for your wedding guests"
 msgstr "Plane eine Radtour, zeichne den Raumplan für deine Konferenz oder erstelle einen Wegweiser für deine Hochzeitsgäste"
 
-msgid "Plan on desktop, run Mapforge on your phone, edit in the field, stream your track live"
-msgstr "Plane am Desktop, nutze Mapforge auf deinem Handy, bearbeite vor Ort, streame deinen Track live"
+msgid "Plan on desktop, edit in the field on your phone."
+msgstr "Am Desktop planen, vor Ort auf dem Handy bearbeiten."
 
 msgid "Plan routes for walking, bicycle and car"
 msgstr "Routen zu Fuß, mit dem Rad oder Auto planen"
@@ -1043,6 +1049,9 @@ msgstr "Projekt"
 msgid "Properties"
 msgstr "Titel"
 
+msgid "Publish in the gallery or share privately – you decide."
+msgstr "In der Galerie veröffentlichen oder privat teilen – du entscheidest."
+
 msgid "QR code"
 msgstr "QR-Code"
 
@@ -1058,8 +1067,14 @@ msgstr "Nur Lesen"
 msgid "Read about the latest changes and improvements on Mapforge."
 msgstr "Lies mehr über die neuesten Änderungen und Verbesserungen bei Mapforge."
 
-msgid "Real-time: Map changes are synchronized to all users"
-msgstr "Echtzeit: Kartenänderungen werden für alle Nutzer synchronisiert"
+msgid "Ready for your first map?"
+msgstr "Bereit für deine erste Karte?"
+
+msgid "Ready for your next map?"
+msgstr "Bereit für deine nächste Karte?"
+
+msgid "Real-time"
+msgstr "Echtzeit"
 
 msgid "Really delete this %{type}?"
 msgstr "%{type} wirklich löschen?"
@@ -1130,9 +1145,6 @@ msgstr "Abschnitt %{index}/%{total} wird berechnet..."
 msgid "Routing with elevation profile"
 msgstr "Routing mit Höhenprofil"
 
-msgid "Run in desktop/mobile browser or as %{app_link}"
-msgstr "Starte im Desktop-/Mobil-Browser oder als %{app_link}"
-
 msgid "Sand"
 msgstr "Sand"
 
@@ -1172,6 +1184,9 @@ msgstr "Auswahlmodus"
 msgid "Self-hostable"
 msgstr "Selbst hostbar"
 
+msgid "Self-hosting guide"
+msgstr "Self-Hosting-Anleitung"
+
 msgid "Set current view as default"
 msgstr "Aktuelle Ansicht als Standard setzen"
 
@@ -1181,6 +1196,9 @@ msgstr "Aktuelle Ansicht verwenden"
 
 msgid "Shape:"
 msgstr "Form:"
+
+msgid "Share"
+msgstr "Teilen"
 
 msgid "Share Map"
 msgstr "Karte teilen"
@@ -1319,8 +1337,8 @@ msgstr "Das KMZ-Archiv enthält kein .kml-Dokument"
 msgid "The app can get installed from the browser or from the app store."
 msgstr "Die App kannst du aus dem Browser oder aus dem App Store installieren."
 
-msgid "The code is public, map data is owned by you"
-msgstr "Der Code ist öffentlich, die Kartendaten gehören dir"
+msgid "The code is open. Your data is yours."
+msgstr "Der Code ist offen. Deine Daten gehören dir."
 
 msgid "The file is not a zip archive"
 msgstr "Die Datei ist kein Zip-Archiv"
@@ -1433,6 +1451,9 @@ msgstr "Nutzer können die Karte ansehen, aber nicht ändern."
 msgid "View"
 msgstr "Ansicht"
 
+msgid "View all maps"
+msgstr "Alle Karten ansehen"
+
 msgid "View feature information"
 msgstr "Objektinformationen anzeigen"
 
@@ -1444,6 +1465,9 @@ msgstr "Ansichtslink kopiert"
 
 msgid "View mode"
 msgstr "Ansichtsmodus"
+
+msgid "View on GitHub"
+msgstr "Auf GitHub ansehen"
 
 msgid "View your map with mountains and valleys"
 msgstr "Betrachte deine Karte mitsamt Bergen und Tälern"
@@ -1523,8 +1547,8 @@ msgstr "Verkleinern"
 msgid "accommodation|lodging"
 msgstr "Hotel|Unterkunft|Uebernachtung|Übernachtung|Pension"
 
-msgid "app on your phone"
-msgstr "App auf deinem Handy"
+msgid "all your maps in one place."
+msgstr "alle deine Karten an einem Ort."
 
 msgid "barber|hair_salon"
 msgstr "Friseur|Frisoer|Frisör|Haarsalon"
@@ -1552,6 +1576,9 @@ msgstr "Parkplatz|Parkhaus|Parken"
 
 msgid "cash|cash_machine|cashpoint"
 msgstr "Geldautomat|Bankautomat|Bargeld|Geld"
+
+msgid "changes are visible to everyone right away."
+msgstr "Änderungen sind sofort für alle sichtbar."
 
 msgid "charger|ev_charger|charging_point"
 msgstr "Ladesaeule|Ladesäule|Ladestation|Strom"
@@ -1646,8 +1673,11 @@ msgstr "Bibliothek|Buecherei|Bücherei|Stadtbibliothek"
 msgid "registered users"
 msgstr "registrierte Nutzer"
 
-msgid "run Mapforge on your own server"
-msgstr "betreibe Mapforge auf deinem eigenen Server"
+msgid "right from the browser."
+msgstr "direkt aus dem Browser."
+
+msgid "share your track in real time with %{ulogger_link}."
+msgstr "Strecke mit %{ulogger_link} in Echtzeit teilen."
 
 msgid "shopping_centre|shopping_center|shopping"
 msgstr "Einkaufszentrum|Shoppingcenter|Einkaufen|Kaufhaus"
@@ -1657,6 +1687,9 @@ msgstr "U-Bahn|Ubahn|Metro|U-Bahnhof"
 
 msgid "summit|mountain|mountain_top"
 msgstr "Gipfel|Berg|Bergspitze"
+
+msgid "the map shows where you are."
+msgstr "die Karte zeigt, wo du bist."
 
 msgid "toilet|wc|restroom|lavatory"
 msgstr "Toilette|Toiletten|WC|Klo"
@@ -1684,6 +1717,9 @@ msgstr "Trinkwasser|Wasserhahn|Brunnen|Wasser"
 
 msgid "worship|prayer_room"
 msgstr "Kirche|Gotteshaus|Andacht|Gebetsraum"
+
+msgid "your map on any web page."
+msgstr "deine Karte auf jeder Webseite."
 
 msgid "🍻 Breweries"
 msgstr "🍻 Brauereien"

@@ -262,15 +262,35 @@ section,
   }
 }
 
+.landing-count {
+  display: inline-block;
+  min-width: 1.6em;
+  margin-left: 0.3em;
+  padding: 0 0.4em;
+  border-radius: 1em;
+  background: var(--color-mid-fawn);
+  color: var(--color-dark-moss-green);
+  font-size: 0.8em;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* The header has its own create button for logged in users, except when it is folded */
+@media (width >= 640px) {
+  .landing-start-map {
+    display: none;
+  }
+}
+
 /* Three buttons are about 27em wide, so they scale with the column to stay on one line */
 @media (width > 860px) {
-  .landing-actions:has(> :nth-child(3)) {
+  .landing-actions:has(> :nth-child(3 of :not(.landing-start-map))) {
     flex-wrap: nowrap;
     gap: 0.6em;
     font-size: min(1rem, 3.7cqi);
   }
 
-  .landing-actions:has(> :nth-child(3)) .btn {
+  .landing-actions:has(> :nth-child(3 of :not(.landing-start-map))) .btn {
     padding: 0.55em 1.1em;
     font-size: 1em;
     white-space: nowrap;
@@ -479,16 +499,33 @@ section,
   background-color: #FBF9F3;
 }
 
+/* The art reaches the edges of its card, the drawing lies on the photo */
 .landing-feature-art {
   position: relative;
-  max-width: 20rem;
-  margin: 0 0 1rem auto;
+  margin: -1.25rem -1.75rem 1rem;
 }
 
 .landing-feature-art img {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.landing-feature-photo + img {
+  position: relative;
+}
+
+/* The white drawings need the shadow on the dark photos, a dark drawing would only blur */
+.landing-feature-photo-routing + img, .landing-feature-photo-terrain + img {
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 70%));
+}
+
+.landing-feature-art .landing-feature-photo {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  border-radius: 1rem 1rem 0 0;
+  object-fit: cover;
 }
 
 #frontpage {
@@ -505,9 +542,16 @@ section,
   pointer-events: none;
 }
 
+.landing-route stop:first-child {
+  stop-color: var(--color-mid-brown);
+}
+
+.landing-route stop:last-child {
+  stop-color: var(--color-mid-fawn);
+}
+
 .landing-route path {
   fill: none;
-  stroke: var(--color-mid-brown);
   stroke-dasharray: 11 9;
   stroke-linecap: round;
   stroke-width: 3.5;
@@ -526,14 +570,22 @@ section,
 .landing-route-pin {
   position: absolute;
   z-index: 2;
-  color: var(--color-mid-rust);
+  color: var(--color-mid-fawn);
   font-size: 1.25rem;
   line-height: 1;
 }
 
-/* The static position keeps a row pin next to its headline, in the padding of the column */
-.slides .landing-route-pin {
-  margin-left: -2.5rem;
+/* The hole of the pin glyph is a circle around 8,6 in its 16x16 box. The route passes behind it. */
+.landing-route-pin.bi-geo-alt-fill {
+  background: radial-gradient(circle at 50% 37.5%, var(--showcase-bg, #fff) 0.25em, transparent 0.26em);
+}
+
+/* The pins of a list stand in the place of its bullets. The shadows in the color of the section
+   leave a small gap around the pin, so the route does not touch it. */
+.landing-stops .landing-route-pin {
+  top: 0.1em;
+  left: 0;
+  text-shadow: 0 -3px var(--showcase-bg), 3px 0 var(--showcase-bg), 0 3px var(--showcase-bg), -3px 0 var(--showcase-bg);
 }
 
 /* --x and --y are a position in the 320x130 drawing, the pin tip stands on it */
@@ -604,39 +656,6 @@ section,
   }
 }
 
-/* maps.css loads after this file, so the selectors below carry one class more to win */
-.featured-maps {
-  padding: 1.5rem 1rem;
-  border-top: 2px solid var(--color-dark-moss-green);
-}
-
-.featured-maps .recently-viewed-maps {
-  justify-content: center;
-  flex-wrap: nowrap;
-}
-
-.featured-maps .recently-viewed-maps .map-preview {
-  width: 9rem;
-  border-color: var(--color-dark-moss-green);
-}
-
-.featured-maps .recently-viewed-maps .map-preview-title {
-  font-size: 1rem;
-}
-
-.featured-maps .gallery-link {
-  display: block;
-  width: fit-content;
-  margin: 0.5rem auto 0;
-}
-
-/* three cards of 9rem plus gaps need about 30rem, below that the third one goes */
-@media (width < 576px) {
-  .featured-maps .recently-viewed-maps .map-preview:nth-child(3) {
-    display: none;
-  }
-}
-
 /* --------------------------------------------------------------
 # Features Section
 -------------------------------------------------------------- */
@@ -646,52 +665,266 @@ section,
   font-size: 1.1rem;
 }
 
-#features .background-bright {
-  --default-color: var(--text-color);
+#features .landing-showcase {
+  --showcase-bg: color-mix(in srgb, var(--color-light-sand), white 70%);
+
+  padding-block: 4.75rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-light-sand), black 7%);
+  background-color: var(--showcase-bg);
 }
 
-#features .img-bg {
-  position: relative;
+#features .landing-showcase:nth-child(even) {
+  --showcase-bg: color-mix(in srgb, var(--color-light-sand), white 25%);
 }
 
-#features .img-bg img {
-  position: absolute;
-  inset: 0;
+.landing-showcase-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4.25rem;
+  align-items: center;
+}
+
+/* 16 / 10 keeps the whole dialog of share.webp in view, it also matches the video frame */
+.landing-showcase-grid > img {
   display: block;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16 / 10;
   object-fit: cover;
-  z-index: 1;
+  border: 1px solid color-mix(in srgb, var(--color-light-sand), black 7%);
+  border-radius: 1rem;
+  box-shadow: 0 16px 32px rgb(0 0 0 / 12%);
 }
 
-#features h3 {
-  font-size: 18px;
-  font-weight: 300;
-  color: color-mix(in srgb, var(--default-color), transparent 30%);
+/* Every second image goes to the right. Below this width the image stays above the text. */
+@media (width >= 992px) {
+  .landing-showcase:nth-child(even) .landing-showcase-grid > img {
+    order: 1;
+  }
 }
 
-#features .row + .row, footer {
+.landing-eyebrow {
+  margin-bottom: 0.6rem;
+  color: var(--color-mid-rust);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.landing-showcase h2 {
+  margin-bottom: 0.9rem;
+  font-size: 2.5rem;
+}
+
+.landing-showcase-lead {
+  margin-bottom: 1.9rem;
+  color: color-mix(in srgb, var(--text-color), transparent 25%);
+  font-size: 1.2rem;
+}
+
+.landing-stops {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#features .landing-stops li {
+  position: relative;
+  margin-bottom: 0.85rem;
+  padding-left: 2rem;
+}
+
+#features .landing-stops li:last-child {
+  margin-bottom: 0;
+}
+
+.landing-stops strong {
+  font-weight: 700;
+}
+
+footer {
   border-top: 2px solid var(--color-dark-moss-green);
 }
 
-#features .slides {
-  padding: 1.5rem 5rem;
-  color: var(--default-color)
+.landing-gallery-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
 }
 
-#features li {
-  margin-bottom: 0.3rem;
+.landing-gallery-head h2 {
+  margin-bottom: 0;
+}
+
+.landing-gallery-link {
+  padding-bottom: 0.4rem;
+  font-weight: 700;
+}
+
+.landing-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.6rem;
+}
+
+/* Above .landing-route, the route passes behind the cards */
+.landing-map-card {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-light-sand), black 7%);
+  border-radius: 1rem;
+  background: #fff;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+@media (hover: hover) {
+  .landing-map-card:hover {
+    transform: translateY(-3px);
+  }
+}
+
+.landing-map-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.landing-map-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 1rem 1.3rem 1.1rem;
+}
+
+.landing-map-card-text strong {
+  font-weight: 700;
+}
+
+.landing-map-card-text span {
+  overflow: hidden;
+  color: color-mix(in srgb, var(--text-color), transparent 25%);
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* In one column the hero centers its buttons, these stay on the left with their text */
+.landing-showcase .landing-actions {
+  justify-content: flex-start;
+}
+
+/* The look of the hero, where this button stands on the dark green of the page */
+.landing-showcase .landing-actions .btn-outline-light {
+  --bs-btn-bg: var(--color-dark-moss-green);
+  --bs-btn-hover-bg: color-mix(in srgb, var(--color-dark-moss-green), var(--color-light-sand) 18%);
+}
+
+/* The design of the navbar buttons, at the height of the button next to it */
+.landing-actions .nav-link {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.6rem;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.landing-built-with {
+  padding: 2rem;
+  border: 1px solid color-mix(in srgb, var(--color-light-sand), black 7%);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-light-sand), white 70%);
+}
+
+.landing-built-with-title {
+  margin-bottom: 1rem;
+  color: color-mix(in srgb, var(--text-color), transparent 25%);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.landing-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.landing-chip {
+  padding: 0.3rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--color-light-sand), black 7%);
+  border-radius: 2rem;
+  background: color-mix(in srgb, var(--color-light-sand), white 25%);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.landing-cta {
+  margin-top: 5.5rem;
+  padding: 4.5rem 2.5rem;
+  border-radius: 1.5rem;
+  background: var(--color-dark-moss-green);
+  color: var(--color-light-sand);
+  text-align: center;
+}
+
+/* fit-content: the route measures the text, and a block would span the whole card */
+.landing-showcase .landing-cta h2 {
+  width: fit-content;
+  margin-inline: auto;
+}
+
+.landing-cta p {
+  margin-bottom: 1.5rem;
+}
+
+.landing-cta-action {
+  position: relative;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+.landing-cta-action .landing-route-pin {
+  top: 50%;
+  right: calc(100% + 1.25rem);
+  font-size: 2rem;
+  translate: 0 -50%;
 }
 
 /* Bootstrap breakpoints: https://getbootstrap.com/docs/5.0/layout/breakpoints/ */
 @media (width < 992px) {
-  #features .slides {
-    padding: 60px 60px 40px;
+  #features .landing-showcase {
+    padding-block: 3rem;
   }
 
-  #features .img-bg, #features .img-bg img {
-    height: 10rem;
-    min-height: 0;
+  .landing-showcase-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* The route runs in the page gutter here, it stays clear of the text */
+  .landing-showcase-grid > div, .landing-gallery-head {
+    padding-left: 0.75rem;
+  }
+
+  .landing-cta {
+    margin-top: 3rem;
+    padding-block: 3rem;
+  }
+
+  .landing-showcase h2 {
+    font-size: 2rem;
   }
 
   .landing-checks {
@@ -700,28 +933,25 @@ section,
 }
 
 @media (width < 576px) {
+  .landing-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  /* one card below the other, the third one makes the page too long */
+  .landing-map-card:nth-child(3) {
+    display: none;
+  }
+
   .landing-actions .btn {
     padding: 0.5rem;
     font-size: 0.95rem;
-  }
-
-  .slides .landing-route-pin {
-    margin-left: -1.5rem;
   }
 
   .hero h1 {
     margin-bottom: 2rem;
   }
 
-  #features .slides {
-    padding: 30px 30px 10px;
-  }
-
   #hero .container {
     margin-left: 1rem;
-  }
-
-  .item ul {
-    padding-left: 1.2rem;
   }
 }

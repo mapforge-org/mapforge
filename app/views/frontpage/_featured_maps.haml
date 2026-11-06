@@ -1,4 +1,17 @@
-.maps-list.recently-viewed-maps
-  - @featured_maps.each do |map|
-    = render map
-= link_to _("More maps in the gallery"), maps_path, class: 'btn btn-secondary btn-green gallery-link'
+.landing-showcase.background-bright
+  .landing-wrap
+    .landing-gallery-head
+      %div
+        .landing-eyebrow= _("Gallery")
+        %h2.mapforge-font= _("Made with Mapforge")
+      = link_to maps_path, class: 'landing-gallery-link' do
+        = _("View all maps")
+        %i.bi.bi-arrow-right
+    .landing-gallery
+      - @featured_maps.each do |map|
+        = link_to map_path(id: map.public_id, name: map.name), class: 'landing-map-card' do
+          %img{ src: map.screenshot, alt: _("Map '%{name}'") % { name: map.name }, loading: 'lazy' }
+          .landing-map-card-text
+            %strong= map.name
+            - if map.description.present?
+              %span= map.description

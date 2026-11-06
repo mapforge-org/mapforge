@@ -10,10 +10,13 @@ const CORNER_REACH = 45 // a sharp corner starts this far before its point
 const CORNER_COSINE = 0.7 // a turn of more than 45 degrees is a sharp corner
 const CHEVRON_SPACING = 280 // distance between the chevrons along the route
 const CHEVRON_SIZE = 9 // length of a chevron arm
+const CHEVRON_PIN_DISTANCE = 26 // a closer chevron would stick out from behind the pin head
+const PIN_HEAD = 12 // the head of a pin sits this far above its tip
 const FLAG_POLE = 7 // the pole of the flag icon stands left of the icon center
 
 export default class extends Controller {
-  static targets = ['path', 'chevrons', 'start', 'headline', 'actions', 'hero', 'feature', 'row', 'stats', 'grid']
+  static targets = ['path', 'chevrons', 'start', 'headline', 'actions', 'hero', 'feature', 'showcase', 'stop', 'cta',
+    'flag', 'stats', 'grid', 'line']
 
   connect () {
     this.redraw = () => this.draw()
@@ -42,9 +45,15 @@ export default class extends Controller {
 
     const adFree = tip(this.heroTargets[1])
     const [importData, routing] = this.featureTargets.map(tip)
-    const [share, mobile, flag] = this.rowTargets.map(tip)
+    const showcase = (row, center) => {
+      const pins = this.stopTargets.filter(pin => row.contains(pin))
+      return this.showcasePoints(box(row), box(row.querySelector('img')), box(pins[0].closest('ul')), pins.map(tip), center)
+    }
+    const share = showcase(this.showcaseTargets[0])
+    const center = share[0].x
+    const mobile = showcase(this.showcaseTargets[1], center)
+    const flag = tip(this.flagTarget)
     const finish = { ...flag, x: flag.x - FLAG_POLE }
-    const [shareBottom, mobileBottom] = this.rowTargets.map(e => box(e.closest('.row')).bottom - 12)
     const aboveStats = box(this.statsTarget).top - 14
     const belowActions = box(this.actionsTarget).bottom + 16
     // In one column the page gutter replaces the gap next to the hero text
@@ -100,24 +109,69 @@ export default class extends Controller {
     const points = [
       ...hero,
       ...features,
-      { x: share.x, y: grid.bottom + 70 },
-      share, { x: share.x, y: shareBottom }, { x: mobile.x, y: shareBottom },
-      mobile, { x: mobile.x, y: mobileBottom }, { x: finish.x, y: mobileBottom },
-      finish
+      { x: center, y: grid.bottom + 70 },
+      ...share,
+      ...mobile,
+      ...this.ctaPoints(center, box(this.ctaTarget), box(this.ctaTarget.querySelector('h2')), finish)
     ]
 
     this.pathTarget.setAttribute('d', this.smoothPath(this.addWobble(this.widenCorners(points)), maxX + WOBBLE))
-    this.chevronsTarget.setAttribute('d', this.chevronPath())
+    this.chevronsTarget.setAttribute('d', this.chevronPath(points.filter(point => point.pin)))
+    const cardTop = box(this.ctaTarget).top
+    this.lineTarget.setAttribute('y1', cardTop)
+    this.lineTarget.setAttribute('y2', cardTop + 1)
     this.startTarget.setAttribute('cx', start.x)
     this.startTarget.setAttribute('cy', start.y)
   }
 
-  chevronPath () {
+  // With the image on the left the route runs in the gap to the text. Below the image, or with the
+  // image on the right, it runs in the left margin. There it comes over from the center first,
+  // and it returns to the center under the list. It swings over to the list and runs straight
+  // through its pins. The extra points on a swing keep it vertical where it meets a straight part.
+  showcasePoints (row, image, list, pins, center) {
+    const inGap = image.right < list.left
+    const flipped = image.left > list.left
+    const gutter = inGap ? (image.right + list.left) / 2 : Math.max(EDGE, flipped ? list.left - 30 : image.left - 12)
+    const reach = inGap || flipped ? 50 : 30
+    const { x } = pins[0]
+    const middle = (gutter + x) / 2
+    const above = pins[0].y - 30
+    const below = pins.at(-1).y + 30
+    const swingIn = [
+      { x: gutter, y: above - reach - 30 },
+      { x: gutter, y: above - reach },
+      { x: middle, y: above - reach / 2 },
+      { x, y: above },
+      ...pins
+    ]
+    if (flipped) {
+      const top = row.top + 30
+      const bottom = row.bottom - 30
+      return [{ x: center, y: top }, { x: gutter, y: top }, ...swingIn, { x, y: bottom }, { x: center, y: bottom }]
+    }
+    return [
+      ...swingIn,
+      { x, y: below },
+      { x: middle, y: below + reach / 2 },
+      { x: gutter, y: below + reach },
+      { x: gutter, y: below + reach + 30 }
+    ]
+  }
+
+  // Along the top of the card and around the centered text to the flag next to the button
+  ctaPoints (gutter, cta, heading, finish) {
+    const top = cta.top + 34
+    const left = Math.max(cta.left + 16, Math.min(heading.left - 140, finish.x - 60))
+    return [{ x: gutter, y: top }, { x: left, y: top }, { x: left, y: finish.y }, finish]
+  }
+
+  chevronPath (pins) {
     const route = this.pathTarget
     const length = route.getTotalLength()
     const marks = []
     for (let distance = CHEVRON_SPACING / 2; distance < length; distance += CHEVRON_SPACING) {
       const { x, y } = route.getPointAtLength(distance)
+      if (pins.some(pin => Math.hypot(pin.x - x, pin.y - PIN_HEAD - y) < CHEVRON_PIN_DISTANCE)) { continue }
       const before = route.getPointAtLength(distance - 4)
       const direction = Math.atan2(y - before.y, x - before.x)
       const arm = (turn) => {

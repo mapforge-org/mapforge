@@ -21,7 +21,8 @@ describe FrontpageController do
       get "/"
       expect(response.body).to include(">Start for free</button>")
       expect(response.body).to include(">Playground</a>")
-      expect(response.body).not_to include(">Your maps</a>")
+      expect(response.body).not_to include("Your maps")
+      expect(response.body).to include("Ready for your first map?", "Free to try, no signup needed.")
     end
 
     it "offers start a map, your maps and the playground to a logged in user" do
@@ -29,8 +30,18 @@ describe FrontpageController do
       sign_in(user)
       get "/"
       expect(response.body).to include(">Start a map</button>")
-      expect(response.body).to include(">Your maps</a>")
+      expect(response.body).to match(%r{>\s*Your maps\s*</a>})
       expect(response.body).to include(">Playground</a>")
+      expect(response.body).to include("Ready for your next map?")
+      expect(response.body).not_to include("Free to try, no signup needed.")
+    end
+
+    it "shows the number of maps of a logged in user" do
+      user = create(:user)
+      create_list(:map, 2, owner_ids: [ user.id ])
+      sign_in(user)
+      get "/"
+      expect(response.body).to include('<span class="landing-count">2</span>')
     end
 
     it "shows the map and user counts" do
@@ -91,6 +102,15 @@ describe FrontpageController do
       get "/"
       expect(response.body).to include("Featured tagged")
       expect(response.body).not_to include("Featured popular", "Featured unlisted")
+    end
+
+    it "shows the description of a featured map and no number of features" do
+      create(:map, name: "Described", description: "A guide", view_permission: "listed", view_count: 2)
+      create(:map, name: "Plain", view_permission: "listed", view_count: 1)
+      allow_any_instance_of(Map).to receive(:screenshot) { |map| "/previews/1/#{map.public_id}.jpg" }
+      get "/"
+      expect(response.body).to include("<span>A guide</span>")
+      expect(response.body).not_to include("0 features")
     end
 
     it "sends a default open graph image" do
