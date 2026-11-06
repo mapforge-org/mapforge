@@ -163,6 +163,13 @@ section,
   line-height: 1.08;
 }
 
+/* The two column layout has no minimum, so the narrow column never wraps the headline */
+@media (width > 860px) {
+  .landing-hero h1 {
+    font-size: min(10cqi, 3.5rem);
+  }
+}
+
 .landing-lead {
   margin: 0;
   max-width: 32.5rem;
@@ -206,6 +213,20 @@ section,
   font-weight: 700;
 }
 
+/* The German badge is about 27em wide, so the badge scales with the column to stay on one line */
+@media (width > 860px) {
+  .landing-badge {
+    gap: 0.67em;
+    padding: 0.39em 1em 0.39em 0.39em;
+    font-size: min(0.9rem, 3.6cqi);
+    white-space: nowrap;
+  }
+
+  .landing-badge-label {
+    padding: 0.11em 0.67em;
+  }
+}
+
 .landing-actions {
   display: flex;
   flex-wrap: wrap;
@@ -238,6 +259,21 @@ section,
   .landing-actions .btn-outline-light {
     --bs-btn-hover-bg: color-mix(in srgb, var(--color-light-sand) 18%, transparent);
     --bs-btn-hover-border-color: var(--color-light-sand);
+  }
+}
+
+/* Three buttons are about 27em wide, so they scale with the column to stay on one line */
+@media (width > 860px) {
+  .landing-actions:has(> :nth-child(3)) {
+    flex-wrap: nowrap;
+    gap: 0.6em;
+    font-size: min(1rem, 3.7cqi);
+  }
+
+  .landing-actions:has(> :nth-child(3)) .btn {
+    padding: 0.55em 1.1em;
+    font-size: 1em;
+    white-space: nowrap;
   }
 }
 
@@ -416,14 +452,6 @@ section,
   line-height: 1.15;
 }
 
-.landing-features-eyebrow {
-  color: var(--color-mid-rust);
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
 .landing-features-lead {
   margin: 0 0 3.5rem;
   font-size: 1.2rem;
@@ -472,9 +500,19 @@ section,
 .landing-route path {
   fill: none;
   stroke: var(--color-mid-brown);
-  stroke-dasharray: 9 7;
+  stroke-dasharray: 11 9;
   stroke-linecap: round;
-  stroke-width: 2.5;
+  stroke-width: 3.5;
+}
+
+.landing-route .landing-route-chevrons {
+  stroke: var(--color-mid-rust);
+  stroke-dasharray: none;
+  stroke-linejoin: round;
+}
+
+.landing-route circle {
+  fill: var(--color-mid-rust);
 }
 
 .landing-route-pin {

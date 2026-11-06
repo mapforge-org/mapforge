@@ -12,9 +12,9 @@
         / Remove or comment out this block when there is nothing to announce.
         %a.landing-badge{ href: doc_path(id: 'bike_touring') }
           %span.landing-badge-label= _("New")
-          = _("Bicycle tour planning: how it works →")
+          = _("Bicycle tour planning: how it works") + "\u00A0→"
 
-        %h1.mapforge-font= _("Create your own map")
+        %h1.mapforge-font{ data: { 'frontpage-route-target': "headline" } }= _("Create your own map")
         %p.landing-lead
           = _("Your free map editor built on OpenStreetMap.")
           %br
@@ -75,9 +75,8 @@
 
   %section.landing-features.background-bright
     .landing-wrap
-      .landing-features-eyebrow= _("Features")
       %h2.mapforge-font= _("Build the map you have in mind")
-      %p.landing-features-lead= _("A bicycle tour, the floor plan for your conference, a guide for your wedding guests")
+      %p.landing-features-lead= _("Plan a bicycle tour, map the floor plan for your conference, or create a guide for your wedding guests")
       .landing-features-grid{ data: { 'frontpage-route-target': "grid" } }
         - overpass_link = link_to 'Overpass', doc_path(id: 'overpass_layers')
         - # The pin is a point in the 320x130 SVG drawing
@@ -129,7 +128,7 @@
         %img{ src: "/images/frontpage/feature3.png", alt: _("Globe with a heart over Central Europe"), loading: 'lazy' }
       .col-lg-7.background-bright.slides
         .item
-          %i.bi.bi-geo-alt-fill.landing-route-pin{ data: { 'frontpage-route-target': "row" } }
+          %i.bi.bi-flag-fill.landing-route-pin{ data: { 'frontpage-route-target': "row" } }
           %h2.mb-3.mapforge-font= _("Open Source")
           %h3.mb-3= _("The code is public, map data is owned by you")
           %ul
@@ -154,3 +153,5 @@
 
   %svg.landing-route{ 'aria-hidden': "true" }
     %path{ data: { 'frontpage-route-target': "path" } }
+    %path.landing-route-chevrons{ data: { 'frontpage-route-target': "chevrons" } }
+    %circle{ r: 6, data: { 'frontpage-route-target': "start" } }

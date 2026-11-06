@@ -50,9 +50,6 @@ msgstr "3D-Gelände"
 msgid "3D Terrain:"
 msgstr "3D-Gelände:"
 
-msgid "A bicycle tour, the floor plan for your conference, a guide for your wedding guests"
-msgstr "Erstelle eine Radtour, den Raumplan einer Konferenz, oder einen Wegweiser für deine Hochzeitsgäste"
-
 msgid "About"
 msgstr "Über"
 
@@ -161,8 +158,8 @@ msgstr "Fahrradkarte mit Radrouten und Höhenlinien"
 msgid "Bicycle route"
 msgstr "Fahrradroute"
 
-msgid "Bicycle tour planning: how it works →"
-msgstr "Tourenplanung fürs Fahrrad – so funktioniert’s →"
+msgid "Bicycle tour planning: how it works"
+msgstr "Tourenplanung fürs Fahrrad – so funktioniert’s"
 
 msgid "Big dots"
 msgstr "Große Punkte"
@@ -547,9 +544,6 @@ msgstr "Ebene %{name} konnte nicht geladen werden"
 
 msgid "Feature"
 msgstr "Objekt"
-
-msgid "Features"
-msgstr "Funktionen"
 
 msgid "Fetching elevation data..."
 msgstr "Höhendaten werden geladen..."
@@ -1000,6 +994,9 @@ msgstr "Schlichte Karte, deine eigenen Daten fallen auf"
 
 msgid "Plain, easy to read street map"
 msgstr "Schlichte, gut lesbare Straßenkarte"
+
+msgid "Plan a bicycle tour, map the floor plan for your conference, or create a guide for your wedding guests"
+msgstr "Plane eine Radtour, zeichne den Raumplan für deine Konferenz oder erstelle einen Wegweiser für deine Hochzeitsgäste"
 
 msgid "Plan on desktop, run Mapforge on your phone, edit in the field, stream your track live"
 msgstr "Plane am Desktop, nutze Mapforge auf deinem Handy, bearbeite vor Ort, streame deinen Track live"
