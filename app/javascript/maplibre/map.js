@@ -14,6 +14,7 @@ import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsMo
 import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
 import { highlightFeature } from 'maplibre/feature';
+import { dimCoveredImages } from 'maplibre/layers/geojson/covered_images';
 import { refreshDescBanners, showDescBanners } from 'maplibre/layers/geojson/desc_banners';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
 import { basemaps } from 'maplibre/styles/basemaps';
@@ -254,6 +255,7 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   // the level control lists only the GeoJSON levels in view
   map.on('moveend', detectLevels)
+  map.on('idle', dimCoveredImages)
 
   // TODO: remove once https://github.com/maplibre/maplibre-gl-js/issues/7752 is fixed (5.25)
   window.addEventListener('error', (event) => {
@@ -705,11 +707,13 @@ export function sortLayers () {
     ordered.filter(e => e.id.startsWith('line-label') && e.id.includes('_geojson-source')),
     // placed before the repeated line labels, which would otherwise take their spot on the line
     ordered.filter(e => e.id.startsWith('route-extras-labels')),
+    // Image points go below the icons. All labels are on top, so an image above an icon would
+    // split that icon from its label.
+    ordered.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),
     ordered.filter(e => e.id.startsWith('points-layer') || e.id.startsWith('shapes-layer') ||
       e.id.startsWith('cluster_points')),
     ordered.filter(e => e.id.startsWith('heatmap-layer')),
     ordered.filter(e => e.id.startsWith('gl-draw-')),
-    ordered.filter(e => e.id.startsWith('symbols-layer') || e.id.startsWith('symbols-border-layer')),
     ordered.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
     // the hovered or selected point, see frontStyleNames in styles.js
     ordered.filter(e => e.id.includes('-front_'))

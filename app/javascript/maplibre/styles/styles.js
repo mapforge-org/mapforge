@@ -487,6 +487,12 @@ const labelSize = () => ['let', 'fontSize', labelFontSize(), [
   ...[17, 18, 19, 20, 21, 22, 23, 24].flatMap(zoom => [zoom, labelSizeAt(zoom)])
 ]]
 
+const coveredImageOpacity = 0.5
+// see dimCoveredImages. A hovered or selected image shows in full.
+const isCoveredImage = () => ['all', ['boolean', ['feature-state', 'covered'], false],
+  ['!', ['boolean', ['feature-state', 'active'], false]],
+  ['!', ['boolean', ['feature-state', 'hover'], false]]]
+
 // Shared configuration for symbols layers
 function symbolsLayerStyles(mode) {
   const flatMode = mode === 'flat'
@@ -509,7 +515,9 @@ function symbolsLayerStyles(mode) {
     'icon-size': iconSize(),
     'icon-overlap': 'always', // https://maplibre.org/maplibre-style-spec/layers/#icon-overlap
     'icon-rotate': ['coalesce', ['get', 'marker-rotate'], 0],
-    'icon-ignore-placement': true // other symbols can be visible even if they collide with the icon
+    // A flat icon lies on the ground, so symbols stay visible on it. An upright icon claims its
+    // place, else a route badge or a label below it would show around the icon.
+    'icon-ignore-placement': flatMode
   }
 
   // Mode-specific layout properties
@@ -564,7 +572,9 @@ function symbolsLayerStyles(mode) {
         ...sharedLayout,
         ...modeSpecificLayout
       },
-      paint: sharedPaint
+      paint: flatMode ? sharedPaint : {
+        'icon-opacity': ['case', isCoveredImage(), ['*', coveredImageOpacity, pointOpacity()], pointOpacity()]
+      }
     }
   }
 }
@@ -589,7 +599,7 @@ function shapesLayerStyles(mode) {
     'icon-anchor': ['case', ['==', markerShape(), 'pin'], 'bottom', 'center'],
     'icon-overlap': 'always',
     'icon-rotate': ['coalesce', ['get', 'marker-rotate'], 0],
-    'icon-ignore-placement': true,
+    'icon-ignore-placement': flatMode, // see symbols-layer
     ...(flatMode ? {
       'icon-pitch-alignment': 'map',
       'icon-rotation-alignment': 'map',
@@ -1118,7 +1128,9 @@ export function styles () {
     const style = styleDefs[id.replace(/-front$/, '')]
     const paint = Object.fromEntries(Object.entries(style.paint)
       .map(([key, value]) => [key, key.endsWith('-opacity') ? ['case', inFront, value, 0] : value]))
-    styleDefs[id] = { ...style, id, paint }
+    // A front copy sits above the text layer, so a claimed place would hide the label of a point.
+    const front = style.type === 'symbol' ? { layout: { ...style.layout, 'icon-ignore-placement': true } } : {}
+    styleDefs[id] = { ...style, ...front, id, paint }
   }
   return styleDefs
 }

@@ -32,4 +32,11 @@ describe "Map km markers" do
       expect(index).to be < lowest, "#{id} is above #{ids[lowest]}"
     end
   end
+
+  it "keeps icon points and their labels together above image points" do
+    wait_for { marker_kms }.to eq [ 0, 1, 2, 2.3 ]
+    ids = page.evaluate_script("map.getStyle().layers.map(l => l.id)")
+    order = %w[symbols-layer shapes-layer text-layer].map { |name| ids.index { |id| id.start_with?("#{name}_geojson-source") } }
+    expect(order).to eq order.sort
+  end
 end

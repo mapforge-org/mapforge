@@ -56,6 +56,31 @@ describe "Map selection" do
     end
   end
 
+  context "with image points" do
+    let(:image) { { "marker-image-url" => "/icons/hydrant.png", "marker-size" => 20 } }
+    let(:points) do
+      { below_icon: point(11.0557, 49.4732, image), icon: point(11.0557, 49.4732, "marker-symbol" => "🚂"),
+        below_label: point(11.0545, 49.4732, image), label: point(11.0545, 49.4735, "label" => "Hauptbahnhof"),
+        free: point(11.0569, 49.4732, image) }
+    end
+    let(:map) { create(:map, features: points.values, center: [ 11.0557, 49.4732 ], zoom: 16) }
+
+    def point(lng, lat, properties)
+      create(:feature, :point, coordinates: [ lng, lat ], properties:)
+    end
+
+    def covered?(name)
+      page.evaluate_script("map.getFeatureState({ source: 'geojson-source-#{map.layers.first.id}', " \
+        "id: '#{points[name].id}' }).covered === true")
+    end
+
+    it "marks the images below an icon or a label as covered, and no other image" do
+      wait_for { covered?(:below_icon) }.to be true
+      wait_for { covered?(:below_label) }.to be true
+      expect(covered?(:free)).to be false
+    end
+  end
+
   context "with a selected feature outside its zoom range" do
     let(:point) { create(:feature, :point, properties: { "label" => "close up", "min-zoom" => 22 }) }
     let(:map) { create(:map, features: [ point ]) }
@@ -189,6 +214,15 @@ describe "Map selection" do
       it "labels the tunnel with its icon" do
         wait_for { page.evaluate_script(tunnel_labels) }.to eq 1
         wait_for { page.evaluate_script(tunnel_icon_width) }.to be > 1
+      end
+
+      it "hides a badge behind a point with an icon" do
+        wait_for { page.evaluate_script(tunnel_labels) }.to eq 1
+        badge = page.evaluate_script("#{tunnel_labels.sub(/\.filter.*/, '')}" \
+          ".find(f => f.properties['route-extras-icon'] === 'tunnel').geometry.coordinates")
+        route.layer.features.create!(geometry: { "type" => "Point", "coordinates" => badge },
+          properties: { "marker-symbol" => "🐍", "marker-size" => 14 })
+        wait_for { page.evaluate_script(tunnel_labels) }.to eq 0
       end
     end
 
