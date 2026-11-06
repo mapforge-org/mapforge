@@ -49,7 +49,6 @@
                                       data: { 'hero-video-target': "overlay", action: "click->hero-video#toggle" } }
             %i.bi.bi-play-fill
           %span.landing-video-length{ data: { 'hero-video-target': "overlay" } } 0:57
-        %figcaption= _("Watch 3 friends mapping their favorite places on an island.")
 
   %section.landing-stats{ data: { 'frontpage-route-target': "stats" } }
     .landing-wrap
@@ -96,8 +95,9 @@
            ["terrain", _("3D Terrain"), _("View your map with mountains and valleys")]].each do |art, title, text, pin|
           %article.landing-feature
             .landing-feature-art
-              %img.landing-feature-photo{ class: "landing-feature-photo-#{art}", src: "/images/frontpage/features/#{art}.webp", alt: "", loading: 'lazy' }
-              %img{ src: "/images/frontpage/features/#{art}.svg", width: 320, height: 130, alt: "" }
+              - # Raise v when a tile image changes: public/ files have no digest, browsers cache them for a month
+              %img.landing-feature-photo{ class: "landing-feature-photo-#{art}", src: "/images/frontpage/features/#{art}.webp?v=2", alt: "", loading: 'lazy' }
+              %img{ src: "/images/frontpage/features/#{art}.svg?v=2", width: 320, height: 130, alt: "" }
               - if pin
                 %i.bi.bi-geo-alt-fill.landing-route-pin{ style: "--x: #{pin[0]}; --y: #{pin[1]}", data: { 'frontpage-route-target': "feature" } }
             %h3= title
@@ -110,7 +110,7 @@
         [[_("Embedding"), _("your map on any web page.")],
          [_("Real-time"), _("changes are visible to everyone right away.")],
          [_("Account"), _("all your maps in one place.")]]],
-       ["feature2.png", _("The same map on a laptop, a tablet and a phone"), _("On the go"),
+       ["on_the_go.webp", _("The same map on a laptop, a tablet and a phone"), _("On the go"),
         _("The map goes with you"), _("Plan on desktop, edit in the field on your phone."),
         [[_("GPS & compass"), _("the map shows where you are.")],
          [link_to(_("Install as an app"), doc_path(id: 'app')), _("right from the browser.")],

@@ -81,7 +81,7 @@
 
 .navbar-toggler {
   position: absolute;
-  right: calc(50% - 27px);
+  right: calc(50% - 1.6875rem);
   top: 0.4rem;
   border-width: 0 !important;
 }

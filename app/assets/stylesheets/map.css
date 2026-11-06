@@ -392,26 +392,6 @@ body:has(#map-mode-badge) .layer-popover {
   transform: perspective(150px) rotateX(var(--view-pitch)) var(--user-dot-rotation);
 }
 
-.km-marker {
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
-  padding-top: 0.05rem;
-  color: var(--color-light-alabaster);
-  font-size: 1.2rem;
-  font-weight: bold;
-  border-color: #fff;
-  border-style: solid;
-  border-width: 0.15rem;
-}
-
-.km-marker-final {
-  width: 35px;
-  height: 35px;
-  padding-top: 0.4rem;
-  opacity: 0.9 !important;
-}
-
 /* --scale follows marker-scaling, set in desc_banners.js. Maplibre positions the outer
    .maplibregl-popup with its own transform, so content and tip scale on their own, both around
    the anchor: the point of the tip, which sits below the content. */

@@ -120,7 +120,7 @@ section,
 
 @media (width <= 640px) {
   .hero h1 {
-    font-size: clamp(1.5rem, 9.5vw, 2.3rem);
+    font-size: clamp(1.5rem, 11.4vw, 2.3rem);
     text-align: center;
   }
 }
@@ -319,11 +319,6 @@ section,
   gap: 0.9rem;
   margin: 0;
   min-width: 0;
-}
-
-.landing-video figcaption {
-  font-size: 0.95rem;
-  text-align: center;
 }
 
 .landing-video-frame {
@@ -923,7 +918,7 @@ footer {
     padding-block: 3rem;
   }
 
-  .landing-showcase h2 {
+  .landing-features h2, .landing-showcase h2 {
     font-size: 2rem;
   }
 
