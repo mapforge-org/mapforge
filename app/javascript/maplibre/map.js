@@ -16,6 +16,7 @@ import { initializeEditMode, resetEditMode } from 'maplibre/edit';
 import { highlightFeature } from 'maplibre/feature';
 import { dimCoveredImages } from 'maplibre/layers/geojson/covered_images';
 import { refreshDescBanners, showDescBanners } from 'maplibre/layers/geojson/desc_banners';
+import { showImageOverlays } from 'maplibre/layers/geojson/image_overlays';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
 import { basemaps } from 'maplibre/styles/basemaps';
 import { applyBasemapDefaults, defaults } from 'maplibre/styles/defaults';
@@ -441,6 +442,7 @@ export function removeStyleLayers(sourceName) {
 }
 
 export function setLayerVisibility(sourceName, visible) {
+  const layer = layers?.find(l => l.sourceId === sourceName)
   if (map.style) {
     const sources = [sourceName]
     // geojson layers have companion sources for km-markers and route extras
@@ -448,21 +450,20 @@ export function setLayerVisibility(sourceName, visible) {
       sources.push(sourceName.replace('geojson-source-', 'km-marker-source-'))
       sources.push(sourceName.replace('geojson-source-', 'route-extras-source-'))
       sources.push(sourceName.replace('geojson-source-', 'extrusion-source-'))
-      // one image overlay source per feature, see image_overlays.js
-      sources.push(sourceName.replace('geojson-source-', 'image-overlay-source-') + '-')
     }
     // raster layers with waymarkedtrails have companion sources for clicked routes
     if (sourceName.startsWith('raster-source-')) {
       sources.push(sourceName + '-features')
     }
     styleLayers()
-      .filter(l => sources.some(s => l.source === s || (s.endsWith('-') && l.source?.startsWith(s))))
+      .filter(l => sources.includes(l.source))
       .forEach(l => {
         if (map.getLayer(l.id)) map.setLayoutProperty(l.id, 'visibility', visible ? 'visible' : 'none', noValidate)
       })
+    // the visibility of an image overlay also depends on the level of its feature
+    if (layer?.type === 'geojson') { showImageOverlays(layer.geojson.features, layer.id, visible) }
   }
   // description banners are DOM popups, not style layers, see desc_banners.js
-  const layer = layers?.find(l => l.sourceId === sourceName)
   if (layer?.type === 'geojson') { showDescBanners(layer, visible) }
 }
 

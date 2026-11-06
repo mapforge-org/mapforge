@@ -151,9 +151,10 @@ function applyActiveLevel() {
       }
     })
 
-  // Update GeoJSON layers (they use map.setFilter via applyLevelFilter)
+  // Update GeoJSON layers (they use map.setFilter via applyLevelFilter). A hidden layer also
+  // needs this: it keeps its style layers, and showing it does not rebuild them.
   layers
-    .filter(layer => layer.type === 'geojson' && layer.show !== false)
+    .filter(layer => layer.type === 'geojson')
     .forEach(layer => {
       if (typeof layer.applyLevelFilter === 'function') {
         layer.applyLevelFilter()

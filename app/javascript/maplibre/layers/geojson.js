@@ -50,7 +50,7 @@ function needsExtrusionPolygon(feature) {
 // A style layer costs parsing in the main thread and in the worker, also when its filter never
 // matches. Route extras hold lines, label points and walls with only the route properties. The
 // extrusion polygons carry all properties of their line, so symbols and labels can match them.
-const routeExtrasStyleNames = viewStyleNames.filter(name => /^(line-layer|polygon-layer-(outline|halo|extru))/.test(name))
+const routeExtrasStyleNames = viewStyleNames.filter(name => /^(line-layer(?!-outline)|polygon-layer-(outline|halo|extru))/.test(name))
 const extrusionStyleNames = viewStyleNames.filter(name =>
   /^(polygon-layer-(outline|halo|extru)|symbols-layer|text-layer)/.test(name))
 
@@ -151,8 +151,6 @@ export class GeoJSONLayer extends Layer {
     }
 
     map.setFilter(`line-layer_${this.sourceId}`, withLevelFilter(this.mainLineFilter), noValidate)
-    // Hide the outline layer for route extras - we only want the colored segments visible
-    map.setLayoutProperty(`line-layer-outline_${this.routeExtrasSourceId}`, 'visibility', 'none', noValidate)
 
     // Override line-cap to 'butt' for route extras line layer to prevent color overlap at segment junctions
     map.setLayoutProperty(`line-layer_${this.routeExtrasSourceId}`, 'line-cap', 'butt', noValidate)
