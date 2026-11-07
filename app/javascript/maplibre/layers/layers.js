@@ -216,9 +216,10 @@ export function loadLayerData(id) {
   })
 }
 
-// triggered by layer reload in the UI
+// triggered by "Load for this area", so only layers whose data depends on the viewport
 export async function loadAllLayerData() {
-  const results = await Promise.all(layers.map((layer) => { return loadLayerData(layer.id) }))
+  const viewportLayers = layers.filter(l => l.reloadAfterMapMove() === 'ondemand')
+  const results = await Promise.all(viewportLayers.map(layer => loadLayerData(layer.id)))
   return results.some(result => result === false)
 }
 
