@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-07 00:30+0100\n"
-"PO-Revision-Date: 2026-11-07 00:30+0100\n"
+"POT-Creation-Date: 2026-11-07 13:55+0100\n"
+"PO-Revision-Date: 2026-11-07 13:55+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -60,6 +60,14 @@ msgstr ""
 
 #: ../app/views/maps/modals/_settings.haml:115
 msgid "3D Terrain:"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:108
+msgid "A phone shows your GPS position on the map, next to a compass."
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:108
+msgid "A team edits a map on a laptop with the edit link, guests view the same map on a phone with the view link. The map can also be embedded on a website or published in the gallery."
 msgstr ""
 
 #: ../app/views/shared/_footer.html.haml:60
@@ -246,7 +254,7 @@ msgstr ""
 msgid "Build the map you have in mind"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:148
+#: ../app/views/frontpage/index.haml:165
 msgid "Built with"
 msgstr ""
 
@@ -338,6 +346,10 @@ msgstr ""
 msgid "Compacted gravel"
 msgstr ""
 
+#: ../app/views/frontpage/_go_drawing.haml:2
+msgid "Compass"
+msgstr ""
+
 #: ../app/javascript/maplibre/controls/geolocate.js:215
 msgid "Compass mode"
 msgstr ""
@@ -414,7 +426,7 @@ msgstr ""
 msgid "Could not read the file: %{error}"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:166
+#: ../app/views/frontpage/index.haml:186
 msgid "Create a new map"
 msgstr ""
 
@@ -426,7 +438,7 @@ msgstr ""
 msgid "Create individual maps for your places, tracks and events."
 msgstr ""
 
-#: ../app/views/layouts/_head.html.haml:20
+#: ../app/views/layouts/_head.html.haml:22
 msgid "Create individual maps for your places, tracks and events. Share your maps in real-time."
 msgstr ""
 
@@ -456,6 +468,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/styles/basemaps.js:242
 msgid "Dark map, easy on the eyes at night"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:159
+msgid "Database"
 msgstr ""
 
 #: ../app/views/maps/modals/_settings.haml:92 ../app/views/maps/modals/_settings.haml:102
@@ -646,7 +662,7 @@ msgstr ""
 msgid "Edit in OSM"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:48 ../app/views/maps/modals/_share.haml:52
+#: ../app/views/frontpage/_share_drawing.haml:8 ../app/views/maps/modals/_share.haml:48 ../app/views/maps/modals/_share.haml:52
 msgid "Edit link"
 msgstr ""
 
@@ -682,7 +698,7 @@ msgstr ""
 msgid "Embed map"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:108
+#: ../app/views/frontpage/_share_drawing.haml:10 ../app/views/frontpage/index.haml:108
 msgid "Embedding"
 msgstr ""
 
@@ -782,7 +798,7 @@ msgstr ""
 msgid "Foot"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:163
+#: ../app/views/frontpage/index.haml:183
 msgid "Free to try, no signup needed."
 msgstr ""
 
@@ -792,6 +808,10 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:108
 msgid "GPS & compass"
+msgstr ""
+
+#: ../app/views/frontpage/_go_drawing.haml:4
+msgid "GPS location"
 msgstr ""
 
 #: ../app/views/frontpage/_featured_maps.haml:5
@@ -844,6 +864,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/controls/level_control.js:7 ../app/javascript/maplibre/layers/geojson/route_extras.js:70
 msgid "Ground"
+msgstr ""
+
+#: ../app/views/frontpage/_share_drawing.haml:3
+msgid "Guests view"
 msgstr ""
 
 #: ../app/javascript/maplibre/feature/edit_ui.js:111
@@ -1016,6 +1040,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/feature/edit_ui.js:113
 msgid "Lines"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:159
+msgid "Live sync"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:108
@@ -1418,11 +1446,11 @@ msgstr ""
 msgid "Read about the latest changes and improvements on Mapforge."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:161
+#: ../app/views/frontpage/index.haml:181
 msgid "Ready for your first map?"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:161
+#: ../app/views/frontpage/index.haml:181
 msgid "Ready for your next map?"
 msgstr ""
 
@@ -1599,10 +1627,6 @@ msgstr ""
 msgid "Share Map"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:108
-msgid "Share dialog with an edit link and a view link over a 3D map"
-msgstr ""
-
 #: ../app/views/maps/modals/_share.haml:47
 msgid "Share edit link"
 msgstr ""
@@ -1757,6 +1781,10 @@ msgstr ""
 msgid "Symbol:"
 msgstr ""
 
+#: ../app/views/frontpage/_share_drawing.haml:2
+msgid "Team plans along"
+msgstr ""
+
 #: ../app/views/shared/_footer.html.haml:70
 msgid "Terms of Service"
 msgstr ""
@@ -1799,10 +1827,6 @@ msgstr ""
 
 #: ../app/views/maps/modals/_settings.haml:145
 msgid "The map starts centered on your content."
-msgstr ""
-
-#: ../app/views/frontpage/index.haml:108
-msgid "The same map on a laptop, a tablet and a phone"
 msgstr ""
 
 #: ../app/javascript/maplibre/feature/edit_ui.js:114
@@ -1937,7 +1961,7 @@ msgstr ""
 msgid "View feature information"
 msgstr ""
 
-#: ../app/views/maps/modals/_share.haml:64 ../app/views/maps/modals/_share.haml:68
+#: ../app/views/frontpage/_share_drawing.haml:9 ../app/views/maps/modals/_share.haml:64 ../app/views/maps/modals/_share.haml:68
 msgid "View link"
 msgstr ""
 
@@ -2011,6 +2035,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/_confirmation.haml:12
 msgid "Yes"
+msgstr ""
+
+#: ../app/views/frontpage/_go_drawing.haml:3
+msgid "You are here"
 msgstr ""
 
 #: ../app/views/maps/my.haml:28
@@ -2109,6 +2137,10 @@ msgstr ""
 msgid "create"
 msgstr ""
 
+#: ../app/views/frontpage/index.haml:166
+msgid "data"
+msgstr ""
+
 #: ../app/javascript/maplibre/controls/search.js:122
 msgid "dental"
 msgstr ""
@@ -2165,12 +2197,20 @@ msgstr ""
 msgid "harbour|harbor|port"
 msgstr ""
 
+#: ../app/views/frontpage/_share_drawing.haml:6
+msgid "in the gallery"
+msgstr ""
+
 #: ../app/views/maps/_map.haml:40
 msgid "last change %{time} ago"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/search.js:151
 msgid "launderette|laundromat"
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:166
+msgid "license"
 msgstr ""
 
 #: ../app/views/maps/maplibre.haml:50
@@ -2187,6 +2227,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/controls/search.js:146
 msgid "nursery|daycare|creche"
+msgstr ""
+
+#: ../app/views/frontpage/_share_drawing.haml:5
+msgid "on your website"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/search.js:141
@@ -2209,6 +2253,10 @@ msgstr ""
 msgid "post|mail"
 msgstr ""
 
+#: ../app/views/frontpage/_share_drawing.haml:7
+msgid "public"
+msgstr ""
+
 #: ../app/views/maps/_map.haml:46
 msgid "public id:"
 msgstr ""
@@ -2223,6 +2271,14 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:108
 msgid "right from the browser."
+msgstr ""
+
+#: ../app/views/frontpage/index.haml:159
+msgid "runs on :3000"
+msgstr ""
+
+#: ../app/views/frontpage/_share_drawing.haml:4
+msgid "same map"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:108

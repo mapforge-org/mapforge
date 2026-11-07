@@ -50,7 +50,7 @@ export default class extends Controller {
     const [importData, routing] = this.featureTargets.map(tip)
     const showcase = (row, center) => {
       const pins = this.stopTargets.filter(pin => row.contains(pin))
-      return this.showcasePoints(box(row), box(row.querySelector('img')), box(pins[0].closest('ul')), pins.map(tip), center)
+      return this.showcasePoints(box(row), box(row.querySelector('svg')), box(pins[0].closest('ul')), pins.map(tip), center)
     }
     const share = showcase(this.showcaseTargets[0])
     const center = share[0].x

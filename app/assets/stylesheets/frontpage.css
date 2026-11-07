@@ -676,20 +676,16 @@ section,
   align-items: center;
 }
 
-/* 16 / 10 keeps the whole dialog of share.webp in view, it also matches the video frame */
-.landing-showcase-grid > img {
+/* The drawings have no frame, they stand directly on the section background */
+.landing-showcase-grid > svg {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  border: 1px solid color-mix(in srgb, var(--color-light-sand), black 7%);
-  border-radius: 1rem;
-  box-shadow: 0 16px 32px rgb(0 0 0 / 12%);
+  height: auto;
 }
 
 /* Every second image goes to the right. Below this width the image stays above the text. */
 @media (width >= 992px) {
-  .landing-showcase:nth-child(even) .landing-showcase-grid > img {
+  .landing-showcase:nth-child(even) .landing-showcase-grid > svg {
     order: 1;
   }
 }
@@ -830,36 +826,110 @@ footer {
   text-decoration: none;
 }
 
-.landing-built-with {
-  padding: 2rem;
-  border: 1px solid color-mix(in srgb, var(--color-light-sand), black 7%);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--color-light-sand), white 70%);
-}
+.landing-terminal {
+  --hover-color: #f2a65a;
+  --text-color: var(--color-light-sand);
 
-.landing-built-with-title {
-  margin-bottom: 1rem;
-  color: color-mix(in srgb, var(--text-color), transparent 25%);
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.landing-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.landing-chip {
-  padding: 0.3rem 0.9rem;
-  border: 1px solid color-mix(in srgb, var(--color-light-sand), black 7%);
-  border-radius: 2rem;
-  background: color-mix(in srgb, var(--color-light-sand), white 25%);
+  min-width: 0;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: #1e241a;
+  box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 18%);
+  color: var(--text-color);
+  font-family: ui-monospace, monospace;
   font-size: 0.95rem;
-  font-weight: 600;
+}
+
+.landing-terminal-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0.9rem 1.4rem;
+  background: #283122;
+  color: #8a9a80;
+  font-size: 0.85rem;
+}
+
+.landing-terminal-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.landing-terminal-dots i {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: #e8704f;
+}
+
+.landing-terminal-dots i:nth-child(2) {
+  background: #e4b04a;
+}
+
+.landing-terminal-dots i:nth-child(3) {
+  background: #84b35c;
+}
+
+.landing-terminal-body {
+  padding: 1.6rem 1.8rem 1.8rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.landing-terminal-command::before {
+  color: #f2a65a;
+  content: "$ ";
+  user-select: none;
+}
+
+.landing-terminal-cursor {
+  margin-top: 1.25rem;
+}
+
+.landing-terminal-cursor::after {
+  display: inline-block;
+  width: 0.65em;
+  height: 1.2em;
+  background: #f2a65a;
+  content: "";
+  vertical-align: text-bottom;
+}
+
+.landing-terminal-row {
+  display: grid;
+  grid-template-columns: 11ch 1fr;
+}
+
+.landing-terminal-row span:first-child {
+  color: #8ab8d8;
+}
+
+.landing-terminal-row span:last-child {
+  color: #8a9a80;
+}
+
+.landing-terminal-ok span:first-child {
+  color: #a3d16f;
+}
+
+.landing-terminal-ok span:first-child::before {
+  content: "\2714  ";
+  white-space: pre;
+}
+
+.landing-terminal-comment {
+  margin-top: 1.25rem;
+  color: #8a9a80;
+}
+
+.landing-terminal a {
   text-decoration: none;
+}
+
+@media (hover: hover) {
+  .landing-terminal a:hover {
+    text-decoration: underline;
+  }
 }
 
 .landing-cta {
@@ -906,7 +976,7 @@ footer {
   }
 
   /* The route runs in the page gutter here, it stays clear of the text */
-  .landing-showcase-grid > div, .landing-gallery-head {
+  .landing-showcase-grid > div:not(.landing-terminal), .landing-gallery-head {
     padding-left: 0.75rem;
   }
 

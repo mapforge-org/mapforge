@@ -50,6 +50,12 @@ msgstr "3D-Gelände"
 msgid "3D Terrain:"
 msgstr "3D-Gelände:"
 
+msgid "A phone shows your GPS position on the map, next to a compass."
+msgstr "Ein Handy zeigt deine GPS-Position auf der Karte, daneben ein Kompass."
+
+msgid "A team edits a map on a laptop with the edit link, guests view the same map on a phone with the view link. The map can also be embedded on a website or published in the gallery."
+msgstr "Ein Team bearbeitet eine Karte am Laptop über den Bearbeitungslink, Gäste sehen dieselbe Karte über den Ansichtslink am Handy. Die Karte lässt sich auch auf einer Webseite einbetten oder in der Galerie veröffentlichen."
+
 msgid "About"
 msgstr "Über"
 
@@ -257,6 +263,9 @@ msgstr "Farbige Straßenkarte für jeden Tag"
 msgid "Compacted gravel"
 msgstr "Verdichteter Schotter"
 
+msgid "Compass"
+msgstr "Kompass"
+
 msgid "Compass mode"
 msgstr "Kompass-Modus"
 
@@ -346,6 +355,9 @@ msgstr "Eigene Rasterebene"
 
 msgid "Dark map, easy on the eyes at night"
 msgstr "Dunkle Karte, angenehm für die Augen bei Nacht"
+
+msgid "Database"
+msgstr "Datenbank"
 
 msgid "Default maps"
 msgstr "Standardkarten"
@@ -599,6 +611,9 @@ msgstr "Gesamter Track"
 msgid "GPS & compass"
 msgstr "GPS & Kompass"
 
+msgid "GPS location"
+msgstr "GPS-Position"
+
 msgid "Gallery"
 msgstr "Galerie"
 
@@ -637,6 +652,9 @@ msgstr "Gitter"
 
 msgid "Ground"
 msgstr "Erde"
+
+msgid "Guests view"
+msgstr "Gäste schauen"
 
 msgid "Hatch"
 msgstr "Schraffur"
@@ -766,6 +784,9 @@ msgstr "Linie in 2 Abschnitte geteilt"
 
 msgid "Lines"
 msgstr "Linien"
+
+msgid "Live sync"
+msgstr "Live-Sync"
 
 msgid "Live tracking"
 msgstr "Live-Tracking"
@@ -1203,9 +1224,6 @@ msgstr "Teilen"
 msgid "Share Map"
 msgstr "Karte teilen"
 
-msgid "Share dialog with an edit link and a view link over a 3D map"
-msgstr "Teilen-Dialog mit Bearbeitungslink und Ansichtslink über einer 3D-Karte"
-
 msgid "Share edit link"
 msgstr "Bearbeitungslink teilen"
 
@@ -1322,6 +1340,9 @@ msgstr "Untergrund"
 msgid "Symbol:"
 msgstr "Symbol:"
 
+msgid "Team plans along"
+msgstr "Team plant mit"
+
 msgid "Terms of Service"
 msgstr "Nutzungsbedingungen"
 
@@ -1354,9 +1375,6 @@ msgstr "Die Karte kommt mit"
 
 msgid "The map starts centered on your content."
 msgstr "Die Karte startet zentriert auf deinen Inhalten."
-
-msgid "The same map on a laptop, a tablet and a phone"
-msgstr "Dieselbe Karte auf Laptop, Tablet und Handy"
 
 msgid "Thick lines"
 msgstr "Dicke Linien"
@@ -1514,6 +1532,9 @@ msgstr "Hackschnitzel"
 msgid "Yes"
 msgstr "Ja"
 
+msgid "You are here"
+msgstr "Du bist hier"
+
 msgid "You can try out the %{tutorial_link} to learn how Mapforge works, or you can %{create_link} your first map right away."
 msgstr "Du kannst die %{tutorial_link} ausprobieren, um zu sehen, wie Mapforge funktioniert, oder %{create_link} direkt deine erste Karte."
 
@@ -1586,6 +1607,9 @@ msgstr "Kaffee|Cafe|Café|Kaffeehaus"
 msgid "create"
 msgstr "erstelle"
 
+msgid "data"
+msgstr "daten"
+
 msgid "dental"
 msgstr "Zahnarzt|Zahnaerztin|Zahnärztin"
 
@@ -1628,11 +1652,17 @@ msgstr "Fitness|Fitnessstudio|Sportstudio|Gym"
 msgid "harbour|harbor|port"
 msgstr "Hafen|Jachthafen|Yachthafen|Marina"
 
+msgid "in the gallery"
+msgstr "in der Galerie"
+
 msgid "last change %{time} ago"
 msgstr "letzte Änderung vor %{time}"
 
 msgid "launderette|laundromat"
 msgstr "Waescherei|Wäscherei|Waschsalon|Waschen"
+
+msgid "license"
+msgstr "lizenz"
 
 msgid "log in"
 msgstr "melde dich an"
@@ -1645,6 +1675,9 @@ msgstr "Kino|Filmtheater"
 
 msgid "nursery|daycare|creche"
 msgstr "Kindergarten|Kita|Kindertagesstaette|Kindertagesstätte"
+
+msgid "on your website"
+msgstr "auf deiner Webseite"
 
 msgid "picnic|picnic_table"
 msgstr "Picknick|Picknickplatz|Rastplatz"
@@ -1661,6 +1694,9 @@ msgstr "Schwimmbad|Freibad|Hallenbad|Schwimmen"
 msgid "post|mail"
 msgstr "Post|Postamt|Postfiliale"
 
+msgid "public"
+msgstr "öffentlich"
+
 msgid "public id:"
 msgstr "öffentliche ID:"
 
@@ -1672,6 +1708,12 @@ msgstr "registrierte Nutzer"
 
 msgid "right from the browser."
 msgstr "direkt aus dem Browser."
+
+msgid "runs on :3000"
+msgstr "läuft auf :3000"
+
+msgid "same map"
+msgstr "dieselbe Karte"
 
 msgid "share your track in real time with %{ulogger_link}."
 msgstr "Strecke mit %{ulogger_link} in Echtzeit teilen."

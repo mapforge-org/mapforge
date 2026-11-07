@@ -105,19 +105,19 @@
 
   %section#features.section
     - ulogger_link = link_to "µlogger", "https://github.com/mapforge-org/mapforge/blob/main/engines/ulogger/README.md"
-    - [["share.webp", _("Share dialog with an edit link and a view link over a 3D map"), _("Share"),
+    - [["share_drawing", _("A team edits a map on a laptop with the edit link, guests view the same map on a phone with the view link. The map can also be embedded on a website or published in the gallery."), _("Share"),
         _("One link to view, one to edit"), _("Publish in the gallery or share privately – you decide."),
         [[_("Embedding"), _("your map on any web page.")],
          [_("Real-time"), _("changes are visible to everyone right away.")],
          [_("Account"), _("all your maps in one place.")]]],
-       ["on_the_go.webp", _("The same map on a laptop, a tablet and a phone"), _("On the go"),
+       ["go_drawing", _("A phone shows your GPS position on the map, next to a compass."), _("On the go"),
         _("The map goes with you"), _("Plan on desktop, edit in the field on your phone."),
         [[_("GPS & compass"), _("the map shows where you are.")],
          [link_to(_("Install as an app"), doc_path(id: 'app')), _("right from the browser.")],
-         [_("Live tracking"), raw(_("share your track in real time with %{ulogger_link}.") % { ulogger_link: ulogger_link })]]]].each do |image, alt, eyebrow, title, lead, stops|
+         [_("Live tracking"), raw(_("share your track in real time with %{ulogger_link}.") % { ulogger_link: ulogger_link })]]]].each do |drawing, alt, eyebrow, title, lead, stops|
       .landing-showcase.background-bright{ data: { 'frontpage-route-target': "showcase" } }
         .landing-wrap.landing-showcase-grid
-          %img{ src: "/images/frontpage/#{image}", alt: alt, loading: 'lazy' }
+          = render drawing, alt: alt
           %div
             .landing-eyebrow= eyebrow
             %h2.mapforge-font= title
@@ -144,18 +144,38 @@
                 = _("View on GitHub")
                 %i.bi.bi-box-arrow-up-right.ms-1
               = link_to _("Self-hosting guide"), "https://github.com/mapforge-org/mapforge/blob/main/SELF-HOSTING.md", class: 'nav-link'
-          .landing-built-with
-            .landing-built-with-title= _("Built with")
-            .landing-chips
-              - [["Ruby on Rails", "https://rubyonrails.org/"],
-                 ["MongoDB", "https://www.mongodb.com/"],
-                 ["MapLibre GL JS", "https://github.com/maplibre/maplibre-gl-js"],
-                 ["OpenStreetMap", "https://www.openstreetmap.org"],
-                 ["mapbox-gl-draw", "https://github.com/mapbox/mapbox-gl-draw"],
-                 ["Turf.js", "https://turfjs.org/"],
-                 ["Pinhead", "https://github.com/waysidemapping/pinhead"],
-                 ["Openrouteservice", "https://openrouteservice.org/"]].each do |name, url|
-                = link_to name, url, class: 'landing-chip'
+          .landing-terminal
+            .landing-terminal-bar{ 'aria-hidden': "true" }
+              .landing-terminal-dots
+                %i
+                %i
+                %i
+              \~/mapforge &ndash; bash
+            .landing-terminal-body
+              - ["git clone https://github.com/mapforge-org/mapforge",
+                 "cd mapforge/deploy && cp .env.example .env",
+                 "docker compose up -d"].each do |command|
+                .landing-terminal-command= command
+              - [["mongodb", "#{_("Database")} · Mongoid"],
+                 ["redis", "#{_("Live sync")} · Action Cable"],
+                 ["mapforge", "Rails 8 · #{_("runs on :3000")}"]].each do |service, status|
+                .landing-terminal-row.landing-terminal-ok
+                  %span= service
+                  %span= status
+              .landing-terminal-comment= "# #{_("Built with")}"
+              - [["backend", [["Ruby on Rails 8", "https://rubyonrails.org/"],
+                              ["MongoDB", "https://www.mongodb.com/"],
+                              ["Redis", "https://redis.io/"]]],
+                 ["frontend", [["MapLibre GL JS", "https://github.com/maplibre/maplibre-gl-js"],
+                               ["mapbox-gl-draw", "https://github.com/mapbox/mapbox-gl-draw"],
+                               ["Turf.js", "https://turfjs.org/"]]],
+                 [_("data"), [["OpenStreetMap", "https://www.openstreetmap.org"],
+                              ["Openrouteservice", "https://openrouteservice.org/"]]],
+                 [_("license"), [["AGPL-3.0", "https://github.com/mapforge-org/mapforge/blob/main/LICENSE"]]]].each do |key, links|
+                .landing-terminal-row
+                  %span= key
+                  %span= safe_join(links.map { |name, url| link_to(name, url) }, ", ")
+              .landing-terminal-command.landing-terminal-cursor
 
         .landing-cta{ data: { 'frontpage-route-target': "cta" } }
           %h2.mapforge-font= @user ? _("Ready for your next map?") : _("Ready for your first map?")

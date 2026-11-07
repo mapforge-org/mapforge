@@ -1,0 +1,81 @@
+- # Inline and not an img, so the labels are translated and use the page fonts
+- team = _("Team plans along")
+- guests = _("Guests view")
+- same_map = _("same map")
+- on_website = _("on your website")
+- in_gallery = _("in the gallery")
+- public_label = _("public")
+- edit_link = _("Edit link")
+- view_link = _("View link")
+- embedding = _("Embedding")
+%svg{ xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 860 690", role: "img", 'aria-label': alt, fill: "none", stroke: "#33502a", 'stroke-width': 3.5, 'stroke-linecap': "round", 'stroke-linejoin': "round" }
+  :plain
+    <defs>
+      <filter id="share-hand"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+      <!-- The arrow of #remote-cursor-template in maps/maplibre.haml -->
+      <symbol id="share-cursor" viewBox="1.815 2.182 16 16" overflow="visible">
+        <path transform="scale(-1 1) translate(-16 0)" d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .557.103z" fill="currentColor" stroke="#fff" stroke-width=".7" paint-order="stroke"/>
+      </symbol>
+      <clipPath id="share-avatar" clipPathUnits="objectBoundingBox"><circle cx=".5" cy=".5" r=".5"/></clipPath>
+      <!-- The real map with the painted plan, in pixels of the 1445x754 screenshot. Every device shows a crop of it. -->
+      <g id="share-map">
+        <image href="/images/frontpage/share_map.webp" width="1445" height="754"/>
+        <path d="M800 520c60 -50 80 -120 150 -140s90 -60 100 -120" stroke="#fff" stroke-width="17"/>
+        <path d="M800 520c60 -50 80 -120 150 -140s90 -60 100 -120" stroke="#b85e1e" stroke-width="10" stroke-dasharray="16 22"/>
+        <path d="M800 520l-21 -21c-22 -22 -27 -46 -14 -62 19 -24 51 -24 70 0 13 16 8 40 -14 62z" fill="#b85e1e" stroke="#fff" stroke-width="5"/>
+      </g>
+    </defs>
+    <g filter="url(#share-hand)">
+      <path d="M8 342l28-24h456l30 24z" fill="#efeee0"/>
+      <rect x="35" y="15" width="458" height="302" rx="18" fill="#fff"/>
+      <path d="M47 48h31M47 68h31M47 88h24"/>
+      <path d="M51 127l-2 -9 17 -17 8 7 -17 17z"/>
+      <path d="M47 155l13 -9 13 9 -13 9z"/>
+      <path d="M634 110a28 28 0 0 1 28 -28h135a28 28 0 0 1 28 28v303a28 28 0 0 1 -28 28h-135a28 28 0 0 1 -28 -28z" fill="#fff"/>
+      <path d="M708 90h42"/>
+      <path d="M694 40c21 -23 51 -23 68 0 -17 23 -47 23 -68 0z" fill="#fff"/>
+      <circle cx="728" cy="40" r="6" fill="#33502a"/>
+      <path d="M507 138c23 -28 63 -43 110 -10M601 116l16 12 -19 6" stroke="#e08a3c"/>
+      <path d="M30 558h810" stroke="#6f8467" stroke-width="2.5" stroke-dasharray="3 7"/>
+      <rect x="35" y="580" width="138" height="92" rx="8" fill="#fff"/>
+      <path d="M35 598h138M120 620h40M120 636h34M120 652h40"/>
+    </g>
+    <svg x="90" y="36" width="388" height="266" viewBox="198 0 1100 754"><use href="#share-map"/></svg>
+    <svg x="650" y="98" width="158" height="312" viewBox="680 0 382 754"><use href="#share-map"/></svg>
+    <svg x="48" y="610" width="62" height="50" viewBox="620 100 680 548"><use href="#share-map"/></svg>
+    <image x="457" y="578" width="56" height="42" preserveAspectRatio="xMidYMid slice" href="/images/frontpage/features/draw.webp?v=2"/>
+    <image x="522" y="578" width="56" height="42" preserveAspectRatio="xMidYMid slice" href="/images/frontpage/features/routing.webp?v=2"/>
+    <image x="457" y="630" width="56" height="42" preserveAspectRatio="xMidYMid slice" href="/images/frontpage/features/import.webp?v=2"/>
+    <image x="522" y="630" width="56" height="42" preserveAspectRatio="xMidYMid slice" href="/images/frontpage/features/terrain.webp?v=2"/>
+    <g filter="url(#share-hand)">
+      <rect x="90" y="36" width="388" height="266" rx="6"/>
+      <rect x="650" y="98" width="158" height="312" rx="10"/>
+      <rect x="48" y="610" width="62" height="50" rx="3"/>
+      <rect x="457" y="578" width="56" height="42" rx="4"/>
+      <rect x="522" y="578" width="56" height="42" rx="4"/>
+      <rect x="457" y="630" width="56" height="42" rx="4"/>
+      <rect x="522" y="630" width="56" height="42" rx="4"/>
+    </g>
+    <use href="#share-cursor" x="396" y="118" width="30" height="30" color="hsl(36 85% 45%)"/>
+    <image x="413" y="133" width="32" height="32" clip-path="url(#share-avatar)" href="/images/frontpage/avatar1.jpeg"/>
+    <circle cx="429" cy="149" r="16" stroke="hsl(36 85% 45%)" stroke-width="3"/>
+    <use href="#share-cursor" x="190" y="84" width="30" height="30" color="hsl(120 85% 45%)"/>
+    <image x="207" y="99" width="32" height="32" clip-path="url(#share-avatar)" href="/images/frontpage/avatar3.jpeg"/>
+    <circle cx="223" cy="115" r="16" stroke="hsl(120 85% 45%)" stroke-width="3"/>
+    <g font-family="SUSE, system-ui, sans-serif" font-weight="600" stroke="none">
+      <g font-size="24" fill="#b85e1e">
+        <text x="55" y="436">#{edit_link}</text>
+        <text x="630" y="530">#{view_link}</text>
+        <text x="190" y="656">#{embedding}</text>
+        <text x="597" y="656">#{public_label}</text>
+      </g>
+    </g>
+    <g font-family="Caveat, cursive" font-weight="700" stroke="none">
+      <text x="506" y="72" font-size="32" fill="#b85e1e" transform="rotate(-6 506 72)">#{same_map}</text>
+      <g fill="#33502a">
+        <text x="55" y="400" font-size="44">#{team}</text>
+        <text x="630" y="492" font-size="44">#{guests}</text>
+        <text x="190" y="622" font-size="36">#{on_website}</text>
+        <text x="597" y="622" font-size="36">#{in_gallery}</text>
+      </g>
+    </g>

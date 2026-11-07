@@ -13,6 +13,15 @@
   /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
+/* caveat-700 - latin */
+@font-face {
+  font-display: swap;
+  font-family: Caveat;
+  font-style: normal;
+  font-weight: 700;
+  src: url('caveat-v23-latin-700.woff2') format('woff2');
+}
+
 /* lobster-two-regular - latin */
 @font-face {
   font-display: swap;

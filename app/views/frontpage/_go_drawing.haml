@@ -1,0 +1,35 @@
+- # Uses the #share-hand filter of _share_drawing.haml, which comes first on the page
+- compass = _("Compass")
+- you_are_here = _("You are here")
+- gps_location = _("GPS location")
+%svg{ xmlns: "http://www.w3.org/2000/svg", viewBox: "-112 0 860 600", role: "img", 'aria-label': alt, fill: "none", stroke: "#33502a", 'stroke-width': 3.5, 'stroke-linecap': "round", 'stroke-linejoin': "round" }
+  :plain
+    <g filter="url(#share-hand)">
+      <path d="M310 20h220a40 40 0 0 1 40 40v480a40 40 0 0 1 -40 40h-220a40 40 0 0 1 -40 -40v-480a40 40 0 0 1 40 -40z" fill="#fff"/>
+    </g>
+    <image x="288" y="48" width="264" height="504" href="/images/frontpage/go_map.webp"/>
+    <g filter="url(#share-hand)">
+      <rect x="288" y="48" width="264" height="504" rx="14"/>
+      <path d="M395 34h50"/>
+    </g>
+    <path d="M290 274c30 8 60 20 121 41s34 13 48 18" stroke="#fff" stroke-width="10"/>
+    <path d="M290 274c30 8 60 20 121 41s34 13 48 18" stroke="#b85e1e" stroke-width="6"/>
+    <path d="M459 333l54 -4a54 54 0 0 1 -14 38z" fill="#2f6fb0" fill-opacity=".3" stroke="none"/>
+    <circle cx="459" cy="333" r="11" fill="#2f6fb0" stroke="#fff" stroke-width="4"/>
+    <g filter="url(#share-hand)">
+      <circle cx="170" cy="170" r="105" fill="#fff" stroke-width="4.5"/>
+      <circle cx="170" cy="170" r="88" stroke-width="2"/>
+      <path d="M170 76v14M170 250v14M76 170h14M250 170h14"/>
+      <path d="M205 112l-20 66 -30 -16z" fill="#b85e1e"/>
+      <path d="M135 228l20 -66 30 16z" fill="#33502a"/>
+      <circle cx="170" cy="170" r="7" fill="#fff"/>
+      <path d="M262 450c70 -4 135 -30 176 -98M414 362l24 -10 2 26" stroke="#e08a3c"/>
+    </g>
+    <text x="170" y="64" font-family="Caveat, cursive" font-weight="700" font-size="30" text-anchor="middle" fill="#33502a" stroke="none" dy="54">N</text>
+    <g font-family="SUSE, system-ui, sans-serif" font-weight="600" stroke="none" font-size="24" fill="#b85e1e">
+      <text x="146" y="500" text-anchor="middle">#{gps_location}</text>
+    </g>
+    <g font-family="Caveat, cursive" font-weight="700" stroke="none" fill="#33502a" font-size="46">
+      <text x="170" y="326" text-anchor="middle">#{compass}</text>
+      <text x="146" y="466" text-anchor="middle">#{you_are_here}</text>
+    </g>
