@@ -239,6 +239,11 @@ describe "Feature directions" do
 
     it "adds a waypoint via context menu on the route line" do
       expect(page).to have_css(".maplibregl-canvas.cursor-crosshair")
+      # the crosshair comes with the draw mode, the route line only after the async plugin import
+      wait_for {
+        page.evaluate_script("!!window.map.getLayer('maplibre-gl-directions-routeline') && " \
+          "window.map.queryRenderedFeatures({ layers: ['maplibre-gl-directions-routeline'] }).length > 0")
+      }.to be true
       xy = viewport_xy_for_lat_lng(49.472, 11.0485)
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
