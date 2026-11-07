@@ -8,13 +8,14 @@ const EDGE = 13 // smallest distance to the page edge before the wobble, it fits
 const MIN_STEP = 20 // closer points make kinks, and identical points have no direction
 const CORNER_REACH = 45 // a sharp corner starts this far before its point
 const CORNER_COSINE = 0.7 // a turn of more than 45 degrees is a sharp corner
-const CHEVRON_SPACING = 280 // distance between the chevrons along the route
+const CHEVRON_SPACING = 280 // distance between the chevrons along the route, a multiple of DASH_PERIOD
 const CHEVRON_SIZE = 9 // length of a chevron arm
 const CHEVRON_PIN_DISTANCE = 26 // a closer chevron would stick out from behind the pin head
 const PIN_HEAD = 12 // the head of a pin sits this far above its tip
 const FLAG_POLE = 1 / 8 // left edge of the pole in the flag icon, as a share of the icon width
 const FLAG_FOOT = 1 / 16 // the route meets the pole this far above the icon bottom, as a share of the icon width
 const DASH = 11 // must match the first stroke-dasharray value of .landing-route path
+const DASH_PERIOD = 20 // must match the sum of the stroke-dasharray values of .landing-route path
 
 export default class extends Controller {
   static targets = ['path', 'chevrons', 'start', 'headline', 'actions', 'hero', 'feature', 'showcase', 'stop', 'cta',
@@ -183,8 +184,10 @@ export default class extends Controller {
     const covered = ({ x, y }) => covers.some(({ left, right, top, bottom }) =>
       x > left - CHEVRON_SIZE && x < right + CHEVRON_SIZE && y > top - CHEVRON_SIZE && y < bottom + CHEVRON_SIZE)
     const marks = []
-    for (let distance = CHEVRON_SPACING / 2; distance < length; distance += CHEVRON_SPACING) {
-      while (distance < length && covered(route.getPointAtLength(distance))) { distance += CHEVRON_SIZE }
+    // The route ends with a full dash, so these distances all put the chevron tip on the end of a dash
+    const first = CHEVRON_SPACING / 2 + (length - CHEVRON_SPACING / 2) % DASH_PERIOD
+    for (let distance = first; distance < length; distance += CHEVRON_SPACING) {
+      while (distance < length && covered(route.getPointAtLength(distance))) { distance += DASH_PERIOD }
       if (distance >= length) { break }
       const { x, y } = route.getPointAtLength(distance)
       if (pins.some(pin => Math.hypot(pin.x - x, pin.y - PIN_HEAD - y) < CHEVRON_PIN_DISTANCE)) { continue }

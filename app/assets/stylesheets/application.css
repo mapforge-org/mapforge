@@ -78,13 +78,6 @@ html {
   background-color: var(--color-dark-moss-green);
 }
 
-/* Phones only: the map view has its own larger root scale in map.css */
-@media (pointer: coarse) and ((width < 640px) or (height < 410px)) {
-  html {
-    font-size: 100%;
-  }
-}
-
 /* the body background must cover the viewport, else the html background shows below short pages
    and below the map while it fades in */
 body {
