@@ -654,7 +654,7 @@ export function updateBuildingOpacity () {
   // isStyleLoaded() is false until all basemap tiles loaded, which is when sortLayers() runs
   if (!map?.style) return
 
-  const opacity = layers?.some(l => l.type === 'indoor' && l.levelControl) ? 0.3 : 0.5
+  const opacity = layers?.some(l => l.type === 'indoor' && l.show !== false && l.levels?.length) ? 0.3 : 0.5
   // basemaps name their building layers differently, e.g. 'building-3d' or 'wrGebaeude3D_nicht_oeffentlich'
   styleLayers().filter(l => l.type === 'fill-extrusion' &&
     !l.id.startsWith('polygon-layer-extrusion') && !l.id.startsWith('indoor-area-extrusion_')).forEach(l => {
