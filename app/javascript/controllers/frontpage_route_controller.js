@@ -12,7 +12,9 @@ const CHEVRON_SPACING = 280 // distance between the chevrons along the route
 const CHEVRON_SIZE = 9 // length of a chevron arm
 const CHEVRON_PIN_DISTANCE = 26 // a closer chevron would stick out from behind the pin head
 const PIN_HEAD = 12 // the head of a pin sits this far above its tip
-const FLAG_POLE = 7 // the pole of the flag icon stands left of the icon center
+const FLAG_POLE = 1 / 8 // left edge of the pole in the flag icon, as a share of the icon width
+const FLAG_FOOT = 1 / 16 // the route meets the pole this far above the icon bottom, as a share of the icon width
+const DASH = 11 // must match the first stroke-dasharray value of .landing-route path
 
 export default class extends Controller {
   static targets = ['path', 'chevrons', 'start', 'headline', 'actions', 'hero', 'feature', 'showcase', 'stop', 'cta',
@@ -52,8 +54,8 @@ export default class extends Controller {
     const share = showcase(this.showcaseTargets[0])
     const center = share[0].x
     const mobile = showcase(this.showcaseTargets[1], center)
-    const flag = tip(this.flagTarget)
-    const finish = { ...flag, x: flag.x - FLAG_POLE }
+    const flag = box(this.flagTarget)
+    const finish = { x: flag.left + flag.width * FLAG_POLE, y: flag.bottom - flag.width * FLAG_FOOT, pin: true }
     const aboveStats = box(this.statsTarget).top - 14
     const belowActions = box(this.actionsTarget).bottom + 16
     // In one column the page gutter replaces the gap next to the hero text
@@ -116,6 +118,8 @@ export default class extends Controller {
     ]
 
     this.pathTarget.setAttribute('d', this.smoothPath(this.addWobble(this.widenCorners(points)), maxX + WOBBLE))
+    // Without this the route can end in a gap of the dash pattern, short of the pole
+    this.pathTarget.setAttribute('stroke-dashoffset', DASH - this.pathTarget.getTotalLength())
     this.chevronsTarget.setAttribute('d', this.chevronPath(points.filter(point => point.pin)))
     const cardTop = box(this.ctaTarget).top
     this.lineTarget.setAttribute('y1', cardTop)

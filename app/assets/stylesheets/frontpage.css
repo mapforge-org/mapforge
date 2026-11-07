@@ -942,6 +942,17 @@ footer {
     font-size: 0.95rem;
   }
 
+  /* The button fills the card here, so the flag stands above it and the route comes in from the left.
+     position: relative keeps the z-index, the flag stays above the route. */
+  .landing-cta-action .landing-route-pin {
+    position: relative;
+    inset: auto;
+    display: block;
+    width: fit-content;
+    margin: 0 auto 0.5rem;
+    translate: none;
+  }
+
   .hero h1 {
     margin-bottom: 2rem;
   }

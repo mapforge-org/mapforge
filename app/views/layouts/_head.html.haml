@@ -6,6 +6,8 @@
   - # Only the map layout locks pinch zoom, the map canvas handles it itself.
   - zoom_lock = content_for?(:lock_zoom) ? ", maximum-scale=1.0, user-scalable=no" : ""
   %meta{ name: 'viewport', content: "width=device-width, height=device-height, initial-scale=1#{zoom_lock}" }
+  - # Chrome on Android only applies the OS font size with this opt-in, Firefox does it by default.
+  %meta{ name: 'text-scale', content: 'scale' }
   %meta{ name: 'view-transition', content: 'same-origin' }
 
   %meta{ name: 'turbo-prefetch', content: 'false' }
