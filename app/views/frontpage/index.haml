@@ -89,7 +89,7 @@
         - # The pin is a point in the 320x130 SVG drawing
         - [["import", _("Import your data"), _("Import from GeoJSON, GPX and KML/KMZ"), [118, 92]],
            ["draw", _("Draw and style"), _("Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more")],
-           ["routing", _("Routing with elevation profile"), _("Plan routes for walking, bicycle and car"), [212, 85]],
+           ["routing", _("Routing with elevation profile"), _("Plan routes for walking, bicycle and car"), [268, 73]],
            ["layers", _("Dynamic layers"), raw(_("Show live OpenStreetMap data with %{overpass_link}") % { overpass_link: overpass_link })],
            ["basemaps", _("Base maps"), _("Streets, Satellite, Topographic, Biking, Watercolor, 3D houses")],
            ["terrain", _("3D Terrain"), _("View your map with mountains and valleys")]].each do |art, title, text, pin|
@@ -97,7 +97,7 @@
             .landing-feature-art
               - # Raise v when a tile image changes: public/ files have no digest, browsers cache them for a month
               %img.landing-feature-photo{ class: "landing-feature-photo-#{art}", src: "/images/frontpage/features/#{art}.webp?v=2", alt: "", loading: 'lazy' }
-              %img{ src: "/images/frontpage/features/#{art}.svg?v=2", width: 320, height: 130, alt: "" }
+              %img{ src: "/images/frontpage/features/#{art}.svg?v=3", width: 320, height: 130, alt: "" }
               - if pin
                 %i.bi.bi-geo-alt-fill.landing-route-pin{ style: "--x: #{pin[0]}; --y: #{pin[1]}", data: { 'frontpage-route-target': "feature" } }
             %h3= title
@@ -167,10 +167,11 @@
 
   %svg.landing-route{ 'aria-hidden': "true" }
     %defs
-      - # The route is light on the dark card, the controller moves the color change to the card
-      %linearGradient#landing-route-line{ gradientUnits: "userSpaceOnUse", x1: 0, x2: 0, data: { 'frontpage-route-target': "line" } }
-        %stop{ offset: 0 }
-        %stop{ offset: 1 }
-    %path{ stroke: "url(#landing-route-line)", data: { 'frontpage-route-target': "path" } }
+      %clipPath#landing-route-photo
+        %rect{ data: { 'frontpage-route-target': "photo" } }
+    %path{ data: { 'frontpage-route-target': "path" } }
     %path.landing-route-chevrons{ data: { 'frontpage-route-target': "chevrons" } }
+    %g.landing-route-light{ 'clip-path': "url(#landing-route-photo)" }
+      %path{ data: { 'frontpage-route-target': "lightRoute" } }
+      %path.landing-route-chevrons{ data: { 'frontpage-route-target': "lightChevrons" } }
     %circle{ r: 6, data: { 'frontpage-route-target': "start" } }

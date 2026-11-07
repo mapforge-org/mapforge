@@ -537,16 +537,9 @@ section,
   pointer-events: none;
 }
 
-.landing-route stop:first-child {
-  stop-color: var(--color-mid-brown);
-}
-
-.landing-route stop:last-child {
-  stop-color: var(--color-mid-fawn);
-}
-
 .landing-route path {
   fill: none;
+  stroke: var(--color-mid-brown);
   stroke-dasharray: 11 9;
   stroke-linecap: round;
   stroke-width: 3.5;
@@ -556,6 +549,10 @@ section,
   stroke: var(--color-mid-rust);
   stroke-dasharray: none;
   stroke-linejoin: round;
+}
+
+.landing-route .landing-route-light path {
+  stroke: var(--color-mid-fawn);
 }
 
 .landing-route circle {

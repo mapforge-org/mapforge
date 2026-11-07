@@ -9,7 +9,7 @@
         %i.bi.bi-arrow-right
     .landing-gallery
       - @featured_maps.each do |map|
-        = link_to map_path(id: map.public_id, name: map.name), class: 'landing-map-card' do
+        = link_to map_path(id: map.public_id, name: map.name), class: 'landing-map-card', data: { 'frontpage-route-target': "tile" } do
           %img{ src: map.screenshot, alt: _("Map '%{name}'") % { name: map.name }, loading: 'lazy' }
           .landing-map-card-text
             %strong= map.name

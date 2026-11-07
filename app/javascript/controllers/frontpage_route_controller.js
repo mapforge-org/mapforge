@@ -18,7 +18,7 @@ const DASH = 11 // must match the first stroke-dasharray value of .landing-route
 
 export default class extends Controller {
   static targets = ['path', 'chevrons', 'start', 'headline', 'actions', 'hero', 'feature', 'showcase', 'stop', 'cta',
-    'flag', 'stats', 'grid', 'line']
+    'flag', 'stats', 'grid', 'tile', 'photo', 'lightRoute', 'lightChevrons']
 
   connect () {
     this.redraw = () => this.draw()
@@ -92,6 +92,9 @@ export default class extends Controller {
         ]
       : [...fromHeadline, { x: side, y: belowActions }]
 
+    // The route runs in the 1rem gap between the image and the text
+    const belowDrawImage = box(this.gridTarget.children[1].querySelector('.landing-feature-art')).bottom + 8
+
     const features = cards[2].top === cards[0].top
       ? [
           { x: leftGutter, y: aboveStats },
@@ -99,10 +102,10 @@ export default class extends Controller {
           ...bends(cards[0], [-0.03, 0.27], [0.18, 0.33]),
           importData,
           ...bends(cards[0], [0.62, 0.4], [0.91, 0.33]),
-          ...bends(cards[1], [0.05, 0.2], [0.3, 0.1], [0.6, 0.02], [0.87, 0.1]),
+          ...[-0.03, 0.5, 1.03].map(share => ({ x: cards[1].left + cards[1].width * share, y: belowDrawImage })),
           ...bends(cards[2], [0.12, 0.24], [0.42, 0.37]),
           routing,
-          ...bends(cards[2], [0.78, 0.42]),
+          ...bends(cards[2], [0.92, 0.42]),
           { x: rightGutter, y: cards[2].top + cards[2].height * 0.55 },
           { x: rightGutter, y: grid.bottom + 30 }
         ]
@@ -120,10 +123,14 @@ export default class extends Controller {
     this.pathTarget.setAttribute('d', this.smoothPath(this.addWobble(this.widenCorners(points)), maxX + WOBBLE))
     // Without this the route can end in a gap of the dash pattern, short of the pole
     this.pathTarget.setAttribute('stroke-dashoffset', DASH - this.pathTarget.getTotalLength())
-    this.chevronsTarget.setAttribute('d', this.chevronPath(points.filter(point => point.pin)))
-    const cardTop = box(this.ctaTarget).top
-    this.lineTarget.setAttribute('y1', cardTop)
-    this.lineTarget.setAttribute('y2', cardTop + 1)
+    const covers = [box(this.statsTarget), ...this.tileTargets.map(box)]
+    this.chevronsTarget.setAttribute('d', this.chevronPath(points.filter(point => point.pin), covers))
+    // The brown route has too little contrast on the satellite image, a light copy covers it there
+    const { x, y, width, height } = box(this.featureTargets[1].parentElement)
+    Object.entries({ x, y, width, height }).forEach(([name, value]) => this.photoTarget.setAttribute(name, value))
+    this.lightRouteTarget.setAttribute('d', this.pathTarget.getAttribute('d'))
+    this.lightRouteTarget.setAttribute('stroke-dashoffset', this.pathTarget.getAttribute('stroke-dashoffset'))
+    this.lightChevronsTarget.setAttribute('d', this.chevronsTarget.getAttribute('d'))
     this.startTarget.setAttribute('cx', start.x)
     this.startTarget.setAttribute('cy', start.y)
   }
@@ -169,11 +176,16 @@ export default class extends Controller {
     return [{ x: gutter, y: top }, { x: left, y: top }, { x: left, y: finish.y }, finish]
   }
 
-  chevronPath (pins) {
+  // The route passes behind the covers, so a chevron moves on along the route until it is clear of them
+  chevronPath (pins, covers) {
     const route = this.pathTarget
     const length = route.getTotalLength()
+    const covered = ({ x, y }) => covers.some(({ left, right, top, bottom }) =>
+      x > left - CHEVRON_SIZE && x < right + CHEVRON_SIZE && y > top - CHEVRON_SIZE && y < bottom + CHEVRON_SIZE)
     const marks = []
     for (let distance = CHEVRON_SPACING / 2; distance < length; distance += CHEVRON_SPACING) {
+      while (distance < length && covered(route.getPointAtLength(distance))) { distance += CHEVRON_SIZE }
+      if (distance >= length) { break }
       const { x, y } = route.getPointAtLength(distance)
       if (pins.some(pin => Math.hypot(pin.x - x, pin.y - PIN_HEAD - y) < CHEVRON_PIN_DISTANCE)) { continue }
       const before = route.getPointAtLength(distance - 4)
@@ -191,12 +203,15 @@ export default class extends Controller {
   stackedFeatures (leftGutter, belowActions, grid, cards, importData, routing) {
     const gap = cards[0].right + 7
     const gapBelow = cards[2].right + 7
+    // The pin stands close to the gap, so the route leaves the gap and returns to it in a half circle around the pin
+    const radius = gapBelow - routing.x
+    const arc = (side) => ({ x: routing.x + radius * 0.3, y: routing.y + side * radius * 0.7 })
     return [
       { x: leftGutter, y: belowActions }, { x: leftGutter, y: grid.top - 20 }, { x: importData.x, y: grid.top - 20 },
       importData,
-      { x: gap, y: importData.y }, { x: gap, y: cards[2].top + 10 },
-      routing,
-      { x: gapBelow, y: routing.y }, { x: gapBelow, y: grid.bottom + 30 }
+      { x: gap, y: importData.y }, { x: gap, y: cards[2].top + 10 }, { x: gap, y: routing.y - radius },
+      arc(-1), routing, arc(1),
+      { x: gapBelow, y: routing.y + radius }, { x: gapBelow, y: grid.bottom + 30 }
     ]
   }
 
