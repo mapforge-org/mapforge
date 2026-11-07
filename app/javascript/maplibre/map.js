@@ -487,7 +487,6 @@ export function reloadMapProperties () {
       window.gon.map_properties = data.properties
       window.gon.map_updated_at = data.updated_at
     })
-    .catch(error => { console.error('Failed to fetch map properties', error) })
 }
 
 export function initializeStaticMode () {
