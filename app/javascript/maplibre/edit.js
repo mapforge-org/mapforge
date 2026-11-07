@@ -170,7 +170,7 @@ export async function initializeEditMode () {
       event.preventDefault()
       redo()
     }
-  })
+  }, { signal: keyListeners.signal })
 }
 
 function buildModes (drawModes, PaintMode) {
@@ -349,8 +349,13 @@ function patchTouchClick () {
   })
 }
 
+// The document outlives the map, so a new map drops the key listener of the previous one
+let keyListeners = new AbortController()
+
 export function resetEditMode() {
   draw = null
+  keyListeners.abort()
+  keyListeners = new AbortController()
 }
 
 // draw.changeMode() does not fire 'draw.modechange' itself

@@ -1,5 +1,5 @@
 import { resetControls } from 'maplibre/controls/shared'
-import { resetEditControls } from 'maplibre/controls/edit'
+import { resetEditControls, shortcutSignal } from 'maplibre/controls/edit'
 import { resetHighlightedFeature } from 'maplibre/feature'
 import { changeMode, toggleDrawMode } from 'maplibre/edit'
 import { routingEnabled } from 'maplibre/routing/openrouteservice'
@@ -62,7 +62,7 @@ function addLineButton() {
     // skip key event when typing in input field
     if (dom.isInputElement(e.target)) return
     if (e.key === 'l') { toggleDrawMode('draw_line_string') }
-  })
+  }, { signal: shortcutSignal() })
   lineMenu.appendChild(lineButton)
 }
 
@@ -84,7 +84,7 @@ function addPaintButton() {
     // skip key event when typing in input field
     if (dom.isInputElement(e.target)) return
     if (e.key === 'f') { toggleDrawMode('draw_paint_mode') }
-  })
+  }, { signal: shortcutSignal() })
   lineMenu.appendChild(paintButton)
 }
 
@@ -106,7 +106,7 @@ function addRoadButton() {
     // skip key event when typing in input field
     if (dom.isInputElement(e.target)) return
     if (e.key === 'r') { toggleDrawMode('directions_car') }
-  })
+  }, { signal: shortcutSignal() })
   lineMenu.appendChild(roadButton)
 }
 
@@ -126,7 +126,7 @@ function addBicycleButton() {
     // skip key event when typing in input field
     if (dom.isInputElement(e.target)) return
     if (e.key === 'b') { toggleDrawMode('directions_bike') }
-  })
+  }, { signal: shortcutSignal() })
   lineMenu.appendChild(bicycleButton)
 }
 
@@ -146,6 +146,6 @@ function addFootButton() {
     // skip key event when typing in input field
     if (dom.isInputElement(e.target)) return
     if (e.key === 'w') { toggleDrawMode('directions_foot') }
-  })
+  }, { signal: shortcutSignal() })
   lineMenu.appendChild(footButton)
 }

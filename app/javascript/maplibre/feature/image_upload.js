@@ -2,6 +2,10 @@ import * as dom from 'helpers/dom'
 import { status } from 'helpers/status'
 
 export async function uploadImage(image) {
+  if (image.size > 15 * 1024 * 1024) {
+    status(window.__('Image exceeds 15MB'), 'error')
+    throw new Error('Image exceeds 15MB')
+  }
   const formData = new FormData() // send using multipart/form-data
   formData.append('image', image)
   formData.append('map_id', window.gon.map_id)

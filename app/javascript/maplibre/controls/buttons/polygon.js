@@ -1,5 +1,6 @@
 import { toggleDrawMode } from 'maplibre/edit'
 import * as dom from 'helpers/dom'
+import { shortcutSignal } from 'maplibre/controls/edit'
 
 export class PolygonControl {
   constructor(_options) {
@@ -10,7 +11,7 @@ export class PolygonControl {
       // skip key event when typing in input field
       if (dom.isInputElement(e.target)) return
       if (e.key === 'o') { toggleDrawMode('draw_polygon') }
-    })
+    }, { signal: shortcutSignal() })
   }
 
   onAdd(map) {

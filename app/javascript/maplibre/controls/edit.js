@@ -10,6 +10,10 @@ import { map } from 'maplibre/map'
 import { resetDirections } from 'maplibre/routing/directions'
 
 let editControls = []
+// The draw buttons listen on document for their shortcut keys. A new set of controls, on each
+// map visit and each switch to edit mode, drops the listeners of the previous set.
+let shortcuts = new AbortController()
+export const shortcutSignal = () => shortcuts.signal
 
 export function resetEditControls () {
   resetDirections()
@@ -17,6 +21,8 @@ export function resetEditControls () {
 }
 
 export function initializeEditControls () {
+  shortcuts.abort()
+  shortcuts = new AbortController()
 
   const selectGroup = new ControlGroup([new MapSelectControl()])
   map.addControl(selectGroup, 'top-left')
@@ -60,6 +66,7 @@ export function initializeEditControls () {
 }
 
 export function removeEditControls () {
+  shortcuts.abort()
   editControls.forEach(control => { map.removeControl(control) })
   editControls = []
 }
