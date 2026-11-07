@@ -6,8 +6,8 @@ import {
   initializeMaplibreProperties,
   loadedMapUpdatedAt,
   map,
-  mapProperties,
   reloadMapProperties,
+  removeGeoJSONSource,
   setBackgroundMapLayer,
   setLayerVisibility,
   setLoadedMapUpdatedAt,
@@ -186,10 +186,10 @@ export function initializeSocket () {
         case 'delete_layer':
           const delIndex = layers.findIndex(l => l.id === data.layer.id)
           if (delIndex > -1) {
-            layers[delIndex].cleanup()
+            const delLayer = layers[delIndex]
+            delLayer.cleanup()
             layers.splice(delIndex, 1)
-            // trigger a full map redraw
-            setBackgroundMapLayer(mapProperties.base_map, true)
+            removeGeoJSONSource(delLayer.sourceId)
             initLayersModal()
           }
           break

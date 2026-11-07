@@ -3,7 +3,7 @@ import { draw } from 'maplibre/edit'
 import { highlightFeature, resetHighlightedFeature } from 'maplibre/feature'
 import { Layer, selectableFeaturesNear } from 'maplibre/layers/layer'
 import { extractTheme, fetchNearestRoute, fetchRouteDetails } from 'maplibre/layers/raster/waymarkedtrails'
-import { addGeoJSONSource, addLayer, map, removeStyleLayers } from 'maplibre/map'
+import { addGeoJSONSource, addLayer, map, removeGeoJSONSource, removeStyleLayers } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
 
 export class RasterLayer extends Layer {
@@ -55,6 +55,11 @@ export class RasterLayer extends Layer {
         addGeoJSONSource(geojsonSourceId, false)
       }
     }
+  }
+
+  cleanup() {
+    super.cleanup()
+    if (this.isWaymarkedtrails) { removeGeoJSONSource(this.sourceId + '-features') }
   }
 
   initialize() {
