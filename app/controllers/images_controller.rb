@@ -50,6 +50,7 @@ class ImagesController < ApplicationController
   def upload
     uploaded_file = params.require(:image)
     tempfile = uploaded_file.tempfile
+    return head :content_too_large if tempfile.size > 15.megabytes
     # Avoid duplicate files by identifying uploaded files by <name>-<size>.
     # Stored as WebP, except GIFs: the WebP encoder keeps only the first frame of an animation.
     gif = File.binread(tempfile.path, 4) == "GIF8"

@@ -452,10 +452,6 @@ export default class extends Controller {
   async updateMarkerImage () {
     const feature = this.getEditFeature()
     const image = document.querySelector('#marker-image').files[0]
-    if (image.size > 15 * 1024 * 1024) {
-      status(window.__('Image exceeds 15MB'), 'error')
-      return
-    }
     const imageLocation = await confirmImageLocation(image)
 
     uploadImageToFeature(image, feature)
@@ -524,10 +520,6 @@ export default class extends Controller {
   async updateFillImage () {
     const feature = this.getEditFeature()
     const image = document.querySelector('#fill-image').files[0]
-    if (image.size > 15 * 1024 * 1024) {
-      status(window.__('Image exceeds 15MB'), 'error')
-      return
-    }
     // the full image, not the 150px icon with its round white border
     const data = await uploadImage(image)
     feature.properties['fill-image-url'] = data.image
