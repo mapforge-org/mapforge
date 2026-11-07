@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { sendMessage } from 'channels/map_channel'
-import { copyToClipboard } from 'helpers/clipboard'
+import { copyToClipboard, setCopiedFeature } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { loadMarkdownEditor, markdownEditor } from 'helpers/markdown'
@@ -378,17 +378,17 @@ export default class extends Controller {
     })
   }
 
-  async copy(event) {
+  copy(event) {
     if (dom.isInputElement(document.activeElement)) { return }
     if (!highlightedFeatureId) { return }
 
     const feature = this.getSelectedFeature()
     if (feature) {
-      await navigator.clipboard.writeText(JSON.stringify(feature))
       event.preventDefault()
       event.stopPropagation()
-      console.log("Copied feature to clipboard ", feature)
-      status(window.__('%{type} copied to clipboard').replace('%{type}', getFeatureTypeName(feature)))
+      setCopiedFeature(feature)
+      copyToClipboard(JSON.stringify(feature),
+        window.__('%{type} copied to clipboard').replace('%{type}', getFeatureTypeName(feature)))
     }
   }
 
