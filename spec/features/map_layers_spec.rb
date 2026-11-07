@@ -170,9 +170,10 @@ describe "Map layers" do
     end
   end
 
-  context "raster layer", :skip_console_errors do
-    let(:old_url) { "http://127.0.0.1/old/{z}/{x}/{y}.png" }
-    let(:new_url) { "http://127.0.0.1/new/{z}/{x}/{y}.png" }
+  context "raster layer" do
+    # a file the test server serves, so that no failed tile request outlives the test
+    let(:old_url) { "/logo/pwa/mapforge-logo-pwa-512.png?old={z}/{x}/{y}" }
+    let(:new_url) { "/logo/pwa/mapforge-logo-pwa-512.png?new={z}/{x}/{y}" }
     let(:map) { create(:map, name: "Layers test").tap { |m| m.layers << layer } }
     let(:layer) { create(:layer, type: "raster", name: "tiles", query: old_url) }
 
