@@ -307,14 +307,20 @@ function redoLayerDeleted(nextState) {
   }
 }
 
+// initialize() re-adds the style layers as visible, so a hidden layer gets its visibility after it.
+// Some layer types add style layers only when their data loads, so apply it again then.
+function applyLayerSettings(layer, state) {
+  layer.update(state)
+  const ready = layer.initialize()
+  setLayerVisibility(layer.sourceId, layer.show)
+  ready.then(() => { setLayerVisibility(layer.sourceId, layer.show); sortLayers(); initLayersModal() })
+}
+
 function undoLayerUpdated(prevState) {
   const layer = layers.find(l => l.id === prevState.state.id)
   if (layer) {
     addRedoState(prevState.type, layerSettings(layer))
-    // Update layer properties using the layer's update method
-    layer.update(prevState.state)
-    setLayerVisibility(layer.sourceId, layer.show)
-    layer.initialize().then(() => { sortLayers(); initLayersModal() })
+    applyLayerSettings(layer, prevState.state)
     sendMessage('update_layer', prevState.state)
   } else {
     console.warn('Layer with id ' + prevState.state.id + ' not found')
@@ -325,10 +331,7 @@ function redoLayerUpdated(nextState) {
   const layer = layers.find(l => l.id === nextState.state.id)
   if (layer) {
     addUndoState(nextState.type, layerSettings(layer), false)
-    // Update layer properties using the layer's update method
-    layer.update(nextState.state)
-    setLayerVisibility(layer.sourceId, layer.show)
-    layer.initialize().then(() => { sortLayers(); initLayersModal() })
+    applyLayerSettings(layer, nextState.state)
     sendMessage('update_layer', nextState.state)
   } else {
     console.warn('Layer with id ' + nextState.state.id + ' not found')

@@ -76,6 +76,22 @@ describe "Map Undo/Redo" do
   end
 
   context "layer operations" do
+    it "keeps a layer hidden after undo and redo of hiding it" do
+      layer_id = map.layers.first.id
+      expect_layer_visibility(layer_id, true)
+      find(".maplibregl-ctrl-layers").click
+      find("button.layer-visibility").click
+      wait_for { map.layers.first.reload.show }.to be false
+
+      find("button.maplibregl-ctrl-undo").click
+      wait_for { map.layers.first.reload.show }.to be true
+      expect_layer_visibility(layer_id, true)
+
+      find("button.maplibregl-ctrl-redo").click
+      wait_for { map.layers.first.reload.show }.to be false
+      expect_layer_visibility(layer_id, false)
+    end
+
     it "can undo adding a layer" do
       initial_layer_count = map.layers.count
 
