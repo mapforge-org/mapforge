@@ -7,7 +7,7 @@ import { featureLabel, resetHighlightedFeature } from 'maplibre/feature'
 import { createLayerInstance } from 'maplibre/layers/factory'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { hasRouteExtras } from 'maplibre/layers/geojson/route_extras'
-import { map, setLoadedMapUpdatedAt, sortLayers } from 'maplibre/map'
+import { map, removeGeoJSONSource, removeStyleLayers, setLayerVisibility, setLoadedMapUpdatedAt, sortLayers } from 'maplibre/map'
 
 export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLayer, BasemapLayer
 let activeLayerId = null // geojson layer that receives new features, per browser session
@@ -190,6 +190,28 @@ export async function initializeLayerStyles(id = null) {
     sortLayers()
     if (hasLiveLayers) { setLayerLoading(false, results.some(result => result === false)) }
   })
+}
+
+// Takes a layer off the map and out of the list: on delete, on its undo or redo, and on a remote delete
+export function removeLayer(layer) {
+  layer.cleanup()
+  layers.splice(layers.indexOf(layer), 1)
+  removeGeoJSONSource(layer.sourceId)
+}
+
+// Puts the show setting of a layer on the map, with rebuild after a change of its settings.
+// initialize() re-adds the style layers as visible, so a hidden layer is never initialized, and
+// overpass and wikipedia would fetch their data for nothing. A hidden layer drops its outdated
+// style layers instead, and its next show rebuilds them (see toggleLayerVisibility).
+export async function applyLayerVisibility(layer, rebuild = true) {
+  if (layer.show === false) {
+    if (rebuild) { removeStyleLayers(layer.sourceId) }
+    setLayerVisibility(layer.sourceId, false)
+    return
+  }
+  if (rebuild) { await initializeLayerStyles(layer.id) }
+  // some layer types add style layers only when their data loads, and a hide can come meanwhile
+  setLayerVisibility(layer.sourceId, layer.show !== false)
 }
 
 // keeps the reload frame open on failure so the user can retry. Success leaves it alone,

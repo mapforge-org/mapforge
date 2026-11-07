@@ -62,6 +62,17 @@ export class RasterLayer extends Layer {
     if (this.isWaymarkedtrails) { removeGeoJSONSource(this.sourceId + '-features') }
   }
 
+  // The tile URL lives in the source, so a new URL needs a new source. Edit, undo, redo and
+  // remote updates all come through here.
+  update(data) {
+    if (data.query === undefined || data.query === this.layer.query) { super.update(data); return }
+    this.cleanup()
+    removeGeoJSONSource(this.sourceId)
+    super.update(data)
+    this.isWaymarkedtrails = this.query?.includes('waymarkedtrails.org')
+    this.createSource()
+  }
+
   initialize() {
     if (!this.query) { return Promise.resolve() }
 

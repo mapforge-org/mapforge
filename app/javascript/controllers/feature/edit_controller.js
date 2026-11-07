@@ -690,9 +690,16 @@ export default class extends Controller {
     sendMessage('update_feature', { ...feature })
   }
 
-  addUndo() {
-    const feature = this.getEditFeature()
-    addUndoState('Feature property update', feature)
+  // 'input' fires on every step of a slider drag, a color pick or a keystroke. One edit of a
+  // control is one undo step, which ends when the control fires 'change'.
+  addUndo(event) {
+    if (event?.type === 'input') {
+      const control = event.currentTarget
+      if (this.undoEdit?.control === control && this.undoEdit.featureId === this.featureIdValue) { return }
+      this.undoEdit = { control, featureId: this.featureIdValue }
+      control.addEventListener('change', () => { this.undoEdit = null }, { once: true })
+    }
+    addUndoState('Feature property update', this.getEditFeature())
   }
 
   getEditFeature () {

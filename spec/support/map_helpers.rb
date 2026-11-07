@@ -17,10 +17,11 @@ def expect_overpass_loaded
 end
 
 def layer_visibility(layer_id, type = 'geojson')
+  # a hidden layer can have no style layers at all, see applyLayerVisibility() in layers.js
   visible = page.evaluate_script(<<~JS)
-    map.getStyle().layers
-      .filter(l => l.source === '#{type}-source-#{layer_id}')
-      .every(l => map.getLayoutProperty(l.id, 'visibility') !== 'none')
+    (styleLayers => styleLayers.length > 0 &&
+      styleLayers.every(l => map.getLayoutProperty(l.id, 'visibility') !== 'none'))(
+      map.getStyle().layers.filter(l => l.source === '#{type}-source-#{layer_id}'))
   JS
   visible
 end

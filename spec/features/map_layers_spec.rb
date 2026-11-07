@@ -169,4 +169,30 @@ describe "Map layers" do
       wait_for { Layer.find(layer.id) }.to be_nil
     end
   end
+
+  context "raster layer", :skip_console_errors do
+    let(:old_url) { "http://127.0.0.1/old/{z}/{x}/{y}.png" }
+    let(:new_url) { "http://127.0.0.1/new/{z}/{x}/{y}.png" }
+    let(:map) { create(:map, name: "Layers test").tap { |m| m.layers << layer } }
+    let(:layer) { create(:layer, type: "raster", name: "tiles", query: old_url) }
+
+    def source_url
+      page.evaluate_script("map.getSource('raster-source-#{layer.id}')?.tiles?.[0]")
+    end
+
+    it "loads the old tiles again on undo of a url change" do
+      wait_for { source_url }.to eq(old_url)
+      find(".maplibregl-ctrl-layers").click
+      open_layer_menu(layer.id)
+      find(".layer-edit").click
+      find(".raster-url").set(new_url)
+      within(".raster-edit") { click_button "Update Layer" }
+      wait_for { source_url }.to eq(new_url)
+      wait_for { layer.reload.query }.to eq(new_url)
+
+      find("button.maplibregl-ctrl-undo").click
+      wait_for { source_url }.to eq(old_url)
+      wait_for { layer.reload.query }.to eq(old_url)
+    end
+  end
 end

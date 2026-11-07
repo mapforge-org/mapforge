@@ -9,10 +9,10 @@ import { updateElevation } from 'maplibre/routing/openrouteservice'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { importFile } from 'maplibre/import/kml'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { activeLayer, getFeature, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, renderLayer, setActiveLayer, setLayerLoading, upsert } from 'maplibre/layers/layers'
+import { activeLayer, applyLayerVisibility, getFeature, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, removeLayer, renderLayer, setActiveLayer, setLayerLoading, upsert } from 'maplibre/layers/layers'
 import { overpassClusterSettings } from 'maplibre/layers/overpass/overpass'
 import { queries } from 'maplibre/layers/overpass/queries'
-import { map, mapProperties, removeGeoJSONSource, setLayerVisibility, sortLayers, updateMapName } from 'maplibre/map'
+import { map, mapProperties, sortLayers, updateMapName } from 'maplibre/map'
 import { addUndoState, layerPlacement, layerSettings } from 'maplibre/undo'
 
 // Browsers report an empty file.type for these when the platform mime database
@@ -242,14 +242,10 @@ export default class extends Controller {
     const layer = layers.find(f => f.id === layerId)
     addUndoState('Layer updated', layerSettings(layer))
 
-    layer.query = layerElement.querySelector('.raster-url').value
-    layer.name = layerElement.querySelector('.raster-name').value
+    layer.update({ query: layerElement.querySelector('.raster-url').value, name: layerElement.querySelector('.raster-name').value })
     event.target.closest('.layer-item').querySelector('.layer-name').textContent = layer.name
     sendMessage('update_layer', layer.toJSON())
-
-    removeGeoJSONSource(layer.sourceId)
-    initializeLayerSources(layerId)
-    initializeLayerStyles(layerId).then(() => { initLayersModal() })
+    applyLayerVisibility(layer).then(initLayersModal)
   }
 
   renameLayer (event) {
@@ -323,7 +319,6 @@ export default class extends Controller {
     if (window.gon.map_mode === "rw") { addUndoState('Layer updated', layerSettings(layer)) }
 
     layer.show = !wasVisible
-    setLayerVisibility(layer.sourceId, layer.show)
 
     const visBtn = layerElement.querySelector('button.layer-visibility')
     const icon = visBtn.querySelector('i')
@@ -369,8 +364,9 @@ export default class extends Controller {
 
     // when showing: initialize styles (and load data for overpass/wikipedia if needed).
     // A geojson layer keeps its style layers and data while hidden, so a full rebuild is only
-    // needed when they don't exist yet (hidden at page load, or replaced by setStyle).
-    if (layer.show && (layer.type !== 'geojson' || !layer.getStyleLayerIds().length)) { initializeLayerStyles(layerId) }
+    // needed when they don't exist yet (hidden at page load, replaced by setStyle, or dropped by
+    // a settings change while hidden, see applyLayerVisibility).
+    applyLayerVisibility(layer, layer.show && (layer.type !== 'geojson' || !layer.getStyleLayerIds().length))
     sendMessage('update_layer', layer.toJSON())
 
     if (window.gon.map_mode === 'rw' && layer.type === 'geojson') {
@@ -483,9 +479,7 @@ export default class extends Controller {
     const layer = layers.find(f => f.id === layerId)
 
     addUndoState('Layer deleted', { ...layer.toJSON(), geojson: layer.geojson }, true, layerPlacement(layer))
-    layer.cleanup()
-    layers.splice(layers.indexOf(layer), 1)
-    removeGeoJSONSource(layer.sourceId)
+    removeLayer(layer)
     sendMessage('delete_layer', layer.toJSON())
     initLayersModal()
   }

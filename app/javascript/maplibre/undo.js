@@ -3,8 +3,7 @@ import { status } from 'helpers/status'
 import { select, selectedRoute } from 'maplibre/edit'
 import { getFeatureTypeName } from 'maplibre/feature'
 import { showFeatureDetails } from 'maplibre/feature/details'
-import { addFeature, destroyFeature, getFeature, getLayer, layers, renderLayers } from 'maplibre/layers/layers'
-import { removeGeoJSONSource, setLayerVisibility, sortLayers } from 'maplibre/map'
+import { addFeature, applyLayerVisibility, destroyFeature, getFeature, getLayer, layers, removeLayer, renderLayers } from 'maplibre/layers/layers'
 import { resetDirections } from 'maplibre/routing/directions'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { createLayerInstance } from 'maplibre/layers/factory'
@@ -72,57 +71,40 @@ function typeLabel(entry) {
   return label.replace('%{type}', getFeatureTypeName(entry.state))
 }
 
-const undoHandlers = {
-  'Feature update': undoFeatureUpdate,
-  'Feature property update': undoFeatureUpdate,
-  'Feature added': undoFeatureAdded,
-  'Feature deleted': undoFeatureDelete,
-  'Track added': undoTrackAdded,
-  'Track update': undoFeatureUpdate,
-  'Layer added': undoLayerAdded,
-  'Layer deleted': undoLayerDeleted,
-  'Layer updated': undoLayerUpdated
-}
-
-const redoHandlers = {
-  'Feature update': redoFeatureUpdate,
-  'Feature property update': redoFeatureUpdate,
-  'Feature added': redoFeatureAdded,
-  'Feature deleted': redoFeatureDelete,
-  'Track added': redoFeatureAdded,
-  'Track update': redoFeatureUpdate,
-  'Layer added': redoLayerAdded,
-  'Layer deleted': redoLayerDeleted,
-  'Layer updated': redoLayerUpdated
+// Each entry type names the operation that undoes it and the one that redoes it. An operation
+// puts the state it replaces on the other stack with push(type, state, meta), and returns false
+// when it cannot run, which keeps the entry on its stack.
+const handlers = {
+  'Feature update': [swapFeature, swapFeature],
+  'Feature property update': [swapFeature, swapFeature],
+  'Feature added': [removeFeatureEntry, restoreFeature],
+  'Feature deleted': [restoreFeature, removeFeatureEntry],
+  'Track added': [removeTrack, restoreFeature],
+  'Track update': [swapFeature, swapFeature],
+  'Layer added': [dropLayer, restoreLayerEntry],
+  'Layer deleted': [restoreLayerEntry, dropLayer],
+  'Layer updated': [swapLayer, swapLayer]
 }
 
 export function undo() {
-  // console.log('Undo from stack', undoStack)
-  if (undoStack.length === 0) { console.warn('Undo stack empty'); return }
-  const prevState = undoStack.pop()
-  // console.log('Undo state: ' + JSON.stringify(prevState))
-  const handler = undoHandlers[prevState.type]
-  if (!handler) { console.warn('Cannot undo ', prevState); return }
-  if (handler(prevState) === false) { undoStack.push(prevState); return }
-  status(window.__('Undone: %{type}').replace('%{type}', typeLabel(prevState)))
-  renderLayers('geojson', true)
-  keepSelection()
-  if (undoStack.length === 0) { hideUndoButton() }
-  updateTooltips()
+  step(undoStack, 0, addRedoState, window.__('Undone: %{type}'), hideUndoButton)
 }
 
 export function redo() {
-  // console.log('Redo from stack', redoStack)
-  if (redoStack.length === 0) { console.warn('Redo stack empty'); return }
-  const nextState = redoStack.pop()
-  // console.log('Next state: ' + JSON.stringify(nextState))
-  const handler = redoHandlers[nextState.type]
-  if (!handler) { console.warn('Cannot redo ', nextState); return }
-  if (handler(nextState) === false) { redoStack.push(nextState); return }
-  status(window.__('Redone: %{type}').replace('%{type}', typeLabel(nextState)))
+  const push = (type, state, meta) => addUndoState(type, state, false, meta)
+  step(redoStack, 1, push, window.__('Redone: %{type}'), hideRedoButton)
+}
+
+function step(stack, direction, push, message, hideButton) {
+  if (stack.length === 0) { console.warn('Undo/redo stack empty'); return }
+  const entry = stack.pop()
+  const handler = handlers[entry.type]?.[direction]
+  if (!handler) { console.warn('Cannot undo/redo ', entry); return }
+  if (handler(entry, push) === false) { stack.push(entry); return }
+  status(message.replace('%{type}', typeLabel(entry)))
   renderLayers('geojson', true)
   keepSelection()
-  if (redoStack.length === 0) { hideRedoButton() }
+  if (stack.length === 0) { hideButton() }
   updateTooltips()
 }
 
@@ -134,28 +116,13 @@ function applyState(feature, state) {
   feature.properties = state.properties
 }
 
-function undoFeatureUpdate(prevState) {
-  const feature = getFeature(prevState.state.id, 'geojson')
-  if (feature) {
-    addRedoState(prevState.type, feature)
-    applyState(feature, prevState.state)
-    resetDirections()
-    sendMessage('update_feature', prevState.state)
-  } else {
-    console.warn('Feature with id ' + prevState.state.id + ' not found for undo')
-  }
-}
-
-function redoFeatureUpdate(nextState) {
-  const feature = getFeature(nextState.state.id, 'geojson')
-  if (feature) {
-    addUndoState(nextState.type, feature, false)
-    applyState(feature, nextState.state)
-    resetDirections()
-    sendMessage('update_feature', nextState.state)
-  } else {
-    console.warn('Feature with id ' + nextState.state.id + ' not found in geojsonData')
-  }
+function swapFeature(entry, push) {
+  const feature = getFeature(entry.state.id, 'geojson')
+  if (!feature) { console.warn('Feature with id ' + entry.state.id + ' not found'); return }
+  push(entry.type, feature)
+  applyState(feature, entry.state)
+  resetDirections()
+  sendMessage('update_feature', entry.state)
 }
 
 // A feature that comes back goes to its old layer, not to the active one
@@ -163,60 +130,24 @@ export function featurePlacement(featureId) {
   return { layerId: getLayer(featureId, 'geojson')?.id }
 }
 
-function undoFeatureDelete(prevState) {
-  let feature = getFeature(prevState.state.id, 'geojson')
-  if (!feature) {
-    addRedoState(prevState.type, prevState.state)
-    addFeature(prevState.state, prevState.layerId)
-    sendMessage('new_feature', prevState.state)
-  } else {
-    console.warn('Feature with id ' + prevState.state.id + ' still present in layer geojson')
-  }
+function restoreFeature(entry, push) {
+  if (getFeature(entry.state.id, 'geojson')) { console.warn('Feature with id ' + entry.state.id + ' still exists'); return }
+  push(entry.type, entry.state)
+  addFeature(entry.state, entry.layerId)
+  sendMessage('new_feature', entry.state)
 }
 
-function redoFeatureDelete(nextState) {
-  let feature = getFeature(nextState.state.id, 'geojson')
-  if (feature) {
-    addUndoState(nextState.type, feature, false, featurePlacement(feature.id))
-    destroyFeature(nextState.state.id)
-    sendMessage('delete_feature', { id: nextState.state.id })
-  } else {
-    console.warn('Feature with id ' + nextState.state.id + ' not found in layer geojson')
-  }
+function removeFeatureEntry(entry, push) {
+  const feature = getFeature(entry.state.id, 'geojson')
+  if (!feature) { console.warn('Feature with id ' + entry.state.id + ' not found'); return }
+  push(entry.type, feature, featurePlacement(feature.id))
+  destroyFeature(entry.state.id)
+  sendMessage('delete_feature', { id: entry.state.id })
 }
 
-function undoFeatureAdded(prevState) {
-  let feature = getFeature(prevState.state.id, 'geojson')
-  if (feature) {
-    addRedoState(prevState.type, feature, featurePlacement(feature.id))
-    destroyFeature(prevState.state.id)
-    sendMessage('delete_feature', { id: prevState.state.id })
-  } else {
-    console.warn('Feature with id ' + prevState.state.id + ' not found in layer geojson')
-  }
-}
-
-function redoFeatureAdded(nextState) {
-  let feature = getFeature(nextState.state.id, 'geojson')
-  if (!feature) {
-    addUndoState(nextState.type, nextState.state, false)
-    addFeature(nextState.state, nextState.layerId)
-    sendMessage('new_feature', nextState.state)
-  } else {
-    console.warn('Feature with id ' + nextState.state.id + ' still present in layer geojson')
-  }
-}
-
-function undoTrackAdded(prevState) {
-  let feature = getFeature(prevState.state.id, 'geojson')
-  if (feature) {
-    addRedoState(prevState.type, feature, featurePlacement(feature.id))
-    destroyFeature(prevState.state.id)
-    resetDirections()
-    sendMessage('delete_feature', { id: prevState.state.id })
-  } else {
-    console.warn('Feature with id ' + prevState.state.id + ' not found in layer geojson')
-  }
+function removeTrack(entry, push) {
+  removeFeatureEntry(entry, push)
+  resetDirections()
 }
 
 // Helper to get full layer data including geojson
@@ -256,86 +187,29 @@ function restoreLayer(entry) {
   sendMessage('new_layer', entry.first ? { ...entry.state, first: true } : entry.state)
 }
 
-// Layer operations
-function undoLayerAdded(prevState) {
-  const layer = layers.find(l => l.id === prevState.state.id)
-  if (layer) {
-    if (isLastGeojsonLayer(layer)) { return false }
-    addRedoState(prevState.type, getFullLayerData(layer), layerPlacement(layer))
-    layer.cleanup()
-    layers.splice(layers.indexOf(layer), 1)
-    removeGeoJSONSource(layer.sourceId)
-    sendMessage('delete_layer', layer.toJSON())
-    initLayersModal()
-  } else {
-    console.warn('Layer with id ' + prevState.state.id + ' not found')
-  }
+function restoreLayerEntry(entry, push) {
+  if (layers.some(l => l.id === entry.state.id)) { console.warn('Layer with id ' + entry.state.id + ' still exists'); return }
+  push(entry.type, entry.state)
+  restoreLayer(entry)
 }
 
-function redoLayerAdded(nextState) {
-  const layer = layers.find(l => l.id === nextState.state.id)
-  if (!layer) {
-    addUndoState(nextState.type, nextState.state, false)
-    restoreLayer(nextState)
-  } else {
-    console.warn('Layer with id ' + nextState.state.id + ' already exists')
-  }
+function dropLayer(entry, push) {
+  const layer = layers.find(l => l.id === entry.state.id)
+  if (!layer) { console.warn('Layer with id ' + entry.state.id + ' not found'); return }
+  if (isLastGeojsonLayer(layer)) { return false }
+  push(entry.type, getFullLayerData(layer), layerPlacement(layer))
+  removeLayer(layer)
+  sendMessage('delete_layer', layer.toJSON())
+  initLayersModal()
 }
 
-function undoLayerDeleted(prevState) {
-  const layer = layers.find(l => l.id === prevState.state.id)
-  if (!layer) {
-    addRedoState(prevState.type, prevState.state)
-    restoreLayer(prevState)
-  } else {
-    console.warn('Layer with id ' + prevState.state.id + ' still exists')
-  }
-}
-
-function redoLayerDeleted(nextState) {
-  const layer = layers.find(l => l.id === nextState.state.id)
-  if (layer) {
-    if (isLastGeojsonLayer(layer)) { return false }
-    addUndoState(nextState.type, getFullLayerData(layer), false, layerPlacement(layer))
-    layer.cleanup()
-    layers.splice(layers.indexOf(layer), 1)
-    removeGeoJSONSource(layer.sourceId)
-    sendMessage('delete_layer', layer.toJSON())
-    initLayersModal()
-  } else {
-    console.warn('Layer with id ' + nextState.state.id + ' not found')
-  }
-}
-
-// initialize() re-adds the style layers as visible, so a hidden layer gets its visibility after it.
-// Some layer types add style layers only when their data loads, so apply it again then.
-function applyLayerSettings(layer, state) {
-  layer.update(state)
-  const ready = layer.initialize()
-  setLayerVisibility(layer.sourceId, layer.show)
-  ready.then(() => { setLayerVisibility(layer.sourceId, layer.show); sortLayers(); initLayersModal() })
-}
-
-function undoLayerUpdated(prevState) {
-  const layer = layers.find(l => l.id === prevState.state.id)
-  if (layer) {
-    addRedoState(prevState.type, layerSettings(layer))
-    applyLayerSettings(layer, prevState.state)
-    sendMessage('update_layer', prevState.state)
-  } else {
-    console.warn('Layer with id ' + prevState.state.id + ' not found')
-  }
-}
-
-function redoLayerUpdated(nextState) {
-  const layer = layers.find(l => l.id === nextState.state.id)
-  if (layer) {
-    addUndoState(nextState.type, layerSettings(layer), false)
-    applyLayerSettings(layer, nextState.state)
-    sendMessage('update_layer', nextState.state)
-  } else {
-    console.warn('Layer with id ' + nextState.state.id + ' not found')
-  }
+function swapLayer(entry, push) {
+  const layer = layers.find(l => l.id === entry.state.id)
+  if (!layer) { console.warn('Layer with id ' + entry.state.id + ' not found'); return }
+  push(entry.type, layerSettings(layer))
+  layer.update(entry.state)
+  applyLayerVisibility(layer).then(initLayersModal)
+  sendMessage('update_layer', entry.state)
 }
 
 // keep feature selected

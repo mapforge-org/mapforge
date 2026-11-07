@@ -1,15 +1,13 @@
 import consumer from 'channels/consumer'
 import { initLayersModal } from 'maplibre/controls/shared'
 import { createLayerInstance } from 'maplibre/layers/factory'
-import { destroyFeature, getLayer, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, upsert } from 'maplibre/layers/layers'
+import { applyLayerVisibility, destroyFeature, getLayer, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, removeLayer, upsert } from 'maplibre/layers/layers'
 import {
   initializeMaplibreProperties,
   loadedMapUpdatedAt,
   map,
   reloadMapProperties,
-  removeGeoJSONSource,
   setBackgroundMapLayer,
-  setLayerVisibility,
   setLoadedMapUpdatedAt,
   updateMapName
 } from 'maplibre/map'
@@ -173,8 +171,7 @@ export function initializeSocket () {
               console.log('Layer updated on server, reloading layer styles', data.layer)
               layers[index].update(data.layer)
               layers[index].applyFeatureOrder(data.layer.feature_order)
-              initializeLayerStyles(data.layer.id).then(() => { initLayersModal() })
-              setLayerVisibility(layers[index].sourceId, data.layer.show !== false)
+              applyLayerVisibility(layers[index]).then(initLayersModal)
             }
           } else {
             const newLayer = createLayerInstance(data.layer)
@@ -186,10 +183,7 @@ export function initializeSocket () {
         case 'delete_layer':
           const delIndex = layers.findIndex(l => l.id === data.layer.id)
           if (delIndex > -1) {
-            const delLayer = layers[delIndex]
-            delLayer.cleanup()
-            layers.splice(delIndex, 1)
-            removeGeoJSONSource(delLayer.sourceId)
+            removeLayer(layers[delIndex])
             initLayersModal()
           }
           break
