@@ -40,7 +40,7 @@
       - # preload none: the file only loads when the visitor presses play
       %figure.landing-video{ data: { controller: "hero-video" } }
         .landing-video-frame
-          %video{ src: "/images/frontpage/demo.mp4", poster: "/images/frontpage/demo_poster.webp?v2", width: 700, height: 436,
+          %video{ src: "/images/frontpage/demo.mp4", poster: "/images/frontpage/demo_poster.webp?v3", width: 700, height: 436,
                   preload: "none", muted: true, playsinline: true, tabindex: 0,
                   'aria-label': _("Demo: a map with routes, photos and 3D buildings takes shape"),
                   data: { 'hero-video-target': "video",
@@ -48,7 +48,7 @@
           %button.landing-video-play{ type: "button", 'aria-label': _("Play video"),
                                       data: { 'hero-video-target': "overlay", action: "click->hero-video#toggle" } }
             %i.bi.bi-play-fill
-          %span.landing-video-length{ data: { 'hero-video-target': "overlay" } } 0:57
+          %span.landing-video-length{ data: { 'hero-video-target': "overlay" } } 0:58
 
   %section.landing-stats{ data: { 'frontpage-route-target': "stats" } }
     .landing-wrap
@@ -87,17 +87,19 @@
       .landing-features-grid{ data: { 'frontpage-route-target': "grid" } }
         - overpass_link = link_to 'Overpass', doc_path(id: 'overpass_layers')
         - # The pin is a point in the 320x130 SVG drawing
+        - # Phones skip the terrain tile, so the base maps text names the terrain there
         - [["import", _("Import your data"), _("Import from GeoJSON, GPX and KML/KMZ"), [118, 92]],
            ["draw", _("Draw and style"), _("Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more")],
            ["routing", _("Routing with elevation profile"), _("Plan routes for walking, bicycle and car"), [268, 73]],
            ["layers", _("Dynamic layers"), raw(_("Show live OpenStreetMap data with %{overpass_link}") % { overpass_link: overpass_link })],
-           ["basemaps", _("Base maps"), _("Streets, Satellite, Topographic, Biking, Watercolor, 3D houses")],
+           ["basemaps", _("Base maps"), safe_join([tag.span(_("Streets, Satellite, Topographic, Biking, Watercolor, 3D houses"), class: "d-none d-sm-inline"),
+                                                   tag.span(_("Streets, Satellite, Topographic, Biking, Watercolor, 3D terrain"), class: "d-sm-none")])],
            ["terrain", _("3D Terrain"), _("View your map with mountains and valleys")]].each do |art, title, text, pin|
-          %article.landing-feature
+          %article.landing-feature{ class: ("d-none d-sm-block" if art == "terrain") }
             .landing-feature-art
               - # Raise v when a tile image changes: public/ files have no digest, browsers cache them for a month
               %img.landing-feature-photo{ class: "landing-feature-photo-#{art}", src: "/images/frontpage/features/#{art}.webp?v=2", alt: "", loading: 'lazy' }
-              %img{ src: "/images/frontpage/features/#{art}.svg?v=3", width: 320, height: 130, alt: "" }
+              %img{ src: "/images/frontpage/features/#{art}.svg?v=4", width: 320, height: 130, alt: "" }
               - if pin
                 %i.bi.bi-geo-alt-fill.landing-route-pin{ style: "--x: #{pin[0]}; --y: #{pin[1]}", data: { 'frontpage-route-target': "feature" } }
             %h3= title
@@ -187,11 +189,12 @@
 
   %svg.landing-route{ 'aria-hidden': "true" }
     %defs
-      %clipPath#landing-route-photo
-        %rect{ data: { 'frontpage-route-target': "photo" } }
+      %clipPath#landing-route-accent
+        - 3.times do
+          %rect{ data: { 'frontpage-route-target': "accentArea" } }
     %path{ data: { 'frontpage-route-target': "path" } }
     %path.landing-route-chevrons{ data: { 'frontpage-route-target': "chevrons" } }
-    %g.landing-route-light{ 'clip-path': "url(#landing-route-photo)" }
-      %path{ data: { 'frontpage-route-target': "lightRoute" } }
-      %path.landing-route-chevrons{ data: { 'frontpage-route-target': "lightChevrons" } }
+    %g.landing-route-accent{ 'clip-path': "url(#landing-route-accent)" }
+      %path{ data: { 'frontpage-route-target': "accentRoute" } }
+      %path.landing-route-chevrons{ data: { 'frontpage-route-target': "accentChevrons" } }
     %circle{ r: 6, data: { 'frontpage-route-target': "start" } }

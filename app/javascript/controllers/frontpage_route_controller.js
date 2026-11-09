@@ -10,8 +10,8 @@ const CORNER_REACH = 45 // a sharp corner starts this far before its point
 const CORNER_COSINE = 0.7 // a turn of more than 45 degrees is a sharp corner
 const CHEVRON_SPACING = 280 // distance between the chevrons along the route, a multiple of DASH_PERIOD
 const CHEVRON_SIZE = 9 // length of a chevron arm
-const CHEVRON_PIN_DISTANCE = 26 // a closer chevron would stick out from behind the pin head
-const PIN_HEAD = 12 // the head of a pin sits this far above its tip
+const CHEVRON_PIN_DISTANCE = 32 // a closer chevron would stick out from behind the pin head
+const PIN_HEAD = 16 // the head of a pin sits this far above its tip
 const FLAG_POLE = 1 / 8 // left edge of the pole in the flag icon, as a share of the icon width
 const FLAG_FOOT = 1 / 16 // the route meets the pole this far above the icon bottom, as a share of the icon width
 const DASH = 11 // must match the first stroke-dasharray value of .landing-route path
@@ -19,7 +19,7 @@ const DASH_PERIOD = 20 // must match the sum of the stroke-dasharray values of .
 
 export default class extends Controller {
   static targets = ['path', 'chevrons', 'start', 'headline', 'actions', 'hero', 'feature', 'showcase', 'stop', 'cta',
-    'flag', 'stats', 'grid', 'tile', 'photo', 'lightRoute', 'lightChevrons']
+    'flag', 'stats', 'grid', 'tile', 'accentArea', 'accentRoute', 'accentChevrons']
 
   connect () {
     this.redraw = () => this.draw()
@@ -81,7 +81,7 @@ export default class extends Controller {
 
     const fromHeadline = [start, { x: side, y: start.y + 12 }]
     // Measured from the list and not the pin: the checks can wrap to a second line below the pin
-    const belowChecks = box(this.heroTargets[1].closest('ul')).bottom + 3
+    const belowChecks = box(this.heroTargets[1].closest('ul')).bottom + 14
     const underChecks = (share, drop) => ({ x: adFree.x + (side - 40 - adFree.x) * share, y: belowChecks + drop })
     const hero = this.heroTargets[1].offsetParent
       ? [
@@ -126,12 +126,19 @@ export default class extends Controller {
     this.pathTarget.setAttribute('stroke-dashoffset', DASH - this.pathTarget.getTotalLength())
     const covers = [box(this.statsTarget), ...this.tileTargets.map(box)]
     this.chevronsTarget.setAttribute('d', this.chevronPath(points.filter(point => point.pin), covers))
-    // The brown route has too little contrast on the satellite image, a light copy covers it there
-    const { x, y, width, height } = box(this.featureTargets[1].parentElement)
-    Object.entries({ x, y, width, height }).forEach(([name, value]) => this.photoTarget.setAttribute(name, value))
-    this.lightRouteTarget.setAttribute('d', this.pathTarget.getAttribute('d'))
-    this.lightRouteTarget.setAttribute('stroke-dashoffset', this.pathTarget.getAttribute('stroke-dashoffset'))
-    this.lightChevronsTarget.setAttribute('d', this.chevronsTarget.getAttribute('d'))
+    // The brown route has too little contrast on the dark green and on the satellite image,
+    // a copy in the accent color covers it there
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
+    const greenBelowStats = parseFloat(getComputedStyle(this.statsTarget).getPropertyValue('--landing-stats-green')) * rem
+    const heroTop = box(this.headlineTarget.closest('section')).top
+    const darkHero = new DOMRect(0, heroTop, origin.width, box(this.statsTarget).top + greenBelowStats - heroTop)
+    const areas = [darkHero, box(this.featureTargets[1].parentElement), box(this.ctaTarget)]
+    areas.forEach(({ x, y, width, height }, index) => {
+      Object.entries({ x, y, width, height }).forEach(([name, value]) => this.accentAreaTargets[index].setAttribute(name, value))
+    })
+    this.accentRouteTarget.setAttribute('d', this.pathTarget.getAttribute('d'))
+    this.accentRouteTarget.setAttribute('stroke-dashoffset', this.pathTarget.getAttribute('stroke-dashoffset'))
+    this.accentChevronsTarget.setAttribute('d', this.chevronsTarget.getAttribute('d'))
     this.startTarget.setAttribute('cx', start.x)
     this.startTarget.setAttribute('cy', start.y)
   }

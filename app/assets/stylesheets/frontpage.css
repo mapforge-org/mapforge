@@ -135,7 +135,7 @@ section,
 }
 
 .landing-hero {
-  padding: 6.5rem 0 2.5rem;
+  padding: 8rem 0 4rem;
   background-color: var(--color-dark-moss-green);
   color: var(--color-light-sand);
 }
@@ -150,7 +150,7 @@ section,
 .landing-hero-text {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.5rem;
   min-width: 0;
   container-type: inline-size;
 }
@@ -309,8 +309,8 @@ section,
 }
 
 .landing-checks .bi {
-  margin-right: 0.3rem;
-  color: var(--color-mid-fawn);
+  margin-right: 0.2rem;
+  font-size: 1.2em;
 }
 
 .landing-video {
@@ -394,9 +394,13 @@ section,
 }
 
 /* The hard color stop puts the card half over the hero */
+
+/* The route measures where the green ends, so it needs the stop as a variable */
 .landing-stats {
-  padding: 0 0 2.5rem;
-  background: linear-gradient(var(--color-dark-moss-green) 2.5rem, var(--color-light-sand) 0);
+  --landing-stats-green: 2.5rem;
+
+  padding: 0 0 3rem;
+  background: linear-gradient(var(--color-dark-moss-green) var(--landing-stats-green), var(--color-light-sand) 0);
 }
 
 /* The 1px gap shows the grid background as cell dividers, in every column count.
@@ -510,7 +514,7 @@ section,
   position: relative;
 }
 
-/* The white drawings need the shadow on the dark photos, a dark drawing would only blur */
+/* The shadow lifts the drawings off the dark photos */
 .landing-feature-photo-routing + img, .landing-feature-photo-terrain + img {
   filter: drop-shadow(0 1px 2px rgb(0 0 0 / 70%));
 }
@@ -546,13 +550,12 @@ section,
 }
 
 .landing-route .landing-route-chevrons {
-  stroke: var(--color-mid-rust);
   stroke-dasharray: none;
   stroke-linejoin: round;
 }
 
-.landing-route .landing-route-light path {
-  stroke: var(--color-mid-fawn);
+.landing-route .landing-route-accent path {
+  stroke: var(--color-mid-rust);
 }
 
 .landing-route circle {
@@ -562,14 +565,22 @@ section,
 .landing-route-pin {
   position: absolute;
   z-index: 2;
-  color: var(--color-mid-fawn);
-  font-size: 1.25rem;
+  font-size: 1.6rem;
   line-height: 1;
+}
+
+/* No single color has enough contrast on the dark green and on the light backgrounds,
+   so the pins combine the rust with a light outline */
+.landing-route-pin, .landing-checks .bi {
+  color: var(--color-mid-rust);
+  -webkit-text-stroke: 3px var(--color-light-sand);
+  paint-order: stroke fill;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 45%));
 }
 
 /* The hole of the pin glyph is a circle around 8,6 in its 16x16 box. The route passes behind it. */
 .landing-route-pin.bi-geo-alt-fill {
-  background: radial-gradient(circle at 50% 37.5%, var(--showcase-bg, #fff) 0.25em, transparent 0.26em);
+  background: radial-gradient(circle at 50% 37.5%, var(--color-light-sand) 0.25em, transparent 0.26em);
 }
 
 /* The pins of a list stand in the place of its bullets. The shadows in the color of the section
@@ -601,7 +612,7 @@ section,
 
 @media (width <= 860px) {
   .landing-hero {
-    padding: 4.5rem 0 3.5rem;
+    padding: 5.5rem 0 4rem;
   }
 
   .landing-wrap {
@@ -681,6 +692,12 @@ section,
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* The viewBox of this drawing has no side margin, so it gets narrower than its column.
+   It only shrinks on screens that are narrower than this width. */
+.landing-showcase-grid > .landing-go-drawing {
+  max-width: 18rem;
 }
 
 /* Every second image goes to the right. Below this width the image stays above the text. */
@@ -975,6 +992,15 @@ footer {
     gap: 2rem;
   }
 
+  /* Left aligned: the route takes a drawing that starts right of the text for the two column layout */
+  .landing-showcase-grid > svg {
+    max-width: 32rem;
+  }
+
+  .landing-terminal {
+    display: none;
+  }
+
   /* The route runs in the page gutter here, it stays clear of the text */
   .landing-showcase-grid > div:not(.landing-terminal), .landing-gallery-head {
     padding-left: 0.75rem;
@@ -991,6 +1017,17 @@ footer {
 
   .landing-checks {
     display: none;
+  }
+}
+
+/* The narrow phone drawing still fits next to the text down to the hero breakpoint */
+@media (860px < width < 992px) {
+  .landing-showcase-grid:has(> .landing-go-drawing) {
+    grid-template-columns: 1fr 18rem;
+  }
+
+  .landing-showcase-grid > .landing-go-drawing {
+    order: 1;
   }
 }
 

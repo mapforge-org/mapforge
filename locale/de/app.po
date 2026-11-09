@@ -1322,6 +1322,9 @@ msgstr "Straßenkarte ohne Straßennamen"
 msgid "Streets, Satellite, Topographic, Biking, Watercolor, 3D houses"
 msgstr "Straße, Satellit, Topo, Fahrrad, Aquarell, 3D-Gebäude"
 
+msgid "Streets, Satellite, Topographic, Biking, Watercolor, 3D terrain"
+msgstr "Straße, Satellit, Topo, Fahrrad, Aquarell, 3D-Gelände"
+
 msgid "Style"
 msgstr "Stil"
 
