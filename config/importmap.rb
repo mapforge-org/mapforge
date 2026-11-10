@@ -56,7 +56,7 @@ pin "osmtogeojson", preload: false
 # https://github.com/mapbox/mapbox-gl-draw
 # Unminified + locally patched, see the header of the vendored file
 pin "@mapbox/mapbox-gl-draw", to: "@mapbox--mapbox-gl-draw.js", preload: "map-rw" # @1.5.2
-pin "@mapbox/geojson-area", to: "@mapbox--geojson-area.js", preload: "map-rw" # @0.2.2
+pin "@mapbox/geojson-area", to: "@mapbox--geojson-area.js", preload: "map-rw" # @0.3.0
 pin "@mapbox/geojson-normalize", to: "@mapbox--geojson-normalize.js", preload: "map-rw" # @0.0.1
 pin "@mapbox/point-geometry", to: "@mapbox--point-geometry.js", preload: "map-rw" # @1.1.0
 pin "fast-deep-equal", preload: "map" # @3.1.3
