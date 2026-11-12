@@ -4,7 +4,7 @@ class TracksController < ApplicationController
       map = Map.by_private_id(params[:id])
       if map
         # link to highlighted track when there is only one
-        track = map.features.line_string.count == 1 ? map.features.line_string.first : nil
+        track = map.features.line_string.one? ? map.features.line_string.first : nil
         if track
           redirect_to map_path(id: map.public_id, f: track.id)
         else

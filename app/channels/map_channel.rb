@@ -97,7 +97,7 @@ class MapChannel < ApplicationCable::Channel
     map = get_map_rw!(data["map_id"])
     layer = map.layers.find(data["id"])
     # new_feature needs a geojson layer to write into
-    if layer.type == "geojson" && map.layers.geojson.count == 1
+    if layer.type == "geojson" && map.layers.geojson.one?
       raise "Cannot delete the last geojson layer of map '#{map.public_id}'"
     end
     layer.destroy
