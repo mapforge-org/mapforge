@@ -15,6 +15,7 @@ import { initializeViewControls, removeViewControls } from 'maplibre/controls/vi
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
 import { highlightFeature } from 'maplibre/feature';
 import { dimCoveredImages } from 'maplibre/layers/geojson/covered_images';
+import { bindFeatureSelection } from 'maplibre/layers/layer';
 import { refreshDescBanners, showDescBanners } from 'maplibre/layers/geojson/desc_banners';
 import { showImageOverlays } from 'maplibre/layers/geojson/image_overlays';
 import { getFeature, initializeLayers, initializeLayerSources, initializeLayerStyles, layers } from 'maplibre/layers/layers';
@@ -342,6 +343,7 @@ function animateFeatureFromUrl () {
 }
 
 function bindMapEvents () {
+  bindFeatureSelection()
   map.on('mousemove', (e) => { updateCursorPosition(e) })
   map.on('touchend', (e) => { updateCursorPosition(e) })
   map.on('drag', () => {

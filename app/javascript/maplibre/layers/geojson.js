@@ -91,11 +91,11 @@ export class GeoJSONLayer extends Layer {
     addGeoJSONSource(this.extrusionSourceId, false, null, 0)
   }
 
-  setupClickHandler() {
-    super.setupClickHandler()
+  setupEventHandlers() {
+    super.setupEventHandlers()
 
     // Double-click opens geometry edit mode directly
-    this.dblClickHandler = (e) => {
+    this.listen('dblclick', (e) => {
       if (window.gon.map_mode !== 'rw') { return }
       if (draw && draw.getMode() !== 'simple_select') { return }
       if (e.defaultPrevented) { return }
@@ -111,16 +111,7 @@ export class GeoJSONLayer extends Layer {
       // Prevent map zoom on double-click
       e.preventDefault()
       e.originalEvent.stopPropagation()
-    }
-    map.on('dblclick', this.dblClickHandler)
-  }
-
-  removeEventHandlers() {
-    super.removeEventHandlers()
-    if (this.dblClickHandler) {
-      map.off('dblclick', this.dblClickHandler)
-      this.dblClickHandler = null
-    }
+    })
   }
 
   cleanup() {

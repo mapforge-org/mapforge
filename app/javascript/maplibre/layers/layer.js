@@ -1,7 +1,7 @@
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { flyToFeature } from 'maplibre/animations'
-import { hideContextMenu } from 'maplibre/controls/context_menu'
+import { addCopyToLayerMenuItem, hideContextMenu } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import {
   highlightFeature,
@@ -16,7 +16,7 @@ import { addGeoJSONSource, map, noValidate } from 'maplibre/map'
 
 // Source prefixes whose features are selectable via click. Excludes basemap
 // vector features and raster layers (which handle their own clicks).
-export const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overpass-source-', 'wikipedia-source-',
+const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overpass-source-', 'wikipedia-source-',
   'search-source-']
 
 // MapLibre queries a single pixel. A line drawn 2px wide at low zoom is almost unhittable,
@@ -132,30 +132,30 @@ const hoverFeatureOnMove = functions.perFrame((e) => {
   setHoveredFeature(feature)
 })
 
-// maps that already have selectFeatureOnClick, a new map comes with each page visit
-const selectClickMaps = new WeakSet()
-const hoverMoveMaps = new WeakSet()
+// Registered map-wide, not per style layer: the delegated form only fires on an exact
+// pixel hit, which would bypass the tolerance in queryFeaturesNear. The handlers query
+// every selectable source and pick the global top feature, so one per map is enough.
+// map.js binds them before any layer handler, and those skip a click prevented here.
+export function bindFeatureSelection () {
+  map.on('click', selectFeatureOnClick)
+  // a touch laptop with a mouse still hovers, see dom.js
+  if (functions.isTouchDevice() && !window.matchMedia('(hover: hover)').matches) { return }
+  map.on('mousemove', hoverFeatureOnMove)
+}
 
 /**
- * Base class for map layers. Subclass to create new layer types.
- *
- * Required overrides:
- * - initialize(): Promise - Apply styles and load data. Return loadData() promise or Promise.resolve()
- * - loadData(): Promise - Fetch data, set this.layer.geojson, call this.render()
- *
- * Optional overrides:
- * - createSource(): void - Override if you need custom source setup beyond standard GeoJSON source
- * - render(resetDraw): void - Override for custom rendering logic (e.g., km markers, extrusion lines)
- * - get sourceId(): string - Override for custom source naming convention
- * - setupEventHandlers(): void - Override to customize click/mousemove behavior or disable handlers
- * - cleanup(): void - Override to add custom cleanup, but call super.cleanup()
- * - description(feature): Promise<string> - Implement to load the details modal description on
+ * Base class for map layers. A subclass overrides what its type needs:
+ * - initialize(): Promise - apply styles and load data, runs again on each show
+ * - loadData(): Promise - fetch data, set this.layer.geojson, call this.render()
+ * - render(), createSource(), get sourceId(), cleanup() (call super.cleanup())
+ * - setupEventHandlers(): call super first, then register map handlers with this.listen()
+ * - description(feature): Promise<string> - loads the details modal description on
  *   demand. The modal shows a loading message until the promise resolves.
  */
 export class Layer {
   constructor(layer) {
     this.layer = layer
-    this.clickHandler = null
+    this.listeners = []
   }
 
   get id() {
@@ -231,10 +231,7 @@ export class Layer {
     return null
   }
 
-  /**
-   * Creates the MapLibre source for this layer.
-   * Called once during initialization; visibility toggles reuse the source.
-   */
+  // Called once per source, a visibility toggle reuses it
   createSource() {
     addGeoJSONSource(this.sourceId, this.clustered, this.attribution)
   }
@@ -243,19 +240,10 @@ export class Layer {
     return !!this.layer.cluster && !this.layer.heatmap
   }
 
-  /**
-   * Applies styles and loads data for this layer.
-   * May be called multiple times (e.g., when toggling visibility).
-   * @returns {Promise} Promise that resolves when layer is ready
-   */
   initialize() {
     return Promise.resolve()
   }
 
-  /**
-   * Fetches data for this layer and renders it.
-   * @returns {Promise} Promise that resolves when data is loaded
-   */
   loadData() {
     return Promise.resolve(this.layer?.geojson)
   }
@@ -271,10 +259,6 @@ export class Layer {
     return false
   }
 
-  /**
-   * Renders layer data to the map.
-   * @param {boolean} [resetDraw=true] - Whether to reset draw features (for GeoJSON layers)
-   */
   render() {
     this.ensureFeaturePropertyIds()
     map.getSource(this.sourceId).setData(this.layer.geojson, false)
@@ -299,93 +283,54 @@ export class Layer {
     })
   }
 
-  /**
-   * Brings a feature to the front in render order. The feature has already been
-   * moved to the end of this.layer.geojson.features by the caller.
-   * Default implementation re-renders the whole layer; subclasses may override
-   * with a more efficient source update.
-   */
+  // The caller already moved the feature to the end of this.layer.geojson.features.
+  // A subclass can replace the full render with a cheaper source update.
   bringToFront(_feature) {
     this.render()
   }
 
-  /**
-   * Sets up event handlers for feature interaction (click, hover).
-   * Called during layer initialization. Override to customize or disable handlers.
-   */
   setupEventHandlers() {
     this.removeEventHandlers()
-    this.setupClickHandler()
-    this.setupMouseMoveHandler()
   }
 
-  /**
-   * Sets up click handler for feature selection and onclick actions.
-   * Override to customize click behavior.
-   */
-  setupClickHandler() {
-    // Registered map-wide, not per style layer: the delegated form only fires on an exact
-    // pixel hit, which would bypass the tolerance in queryFeaturesNear. The handler queries
-    // every selectable source and picks the global top feature, so one per map is enough.
-    if (selectClickMaps.has(map)) { return }
-    selectClickMaps.add(map)
-    map.on('click', selectFeatureOnClick)
+  // map.on, undone by removeEventHandlers()
+  listen(type, ...args) {
+    this.listeners.push([type, ...args])
+    map.on(type, ...args)
   }
 
-  /**
-   * Sets up mousemove handler for hover highlighting: the hover state, in every map mode.
-   * The details only show on a click. Override to customize hover behavior.
-   */
-  setupMouseMoveHandler() {
-    // a touch laptop with a mouse still hovers, see dom.js
-    if (functions.isTouchDevice() && !window.matchMedia('(hover: hover)').matches) { return }
-    if (hoverMoveMaps.has(map)) { return }
-    hoverMoveMaps.add(map)
-    map.on('mousemove', hoverFeatureOnMove)
+  removeEventHandlers() {
+    this.listeners.forEach(args => map?.off(...args))
+    this.listeners = []
   }
 
-  /**
-   * Returns array of MapLibre layer IDs for this source.
-   * Override if you have custom layer naming.
-   */
+  // Context menu entry that copies the feature under the cursor to a geojson layer
+  listenForCopy() {
+    this.listen('contextmenu', (e) => {
+      e.preventDefault()
+      const hit = map.queryRenderedFeatures(e.point, { layers: this.getStyleLayerIds() })
+        .find(f => !f.properties?.cluster)
+      if (hit) { addCopyToLayerMenuItem(this.copyableFeature(hit.id)) }
+    })
+  }
+
+  copyableFeature(id) {
+    return this.geojson.features.find(f => f.id === id)
+  }
+
   getStyleLayerIds() {
-    // Get all layer IDs that belong to this source
     const sourceSuffix = '_' + this.sourceId
     return map.getLayersOrder().filter(id => id.endsWith(sourceSuffix))
   }
 
-  /**
-   * Removes event handlers for this layer.
-   * Called before re-initialization and during cleanup.
-   */
-  removeEventHandlers() {
-    if (!map?.style) { return }
-    if (this.clickHandler) {
-      map.off('click', this.clickHandler)
-      this.clickHandler = null
-    }
-  }
-
-  /**
-   * Cleans up layer resources (event handlers, etc.).
-   * Override to add custom cleanup, but call super.cleanup().
-   */
   cleanup() {
     this.removeEventHandlers()
   }
 
-  /**
-   * Clear any layer-specific highlight state.
-   * Override in subclasses that maintain their own highlight state beyond the global highlightedFeatureId.
-   */
-  clearHighlight() {
-    // Default implementation does nothing - most layers rely on global highlightedFeatureId
-  }
+  // For highlight state of a layer beyond the global highlightedFeatureId
+  clearHighlight() {}
 
-  /**
-   * Reload mode after map was moved
-   * - ondemand: 'load for this area button'
-   */
+  // 'ondemand': a map move shows the 'Load for this area' button
   reloadAfterMapMove() {
     return false
   }

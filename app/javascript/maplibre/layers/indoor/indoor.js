@@ -13,7 +13,6 @@ export class IndoorLayer extends Layer {
     this.levels = []
     this.idleHandler = null
     this.initialTimeout = null
-    this.contextMenuHandler = null
   }
 
   get show() {
@@ -41,7 +40,6 @@ export class IndoorLayer extends Layer {
       return
     }
 
-    console.log('Indoor layer: creating source with API key')
     map.addSource(this.sourceId, {
       type: 'vector',
       tiles: [`https://tiles.indoorequal.org/tiles/{z}/{x}/{y}.pbf?key=${encodeURIComponent(apiKey)}`],
@@ -53,7 +51,6 @@ export class IndoorLayer extends Layer {
   }
 
   initialize() {
-    console.log('Indoor layer: initializing with level', this.currentLevel)
     removeStyleLayers(this.sourceId)
     this.removeLevelDetection()
 
@@ -79,18 +76,14 @@ export class IndoorLayer extends Layer {
     return Promise.resolve()
   }
 
-  loadData() {
-    return Promise.resolve()
-  }
-
   render() {
     // No-op - vector tiles render automatically
   }
 
   setupEventHandlers() {
-    this.removeEventHandlers()
+    super.setupEventHandlers()
 
-    this.clickHandler = (e) => {
+    this.listen('click', this.getStyleLayerIds(), (e) => {
       if (window.gon.map_mode !== 'rw') return
       // Exit if another layer already selected a feature on this click
       if (e.defaultPrevented) return
@@ -98,23 +91,15 @@ export class IndoorLayer extends Layer {
       const feature = e.features?.[0]
       if (!feature) return
 
-      console.log('Indoor feature clicked:', feature)
-      console.log('Feature id:', feature.id, 'Source:', this.sourceId)
-
       feature.properties.label = feature.properties.name || feature.properties.class
       feature.properties.desc = indoorDescription(feature.properties)
 
       const sourceLayer = feature.layer['source-layer'] || feature.sourceLayer
-      console.log('Source layer:', sourceLayer)
       highlightFeature(feature, false, this.sourceId, sourceLayer)
       e.preventDefault()
-    }
+    })
 
-    // map.off must get this same list, and getStyleLayerIds() is empty once the style is gone
-    this.clickLayerIds = this.getStyleLayerIds()
-    map.on('click', this.clickLayerIds, this.clickHandler)
-
-    this.contextMenuHandler = (e_event) => {
+    this.listen('contextmenu', (e_event) => {
       e_event.preventDefault()
       const queryLayerIds = this.getStyleLayerIds()
       const features = map.queryRenderedFeatures(e_event.point, { layers: queryLayerIds })
@@ -132,23 +117,7 @@ export class IndoorLayer extends Layer {
       delete geojsonFeature.properties.desc
 
       addCopyToLayerMenuItem(geojsonFeature)
-    }
-
-    map.on('contextmenu', this.contextMenuHandler)
-  }
-
-  removeEventHandlers() {
-    // this layer registers its click handler delegated to style layer ids, which
-    // map.off('click', handler) in the base class cannot remove
-    if (this.clickHandler) {
-      map.off('click', this.clickLayerIds, this.clickHandler)
-      this.clickHandler = null
-    }
-    super.removeEventHandlers()
-    if (this.contextMenuHandler) {
-      map.off('contextmenu', this.contextMenuHandler)
-      this.contextMenuHandler = null
-    }
+    })
   }
 
   setLevel(level) {
@@ -173,21 +142,13 @@ export class IndoorLayer extends Layer {
     const fillLayerId = `indoor-area-fill_${this.sourceId}`
     if (!map.getLayer(fillLayerId)) return
 
-    if (parseFloat(this.currentLevel) >= 1) {
-      map.setPaintProperty(fillLayerId, 'fill-color', [
-        'case',
-        ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
-        'gray'
-      ], noValidate)
-      map.setPaintProperty(fillLayerId, 'fill-opacity', 0.7, noValidate)
-    } else {
-      map.setPaintProperty(fillLayerId, 'fill-color', [
-        'case',
-        ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
-        indoorFillColor
-      ], noValidate)
-      map.setPaintProperty(fillLayerId, 'fill-opacity', 0.9, noValidate)
-    }
+    const upperLevel = parseFloat(this.currentLevel) >= 1
+    map.setPaintProperty(fillLayerId, 'fill-color', [
+      'case',
+      ['boolean', ['feature-state', 'active'], false], '#b3d9ff',
+      upperLevel ? 'gray' : indoorFillColor
+    ], noValidate)
+    map.setPaintProperty(fillLayerId, 'fill-opacity', upperLevel ? 0.7 : 0.9, noValidate)
   }
 
   setupLevelDetection() {
@@ -205,7 +166,6 @@ export class IndoorLayer extends Layer {
           const features = map.querySourceFeatures(this.sourceId, {
             sourceLayer: 'area'
           })
-          // console.log(`${features.length} indoor features in current view`)
 
           features.forEach(feature => {
             const level = feature.properties?.level

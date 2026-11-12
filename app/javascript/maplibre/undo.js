@@ -6,8 +6,7 @@ import { showFeatureDetails } from 'maplibre/feature/details'
 import { addFeature, applyLayerVisibility, destroyFeature, getFeature, getLayer, layers, removeLayer, renderLayers } from 'maplibre/layers/layers'
 import { resetDirections } from 'maplibre/routing/directions'
 import { initLayersModal } from 'maplibre/controls/shared'
-import { createLayerInstance } from 'maplibre/layers/factory'
-import { initializeLayerSources, initializeLayerStyles } from 'maplibre/layers/layers'
+import { createLayerInstance, initializeLayerSources, initializeLayerStyles } from 'maplibre/layers/layers'
 
 let undoStack = []
 let redoStack = []

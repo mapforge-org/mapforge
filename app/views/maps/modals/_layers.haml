@@ -68,30 +68,15 @@
                   = _("Custom raster layer")
               %li
                 %h6.dropdown-header waymarkedtrails.org
-              %li
-                %button.dropdown-item{
-                  type: "button",
-                  data: { action: "click->map--layers#createHikingWaymarkedtrailsLayer" }
-                }
-                  🥾 hiking
-              %li
-                %button.dropdown-item{
-                  type: "button",
-                  data: { action: "click->map--layers#createCyclingWaymarkedtrailsLayer" }
-                }
-                  🚴 cycling
-              %li
-                %button.dropdown-item{
-                  type: "button",
-                  data: { action: "click->map--layers#createMtbWaymarkedtrailsLayer" }
-                }
-                  🚵 mtb
-              %li
-                %button.dropdown-item{
-                  type: "button",
-                  data: { action: "click->map--layers#createSlopesWaymarkedtrailsLayer" }
-                }
-                  ⛷️ slopes
+              - { "hiking" => "🥾", "cycling" => "🚴", "mtb" => "🚵", "slopes" => "⛷️" }.each do |theme, icon|
+                %li
+                  %button.dropdown-item{
+                    type: "button",
+                    data: { action: "click->map--layers#addLayer", layer_type: "raster",
+                      layer_name: "waymarkedtrails.org: #{theme}",
+                      layer_query: "https://tile.waymarkedtrails.org/#{theme}/{z}/{x}/{y}.png" }
+                  }
+                    #{icon} #{theme}
               %li
                 %hr.dropdown-divider
               %li
@@ -121,7 +106,7 @@
               %li
                 %button.dropdown-item{
                   type: "button",
-                  data: { action: "click->map--layers#createWikipediaLayer" }
+                  data: { action: "click->map--layers#addLayer", layer_type: "wikipedia", layer_name: "Wikipedia" }
                 }
                   %i.bi.bi-wikipedia.me-2
                   = _("Wikipedia articles")
@@ -129,7 +114,7 @@
                 %li
                   %button.dropdown-item{
                     type: "button",
-                    data: { action: "click->map--layers#createIndoorLayer" }
+                    data: { action: "click->map--layers#addLayer", layer_type: "indoor", layer_name: "Indoor map" }
                   }
                     %i.bi.bi-building.me-2
                     = _("OpenStreetMap indoor")
@@ -138,13 +123,13 @@
               %li
                 %button.dropdown-item{
                   type: "button",
-                  data: { action: "click->map--layers#createBaseMapLayer" }
+                  data: { action: "click->map--layers#addLayer", layer_type: "basemap", layer_name: "Basemap layer" }
                 }
                   = _("Basemap Info (experimental)")
               %li
                 %button.dropdown-item{
                   type: "button",
-                  data: { action: "click->map--layers#createOsmLayer" }
+                  data: { action: "click->map--layers#addLayer", layer_type: "osm", layer_name: "OSM layer" }
                 }
                   = _("OSM Info (experimental)")
 

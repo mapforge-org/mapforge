@@ -221,7 +221,7 @@ function updateLegendVisibility () {
 }
 
 // Show/hide the map legend for route extras
-export function showExtrasLegend (extrasType, activeValues, extrasBbox = null) {
+function showExtrasLegend (extrasType, activeValues, extrasBbox = null) {
   if (window.gon.map_mode === 'static') { return }
 
   let container = document.getElementById('route-extras-legend')

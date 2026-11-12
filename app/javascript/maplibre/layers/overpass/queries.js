@@ -1,4 +1,4 @@
-export function getQueryTemplate(queryName) {
+function getQueryTemplate(queryName) {
   return queries.find(q => q.name === queryName)
 }
 

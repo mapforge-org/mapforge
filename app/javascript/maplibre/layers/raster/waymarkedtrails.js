@@ -11,7 +11,7 @@ export function extractTheme(tileUrl) {
 }
 
 // Converts WGS84 coordinates to slippy map tile indices (https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)
-export function lngLatToTile(lng, lat, zoom) {
+function lngLatToTile(lng, lat, zoom) {
   const n = 2 ** zoom
   const x = Math.floor(((lng + 180) / 360) * n)
   const latRad = (lat * Math.PI) / 180
@@ -21,16 +21,7 @@ export function lngLatToTile(lng, lat, zoom) {
 
 // Minimum distance from a point to a polyline, in EPSG:3857 Mercator units
 function distanceToLine(point, lineCoords) {
-  let minDist = Infinity
-  for (let i = 0; i < lineCoords.length - 1; i++) {
-    const segStart = lineCoords[i]
-    const segEnd = lineCoords[i + 1]
-    const dist = pointToSegmentDistance(point, segStart, segEnd)
-    if (dist < minDist) {
-      minDist = dist
-    }
-  }
-  return minDist
+  return Math.min(...lineCoords.slice(1).map((end, i) => pointToSegmentDistance(point, lineCoords[i], end)))
 }
 
 // Perpendicular distance from point p to line segment a-b, clamped to segment bounds
@@ -38,19 +29,8 @@ function pointToSegmentDistance(p, a, b) {
   const dx = b[0] - a[0]
   const dy = b[1] - a[1]
   const lenSq = dx * dx + dy * dy
-
-  if (lenSq === 0) {
-    const dpx = p[0] - a[0]
-    const dpy = p[1] - a[1]
-    return Math.sqrt(dpx * dpx + dpy * dpy)
-  }
-
-  const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / lenSq))
-  const projX = a[0] + t * dx
-  const projY = a[1] + t * dy
-  const dpx = p[0] - projX
-  const dpy = p[1] - projY
-  return Math.sqrt(dpx * dpx + dpy * dpy)
+  const t = lenSq && Math.max(0, Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / lenSq))
+  return Math.hypot(p[0] - (a[0] + t * dx), p[1] - (a[1] + t * dy))
 }
 
 export async function fetchNearestRoute(theme, lng, lat, currentZoom) {

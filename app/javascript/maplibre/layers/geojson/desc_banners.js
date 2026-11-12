@@ -15,7 +15,7 @@ const banners = new Map()
 const prefix = layer => `${layer.id}/`
 const key = (layer, feature) => prefix(layer) + feature.id
 
-export const hasDescBanner = feature => feature.geometry?.type === 'Point' &&
+const hasDescBanner = feature => feature.geometry?.type === 'Point' &&
   !!feature.properties?.['show-desc'] && !!feature.properties?.desc
 
 export function renderDescBanners (features, layer, visible = layer.show !== false) {

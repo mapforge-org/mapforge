@@ -3,7 +3,6 @@ import { highlightFeature } from 'maplibre/feature'
 import { BasemapLayer } from 'maplibre/layers/basemap'
 import { selectableFeaturesNear } from 'maplibre/layers/layer'
 import { fetchOsmElement, overpassDescription } from 'maplibre/layers/osm_description'
-import { map } from 'maplibre/map'
 
 const OSM_ELEMENT_TYPES = { 1: 'node', 2: 'way', 3: 'relation' }
 // Layer classes in protomaps/basemaps that call FeatureMerge in postProcess
@@ -84,12 +83,11 @@ export class OsmLayer extends BasemapLayer {
     this.selectedOsmId = null
   }
 
-  /**
-   * The clicked elements live in the basemap vector source, not in this layer's style layers,
-   * so this handler listens on the whole map instead of on layer ids.
-   */
-  setupClickHandler() {
-    this.clickHandler = (e) => {
+  // The clicked elements live in the basemap vector source, not in this layer's style layers,
+  // so this handler listens on the whole map instead of on layer ids.
+  setupEventHandlers() {
+    super.setupEventHandlers()
+    this.listen('click', (e) => {
       if (draw && draw.getMode() !== 'simple_select') { return }
       if (window.gon.map_mode === 'static') { return }
       if (e.defaultPrevented) { return }
@@ -112,9 +110,7 @@ export class OsmLayer extends BasemapLayer {
       this.selectedOsmId = this.osmId(feature)
 
       e.preventDefault()
-    }
-
-    map.on('click', this.clickHandler)
+    })
   }
 
   /**

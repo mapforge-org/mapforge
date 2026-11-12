@@ -1,5 +1,4 @@
 import * as functions from 'helpers/functions'
-import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { Layer } from 'maplibre/layers/layer'
 import { applyOverpassQueryStyle } from 'maplibre/layers/overpass/queries'
 import { map } from 'maplibre/map'
@@ -16,11 +15,6 @@ export function overpassClusterSettings (query) {
 }
 
 export class OverpassLayer extends Layer {
-  constructor(layer) {
-    super(layer)
-    this.contextMenuHandler = null
-  }
-
   // Overpass serves OpenStreetMap data, which the ODbL requires to be credited
   get attribution() {
     return osmAttribution
@@ -42,26 +36,7 @@ export class OverpassLayer extends Layer {
 
   setupEventHandlers() {
     super.setupEventHandlers()
-
-    this.contextMenuHandler = (e) => {
-      e.preventDefault()
-      const queryLayerIds = this.getStyleLayerIds()
-      const features = map.queryRenderedFeatures(e.point, { layers: queryLayerIds })
-
-      const rendered = features.find(f => !f.properties?.cluster)
-      if (rendered) {
-        addCopyToLayerMenuItem(this.geojson.features.find(f => f.id === rendered.id))
-      }
-    }
-    map.on('contextmenu', this.contextMenuHandler)
-  }
-
-  removeEventHandlers() {
-    super.removeEventHandlers()
-    if (this.contextMenuHandler) {
-      map.off('contextmenu', this.contextMenuHandler)
-      this.contextMenuHandler = null
-    }
+    this.listenForCopy()
   }
 
   /**
@@ -147,7 +122,7 @@ function applyOverpassStyle(geojson, query) {
   const markerSymbol = getCommentValue(query, 'marker-symbol')
   const markerImageUrl = getCommentValue(query, 'marker-image-url')
   const labelProperty = getCommentValue(query, 'label-property')
-  const heatmap = query.includes("heatmap=true")
+  const { heatmap } = overpassClusterSettings(query)
   const styleKeys = ['marker-color', 'stroke', 'stroke-width', 'fill', 'fill-opacity']
   const styleValues = Object.fromEntries(styleKeys.map(key => [key, getCommentValue(query, key)]))
 
@@ -161,11 +136,10 @@ function applyOverpassStyle(geojson, query) {
     if (styleValues['marker-color']) { f.properties["marker-color"] = styleValues['marker-color'] }
     if (markerSymbol) {
       f.properties["marker-symbol"] = markerSymbol
-      f.properties["marker-size"] = "30"
-      f.properties["marker-color"] = "transparent"
-      f.properties["stroke"] = "transparent"
     } else if (markerImageUrl) {
       f.properties["marker-image-url"] = markerImageUrl
+    }
+    if (markerSymbol || markerImageUrl) {
       f.properties["marker-size"] = "30"
       f.properties["marker-color"] = "transparent"
       f.properties["stroke"] = "transparent"

@@ -16,7 +16,7 @@ const overlaySources = new Set()
 export const canPinImage = feature => feature.geometry?.type === 'Polygon' &&
   feature.geometry.coordinates[0]?.length === 5
 
-export function hasImageOverlay (feature) {
+function hasImageOverlay (feature) {
   return canPinImage(feature) && !!feature.properties?.['fill-image-url']
 }
 

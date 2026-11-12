@@ -9,8 +9,6 @@ import { defaults } from 'maplibre/styles/defaults'
 export class RasterLayer extends Layer {
   constructor(layer) {
     super(layer)
-    this.mapClickHandler = null
-    this.mapContextMenuHandler = null
     this.isWaymarkedtrails = layer.query && layer.query.includes('waymarkedtrails.org')
     this.highlightedFeatureId = null
   }
@@ -76,12 +74,11 @@ export class RasterLayer extends Layer {
   initialize() {
     if (!this.query) { return Promise.resolve() }
 
-    // Make idempotent: existing layers/handlers must be cleared.
+    // Make idempotent: existing layers must be cleared, setupEventHandlers clears the handlers.
     removeStyleLayers(this.sourceId)
     if (this.isWaymarkedtrails) {
       removeStyleLayers(this.sourceId + '-features')
     }
-    this.removeEventHandlers()
 
     addLayer({
       id: 'raster-layer_' + this.sourceId,
@@ -185,14 +182,10 @@ export class RasterLayer extends Layer {
     return Promise.resolve()
   }
 
-  loadData() {
-    return Promise.resolve()
-  }
-
   clearHighlight() {
     if (this.highlightedFeatureId) {
       this.highlightedFeatureId = null
-      this.render(null)
+      this.render()
     }
   }
 
@@ -223,21 +216,19 @@ export class RasterLayer extends Layer {
     const feature = await fetchRouteDetails(theme, route.id)
     if (!feature) return null
 
-    if (!this.layer.geojson) {
-      this.layer.geojson = { type: 'FeatureCollection', features: [] }
-    }
-
-    const existingIndex = this.layer.geojson.features.findIndex(f => f.id === feature.id)
+    const features = this.geojson.features
+    const existingIndex = features.findIndex(f => f.id === feature.id)
     if (existingIndex >= 0) {
-      this.layer.geojson.features[existingIndex] = feature
+      features[existingIndex] = feature
     } else {
-      this.layer.geojson.features.push(feature)
+      features.push(feature)
     }
 
     return feature
   }
 
   setupEventHandlers() {
+    super.setupEventHandlers()
     if (!this.isWaymarkedtrails) return
 
     const theme = extractTheme(this.query)
@@ -246,7 +237,7 @@ export class RasterLayer extends Layer {
       return
     }
 
-    this.mapClickHandler = async (e) => {
+    this.listen('click', async (e) => {
       if (!this.show) return
 
       // Skip waymarkedtrails selection when draw mode is active (not simple_select)
@@ -279,30 +270,14 @@ export class RasterLayer extends Layer {
 
       this.highlightedFeatureId = feature.id
       this.render(feature.id)
-    }
+    })
 
-    map.on('click', this.mapClickHandler)
-
-    this.mapContextMenuHandler = (e) => {
+    this.listen('contextmenu', (e) => {
       e.preventDefault()
 
       if (!this.show || !this.highlightedFeatureId) return
 
       addCopyToLayerMenuItem(this.layer.geojson?.features.find(f => f.id === this.highlightedFeatureId))
-    }
-
-    map.on('contextmenu', this.mapContextMenuHandler)
-  }
-
-  removeEventHandlers() {
-    super.removeEventHandlers()
-    if (this.mapClickHandler) {
-      map.off('click', this.mapClickHandler)
-      this.mapClickHandler = null
-    }
-    if (this.mapContextMenuHandler) {
-      map.off('contextmenu', this.mapContextMenuHandler)
-      this.mapContextMenuHandler = null
-    }
+    })
   }
 }

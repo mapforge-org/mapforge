@@ -1,4 +1,3 @@
-import { addCopyToLayerMenuItem } from 'maplibre/controls/context_menu'
 import { Layer } from 'maplibre/layers/layer'
 import { fetchOsmElement, overpassDescription } from 'maplibre/layers/osm_description'
 import { map } from 'maplibre/map'
@@ -11,7 +10,7 @@ export const MARKER_OPACITY = 0.8
 export const MARKER_OUTLINE = '#ffffff'
 // the colors tell a result of the search apart from a feature of the map. a copy to a layer
 // of the map drops them and renders as a plain emoji point.
-export const TRANSIENT_PROPERTIES = ['marker-color', 'stroke', 'marker-opacity']
+const TRANSIENT_PROPERTIES = ['marker-color', 'stroke', 'marker-opacity']
 
 // a paint expression of maplibre cannot read a css variable, so it is resolved here
 export function markerColor () {
@@ -22,11 +21,10 @@ export function markerColor () {
 // context menu handling as the other layers. The instance stays out of the global
 // 'layers' array: the results are transient and must not reach the layers modal,
 // the undo stack or the server.
-export class SearchLayer extends Layer {
+class SearchLayer extends Layer {
   constructor() {
     super({ id: 'results', type: 'search', name: 'Search results',
       geojson: { type: 'FeatureCollection', features: [] } })
-    this.contextMenuHandler = null
   }
 
   initialize() {
@@ -38,15 +36,7 @@ export class SearchLayer extends Layer {
 
   setupEventHandlers() {
     super.setupEventHandlers()
-
-    this.contextMenuHandler = (e) => {
-      e.preventDefault()
-      const features = map.queryRenderedFeatures(e.point, { layers: this.getStyleLayerIds() })
-      if (!features.length) { return }
-
-      addCopyToLayerMenuItem(this.copyableFeature(features[0].id))
-    }
-    map.on('contextmenu', this.contextMenuHandler)
+    this.listenForCopy()
   }
 
   // a copy gets saved, so it must not keep the properties of the search marker
@@ -59,14 +49,6 @@ export class SearchLayer extends Layer {
     if (properties.osm) { properties.desc = overpassDescription(properties.osm) }
     TRANSIENT_PROPERTIES.forEach(key => delete properties[key])
     return { ...feature, properties: properties }
-  }
-
-  removeEventHandlers() {
-    super.removeEventHandlers()
-    if (this.contextMenuHandler) {
-      if (map?.style) { map.off('contextmenu', this.contextMenuHandler) }
-      this.contextMenuHandler = null
-    }
   }
 
   setResults(features) {

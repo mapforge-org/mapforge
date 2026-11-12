@@ -2,7 +2,7 @@
 import { addCopyMenuItem, addDeleteMenuItem, addLineMenuItems, addLineVertexMenuItems, addPasteMenuItem, addWaypointMenuItem } from 'maplibre/controls/context_menu'
 import { draw } from 'maplibre/edit'
 import { highlightFeature } from 'maplibre/feature'
-import { SELECTABLE_SOURCE_PREFIXES, queryFeaturesNear } from 'maplibre/layers/layer'
+import { isSelectable, queryFeaturesNear } from 'maplibre/layers/layer'
 import { editDefaults } from 'maplibre/styles/defaults'
 import { pointSize, styles } from 'maplibre/styles/styles'
 
@@ -60,7 +60,7 @@ export function initializeEditStyles() {
     }
 
     // layers add their own menu items later, so check the features instead of the open menu
-    if (!features.some(f => SELECTABLE_SOURCE_PREFIXES.some(p => f.source.startsWith(p)))) {
+    if (!features.some(isSelectable)) {
       addPasteMenuItem(e)
     }
   })

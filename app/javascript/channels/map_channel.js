@@ -1,7 +1,6 @@
 import consumer from 'channels/consumer'
 import { initLayersModal } from 'maplibre/controls/shared'
-import { createLayerInstance } from 'maplibre/layers/factory'
-import { applyLayerVisibility, destroyFeature, getLayer, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, removeLayer, upsert } from 'maplibre/layers/layers'
+import { applyLayerVisibility, createLayerInstance, destroyFeature, getLayer, initializeLayerSources, initializeLayerStyles, layers, loadLayerDefinitions, removeLayer, upsert } from 'maplibre/layers/layers'
 import {
   initializeMaplibreProperties,
   loadedMapUpdatedAt,

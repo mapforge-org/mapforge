@@ -13,7 +13,6 @@ export class WikipediaLayer extends Layer {
   initialize() {
     initializeViewStyles(this.sourceId)
     if (this.clustered) { initializeClusterStyles(this.sourceId, "/icons/wikipedia.png") }
-    this.setupEventHandlers()
     return this.loadData()
   }
 
@@ -64,27 +63,19 @@ export class WikipediaLayer extends Layer {
 }
 
 function wikipediatoGeoJSON(data) {
-  let geoJSON = {
-    "type": "FeatureCollection",
-    "features": []
-  }
-  data['query']['geosearch'].forEach( entry => {
-    let feature = {
-      "id": functions.featureId(),
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [entry.lon, entry.lat]
-      },
-      "properties": {
-        "title": entry.title,
-        "label": entry.title,
-        "wikipediaId": entry.pageid,
-        "marker-image-url": "/icons/wikipedia.png",
-        "marker-size": "20",
+  return {
+    type: 'FeatureCollection',
+    features: data.query.geosearch.map(entry => ({
+      id: functions.featureId(),
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [entry.lon, entry.lat] },
+      properties: {
+        title: entry.title,
+        label: entry.title,
+        wikipediaId: entry.pageid,
+        'marker-image-url': '/icons/wikipedia.png',
+        'marker-size': '20'
       }
-    }
-    geoJSON.features.push(feature)
-  })
-  return geoJSON
+    }))
+  }
 }

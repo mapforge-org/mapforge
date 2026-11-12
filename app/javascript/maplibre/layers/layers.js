@@ -4,16 +4,38 @@ import { status } from 'helpers/status'
 import { AnimatePointAnimation } from 'maplibre/animations'
 import { resetLevels } from 'maplibre/controls/levels'
 import { featureLabel, resetHighlightedFeature } from 'maplibre/feature'
-import { createLayerInstance } from 'maplibre/layers/factory'
+import { BasemapLayer } from 'maplibre/layers/basemap'
+import { GeoJSONLayer } from 'maplibre/layers/geojson'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { hasRouteExtras } from 'maplibre/layers/geojson/route_extras'
+import { IndoorLayer } from 'maplibre/layers/indoor/indoor'
+import { Layer } from 'maplibre/layers/layer'
+import { OsmLayer } from 'maplibre/layers/osm'
+import { OverpassLayer } from 'maplibre/layers/overpass/overpass'
+import { RasterLayer } from 'maplibre/layers/raster/raster'
+import { WikipediaLayer } from 'maplibre/layers/wikipedia'
 import { map, removeGeoJSONSource, removeStyleLayers, setLayerVisibility, setLoadedMapUpdatedAt, sortLayers } from 'maplibre/map'
 
-export let layers // Layer instances: GeoJSONLayer, OverpassLayer, WikipediaLayer, BasemapLayer
+export let layers // Layer instances, one class per type in layerTypes
 let activeLayerId = null // geojson layer that receives new features, per browser session
 
 // Cached promise to ensure initializeLayers only runs once
 let initializePromise = null
+
+const layerTypes = {
+  geojson: GeoJSONLayer,
+  overpass: OverpassLayer,
+  wikipedia: WikipediaLayer,
+  basemap: BasemapLayer,
+  osm: OsmLayer,
+  raster: RasterLayer,
+  indoor: IndoorLayer
+}
+
+export function createLayerInstance(data) {
+  const LayerClass = layerTypes[data.type] || Layer
+  return new LayerClass(data)
+}
 
 // Layer setup workflow (three steps; initializeLayers() runs all three and is memoized):
 //
@@ -51,14 +73,8 @@ export function resetInitializationState() {
  * into a single async operation. Returns Promise that resolves when all visible layers are ready.
  * Idempotent - safe to call multiple times, will only load once.
  */
-export async function initializeLayers() {
-  // Return cached promise if already initializing/initialized
-  if (initializePromise) {
-    return initializePromise
-  }
-
-  // Cache the promise so multiple calls don't re-initialize
-  initializePromise = (async () => {
+export function initializeLayers() {
+  return (initializePromise ||= (async () => {
     await loadLayerDefinitions()
     initializeLayerSources()
     await initializeLayerStyles()
@@ -67,9 +83,7 @@ export async function initializeLayers() {
     functions.e('#maplibre-map', e => { e.setAttribute('data-geojson-loaded', true) })
 
     return layers
-  })()
-
-  return initializePromise
+  })())
 }
 
 /**
@@ -96,7 +110,6 @@ export function loadLayerDefinitions({ refetch = false } = {}) {
     // reload when nothing changed while we were disconnected (see map_channel.js).
     setLoadedMapUpdatedAt(data.updated_at)
     window._layers = layers
-    // console.log(`Map layers (${layers.length}) instantiated`)
   }
 
   if (!refetch && window.gon.map_layers) {
@@ -145,10 +158,7 @@ export function initializeLayerSources(id = null) {
   let initLayers = layers
   if (id) { initLayers = initLayers.filter(l => l.id === id) }
 
-  initLayers.forEach((layer) => {
-    // console.log(`Adding source for ${layer.type} layer`, layer)
-    layer.createSource()
-  })
+  initLayers.forEach(layer => layer.createSource())
 }
 
 /**
@@ -397,20 +407,15 @@ export function destroyFeature (featureId) {
   }
 }
 
+// moves the feature to the end of the features of its layer
 export function frontFeature(frontFeature) {
-  // move feature to end of its layer's features array
-  for (const layer of layers) {
-    if (!layer?.geojson?.features) { continue }
-    const features = layer.geojson.features
-    const idx = features.findIndex(f => f.id === frontFeature.id)
-    if (idx !== -1) {
-      if (idx === features.length - 1) { break } // already in front, nothing to do
-      const [feature] = features.splice(idx, 1) // Remove it
-      features.push(feature) // Add to end
-      layer.bringToFront(feature)
-
-      break // done, exit loop
-    }
-  }
+  const layer = getLayer(frontFeature.id)
+  if (!layer) { return }
+  const features = layer.geojson.features
+  const idx = features.findIndex(f => f.id === frontFeature.id)
+  if (idx === features.length - 1) { return }
+  const [feature] = features.splice(idx, 1)
+  features.push(feature)
+  layer.bringToFront(feature)
 }
 

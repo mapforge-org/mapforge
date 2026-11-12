@@ -8,8 +8,7 @@ import { initLayersModal } from 'maplibre/controls/shared'
 import { updateElevation } from 'maplibre/routing/openrouteservice'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { importFile } from 'maplibre/import/kml'
-import { createLayerInstance } from 'maplibre/layers/factory'
-import { activeLayer, applyLayerVisibility, getFeature, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, removeLayer, renderLayer, setActiveLayer, setLayerLoading, upsert } from 'maplibre/layers/layers'
+import { activeLayer, applyLayerVisibility, createLayerInstance, getFeature, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, removeLayer, setActiveLayer, setLayerLoading, upsert } from 'maplibre/layers/layers'
 import { overpassClusterSettings } from 'maplibre/layers/overpass/overpass'
 import { queries } from 'maplibre/layers/overpass/queries'
 import { map, mapProperties, sortLayers, updateMapName } from 'maplibre/map'
@@ -37,6 +36,13 @@ function readFile (file, format) {
   })
 }
 
+// the .layer-item around the event target, and its layer
+function layerItem (event) {
+  const layerElement = event.target.closest('.layer-item')
+  const layerId = layerElement.getAttribute('data-layer-id')
+  return { layerElement, layer: layers.find(l => l.id === layerId) }
+}
+
 export default class extends Controller {
   pickFile (event) {
     const fileInput = document.getElementById('fileInput')
@@ -62,6 +68,7 @@ export default class extends Controller {
 
     const content = await readFile(file, format)
     let geoJSON
+    let mapforgeJSON
     let kmlMap = {}
 
     if (format === 'xml' || format === 'kmz') {
@@ -83,7 +90,7 @@ export default class extends Controller {
     } else if (format === 'geojson') {
       geoJSON = JSON.parse(content)
     } else if (format === 'json') {
-      const mapforgeJSON = JSON.parse(content)
+      mapforgeJSON = JSON.parse(content)
       if (mapforgeJSON.layers) {
         // mapforge export file
         mapforgeJSON.layers.forEach(layer => {
@@ -142,19 +149,16 @@ export default class extends Controller {
       sendMessage('update_map', mapProperties)
     }
 
-    if (format === 'json') {
-      const mapforgeJSON = JSON.parse(content)
-      if (mapforgeJSON.properties) {
-        const props = mapforgeJSON.properties
-        mapProperties.base_map = props.base_map
-        mapProperties.center = props.center
-        mapProperties.zoom = props.zoom
-        mapProperties.pitch = props.pitch
-        mapProperties.bearing = props.bearing
-        if (!mapProperties.name) { updateMapName(props.name) }
-        if (!mapProperties.description) { mapProperties.description = props.description }
-        sendMessage('update_map', mapProperties)
-      }
+    if (mapforgeJSON?.properties) {
+      const props = mapforgeJSON.properties
+      mapProperties.base_map = props.base_map
+      mapProperties.center = props.center
+      mapProperties.zoom = props.zoom
+      mapProperties.pitch = props.pitch
+      mapProperties.bearing = props.bearing
+      if (!mapProperties.name) { updateMapName(props.name) }
+      if (!mapProperties.description) { mapProperties.description = props.description }
+      sendMessage('update_map', mapProperties)
     }
 
     status(window.__('File imported'))
@@ -176,7 +180,6 @@ export default class extends Controller {
 
     uploadImageToFeature(file, feature).then( () => {
       upsert(feature)
-      renderLayer(activeLayer().id)
       sendMessage('new_feature', { ...feature })
       status(window.__('Added image'))
       flyToFeature(feature)
@@ -194,9 +197,7 @@ export default class extends Controller {
 
   toggleEdit (event) {
     event.preventDefault()
-    const layerElement = event.target.closest('.layer-item')
-    const layerId = layerElement.getAttribute('data-layer-id')
-    const layer = layers.find(f => f.id === layerId)
+    const { layerElement, layer } = layerItem(event)
     const contentElement = layerElement.querySelector('.layer-content')
     if (contentElement.classList.contains('hidden')) { this.toggleLayerList(event) }
 
@@ -221,37 +222,32 @@ export default class extends Controller {
 
   updateOverpassLayer (event) {
     event.preventDefault()
-    const layerElement = event.target.closest('.layer-item')
-    const layerId = layerElement.getAttribute('data-layer-id')
-    const layer = layers.find(f => f.id === layerId)
+    const { layerElement, layer } = layerItem(event)
     addUndoState('Layer updated', layerSettings(layer))
 
     layer.query = layerElement.querySelector('.overpass-query').value
     layer.name = layerElement.querySelector('.overpass-name').value
     Object.assign(layer, overpassClusterSettings(layer.query))
-    event.target.closest('.layer-item').querySelector('.layer-name').textContent = layer.name
+    layerElement.querySelector('.layer-name').textContent = layer.name
     sendMessage('update_layer', layer.toJSON())
-    event.target.closest('.layer-item').querySelector('.reload-icon').classList.add('layer-refresh-animate')
+    layerElement.querySelector('.reload-icon').classList.add('layer-refresh-animate')
     layer.initialize().then(() => { sortLayers(); initLayersModal() })
   }
 
   updateRasterLayer (event) {
     event.preventDefault()
-    const layerElement = event.target.closest('.layer-item')
-    const layerId = layerElement.getAttribute('data-layer-id')
-    const layer = layers.find(f => f.id === layerId)
+    const { layerElement, layer } = layerItem(event)
     addUndoState('Layer updated', layerSettings(layer))
 
     layer.update({ query: layerElement.querySelector('.raster-url').value, name: layerElement.querySelector('.raster-name').value })
-    event.target.closest('.layer-item').querySelector('.layer-name').textContent = layer.name
+    layerElement.querySelector('.layer-name').textContent = layer.name
     sendMessage('update_layer', layer.toJSON())
     applyLayerVisibility(layer).then(initLayersModal)
   }
 
   renameLayer (event) {
     event.preventDefault()
-    const layerElement = event.target.closest('.layer-item')
-    const layer = layers.find(f => f.id === layerElement.getAttribute('data-layer-id'))
+    const { layerElement, layer } = layerItem(event)
     const input = document.createElement('input')
     input.type = 'text'
     input.classList.add('form-control', 'd-inline-block', 'me-2', 'mapforge-font', 'layer-name-input')
@@ -299,21 +295,14 @@ export default class extends Controller {
     event.preventDefault()
     const list = event.target.closest('.layer-item').querySelector('.layer-content')
     const icon = event.target.closest('.layer-item-header').querySelector('span i')
-    if (list.classList.contains('hidden')) {
-      icon.classList.remove('bi-caret-right-fill')
-      icon.classList.add('bi-caret-down-fill')
-    } else {
-      icon.classList.add('bi-caret-right-fill')
-      icon.classList.remove('bi-caret-down-fill')
-    }
-    list.classList.toggle('hidden')
+    const hidden = list.classList.toggle('hidden')
+    icon.classList.toggle('bi-caret-right-fill', hidden)
+    icon.classList.toggle('bi-caret-down-fill', !hidden)
   }
 
   toggleLayerVisibility (event) {
     event.preventDefault()
-    const layerElement = event.target.closest('.layer-item')
-    const layerId = layerElement.getAttribute('data-layer-id')
-    const layer = layers.find(l => l.id === layerId)
+    const { layerElement, layer } = layerItem(event)
     const wasVisible = layer.show !== false
     const previousActiveLayer = activeLayer()
     if (window.gon.map_mode === "rw") { addUndoState('Layer updated', layerSettings(layer)) }
@@ -322,11 +311,8 @@ export default class extends Controller {
 
     const visBtn = layerElement.querySelector('button.layer-visibility')
     const icon = visBtn.querySelector('i')
-    if (layer.show) {
-      icon.classList.replace('bi-eye-slash', 'bi-eye')
-    } else {
-      icon.classList.replace('bi-eye', 'bi-eye-slash')
-    }
+    icon.classList.toggle('bi-eye', layer.show)
+    icon.classList.toggle('bi-eye-slash', !layer.show)
     const newText = layer.show ? window.__('Hide layer') : window.__('Show layer')
 
     // Update tooltip title attributes
@@ -335,32 +321,27 @@ export default class extends Controller {
     visBtn.setAttribute('aria-label', newText)
 
     // Update Bootstrap tooltip content if it exists
-    if (typeof bootstrap !== 'undefined' && visBtn) {
+    if (typeof bootstrap !== 'undefined') {
       const tooltip = bootstrap.Tooltip.getInstance(visBtn)
       if (tooltip) {
         tooltip.setContent({ '.tooltip-inner': newText })
       }
     }
     // show/hide refresh and edit buttons based on visibility
-    const hideAction = layer.show ? 'remove' : 'add'
     if (layer.type === 'overpass' || layer.type === 'wikipedia') {
-      layerElement.querySelector('button.layer-refresh').classList[hideAction]('hidden')
+      layerElement.querySelector('button.layer-refresh').classList.toggle('hidden', !layer.show)
     }
     if ((layer.type === 'overpass' || layer.type === 'raster') && window.gon.map_mode === 'rw') {
-      layerElement.querySelector('button.layer-edit').classList[hideAction]('hidden')
+      layerElement.querySelector('button.layer-edit').classList.toggle('hidden', !layer.show)
     }
     // hide global "Load for this area" button if no visible overpass/wikipedia layers remain
     if (!layer.show) {
-      const hasVisibleReloadLayer = layers.some(l => l.reloadAfterMapMove() === 'ondemand' && l.show !== false && l.id !== layerId)
+      const hasVisibleReloadLayer = layers.some(l => l.reloadAfterMapMove() === 'ondemand' && l.show !== false && l !== layer)
       if (!hasVisibleReloadLayer) {
         functions.e('#layer-reload', e => { e.classList.add('hidden') })
       }
     }
-    if (layer.show) {
-      layerElement.classList.remove('layer-dimmed')
-    } else {
-      layerElement.classList.add('layer-dimmed')
-    }
+    layerElement.classList.toggle('layer-dimmed', !layer.show)
 
     // when showing: initialize styles (and load data for overpass/wikipedia if needed).
     // A geojson layer keeps its style layers and data while hidden, so a full rebuild is only
@@ -378,8 +359,7 @@ export default class extends Controller {
   activateLayer (event) {
     event.preventDefault()
     event.stopPropagation()
-    const layer = layers.find(l => l.id === event.target.closest('.layer-item').getAttribute('data-layer-id'))
-    setActiveLayer(layer.id)
+    setActiveLayer(layerItem(event).layer.id)
     initLayersModal()
   }
 
@@ -390,10 +370,6 @@ export default class extends Controller {
     initLayersModal()
   }
 
-  createWikipediaLayer() {
-    this.createLayer({ type: 'wikipedia', name: 'Wikipedia' })
-  }
-
   createRasterLayer() {
     const layerId = this.createLayer({ type: 'raster', name: 'Raster layer', query: '' })
     functions.sleep(50).then(() => {
@@ -401,24 +377,10 @@ export default class extends Controller {
     })
   }
 
-  createHikingWaymarkedtrailsLayer() {
-    this.createLayer({ type: 'raster', name: 'waymarkedtrails.org: hiking',
-      query: 'https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png' })
-  }
-
-  createCyclingWaymarkedtrailsLayer() {
-    this.createLayer({ type: 'raster', name: 'waymarkedtrails.org: cycling',
-      query: 'https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png' })
-  }
-
-  createMtbWaymarkedtrailsLayer() {
-    this.createLayer({ type: 'raster', name: 'waymarkedtrails.org: mtb',
-      query: 'https://tile.waymarkedtrails.org/mtb/{z}/{x}/{y}.png' })
-  }
-
-  createSlopesWaymarkedtrailsLayer() {
-    this.createLayer({ type: 'raster', name: 'waymarkedtrails.org: slopes',
-      query: 'https://tile.waymarkedtrails.org/slopes/{z}/{x}/{y}.png' })
+  // for the layer types that need no setup: the button carries type, name and query
+  addLayer(event) {
+    const { layerType, layerName, layerQuery } = event.currentTarget.dataset
+    this.createLayer({ type: layerType, name: layerName, query: layerQuery })
   }
 
   createSelectedOverpassLayer(event) {
@@ -433,18 +395,6 @@ export default class extends Controller {
         document.querySelector('#layer-list-' + layerId + ' button.layer-edit').click()
       })
     }
-  }
-
-  createBaseMapLayer(_event) {
-    this.createLayer({ type: 'basemap', name: 'Basemap layer' })
-  }
-
-  createOsmLayer(_event) {
-    this.createLayer({ type: 'osm', name: 'OSM layer' })
-  }
-
-  createIndoorLayer(_event) {
-    this.createLayer({ type: 'indoor', name: 'Indoor map' })
   }
 
   // 'layer' is a layer definition: { type, name, query, geojson, heatmap, cluster, show }
@@ -474,9 +424,7 @@ export default class extends Controller {
   deleteLayer (event) {
     event.preventDefault()
     if (!confirm(window.__('Really delete this layer?'))) { return }
-    const layerElement = event.target.closest('.layer-item')
-    const layerId = layerElement.getAttribute('data-layer-id')
-    const layer = layers.find(f => f.id === layerId)
+    const { layer } = layerItem(event)
 
     addUndoState('Layer deleted', { ...layer.toJSON(), geojson: layer.geojson }, true, layerPlacement(layer))
     removeLayer(layer)
