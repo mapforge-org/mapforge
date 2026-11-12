@@ -39,17 +39,16 @@ const CONSUMED = [
 const IMAGE_TYPES = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg',
   gif: 'image/gif', webp: 'image/webp', svg: 'image/svg+xml' }
 
-// Reads a KML, KMZ or GPX file and returns everything the importer needs:
+// Reads the content of a 'gpx', 'kml' or 'kmz' file (a KMZ as ArrayBuffer) and returns
+// everything the importer needs:
 //   layers: one definition per KML <Folder>, ready for layers_controller#createLayer
 //   features: placemarks outside any folder, and every GPX feature
 //   map: name, description and view read from the KML <Document>
-export async function importFile (file, content) {
-  const name = file.name.toLowerCase()
-  const isKmz = file.type === 'application/vnd.google-earth.kmz' || name.endsWith('.kmz')
+export async function importFile (format, content) {
   let entries = new Map()
   let text = content
 
-  if (isKmz) {
+  if (format === 'kmz') {
     entries = await unzip(content)
     const docName = [...entries.keys()].find(k => k.toLowerCase().endsWith('.kml'))
     if (!docName) { throw new Error(window.__('The KMZ archive contains no .kml document')) }
@@ -60,28 +59,25 @@ export async function importFile (file, content) {
   if (xmlDoc.querySelector('parsererror')) { throw new Error(window.__('The file is not valid XML')) }
   const { gpx, kmlWithFolders } = await import('togeojson')
 
-  if (file.type === 'application/gpx+xml' || name.endsWith('.gpx')) {
-    const geojson = gpx(xmlDoc)
-    const gpxFeatures = expandGeometryCollections(geojson.features)
-    gpxFeatures.forEach(f => { f.properties = mapforgeProperties(f.properties) })
-    return { layers: [], features: gpxFeatures, map: {} }
+  if (format === 'gpx') {
+    return { layers: [], features: normalize(gpx(xmlDoc).features), map: {} }
   }
 
   // skipNullGeometry is required: a <Model> placemark otherwise yields geometry: null,
   // which every caller reading feature.geometry.type trips over.
   const tree = kmlWithFolders(xmlDoc, { skipNullGeometry: true })
   const layers = []
-  let features = []
-  collect(tree, layers, features)
-  features = expandGeometryCollections(features)
-  layers.forEach(l => { l.geojson.features = expandGeometryCollections(l.geojson.features) })
-
-  const all = features.concat(...layers.map(l => l.geojson.features))
-  all.forEach(f => { f.properties = mapforgeProperties(f.properties) })
-  if (isKmz) { await uploadPackedIcons(all, entries) }
+  const loose = []
+  collect(tree, layers, loose)
+  const features = normalize(loose)
+  layers.forEach(l => { l.geojson.features = normalize(l.geojson.features) })
+  if (format === 'kmz') { await uploadPackedIcons(features.concat(layers.flatMap(l => l.geojson.features)), entries) }
 
   return { layers, features, map: documentProperties(xmlDoc) }
 }
+
+const normalize = (features) => expandGeometryCollections(features)
+  .map(f => ({ ...f, properties: mapforgeProperties(f.properties) }))
 
 // Each <Folder> becomes one layer. Nested folders flatten into a layer of their own,
 // placemarks outside any folder stay loose so they land in the default layer.
@@ -116,7 +112,7 @@ function expandGeometryCollections (features) {
   })
 }
 
-export function mapforgeProperties (props = {}) {
+function mapforgeProperties (props = {}) {
   const out = {}
   for (const [key, value] of Object.entries(props)) {
     if (!CONSUMED.includes(key)) { out[key] = value }
@@ -252,9 +248,6 @@ async function uploadPackedIcons (features, entries) {
 // central directory only, no zip64 and no encryption.
 // Swap in fflate if a KMZ over 4GB or a split archive ever turns up.
 async function unzip (buffer) {
-  if (typeof DecompressionStream === 'undefined') {
-    throw new Error(window.__('This browser cannot read KMZ archives. Please unzip it and import the .kml'))
-  }
   const view = new DataView(buffer)
   const bytes = new Uint8Array(buffer)
 

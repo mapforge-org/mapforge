@@ -406,9 +406,6 @@ GEM
       io-console (~> 0.5)
     rexml (3.4.4)
     rgeo (3.1.0)
-    rgeo-geojson (2.2.0)
-      multi_json (~> 1.15)
-      rgeo (>= 1.0.0)
     rspec (3.13.2)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -588,7 +585,6 @@ DEPENDENCIES
   redcarpet
   redis (>= 4.0.1, < 6)
   rgeo
-  rgeo-geojson
   rspec
   rspec-rails
   rspec-wait

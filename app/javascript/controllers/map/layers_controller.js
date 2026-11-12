@@ -18,22 +18,13 @@ import { addUndoState, layerPlacement, layerSettings } from 'maplibre/undo'
 // does not know them, so the extension decides as well.
 function fileFormat (file) {
   const name = file.name.toLowerCase()
-  if (file.type === 'application/gpx+xml' || name.endsWith('.gpx')) { return 'xml' }
-  if (file.type === 'application/vnd.google-earth.kml+xml' || name.endsWith('.kml')) { return 'xml' }
+  if (file.type === 'application/gpx+xml' || name.endsWith('.gpx')) { return 'gpx' }
+  if (file.type === 'application/vnd.google-earth.kml+xml' || name.endsWith('.kml')) { return 'kml' }
   if (file.type === 'application/vnd.google-earth.kmz' || name.endsWith('.kmz')) { return 'kmz' }
   if (file.type === 'application/geo+json' || name.endsWith('.geojson')) { return 'geojson' }
   if (file.type === 'application/json' || name.endsWith('.json')) { return 'json' }
   if (file.type.startsWith('image/')) { return 'image' }
   return null
-}
-
-function readFile (file, format) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = (event) => resolve(event.target.result)
-    reader.onerror = () => reject(reader.error)
-    if (format === 'kmz') { reader.readAsArrayBuffer(file) } else { reader.readAsText(file) }
-  })
 }
 
 // the .layer-item around the event target, and its layer
@@ -54,11 +45,10 @@ export default class extends Controller {
     const fileInput = document.getElementById('fileInput')
     const file = fileInput.files[0]
     if (!file) { return }
-    const fileSize = (file.size / 1024).toFixed(2) // in KB
     const format = fileFormat(file)
 
     // a KMZ is a zip of a KML plus its icons, so its payload is much smaller than the limit
-    if (fileSize > 2500 && format !== 'image' && format !== 'kmz') {
+    if (file.size > 2500 * 1024 && format !== 'image' && format !== 'kmz') {
       status(window.__('File exceeds 2.5MB. Please simplify it, for example with mapshaper.org'), 'error', 'medium', 8000)
       return
     }
@@ -66,47 +56,33 @@ export default class extends Controller {
     if (format === 'image') { this.addImageMarker(file); return }
     if (!format) { console.log('Unsupported file type: ' + file.type); return }
 
-    const content = await readFile(file, format)
+    const content = format === 'kmz' ? await file.arrayBuffer() : await file.text()
     let geoJSON
-    let mapforgeJSON
-    let kmlMap = {}
+    let mapProps
 
-    if (format === 'xml' || format === 'kmz') {
+    // createLayer persists the features of a KML <Folder> or an export layer in one new_layer
+    // message, so only the loose features in geoJSON go through updateElevation() below.
+    if (['gpx', 'kml', 'kmz'].includes(format)) {
       let imported
       try {
-        imported = await importFile(file, content)
+        imported = await importFile(format, content)
       } catch (error) {
         status(window.__('Could not read the file: %{error}').replace('%{error}', error.message), 'error', 'medium', 8000)
         return
       }
-      // Every KML <Folder> becomes its own layer. new_layer persists the features server side,
-      // so those skip updateElevation() below, same as the mapforge json import.
-      imported.layers.forEach(layer => {
-        layer.geojson.features.forEach(f => { f.id = functions.featureId() })
-        this.createLayer(layer)
-      })
-      kmlMap = imported.map
+      imported.layers.forEach(layer => this.createLayer(layer))
+      mapProps = imported.map
       geoJSON = { type: 'FeatureCollection', features: imported.features }
-    } else if (format === 'geojson') {
-      geoJSON = JSON.parse(content)
-    } else if (format === 'json') {
-      mapforgeJSON = JSON.parse(content)
-      if (mapforgeJSON.layers) {
-        // mapforge export file
-        mapforgeJSON.layers.forEach(layer => {
-          // reset feature ids
-          if (layer.geojson?.features) {
-            layer.geojson.features.forEach(f => { f.id = functions.featureId() })
-          }
-          this.createLayer(layer)
-        })
+    } else {
+      const json = JSON.parse(content)
+      if (json.layers) {
+        json.layers.forEach(layer => this.createLayer(layer))
+        mapProps = json.properties
       } else {
-        // standard geojson file
-        geoJSON = mapforgeJSON
+        geoJSON = json
       }
     }
 
-    let i = 1
     geoJSON?.features?.forEach(feature => {
       feature.id = functions.featureId()
       feature.properties ||= {}
@@ -118,46 +94,23 @@ export default class extends Controller {
       } else {
         sendMessage('new_feature', feature)
       }
-      status(window.__('Added feature %{index}/%{total}')
-        .replace('%{index}', i++).replace('%{total}', geoJSON.features.length))
     })
 
-    // A KML <LookAt> frames the import better than its centroid does.
-    if (kmlMap.center) {
-      const view = { center: kmlMap.center, pitch: kmlMap.pitch, bearing: kmlMap.bearing }
-      if (kmlMap.zoom !== undefined) { view.zoom = kmlMap.zoom }
+    // flyTo reads a present but undefined zoom as NaN
+    const view = Object.fromEntries(['center', 'zoom', 'pitch', 'bearing']
+      .filter(key => mapProps?.[key] != null).map(key => [key, mapProps[key]]))
+    // A KML <LookAt> or the export view frames the import better than its centroid does.
+    if (view.center) {
       map.flyTo({ ...view, duration: 1000, curve: 0.3, essential: true })
     } else if (geoJSON?.features?.length > 0) {
-      const center = centroid(geoJSON)
-      map.flyTo({
-        center: center.geometry.coordinates,
-        duration: 1000,
-        curve: 0.3,
-        essential: true
-      })
+      map.flyTo({ center: centroid(geoJSON).geometry.coordinates, duration: 1000, curve: 0.3, essential: true })
     }
 
-    if (kmlMap.name || kmlMap.description) {
-      if (kmlMap.center) {
-        mapProperties.center = kmlMap.center
-        mapProperties.pitch = kmlMap.pitch
-        mapProperties.bearing = kmlMap.bearing
-        if (kmlMap.zoom !== undefined) { mapProperties.zoom = kmlMap.zoom }
-      }
-      if (kmlMap.name && !mapProperties.name) { updateMapName(kmlMap.name) }
-      if (kmlMap.description && !mapProperties.description) { mapProperties.description = kmlMap.description }
-      sendMessage('update_map', mapProperties)
-    }
-
-    if (mapforgeJSON?.properties) {
-      const props = mapforgeJSON.properties
-      mapProperties.base_map = props.base_map
-      mapProperties.center = props.center
-      mapProperties.zoom = props.zoom
-      mapProperties.pitch = props.pitch
-      mapProperties.bearing = props.bearing
-      if (!mapProperties.name) { updateMapName(props.name) }
-      if (!mapProperties.description) { mapProperties.description = props.description }
+    if (mapProps && Object.keys(mapProps).length) {
+      Object.assign(mapProperties, view)
+      if (mapProps.base_map) { mapProperties.base_map = mapProps.base_map }
+      if (mapProps.name && !mapProperties.name) { updateMapName(mapProps.name) }
+      if (mapProps.description && !mapProperties.description) { mapProperties.description = mapProps.description }
       sendMessage('update_map', mapProperties)
     }
 
@@ -401,6 +354,8 @@ export default class extends Controller {
   // first: the layer becomes the first layer of the map, on the server and in the list
   createLayer(layer, { first = false } = {}) {
     let layerId = functions.featureId()
+    // an import keeps the feature ids of its source map otherwise
+    layer.geojson?.features?.forEach(f => { f.id = functions.featureId() })
     // must match server attribute order, for proper comparison in map_channel
     let layerData = { "id": layerId, "type": layer.type, "name": layer.name,
       "heatmap": layer.heatmap ?? false, "cluster": layer.cluster ?? false,

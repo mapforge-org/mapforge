@@ -89,9 +89,6 @@ msgstr "Füge Bilder hinzu, passe Farben, Symbole, Beschriftungen, (3D-)Polygone
 msgid "Add waypoint here"
 msgstr "Wegpunkt hier einfügen"
 
-msgid "Added feature %{index}/%{total}"
-msgstr "Objekt %{index}/%{total} hinzugefügt"
-
 msgid "Added image"
 msgstr "Bild hinzugefügt"
 
@@ -1381,9 +1378,6 @@ msgstr "Die Karte startet zentriert auf deinen Inhalten."
 
 msgid "Thick lines"
 msgstr "Dicke Linien"
-
-msgid "This browser cannot read KMZ archives. Please unzip it and import the .kml"
-msgstr "Dieser Browser kann keine KMZ-Archive lesen. Bitte entpacke es und importiere die .kml"
 
 msgid "This feature no longer exists"
 msgstr "Dieses Objekt existiert nicht mehr"

@@ -52,9 +52,8 @@ class Feature
 
   # expects EPSG:4326 (WGS 84), the GeoJSON default
   def self.from_collection(geojson)
-    RGeo::GeoJSON.decode(geojson).map do |feature|
-      next unless feature.geometry
-      Feature.create!(RGeo::GeoJSON.encode(feature).except("id"))
+    (geojson["features"] || [ geojson ]).filter_map do |feature|
+      Feature.create!(feature.slice("type", "geometry", "properties")) if feature["geometry"]
     end
   end
 
