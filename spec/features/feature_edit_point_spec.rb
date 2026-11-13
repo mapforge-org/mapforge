@@ -86,7 +86,8 @@ describe "Feature edit, point features" do
         expect(page).not_to have_css(".desc-banner")
       end
 
-      it "strips scripts and event handlers from the description on the map" do
+      # the image src "x" fails to load on purpose
+      it "strips scripts and event handlers from the description on the map", :skip_console_errors do
         click_button "Add description"
         find(:css, ".CodeMirror textarea", visible: false)
           .set('<img src="x" onerror="window.pwned = true"> plain <script>window.pwned = true</script>')

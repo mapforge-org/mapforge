@@ -144,7 +144,8 @@ describe "Map public view" do
 
     # A modal pushes a history entry without Turbo state, and Turbo ignores a popstate
     # to such an entry. The map layout opts out of Turbo, so the login page is a full load.
-    it "comes back from the login page with the browser back button" do
+    # Chrome closes the websocket of a page that enters the back-forward cache, and logs that as an error
+    it "comes back from the login page with the browser back button", :skip_console_errors do
       find(".maplibregl-ctrl-map").click
       find("#settings-modal .modal-close-button").click
       within("#edit-notice") { click_link "log in" }

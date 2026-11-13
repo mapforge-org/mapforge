@@ -5,6 +5,7 @@ RSpec.shared_context "with an editable map and an elevation stub" do
   before do
     sign_in(user)
     stub_fixture(:post, /api\.heigit\.org\/openelevationservice\/v0\/line/, "ors_elevation.json")
+    stub_point_elevation
     visit map.private_map_path
     expect_map_loaded
   end

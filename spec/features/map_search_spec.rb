@@ -31,6 +31,12 @@ describe "Map places search" do
         { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
         photon_file ]
     end
+    # a click on a result loads its tags. Only ways: CapybaraMock takes the first matching stub,
+    # and the node stubs of the nested contexts come later.
+    CapybaraMock.stub_request(:get, %r{api\.openstreetmap\.org/api/0\.6/way/}).to_return(
+      headers: { "Access-Control-Allow-Origin" => "*", "Content-Type" => "application/json" },
+      body: { elements: [] }.to_json
+    )
 
     visit map_path
     expect_map_loaded

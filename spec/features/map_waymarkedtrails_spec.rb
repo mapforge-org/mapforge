@@ -31,6 +31,7 @@ describe "Waymarkedtrails layer" do
   before do
     # the details of a line show its elevation profile
     stub_fixture(:post, /api\.heigit\.org\/openelevationservice\/v0\/line/, "ors_elevation.json")
+    stub_point_elevation
     stub_json(%r{hiking\.waymarkedtrails\.org/api/v1/tiles/12/}, {
       type: "FeatureCollection",
       features: [

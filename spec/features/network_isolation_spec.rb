@@ -12,7 +12,7 @@ describe "Network isolation" do
     JS
   end
 
-  it "blocks external hosts" do
+  it "blocks external hosts", :skip_console_errors do
     expect(fetch_status("https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css")).to eq "blocked"
   end
 
