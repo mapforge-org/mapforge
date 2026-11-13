@@ -1,5 +1,4 @@
 import DOMPurify from 'dompurify'
-import { loadStylesheet } from 'helpers/dom'
 import { marked } from 'marked'
 
 marked.use({ gfm: true, breaks: true })
@@ -24,14 +23,10 @@ export function renderMarkdown (text) {
 // markdownEditor() without another await in between, or two calls can create duplicate editors.
 export async function loadMarkdownEditor () {
   await import('easymde') // import EasyMDE UMD bundle
-  // EasyMDE defaults to a broken font-awesome build from bootstrapcdn; load a working one ourselves
-  // (v4-shims maps EasyMDE's old "fa fa-*" classes to FA6 icons)
-  loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css')
-  loadStylesheet('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/v4-shims.min.css')
 }
 
 export function markdownEditor (element, onUpdate) {
-  return new window.EasyMDE({
+  const editor = new window.EasyMDE({
     element,
     placeholder: window.__('Add a description text'),
     toolbar: ["bold", "italic", "heading", "code", "table", "|", "unordered-list", "horizontal-rule", "|", "link", "image", "preview"],
@@ -40,4 +35,23 @@ export function markdownEditor (element, onUpdate) {
     autoDownloadFontAwesome: false,
     status: [{ className: 'autosave', onUpdate }]
   })
+  // Bootstrap Icons, which every page loads, in place of EasyMDE's Font Awesome classes.
+  // EasyMDE 2.20 ignores its iconClassMap option, so the classes get swapped on the buttons.
+  Object.entries(TOOLBAR_ICONS).forEach(([name, icon]) => {
+    editor.toolbarElements[name].querySelector('i').className = `bi bi-${icon}`
+  })
+  return editor
+}
+
+const TOOLBAR_ICONS = {
+  bold: 'type-bold',
+  italic: 'type-italic',
+  heading: 'type-h1',
+  code: 'code',
+  table: 'table',
+  'unordered-list': 'list-ul',
+  'horizontal-rule': 'dash-lg',
+  link: 'link-45deg',
+  image: 'image',
+  preview: 'eye'
 }

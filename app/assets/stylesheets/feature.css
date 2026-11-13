@@ -345,7 +345,7 @@ img[src*="/icon-sets/fontawesome/"] {
 }
 
 .editor-toolbar {
-  padding: 0.3rem 0 !important;
+  padding: 0.3rem !important;
 }
 
 /* fix bootstrap overwriting style of easymde 'table' button */
