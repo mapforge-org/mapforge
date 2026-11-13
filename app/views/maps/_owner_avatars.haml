@@ -1,0 +1,6 @@
+- owners.each do |owner|
+  = link_to url_for(params: { search: "user:#{owner.id}" }), title: owner.name.presence || owner.email, 'aria-label': _("Browse maps by user %{email}") % { email: owner.email } do
+    - if owner.image
+      = image_tag avatar_url(owner.image, 40), class: "map-avatar", loading: "lazy", alt: "", referrerpolicy: "no-referrer"
+    - else
+      %span.map-avatar= (owner.name.presence || owner.email.to_s).first.upcase

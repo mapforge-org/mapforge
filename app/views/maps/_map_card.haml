@@ -15,22 +15,21 @@
         = _("Featured in gallery")
 
   - if admin
-    .map-avatars
-      - map.owners.each do |owner|
-        = link_to url_for(params: { search: "user:#{owner.id}" }), 'aria-label': _("Browse maps by user %{email}") % { email: owner.email } do
-          - if owner.image
-            = image_tag avatar_url(owner.image, 40), class: "map-avatar", loading: "lazy", alt: "", referrerpolicy: "no-referrer"
-          - else
-            %span.map-avatar= (owner.name.presence || owner.email.to_s).first.upcase
+    .map-avatars= render "maps/owner_avatars", owners: map.owners
 
   .map-card-body
-    .map-card-title.mapforge-font= title
+    .map-card-title{ class: (map.name.present? ? "mapforge-font" : "untitled"), style: "--len: #{title.length}" }= title
 
     - tags = map.tags - [ "featured" ]
     - if tags.any?
       .map-card-tags
         - tags.each do |tag|
           %span.map-card-tag= "##{tag}"
+
+    - if !admin && map.owners.size > 1
+      .map-card-shared
+        = _("Shared with:")
+        = render "maps/owner_avatars", owners: map.owners - [ @user ]
 
     - if admin
       .map-card-stats

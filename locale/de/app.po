@@ -1245,6 +1245,9 @@ msgstr "Eigentümerlink teilen"
 msgid "Share view link"
 msgstr "Ansichtslink teilen"
 
+msgid "Shared with:"
+msgstr "Geteilt mit:"
+
 msgid "Show QR code"
 msgstr "QR-Code anzeigen"
 

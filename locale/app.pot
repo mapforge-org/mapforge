@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 12:14+0100\n"
-"PO-Revision-Date: 2026-11-13 12:14+0100\n"
+"POT-Creation-Date: 2026-11-13 12:37+0100\n"
+"PO-Revision-Date: 2026-11-13 12:37+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../app/views/maps/_map_card.haml:40
+#: ../app/views/maps/_map_card.haml:38
 msgid "%{count} features"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:38
+#: ../app/views/maps/_map_card.haml:36
 msgid "%{count} views"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "Bright street map with clear roads and labels"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:21
+#: ../app/views/maps/_owner_avatars.haml:2
 msgid "Browse maps by user %{email}"
 msgstr ""
 
@@ -410,7 +410,7 @@ msgstr ""
 msgid "Copy link to clipboard"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:44
+#: ../app/views/maps/_map_card.haml:42
 msgid "Copy map"
 msgstr ""
 
@@ -486,7 +486,7 @@ msgstr ""
 msgid "Delete feature"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:46
+#: ../app/views/maps/_map_card.haml:44
 msgid "Delete map"
 msgstr ""
 
@@ -550,11 +550,11 @@ msgstr ""
 msgid "Do nothing"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:46
+#: ../app/views/maps/_map_card.haml:44
 msgid "Do you really want to delete this map?"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:44
+#: ../app/views/maps/_map_card.haml:42
 msgid "Do you want to copy this map?"
 msgstr ""
 
@@ -738,7 +738,7 @@ msgstr ""
 msgid "Feature"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:16
+#: ../app/views/maps/_map_card.haml:15
 msgid "Featured in gallery"
 msgstr ""
 
@@ -1098,7 +1098,7 @@ msgstr ""
 msgid "Map"
 msgstr ""
 
-#: ../app/views/frontpage/_featured_maps.haml:13 ../app/views/maps/_map.haml:12 ../app/views/maps/_map.haml:17 ../app/views/maps/_map_card.haml:9
+#: ../app/views/frontpage/_featured_maps.haml:13 ../app/views/maps/_map.haml:12 ../app/views/maps/_map.haml:17 ../app/views/maps/_map_card.haml:8
 msgid "Map '%{name}'"
 msgstr ""
 
@@ -1282,7 +1282,7 @@ msgstr ""
 msgid "Open link"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:10 ../app/views/maps/_map_card.haml:8
+#: ../app/views/maps/_map.haml:10 ../app/views/maps/_map_card.haml:7
 msgid "Open map '%{name}'"
 msgstr ""
 
@@ -1410,11 +1410,11 @@ msgstr ""
 msgid "Privacy Policy"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:4
+#: ../app/views/maps/_map_card.haml:3
 msgid "Private"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:4
+#: ../app/views/maps/_map_card.haml:3
 msgid "Private link"
 msgstr ""
 
@@ -1430,7 +1430,7 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:4
+#: ../app/views/maps/_map_card.haml:3
 msgid "Public"
 msgstr ""
 
@@ -1655,6 +1655,10 @@ msgstr ""
 msgid "Share view link"
 msgstr ""
 
+#: ../app/views/maps/_map_card.haml:31
+msgid "Shared with:"
+msgstr ""
+
 #: ../app/views/maps/modals/_share.haml:36 ../app/views/maps/modals/_share.haml:52 ../app/views/maps/modals/_share.haml:68
 msgid "Show QR code"
 msgstr ""
@@ -1691,7 +1695,7 @@ msgstr ""
 msgid "Show title on map"
 msgstr ""
 
-#: ../app/views/maps/_list.haml:7
+#: ../app/views/maps/_list.haml:6
 msgid "Showing %{count} map"
 msgid_plural "Showing %{count} maps"
 msgstr[0] ""
@@ -1941,7 +1945,7 @@ msgstr ""
 msgid "Unpaved"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:3
+#: ../app/views/maps/_map_card.haml:2
 msgid "Untitled map"
 msgstr ""
 
@@ -1953,7 +1957,7 @@ msgstr ""
 msgid "Update Layer"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:43
+#: ../app/views/maps/_map_card.haml:41
 msgid "Updated %{time} ago"
 msgstr ""
 

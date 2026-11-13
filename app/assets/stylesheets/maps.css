@@ -243,12 +243,29 @@ span.map-avatar {
   gap: 0.5rem;
   padding: 0.75rem;
   color: var(--color-dark-charcoal);
+  container-type: inline-size;
 }
 
 .map-card-title {
   overflow: hidden;
-  font-size: 1.25rem;
+  white-space: nowrap;
   text-overflow: ellipsis;
+
+  /* --len is the title length. 1.8 is about 1 / glyph width in em, so a long
+     title shrinks to fit the card before the ellipsis cuts it. */
+  font-size: clamp(1rem, 180cqi / var(--len), 1.25rem);
+
+  &.untitled {
+    font-style: italic;
+    color: var(--color-dark-charcoal);
+    opacity: 0.6;
+  }
+}
+
+.map-card-shared {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .map-card-tags {
