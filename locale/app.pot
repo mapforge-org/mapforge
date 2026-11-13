@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 11:13+0100\n"
-"PO-Revision-Date: 2026-11-13 11:13+0100\n"
+"POT-Creation-Date: 2026-11-13 12:14+0100\n"
+"PO-Revision-Date: 2026-11-13 12:14+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../app/views/maps/_map.haml:44
+#: ../app/views/maps/_map_card.haml:40
 msgid "%{count} features"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:42
+#: ../app/views/maps/_map_card.haml:38
 msgid "%{count} views"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "Bright street map with clear roads and labels"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:17
+#: ../app/views/maps/_map_card.haml:21
 msgid "Browse maps by user %{email}"
 msgstr ""
 
@@ -410,7 +410,7 @@ msgstr ""
 msgid "Copy link to clipboard"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:21
+#: ../app/views/maps/_map_card.haml:44
 msgid "Copy map"
 msgstr ""
 
@@ -486,7 +486,7 @@ msgstr ""
 msgid "Delete feature"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:25
+#: ../app/views/maps/_map_card.haml:46
 msgid "Delete map"
 msgstr ""
 
@@ -550,11 +550,11 @@ msgstr ""
 msgid "Do nothing"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:25
+#: ../app/views/maps/_map_card.haml:46
 msgid "Do you really want to delete this map?"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:21
+#: ../app/views/maps/_map_card.haml:44
 msgid "Do you want to copy this map?"
 msgstr ""
 
@@ -736,6 +736,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/feature.js:75
 msgid "Feature"
+msgstr ""
+
+#: ../app/views/maps/_map_card.haml:16
+msgid "Featured in gallery"
 msgstr ""
 
 #: ../app/javascript/maplibre/routing/gpx_to_route.js:173 ../app/javascript/maplibre/routing/gpx_to_route.js:320
@@ -1094,7 +1098,7 @@ msgstr ""
 msgid "Map"
 msgstr ""
 
-#: ../app/views/frontpage/_featured_maps.haml:13 ../app/views/maps/_map.haml:31 ../app/views/maps/_map.haml:36
+#: ../app/views/frontpage/_featured_maps.haml:13 ../app/views/maps/_map.haml:12 ../app/views/maps/_map.haml:17 ../app/views/maps/_map_card.haml:9
 msgid "Map '%{name}'"
 msgstr ""
 
@@ -1278,7 +1282,7 @@ msgstr ""
 msgid "Open link"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:29
+#: ../app/views/maps/_map.haml:10 ../app/views/maps/_map_card.haml:8
 msgid "Open map '%{name}'"
 msgstr ""
 
@@ -1406,6 +1410,14 @@ msgstr ""
 msgid "Privacy Policy"
 msgstr ""
 
+#: ../app/views/maps/_map_card.haml:4
+msgid "Private"
+msgstr ""
+
+#: ../app/views/maps/_map_card.haml:4
+msgid "Private link"
+msgstr ""
+
 #: ../app/views/shared/_header.html.haml:76 ../app/views/shared/_header.html.haml:83
 msgid "Profile"
 msgstr ""
@@ -1416,6 +1428,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/_feature.haml:27
 msgid "Properties"
+msgstr ""
+
+#: ../app/views/maps/_map_card.haml:4
+msgid "Public"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:96
@@ -1675,7 +1691,7 @@ msgstr ""
 msgid "Show title on map"
 msgstr ""
 
-#: ../app/views/maps/_list.haml:10
+#: ../app/views/maps/_list.haml:7
 msgid "Showing %{count} map"
 msgid_plural "Showing %{count} maps"
 msgstr[0] ""
@@ -1837,7 +1853,7 @@ msgstr ""
 msgid "This feature no longer exists"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:10
+#: ../app/views/maps/_map.haml:6
 msgid "This map is private and not linked from the public listing."
 msgstr ""
 
@@ -1925,12 +1941,20 @@ msgstr ""
 msgid "Unpaved"
 msgstr ""
 
+#: ../app/views/maps/_map_card.haml:3
+msgid "Untitled map"
+msgstr ""
+
 #: ../app/views/maps/modals/_layers.haml:185 ../app/views/maps/modals/_layers.haml:198 ../app/views/maps/modals/feature/_edit_raw.haml:7 ../app/views/maps/modals/feature/_edit_raw_geometry.haml:7
 msgid "Update"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:184 ../app/views/maps/modals/_layers.haml:197
 msgid "Update Layer"
+msgstr ""
+
+#: ../app/views/maps/_map_card.haml:43
+msgid "Updated %{time} ago"
 msgstr ""
 
 #: ../app/javascript/maplibre/layers/geojson/route_extras.js:55
@@ -2197,10 +2221,6 @@ msgstr ""
 msgid "in the gallery"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:40
-msgid "last change %{time} ago"
-msgstr ""
-
 #: ../app/javascript/maplibre/controls/search.js:151
 msgid "launderette|laundromat"
 msgstr ""
@@ -2251,10 +2271,6 @@ msgstr ""
 
 #: ../app/views/frontpage/_share_drawing.haml:7
 msgid "public"
-msgstr ""
-
-#: ../app/views/maps/_map.haml:46
-msgid "public id:"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/search.js:145

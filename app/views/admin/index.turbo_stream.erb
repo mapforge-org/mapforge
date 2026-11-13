@@ -1,5 +1,5 @@
 <%= turbo_stream.replace "maps-list" do %>
-  <%= render "list", maps: @maps %>
+  <%= render "maps/list", maps: @maps, partial: "maps/map_card", admin: true %>
 <% end %>
 
 <%= turbo_stream.replace "search-filters-container" do %>

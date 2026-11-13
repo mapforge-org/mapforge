@@ -1,8 +1,0 @@
-#maps-list.maps-list
-
-  %span#map-list-count= "Showing #{pluralize(@maps.size, 'map')}"
-
-  .grid-container.flex-center.mb-4
-    - @maps.each do |map|
-      = render map, rw: true, last_change: true, avatar: true, delete: true, clone:true
-      

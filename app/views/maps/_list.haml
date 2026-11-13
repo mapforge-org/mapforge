@@ -1,14 +1,9 @@
 - maps = local_assigns[:maps] || @maps || []
-- rw = local_assigns[:rw] || false
-- avatar = local_assigns[:avatar] || false
-- delete = local_assigns[:delete] || false
-- clone = local_assigns[:clone] || false
-- last_change = local_assigns[:last_change] || false
+- partial = local_assigns[:partial] || "maps/map"
 
 #maps-list.maps-list
 
   %span#map-list-count= n_("Showing %{count} map", "Showing %{count} maps", maps.size) % { count: maps.size }
 
-  .grid-container.flex-center{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
-    - maps.each do |map|
-      = render map, rw: rw, last_change: last_change, avatar: avatar, delete: delete, clone: clone
+  .grid-container{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
+    = render partial: partial, collection: maps, as: :map, locals: { admin: local_assigns[:admin] }

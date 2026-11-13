@@ -15,7 +15,7 @@
     = _("Your Maps")
 
   = render "list_filter"
-  = render "list" , maps: @my_maps, rw: true, delete: true, clone: false, last_change: false
+  = render "list" , maps: @my_maps, partial: "maps/map_card"
 
 
   - if @my_maps.empty?

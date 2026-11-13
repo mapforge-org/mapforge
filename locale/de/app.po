@@ -557,6 +557,9 @@ msgstr "Ebene %{name} konnte nicht geladen werden"
 msgid "Feature"
 msgstr "Objekt"
 
+msgid "Featured in gallery"
+msgstr "In der Galerie hervorgehoben"
+
 msgid "Fetching elevation data..."
 msgstr "Höhendaten werden geladen..."
 
@@ -1058,6 +1061,12 @@ msgstr "Polygon-Modus: Auf die Karte klicken, um ein Polygon zu zeichnen"
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
 
+msgid "Private"
+msgstr "Privat"
+
+msgid "Private link"
+msgstr "Privater Link"
+
 msgid "Profile"
 msgstr "Profil"
 
@@ -1066,6 +1075,9 @@ msgstr "Projekt"
 
 msgid "Properties"
 msgstr "Titel"
+
+msgid "Public"
+msgstr "Öffentlich"
 
 msgid "Publish in the gallery or share privately – you decide."
 msgstr "In der Galerie veröffentlichen oder privat teilen – du entscheidest."
@@ -1448,11 +1460,17 @@ msgstr "Unbekannt"
 msgid "Unpaved"
 msgstr "Unbefestigt"
 
+msgid "Untitled map"
+msgstr "Unbenannte Karte"
+
 msgid "Update"
 msgstr "Aktualisieren"
 
 msgid "Update Layer"
 msgstr "Ebene aktualisieren"
+
+msgid "Updated %{time} ago"
+msgstr "Aktualisiert vor %{time}"
 
 msgid "Uphill"
 msgstr "Bergauf"
@@ -1652,9 +1670,6 @@ msgstr "Hafen|Jachthafen|Yachthafen|Marina"
 msgid "in the gallery"
 msgstr "in der Galerie"
 
-msgid "last change %{time} ago"
-msgstr "letzte Änderung vor %{time}"
-
 msgid "launderette|laundromat"
 msgstr "Waescherei|Wäscherei|Waschsalon|Waschen"
 
@@ -1693,9 +1708,6 @@ msgstr "Post|Postamt|Postfiliale"
 
 msgid "public"
 msgstr "öffentlich"
-
-msgid "public id:"
-msgstr "öffentliche ID:"
 
 msgid "public_library"
 msgstr "Bibliothek|Buecherei|Bücherei|Stadtbibliothek"

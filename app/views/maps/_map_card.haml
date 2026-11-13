@@ -1,0 +1,46 @@
+- featured = map.tags.include?("featured")
+- title = map.name.presence || _("Untitled map")
+- icon, visibility = { "private" => [ "bi-lock", _("Private") ],
+                       "listed" => [ "bi-globe", _("Public") ] }.fetch(map.view_permission, [ "bi-link-45deg", _("Private link") ])
+
+.map-card.grid-item.map-preview.background-bright{ class: [ "map_#{map.public_id}", ("featured" if featured) ] }
+  = link_to map_path(id: map.private_id, name: map.name), class: "map-card-image", 'aria-label': _("Open map '%{name}'") % { name: title } do
+    %img{ src: map.screenshot || image_path("preview.png"), class: "preview-image", loading: "lazy", alt: _("Map '%{name}'") % { name: title } }
+    %span.map-card-badge
+      %i.bi{ class: icon }
+      = visibility
+    - if featured
+      %span.map-card-featured
+        %i.bi.bi-star-fill
+        = _("Featured in gallery")
+
+  - if admin
+    .map-avatars
+      - map.owners.each do |owner|
+        = link_to url_for(params: { search: "user:#{owner.id}" }), 'aria-label': _("Browse maps by user %{email}") % { email: owner.email } do
+          - if owner.image
+            = image_tag avatar_url(owner.image, 40), class: "map-avatar", loading: "lazy", alt: "", referrerpolicy: "no-referrer"
+          - else
+            %span.map-avatar= (owner.name.presence || owner.email.to_s).first.upcase
+
+  .map-card-body
+    .map-card-title.mapforge-font= title
+
+    - tags = map.tags - [ "featured" ]
+    - if tags.any?
+      .map-card-tags
+        - tags.each do |tag|
+          %span.map-card-tag= "##{tag}"
+
+    - if admin
+      .map-card-stats
+        = _("%{count} views") % { count: map.view_count }
+        &middot;
+        = _("%{count} features") % { count: map.features_count }
+
+    .map-card-footer
+      %span.map-card-updated= _("Updated %{time} ago") % { time: time_ago_in_words(map.updated_at) }
+      = link_to copy_map_path(id: map.public_id), data: { turbo_method: :post, turbo_confirm: _("Do you want to copy this map?") }, title: _("Copy map") do
+        %i.bi.bi-copy
+      = link_to destroy_map_path(id: map.private_id), data: { turbo_method: :delete, turbo_confirm: _("Do you really want to delete this map?") }, title: _("Delete map"), class: "map-delete" do
+        %i.bi.bi-trash

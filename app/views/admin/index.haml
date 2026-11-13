@@ -6,7 +6,7 @@
     Admin
 
   = render "maps/list_filter"
-  = render "list", maps: @maps
+  = render "maps/list", maps: @maps, partial: "maps/map_card", admin: true
 
   - if @maps.empty?
     .container.pt-4.mt-4.mb-4.empty-map-list.background-bright
