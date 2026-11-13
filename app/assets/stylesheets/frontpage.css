@@ -542,15 +542,12 @@ section,
   stroke-width: 1.5;
 }
 
+/* The pins take the color of the route outline. A dark outline sets them off from the light backgrounds. */
 .landing-route-pin {
   position: absolute;
   z-index: 2;
   font-size: 1.6rem;
   line-height: 1;
-}
-
-/* The pins take the color of the route outline. A dark outline sets them off from the light backgrounds. */
-.landing-route-pin {
   color: var(--color-mid-fawn);
   -webkit-text-stroke: 3px var(--color-mid-brown);
   paint-order: stroke fill;
