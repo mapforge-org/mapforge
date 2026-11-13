@@ -1,7 +1,7 @@
 class AdminController < ApplicationController
   include MapListFilters
 
-  QUICK_FILTERS = { "all" => "All", "featured" => "Featured", "public" => "Public", "content" => "With content" }.freeze
+  QUICK_FILTERS = { "all" => N_("All"), "featured" => N_("Featured"), "public" => N_("Public"), "content" => N_("Content") }.freeze
 
   before_action :require_admin_user
 

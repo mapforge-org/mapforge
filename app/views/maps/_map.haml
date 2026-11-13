@@ -14,5 +14,5 @@
             loading: 'lazy',
             alt: _("Map '%{name}'") % { name: map.name }}
       - else
-        = image_tag "preview.png", class: 'preview-image', loading: 'lazy', alt: _("Map '%{name}'") % { name: map.name }
+        = image_tag "preview.png", class: 'preview-image preview-placeholder', loading: 'lazy', alt: _("Map '%{name}'") % { name: map.name }
     .map-preview-title.mapforge-font.text-glow= map.name

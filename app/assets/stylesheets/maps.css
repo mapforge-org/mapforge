@@ -83,6 +83,11 @@ nav.fixed-top~#maps {
   }
 }
 
+/* A tiny map image, scaled up as blocks until the screenshot task made the real preview */
+.preview-placeholder {
+  image-rendering: pixelated;
+}
+
 .preview-image-link {
   position:relative;
   overflow: hidden;
@@ -311,17 +316,14 @@ span.map-avatar {
   margin: 0 0 0.375rem;
 }
 
-.list-search {
+.list-search,
+.list-tag {
   display: inline-block;
   vertical-align: middle;
-
-  /* 15rem = the 1rem right margin + the 0.75rem sort margin + the widest sort button
-     ("Kürzlich aktualisiert", about 12.75rem). Less, and the search drops below the button. */
-  width: clamp(12rem, 100% - 15rem, 26rem);
   margin: 0.375rem 1rem 0.375rem 0;
   position: relative;
 
-  > .bi-search {
+  > .bi {
     position: absolute;
     top: 50%;
     left: 0.8rem;
@@ -329,15 +331,38 @@ span.map-avatar {
     color: var(--color-dark-charcoal);
     pointer-events: none;
   }
+}
+
+.list-search {
+  /* 15rem = the 1rem right margin + the 0.75rem sort margin + the widest sort button
+     ("Kürzlich aktualisiert", about 12.75rem). Less, and the search drops below the button. */
+  width: clamp(12rem, 100% - 15rem, 26rem);
 
   #search {
     padding-left: 2.3rem;
     padding-right: 7.5rem;
   }
+}
 
-  /* The X below replaces the browser's own clear button, which looks different in each browser */
-  #search::-webkit-search-cancel-button {
-    appearance: none;
+/* The X buttons replace the browser's own clear button, which looks different in each browser */
+#search::-webkit-search-cancel-button,
+#tag-filter::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.tag-menu {
+  top: 100%;
+  width: 100%;
+
+  &:not(:has(li:not([hidden]))) {
+    display: none;
+  }
+
+  .dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
   }
 }
 
@@ -360,9 +385,58 @@ span.map-avatar {
   background: none;
 }
 
+.list-tag {
+  width: 12rem;
+
+  /* Green like the filters and the sort button, because the search is the main field */
+  #tag-filter,
+  #tag-filter:focus {
+    padding-left: 2.3rem;
+    padding-right: 2rem;
+    color: #fff;
+    background-color: var(--color-dark-moss-green);
+    border-color: var(--list-border);
+  }
+
+  #tag-filter::placeholder {
+    color: rgb(255 255 255 / 70%);
+  }
+
+  > .bi-tag,
+  .list-search-clear {
+    color: #fff;
+  }
+}
+
 #search:placeholder-shown ~ .list-search-end .list-search-clear,
+#tag-filter:placeholder-shown ~ .list-search-end .list-search-clear,
+.list-tag-toggle,
 .map-count-short {
   display: none;
+}
+
+/* Narrow screens get an icon button like the sort button, which opens all proposals */
+@media (width < 992px) {
+  .list-tag {
+    width: auto;
+
+    > .bi-tag,
+    #tag-filter,
+    .list-search-end {
+      display: none;
+    }
+  }
+
+  .list-tag-toggle {
+    display: inline-block;
+  }
+
+  .tag-menu {
+    right: 0;
+    left: auto;
+    width: auto;
+    min-width: 12rem;
+  }
 }
 
 .list-sort {
@@ -403,7 +477,8 @@ span.map-avatar {
   font-size: 0.75rem;
   background-color: rgb(255 255 255 / 20%);
 
-  .active & {
+  .active &,
+  .tag-menu & {
     color: white;
     background-color: var(--color-dark-moss-green);
   }
@@ -420,8 +495,8 @@ span.map-avatar {
     gap: 0.75rem 0.5rem;
     align-items: center;
 
-    /* The two outer columns center the search and the sort button between them */
-    grid-template-columns: 1fr minmax(0, 18rem) auto 1fr;
+    /* The two outer columns center the search, the tag and the sort button between them */
+    grid-template-columns: 1fr minmax(0, 18rem) auto auto 1fr;
   }
 
   .list-title,
@@ -439,8 +514,12 @@ span.map-avatar {
     width: auto;
   }
 
-  .list-sort {
+  .list-tag {
     grid-area: 2 / 3;
+  }
+
+  .list-sort {
+    grid-area: 2 / 4;
   }
 
   .map-count-full {
@@ -457,6 +536,7 @@ span.map-avatar {
 
   .list-title,
   .list-search,
+  .list-tag,
   .list-sort,
   .quick-filter {
     margin: 0;
@@ -494,5 +574,10 @@ span.map-avatar {
 
   .list-search #search {
     padding-right: 2.5rem;
+  }
+
+  /* No counter here, and the X only shows with a search, so the placeholder gets the full width */
+  .list-search #search:placeholder-shown {
+    padding-right: 0.75rem;
   }
 }

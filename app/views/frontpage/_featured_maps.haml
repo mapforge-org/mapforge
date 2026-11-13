@@ -13,5 +13,7 @@
           %img{ src: map.screenshot, alt: _("Map '%{name}'") % { name: map.name }, loading: 'lazy' }
           .landing-map-card-text
             %strong= map.name
-            - if map.description.present?
-              %span= map.description
+            -# Only the standard tags of db/seeds/tags.yml have a description
+            - description = map.tags.map(&:description).find(&:present?) || map.description
+            - if description.present?
+              %span= description

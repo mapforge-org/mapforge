@@ -400,6 +400,19 @@ describe MapsController do
       expect(response.body).not_to include("Map1")
     end
 
+    it "filters by the tag field and proposes the tags of the listed maps with their map count" do
+      Tag.seed_standard
+      create(:map, name: "Map1", view_permission: "listed", tags: [ Tag.for("hike") ])
+      create(:map, name: "Map2", view_permission: "listed")
+      create(:map, name: "Map3", tags: [ Tag.for("hike") ])
+      Tag.for("custom")
+      get maps_path, params: { tag: "Hike" }
+      expect(response.body).to include("Map1")
+      expect(response.body).not_to include("Map2")
+      options = Nokogiri::HTML(response.body).css(".tag-menu button").map { |option| option.text.squish }
+      expect(options).to eq [ "Hike 1" ]
+    end
+
     it "ignores the limit param and a sort column that the list does not offer" do
       get maps_path, params: { limit: "0", sort: "private_id" }
       expect(controller.instance_variable_get(:@sort)).to eq "view_count"
@@ -420,6 +433,25 @@ describe MapsController do
 
     before do
       sign_in(user)
+    end
+
+    it "shows the search without the tag field only when the user has maps, also when the search finds none" do
+      create(:map)
+      get my_path
+      expect(response.body).not_to include('id="search"')
+      expect(response.body).to include(%(href="#{playground_path}"))
+      create(:map, owners: [ user ])
+      get my_path, params: { search: "nothing" }
+      expect(response.body).to include('id="search"')
+      expect(response.body).not_to include('id="tag-filter"')
+    end
+
+    it "shows the pixelated placeholder asset for a map without a screenshot" do
+      create(:map, owners: [ user ])
+      get my_path
+      image = Nokogiri::HTML(response.body).at_css(".map-card img.preview-image")
+      expect(image["src"]).to start_with("/assets/preview")
+      expect(image["class"]).to include("preview-placeholder")
     end
 
     it "lists the private link of an own map" do

@@ -113,6 +113,15 @@ describe FrontpageController do
       expect(response.body).not_to include("0 features")
     end
 
+    it "shows the description of the standard tag of a featured map instead of the map description" do
+      Tag.seed_standard
+      create(:map, name: "Tagged", description: "A guide", view_permission: "listed", tags: [ Tag.for("custom"), Tag.for("hike") ])
+      allow_any_instance_of(Map).to receive(:screenshot) { |map| "/previews/1/#{map.public_id}.jpg" }
+      get "/"
+      expect(response.body).to include("<span>Routes for hikes and walks.</span>")
+      expect(response.body).not_to include("A guide")
+    end
+
     it "sends a default open graph image" do
       get "/"
       expect(response.body).to include('<meta content="http://www.example.com/images/map_list_preview.png" property="og:image">')

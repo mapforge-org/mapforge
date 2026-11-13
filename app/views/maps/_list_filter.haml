@@ -5,49 +5,73 @@
 .list-header{ 'data-controller': "maps", 'data-maps-sort-value': @sort,
                                          'data-maps-sort_label-value': sort_options[@sort.to_sym],
                                          'data-maps-direction-value': @direction,
-                                         'data-maps-search-value': @filter }
+                                         'data-maps-search-value': @filter,
+                                         'data-maps-tag-value': @tag }
   %h1.list-title.mapforge-font= title
 
-  -# Before the search, because the sort button floats right and the search and filters flow around it
-  .dropdown.list-sort
-    %button.btn.btn-green.dropdown-toggle{ type: "button", id: "sortDropdown", "data-bs-toggle": "dropdown", "aria-expanded": "false", 'aria-label': _("Sort") }
-      %i.bi#sortIcon{class: (@direction == "desc" ? "bi-sort-down" : "bi-sort-up")}
-      %span.sort-title#sortTitle= sort_options[@sort.to_sym]
-    %ul.background-bright.dropdown-menu.dropdown-menu-end{ "aria-labelledby": "sortDropdown" }
+  -# Without any maps, there is nothing to search, filter or sort
+  - if maps_to_filter?
+    -# Before the search, because the sort button floats right and the search and filters flow around it
+    .dropdown.list-sort
+      %button.btn.btn-green.dropdown-toggle{ type: "button", id: "sortDropdown", "data-bs-toggle": "dropdown", "aria-expanded": "false", 'aria-label': _("Sort") }
+        %i.bi#sortIcon{class: (@direction == "desc" ? "bi-sort-down" : "bi-sort-up")}
+        %span.sort-title#sortTitle= sort_options[@sort.to_sym]
+      %ul.background-bright.dropdown-menu.dropdown-menu-end{ "aria-labelledby": "sortDropdown" }
 
-      - sort_options.each do |sort, label|
+        - sort_options.each do |sort, label|
+          %li
+            %a.dropdown-item{
+              'data-action': "click->maps#changeSort",
+              'data-maps-sort-param': sort,
+              'data-maps-sort-label-param': label
+            }
+              = label
+        %hr.dropdown-divider
         %li
           %a.dropdown-item{
-            'data-action': "click->maps#changeSort",
-            'data-maps-sort-param': sort,
-            'data-maps-sort-label-param': label
+            'data-action': "click->maps#changeDirection",
+            'data-maps-direction-param': "desc"
           }
-            = label
-      %hr.dropdown-divider
-      %li
-        %a.dropdown-item{
-          'data-action': "click->maps#changeDirection",
-          'data-maps-direction-param': "desc"
-        }
-          %i.bi.bi-sort-down.me-1>
-          = _("Descending")
-      %li
-        %a.dropdown-item{
-          'data-action': "click->maps#changeDirection",
-          'data-maps-direction-param': "asc"
-        }
-          %i.bi.bi-sort-up.me-1>
-          = _("Ascending")
+            %i.bi.bi-sort-down.me-1>
+            = _("Descending")
+        %li
+          %a.dropdown-item{
+            'data-action': "click->maps#changeDirection",
+            'data-maps-direction-param': "asc"
+          }
+            %i.bi.bi-sort-up.me-1>
+            = _("Ascending")
 
-  .list-controls
-    .list-search
-      %i.bi.bi-search
-      %input#search.form-control{ type: "search", name: "search", placeholder: _("Search maps"), 'aria-label': _("Search maps"),
-                                  'data-action': "input->maps#search keydown.enter->maps#search", value: @search }
-      .list-search-end
-        = render "maps/map_count", count: count
-        %button.list-search-clear{ type: "button", 'aria-label': _("Clear filter"), 'data-action': "click->maps#clearFilter" }
-          %i.bi.bi-x-lg
+    .list-controls
+      .list-search
+        %i.bi.bi-search
+        %input#search.form-control{ type: "search", name: "search", placeholder: _("Search maps"), 'aria-label': _("Search maps"),
+                                    'data-action': "input->maps#search keydown.enter->maps#search", value: @search }
+        .list-search-end
+          = render "maps/map_count", count: count
+          %button.list-search-clear{ type: "button", 'aria-label': _("Clear filter"), 'data-action': "click->maps#clearFilter" }
+            %i.bi.bi-x-lg
 
-    - if local_assigns[:filters]
-      = render filters
+      -# A menu instead of a datalist, because the browser draws a datalist and CSS cannot style it
+      - if local_assigns.fetch(:tags, true)
+        .list-tag{ 'data-action': "focusout->maps#hideTags" }
+          %i.bi.bi-tag
+          %input#tag-filter.form-control{ type: "search", autocomplete: "off", value: @tag,
+                                          placeholder: _("Tag"), 'aria-label': _("Filter by tag"), 'data-maps-target': "tagInput",
+                                          'data-action': "focus->maps#showTags click->maps#showTags input->maps#typeTag keydown.enter->maps#applyTag keydown.esc->maps#closeTags" }
+          .list-search-end
+            %button.list-search-clear{ type: "button", 'aria-label': _("Clear tag"), 'data-action': "click->maps#clearTag" }
+              %i.bi.bi-x-lg
+          %button.btn.btn-green.list-tag-toggle{ type: "button", 'aria-label': _("Filter by tag"),
+                                                 'data-maps-target': "tagToggle", 'data-action': "maps#toggleTags" }
+            %i.bi.bi-tag
+          -# :prevent on mousedown keeps the focus in the input, else focusout closes the menu before the click
+          %ul.tag-menu.background-bright.dropdown-menu{ 'data-maps-target': "tagMenu", 'data-action': "mousedown->maps#showTags:prevent" }
+            - tag_options.each do |name, count|
+              %li{ 'data-tag': name }
+                %button.dropdown-item{ type: "button", 'data-action': "maps#pickTag", 'data-maps-tag-param': name }
+                  = name
+                  %span.quick-count= count
+
+      - if local_assigns[:filters]
+        = render filters

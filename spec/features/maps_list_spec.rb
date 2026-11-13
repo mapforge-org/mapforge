@@ -35,5 +35,38 @@ describe "Public map list" do
       find("button[aria-label='Clear filter']").click
       expect(page).to have_selector(".map-preview", count: 2)
     end
+
+    it "narrows the tag proposals while typing and filters by the picked tag" do
+      Tag.seed_standard
+      maps[0].update!(tag_keys: [ "hike" ])
+      visit maps_path
+
+      find("#tag-filter").send_keys("hi")
+      expect(page).to have_selector(".tag-menu button", count: 1)
+      expect(page).to have_selector(".map-preview", count: 2)
+      find(".tag-menu button", text: "Hike").click
+      expect(page).to have_selector(".map-preview", count: 1)
+      expect(page).to have_no_selector(".tag-menu")
+      expect(find_field("tag-filter").value).to eq "Hike"
+      expect(page).to have_current_path(/tag=Hike/)
+    end
+
+    it "offers the tags behind an icon button on narrow screens, and removes a picked tag on a second pick" do
+      Tag.seed_standard
+      maps[0].update!(tag_keys: [ "hike" ])
+      page.current_window.resize_to(800, 860)
+      visit maps_path
+
+      expect(page).to have_no_field("tag-filter")
+      find(".list-tag-toggle").click
+      find(".tag-menu button", text: "Hike").click
+      expect(page).to have_selector(".map-preview", count: 1)
+      expect(page).to have_css(".list-tag-toggle.active")
+
+      find(".list-tag-toggle").click
+      find(".tag-menu button.fw-bold", text: "Hike").click
+      expect(page).to have_selector(".map-preview", count: 2)
+      expect(page).to have_no_css(".list-tag-toggle.active")
+    end
   end
 end

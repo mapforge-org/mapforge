@@ -4,7 +4,9 @@
 
 .map-card.grid-item.map-preview.background-bright{ class: [ "map_#{map.public_id}", ("featured" if map.featured) ] }
   = link_to map_path(id: map.private_id, name: map.name), class: "map-card-image", 'aria-label': _("Open map '%{name}'") % { name: title } do
-    %img{ src: map.screenshot || image_path("preview.png"), class: "preview-image", loading: "lazy", alt: _("Map '%{name}'") % { name: title } }
+    - screenshot = map.screenshot
+    %img{ src: screenshot || image_path("preview.png"), class: [ "preview-image", ("preview-placeholder" unless screenshot) ],
+          loading: "lazy", alt: _("Map '%{name}'") % { name: title } }
     %span.map-card-badge
       %i.bi{ class: icon }
       = visibility

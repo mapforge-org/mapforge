@@ -54,7 +54,7 @@ Rails.application.routes.draw do
   # map icons
   get "/icon/osmc/:osmc_symbol", to: "images#osmc_symbol", as: "osmc"
   get "/icon/:public_id", to: "images#icon", as: "icon", constraints: { public_id: ID_PATTERN }
-  get "/image/:public_id", to: "images#image", as: "image", constraints: { public_id: ID_PATTERN }
+  get "/image/:public_id", to: "images#image", as: "uploaded_image", constraints: { public_id: ID_PATTERN }
   post "/images", to: "images#upload", as: "upload"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

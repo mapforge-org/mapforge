@@ -6,7 +6,7 @@ describe ImagesController do
   describe "#image" do
     it "redirects to image" do
       image_url = image.img.url
-      expect(get(image_path(public_id: image.public_id))).to redirect_to(image_url)
+      expect(get(uploaded_image_path(public_id: image.public_id))).to redirect_to(image_url)
     end
   end
 

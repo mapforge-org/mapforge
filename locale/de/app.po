@@ -112,6 +112,9 @@ msgstr "Erweitert"
 msgid "Advanced feature styling"
 msgstr "Erweiterte Objektgestaltung"
 
+msgid "All"
+msgstr "Alle"
+
 msgid "Applies in view mode. In edit mode, a click always selects the feature."
 msgstr "Gilt im Ansichtsmodus. Im Bearbeitungsmodus wählt ein Klick immer das Objekt aus."
 
@@ -244,6 +247,9 @@ msgstr "Kreis"
 msgid "Clear filter"
 msgstr "Filter entfernen"
 
+msgid "Clear tag"
+msgstr "Tag entfernen"
+
 msgid "Click to copy html to embed in your website"
 msgstr "Klicken, um das HTML zum Einbetten in deine Website zu kopieren"
 
@@ -279,6 +285,9 @@ msgstr "Karte einrichten"
 
 msgid "Connection error"
 msgstr "Verbindungsfehler"
+
+msgid "Content"
+msgstr "Inhalt"
 
 msgid "Contour lines added to map"
 msgstr "Höhenlinien zur Karte hinzugefügt"
@@ -562,6 +571,9 @@ msgstr "Ebene %{name} konnte nicht geladen werden"
 msgid "Feature"
 msgstr "Objekt"
 
+msgid "Featured"
+msgstr "Hervorgehoben"
+
 msgid "Featured in gallery"
 msgstr "In der Galerie hervorgehoben"
 
@@ -579,6 +591,9 @@ msgstr "Fläche"
 
 msgid "Fill color"
 msgstr "Flächenfarbe"
+
+msgid "Filter by tag"
+msgstr "Nach Tag filtern"
 
 msgid "Find my location"
 msgstr "Meinen Standort finden"
@@ -1093,6 +1108,9 @@ msgstr "QR-Code"
 msgid "Query"
 msgstr "Abfrage"
 
+msgid "Quick filter"
+msgstr "Schnellfilter"
+
 msgid "Raster URL (https://<host>/{z}/{x}/{y}.png)"
 msgstr "Raster-URL (https://<host>/{z}/{x}/{y}.png)"
 
@@ -1358,6 +1376,9 @@ msgstr "Untergrund"
 msgid "Symbol:"
 msgstr "Symbol:"
 
+msgid "Tag"
+msgstr "Tag"
+
 msgid "Team plans along"
 msgstr "Team plant"
 
@@ -1556,8 +1577,8 @@ msgstr "Ja"
 msgid "You are here"
 msgstr "Du bist hier"
 
-msgid "You can try out the %{tutorial_link} to learn how Mapforge works, or you can %{create_link} your first map right away."
-msgstr "Du kannst die %{tutorial_link} ausprobieren, um zu sehen, wie Mapforge funktioniert, oder %{create_link} direkt deine erste Karte."
+msgid "You can try out the %{playground_link} to learn how Mapforge works, or you can %{create_link} your first map right away."
+msgstr "Du kannst die %{playground_link} ausprobieren, um zu sehen, wie Mapforge funktioniert, oder %{create_link} direkt deine erste Karte."
 
 msgid "Your Maps"
 msgstr "Deine Karten"
@@ -1756,9 +1777,6 @@ msgstr "Strassenbahn|Straßenbahn|Tram"
 
 msgid "transparent"
 msgstr "transparent"
-
-msgid "tutorial map"
-msgstr "Tutorial-Karte"
 
 msgid "vet|animal_doctor"
 msgstr "Tierarzt|Tieraerztin|Tierärztin|Tierklinik"

@@ -8,6 +8,14 @@ describe AdminController do
       sign_in(admin)
     end
 
+    it "shows the search only when there are maps, also when the quick filter finds none" do
+      get "/admin"
+      expect(response.body).not_to include('id="search"')
+      create(:map)
+      get "/admin", params: { quick: "featured" }
+      expect(response.body).to include('id="search"')
+    end
+
     it "lists the private link of every map" do
       map = create(:map)
       get "/admin", params: { quick: "all" }
@@ -48,7 +56,7 @@ describe AdminController do
         get "/admin"
         titles = Nokogiri::HTML(response.body).css(".map-card-title").map(&:text)
         expect(titles).to eq [ "Filled" ]
-        expect(Nokogiri::HTML(response.body).at_css("#quick-filter .active").text).to include "With content"
+        expect(Nokogiri::HTML(response.body).at_css("#quick-filter .active").text).to include "Content"
       end
 
       it "counts all maps of every filter, whatever the search" do

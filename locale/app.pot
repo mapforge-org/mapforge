@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 14:22+0100\n"
-"PO-Revision-Date: 2026-11-13 14:22+0100\n"
+"POT-Creation-Date: 2026-11-14 00:14+0100\n"
+"PO-Revision-Date: 2026-11-14 00:14+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,17 +18,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../app/views/maps/_map_card.haml:38
+#: ../app/views/maps/_map_card.haml:36
 msgid "%{count} features"
 msgstr ""
 
-#: ../app/views/maps/_map_count.haml:1
+#: ../app/views/maps/_map_count.haml:2
 msgid "%{count} map"
 msgid_plural "%{count} maps"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/views/maps/_map_card.haml:36
+#: ../app/views/maps/_map_card.haml:34
 msgid "%{count} views"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 msgid "Add OpenStreetMap layers"
 msgstr ""
 
-#: ../app/javascript/helpers/markdown.js:36
+#: ../app/javascript/helpers/markdown.js:31
 msgid "Add a description text"
 msgstr ""
 
@@ -144,6 +144,10 @@ msgstr ""
 msgid "Advanced feature styling"
 msgstr ""
 
+#: ../app/controllers/admin_controller.rb:4
+msgid "All"
+msgstr ""
+
 #: ../app/views/maps/modals/feature/_edit_ui.haml:241
 msgid "Applies in view mode. In edit mode, a click always selects the feature."
 msgstr ""
@@ -156,7 +160,7 @@ msgstr ""
 msgid "Artistic"
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:51
+#: ../app/views/maps/_list_filter.haml:43
 msgid "Ascending"
 msgstr ""
 
@@ -316,8 +320,12 @@ msgstr ""
 msgid "Circle"
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:17
+#: ../app/views/maps/_list_filter.haml:52
 msgid "Clear filter"
+msgstr ""
+
+#: ../app/views/maps/_list_filter.haml:61
+msgid "Clear tag"
 msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:111
@@ -368,6 +376,10 @@ msgstr ""
 msgid "Connection error"
 msgstr ""
 
+#: ../app/controllers/admin_controller.rb:4
+msgid "Content"
+msgstr ""
+
 #: ../app/javascript/maplibre/styles/terrain.js:121
 msgid "Contour lines added to map"
 msgstr ""
@@ -416,7 +428,7 @@ msgstr ""
 msgid "Copy link to clipboard"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:42
+#: ../app/views/maps/_map_card.haml:40
 msgid "Copy map"
 msgstr ""
 
@@ -492,7 +504,7 @@ msgstr ""
 msgid "Delete feature"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:44
+#: ../app/views/maps/_map_card.haml:42
 msgid "Delete map"
 msgstr ""
 
@@ -508,7 +520,7 @@ msgstr ""
 msgid "Demo: a map with routes, photos and 3D buildings takes shape"
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:44
+#: ../app/views/maps/_list_filter.haml:36
 msgid "Descending"
 msgstr ""
 
@@ -556,11 +568,11 @@ msgstr ""
 msgid "Do nothing"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:44
+#: ../app/views/maps/_map_card.haml:42
 msgid "Do you really want to delete this map?"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:42
+#: ../app/views/maps/_map_card.haml:40
 msgid "Do you want to copy this map?"
 msgstr ""
 
@@ -744,7 +756,11 @@ msgstr ""
 msgid "Feature"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:15
+#: ../app/controllers/admin_controller.rb:4
+msgid "Featured"
+msgstr ""
+
+#: ../app/views/maps/_map_card.haml:14
 msgid "Featured in gallery"
 msgstr ""
 
@@ -766,6 +782,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:123
 msgid "Fill color"
+msgstr ""
+
+#: ../app/views/maps/_list_filter.haml:58 ../app/views/maps/_list_filter.haml:63
+msgid "Filter by tag"
 msgstr ""
 
 #: ../app/javascript/maplibre/map.js:212
@@ -1072,7 +1092,7 @@ msgstr ""
 msgid "Loading live layer"
 msgstr ""
 
-#: ../app/javascript/controllers/maps_controller.js:48
+#: ../app/javascript/controllers/maps_controller.js:135
 msgid "Loading..."
 msgstr ""
 
@@ -1104,7 +1124,7 @@ msgstr ""
 msgid "Map"
 msgstr ""
 
-#: ../app/views/frontpage/_featured_maps.haml:13 ../app/views/maps/_map.haml:12 ../app/views/maps/_map.haml:17 ../app/views/maps/_map_card.haml:8
+#: ../app/views/frontpage/_featured_maps.haml:13 ../app/views/maps/_map.haml:12 ../app/views/maps/_map.haml:17 ../app/views/maps/_map_card.haml:7
 msgid "Map '%{name}'"
 msgstr ""
 
@@ -1288,7 +1308,7 @@ msgstr ""
 msgid "Open link"
 msgstr ""
 
-#: ../app/views/maps/_map.haml:10 ../app/views/maps/_map_card.haml:7
+#: ../app/views/maps/_map.haml:10 ../app/views/maps/_map_card.haml:6
 msgid "Open map '%{name}'"
 msgstr ""
 
@@ -1384,7 +1404,7 @@ msgstr ""
 msgid "Play video"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:32
+#: ../app/views/frontpage/index.haml:32 ../app/views/maps/my.haml:23
 msgid "Playground"
 msgstr ""
 
@@ -1416,11 +1436,11 @@ msgstr ""
 msgid "Privacy Policy"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:3
+#: ../app/views/maps/_map_card.haml:2
 msgid "Private"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:3
+#: ../app/views/maps/_map_card.haml:2
 msgid "Private link"
 msgstr ""
 
@@ -1436,7 +1456,7 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:3
+#: ../app/controllers/admin_controller.rb:4 ../app/views/maps/_map_card.haml:2
 msgid "Public"
 msgstr ""
 
@@ -1450,6 +1470,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:178
 msgid "Query"
+msgstr ""
+
+#: ../app/views/admin/_quick_filter.haml:1
+msgid "Quick filter"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:194
@@ -1596,7 +1620,7 @@ msgstr ""
 msgid "Search location"
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:13
+#: ../app/views/maps/_list_filter.haml:48
 msgid "Search maps"
 msgstr ""
 
@@ -1661,7 +1685,7 @@ msgstr ""
 msgid "Share view link"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:31
+#: ../app/views/maps/_map_card.haml:29
 msgid "Shared with:"
 msgstr ""
 
@@ -1721,7 +1745,7 @@ msgstr ""
 msgid "Snapping waypoints to road network..."
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:24
+#: ../app/views/maps/_list_filter.haml:16
 msgid "Sort"
 msgstr ""
 
@@ -1803,6 +1827,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:178
 msgid "Symbol:"
+msgstr ""
+
+#: ../app/views/maps/_list_filter.haml:58
+msgid "Tag"
 msgstr ""
 
 #: ../app/views/frontpage/_share_drawing.haml:2
@@ -1949,7 +1977,7 @@ msgstr ""
 msgid "Unpaved"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:2
+#: ../app/views/maps/_map_card.haml:1
 msgid "Untitled map"
 msgstr ""
 
@@ -1961,7 +1989,7 @@ msgstr ""
 msgid "Update Layer"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:41
+#: ../app/views/maps/_map_card.haml:39
 msgid "Updated %{time} ago"
 msgstr ""
 
@@ -2070,7 +2098,7 @@ msgid "You are here"
 msgstr ""
 
 #: ../app/views/maps/my.haml:25
-msgid "You can try out the %{tutorial_link} to learn how Mapforge works, or you can %{create_link} your first map right away."
+msgid "You can try out the %{playground_link} to learn how Mapforge works, or you can %{create_link} your first map right away."
 msgstr ""
 
 #: ../app/views/maps/my.haml:14
@@ -2335,10 +2363,6 @@ msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:109 ../app/views/maps/modals/feature/_edit_ui.haml:116
 msgid "transparent"
-msgstr ""
-
-#: ../app/views/maps/my.haml:23
-msgid "tutorial map"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/search.js:149

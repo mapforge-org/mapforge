@@ -11,7 +11,7 @@
         = render recent_map, rw: rw
 
 
-  = render "list_filter", title: _("Your Maps"), count: @my_maps.size
+  = render "list_filter", title: _("Your Maps"), count: @my_maps.size, tags: false
   = render "list" , maps: @my_maps, partial: "maps/map_card"
 
 
@@ -20,6 +20,6 @@
       %p.text-center
         = _("In this gallery, your personal maps will be shown.")
         %br
-        - tutorial_link = link_to(_('tutorial map'), tutorial_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
+        - playground_link = link_to(_("Playground"), playground_path, class: 'btn btn-orange call-to-action')
         - create_link = link_to(_('create'), create_map_path, class: 'btn btn-orange call-to-action', data: { turbo_method: :post })
-        = raw(_("You can try out the %{tutorial_link} to learn how Mapforge works, or you can %{create_link} your first map right away.") % { tutorial_link: tutorial_link, create_link: create_link })
+        = raw(_("You can try out the %{playground_link} to learn how Mapforge works, or you can %{create_link} your first map right away.") % { playground_link: playground_link, create_link: create_link })
