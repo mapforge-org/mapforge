@@ -1,0 +1,71 @@
+# Standard tags, applied by Tag.seed_standard (a migration and bin/rails db:seed)
+event:
+  name:
+    en: Event
+    de: Veranstaltung
+  description:
+    en: Maps for an event, for example a festival, a conference or a wedding.
+    de: Karten für eine Veranstaltung, zum Beispiel ein Festival, eine Konferenz oder eine Hochzeit.
+hike:
+  name:
+    en: Hike
+    de: Wanderung
+  description:
+    en: Routes for hikes and walks.
+    de: Routen für Wanderungen und Spaziergänge.
+indoor:
+  name:
+    en: Indoor
+    de: Indoor
+  description:
+    en: Floor plans of buildings, with their levels.
+    de: Grundrisse von Gebäuden, mit ihren Stockwerken.
+overpass:
+  name:
+    en: Overpass
+    de: Overpass
+  description:
+    en: Maps with live OpenStreetMap data from Overpass queries.
+    de: Karten mit aktuellen OpenStreetMap-Daten aus Overpass-Abfragen.
+story:
+  name:
+    en: Story
+    de: Geschichte
+  description:
+    en: Maps that tell a story, for example a travel diary.
+    de: Karten, die eine Geschichte erzählen, zum Beispiel ein Reisetagebuch.
+geography:
+  name:
+    en: Geography
+    de: Geografie
+  description:
+    en: Maps about places, regions and landscapes.
+    de: Karten über Orte, Regionen und Landschaften.
+tutorial:
+  name:
+    en: Tutorial
+    de: Tutorial
+  description:
+    en: Maps that show how Mapforge works.
+    de: Karten, die zeigen, wie Mapforge funktioniert.
+ulogger:
+  name:
+    en: µlogger
+    de: µlogger
+  description:
+    en: GPS tracks that the µlogger app records.
+    de: GPS-Tracks, die die µlogger-App aufzeichnet.
+train:
+  name:
+    en: Train
+    de: Zug
+  description:
+    en: Train lines with the live positions of their trains.
+    de: Zuglinien mit den aktuellen Positionen ihrer Züge.
+template:
+  name:
+    en: Template
+    de: Vorlage
+  description:
+    en: Maps to copy as a starting point for a new map.
+    de: Karten, die man als Ausgangspunkt für eine neue Karte kopiert.

@@ -34,6 +34,12 @@ podman run -d --name redis \
   redis
 ```
 
+Then prepare the database. The migrations also create the standard map tags. Run this command again after you pull changes:
+
+```bash
+bin/rails db:migrate db:mongoid:create_indexes
+```
+
 Then start the Mapforge app:
 
 ```bash
@@ -90,6 +96,12 @@ A map URL accepts these parameters. They are useful for embedded maps:
 
   ```bash
   bin/rake db:mongoid:create_indexes
+  ```
+
+- Create or update the standard map tags from `db/seeds/tags.yml`. You can run it again at any time:
+
+  ```bash
+  bin/rails db:seed
   ```
 
 - Animate a marker along a line, at a constant speed in m/s (default 10):

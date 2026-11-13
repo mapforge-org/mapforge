@@ -20,7 +20,7 @@ Then open [http://localhost:3000](http://localhost:3000). To watch the logs, run
 
 To sign in, either add [OAuth credentials](#login) to `.env`, or use the local developer login, which is enabled by `DEVELOPER_LOGIN_ENABLED`. Only enable the developer login on a local test instance! The first user that logs in becomes admin.
 
-Uploaded images are stored in `deploy/volumes/storage/`, the database in `deploy/volumes/mongodb/`. To update to the latest version: `docker compose pull`
+Uploaded images are stored in `deploy/volumes/storage/`, the database in `deploy/volumes/mongodb/`. To update to the latest version: `docker compose pull`. On start, the container runs the database migrations, so an update needs no manual step.
 
 ### Upgrade from MongoDB 8.x to 9.0
 
@@ -56,7 +56,7 @@ Then run `docker compose pull` and `docker compose up --detach`. After MongoDB 9
 | Variable           | Description                                                                                       | Default                                 |
 | ------------------ | ------------------------------------------------------------------------------------------------- | --------------------------------------- |
 | `HTTP_PORT`        | HTTP port inside the container                                                                    | 3001 for thruster, 3000 for puma        |
-| `FORCE_SSL`        | HTTPS enforcement. Set it to `true` if a reverse proxy terminates TLS in front of the app.        | unset                                   |
+| `FORCE_SSL`        | HTTPS enforcement. If a reverse proxy terminates TLS in front of the app, set it to `true`.       | unset                                   |
 
 ### Login
 
