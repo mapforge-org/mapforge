@@ -6,6 +6,8 @@
     Admin
 
   = render "maps/list_filter"
+
+  = render "quick_filter"
   = render "maps/list", maps: @maps, partial: "maps/map_card", admin: true
 
   - if @maps.empty?

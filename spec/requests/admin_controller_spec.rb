@@ -21,6 +21,30 @@ describe AdminController do
       expect(response.body).to include("Map1")
       expect(response.body).not_to include("Map2")
     end
+
+    context "with a quick filter" do
+      before do
+        create(:map, name: "Plain")
+        create(:map, name: "Starred", tags: [ "featured" ])
+        create(:map, name: "Listed", view_permission: "listed")
+        create(:feature, :point, layer: create(:map, name: "Filled").layers.first)
+      end
+
+      { "featured" => "Starred", "public" => "Listed", "content" => "Filled" }.each do |quick, name|
+        it "lists only the #{quick} maps" do
+          get "/admin", params: { quick: quick }
+          titles = Nokogiri::HTML(response.body).css(".map-card-title").map(&:text)
+          expect(titles).to eq [ name ]
+        end
+      end
+
+      it "keeps the search in the filter links, and drops the filter for 'All'" do
+        get "/admin", params: { quick: "public", search: "x" }
+        links = Nokogiri::HTML(response.body).css(".btn-group a").to_h { |a| [ a.text, a["href"] ] }
+        expect(links["All"]).to eq "/admin?search=x"
+        expect(links["Featured"]).to eq "/admin?quick=featured&search=x"
+      end
+    end
   end
 
   describe "#require_admin_user" do

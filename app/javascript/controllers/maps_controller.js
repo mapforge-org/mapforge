@@ -46,7 +46,12 @@ export default class extends Controller {
 
   async loadMaps() {
     document.getElementById('map-list-count').innerText = window.__('Loading...')
-    const url = `${location.pathname}?search=${this.searchValue}&sort=${this.sortValue}&direction=${this.directionValue}`
+    // Start from the current params, so the admin quick filter stays set
+    const params = new URLSearchParams(location.search)
+    params.set('search', this.searchValue)
+    params.set('sort', this.sortValue)
+    params.set('direction', this.directionValue)
+    const url = `${location.pathname}?${params}`
     const response = await fetch(url, {
       headers: { "Accept": "text/vnd.turbo-stream.html" }
     })

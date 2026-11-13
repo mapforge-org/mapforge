@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 12:37+0100\n"
-"PO-Revision-Date: 2026-11-13 12:37+0100\n"
+"POT-Creation-Date: 2026-11-13 13:54+0100\n"
+"PO-Revision-Date: 2026-11-13 13:54+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -21,6 +21,12 @@ msgstr ""
 #: ../app/views/maps/_map_card.haml:38
 msgid "%{count} features"
 msgstr ""
+
+#: ../app/views/maps/_list.haml:6
+msgid "%{count} map"
+msgid_plural "%{count} maps"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../app/views/maps/_map_card.haml:36
 msgid "%{count} views"
@@ -1694,12 +1700,6 @@ msgstr ""
 #: ../app/views/maps/modals/feature/_edit_ui.haml:35
 msgid "Show title on map"
 msgstr ""
-
-#: ../app/views/maps/_list.haml:6
-msgid "Showing %{count} map"
-msgid_plural "Showing %{count} maps"
-msgstr[0] ""
-msgstr[1] ""
 
 #: ../app/views/maps/modals/_share.haml:101
 msgid "Single tracks or points of the map can get exported from their details view."

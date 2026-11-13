@@ -20,6 +20,11 @@ msgstr ""
 msgid "%{count} features"
 msgstr "%{count} Objekte"
 
+msgid "%{count} map"
+msgid_plural "%{count} maps"
+msgstr[0] "%{count} Karte"
+msgstr[1] "%{count} Karten"
+
 msgid "%{count} views"
 msgstr "%{count} Aufrufe"
 
@@ -1274,11 +1279,6 @@ msgstr "Auf der Karte:"
 
 msgid "Show title on map"
 msgstr "Titel auf der Karte anzeigen"
-
-msgid "Showing %{count} map"
-msgid_plural "Showing %{count} maps"
-msgstr[0] "Zeige %{count} Karte"
-msgstr[1] "Zeige %{count} Karten"
 
 msgid "Single tracks or points of the map can get exported from their details view."
 msgstr "Einzelne Tracks oder Punkte der Karte lassen sich in ihrer Detailansicht exportieren."

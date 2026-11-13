@@ -5,3 +5,7 @@
 <%= turbo_stream.replace "search-filters-container" do %>
   <%= render "maps/search_filters", filter: @filter, user: @searchuser %>
 <% end %>
+
+<%= turbo_stream.replace "quick-filter" do %>
+  <%= render "quick_filter" %>
+<% end %>
