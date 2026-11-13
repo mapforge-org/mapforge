@@ -518,10 +518,10 @@ section,
 
 .landing-route path {
   fill: none;
-  stroke: var(--color-mid-brown);
-  stroke-dasharray: 11 9;
+  stroke: var(--color-mid-rust);
+  stroke-dasharray: 10 12;
   stroke-linecap: round;
-  stroke-width: 3.5;
+  stroke-width: 3;
 }
 
 .landing-route .landing-route-chevrons {
@@ -529,16 +529,17 @@ section,
   stroke-linejoin: round;
 }
 
-.landing-route .landing-route-accent path {
-  stroke: var(--color-mid-rust);
-}
-
-.landing-route .landing-route-bright path {
+/* The light outline gives the route contrast on the dark green and on the photos.
+   The round caps of the wider copy put it around every dash. */
+.landing-route .landing-route-outline {
   stroke: var(--color-mid-fawn);
+  stroke-width: 4.8;
 }
 
 .landing-route circle {
   fill: var(--color-mid-rust);
+  stroke: var(--color-mid-fawn);
+  stroke-width: 1.5;
 }
 
 .landing-route-pin {
@@ -548,17 +549,16 @@ section,
   line-height: 1;
 }
 
-/* No single color has enough contrast on the dark green and on the light backgrounds,
-   so the pins combine the rust with a light outline */
+/* The pins take the color of the route outline. A dark outline sets them off from the light backgrounds. */
 .landing-route-pin, .landing-checks .bi {
-  color: var(--color-mid-rust);
-  -webkit-text-stroke: 3px var(--color-light-sand);
+  color: var(--color-mid-fawn);
+  -webkit-text-stroke: 3px var(--color-mid-brown);
   paint-order: stroke fill;
   filter: drop-shadow(0 1px 2px rgb(0 0 0 / 45%));
 }
 
 /* The hole of the pin glyph is a circle around 8,6 in its 16x16 box. The route passes behind it. */
-.landing-route-pin.bi-geo-alt-fill {
+.landing-route-pin.bi-geo-alt-fill, .landing-checks .bi-geo-alt-fill {
   background: radial-gradient(circle at 50% 37.5%, var(--color-light-sand) 0.25em, transparent 0.26em);
 }
 

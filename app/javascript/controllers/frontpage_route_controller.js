@@ -8,18 +8,18 @@ const EDGE = 13 // smallest distance to the page edge before the wobble, it fits
 const MIN_STEP = 20 // closer points make kinks, and identical points have no direction
 const CORNER_REACH = 45 // a sharp corner starts this far before its point
 const CORNER_COSINE = 0.7 // a turn of more than 45 degrees is a sharp corner
-const CHEVRON_SPACING = 280 // distance between the chevrons along the route, a multiple of DASH_PERIOD
+const CHEVRON_SPACING = 286 // distance between the chevrons along the route, a multiple of DASH_PERIOD
 const CHEVRON_SIZE = 9 // length of a chevron arm
 const CHEVRON_PIN_DISTANCE = 32 // a closer chevron would stick out from behind the pin head
 const PIN_HEAD = 16 // the head of a pin sits this far above its tip
 const FLAG_POLE = 1 / 8 // left edge of the pole in the flag icon, as a share of the icon width
 const FLAG_FOOT = 1 / 16 // the route meets the pole this far above the icon bottom, as a share of the icon width
-const DASH = 11 // must match the first stroke-dasharray value of .landing-route path
-const DASH_PERIOD = 20 // must match the sum of the stroke-dasharray values of .landing-route path
+const DASH = 10 // must match the first stroke-dasharray value of .landing-route path
+const DASH_PERIOD = 22 // must match the sum of the stroke-dasharray values of .landing-route path
 
 export default class extends Controller {
   static targets = ['path', 'chevrons', 'start', 'headline', 'actions', 'hero', 'feature', 'showcase', 'stop', 'cta',
-    'flag', 'stats', 'grid', 'tile', 'accentArea', 'accentRoute', 'accentChevrons']
+    'flag', 'stats', 'grid', 'tile', 'outline', 'outlineChevrons']
 
   connect () {
     this.redraw = () => this.draw()
@@ -127,21 +127,9 @@ export default class extends Controller {
     this.pathTarget.setAttribute('stroke-dashoffset', DASH - this.pathTarget.getTotalLength())
     const covers = [box(this.statsTarget), ...this.tileTargets.map(box)]
     this.chevronsTarget.setAttribute('d', this.chevronPath(points.filter(point => point.pin), covers))
-    // The brown route has too little contrast on the dark green and on the satellite image,
-    // copies in the accent colors cover it there. The last area is the satellite image, it gets the brightest color.
-    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
-    const greenBelowStats = parseFloat(getComputedStyle(this.statsTarget).getPropertyValue('--landing-stats-green')) * rem
-    const heroTop = box(this.headlineTarget.closest('section')).top
-    const darkHero = new DOMRect(0, heroTop, origin.width, box(this.statsTarget).top + greenBelowStats - heroTop)
-    const areas = [darkHero, box(this.ctaTarget), box(this.featureTargets[2].parentElement)]
-    areas.forEach(({ x, y, width, height }, index) => {
-      Object.entries({ x, y, width, height }).forEach(([name, value]) => this.accentAreaTargets[index].setAttribute(name, value))
-    })
-    this.accentRouteTargets.forEach(route => {
-      route.setAttribute('d', this.pathTarget.getAttribute('d'))
-      route.setAttribute('stroke-dashoffset', this.pathTarget.getAttribute('stroke-dashoffset'))
-    })
-    this.accentChevronsTargets.forEach(chevrons => chevrons.setAttribute('d', this.chevronsTarget.getAttribute('d')))
+    this.outlineTarget.setAttribute('d', this.pathTarget.getAttribute('d'))
+    this.outlineTarget.setAttribute('stroke-dashoffset', this.pathTarget.getAttribute('stroke-dashoffset'))
+    this.outlineChevronsTarget.setAttribute('d', this.chevronsTarget.getAttribute('d'))
     this.startTarget.setAttribute('cx', start.x)
     this.startTarget.setAttribute('cy', start.y)
   }

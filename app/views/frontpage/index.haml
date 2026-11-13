@@ -174,16 +174,9 @@
             = button_to _("Create a new map"), create_map_path, class: 'btn btn-orange btn-lg'
 
   %svg.landing-route{ 'aria-hidden': "true" }
-    %defs
-      %clipPath#landing-route-accent
-        - 2.times do
-          %rect{ data: { 'frontpage-route-target': "accentArea" } }
-      %clipPath#landing-route-bright
-        %rect{ data: { 'frontpage-route-target': "accentArea" } }
+    - # A wider copy below the route is its outline
+    %path.landing-route-outline{ data: { 'frontpage-route-target': "outline" } }
+    %path.landing-route-chevrons.landing-route-outline{ data: { 'frontpage-route-target': "outlineChevrons" } }
     %path{ data: { 'frontpage-route-target': "path" } }
     %path.landing-route-chevrons{ data: { 'frontpage-route-target': "chevrons" } }
-    - %w[accent bright].each do |area|
-      %g{ class: "landing-route-#{area}", 'clip-path': "url(#landing-route-#{area})" }
-        %path{ data: { 'frontpage-route-target': "accentRoute" } }
-        %path.landing-route-chevrons{ data: { 'frontpage-route-target': "accentChevrons" } }
     %circle{ r: 6, data: { 'frontpage-route-target': "start" } }

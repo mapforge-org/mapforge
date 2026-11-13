@@ -74,7 +74,7 @@ describe "Frontpage" do
   end
 
   it "draws the route through the feature pins" do
-    expect(page).to have_css(".landing-route-pin", visible: :all, count: 9)
+    expect(page).to have_css(".landing-route-pin", visible: :all, count: 10)
     expect(find("[data-frontpage-route-target='path'][d]", visible: :all)[:d]).to match(/\AM[\d.-]+ [\d.-]+ C/)
   end
 
