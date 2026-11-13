@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 00:16+0100\n"
-"PO-Revision-Date: 2026-11-13 00:16+0100\n"
+"POT-Creation-Date: 2026-11-13 11:13+0100\n"
+"PO-Revision-Date: 2026-11-13 11:13+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -54,7 +54,7 @@ msgstr ""
 msgid "%{type} updated"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "3D Terrain"
 msgstr ""
 
@@ -62,11 +62,11 @@ msgstr ""
 msgid "3D Terrain:"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "A phone shows your GPS position on the map, next to a compass."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "A team edits a map on a laptop with the edit link, guests view the same map on a phone with the view link. The map can also be embedded on a website or published in the gallery."
 msgstr ""
 
@@ -74,7 +74,7 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "Account"
 msgstr ""
 
@@ -106,7 +106,7 @@ msgstr ""
 msgid "Add new features to this layer"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more"
 msgstr ""
 
@@ -174,7 +174,7 @@ msgstr ""
 msgid "Banner"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Base maps"
 msgstr ""
 
@@ -246,11 +246,11 @@ msgstr ""
 msgid "Browse maps by user %{email}"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:85
+#: ../app/views/frontpage/index.haml:71
 msgid "Build the map you have in mind"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:167
+#: ../app/views/frontpage/index.haml:153
 msgid "Built with"
 msgstr ""
 
@@ -422,7 +422,7 @@ msgstr ""
 msgid "Could not read the file: %{error}"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:188
+#: ../app/views/frontpage/index.haml:174
 msgid "Create a new map"
 msgstr ""
 
@@ -466,7 +466,7 @@ msgstr ""
 msgid "Dark map, easy on the eyes at night"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:161
+#: ../app/views/frontpage/index.haml:147
 msgid "Database"
 msgstr ""
 
@@ -618,7 +618,7 @@ msgstr ""
 msgid "Drag to rotate map, click to reset north"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Draw and style"
 msgstr ""
 
@@ -646,7 +646,7 @@ msgstr ""
 msgid "Draw polygon (o)"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Dynamic layers"
 msgstr ""
 
@@ -658,7 +658,7 @@ msgstr ""
 msgid "Edit in OSM"
 msgstr ""
 
-#: ../app/views/frontpage/_share_drawing.haml:8 ../app/views/maps/modals/_share.haml:48 ../app/views/maps/modals/_share.haml:52
+#: ../app/views/maps/modals/_share.haml:48 ../app/views/maps/modals/_share.haml:52
 msgid "Edit link"
 msgstr ""
 
@@ -666,7 +666,7 @@ msgstr ""
 msgid "Edit link copied"
 msgstr ""
 
-#: ../app/views/maps/maplibre.haml:34
+#: ../app/views/frontpage/_share_drawing.haml:12 ../app/views/maps/maplibre.haml:34
 msgid "Edit mode"
 msgstr ""
 
@@ -694,7 +694,7 @@ msgstr ""
 msgid "Embed map"
 msgstr ""
 
-#: ../app/views/frontpage/_share_drawing.haml:10 ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/_share_drawing.haml:10 ../app/views/frontpage/index.haml:96
 msgid "Embedding"
 msgstr ""
 
@@ -794,7 +794,7 @@ msgstr ""
 msgid "Foot"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:185
+#: ../app/views/frontpage/index.haml:171
 msgid "Free to try, no signup needed."
 msgstr ""
 
@@ -802,7 +802,7 @@ msgstr ""
 msgid "Full track"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "GPS & compass"
 msgstr ""
 
@@ -942,11 +942,11 @@ msgstr ""
 msgid "Import data (gpx, kml, image)"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Import from GeoJSON, GPX and KML/KMZ"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Import your data"
 msgstr ""
 
@@ -954,7 +954,7 @@ msgstr ""
 msgid "In this gallery, your personal maps will be shown."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "Install as an app"
 msgstr ""
 
@@ -970,7 +970,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:80
+#: ../app/views/frontpage/index.haml:56
 msgid "Latest changes"
 msgstr ""
 
@@ -1038,11 +1038,11 @@ msgstr ""
 msgid "Lines"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:161
+#: ../app/views/frontpage/index.haml:147
 msgid "Live sync"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "Live tracking"
 msgstr ""
 
@@ -1218,7 +1218,7 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:143
+#: ../app/views/frontpage/index.haml:129
 msgid "No ads, no tracking, no lock-in. Export anytime as GPX or GeoJSON – or run Mapforge on your own server."
 msgstr ""
 
@@ -1254,11 +1254,11 @@ msgstr ""
 msgid "On click:"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "On the go"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "One link to view, one to edit"
 msgstr ""
 
@@ -1270,7 +1270,7 @@ msgstr ""
 msgid "Opacity:"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:35 ../app/views/frontpage/index.haml:141
+#: ../app/views/frontpage/index.haml:35 ../app/views/frontpage/index.haml:127
 msgid "Open Source"
 msgstr ""
 
@@ -1354,15 +1354,15 @@ msgstr ""
 msgid "Plain, easy to read street map"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:86
+#: ../app/views/frontpage/index.haml:72
 msgid "Plan a bicycle tour, map the floor plan for your conference, or create a guide for your wedding guests"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "Plan on desktop, edit in the field on your phone."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Plan routes for walking, bicycle and car"
 msgstr ""
 
@@ -1418,7 +1418,7 @@ msgstr ""
 msgid "Properties"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "Publish in the gallery or share privately – you decide."
 msgstr ""
 
@@ -1442,15 +1442,15 @@ msgstr ""
 msgid "Read about the latest changes and improvements on Mapforge."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:183
+#: ../app/views/frontpage/index.haml:169
 msgid "Ready for your first map?"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:183
+#: ../app/views/frontpage/index.haml:169
 msgid "Ready for your next map?"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "Real-time"
 msgstr ""
 
@@ -1542,7 +1542,7 @@ msgstr ""
 msgid "Routing segment %{index}/%{total}..."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Routing with elevation profile"
 msgstr ""
 
@@ -1598,7 +1598,7 @@ msgstr ""
 msgid "Self-hostable"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:148
+#: ../app/views/frontpage/index.haml:134
 msgid "Self-hosting guide"
 msgstr ""
 
@@ -1615,7 +1615,7 @@ msgstr ""
 msgid "Shape:"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "Share"
 msgstr ""
 
@@ -1655,7 +1655,7 @@ msgstr ""
 msgid "Show layer"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Show live OpenStreetMap data with %{overpass_link}"
 msgstr ""
 
@@ -1709,7 +1709,7 @@ msgstr ""
 msgid "Standard OpenStreetMap with roads and places"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:73
+#: ../app/views/frontpage/index.haml:56
 msgid "Stars on GitHub"
 msgstr ""
 
@@ -1749,11 +1749,11 @@ msgstr ""
 msgid "Street map without street names"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Streets, Satellite, Topographic, Biking, Watercolor, 3D houses"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "Streets, Satellite, Topographic, Biking, Watercolor, 3D terrain"
 msgstr ""
 
@@ -1805,7 +1805,7 @@ msgstr ""
 msgid "The app can get installed from the browser or from the app store."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:142
+#: ../app/views/frontpage/index.haml:128
 msgid "The code is open. Your data is yours."
 msgstr ""
 
@@ -1821,7 +1821,7 @@ msgstr ""
 msgid "The image contains GPS coordinates (<code>%{coordinates}</code>).<br/>Do you want to place the marker there?"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "The map goes with you"
 msgstr ""
 
@@ -1957,7 +1957,7 @@ msgstr ""
 msgid "View feature information"
 msgstr ""
 
-#: ../app/views/frontpage/_share_drawing.haml:9 ../app/views/maps/modals/_share.haml:64 ../app/views/maps/modals/_share.haml:68
+#: ../app/views/maps/modals/_share.haml:64 ../app/views/maps/modals/_share.haml:68
 msgid "View link"
 msgstr ""
 
@@ -1965,15 +1965,15 @@ msgstr ""
 msgid "View link copied"
 msgstr ""
 
-#: ../app/views/maps/maplibre.haml:31
+#: ../app/views/frontpage/_share_drawing.haml:11 ../app/views/maps/maplibre.haml:31
 msgid "View mode"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:146
+#: ../app/views/frontpage/index.haml:132
 msgid "View on GitHub"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:91
+#: ../app/views/frontpage/index.haml:77
 msgid "View your map with mountains and valleys"
 msgstr ""
 
@@ -2077,7 +2077,7 @@ msgstr ""
 msgid "accommodation|lodging"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "all your maps in one place."
 msgstr ""
 
@@ -2117,7 +2117,7 @@ msgstr ""
 msgid "cash|cash_machine|cashpoint"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "changes are visible to everyone right away."
 msgstr ""
 
@@ -2133,7 +2133,7 @@ msgstr ""
 msgid "create"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:168
+#: ../app/views/frontpage/index.haml:154
 msgid "data"
 msgstr ""
 
@@ -2205,7 +2205,7 @@ msgstr ""
 msgid "launderette|laundromat"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:168
+#: ../app/views/frontpage/index.haml:154
 msgid "license"
 msgstr ""
 
@@ -2213,7 +2213,7 @@ msgstr ""
 msgid "log in"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:61
+#: ../app/views/frontpage/index.haml:56
 msgid "maps created"
 msgstr ""
 
@@ -2261,15 +2261,15 @@ msgstr ""
 msgid "public_library"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:67
+#: ../app/views/frontpage/index.haml:56
 msgid "registered users"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "right from the browser."
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:161
+#: ../app/views/frontpage/index.haml:147
 msgid "runs on :3000"
 msgstr ""
 
@@ -2277,7 +2277,7 @@ msgstr ""
 msgid "same map"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "share your track in real time with %{ulogger_link}."
 msgstr ""
 
@@ -2293,7 +2293,7 @@ msgstr ""
 msgid "summit|mountain|mountain_top"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "the map shows where you are."
 msgstr ""
 
@@ -2333,8 +2333,16 @@ msgstr ""
 msgid "worship|prayer_room"
 msgstr ""
 
-#: ../app/views/frontpage/index.haml:110
+#: ../app/views/frontpage/index.haml:96
 msgid "your map on any web page."
+msgstr ""
+
+#: ../app/views/frontpage/_share_drawing.haml:8
+msgid "… via the edit link"
+msgstr ""
+
+#: ../app/views/frontpage/_share_drawing.haml:9
+msgid "… via the view link"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:94

@@ -5,9 +5,11 @@
 - on_website = _("on your website")
 - in_gallery = _("in the gallery")
 - public_label = _("public")
-- edit_link = _("Edit link")
-- view_link = _("View link")
+- via_edit_link = _("… via the edit link")
+- via_view_link = _("… via the view link")
 - embedding = _("Embedding")
+- view_mode = _("View mode")
+- edit_mode = _("Edit mode")
 %svg{ xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 860 690", role: "img", 'aria-label': alt, fill: "none", stroke: "#33502a", 'stroke-width': 3.5, 'stroke-linecap': "round", 'stroke-linejoin': "round" }
   :plain
     <defs>
@@ -62,12 +64,21 @@
     <use href="#share-cursor" x="190" y="84" width="30" height="30" color="hsl(120 85% 45%)"/>
     <image x="207" y="99" width="32" height="32" clip-path="url(#share-avatar)" href="/images/frontpage/avatar3.jpeg"/>
     <circle cx="223" cy="115" r="16" stroke="hsl(120 85% 45%)" stroke-width="3"/>
-    <g font-family="SUSE, system-ui, sans-serif" font-weight="600" stroke="none" font-size="24" fill="#b85e1e">
-      <text x="55" y="436">#{edit_link}</text>
-      <text x="630" y="530">#{view_link}</text>
-      <text x="190" y="656">#{embedding}</text>
-      <text x="597" y="656">#{public_label}</text>
-    </g>
+    <!-- foreignObject, so the pills grow with the translated text -->
+    <foreignObject x="90" y="44" width="388" height="24">
+      <div style="display: flex; justify-content: center;">
+        <div style="display: flex; overflow: hidden; border-radius: 6px; box-shadow: 0 0 0 1.5px #bbb; background: #fffe; font: 600 11px SUSE, system-ui, sans-serif; letter-spacing: 0.3px; text-transform: uppercase; white-space: nowrap;">
+          <span style="padding: 2px 8px; color: #3d607b;">#{view_mode}</span>
+          <span style="padding: 2px 8px; background: #3d607b; color: #fff;">#{edit_mode}</span>
+        </div>
+      </div>
+    </foreignObject>
+    <foreignObject x="188" y="634" width="250" height="40">
+      <span style="display: inline-block; margin: 2px; padding: 3px 14px; border: 2.5px solid #33502a; border-radius: 99px; font: 700 16px SUSE, system-ui, sans-serif; letter-spacing: 1px; text-transform: uppercase; color: #33502a; white-space: nowrap;">&lt;/&gt; #{embedding}</span>
+    </foreignObject>
+    <foreignObject x="595" y="634" width="250" height="40">
+      <span style="display: inline-block; margin: 2px; padding: 3px 14px; border: 2.5px solid #33502a; border-radius: 99px; font: 700 16px SUSE, system-ui, sans-serif; letter-spacing: 1px; text-transform: uppercase; color: #33502a; white-space: nowrap;">#{public_label}</span>
+    </foreignObject>
     <g font-family="Caveat, cursive" font-weight="700" stroke="none">
       <text x="506" y="72" font-size="32" fill="#b85e1e" transform="rotate(-6 506 72)">#{same_map}</text>
       <g fill="#33502a">
@@ -75,5 +86,9 @@
         <text x="630" y="492" font-size="44">#{guests}</text>
         <text x="190" y="622" font-size="36">#{on_website}</text>
         <text x="597" y="622" font-size="36">#{in_gallery}</text>
+      </g>
+      <g fill="#6f8467" font-size="30">
+        <text x="75" y="434">#{via_edit_link}</text>
+        <text x="650" y="526">#{via_view_link}</text>
       </g>
     </g>
