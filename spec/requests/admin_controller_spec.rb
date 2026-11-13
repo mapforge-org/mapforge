@@ -25,7 +25,7 @@ describe AdminController do
     context "with a quick filter" do
       before do
         create(:map, name: "Plain")
-        create(:map, name: "Starred", tags: [ "featured" ])
+        create(:map, name: "Starred", featured: true)
         create(:map, name: "Listed", view_permission: "listed")
         create(:feature, :point, layer: create(:map, name: "Filled").layers.first)
       end

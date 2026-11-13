@@ -34,7 +34,7 @@ namespace :trains do
 
     map = Map.create
     lons, lats = coordinates.transpose
-    map.update!({ name: route.name, zoom: "10", base_map: "versatilesGraybeard", tags: [ "train" ],
+    map.update!({ name: route.name, zoom: "10", base_map: "versatilesGraybeard", tag_keys: [ "train" ],
       public_id: public_id, center: [ (lons.min + lons.max) / 2, (lats.min + lats.max) / 2 ] }.compact)
     layer = map.layers.first
     # The line is the IRIS line name, the l attribute on every stop event, eg "RB21" or "S1". It

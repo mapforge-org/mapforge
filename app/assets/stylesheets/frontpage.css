@@ -550,9 +550,17 @@ section,
 }
 
 /* The pins take the color of the route outline. A dark outline sets them off from the light backgrounds. */
-.landing-route-pin, .landing-checks .bi {
+.landing-route-pin {
   color: var(--color-mid-fawn);
   -webkit-text-stroke: 3px var(--color-mid-brown);
+  paint-order: stroke fill;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 45%));
+}
+
+/* The hero pins and the flag stand on the dark green, a light outline sets them off */
+.landing-checks .bi, .landing-route-pin.bi-flag-fill {
+  color: var(--color-mid-rust);
+  -webkit-text-stroke: 3px var(--color-light-sand);
   paint-order: stroke fill;
   filter: drop-shadow(0 1px 2px rgb(0 0 0 / 45%));
 }
@@ -687,8 +695,10 @@ section,
   list-style: none;
 }
 
+/* The padding puts the text baseline just above the pin tip */
 .landing-stops li {
   position: relative;
+  padding-top: 0.45em;
   padding-left: 2rem;
 }
 

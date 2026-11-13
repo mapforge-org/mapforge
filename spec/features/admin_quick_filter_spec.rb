@@ -6,7 +6,7 @@ describe "Admin quick filter" do
   it "keeps the quick filter on search, and the search on filter change" do
     create(:map, name: "Listed one", view_permission: "listed")
     create(:map, name: "Listed two", view_permission: "listed")
-    create(:map, name: "Starred one", tags: [ "featured" ])
+    create(:map, name: "Starred one", featured: true)
     sign_in(admin)
     visit admin_path
     within("#quick-filter") { click_link "Public" }

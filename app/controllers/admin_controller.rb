@@ -7,7 +7,7 @@ class AdminController < ApplicationController
 
   def index
     @quick = QUICK_FILTERS.key?(params[:quick]) ? params[:quick] : "content"
-    @maps = sort_maps(quick_filter(search_maps(Map.includes(:layers, :owners)), @quick))
+    @maps = sort_maps(quick_filter(search_maps(Map.includes(:layers, :owners, :tags)), @quick))
 
     respond_to do |format|
       # The counts ignore the search, so only the full page needs them

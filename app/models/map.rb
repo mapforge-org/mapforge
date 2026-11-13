@@ -11,13 +11,16 @@ class Map
     class_name: "User",
     inverse_of: nil
 
+  # Stores tag_ids, see db/seeds/tags.yml for the standard tags
+  has_and_belongs_to_many :tags, inverse_of: nil
+
   # implicit_order_column is not supported by mongoid
   default_scope { sorted(:created_at, :asc) }
   scope :listed, -> { where(view_permission: "listed") }
-  scope :tutorial, -> { where(tags: "tutorial") }
-  scope :featured, -> { where(tags: "featured") }
-  scope :ulogger, -> { where(tags: "ulogger") }
-  scope :trains, -> { where(tags: "train") }
+  scope :tagged, ->(key) { where(:tag_ids.in => Tag.where(key: key).pluck(:id)) }
+  scope :tutorial, -> { tagged("tutorial") }
+  scope :featured, -> { where(featured: true) }
+  scope :trains, -> { tagged("train") }
   scope :search, ->(term) {
     regex = /#{Regexp.escape(term)}/i
     where(:$or => [ { name: regex }, { description: regex } ])
@@ -43,8 +46,7 @@ class Map
   field :public_id, type: String, default: -> { SecureRandom.hex(4) }
   field :viewed_at, type: DateTime
   field :view_count, type: Integer, default: 0
-  # tutorial, train, ulogger
-  field :tags, type: Array, default: []
+  field :featured, type: Boolean, default: false
   field :share_cursor, type: Boolean
   field :template, type: Boolean
   field :edit_permission, type: String, default: "link" # 'private', 'link'
@@ -58,6 +60,7 @@ class Map
   index({ private_id: 1 }, unique: true, background: true)
   index({ view_permission: 1 }, background: true)
   index({ owner_ids: 1 }, background: true)
+  index({ tag_ids: 1 }, background: true)
 
   # Only BASE_MAPS are available in the UI
   BASE_MAPS = [ "versatilesColorful", "satelliteStreets", "openTopoTiles",
@@ -159,13 +162,22 @@ class Map
     owners.delete(user)
   end
 
+  # Most maps have no tags, so no query for them: properties runs on every broadcast
+  def tag_keys
+    tag_ids.empty? ? [] : tags.map(&:key)
+  end
+
+  def tag_keys=(keys)
+    self.tags = keys.map { |key| Tag.for(key) }
+  end
+
   def properties
     default_center, default_zoom = default_view if center.nil? || zoom.nil?
     { name: name,
      description: description,
      public_id: public_id,
      base_map: get_base_map,
-     tags: tags,
+     tags: tag_keys,
      center: center,
      default_center: center ? nil : default_center, # only set when no center defined
      zoom: zoom,
@@ -232,8 +244,11 @@ class Map
     file = File.read(path)
     map_hash = JSON.parse(file)
 
-    # "type" is the pre-tags field, still present in older exports
-    map = Map.create!(map_hash["properties"].except("default_center", "default_zoom", "public_id", "type"))
+    # "type" is the pre-tags field, still present in older exports. Older exports also carry the
+    # "featured" tag, which an import should not take over.
+    properties = map_hash["properties"]
+    map = Map.create!(properties.except("default_center", "default_zoom", "public_id", "type", "tags")
+      .merge("tag_keys" => Array(properties["tags"]) - [ "featured" ]))
     map.layers.delete_all
     map_hash["layers"].each do |layer|
       features = Feature.from_collection(layer["geojson"])
@@ -279,7 +294,7 @@ class Map
 
     map = Map.create_from_file(Rails.root.join("db/seeds/demo.json"))
     Yabeda.maps_created.increment(kind: "tutorial", owner: user ? "user" : "anonymous", user: user&.id.to_s)
-    map.update(tags: [ "tutorial" ])
+    map.update(tag_keys: [ "tutorial" ])
     map.add_owner(user) if user
     greeting = [ "Welcome", user&.name&.split&.first, "to the Tutorial" ].compact.join(" ")
     map.features.where("properties.label" => /\AWelcome .*Tutorial\z/).update_all("properties.label" => greeting)

@@ -57,7 +57,7 @@ namespace :maintenance do
 
     desc "Map statistics and the largest maps"
     task maps: :quiet do
-      maps = Map.includes(:layers).to_a
+      maps = Map.includes(:layers, :tags).to_a
       # The features are the bulk of a map in the database, the map and layer documents are small.
       bytes_by_layer = Feature.collection.aggregate([
         { "$group" => { "_id" => "$layer_id", "bytes" => { "$sum" => { "$bsonSize" => "$$ROOT" } } } }
@@ -65,7 +65,7 @@ namespace :maintenance do
       db_size = ->(map) { map.layers.sum { |layer| bytes_by_layer[layer.id].to_i } }
       puts "Maps: #{maps.size} (#{maps.count { _1.features_count.zero? }} empty, #{Map.listed.count} listed, " \
            "#{Map.where(edit_permission: 'private').count} private)"
-      puts "Tags: #{tally.call(maps.flat_map { _1.tags.presence || 'none' })}"
+      puts "Tags: #{tally.call(maps.flat_map { _1.tag_keys.presence || 'none' })}"
       puts "Layers: #{Layer.count} (#{tally.call(Layer.pluck(:type))}), features: #{Feature.count}, " \
            "#{mb.call(bytes_by_layer.values.sum)} in the database"
       puts new_since.call(Map)

@@ -1,15 +1,14 @@
-- featured = map.tags.include?("featured")
 - title = map.name.presence || _("Untitled map")
 - icon, visibility = { "private" => [ "bi-lock", _("Private") ],
                        "listed" => [ "bi-globe", _("Public") ] }.fetch(map.view_permission, [ "bi-link-45deg", _("Private link") ])
 
-.map-card.grid-item.map-preview.background-bright{ class: [ "map_#{map.public_id}", ("featured" if featured) ] }
+.map-card.grid-item.map-preview.background-bright{ class: [ "map_#{map.public_id}", ("featured" if map.featured) ] }
   = link_to map_path(id: map.private_id, name: map.name), class: "map-card-image", 'aria-label': _("Open map '%{name}'") % { name: title } do
     %img{ src: map.screenshot || image_path("preview.png"), class: "preview-image", loading: "lazy", alt: _("Map '%{name}'") % { name: title } }
     %span.map-card-badge
       %i.bi{ class: icon }
       = visibility
-    - if featured
+    - if map.featured
       %span.map-card-featured
         %i.bi.bi-star-fill
         = _("Featured in gallery")
@@ -20,10 +19,9 @@
   .map-card-body
     .map-card-title{ class: (map.name.present? ? "mapforge-font" : "untitled"), style: "--len: #{title.length}" }= title
 
-    - tags = map.tags - [ "featured" ]
-    - if tags.any?
+    - if map.tags.any?
       .map-card-tags
-        - tags.each do |tag|
+        - map.tags.each do |tag|
           %span.map-card-tag= "##{tag}"
 
     - if !admin && map.owners.size > 1

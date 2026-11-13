@@ -23,7 +23,7 @@ class MapsController < ApplicationController
 
   def my
     @recent_maps = load_recent_maps(@user.recent_map_ids)
-    @my_maps = filter_and_sort_maps(@user.owned_maps.includes(:layers, :owners))
+    @my_maps = filter_and_sort_maps(@user.owned_maps.includes(:layers, :owners, :tags))
 
     respond_to do |format|
       format.html # full page

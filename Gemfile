@@ -39,6 +39,8 @@ gem "rails-i18n" # core Rails i18n strings (date/time, number formatting, etc.) 
 # Action Cable's redis adapter hard-caps redis < 6 (actioncable 8.1.x)
 gem "redis", ">= 4.0.1", "< 6"
 gem "mongoid"
+# db:migrate with versioned data migrations in db/migrate, Mongoid has none of its own
+gem "mongoid_rails_migrations"
 
 # image uploads
 # https://github.com/markevans/dragonfly (rdoc: https://rubydoc.info/github/markevans/dragonfly/)

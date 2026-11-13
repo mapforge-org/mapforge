@@ -35,6 +35,10 @@ module Mapforge
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    # A translation missing in the current locale falls back to English, also for localized
+    # Mongoid fields such as Tag#name, in every environment alike
+    config.i18n.fallbacks = true
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
