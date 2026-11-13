@@ -385,6 +385,21 @@ describe MapsController do
       expect(response.body).not_to include("Map1")
     end
 
+    it "searches for tags by key and by localized name" do
+      Tag.seed_standard
+      create(:map, name: "Map1", view_permission: "listed", tags: [ Tag.for("hike") ])
+      create(:map, name: "Map2", view_permission: "listed", tags: [ Tag.for("hike"), Tag.for("event") ])
+      create(:map, name: "Map3", view_permission: "listed")
+      get maps_path, params: { search: "tag:hike" }
+      expect(response.body).to include("Map1", "Map2")
+      expect(response.body).not_to include("Map3")
+      get maps_path, params: { search: "#wanderung #Event" }
+      expect(response.body).to include("Map2")
+      expect(response.body).not_to include("Map1")
+      get maps_path, params: { search: "#hik" }
+      expect(response.body).not_to include("Map1")
+    end
+
     it "ignores the limit param and a sort column that the list does not offer" do
       get maps_path, params: { limit: "0", sort: "private_id" }
       expect(controller.instance_variable_get(:@sort)).to eq "view_count"

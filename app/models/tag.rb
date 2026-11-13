@@ -7,6 +7,11 @@ class Tag
 
   index({ key: 1 }, unique: true, background: true)
 
+  scope :named, ->(term) {
+    regex = /\A#{Regexp.escape(term)}\z/i
+    any_of({ key: regex }, *FastGettext.default_available_locales.map { |locale| { "name.#{locale}" => regex } })
+  }
+
   def self.for(key)
     find_or_create_by!(key: key)
   end

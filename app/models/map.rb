@@ -17,10 +17,10 @@ class Map
   # implicit_order_column is not supported by mongoid
   default_scope { sorted(:created_at, :asc) }
   scope :listed, -> { where(view_permission: "listed") }
-  scope :tagged, ->(key) { where(:tag_ids.in => Tag.where(key: key).pluck(:id)) }
-  scope :tutorial, -> { tagged("tutorial") }
+  scope :tagged, ->(tags) { all_of(:tag_ids.in => tags.pluck(:id)) }
+  scope :tutorial, -> { tagged(Tag.where(key: "tutorial")) }
   scope :featured, -> { where(featured: true) }
-  scope :trains, -> { tagged("train") }
+  scope :trains, -> { tagged(Tag.where(key: "train")) }
   scope :search, ->(term) {
     regex = /#{Regexp.escape(term)}/i
     where(:$or => [ { name: regex }, { description: regex } ])

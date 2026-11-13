@@ -14,11 +14,14 @@ module MapListFilters
       userid = $1
       @searchuser = User.find(userid) if userid.present?
     end
+    tags = []
+    @filter = @filter.gsub(/(?:^|\s)(?:tag:|#)(\S+)/) { tags << $1; "" }.strip
 
     if @searchuser
       # Find maps where user is in owner_ids array
       maps = maps.where(owner_ids: @searchuser.id)
     end
+    tags.each { |tag| maps = maps.tagged(Tag.named(tag)) }
     maps = maps.search(@filter) unless @filter.empty?
     maps
   end

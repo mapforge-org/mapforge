@@ -419,7 +419,9 @@ span.map-avatar {
     display: grid;
     gap: 0.75rem 0.5rem;
     align-items: center;
-    grid-template-columns: minmax(0, 1fr) auto;
+
+    /* The two outer columns center the search and the sort button between them */
+    grid-template-columns: 1fr minmax(0, 18rem) auto 1fr;
   }
 
   .list-title,
@@ -427,14 +429,18 @@ span.map-avatar {
     grid-column: 1 / -1;
   }
 
+  .list-title {
+    text-align: center;
+  }
+
   /* Explicit cells, because the sort button comes before the search in the DOM */
   .list-search {
-    grid-area: 2 / 1;
+    grid-area: 2 / 2;
     width: auto;
   }
 
   .list-sort {
-    grid-area: 2 / 2;
+    grid-area: 2 / 3;
   }
 
   .map-count-full {
