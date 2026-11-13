@@ -9,6 +9,5 @@ jq -n \
   --argjson stars "$(gh api "repos/$repo" --jq .stargazers_count)" \
   --arg release "$release" \
   --arg sha "$(git rev-parse HEAD)" \
-  --arg date "$(git log -1 --format=%cI)" \
-  '{stars: $stars, release: ($release | select(. != "") // null), sha: $sha, date: $date}' \
+  '{stars: $stars, release: ($release | select(. != "") // null), sha: $sha}' \
   > config/build_info.json

@@ -53,32 +53,18 @@
   %section.landing-stats{ data: { 'frontpage-route-target': "stats" } }
     .landing-wrap
       .landing-stats-grid{ 'data-animate': "fade-up" }
-        .landing-stat
-          %span.landing-stat-icon
-            %i.bi.bi-map
-          %div
-            .landing-stat-value.mapforge-font= number_with_delimiter(@stats[:maps])
-            .landing-stat-label= _("maps created")
-        .landing-stat
-          %span.landing-stat-icon
-            %i.bi.bi-people
-          %div
-            .landing-stat-value.mapforge-font= number_with_delimiter(@stats[:users])
-            .landing-stat-label= _("registered users")
-        %a.landing-stat{ href: "https://github.com/mapforge-org/mapforge/" }
-          %span.landing-stat-icon.landing-stat-icon-accent
-            %i.bi.bi-star
-          %div
-            .landing-stat-value.mapforge-font= number_with_delimiter(@build[:stars])
-            .landing-stat-label= _("Stars on GitHub")
-          %i.bi.bi-arrow-up-right.landing-stat-link
-        %a.landing-stat{ href: doc_path(id: 'CHANGELOG') }
-          %span.landing-stat-icon.landing-stat-icon-accent
-            %i.bi.bi-tag
-          %div
-            .landing-stat-value.mapforge-font= @build[:release] || @build[:sha]&.first(7) || @stats[:updated]
-            .landing-stat-label= _("Latest changes")
-          %i.bi.bi-arrow-up-right.landing-stat-link
+        - [["map", number_with_delimiter(@stats[:maps]), _("maps created")],
+           ["people", number_with_delimiter(@stats[:users]), _("registered users")],
+           ["star", number_with_delimiter(@build[:stars]), _("Stars on GitHub"), "https://github.com/mapforge-org/mapforge/"],
+           ["tag", @build[:release] || @build[:sha]&.first(7) || @stats[:updated], _("Latest changes"), doc_path(id: 'CHANGELOG')]].each do |icon, value, label, href|
+          = content_tag(href ? :a : :div, class: "landing-stat", href: href) do
+            %span.landing-stat-icon{ class: ("landing-stat-icon-accent" if href) }
+              %i.bi{ class: "bi-#{icon}" }
+            %div
+              .landing-stat-value.mapforge-font= value
+              .landing-stat-label= label
+            - if href
+              %i.bi.bi-arrow-up-right.landing-stat-link
 
   %section.landing-features.background-bright
     .landing-wrap
