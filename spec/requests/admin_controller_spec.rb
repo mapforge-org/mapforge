@@ -10,14 +10,14 @@ describe AdminController do
 
     it "lists the private link of every map" do
       map = create(:map)
-      get "/admin"
+      get "/admin", params: { quick: "all" }
       expect(response.body).to include("/m/#{map.private_id}")
     end
 
     it "searches in map names" do
       create(:map, name: "Map1")
       create(:map, name: "Map2")
-      get "/admin", params: { search: "Map1" }
+      get "/admin", params: { search: "Map1", quick: "all" }
       expect(response.body).to include("Map1")
       expect(response.body).not_to include("Map2")
     end
@@ -38,11 +38,23 @@ describe AdminController do
         end
       end
 
-      it "keeps the search in the filter links, and drops the filter for 'All'" do
+      it "keeps the search in the filter links" do
         get "/admin", params: { quick: "public", search: "x" }
-        links = Nokogiri::HTML(response.body).css(".btn-group a").to_h { |a| [ a.text, a["href"] ] }
-        expect(links["All"]).to eq "/admin?search=x"
-        expect(links["Featured"]).to eq "/admin?quick=featured&search=x"
+        links = Nokogiri::HTML(response.body).css("#quick-filter a").map { |a| a["href"] }
+        expect(links.first(2)).to eq [ "/admin?quick=all&search=x", "/admin?quick=featured&search=x" ]
+      end
+
+      it "shows the maps with content by default" do
+        get "/admin"
+        titles = Nokogiri::HTML(response.body).css(".map-card-title").map(&:text)
+        expect(titles).to eq [ "Filled" ]
+        expect(Nokogiri::HTML(response.body).at_css("#quick-filter .active").text).to include "With content"
+      end
+
+      it "counts all maps of every filter, whatever the search" do
+        get "/admin", params: { search: "Plain" }
+        counts = Nokogiri::HTML(response.body).css("#quick-filter .quick-count").map(&:text)
+        expect(counts).to eq %w[4 1 1 1]
       end
     end
   end

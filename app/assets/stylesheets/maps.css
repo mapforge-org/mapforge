@@ -29,14 +29,6 @@ nav.fixed-top~#maps {
   #maps .recently-viewed-maps .map-preview:nth-child(n+4) {
     display: none;
   }
-
-  #search-filters-container {
-    margin-inline: auto;
-  }
-}
-
-.maps-list .flex-container {
-  gap: 1rem;
 }
 
 .maps-list .grid-container {
@@ -305,22 +297,196 @@ span.map-avatar {
   min-height: 8rem;
 }
 
-.bg-search-filter {
-  background-color: var(--color-mid-steel-blue);
-  margin-top: 0.3rem;
+.list-header {
+  --list-border: color-mix(in srgb, var(--color-light-sand) 45%, transparent);
 
-  --bs-badge-padding-x: 0.6rem;
-  --bs-badge-padding-y: 0.4rem;
-  --bs-badge-font-size: 1rem;
+  /* The sort button floats right. The search and the filters are inline boxes that flow
+     around it, so filters that do not fit move below the button and get the full line. */
+  display: flow-root;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
 
-  .btn-close {
-    width: 0.4rem;
-    height: 0.4rem;
+.list-title {
+  margin: 0 0 0.375rem;
+}
+
+.list-search {
+  display: inline-block;
+  vertical-align: middle;
+
+  /* 15rem = the 1rem right margin + the 0.75rem sort margin + the widest sort button
+     ("Kürzlich aktualisiert", about 12.75rem). Less, and the search drops below the button. */
+  width: clamp(12rem, 100% - 15rem, 26rem);
+  margin: 0.375rem 1rem 0.375rem 0;
+  position: relative;
+
+  > .bi-search {
+    position: absolute;
+    top: 50%;
+    left: 0.8rem;
+    transform: translateY(-50%);
+    color: var(--color-dark-charcoal);
+    pointer-events: none;
+  }
+
+  #search {
+    padding-left: 2.3rem;
+    padding-right: 7.5rem;
+  }
+
+  /* The X below replaces the browser's own clear button, which looks different in each browser */
+  #search::-webkit-search-cancel-button {
+    appearance: none;
   }
 }
 
-#map-list-count {
-  position: relative;
-  top: -1rem;
+.list-search-end {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.8rem;
+  color: var(--color-dark-charcoal);
+}
+
+.list-search-clear {
+  padding: 0 0.3rem;
+  border: 0;
+  color: var(--text-color);
+  background: none;
+}
+
+#search:placeholder-shown ~ .list-search-end .list-search-clear,
+.map-count-short {
+  display: none;
+}
+
+.list-sort {
+  float: right;
+  margin: 0.375rem 0 0 0.75rem;
+
+  .sort-title {
+    margin-left: 0.3rem;
+  }
+}
+
+.quick-filter {
+  display: inline-flex;
+  vertical-align: middle;
+  max-width: 100%;
+  margin-block: 0.375rem;
+  overflow-x: auto;
+  border: 1px solid var(--list-border);
+  border-radius: var(--bs-border-radius);
+
+  .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .btn + .btn {
+    border-left: 1px solid var(--list-border);
+  }
+}
+
+.quick-count {
+  padding: 0 0.45rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  background-color: rgb(255 255 255 / 20%);
+
+  .active & {
+    color: white;
+    background-color: var(--color-dark-moss-green);
+  }
+}
+
+/* After the base rules above, so these overrides win */
+@media (width <= 640px) {
+  .list-controls {
+    display: contents;
+  }
+
+  .list-header {
+    display: grid;
+    gap: 0.75rem 0.5rem;
+    align-items: center;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .list-title,
+  .quick-filter {
+    grid-column: 1 / -1;
+  }
+
+  /* Explicit cells, because the sort button comes before the search in the DOM */
+  .list-search {
+    grid-area: 2 / 1;
+    width: auto;
+  }
+
+  .list-sort {
+    grid-area: 2 / 2;
+  }
+
+  .map-count-full {
+    display: none;
+  }
+
+  .map-count-short {
+    display: inline;
+  }
+
+  .list-search #search {
+    padding-right: 4.5rem;
+  }
+
+  .list-title,
+  .list-search,
+  .list-sort,
+  .quick-filter {
+    margin: 0;
+  }
+
+  .list-sort .dropdown-toggle::after,
+  .sort-title {
+    display: none;
+  }
+
+  .quick-filter {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.3rem;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+
+    .btn,
+    .btn + .btn {
+      flex: none;
+      gap: 0.3rem;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--list-border);
+      border-radius: 2rem;
+    }
+  }
+}
+
+@media (width < 380px) {
+  #map-list-count {
+    display: none;
+  }
+
+  .list-search #search {
+    padding-right: 2.5rem;
+  }
 }

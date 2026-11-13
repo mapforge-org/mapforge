@@ -2,10 +2,6 @@
   <%= render "maps/list", maps: @maps, partial: "maps/map_card", admin: true %>
 <% end %>
 
-<%= turbo_stream.replace "search-filters-container" do %>
-  <%= render "maps/search_filters", filter: @filter, user: @searchuser %>
-<% end %>
-
-<%= turbo_stream.replace "quick-filter" do %>
-  <%= render "quick_filter" %>
+<%= turbo_stream.replace "map-list-count" do %>
+  <%= render "maps/map_count", count: @maps.size %>
 <% end %>

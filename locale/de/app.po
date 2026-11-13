@@ -1295,6 +1295,9 @@ msgstr "Geringe Steigung (1-3 %)"
 msgid "Snapping waypoints to road network..."
 msgstr "Wegpunkte werden auf das Straßennetz gesetzt..."
 
+msgid "Sort"
+msgstr "Sortieren"
+
 msgid "Square"
 msgstr "Quadrat"
 

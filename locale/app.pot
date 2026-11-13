@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-13 13:54+0100\n"
-"PO-Revision-Date: 2026-11-13 13:54+0100\n"
+"POT-Creation-Date: 2026-11-13 14:22+0100\n"
+"PO-Revision-Date: 2026-11-13 14:22+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "%{count} features"
 msgstr ""
 
-#: ../app/views/maps/_list.haml:6
+#: ../app/views/maps/_map_count.haml:1
 msgid "%{count} map"
 msgid_plural "%{count} maps"
 msgstr[0] ""
@@ -156,7 +156,7 @@ msgstr ""
 msgid "Artistic"
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:49
+#: ../app/views/maps/_list_filter.haml:51
 msgid "Ascending"
 msgstr ""
 
@@ -316,7 +316,7 @@ msgstr ""
 msgid "Circle"
 msgstr ""
 
-#: ../app/views/maps/_search_filters.haml:7 ../app/views/maps/_search_filters.haml:14
+#: ../app/views/maps/_list_filter.haml:17
 msgid "Clear filter"
 msgstr ""
 
@@ -508,7 +508,7 @@ msgstr ""
 msgid "Demo: a map with routes, photos and 3D buildings takes shape"
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:42
+#: ../app/views/maps/_list_filter.haml:44
 msgid "Descending"
 msgstr ""
 
@@ -960,7 +960,7 @@ msgstr ""
 msgid "Import your data"
 msgstr ""
 
-#: ../app/views/maps/my.haml:24
+#: ../app/views/maps/my.haml:21
 msgid "In this gallery, your personal maps will be shown."
 msgstr ""
 
@@ -1596,7 +1596,7 @@ msgstr ""
 msgid "Search location"
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:12
+#: ../app/views/maps/_list_filter.haml:13
 msgid "Search maps"
 msgstr ""
 
@@ -1719,6 +1719,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/routing/gpx_to_route.js:130
 msgid "Snapping waypoints to road network..."
+msgstr ""
+
+#: ../app/views/maps/_list_filter.haml:24
+msgid "Sort"
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:56 ../app/views/maps/modals/feature/_edit_ui.haml:171
@@ -2065,11 +2069,11 @@ msgstr ""
 msgid "You are here"
 msgstr ""
 
-#: ../app/views/maps/my.haml:28
+#: ../app/views/maps/my.haml:25
 msgid "You can try out the %{tutorial_link} to learn how Mapforge works, or you can %{create_link} your first map right away."
 msgstr ""
 
-#: ../app/views/maps/my.haml:15
+#: ../app/views/maps/my.haml:14
 msgid "Your Maps"
 msgstr ""
 
@@ -2157,7 +2161,7 @@ msgstr ""
 msgid "coffee|coffee_shop"
 msgstr ""
 
-#: ../app/views/maps/my.haml:27
+#: ../app/views/maps/my.haml:24
 msgid "create"
 msgstr ""
 
@@ -2333,7 +2337,7 @@ msgstr ""
 msgid "transparent"
 msgstr ""
 
-#: ../app/views/maps/my.haml:26
+#: ../app/views/maps/my.haml:23
 msgid "tutorial map"
 msgstr ""
 

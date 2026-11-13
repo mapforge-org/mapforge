@@ -1,0 +1,6 @@
+#quick-filter.quick-filter{ role: "group", 'aria-label': "Quick filter" }
+  - AdminController::QUICK_FILTERS.each do |key, label|
+    = link_to request.query_parameters.merge("quick" => key), class: [ "btn btn-green", ("active" if @quick == key) ],
+              data: { action: "maps#quickFilter", 'maps-quick-param': key } do
+      = label
+      %span.quick-count= number_with_delimiter(@quick_counts[key])

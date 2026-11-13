@@ -15,6 +15,7 @@ class Map
   default_scope { sorted(:created_at, :asc) }
   scope :listed, -> { where(view_permission: "listed") }
   scope :tutorial, -> { where(tags: "tutorial") }
+  scope :featured, -> { where(tags: "featured") }
   scope :ulogger, -> { where(tags: "ulogger") }
   scope :trains, -> { where(tags: "train") }
   scope :search, ->(term) {

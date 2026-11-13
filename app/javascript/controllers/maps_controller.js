@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
+import { debounce } from 'helpers/functions'
 
 export default class extends Controller {
 
@@ -34,8 +35,19 @@ export default class extends Controller {
   }
 
   search(event) {
-    this.searchValue = event.target.value
-    this.loadMaps()
+    const value = event.target.value
+    debounce(() => {
+      this.searchValue = value
+      this.loadMaps()
+    }, 'maps-search', 300)
+  }
+
+  // Adds the current search and sort, which change in the URL without a page load
+  quickFilter(event) {
+    event.preventDefault()
+    const params = new URLSearchParams(location.search)
+    params.set('quick', event.params.quick)
+    Turbo.visit(`${location.pathname}?${params}`)
   }
 
   clearFilter() {
@@ -52,10 +64,13 @@ export default class extends Controller {
     params.set('sort', this.sortValue)
     params.set('direction', this.directionValue)
     const url = `${location.pathname}?${params}`
+    const request = this.lastRequest = Symbol('maps')
     const response = await fetch(url, {
       headers: { "Accept": "text/vnd.turbo-stream.html" }
     })
     const html = await response.text()
+    // A slower response for older input must not overwrite a newer one
+    if (request !== this.lastRequest) return
     Turbo.renderStreamMessage(html)
     // Optionally update URL in address bar without full reload
     window.history.replaceState({}, "", url)

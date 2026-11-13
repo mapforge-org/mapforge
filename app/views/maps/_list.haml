@@ -3,7 +3,5 @@
 
 #maps-list.maps-list
 
-  %span#map-list-count= n_("%{count} map", "%{count} maps", maps.size) % { count: maps.size }
-
   .grid-container{ data: { 'controller': "header", 'action': "click->header#hideNavDropdown" } }
     = render partial: partial, collection: maps, as: :map, locals: { admin: local_assigns[:admin] }

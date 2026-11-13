@@ -11,10 +11,7 @@
         = render recent_map, rw: rw
 
 
-  %h1.mapforge-font
-    = _("Your Maps")
-
-  = render "list_filter"
+  = render "list_filter", title: _("Your Maps"), count: @my_maps.size
   = render "list" , maps: @my_maps, partial: "maps/map_card"
 
 

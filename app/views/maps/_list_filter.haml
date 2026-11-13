@@ -1,49 +1,53 @@
 - sort_options = {created_at: _("Newest"),
                 updated_at: _("Recently updated"),
                 view_count: _("Most viewed") }
-.row{ 'data-controller': "maps", 'data-maps-sort-value': @sort,
-                                  'data-maps-sort_label-value': sort_options[@sort.to_sym],
-                                  'data-maps-direction-value': @direction,
-                                  'data-maps-search-value': @filter }
-  - # screen < sm, sort moves below filters
-  .col-12.col-md-4.mb-2
+-# One header for title, search, filters and sort, so the sort button exists once and CSS moves it on phones
+.list-header{ 'data-controller': "maps", 'data-maps-sort-value': @sort,
+                                         'data-maps-sort_label-value': sort_options[@sort.to_sym],
+                                         'data-maps-direction-value': @direction,
+                                         'data-maps-search-value': @filter }
+  %h1.list-title.mapforge-font= title
 
-    %div
-      %input#search.form-control.form-control{ type: "text", name: "search", placeholder: _("Search maps"),
-                                               "aria-describedby" => "searchHelp",
-                                               'data-action': "keydown.enter->maps#search",
-                                               value: @search }
+  -# Before the search, because the sort button floats right and the search and filters flow around it
+  .dropdown.list-sort
+    %button.btn.btn-green.dropdown-toggle{ type: "button", id: "sortDropdown", "data-bs-toggle": "dropdown", "aria-expanded": "false", 'aria-label': _("Sort") }
+      %i.bi#sortIcon{class: (@direction == "desc" ? "bi-sort-down" : "bi-sort-up")}
+      %span.sort-title#sortTitle= sort_options[@sort.to_sym]
+    %ul.background-bright.dropdown-menu.dropdown-menu-end{ "aria-labelledby": "sortDropdown" }
 
-  .col-12.col-md-4.mb-2
-    = render "maps/search_filters"
-
-  .col-12.col-md-4.text-md-end.mb-3
-    .dropdown
-      %button.btn.btn-green.dropdown-toggle{ type: "button", id: "sortDropdown", "data-bs-toggle": "dropdown", "aria-expanded": "false" }
-        %i.bi.me-1#sortIcon{class: (@direction == "desc" ? "bi-sort-down" : "bi-sort-up")}
-        %span#sortTitle= sort_options[@sort.to_sym]
-      %ul.background-bright.dropdown-menu{ "aria-labelledby": "sortDropdown" }
-
-        - sort_options.each do |sort, label|
-          %li
-            %a.dropdown-item{
-              'data-action': "click->maps#changeSort",
-              'data-maps-sort-param': sort,
-              'data-maps-sort-label-param': label
-            }
-              = label
-        %hr.dropdown-divider
+      - sort_options.each do |sort, label|
         %li
           %a.dropdown-item{
-            'data-action': "click->maps#changeDirection",
-            'data-maps-direction-param': "desc"
+            'data-action': "click->maps#changeSort",
+            'data-maps-sort-param': sort,
+            'data-maps-sort-label-param': label
           }
-            %i.bi.bi-sort-down.me-1>
-            = _("Descending")
-        %li
-          %a.dropdown-item{
-            'data-action': "click->maps#changeDirection",
-            'data-maps-direction-param': "asc"
-          }
-            %i.bi.bi-sort-up.me-1>
-            = _("Ascending")
+            = label
+      %hr.dropdown-divider
+      %li
+        %a.dropdown-item{
+          'data-action': "click->maps#changeDirection",
+          'data-maps-direction-param': "desc"
+        }
+          %i.bi.bi-sort-down.me-1>
+          = _("Descending")
+      %li
+        %a.dropdown-item{
+          'data-action': "click->maps#changeDirection",
+          'data-maps-direction-param': "asc"
+        }
+          %i.bi.bi-sort-up.me-1>
+          = _("Ascending")
+
+  .list-controls
+    .list-search
+      %i.bi.bi-search
+      %input#search.form-control{ type: "search", name: "search", placeholder: _("Search maps"), 'aria-label': _("Search maps"),
+                                  'data-action': "input->maps#search keydown.enter->maps#search", value: @search }
+      .list-search-end
+        = render "maps/map_count", count: count
+        %button.list-search-clear{ type: "button", 'aria-label': _("Clear filter"), 'data-action': "click->maps#clearFilter" }
+          %i.bi.bi-x-lg
+
+    - if local_assigns[:filters]
+      = render filters

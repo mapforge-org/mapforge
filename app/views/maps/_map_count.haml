@@ -1,0 +1,3 @@
+%span#map-list-count
+  %span.map-count-full= n_("%{count} map", "%{count} maps", count) % { count: number_with_delimiter(count) }
+  %span.map-count-short= number_with_delimiter(count)

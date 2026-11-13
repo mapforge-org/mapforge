@@ -10,7 +10,7 @@ describe "Admin List" do
     create_list(:map, 3)
     sign_in(admin)
 
-    visit admin_path
+    visit admin_path(quick: "all")
   end
 
   it "shows link to destroy map" do

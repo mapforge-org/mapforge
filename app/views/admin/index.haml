@@ -2,12 +2,7 @@
 = turbo_stream_from "admin_maps_list"
 
 #maps
-  %h1.mapforge-font
-    Admin
-
-  = render "maps/list_filter"
-
-  = render "quick_filter"
+  = render "maps/list_filter", title: "Admin", count: @maps.size, filters: "admin/quick_filter"
   = render "maps/list", maps: @maps, partial: "maps/map_card", admin: true
 
   - if @maps.empty?

@@ -4,8 +4,10 @@ module MapListFilters
   SORT_COLUMNS = %w[created_at updated_at view_count].freeze
 
   def filter_and_sort_maps(maps, default_sort: "updated_at")
-    @sort = SORT_COLUMNS.include?(params[:sort]) ? params[:sort] : default_sort
-    @direction = params[:direction] || "desc"
+    sort_maps(search_maps(maps), default_sort:)
+  end
+
+  def search_maps(maps)
     @search = @filter = params[:search].to_s.strip
     if @search.include? "user:"
       @filter = @search.sub(/\buser:(\S+)\s*/, "").strip
@@ -18,7 +20,12 @@ module MapListFilters
       maps = maps.where(owner_ids: @searchuser.id)
     end
     maps = maps.search(@filter) unless @filter.empty?
-    maps = maps.sorted(@sort, @direction)
-    maps.limit(300)
+    maps
+  end
+
+  def sort_maps(maps, default_sort: "updated_at")
+    @sort = SORT_COLUMNS.include?(params[:sort]) ? params[:sort] : default_sort
+    @direction = params[:direction] || "desc"
+    maps.sorted(@sort, @direction).limit(300)
   end
 end
