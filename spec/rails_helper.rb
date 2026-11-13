@@ -60,20 +60,10 @@ RSpec.configure do |config|
   end
 
   config.after(:each, type: :feature) do |spec|
-    # https://danielabaron.me/blog/capture-browser-console-logs-capybara-cuprite/
-    logger = page.driver.browser.options.logger
-    console_logs = logger.string.lines.select { |line| line.include?("Runtime.consoleAPICalled") }
-    error_logs = console_logs.select { |line| line.include?('"type":"error"') }
-
-    # Clear the logger buffer to prevent errors from carrying over to subsequent tests,
-    # also for :skip_console_errors specs
-    logger.truncate(0)
-    logger.rewind
-
-    # Raise after clearing to ensure isolation even when test fails
-    if error_logs.present? && !spec.metadata[:skip_console_errors]
-      raise JavaScriptError, error_logs.join("\n\n")
-    end
+    # Console errors, failed network loads and uncaught exceptions. Every example gets a new page,
+    # and with it an empty console, see CupriteKeepCacheOnReset.
+    errors = page.driver.browser.console.select(&:error?)
+    raise JavaScriptError, errors.join("\n\n") if errors.any? && !spec.metadata[:skip_console_errors]
   end
 
   config.infer_spec_type_from_file_location!

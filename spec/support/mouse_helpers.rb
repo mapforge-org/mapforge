@@ -10,7 +10,7 @@ end
 
 def click_center_of_screen
   center = center_of_screen
-  page.driver.click(center[:x], center[:y])
+  page.driver.browser.mouse.click(**center)
 end
 
 def hover_center_of_screen

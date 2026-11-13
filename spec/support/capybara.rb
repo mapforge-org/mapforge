@@ -27,7 +27,6 @@ Capybara.register_driver(:cuprite) do |app|
     # than 100 modules, and on a loaded machine that took longer than the default 5 seconds.
     timeout: 10,
     js_errors: true,
-    logger: StringIO.new,
     # Specs must not depend on the network. Chrome resolves no host but the Capybara server,
     # so a slow CDN cannot time out a spec. CapybaraMock intercepts before name resolution,
     # so stub_request still answers external urls. See spec/features/network_isolation_spec.rb
@@ -56,6 +55,7 @@ module CupriteKeepCacheOnReset
     old_page.command("Runtime.disable")
     @options.reset_window_size
     @page = attach_page(default_context.create_target.id)
+    @page_closed = false
     old_page.close
   # Cuprite restarts a dead browser only in its own commands, so without this the example
   # that killed Chrome fails every example after it too.
@@ -88,6 +88,6 @@ Capybara.server = :puma, { Silent: true, Threads: "0:8" }
 # `browser.reset` between examples rebinds the page, so this must be reapplied every example.
 RSpec.configure do |config|
   config.before(:each, type: :feature) do
-    page.driver.headers = { "Accept-Language" => "en-US,en;q=0.9" }
+    page.driver.browser.headers.set("Accept-Language" => "en-US,en;q=0.9")
   end
 end

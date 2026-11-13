@@ -46,6 +46,10 @@
   text-decoration-color: var(--color-dark-charcoal);
 }
 
+.footer .footer-links ul a.footer-coffee {
+  line-height: 1.3;
+}
+
 .footer .footer-links ul a[aria-current] {
   font-weight: 600;
   text-decoration-line: none;
