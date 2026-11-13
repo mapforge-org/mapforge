@@ -47,7 +47,7 @@ export default class extends Controller {
     }
 
     const adFree = tip(this.heroTargets[1])
-    const [importData, routing] = this.featureTargets.map(tip)
+    const [importData, draw, routing] = this.featureTargets.map(tip)
     const showcase = (row, center) => {
       const pins = this.stopTargets.filter(pin => row.contains(pin))
       return this.showcasePoints(box(row), box(row.querySelector('svg')), box(pins[0].closest('ul')), pins.map(tip), center)
@@ -103,14 +103,15 @@ export default class extends Controller {
           ...bends(cards[0], [-0.03, 0.27], [0.18, 0.33]),
           importData,
           ...bends(cards[0], [0.62, 0.4], [0.91, 0.33]),
-          ...[-0.03, 0.5, 1.03].map(share => ({ x: cards[1].left + cards[1].width * share, y: belowDrawImage })),
+          ...[-0.03, 0.55].map(share => ({ x: cards[1].left + cards[1].width * share, y: belowDrawImage })),
+          draw,
           ...bends(cards[2], [0.12, 0.24], [0.42, 0.37]),
           routing,
           ...bends(cards[2], [0.92, 0.42]),
           { x: rightGutter, y: cards[2].top + cards[2].height * 0.55 },
           { x: rightGutter, y: grid.bottom + 30 }
         ]
-      : this.stackedFeatures(leftGutter, belowActions, grid, cards, importData, routing)
+      : this.stackedFeatures(leftGutter, rightGutter, belowActions, belowDrawImage, grid, cards, [importData, draw, routing])
 
     const points = [
       ...hero,
@@ -127,18 +128,20 @@ export default class extends Controller {
     const covers = [box(this.statsTarget), ...this.tileTargets.map(box)]
     this.chevronsTarget.setAttribute('d', this.chevronPath(points.filter(point => point.pin), covers))
     // The brown route has too little contrast on the dark green and on the satellite image,
-    // a copy in the accent color covers it there
+    // copies in the accent colors cover it there. The last area is the satellite image, it gets the brightest color.
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
     const greenBelowStats = parseFloat(getComputedStyle(this.statsTarget).getPropertyValue('--landing-stats-green')) * rem
     const heroTop = box(this.headlineTarget.closest('section')).top
     const darkHero = new DOMRect(0, heroTop, origin.width, box(this.statsTarget).top + greenBelowStats - heroTop)
-    const areas = [darkHero, box(this.featureTargets[1].parentElement), box(this.ctaTarget)]
+    const areas = [darkHero, box(this.ctaTarget), box(this.featureTargets[2].parentElement)]
     areas.forEach(({ x, y, width, height }, index) => {
       Object.entries({ x, y, width, height }).forEach(([name, value]) => this.accentAreaTargets[index].setAttribute(name, value))
     })
-    this.accentRouteTarget.setAttribute('d', this.pathTarget.getAttribute('d'))
-    this.accentRouteTarget.setAttribute('stroke-dashoffset', this.pathTarget.getAttribute('stroke-dashoffset'))
-    this.accentChevronsTarget.setAttribute('d', this.chevronsTarget.getAttribute('d'))
+    this.accentRouteTargets.forEach(route => {
+      route.setAttribute('d', this.pathTarget.getAttribute('d'))
+      route.setAttribute('stroke-dashoffset', this.pathTarget.getAttribute('stroke-dashoffset'))
+    })
+    this.accentChevronsTargets.forEach(chevrons => chevrons.setAttribute('d', this.chevronsTarget.getAttribute('d')))
     this.startTarget.setAttribute('cx', start.x)
     this.startTarget.setAttribute('cy', start.y)
   }
@@ -210,18 +213,29 @@ export default class extends Controller {
   }
 
   // In a wrapped grid the route stays in the gaps next to the cards, away from their text
-  stackedFeatures (leftGutter, belowActions, grid, cards, importData, routing) {
+  stackedFeatures (leftGutter, rightGutter, belowActions, belowDrawImage, grid, cards, [importData, draw, routing]) {
     const gap = cards[0].right + 7
-    const gapBelow = cards[2].right + 7
-    // The pin stands close to the gap, so the route leaves the gap and returns to it in a half circle around the pin
-    const radius = gapBelow - routing.x
-    const arc = (side) => ({ x: routing.x + radius * 0.3, y: routing.y + side * radius * 0.7 })
+    // A pin stands close to a gap, so the route leaves the gap and returns to it in a half circle around the pin
+    const around = (pin, x) => {
+      const radius = x - pin.x
+      const arc = (side) => ({ x: pin.x + radius * 0.3, y: pin.y + side * radius * 0.7 })
+      return [{ x, y: pin.y - radius }, arc(-1), pin, arc(1), { x, y: pin.y + radius }]
+    }
+    // In two columns the draw pin is far from the gap between the columns. The route crosses the
+    // card under its image to the pin and returns in the right gutter and the gap between the rows.
+    const toDraw = cards[1].top === cards[0].top
+      ? [
+          { x: gap, y: belowDrawImage }, { x: cards[1].left + cards[1].width * 0.55, y: belowDrawImage }, draw,
+          { x: rightGutter, y: draw.y + 40 }, { x: rightGutter, y: cards[1].bottom + 10 }, { x: gap, y: cards[1].bottom + 10 }
+        ]
+      : [{ x: gap, y: importData.y }, ...around(draw, gap)]
     return [
       { x: leftGutter, y: belowActions }, { x: leftGutter, y: grid.top - 20 }, { x: importData.x, y: grid.top - 20 },
       importData,
-      { x: gap, y: importData.y }, { x: gap, y: cards[2].top + 10 }, { x: gap, y: routing.y - radius },
-      arc(-1), routing, arc(1),
-      { x: gapBelow, y: routing.y + radius }, { x: gapBelow, y: grid.bottom + 30 }
+      ...toDraw,
+      { x: gap, y: cards[2].top + 10 },
+      ...around(routing, cards[2].right + 7),
+      { x: cards[2].right + 7, y: grid.bottom + 30 }
     ]
   }
 

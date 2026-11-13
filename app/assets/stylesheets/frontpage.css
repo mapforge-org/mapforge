@@ -533,6 +533,10 @@ section,
   stroke: var(--color-mid-rust);
 }
 
+.landing-route .landing-route-bright path {
+  stroke: var(--color-mid-fawn);
+}
+
 .landing-route circle {
   fill: var(--color-mid-rust);
 }

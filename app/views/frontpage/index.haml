@@ -75,7 +75,7 @@
         - # The pin is a point in the 320x130 SVG drawing
         - # Phones skip the terrain tile, so the base maps text names the terrain there
         - [["import", _("Import your data"), _("Import from GeoJSON, GPX and KML/KMZ"), [118, 92]],
-           ["draw", _("Draw and style"), _("Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more")],
+           ["draw", _("Draw and style"), _("Add pictures, customize colors, symbols, labels, (3D) polygons, indoor maps and more"), [290, 102]],
            ["routing", _("Routing with elevation profile"), _("Plan routes for walking, bicycle and car"), [268, 73]],
            ["layers", _("Dynamic layers"), raw(_("Show live OpenStreetMap data with %{overpass_link}") % { overpass_link: overpass_link })],
            ["basemaps", _("Base maps"), safe_join([tag.span(_("Streets, Satellite, Topographic, Biking, Watercolor, 3D houses"), class: "d-none d-sm-inline"),
@@ -176,11 +176,14 @@
   %svg.landing-route{ 'aria-hidden': "true" }
     %defs
       %clipPath#landing-route-accent
-        - 3.times do
+        - 2.times do
           %rect{ data: { 'frontpage-route-target': "accentArea" } }
+      %clipPath#landing-route-bright
+        %rect{ data: { 'frontpage-route-target': "accentArea" } }
     %path{ data: { 'frontpage-route-target': "path" } }
     %path.landing-route-chevrons{ data: { 'frontpage-route-target': "chevrons" } }
-    %g.landing-route-accent{ 'clip-path': "url(#landing-route-accent)" }
-      %path{ data: { 'frontpage-route-target': "accentRoute" } }
-      %path.landing-route-chevrons{ data: { 'frontpage-route-target': "accentChevrons" } }
+    - %w[accent bright].each do |area|
+      %g{ class: "landing-route-#{area}", 'clip-path': "url(#landing-route-#{area})" }
+        %path{ data: { 'frontpage-route-target': "accentRoute" } }
+        %path.landing-route-chevrons{ data: { 'frontpage-route-target': "accentChevrons" } }
     %circle{ r: 6, data: { 'frontpage-route-target': "start" } }
