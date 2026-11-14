@@ -1,7 +1,7 @@
 import { symbolUrl } from 'helpers/functions'
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { addLayer, map, removeStyleLayers } from 'maplibre/map'
-import { haloImage, inlineIconImage, labelImage, markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
+import { SHAPE_EDGE, haloImage, inlineIconImage, labelImage, markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
 import { defaults, glyphShift } from 'maplibre/styles/defaults'
 import { patternImage } from 'maplibre/styles/pattern_image'
 
@@ -9,8 +9,8 @@ import { patternImage } from 'maplibre/styles/pattern_image'
 // is emulated by stacking one fill-extrusion layer per bucket (0.1 … 1.0)
 export const extrusionOpacityBuckets = Array.from({ length: 10 }, (_, i) => (i + 1) / 10)
 
-// Copies of the point layers, which sortLayers() puts above all other points, but below the labels,
-// so a label centered on its point stays visible. They hold every point, but only the hovered or
+// Copies of the point layers, which sortLayers() puts above all other points and labels, and below
+// 'text-layer-front' with the label of the point. They hold every point, but only the hovered or
 // selected one is visible, through feature-state in its opacity. A copy filtered to that point would place a new symbol on each hover, and MapLibre fades
 // a new symbol in. The point stays in its own layer below, so the original order comes back.
 const frontStyleNames = ['points-layer-halo', 'points-layer', 'shapes-layer-halo', 'shapes-layer',
@@ -19,6 +19,7 @@ const frontStyleNames = ['points-layer-halo', 'points-layer', 'shapes-layer-halo
 export const viewStyleNames = [
   'polygon-layer',
   'polygon-layer-pattern', // the pattern draws on the fill color, so it goes above the fill
+  'polygon-layer-hover',
   'polygon-layer-outline',
   'polygon-layer-halo',
   'line-layer-outline', // casing beside the line, drawn below it
@@ -40,6 +41,8 @@ export const viewStyleNames = [
   'symbols-layer',
   'text-layer-flat',
   'text-layer',
+  'text-layer-front',
+  'text-layer-title-front',
   ...frontStyleNames,
   'polygon-layer-extruded-shadow',
   ...extrusionOpacityBuckets.map((_, i) => `polygon-layer-extrusion-${i + 1}`)
@@ -99,8 +102,18 @@ export async function loadImage (id) {
   // re-check of MapLibre finds the image at once. imageState does not apply: a prune can
   // drop the image, and then MapLibre asks for it again.
   if (id.startsWith('shape-')) {
-    const [ shape, color, border, symbol, size, selected ] = id.slice('shape-'.length).split('|')
-    markerImage(id, { shape, color, border, symbol, size: shapeCanvasSize(Number(size)), halo: selected === '1' })
+    const [ shape, color, border, symbol, size, selected, labelColor, shadow, shadowWidth, labelSize, weight,
+      ...text ] = id.slice('shape-'.length).split('|')
+    const label = text.length ? {
+      text: text.join('|'),
+      color: labelColor,
+      shadow,
+      shadowWidth: Number(shadowWidth),
+      // same as staticLabelSize()
+      size: Number(labelSize) || Math.max(defaults.labelSize, defaults.labelSize + 0.25 * (Number(size) - 20)),
+      bold: weight === 'bold'
+    } : null
+    markerImage(id, { shape, color, border, symbol, size: shapeCanvasSize(Number(size)), halo: selected === '1', label })
     return
   }
 
@@ -244,6 +257,10 @@ const haloOpacity = () => ['case',
   ['boolean', ['feature-state', 'hover'], false], defaults.haloOpacityHover,
   0]
 
+// one color stays a constant, a feature-state case is a per vertex attribute
+const haloColor = () => defaults.haloColor === defaults.haloColorHover ? defaults.haloColor
+  : ['case', ['boolean', ['feature-state', 'active'], false], defaults.haloColor, defaults.haloColorHover]
+
 const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
 const pointColor = () => styleProp(['user_marker-color', 'marker-color'], defaults.featureColor)
 const markerSize = styleProp(['user_marker-size', 'marker-size'])
@@ -255,6 +272,9 @@ const showsSymbol = () => ['all', ['!=', markerSymbol(), ''], ['!', ['has', 'mar
 // Only a sticky selection sets it: a change rebuilds the tiles, so a halo uses feature-state.
 // The expression reads the 'id' property: in the worker, ['id'] is not the promoteId value.
 // ['has', 'id']: without it, a feature without an id would match while nothing is selected (null == null)
+const inFront = ['any', ['boolean', ['feature-state', 'active'], false], ['boolean', ['feature-state', 'hover'], false]]
+const showInFront = value => ['case', inFront, value, 0]
+const hideInFront = value => ['case', inFront, 0, value]
 const isSelected = () => ['all', ['has', 'id'], ['==', ['get', 'id'], ['global-state', 'selectedFeatureId']]]
 // the selected feature shows at every zoom level
 export const minZoomFilter = () => ['any', isSelected(),
@@ -305,13 +325,28 @@ const pointHaloWidth = () => ['interpolate', ['exponential', 2], ['zoom'],
   21, ['+', defaults.haloWidth, ['case', shouldScale, ['*', 32, pointOutlineSize()], pointOutlineSize()]]
 ]
 
-// A point with a shape or a symbol leaves the circle layer and the symbol layer, and gets
-// drawn as one image instead (see shapesLayerStyles). A plain circle keeps the old layers, so
-// an uploaded image without a shape still renders as just the image, with nothing behind it.
+// MapLibre draws all labels above all points, so the label on a point would draw above the point
+// on top of it. A label centered on its point goes into the image of the point instead, with
+// the z-order of the point. A symbol loads after the image is drawn and would cover the label.
+// KEEP IN SYNC with hasCenteredLabel() in circle_image.js.
+const centeredLabel = () => ['all',
+  ['==', ['geometry-type'], 'Point'],
+  present('label'),
+  ['==', styleProp(['user_label-anchor', 'label-anchor'], defaults.labelAnchor), 'center'],
+  ['!', present('label-title')],
+  // an offset of [0, 0] keeps the label on the point
+  ['any', ['!', ['has', 'label-offset']], ['==', ['to-string', ['get', 'label-offset']], '[0,0]']],
+  ['!', ['has', 'marker-image-url']],
+  ['!', showsSymbol()]
+]
+
+// A point with a shape, a symbol or a centered label leaves the circle layer and the symbol layer,
+// and gets drawn as one image instead (see shapesLayerStyles). A plain circle keeps the old layers,
+// so an uploaded image without a shape still renders as just the image, with nothing behind it.
 // KEEP IN SYNC with isShapedPoint() in circle_image.js, which is what the prune reads.
 const shapedPoint = () => ['all',
   ['==', ['geometry-type'], 'Point'],
-  ['any', ['!=', markerShape(), 'circle'], showsSymbol()]
+  ['any', ['!=', markerShape(), 'circle'], showsSymbol(), centeredLabel()]
 ]
 const plainPoint = () => ['!', shapedPoint()]
 
@@ -323,7 +358,14 @@ const shapeImage = () => ['concat',
   '|', pointOutlineColor(),
   '|', ['coalesce', ['get', 'marker-image-url'], markerSymbol()],
   '|', ['to-string', pointSizeMax()],
-  '|0'
+  '|0',
+  // the label goes last, it can contain a '|'
+  ['case', centeredLabel(),
+    ['concat', '|', labelColor(), '|', labelShadow(), '|', labelShadowWidth(),
+      '|', styleProp(['user_label-size', 'label-size'], ''),
+      '|', styleProp(['user_label-font-weight', 'label-font-weight'], 'normal'),
+      '|', ['get', 'label']],
+    '']
 ]
 // Only the halo ring of a shape, which shapes-layer-halo shows below a selected shape.
 // KEEP IN SYNC with shapeHaloImageName() in circle_image.js.
@@ -389,12 +431,12 @@ const vectorY = y => ['interpolate', ['linear'], y,
 const offsetY = y => vectorY(['-', y, capsInset])
 
 // The distance from the center of a point to its lower edge, in px. A shape canvas is
-// 2 * size / FILL wide (see circle_image.js), its outline ends at 1.14 * size. A plain circle
+// 2 * size / FILL wide (see circle_image.js), its outline ends at SHAPE_EDGE * size. A plain circle
 // gets its stroke on top of the radius. An image without a shape has an unknown aspect, the
 // factor keeps the distance it always had. A pin stands on its tip, see 'icon-anchor'.
 const pointEdge = () => ['case',
   ['==', markerShape(), 'pin'], 0,
-  shapedPoint(), ['*', 1.14, pointSizeMax()],
+  shapedPoint(), ['*', SHAPE_EDGE, pointSizeMax()],
   ['has', 'marker-image-url'], ['+', 2, ['*', 1.38, pointSizeMax()]],
   ['+', pointSizeMax(), pointOutlineSize()]
 ]
@@ -402,6 +444,9 @@ const pointEdge = () => ['case',
 // Label offset based on marker size, with geometry-aware handling. The label starts 16px below
 // the edge of the point. Without scaling the point has a fixed size in px. With scaling, the edge
 // and the label both double per zoom level, so one em value holds at every zoom, see labelSize.
+// The label of an unscaled point starts 16px below its edge
+const belowEdge = (edge, fontSize) => offsetY(['/', ['+', 16, edge], fontSize])
+
 const labelOffsetBySize = zoom => [
   'case',
   ['any',
@@ -410,7 +455,7 @@ const labelOffsetBySize = zoom => [
   ],
   ['literal', [0, 0]],  // Zero offset for polygons
   ['!', shouldScale],
-  offsetY(['/', ['+', 16, ['var', 'edge']], ['var', 'fontSize']]),
+  belowEdge(['var', 'edge'], ['var', 'fontSize']),
   // the edge is pointEdge() at zoom 16
   offsetY(['/', ['*', 2 ** (zoom - 16), ['+', 16, ['var', 'edge']]], labelSizeAt(zoom)])
 ]
@@ -419,12 +464,10 @@ const labelOffsetBySize = zoom => [
 // a zoom dependent text size, so a scaled label gets no box.
 const hasLabelBox = () => ['!', ['any', shouldScale,
   ['==', styleProp(['user_label-background', 'label-background'], 'badge'), 'shadow']]]
-const labelBoxImage = () => ['case',
-  hasLabelBox(),
-  // the radius is a quarter of the line height, like the 8px corners of the 2rem controls
-  ['concat', 'label-', labelShadow(), '|',
-    ['to-string', ['round', ['*', defaults.labelLineHeight / 4, labelFontSize()]]]],
-  '']
+// the radius is a quarter of the line height, like the 8px corners of the 2rem controls
+const boxImage = (color, fontSize) => ['concat', 'label-', color, '|',
+  ['to-string', ['round', ['*', defaults.labelLineHeight / 4, fontSize]]]]
+const labelBoxImage = () => ['case', hasLabelBox(), boxImage(labelShadow(), labelFontSize()), '']
 
 // The glyphs of some fonts sit higher in their line than others (see glyphShift), so the box
 // behind the label moves up by that much, in px of the text size.
@@ -438,15 +481,19 @@ const labelBoxOffset = () => {
 // stops growing with the marker. The value of the next level then keeps the label clear of
 // the marker, at the cost of a gap of up to one radius.
 
-const labelOffset = () => ['let', 'edge', pointEdge(), 'fontSize', labelFontSize(),
+// defaultPlace: a condition for the default place below the point, whatever the label asks for.
+// 'let' parses the conditions once, and not once per stop.
+const labelOffset = (defaultPlace = false) => ['let', 'edge', pointEdge(), 'fontSize', labelFontSize(),
+  'bySize', ['any', defaultPlace, ['all', ['!', ['has', 'label-offset']],
+    ['==', styleProp(['user_label-anchor', 'label-anchor'], defaults.labelAnchor), 'top']]],
   ['step', ['zoom'], textOffset(17),
     ...[17, 18, 19, 20, 21, 22, 23].flatMap(zoom => [zoom, textOffset(zoom + 1)])
   ]]
 
 const textOffset = zoom => [
   'case',
+  ['var', 'bySize'], labelOffsetBySize(zoom),
   ['has', 'label-offset'], ['get', 'label-offset'],
-  ['==', styleProp(['user_label-anchor', 'label-anchor'], defaults.labelAnchor), 'top'], labelOffsetBySize(zoom),
   ['literal', [0, 0]]
 ]
 
@@ -555,7 +602,7 @@ function symbolsLayerStyles(mode) {
         'icon-image': ['concat', 'halo|',
           ['to-string', styleProp(['user_marker-size', 'marker-size'], defaults.markerSize)], '|', image]
       },
-      paint: { 'icon-opacity': haloOpacity() }
+      paint: { 'icon-opacity': haloOpacity(), 'icon-color': haloColor() }
     },
     [layerId]: {
       id: layerId,
@@ -613,7 +660,7 @@ function shapesLayerStyles(mode) {
       type: 'symbol',
       filter,
       layout: { ...layout, 'icon-image': shapeHaloImage() },
-      paint: { 'icon-opacity': haloOpacity() }
+      paint: { 'icon-opacity': haloOpacity(), 'icon-color': haloColor() }
     },
     [layerId]: {
       id: layerId,
@@ -652,7 +699,7 @@ function pointHaloStyles(mode) {
         'circle-pitch-scale': 'map',
         'circle-radius': pointSize(),
         'circle-color': 'transparent',
-        'circle-stroke-color': defaults.haloColor,
+        'circle-stroke-color': haloColor(),
         'circle-stroke-width': pointHaloWidth(),
         'circle-stroke-opacity': haloOpacity()
       }
@@ -734,27 +781,83 @@ function textLayerStyles(mode) {
     'text-halo-width': ['case', hasLabelBox(), 0, labelShadowWidth()]
   }
 
+  // a blank label would still show its box
+  const hasLabel = ['any', present('label'), present('label-title')]
+  // the label of a point below another point, see hideCoveredLabels
+  const notCovered = ['any', isSelected(), ['!', ['has', 'id']],
+    ['!', ['in', ['concat', '|', ['get', 'id'], '|'], ['to-string', ['global-state', 'coveredLabels']]]]]
+  const baseFilter = [
+    ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
+    ['!=', ['geometry-type'], 'MultiLineString'], // line labels are in 'line-labels'
+    ['!', centeredLabel()], // a centered label is part of the image of the point
+    flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
+    minZoomFilter(),
+    maxZoomFilter()
+  ]
+  const style = {
+    id: layerId,
+    type: 'symbol',
+    filter: ['all', hasLabel, notCovered, ...baseFilter],
+    layout: {
+      ...sharedLayout,
+      ...modeSpecificLayout
+    },
+    paint: sharedPaint
+  }
+  if (flatMode) { return { [layerId]: style } }
+
+  // The label of the hovered or selected feature on top of all labels, like the front points.
+  // Hover cannot use the sort key of the selection: it reads global state, and a change of
+  // global state rebuilds the tiles. The copy places every label, but shows only the one in front.
+  // A point whose label does not show its title shows the title there instead, in the default
+  // place and the look of its label. A centered label is in the image, see 'text-layer-title-front'.
+  const title = ['to-string', styleProp(['title', 'user_title', 'name', 'user_name'], '')]
+  const showsTitle = ['all', ['==', ['geometry-type'], 'Point'], ['!', blank(title)],
+    ['!=', title, labelText()], ['!=', title, ['to-string', ['coalesce', ['get', 'label-title'], '']]]]
+  const overlapAll = { 'text-allow-overlap': true, 'text-ignore-placement': true, 'icon-allow-overlap': true, 'icon-ignore-placement': true }
+  const frontPaint = { 'text-opacity': showInFront(1), 'icon-opacity': showInFront(sharedPaint['icon-opacity']) }
+  const titleSize = defaultLabelSize(0.25)
   return {
     [layerId]: {
-      id: layerId,
-      type: 'symbol',
-      filter: ['all',
-        ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
-        ['!=', ['geometry-type'], 'MultiLineString'], // line labels are in 'line-labels'
-        // a blank label would still show its box
-        ['any', present('label'), present('label-title')],
-        // the label of a point below another point, see hideCoveredLabels
-        ['any', isSelected(), ['!', ['has', 'id']],
-          ['!', ['in', ['concat', '|', ['get', 'id'], '|'], ['to-string', ['global-state', 'coveredLabels']]]]],
-        flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
-        minZoomFilter(),
-        maxZoomFilter()
-      ],
+      ...style,
+      paint: { ...sharedPaint, 'text-opacity': hideInFront(1), 'icon-opacity': hideInFront(sharedPaint['icon-opacity']) }
+    },
+    'text-layer-front': {
+      ...style,
+      id: 'text-layer-front',
+      // a covered label shows while it is hovered
+      filter: ['all', ['any', hasLabel, showsTitle], ...baseFilter],
       layout: {
-        ...sharedLayout,
-        ...modeSpecificLayout
+        ...style.layout,
+        'text-field': ['case', showsTitle, ['format', title, textFont], style.layout['text-field']],
+        'text-anchor': ['case', showsTitle, 'top', style.layout['text-anchor']],
+        'text-offset': labelOffset(showsTitle),
+        ...overlapAll
       },
-      paint: sharedPaint
+      paint: { ...sharedPaint, ...frontPaint }
+    },
+    // The title of a point with a centered label. The label-* properties style the label in the
+    // image, so the title gets the look and the place of a default label.
+    // ponytail: no 'marker-scaling', the title gets the size and the place of an unscaled marker
+    'text-layer-title-front': {
+      id: 'text-layer-title-front',
+      type: 'symbol',
+      filter: ['all', centeredLabel(), showsTitle, ['!=', ['get', 'flat'], true], minZoomFilter(), maxZoomFilter()],
+      layout: {
+        'text-field': title,
+        'text-font': [defaults.font],
+        'text-size': titleSize,
+        'text-anchor': 'top',
+        'text-offset': belowEdge(pointEdge(), titleSize),
+        'text-max-width': defaults.labelMaxWidth,
+        'text-line-height': defaults.labelLineHeight,
+        'icon-image': boxImage(defaults.labelShadow, titleSize),
+        'icon-text-fit': 'both',
+        'icon-text-fit-padding': [0, 8, 0, 8],
+        'icon-offset': labelBoxOffset(),
+        ...overlapAll
+      },
+      paint: { 'text-color': defaults.labelColor, ...frontPaint }
     }
   }
 }
@@ -866,6 +969,21 @@ export function styles () {
         'fill-opacity': fillOpacity()
       }
     },
+    // tints the fill of the polygon under the mouse
+    'polygon-layer-hover': {
+      id: 'polygon-layer-hover',
+      type: 'fill',
+      filter: ['all',
+        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
+        ['==', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
+        minZoomFilter(),
+        maxZoomFilter()],
+      paint: {
+        'fill-color': defaults.haloColorHover,
+        'fill-opacity': ['case', ['boolean', ['feature-state', 'active'], false], 0,
+          ['boolean', ['feature-state', 'hover'], false], defaults.haloFillOpacityHover, 0]
+      }
+    },
     // fill-extrusion-opacity is not data-driven, so we stack 10 layers, one per
     // opacity bucket. Each feature is routed to one bucket via opacityBucketSelector.
     ...extrusionBucketLayers(),
@@ -900,7 +1018,7 @@ export function styles () {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': defaults.haloColor,
+        'line-color': haloColor(),
         // the tiles of a geojson source rewind every ring, so the outside of the polygon is
         // always on the same side of the line, including the inside of a hole
         'line-offset': ['-', 0, ['+', ['/', outlineWidthPolygon(), 2], defaults.haloWidth / 2]],
@@ -940,7 +1058,7 @@ export function styles () {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': defaults.haloColor,
+        'line-color': haloColor(),
         'line-gap-width': lineHaloGap(),
         'line-width': defaults.haloWidth,
         'line-opacity': haloOpacity()
@@ -1126,11 +1244,10 @@ export function styles () {
     ...textLayerStyles('flat'),
     ...textLayerStyles('viewport')
   }
-  const inFront = ['any', ['boolean', ['feature-state', 'active'], false], ['boolean', ['feature-state', 'hover'], false]]
   for (const id of frontStyleNames) {
     const style = styleDefs[id.replace(/-front$/, '')]
     const paint = Object.fromEntries(Object.entries(style.paint)
-      .map(([key, value]) => [key, key.endsWith('-opacity') ? ['case', inFront, value, 0] : value]))
+      .map(([key, value]) => [key, key.endsWith('-opacity') ? showInFront(value) : value]))
     // A front copy sits above the other symbol layers, so a claimed place would hide their labels.
     const front = style.type === 'symbol' ? { layout: { ...style.layout, 'icon-ignore-placement': true } } : {}
     styleDefs[id] = { ...style, ...front, id, paint }

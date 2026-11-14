@@ -718,9 +718,12 @@ export function sortLayers () {
       e.id.startsWith('cluster_points')),
     ordered.filter(e => e.id.startsWith('heatmap-layer')),
     ordered.filter(e => e.id.startsWith('gl-draw-')),
-    // the hovered or selected point, see frontStyleNames in styles.js
+    ordered.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
+    // the hovered or selected point covers the other labels, see frontStyleNames in styles.js.
+    // A layer in two groups ends up at the place of the last one.
     ordered.filter(e => e.id.includes('-front_')),
-    ordered.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
+    // its label goes on top of it
+    ordered.filter(e => e.id.startsWith('text-layer') && e.id.includes('-front_'))
   ]
 
   // moveLayer(id) with no second arg moves the layer to the top. Iterating

@@ -15,7 +15,10 @@ const inheritedProps = ['stroke-width', 'fill-extrusion-height', 'fill-extrusion
   'min-zoom', 'max-zoom', 'level']
 
 // Steepness value to percentage range mapping for labels
-const STEEPNESS_RANGES = {
+export const STEEPNESS_RANGES = {
+  0: '0%',
+  1: '1-3%',
+  2: '4-6%',
   3: '7-11%',
   4: '12-15%',
   5: '>16%'

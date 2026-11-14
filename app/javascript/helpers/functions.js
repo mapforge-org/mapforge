@@ -105,6 +105,8 @@ export function featureId () {
 
 // Text from OSM and from other outside sources can carry markup. The quotes are escaped
 // too, so the result is also safe inside a quoted html attribute.
+export const present = value => String(value ?? '').trim() !== ''
+
 export function escapeHtml (text) {
   const div = document.createElement('div')
   div.textContent = text

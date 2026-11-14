@@ -9,6 +9,15 @@
 // fontBold and fontItalic are only used for the labels of a basemap that opts
 // into the font transform with 'applyFont: true'. versatiles glyphs have no italic
 // variant, so fontItalic is null here and the transform falls back to font.
+// Highlight colors for the selected feature and the feature under the mouse. Most basemaps are
+// light (backgrounds #f2f3f0 to #fffdee), where this deep magenta keeps a contrast of 5:1 and
+// matches no road, water or park color. On a dark or satellite basemap ('dark: true' in
+// basemaps.js) it turns dark on dark (2.5:1 on Eclipse), so darkDefaults takes an orange
+// selection (8:1) and a cream hover glow (12:1). A basemap can still override each key.
+const selectionColor = '#c2185b'
+const darkSelectionColor = '#fbb03b'
+const darkDefaults = { haloColor: darkSelectionColor, haloColorHover: '#f3edd6', haloOpacityHover: 0.9, haloFillOpacityHover: 0.3 }
+
 const baseDefaults = {
   font: 'noto_sans_regular',
   fontBold: 'noto_sans_bold',
@@ -31,9 +40,11 @@ const baseDefaults = {
   featureColor: '#0A870A', // green
   featureOutlineColor: '#444444',
   // ring outside a selected feature, which leaves its own size, color and opacity as they are
-  haloColor: '#fbb03b',
+  haloColor: selectionColor,
   haloWidth: 3,
-  haloOpacityHover: 0.4, // the feature under the mouse, a click shows the full halo
+  haloColorHover: selectionColor, // the feature under the mouse, a click shows the haloColor
+  haloOpacityHover: 0.5,
+  haloFillOpacityHover: 0.15, // tints the fill of a hovered polygon
 
   extrusionOpacity: 0.9,
   extrusionCornerRadius: 0.5, // meters
@@ -75,7 +86,7 @@ const baseDefaults = {
 }
 
 const baseEditDefaults = {
-  highlightColor: '#fbb03b',
+  highlightColor: selectionColor,
 
   vertexSize: 6,
   activeLineDashArray: [0.2, 2],
@@ -125,6 +136,6 @@ export function defaultLineWidth (feature) {
 // Re-applies the base values first, so keys overridden by the previous basemap
 // get reset instead of leaking into the new one.
 export function applyBasemapDefaults (basemap) {
-  Object.assign(defaults, baseDefaults, basemap.defaults)
-  Object.assign(editDefaults, baseEditDefaults, basemap.editDefaults)
+  Object.assign(defaults, baseDefaults, basemap.dark && darkDefaults, basemap.defaults)
+  Object.assign(editDefaults, baseEditDefaults, basemap.dark && { highlightColor: darkSelectionColor }, basemap.editDefaults)
 }

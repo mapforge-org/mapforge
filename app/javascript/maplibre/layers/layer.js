@@ -11,8 +11,11 @@ import {
   setHoveredFeature,
   stickyFeatureHighlight
 } from 'maplibre/feature'
+import { moveHoverInfo, showHoverInfo } from 'maplibre/feature/hover_info'
 import { frontFeature, getFeature, layers } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, noValidate } from 'maplibre/map'
+import { SHAPE_EDGE } from 'maplibre/styles/circle_image'
+import { defaultPointSize } from 'maplibre/styles/defaults'
 
 // Source prefixes whose features are selectable via click. Excludes basemap
 // vector features and raster layers (which handle their own clicks).
@@ -22,9 +25,12 @@ const SELECTABLE_SOURCE_PREFIXES = ['geojson-source-', 'tileset-', 'overpass-sou
 // MapLibre queries a single pixel. A line drawn 2px wide at low zoom is almost unhittable,
 // so retry with a small box when the exact pixel misses. The exact hit still wins, which
 // keeps the top-most-feature rule intact. draw uses the same value as its clickBuffer.
-export const CLICK_TOLERANCE = 8
+export const CLICK_TOLERANCE = 5
 // 15px radius = a 30px target for a fingertip
 const CLICK_TOLERANCE_TOUCH = 15
+
+const coarsePointer = window.matchMedia('(pointer: coarse)')
+const tolerance = () => coarsePointer.matches ? CLICK_TOLERANCE_TOUCH : CLICK_TOLERANCE
 
 export const isSelectable = f => SELECTABLE_SOURCE_PREFIXES.some(p => f.source.startsWith(p))
 
@@ -32,21 +38,60 @@ export const isSelectable = f => SELECTABLE_SOURCE_PREFIXES.some(p => f.source.s
 export function queryFeaturesNear (point, options, keep = () => true) {
   const exact = map.queryRenderedFeatures(point, options).filter(keep)
   if (exact.length) { return exact }
-  const r = window.matchMedia('(pointer: coarse)').matches ? CLICK_TOLERANCE_TOUCH : CLICK_TOLERANCE
+  const r = tolerance()
   const box = [[point.x - r, point.y - r], [point.x + r, point.y + r]]
   return map.queryRenderedFeatures(box, options).filter(keep)
 }
 
-// The front layers draw the hovered and the selected point on top, but they hold copies of all
-// points in the original order, so the query still ranks these two at their old place.
-const drawnInFront = f => (f.source === hoveredFeature?.source && f.id === hoveredFeature.id) ||
+const isInFront = f => (f.source === hoveredFeature?.source && f.id === hoveredFeature.id) ||
   (f.source === highlightedFeatureSource && f.id === highlightedFeatureId)
 
-// Features of every selectable source near the point, top-most first
+// The front layers place a copy of every point and label, and show only the hovered and the selected
+// one. The query does not see opacity, so a hidden copy, like the title of a point without a label,
+// would activate its feature from an empty spot. The visible feature has its own hit in its own layer.
+const hiddenCopy = f => f.layer?.id.includes('-front_') && !isInFront(f)
+
+// The front layers draw the hovered and the selected point on top, but they hold copies of all
+// points in the original order, so the query still ranks these two at their old place. They hold
+// points only: a hovered polygon stays below the points on top of it.
+// The labels draw above all features, but a point or a line under a label wins over it. A label
+// still wins over an area, because most labels sit on one.
+// The geometry of a hit gets decoded on its first read, so the cheap checks go first.
+function rank (f) {
+  if (isInFront(f) && f.geometry.type === 'Point') { return 0 }
+  if (/^(text-layer|line-label)/.test(f.layer?.id)) { return 2 }
+  return ['Polygon', 'MultiPolygon'].includes(f.geometry.type) ? 3 : 1
+}
+
+// MapLibre builds the hit box of a symbol at the icon size of the next integer zoom. A shape with
+// 'marker-scaling' doubles per zoom level, so its box is up to twice its drawn size. A hit outside
+// the drawn shape does not count: the outline ends at SHAPE_EDGE times 'marker-size', scaled by
+// 2^(zoom - 16) (see shapeIconSize() in styles.js).
+// ponytail: a pin keeps the big box, because its head sits above the coordinate, and a square
+// with 'marker-rotate' or on a rotated flat map gets checked unrotated
+function outsideScaledShape (f, point, slack, scale) {
+  const p = f.properties
+  const shape = p['user_marker-shape'] ?? p['marker-shape'] ?? 'circle'
+  if (!f.layer?.id.startsWith('shapes-layer') || shape === 'pin' ||
+    (p['user_marker-scaling'] ?? p['marker-scaling']) !== true) { return false }
+  const size = Number(p['user_marker-size'] ?? p['marker-size']) || defaultPointSize(f)
+  const radius = SHAPE_EDGE * size * scale
+  const { x, y } = map.project(f.geometry.coordinates)
+  const dx = Math.abs(x - point.x)
+  const dy = Math.abs(y - point.y)
+  return (shape === 'square' ? Math.max(dx, dy) : Math.hypot(dx, dy)) > radius + slack
+}
+
+// Features of every selectable source near the point, top-most first, in the order of rank()
 export function selectableFeaturesNear (point) {
-  const features = queryFeaturesNear(point, { filter: ['!', ['has', 'cluster']], ...noValidate }, isSelectable)
+  const slack = tolerance()
+  const scale = 2 ** (map.getZoom() - 16)
+  return queryFeaturesNear(point, { filter: ['!', ['has', 'cluster']], ...noValidate },
+    f => isSelectable(f) && !hiddenCopy(f) && !outsideScaledShape(f, point, slack, scale))
     .filter(f => !f.properties?.cluster)
-  return [...features.filter(drawnInFront), ...features.filter(f => !drawnInFront(f))]
+    .map(f => [rank(f), f])
+    .sort((a, b) => a[0] - b[0])
+    .map(([, f]) => f)
 }
 
 function httpUrl (target) {
@@ -92,7 +137,7 @@ function selectFeatureOnClick (e) {
     : selectable
   if (!clickable.length) { return }
 
-  // Visual top = first in z-order (matches hover behavior)
+  // Top = first in the order of selectableFeaturesNear (matches hover behavior)
   const visualTop = clickable[0]
 
   // Stable cycling order, deduped by id, independent of z-order reshuffling by frontFeature()
@@ -129,7 +174,11 @@ const hoverFeatureOnMove = functions.perFrame((e) => {
   // like a click, a feature that does nothing on click reacts only in edit mode
   const feature = drawing ? null : selectableFeaturesNear(e.point)
     .find(f => window.gon.map_mode !== 'ro' || f.properties?.onclick !== false)
-  setHoveredFeature(feature)
+  if (setHoveredFeature(feature)) {
+    showHoverInfo(hoveredFeature && feature, e.lngLat)
+  } else {
+    moveHoverInfo(e.lngLat)
+  }
 })
 
 // Registered map-wide, not per style layer: the delegated form only fires on an exact

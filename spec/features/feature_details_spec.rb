@@ -237,6 +237,30 @@ describe "Feature details" do
       wait_for { gps_chart_index }.not_to be_nil
     end
 
+    context "with a route" do
+      let(:feature) {
+        create(:feature, :line_string_with_elevation, title: "Elevation Track").tap { |feature|
+          feature.update!(properties: feature.properties.merge("route" => { "profile" => "foot" }))
+        }
+      }
+
+      it "marks the hovered point of the track in the chart" do
+        xy = viewport_xy_for_lat_lng(49.45, 11.08)
+        hover_coord(xy[:x], xy[:y])
+        expect(page).to have_css(".feature-hover-info .hover-position .bi-triangle")
+        expect(page).to have_css("#elevation-info-line", text: "350m")
+        active = page.evaluate_async_script(<<~JS)
+          const done = arguments[0]
+          import('chart.js').then(m => done(
+            m.Chart.getChart(document.getElementById('route-elevation-chart')).getActiveElements().map(e => e.index)))
+        JS
+        expect(active).to eq [ 2 ]
+
+        hover_coord(xy[:x] + 300, xy[:y] - 300)
+        expect(page).to have_no_css("#elevation-info-line", visible: :visible)
+      end
+    end
+
     it "can collapse and expand elevation profile" do
       expect(page).not_to have_css("#elevation-content.hidden", visible: :all)
       find("#elevation-toggle").click

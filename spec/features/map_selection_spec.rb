@@ -12,6 +12,10 @@ describe "Map selection" do
     expect_map_loaded
   end
 
+  def hover_state_of(feature)
+    page.evaluate_script("map.getFeatureState({ source: 'geojson-source-#{map.layers.first.id}', id: '#{feature.id}' })")
+  end
+
   context "with a selected feature whose label collides" do
     let(:first) { create(:feature, :point, properties: { "label" => "first" }) }
     let(:second) { create(:feature, :point, properties: { "label" => "second" }) }
@@ -21,7 +25,7 @@ describe "Map selection" do
     it "shows the label of the selected feature" do
       labels = <<~JS
         [...new Set(map.queryRenderedFeatures({
-          layers: map.getStyle().layers.map(l => l.id).filter(id => id.startsWith('text-layer'))
+          layers: map.getStyle().layers.map(l => l.id).filter(id => /^text-layer(-flat)?_/.test(id))
         }).map(f => f.properties.label))]
       JS
       wait_for { page.evaluate_script(labels) }.to eq [ "second" ]
@@ -95,7 +99,7 @@ describe "Map selection" do
     def rendered_labels
       page.evaluate_script(<<~JS).sort
         [...new Set(map.queryRenderedFeatures({
-          layers: map.getStyle().layers.map(l => l.id).filter(id => id.startsWith('text-layer'))
+          layers: map.getStyle().layers.map(l => l.id).filter(id => /^text-layer(-flat)?_/.test(id))
         }).map(f => f.properties.label))]
       JS
     end
@@ -109,6 +113,48 @@ describe "Map selection" do
       wait_for { covered_labels.size }.to eq 1
       expect(covered_labels).not_to include "free"
       wait_for { rendered_labels }.to eq (%w[first second free] - covered_labels).sort
+    end
+  end
+
+  context "with centered labels on points that cover each other" do
+    # an offset of [0, 0] keeps the label on the point
+    let(:points) do
+      [ { "title" => "One" }, { "label-offset" => [ 0, 0 ] } ].each_with_index.map do |offset, i|
+        create(:feature, :point, coordinates: [ 11.0557 + i * 0.00002, 49.4732 ],
+                                 properties: { "label" => (i + 1).to_s, "label-anchor" => "center", **offset })
+      end
+    end
+    let(:map) { create(:map, features: points, center: [ 11.0557, 49.4732 ], zoom: 16) }
+
+    it "draws each label into the image of its point, and not in the label layer" do
+      # the parts after the 6 of a shape are the label, the halo ring has none
+      images = "map.listImages().filter(name => name.startsWith('shape-')).map(name => name.split('|'))" \
+               ".filter(parts => parts.length > 6).map(parts => parts.pop()).sort()"
+      wait_for { page.evaluate_script(images) }.to eq %w[1 2]
+      labels = <<~JS
+        map.queryRenderedFeatures({
+          layers: map.getStyle().layers.map(l => l.id).filter(id => /^text-layer(-flat|-front)?_/.test(id))
+        }).length
+      JS
+      expect(page.evaluate_script(labels)).to eq 0
+      expect(page.evaluate_script("map.getGlobalState().coveredLabels").to_s).to eq ""
+
+      # the prune keeps the images by these names
+      names = page.evaluate_async_script(<<~JS)
+        import('maplibre/styles/circle_image')
+          .then(m => arguments[0](#{points.map(&:properties).to_json}.map(p => m.shapeImageName(p))))
+      JS
+      expect(page.evaluate_script("map.listImages()")).to include(*names)
+    end
+
+    # the label-* properties style the label in the image, not the title
+    it "places a title that differs from the label in a front layer for the default label look" do
+      titles = <<~JS
+        map.queryRenderedFeatures({
+          layers: map.getStyle().layers.map(l => l.id).filter(id => id.startsWith('text-layer-title-front_'))
+        }).map(f => f.properties.title)
+      JS
+      wait_for { page.evaluate_script(titles) }.to eq [ "One" ]
     end
   end
 
@@ -129,19 +175,126 @@ describe "Map selection" do
     let(:map) { create(:map, features: [ point ], center: [ 11.0557, 49.4732 ], zoom: 16) }
 
     # the front copy shows the point through feature-state, which queryRenderedFeatures does not see
-    it "draws the point in a front layer above all points, below the labels, while it is hovered" do
+    it "draws the point in a front layer above all points and labels, below its own label, while it is hovered" do
       ids = page.evaluate_script("map.getStyle().layers.map(l => l.id)")
       front = ids.index { |id| id.start_with?("points-layer-front_") }
       expect(front).to be > ids.rindex { |id| id.start_with?("points-layer_") }
-      expect(front).to be < ids.index { |id| id.start_with?("text-layer") }
+      expect(front).to be > ids.rindex { |id| id.start_with?("text-layer_") }
+      expect(front).to be < ids.index { |id| id.start_with?("text-layer-front_") }
 
-      state = "map.getFeatureState({ source: 'geojson-source-#{map.layers.first.id}', id: '#{point.id}' })"
       xy = viewport_xy_for_lat_lng(49.4732, 11.0557)
-      page.driver.browser.mouse.move(x: xy[:x], y: xy[:y])
-      wait_for { page.evaluate_script(state) }.to eq("hover" => true)
+      hover_coord(xy[:x], xy[:y])
+      wait_for { hover_state_of(point) }.to eq("hover" => true)
 
-      page.driver.browser.mouse.move(x: xy[:x] + 300, y: xy[:y])
-      wait_for { page.evaluate_script(state) }.to eq("hover" => false)
+      hover_coord(xy[:x] + 300, xy[:y])
+      wait_for { hover_state_of(point) }.to eq("hover" => false)
+    end
+  end
+
+  context "with a hovered point that has a title and no label" do
+    let(:point) { create(:feature, :point, coordinates: [ 11.0557, 49.4732 ], properties: { "title" => "Glenn" }) }
+    let(:map) { create(:map, features: [ point ], center: [ 11.0557, 49.4732 ], zoom: 16) }
+
+    let(:xy) { viewport_xy_for_lat_lng(49.4732, 11.0557) }
+
+    def hover_state(dy = 0)
+      hover_coord(xy[:x], xy[:y] + dy)
+      sleep 0.5
+      hover_state_of(point)
+    end
+
+    # the front copy places the title of every point, feature-state shows the hovered one
+    it "places the title as a map label, and shows no card" do
+      titles = <<~JS
+        map.queryRenderedFeatures({
+          layers: map.getStyle().layers.map(l => l.id).filter(id => id.startsWith('text-layer-front_'))
+        }).map(f => f.properties.title)
+      JS
+      wait_for { page.evaluate_script(titles) }.to eq [ "Glenn" ]
+      expect(hover_state).to eq("hover" => true)
+      expect(page).to have_no_css(".feature-hover-info")
+    end
+
+    it "takes the hover from the shown title only" do
+      expect(hover_state(30)).to eq({})
+      expect(hover_state).to eq("hover" => true)
+      expect(hover_state(30)).to eq("hover" => true)
+    end
+  end
+
+  context "with a point below the label of another point" do
+    # at zoom 18 the label sits about 30px below its point, that is 0.00005° of latitude
+    let(:labeled) { create(:feature, :point, coordinates: [ 11.0557, 49.4732 ], properties: { "label" => "Above" }) }
+    let(:below) { create(:feature, :point, coordinates: [ 11.0557, 49.4732 - 0.00005 ]) }
+    let(:map) { create(:map, features: [ labeled, below ], center: [ 11.0557, 49.4732 ], zoom: 18) }
+
+    it "gives the hover to the point and not to the label" do
+      xy = viewport_xy_for_lat_lng(49.4732 - 0.00005, 11.0557)
+      hover_coord(xy[:x], xy[:y])
+      wait_for { hover_state_of(below) }.to eq("hover" => true)
+    end
+  end
+
+  context "with a scaled shape" do
+    # at zoom 16 the square has its 'marker-size' of 20px, the hit box of MapLibre is twice as big
+    let(:point) do
+      create(:feature, :point, coordinates: [ 11.0557, 49.4732 ],
+                               properties: { "marker-shape" => "square", "marker-scaling" => true, "marker-size" => 20 })
+    end
+    let(:map) { create(:map, features: [ point ], center: [ 11.0557, 49.4732 ], zoom: 16) }
+
+    it "takes the hover only on the drawn shape" do
+      xy = viewport_xy_for_lat_lng(49.4732, 11.0557)
+      hover_coord(xy[:x], xy[:y] + 40)
+      sleep 0.5
+      expect(hover_state_of(point)).to eq({})
+      hover_coord(xy[:x], xy[:y] + 15)
+      wait_for { hover_state_of(point) }.to eq("hover" => true)
+    end
+  end
+
+  context "with a hovered line" do
+    let(:line) {
+      create(:feature, :line_string, properties: { "title" => "River walk" },
+                                     coordinates: [ [ 11.0416378, 49.4812338, 300 ], [ 11.056744, 49.4631524, 350 ] ])
+    }
+    let(:map) { create(:map, features: [ line ], center: [ 11.0492, 49.4722 ], zoom: 13) }
+
+    it "shows the name and the length, but no position, for a line with only elevation data" do
+      xy = viewport_xy_for_lat_lng(49.4722, 11.0492)
+      hover_coord(xy[:x], xy[:y])
+      expect(page).to have_css(".feature-hover-info", text: /River walk\s*2\.\d+ km/)
+      expect(page).to have_no_css(".feature-hover-info .hover-position")
+      expect(page).to have_no_css(".hover-route-dot")
+    end
+  end
+
+  context "with a hovered track" do
+    let(:line) {
+      create(:feature, :line_string, properties: { "title" => "River walk", "route" => { "profile" => "foot", "extras" => { "steepness" => { "values" => [ [ 0, 1, 3 ] ] } } } },
+                                     coordinates: [ [ 11.0416378, 49.4812338, 300 ], [ 11.056744, 49.4631524, 350 ] ])
+    }
+    let(:map) { create(:map, features: [ line ], center: [ 11.0492, 49.4722 ], zoom: 13) }
+
+    it "shows the name, the length and the position on the track next to the cursor" do
+      xy = viewport_xy_for_lat_lng(49.4722, 11.0492)
+      hover_coord(xy[:x], xy[:y])
+      expect(page).to have_css(".feature-hover-info", text: /River walk\s*2\.\d+ km/)
+      expect(page).to have_css(".feature-hover-info .hover-position", text: /\Akm 1\.\d\s*3\d\d m\s*7-11%\z/)
+      expect(page).to have_css(".hover-route-dot")
+
+      # the card must let the mouse events through to the map
+      under_card = <<~JS
+        (() => {
+          const r = document.querySelector('.feature-hover-info .maplibregl-popup-content').getBoundingClientRect()
+          return document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2).tagName
+        })()
+      JS
+      expect(page.evaluate_script(under_card)).to eq "CANVAS"
+
+      hover_coord(xy[:x] + 300, xy[:y] + 200)
+      expect(page).to have_no_css(".feature-hover-info")
+      expect(page).to have_no_css(".hover-route-dot")
     end
   end
 

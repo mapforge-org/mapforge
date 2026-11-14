@@ -384,6 +384,112 @@ body:has(#map-mode-badge) .layer-popover {
   transform: perspective(150px) rotateX(var(--view-pitch)) var(--user-dot-rotation);
 }
 
+/* the card and the dot sit under the cursor, they must not take the mouse events of the map.
+   maplibre sets 'pointer-events: auto' on the content of a popup. */
+.feature-hover-info .maplibregl-popup-content,
+.hover-route-dot {
+  pointer-events: none;
+}
+
+.feature-hover-info .maplibregl-popup-content {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 25%);
+  color: #222;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.feature-hover-info .maplibregl-popup-tip {
+  display: none;
+}
+
+.feature-hover-info .hover-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+/* featureIcon() sizes its icon for the details modal */
+.feature-hover-info .hover-head .bi {
+  font-size: 1rem !important;
+}
+
+.feature-hover-info .hover-head .feature-details-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.feature-hover-info .hover-total {
+  margin-left: auto;
+  padding-left: 1rem;
+  color: #666;
+}
+
+.feature-hover-info .hover-position .bi {
+  margin-right: 0.3rem;
+}
+
+.feature-hover-info .hover-bar {
+  position: relative;
+  height: 3px;
+  margin: 0.7rem 0 0.6rem;
+  border-radius: 2px;
+  background: var(--route-color);
+}
+
+.hover-ring {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  box-sizing: border-box;
+  flex: none;
+  border: 2.5px solid var(--route-color);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.feature-hover-info .hover-bar .hover-ring {
+  position: absolute;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  border-width: 3px;
+  transform: translate(-50%, -50%);
+}
+
+/* the route color can be pale, a shadow keeps the line, the rings and the icons on the white card */
+.feature-hover-info .hover-bar,
+.feature-hover-info .hover-position .hover-ring,
+.feature-hover-info .hover-head .bi,
+.feature-hover-info .hover-head .feature-details-icon,
+.feature-hover-info .hover-swatch {
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 30%));
+}
+
+.feature-hover-info .hover-position {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+}
+
+.feature-hover-info .hover-swatch {
+  width: 0.8rem;
+  height: 0.8rem;
+  flex: none;
+  border: 1px solid rgb(0 0 0 / 30%);
+  border-radius: 2px;
+}
+
+.hover-route-dot {
+  width: 12px;
+  height: 12px;
+  border-width: 3px;
+}
+
 /* --scale follows marker-scaling, set in desc_banners.js. Maplibre positions the outer
    .maplibregl-popup with its own transform, so content and tip scale on their own, both around
    the anchor: the point of the tip, which sits below the content. */

@@ -138,6 +138,8 @@ export async function showElevationChart (feature) {
     options: {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
+      // the hovered point jumps to its place, a grow animation lags behind the mouse
+      transitions: { active: { animation: { duration: 0 } } },
       plugins: {
         legend: { display: false },
         tooltip: { enabled: false },
@@ -223,6 +225,33 @@ export async function showElevationChart (feature) {
   canvasAbort = new AbortController()
   const signal = canvasAbort.signal
 
+  const showInfoLine = (i) => {
+    const distance = displayDistance(active.labels[i])
+    const elevation = active.values[i].toFixed(0)
+    const grade = i === 0 ? 0 : computeGrade(active.values, active.labels, i)
+
+    infoLine.innerHTML = `${window.__('Waypoint:')} ${distance} • <i class="bi bi-triangle"></i> ${elevation}m • <i class="bi bi-arrow-up-right"></i> ${grade.toFixed(1)}%`
+    infoLine.style.visibility = 'visible'
+  }
+
+  // The hover on a map track, see hover_info.js. It has its own dot on the track, so the chart
+  // places no marker. The labels hold the visible section only, a point outside of it clears the chart.
+  let trackIndex = -1
+  window.addEventListener('track-position', (event) => {
+    const { featureId, meters } = event.detail
+    if (featureId !== feature.id || elevationContainer.offsetParent === null) { return }
+    const i = meters == null ? -1 : active.labels.findIndex(d => d >= meters)
+    if (i === trackIndex) { return }
+    trackIndex = i
+    chart.setActiveElements(i < 0 ? [] : [{ datasetIndex: 0, index: i }])
+    chart.update('none')
+    if (i < 0) {
+      infoLine.style.visibility = 'hidden'
+    } else {
+      showInfoLine(i)
+    }
+  }, { signal })
+
   // Shared handler for hover/touch interaction
   const handleChartInteraction = (event) => {
     const points = chart.getElementsAtEventForMode(event, 'index', { intersect: false }, true)
@@ -233,12 +262,7 @@ export async function showElevationChart (feature) {
     }
 
     const i = points[0].index
-    const distance = displayDistance(active.labels[i])
-    const elevation = active.values[i].toFixed(0)
-    const grade = i === 0 ? 0 : computeGrade(active.values, active.labels, i)
-
-    infoLine.innerHTML = `${window.__('Waypoint:')} ${distance} • <i class="bi bi-triangle"></i> ${elevation}m • <i class="bi bi-arrow-up-right"></i> ${grade.toFixed(1)}%`
-    infoLine.style.visibility = 'visible'
+    showInfoLine(i)
 
     // Place a marker on the map at the hovered point
     const coord = active.coords[i]

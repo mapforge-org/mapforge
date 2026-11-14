@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-14 00:14+0100\n"
-"PO-Revision-Date: 2026-11-14 00:14+0100\n"
+"POT-Creation-Date: 2026-11-14 13:27+0100\n"
+"PO-Revision-Date: 2026-11-14 13:27+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../app/views/maps/_map_card.haml:36
+#: ../app/views/maps/_map_card.haml:38
 msgid "%{count} features"
 msgstr ""
 
@@ -28,7 +28,7 @@ msgid_plural "%{count} maps"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/views/maps/_map_card.haml:34
+#: ../app/views/maps/_map_card.haml:36
 msgid "%{count} views"
 msgstr ""
 
@@ -220,7 +220,7 @@ msgstr ""
 msgid "Bicycle map with cycle routes and height lines"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:58 ../app/javascript/maplibre/feature.js:78
+#: ../app/views/maps/modals/_settings.haml:58 ../app/javascript/maplibre/feature.js:79
 msgid "Bicycle route"
 msgstr ""
 
@@ -296,7 +296,7 @@ msgstr ""
 msgid "Car"
 msgstr ""
 
-#: ../app/views/maps/modals/_settings.haml:61 ../app/javascript/maplibre/feature.js:79
+#: ../app/views/maps/modals/_settings.haml:61 ../app/javascript/maplibre/feature.js:80
 msgid "Car route"
 msgstr ""
 
@@ -324,7 +324,7 @@ msgstr ""
 msgid "Clear filter"
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:61
+#: ../app/views/maps/_list_filter.haml:63
 msgid "Clear tag"
 msgstr ""
 
@@ -428,7 +428,7 @@ msgstr ""
 msgid "Copy link to clipboard"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:40
+#: ../app/views/maps/_map_card.haml:42
 msgid "Copy map"
 msgstr ""
 
@@ -504,7 +504,7 @@ msgstr ""
 msgid "Delete feature"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:42
+#: ../app/views/maps/_map_card.haml:44
 msgid "Delete map"
 msgstr ""
 
@@ -568,11 +568,11 @@ msgstr ""
 msgid "Do nothing"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:42
+#: ../app/views/maps/_map_card.haml:44
 msgid "Do you really want to delete this map?"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:40
+#: ../app/views/maps/_map_card.haml:42
 msgid "Do you want to copy this map?"
 msgstr ""
 
@@ -752,7 +752,7 @@ msgstr ""
 msgid "Failed to load layer %{name}"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature.js:75
+#: ../app/javascript/maplibre/feature.js:76
 msgid "Feature"
 msgstr ""
 
@@ -760,7 +760,7 @@ msgstr ""
 msgid "Featured"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:14
+#: ../app/views/maps/_map_card.haml:16
 msgid "Featured in gallery"
 msgstr ""
 
@@ -784,7 +784,7 @@ msgstr ""
 msgid "Fill color"
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:58 ../app/views/maps/_list_filter.haml:63
+#: ../app/views/maps/_list_filter.haml:59 ../app/views/maps/_list_filter.haml:65
 msgid "Filter by tag"
 msgstr ""
 
@@ -912,7 +912,7 @@ msgstr ""
 msgid "Hiking map with height lines and hill shadows"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature.js:80
+#: ../app/javascript/maplibre/feature.js:81
 msgid "Hiking route"
 msgstr ""
 
@@ -1048,7 +1048,7 @@ msgstr ""
 msgid "Light street map with soft colors"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature.js:85
+#: ../app/javascript/maplibre/feature.js:86
 msgid "Line"
 msgstr ""
 
@@ -1080,7 +1080,7 @@ msgstr ""
 msgid "Load for this area"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:622
+#: ../app/javascript/maplibre/map.js:624
 msgid "Loaded base map %{name}"
 msgstr ""
 
@@ -1092,7 +1092,7 @@ msgstr ""
 msgid "Loading live layer"
 msgstr ""
 
-#: ../app/javascript/controllers/maps_controller.js:135
+#: ../app/javascript/controllers/maps_controller.js:140
 msgid "Loading..."
 msgstr ""
 
@@ -1124,7 +1124,7 @@ msgstr ""
 msgid "Map"
 msgstr ""
 
-#: ../app/views/frontpage/_featured_maps.haml:13 ../app/views/maps/_map.haml:12 ../app/views/maps/_map.haml:17 ../app/views/maps/_map_card.haml:7
+#: ../app/views/frontpage/_featured_maps.haml:13 ../app/views/maps/_map.haml:12 ../app/views/maps/_map.haml:17 ../app/views/maps/_map_card.haml:8
 msgid "Map '%{name}'"
 msgstr ""
 
@@ -1180,7 +1180,7 @@ msgstr ""
 msgid "Max. 5MB"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:395
+#: ../app/javascript/maplibre/map.js:397
 msgid "Maximum zoom level %{zoom} reached"
 msgstr ""
 
@@ -1192,7 +1192,7 @@ msgstr ""
 msgid "Midpoint deleted"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:399
+#: ../app/javascript/maplibre/map.js:401
 msgid "Minimum zoom level %{zoom} reached"
 msgstr ""
 
@@ -1416,7 +1416,7 @@ msgstr ""
 msgid "Please log in to upload images"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature.js:84
+#: ../app/javascript/maplibre/feature.js:85
 msgid "Point"
 msgstr ""
 
@@ -1424,7 +1424,7 @@ msgstr ""
 msgid "Point Mode: Click on the map to place a marker"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature.js:86
+#: ../app/javascript/maplibre/feature.js:87
 msgid "Polygon"
 msgstr ""
 
@@ -1685,7 +1685,7 @@ msgstr ""
 msgid "Share view link"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:29
+#: ../app/views/maps/_map_card.haml:31
 msgid "Shared with:"
 msgstr ""
 
@@ -1829,7 +1829,7 @@ msgstr ""
 msgid "Symbol:"
 msgstr ""
 
-#: ../app/views/maps/_list_filter.haml:58
+#: ../app/views/maps/_list_filter.haml:59
 msgid "Tag"
 msgstr ""
 
@@ -1989,7 +1989,7 @@ msgstr ""
 msgid "Update Layer"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:39
+#: ../app/views/maps/_map_card.haml:41
 msgid "Updated %{time} ago"
 msgstr ""
 

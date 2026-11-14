@@ -1,4 +1,4 @@
-import { symbolUrl } from 'helpers/functions'
+import { present, symbolUrl } from 'helpers/functions'
 import { map } from 'maplibre/map'
 import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
 
@@ -17,6 +17,9 @@ const BORDER = 1 / 18
 
 // The filled part of a shape, as a fraction of its canvas.
 const FILL = 1 - 2 * MARGIN - BORDER
+
+// Where the outline of a shape ends, as a multiple of its 'marker-size'
+export const SHAPE_EDGE = (1 - 2 * MARGIN + BORDER) / FILL
 
 // css pixel size of the canvas of a shape whose filled part is as wide as a plain circle of the
 // given 'marker-size'. A marker keeps its size whether it carries a symbol or not, and the map
@@ -69,18 +72,48 @@ function shapePath (ctx, shape, size, inset) {
   }
 }
 
-// Draws a shape in the given color, with a border, an optional emoji on it and an optional halo
-// around it, and adds it as a map image under the given name. The size is in css pixels, the
-// style layer scales the image from there.
-export function markerImage (name, { shape = 'circle', color, border = '#CCC', symbol = '', size = 36, halo = false } = {}) {
+// The canvas has no access to the glyphs of the map labels.
+// ponytail: the font can differ a bit from the other labels, and 'label-font' does not apply
+const labelCanvasFont = label => `${label.bold ? 'bold ' : ''}${label.size}px "Noto Sans", sans-serif`
+
+// The label goes on the center of the head, with its shadow as an outline around the letters.
+// ponytail: no badge box ('label-background'), and a bitmap that blurs with 'marker-scaling'
+function drawLabel (ctx, size, label, metrics) {
+  ctx.font = labelCanvasFont(label)
+  ctx.textAlign = 'center'
+  const y = size / 2 + (metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2
+  if (label.shadowWidth > 0) {
+    ctx.strokeStyle = label.shadow
+    ctx.lineWidth = 2 * label.shadowWidth
+    ctx.lineJoin = 'round'
+    ctx.strokeText(label.text, size / 2, y)
+  }
+  ctx.fillStyle = label.color
+  ctx.fillText(label.text, size / 2, y)
+}
+
+// Draws a shape in the given color, with a border, an optional emoji or label on it and an
+// optional halo around it, and adds it as a map image under the given name. The size is in css
+// pixels, the style layer scales the image from there.
+export function markerImage (name, { shape = 'circle', color, border = '#CCC', symbol = '', size = 36, halo = false, label = null } = {}) {
   if (map.hasImage(name)) { return name }
 
   const ratio = pixelRatio()
   const canvas = document.createElement('canvas')
-  canvas.width = size * ratio
-  canvas.height = canvasHeight(shape, size) * ratio
   const ctx = canvas.getContext('2d')
+  // a label wider than the shape widens the canvas, the shape stays in the middle, on the anchor
+  let width = size
+  let metrics = null
+  if (label) {
+    ctx.font = labelCanvasFont(label)
+    metrics = ctx.measureText(label.text)
+    width = Math.max(size, Math.ceil(metrics.width + 2 * label.shadowWidth + 2))
+  }
+  // a new size resets the context
+  canvas.width = width * ratio
+  canvas.height = canvasHeight(shape, size) * ratio
   ctx.scale(ratio, ratio)
+  ctx.translate((width - size) / 2, 0)
 
   const borderWidth = size * BORDER
   const margin = size * MARGIN
@@ -89,7 +122,7 @@ export function markerImage (name, { shape = 'circle', color, border = '#CCC', s
   // a marker below size 20. A wider canvas would move the anchor and pointEdge() in styles.js.
   if (halo) {
     const haloWidth = Math.min(defaults.haloWidth, margin - borderWidth / 2)
-    ctx.strokeStyle = defaults.haloColor
+    ctx.strokeStyle = '#000'
     ctx.lineWidth = haloWidth
     shapePath(ctx, shape, size, margin - borderWidth / 2 - haloWidth / 2)
     ctx.stroke()
@@ -106,9 +139,11 @@ export function markerImage (name, { shape = 'circle', color, border = '#CCC', s
     shapePath(ctx, shape, size, margin + borderWidth / 2)
     ctx.fill()
   }
+  if (label) { drawLabel(ctx, size, label, metrics) }
 
   const imageData = () => ctx.getImageData(0, 0, canvas.width, canvas.height)
-  map.addImage(name, imageData(), { pixelRatio: ratio })
+  // a halo is an sdf image: the map reads only its alpha, 'icon-color' tints it for hover and selection
+  map.addImage(name, imageData(), { pixelRatio: ratio, sdf: halo })
   if (symbol) { drawSymbol(name, ctx, size, symbol, imageData) }
   return name
 }
@@ -118,16 +153,33 @@ export function circleImage (prefix, color, { size = 36, symbol = '', border = '
   return markerImage(imageName(prefix, color, symbol), { color, size, symbol, border })
 }
 
+// a rendered feature carries an array property as a JSON string
+const noOffset = offset => offset === undefined ||
+  (typeof offset === 'string' ? offset : JSON.stringify(offset)) === '[0,0]'
+
+// A label on the center of a point goes into the image of the point.
+// KEEP IN SYNC with centeredLabel() in styles.js.
+export const hasCenteredLabel = properties => present(properties.label) &&
+  (properties['user_label-anchor'] ?? properties['label-anchor']) === 'center' &&
+  !present(properties['label-title']) && noOffset(properties['label-offset']) &&
+  !('marker-image-url' in properties) && !(properties['user_marker-symbol'] ?? properties['marker-symbol'])
+
 // The name of the image of a shaped marker. It carries every style that goes into the image,
 // so that two markers share one image only while they look the same.
 // KEEP IN SYNC with shapeImage() in styles.js, which is what the map renders.
 export function shapeImageName (properties) {
-  return [ 'shape-' + (properties['marker-shape'] || 'circle'),
+  const parts = [ 'shape-' + (properties['marker-shape'] || 'circle'),
     properties['marker-color'] || defaults.featureColor,
     properties.stroke || defaults.featureOutlineColor,
     properties['marker-image-url'] || properties['marker-symbol'] || '',
     Number(properties['marker-size']) || defaultPointSize({ properties }),
-    '0' ].join('|')
+    '0' ]
+  if (hasCenteredLabel(properties)) {
+    parts.push(properties['label-color'] ?? defaults.labelColor, properties['label-shadow'] ?? defaults.labelShadow,
+      properties['label-shadow-width'] ?? defaults.labelShadowWidth, properties['label-size'] ?? '',
+      properties['label-font-weight'] ?? 'normal', properties.label)
+  }
+  return parts.join('|')
 }
 
 // The name of the halo ring of a shaped marker. KEEP IN SYNC with shapeHaloImage() in styles.js.
@@ -137,7 +189,9 @@ const shapeHaloImageName = properties => [ 'shape-' + (properties['marker-shape'
 
 // Which points the map draws as one image. KEEP IN SYNC with shapedPoint() in styles.js.
 const isShapedPoint = feature => feature.geometry?.type === 'Point' &&
-  ((feature.properties?.['marker-shape'] || 'circle') !== 'circle' || (!!feature.properties?.['marker-symbol'] && !feature.properties?.['marker-image-url']))
+  ((feature.properties?.['marker-shape'] || 'circle') !== 'circle' ||
+    (!!feature.properties?.['marker-symbol'] && !feature.properties?.['marker-image-url']) ||
+    hasCenteredLabel(feature.properties || {}))
 
 // Drops the shape images that no feature uses any more. A missing image is drawn again by the
 // resolver of maplibre (see loadImage), so a prune that goes too far repairs itself.
@@ -224,8 +278,9 @@ export function labelImage (name) {
 // draws an image at 'marker-size' / 60, so the halo gets that much wider in image pixels.
 export async function haloImage (name) {
   const [, size, ...url] = name.split('|')
-  // MapLibre checks for the image right after the resolver, see the placeholder in loadImage
-  map.addImage(name, { width: 1, height: 1, data: new Uint8Array(4) })
+  // MapLibre checks for the image right after the resolver, see the placeholder in loadImage.
+  // A symbol layer takes either sdf or plain images, so the placeholder is sdf like the halo.
+  map.addImage(name, { width: 1, height: 1, data: new Uint8Array(4) }, { sdf: true })
   let image
   try {
     image = (await map.loadImage(url.join('|'))).data
@@ -242,12 +297,9 @@ export async function haloImage (name) {
     const angle = i * Math.PI / 8
     ctx.drawImage(image, pad + pad * Math.cos(angle), pad + pad * Math.sin(angle))
   }
-  ctx.globalCompositeOperation = 'source-in'
-  ctx.fillStyle = defaults.haloColor
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
   ctx.globalCompositeOperation = 'destination-out'
   ctx.drawImage(image, pad, pad)
   // the image can be gone after a style change, and the placeholder has another size
   if (map.hasImage(name)) { map.removeImage(name) }
-  map.addImage(name, ctx.getImageData(0, 0, canvas.width, canvas.height))
+  map.addImage(name, ctx.getImageData(0, 0, canvas.width, canvas.height), { sdf: true })
 }

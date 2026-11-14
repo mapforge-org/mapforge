@@ -137,13 +137,15 @@ export function resetHighlightedFeature () {
 // For highlighting features from vector layers, we need to track their sourceLayer.
 // The feature under the mouse gets the 'hover' state, see the halo styles. No feature clears it.
 // Hover must not set global state: a change rebuilds the tiles of every geojson source.
+// Returns whether the hovered feature changed.
 export function setHoveredFeature (feature) {
   const next = feature?.id ? { source: feature.source, id: feature.id } : null
-  if (hoveredFeature?.source === next?.source && hoveredFeature?.id === next?.id) { return }
+  if (hoveredFeature?.source === next?.source && hoveredFeature?.id === next?.id) { return false }
   if (hoveredFeature && map.getSource(hoveredFeature.source)) { map.setFeatureState(hoveredFeature, { hover: false }) }
   hoveredFeature = next
   if (hoveredFeature) { map.setFeatureState(hoveredFeature, { hover: true }) }
   map.getCanvas().style.cursor = hoveredFeature ? 'pointer' : ''
+  return true
 }
 
 export function highlightFeature (feature, sticky = false, source, sourceLayer = null) {

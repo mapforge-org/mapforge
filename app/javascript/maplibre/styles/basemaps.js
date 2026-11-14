@@ -66,6 +66,7 @@ const versatilesFont = 'noto_sans_regular'
 
 // A basemap can override any feature style default via 'defaults' (styles.js) and
 // 'editDefaults' (edit_styles.js). See styles/defaults.js for the available keys.
+// 'dark: true' marks a dark or satellite basemap, which gets the highlight colors of darkDefaults.
 //
 // 'font' styles the label layers of mapforge, so it must be served by the glyph endpoint
 // of the basemap. The labels of the basemap itself keep their own fonts. A basemap that
@@ -218,7 +219,7 @@ export function basemaps () {
         glyphs: versatilesGlyphs
       }
     },
-    satelliteStreets: { description: window.__('Satellite photos with street names and places'), source: 'Esri', style: host + '/layers/satellite_with_streets.json', defaults: { labelColor: '#000', labelShadow: '#fff', font: versatilesFont } },
+    satelliteStreets: { description: window.__('Satellite photos with street names and places'), source: 'Esri', style: host + '/layers/satellite_with_streets.json', defaults: { labelColor: '#000', labelShadow: '#fff', font: versatilesFont }, dark: true },
 
     // basemap.de
     basemapWorld: {
@@ -239,9 +240,9 @@ export function basemaps () {
     versatilesGraybeard: { description: window.__('Gray map in calm colors, your own data stands out'), source: 'VersaTiles', style: 'https://tiles.versatiles.org/assets/styles/graybeard/style.json', sourceName: 'versatiles-shortbread', defaults: { font: versatilesFont } },
     versatilesGraybeardSnow: { description: window.__('Winter map with snow on the mountains'), source: 'VersaTiles', style: host + '/layers/graybeard_snow.json', sourceName: 'versatiles-shortbread', defaults: { font: versatilesFont } },
     versatilesNeutrino: { description: window.__('Plain map with soft colors and few labels'), source: 'VersaTiles', style: 'https://tiles.versatiles.org/assets/styles/neutrino/style.json', defaults: { font: versatilesFont } },
-    versatilesEclipse: { description: window.__('Dark map, easy on the eyes at night'), source: 'VersaTiles', style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', defaults: { labelColor: '#fff', labelShadow: '#000', font: versatilesFont } },
+    versatilesEclipse: { description: window.__('Dark map, easy on the eyes at night'), source: 'VersaTiles', style: 'https://tiles.versatiles.org/assets/styles/eclipse/style.json', defaults: { labelColor: '#fff', labelShadow: '#000', font: versatilesFont }, dark: true },
     // VersaTiles satellite imagery (alpha) composited with OpenFreeMap street/label overlay
-    versatilesSatelliteStreets: { description: window.__('Satellite photos with street names and places'), source: 'VersaTiles', style: host + '/layers/versatiles_satellite_streets.json', defaults: { font: versatilesFont } },
+    versatilesSatelliteStreets: { description: window.__('Satellite photos with street names and places'), source: 'VersaTiles', style: host + '/layers/versatiles_satellite_streets.json', defaults: { font: versatilesFont }, dark: true },
 
     // Custom local styles using OpenMapTiles schema
     artistic: { description: window.__('Map with its own hand-picked colors'), source: 'Mapforge', style: host + '/layers/artistic.json', sourceName: 'versatiles-shortbread', applyFont: true,
@@ -257,10 +258,10 @@ export function basemaps () {
     maptilerDataviz: { description: window.__('Plain map, your own data stands out'), source: 'MapTiler', style: 'https://api.maptiler.com/maps/dataviz/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont, fontBold: notoFontBold } },
     maptilerStreets: { description: window.__('Street map with roads and places'), source: 'MapTiler', style: host + '/layers/streets.json', defaults: { font: notoFont, fontBold: notoFontBold } },
     maptilerNoStreets: { description: window.__('Street map without street names'), source: 'MapTiler', style: host + '/layers/nostreets.json', defaults: { font: notoFont, fontBold: notoFontBold } },
-    maptilerSatellite: { description: window.__('Satellite photos without labels'), source: 'MapTiler', style: 'https://api.maptiler.com/maps/satellite/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont, fontBold: notoFontBold } },
+    maptilerSatellite: { description: window.__('Satellite photos without labels'), source: 'MapTiler', style: 'https://api.maptiler.com/maps/satellite/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont, fontBold: notoFontBold }, dark: true },
     maptilerWinter: { description: window.__('Winter map with snow and ski slopes'), source: 'MapTiler', style: 'https://api.maptiler.com/maps/winter-v2/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: notoFont, fontBold: notoFontBold } },
     maptilerBike: { description: window.__('Bicycle map with bike routes and trails'), source: 'MapTiler', style: 'https://api.maptiler.com/maps/64d03850-97e0-4aaa-bd1d-8287a9792de1/style.json?key=' + window.gon.map_keys.maptiler, sourceName: 'maptiler_planet', defaults: { font: notoFont, fontBold: notoFontBold } },
-    maptilerHybrid: { description: window.__('Satellite photos with street names'), source: 'MapTiler', style: 'https://api.maptiler.com/maps/hybrid/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont, fontBold: notoFontBold } },
+    maptilerHybrid: { description: window.__('Satellite photos with street names'), source: 'MapTiler', style: 'https://api.maptiler.com/maps/hybrid/style.json?key=' + window.gon.map_keys.maptiler, defaults: { font: notoFont, fontBold: notoFontBold }, dark: true },
 
   // static test tile
     test: {

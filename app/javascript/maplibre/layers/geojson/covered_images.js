@@ -1,4 +1,5 @@
 import { map } from 'maplibre/map'
+import { hasCenteredLabel } from 'maplibre/styles/circle_image'
 import { defaultPointSize } from 'maplibre/styles/defaults'
 
 // Half the side of the query box around the center of an image, in px. Something that only touches
@@ -70,7 +71,8 @@ export function hideCoveredLabels () {
     if (seen.has(key)) { return }
     seen.add(key)
     const { x, y } = map.project(point.geometry.coordinates)
-    if (point.properties.label && above.some(a => Math.hypot(a.x - x, a.y - y) < a.radius + QUERY_RADIUS)) {
+    // a centered label is part of the image of its point
+    if (point.properties.label && !hasCenteredLabel(point.properties) && above.some(a => Math.hypot(a.x - x, a.y - y) < a.radius + QUERY_RADIUS)) {
       ids.add(point.properties.id)
     }
     above.push({ x, y, radius: Number(point.properties['marker-size'] || defaultPointSize(point)) })

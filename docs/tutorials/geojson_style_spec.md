@@ -21,7 +21,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `label-background`: `badge` (default) draws a rounded box in the `label-shadow` color behind the label, and the letters get no halo. `shadow` draws only the halo around the letters. A label with `marker-scaling` always gets `shadow`.
 * `label-shadow`: font shadow and background color of the label box in format "#ffffff" (default)
 * `label-shadow-width`: shadow width/halo width in pixels (default 2, max. 5)
-* `label-anchor`: text anchor position relative to the feature: top (default), bottom, left, right, center, top-left, top-right, bottom-left, bottom-right
+* `label-anchor`: text anchor position relative to the feature: top (default), bottom, left, right, center, top-left, top-right, bottom-left, bottom-right. A point label with `center` and without `label-title`, and without a `label-offset` other than `[0, 0]`, is drawn as a part of the marker: it always shows, and a marker on top covers it together with its marker.
 * `label-offset`: label position offset from the anchor as `[x, y]` in em units (default: depends on marker size for `label-anchor: top`, otherwise `[0, 0]`)
 * `sort-key`: sort order of features: higher numbers overlay lower numbers (default: 1)
 * `min-zoom`: Display feature only on zoom levels bigger than min-zoom (only integer values)

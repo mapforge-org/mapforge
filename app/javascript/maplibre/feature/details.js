@@ -45,7 +45,7 @@ function pointMeta (lat, lng) {
   return coordsPart + linksPart
 }
 
-function featureMeta (feature) {
+export function featureMeta (feature) {
   const { type, coordinates } = feature.geometry
   if (type === 'LineString' && coordinates.length > 1) { return formatLength(length(feature)) }
   if (type === 'MultiLineString') { return formatLength(length(feature)) }

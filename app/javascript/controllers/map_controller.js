@@ -4,7 +4,8 @@ import { parseClipboardFeature, setCopiedFeature } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { initializeEditMode } from 'maplibre/edit'
-import { moveFeatureTo } from 'maplibre/feature'
+import { moveFeatureTo, setHoveredFeature } from 'maplibre/feature'
+import { showHoverInfo } from 'maplibre/feature/hover_info'
 import { addFeature, resetInitializationState } from 'maplibre/layers/layers'
 import {
   initializeMap,
@@ -44,6 +45,9 @@ export default class extends Controller {
   disconnect() {
     // Clean up when navigating away from the map
     console.log('Map controller disconnecting, cleaning up...')
+    // a revisit of the map would skip the hover of the same feature
+    setHoveredFeature(null)
+    showHoverInfo(null)
     resetInitializationState()
     clearImageState()
     clearUndoHistory()
