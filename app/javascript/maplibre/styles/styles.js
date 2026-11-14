@@ -9,9 +9,9 @@ import { patternImage } from 'maplibre/styles/pattern_image'
 // is emulated by stacking one fill-extrusion layer per bucket (0.1 … 1.0)
 export const extrusionOpacityBuckets = Array.from({ length: 10 }, (_, i) => (i + 1) / 10)
 
-// Copies of the point layers, which sortLayers() puts on top of all others, labels included. They
-// hold every point, but only the hovered or selected one is visible, through feature-state in its
-// opacity. A copy filtered to that point would place a new symbol on each hover, and MapLibre fades
+// Copies of the point layers, which sortLayers() puts above all other points, but below the labels,
+// so a label centered on its point stays visible. They hold every point, but only the hovered or
+// selected one is visible, through feature-state in its opacity. A copy filtered to that point would place a new symbol on each hover, and MapLibre fades
 // a new symbol in. The point stays in its own layer below, so the original order comes back.
 const frontStyleNames = ['points-layer-halo', 'points-layer', 'shapes-layer-halo', 'shapes-layer',
   'symbols-layer-halo', 'symbols-layer'].map(id => `${id}-front`)
@@ -743,6 +743,9 @@ function textLayerStyles(mode) {
         ['!=', ['geometry-type'], 'MultiLineString'], // line labels are in 'line-labels'
         // a blank label would still show its box
         ['any', present('label'), present('label-title')],
+        // the label of a point below another point, see hideCoveredLabels
+        ['any', isSelected(), ['!', ['has', 'id']],
+          ['!', ['in', ['concat', '|', ['get', 'id'], '|'], ['to-string', ['global-state', 'coveredLabels']]]]],
         flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
         minZoomFilter(),
         maxZoomFilter()
@@ -1128,7 +1131,7 @@ export function styles () {
     const style = styleDefs[id.replace(/-front$/, '')]
     const paint = Object.fromEntries(Object.entries(style.paint)
       .map(([key, value]) => [key, key.endsWith('-opacity') ? ['case', inFront, value, 0] : value]))
-    // A front copy sits above the text layer, so a claimed place would hide the label of a point.
+    // A front copy sits above the other symbol layers, so a claimed place would hide their labels.
     const front = style.type === 'symbol' ? { layout: { ...style.layout, 'icon-ignore-placement': true } } : {}
     styleDefs[id] = { ...style, ...front, id, paint }
   }

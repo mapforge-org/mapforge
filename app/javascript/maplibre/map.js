@@ -14,7 +14,7 @@ import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsMo
 import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
 import { highlightFeature } from 'maplibre/feature';
-import { dimCoveredImages } from 'maplibre/layers/geojson/covered_images';
+import { dimCoveredImages, hideCoveredLabels } from 'maplibre/layers/geojson/covered_images';
 import { bindFeatureSelection } from 'maplibre/layers/layer';
 import { refreshDescBanners, showDescBanners } from 'maplibre/layers/geojson/desc_banners';
 import { showImageOverlays } from 'maplibre/layers/geojson/image_overlays';
@@ -258,6 +258,8 @@ export async function initializeMap (divId = 'maplibre-map') {
   // the level control lists only the GeoJSON levels in view
   map.on('moveend', detectLevels)
   map.on('idle', dimCoveredImages)
+  map.on('moveend', hideCoveredLabels)
+  map.on('idle', hideCoveredLabels)
 
   // TODO: remove once https://github.com/maplibre/maplibre-gl-js/issues/7752 is fixed (5.25)
   window.addEventListener('error', (event) => {
@@ -716,9 +718,9 @@ export function sortLayers () {
       e.id.startsWith('cluster_points')),
     ordered.filter(e => e.id.startsWith('heatmap-layer')),
     ordered.filter(e => e.id.startsWith('gl-draw-')),
-    ordered.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
     // the hovered or selected point, see frontStyleNames in styles.js
-    ordered.filter(e => e.id.includes('-front_'))
+    ordered.filter(e => e.id.includes('-front_')),
+    ordered.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels'))
   ]
 
   // moveLayer(id) with no second arg moves the layer to the top. Iterating

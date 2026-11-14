@@ -81,6 +81,37 @@ describe "Map selection" do
     end
   end
 
+  context "with labeled points that partly cover each other" do
+    # the second point sits about 8px to the right of the first, so it does not cover its center
+    let(:points) do
+      [ point(11.0557, 49.4732, "first"), point(11.05586, 49.4732, "second"), point(11.0575, 49.4732, "free") ]
+    end
+    let(:map) { create(:map, features: points, center: [ 11.0557, 49.4732 ], zoom: 16) }
+
+    def point(lng, lat, label)
+      create(:feature, :point, coordinates: [ lng, lat ], properties: { "label" => label })
+    end
+
+    def rendered_labels
+      page.evaluate_script(<<~JS).sort
+        [...new Set(map.queryRenderedFeatures({
+          layers: map.getStyle().layers.map(l => l.id).filter(id => id.startsWith('text-layer'))
+        }).map(f => f.properties.label))]
+      JS
+    end
+
+    def covered_labels
+      ids = page.evaluate_script("map.getGlobalState().coveredLabels").to_s
+      points.select { |p| ids.include?("|#{p.id}|") }.map { |p| p.properties["label"] }
+    end
+
+    it "hides the label of the point below, and its place goes to the label of the point above" do
+      wait_for { covered_labels.size }.to eq 1
+      expect(covered_labels).not_to include "free"
+      wait_for { rendered_labels }.to eq (%w[first second free] - covered_labels).sort
+    end
+  end
+
   context "with a selected feature outside its zoom range" do
     let(:point) { create(:feature, :point, properties: { "label" => "close up", "min-zoom" => 22 }) }
     let(:map) { create(:map, features: [ point ]) }
@@ -98,10 +129,11 @@ describe "Map selection" do
     let(:map) { create(:map, features: [ point ], center: [ 11.0557, 49.4732 ], zoom: 16) }
 
     # the front copy shows the point through feature-state, which queryRenderedFeatures does not see
-    it "draws the point in a front layer on top of all labels while it is hovered" do
+    it "draws the point in a front layer above all points, below the labels, while it is hovered" do
       ids = page.evaluate_script("map.getStyle().layers.map(l => l.id)")
-      expect(ids.index { |id| id.start_with?("points-layer-front_") })
-        .to be > ids.rindex { |id| id.start_with?("text-layer") }
+      front = ids.index { |id| id.start_with?("points-layer-front_") }
+      expect(front).to be > ids.rindex { |id| id.start_with?("points-layer_") }
+      expect(front).to be < ids.index { |id| id.start_with?("text-layer") }
 
       state = "map.getFeatureState({ source: 'geojson-source-#{map.layers.first.id}', id: '#{point.id}' })"
       xy = viewport_xy_for_lat_lng(49.4732, 11.0557)
