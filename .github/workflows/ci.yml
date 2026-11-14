@@ -46,7 +46,27 @@ jobs:
       - name: Lint CSS
         run: npm run lint:css
 
+  # Restored once for all test jobs. A concurrent CI run can save a newer cache
+  # between the restores of separate jobs, which gives them different groups,
+  # so some specs run in no job.
+  runtimes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore spec runtimes
+        uses: actions/cache/restore@v4
+        with:
+          path: tmp/parallel_runtime_rspec.log
+          key: rspec-runtime-${{ github.run_id }}
+          restore-keys: rspec-runtime-
+      # --group-by runtime reads the log without a rescue, so it must exist
+      - run: mkdir -p tmp && touch tmp/parallel_runtime_rspec.log
+      - uses: actions/upload-artifact@v6
+        with:
+          name: runtimes
+          path: tmp/parallel_runtime_rspec.log
+
   test:
+    needs: runtimes
     runs-on: ubuntu-latest
     # One spec process per job: two browsers on one runner compete for its 4 CPUs, and
     # that makes the spec runtimes too uneven for the runtime split to balance. All jobs
@@ -78,20 +98,17 @@ jobs:
           # caches by Gemfile.lock checksum
           bundler-cache: true
       # Share test run timings across CI runs for optimal distribution
-      - name: Restore spec runtimes
-        uses: actions/cache/restore@v4
+      - name: Download spec runtimes
+        uses: actions/download-artifact@v4
         with:
-          path: tmp/parallel_runtime_rspec.log
-          key: rspec-runtime-${{ github.run_id }}
-          restore-keys: rspec-runtime-
+          name: runtimes
+          path: tmp
       - name: Wait for MongoDB
         run: |
           timeout 90 bash -c 'until docker exec mongo mongosh --quiet --eval "db.adminCommand({ping: 1})"; do sleep 1; done'
       - name: Run tests
         id: rspec
         run: |
-          # --group-by runtime reads the log without a rescue, so it must exist
-          mkdir -p tmp && touch tmp/parallel_runtime_rspec.log
           bin/parallel_rspec spec engines -n 6 \
             --group-by runtime --allowed-missing 100 --only-group ${{ matrix.part }}
         shell: bash
