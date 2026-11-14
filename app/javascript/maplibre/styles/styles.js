@@ -19,7 +19,6 @@ const frontStyleNames = ['points-layer-halo', 'points-layer', 'shapes-layer-halo
 export const viewStyleNames = [
   'polygon-layer',
   'polygon-layer-pattern', // the pattern draws on the fill color, so it goes above the fill
-  'polygon-layer-hover',
   'polygon-layer-outline',
   'polygon-layer-halo',
   'line-layer-outline', // casing beside the line, drawn below it
@@ -204,6 +203,20 @@ const labelFont = () => ['coalesce', ['get', 'label-font'],
 
 const fillColor = () => styleProp(['fill', 'user_fill'], defaults.featureColor)
 const fillOpacity = () => ['to-number', styleProp(['fill-opacity', 'user_fill-opacity'], defaults.extrusionOpacity)]
+
+// The polygon under the mouse looks as if a layer in haloColorHover at haloFillOpacityHover lay on
+// it. A fill at opacity o under a tint at opacity a gives opacity o + a(1 - o), and the color moves
+// to the tint by a / (o + a(1 - o)). A layer for the tint would draw every polygon again per frame.
+// The paint value reads these two numbers as the variables 'opacity' and 'share'.
+const hoverTint = paintValue => {
+  const o = ['case', ['==', fillColor(), 'transparent'], 0, fillOpacity()]
+  const a = ['case', ['boolean', ['feature-state', 'active'], false], 0,
+    ['boolean', ['feature-state', 'hover'], false], defaults.haloFillOpacityHover, 0]
+  // a binding cannot read its siblings, so the lets nest
+  return ['let', 'o', o, 'a', a,
+    ['let', 'opacity', ['+', ['var', 'o'], ['*', ['var', 'a'], ['-', 1, ['var', 'o']]]],
+      ['let', 'share', ['case', ['==', ['var', 'a'], 0], 0, ['/', ['var', 'a'], ['var', 'opacity']]], paintValue]]]
+}
 
 // The name of the image of a polygon pattern, drawn by the resolver of maplibre on first use.
 // KEEP IN SYNC with patternImageName() in pattern_image.js.
@@ -786,18 +799,21 @@ function textLayerStyles(mode) {
   // the label of a point below another point, see hideCoveredLabels
   const notCovered = ['any', isSelected(), ['!', ['has', 'id']],
     ['!', ['in', ['concat', '|', ['get', 'id'], '|'], ['to-string', ['global-state', 'coveredLabels']]]]]
-  const baseFilter = [
+  // the cheap checks first
+  const kindFilter = [
     ['!=', ['geometry-type'], 'LineString'], // line labels are in 'line-labels'
     ['!=', ['geometry-type'], 'MultiLineString'], // line labels are in 'line-labels'
+    flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true]
+  ]
+  const restFilter = [
     ['!', centeredLabel()], // a centered label is part of the image of the point
-    flatMode ? ['==', ['get', 'flat'], true] : ['!=', ['get', 'flat'], true],
     minZoomFilter(),
     maxZoomFilter()
   ]
   const style = {
     id: layerId,
     type: 'symbol',
-    filter: ['all', hasLabel, notCovered, ...baseFilter],
+    filter: ['all', ...kindFilter, hasLabel, notCovered, ...restFilter],
     layout: {
       ...sharedLayout,
       ...modeSpecificLayout
@@ -812,8 +828,8 @@ function textLayerStyles(mode) {
   // A point whose label does not show its title shows the title there instead, in the default
   // place and the look of its label. A centered label is in the image, see 'text-layer-title-front'.
   const title = ['to-string', styleProp(['title', 'user_title', 'name', 'user_name'], '')]
-  const showsTitle = ['all', ['==', ['geometry-type'], 'Point'], ['!', blank(title)],
-    ['!=', title, labelText()], ['!=', title, ['to-string', ['coalesce', ['get', 'label-title'], '']]]]
+  const showsTitle = ['let', 'title', title, ['all', ['==', ['geometry-type'], 'Point'], ['!', blank(['var', 'title'])],
+    ['!=', ['var', 'title'], labelText()], ['!=', ['var', 'title'], ['to-string', ['coalesce', ['get', 'label-title'], '']]]]]
   const overlapAll = { 'text-allow-overlap': true, 'text-ignore-placement': true, 'icon-allow-overlap': true, 'icon-ignore-placement': true }
   const frontPaint = { 'text-opacity': showInFront(1), 'icon-opacity': showInFront(sharedPaint['icon-opacity']) }
   const titleSize = defaultLabelSize(0.25)
@@ -826,7 +842,7 @@ function textLayerStyles(mode) {
       ...style,
       id: 'text-layer-front',
       // a covered label shows while it is hovered
-      filter: ['all', ['any', hasLabel, showsTitle], ...baseFilter],
+      filter: ['all', ...kindFilter, ['any', hasLabel, showsTitle], ...restFilter],
       layout: {
         ...style.layout,
         'text-field': ['case', showsTitle, ['format', title, textFont], style.layout['text-field']],
@@ -949,8 +965,9 @@ export function styles () {
         minZoomFilter(),
         maxZoomFilter()],
       paint: {
-        'fill-color': fillColor(),
-        'fill-opacity': fillOpacity()
+        'fill-color': hoverTint(['interpolate', ['linear'], ['var', 'share'],
+          0, ['to-color', fillColor()], 1, defaults.haloColorHover]),
+        'fill-opacity': hoverTint(['var', 'opacity'])
       }
     },
     // The tile of the pattern is transparent between its marks, so the fill color of the
@@ -967,21 +984,6 @@ export function styles () {
       paint: {
         'fill-pattern': patternImageExpression(),
         'fill-opacity': fillOpacity()
-      }
-    },
-    // tints the fill of the polygon under the mouse
-    'polygon-layer-hover': {
-      id: 'polygon-layer-hover',
-      type: 'fill',
-      filter: ['all',
-        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
-        ['==', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
-        minZoomFilter(),
-        maxZoomFilter()],
-      paint: {
-        'fill-color': defaults.haloColorHover,
-        'fill-opacity': ['case', ['boolean', ['feature-state', 'active'], false], 0,
-          ['boolean', ['feature-state', 'hover'], false], defaults.haloFillOpacityHover, 0]
       }
     },
     // fill-extrusion-opacity is not data-driven, so we stack 10 layers, one per

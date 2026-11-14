@@ -3,7 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 ## 2026-11
-* Tunnel and bridge detection for routed tracks
+
+* Tunnel and bridge detection for routed tracks, with a track color for bridge and tunnel sections
+* Redesigned frontpage
+* Feature info popup on mouse hover
+* Improved map search form and filters
+* New [styling properties](/doc/geojson_style_spec): label-font-weight, label-background
+* Faster page load: libraries load on demand
+* Update to [Maplibre GL JS 6.18](https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.18.0)
 
 ## 2026-10
 

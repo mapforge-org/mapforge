@@ -14,7 +14,7 @@ import { hideModals, initCtrlTooltips, initializeDefaultControls, initSettingsMo
 import { initializeViewControls, removeViewControls } from 'maplibre/controls/view';
 import { initializeEditMode, resetEditMode } from 'maplibre/edit';
 import { highlightFeature } from 'maplibre/feature';
-import { dimCoveredImages, hideCoveredLabels } from 'maplibre/layers/geojson/covered_images';
+import { dimCoveredImages, hideCoveredLabels, markCoveredStale } from 'maplibre/layers/geojson/covered_images';
 import { bindFeatureSelection } from 'maplibre/layers/layer';
 import { refreshDescBanners, showDescBanners } from 'maplibre/layers/geojson/desc_banners';
 import { showImageOverlays } from 'maplibre/layers/geojson/image_overlays';
@@ -257,6 +257,9 @@ export async function initializeMap (divId = 'maplibre-map') {
 
   // the level control lists only the GeoJSON levels in view
   map.on('moveend', detectLevels)
+  map.on('move', markCoveredStale)
+  map.on('sourcedata', markCoveredStale)
+  map.on('styledata', markCoveredStale)
   map.on('idle', dimCoveredImages)
   map.on('moveend', hideCoveredLabels)
   map.on('idle', hideCoveredLabels)
@@ -687,6 +690,8 @@ export function sortLayers () {
   // excludes user symbol/label layers since the original mutating logic pulled
   // those out before computing mapSymbols.
   const groups = [
+    // the ground below an extrusion, which covers it
+    ordered.filter(e => e.id.startsWith('polygon-layer-extruded-shadow_')),
     ordered.filter(e => e.id.startsWith('raster-layer_')), // raster overlays below all geojson layers
     ordered.filter(e => e.id.startsWith('polygon-layer_geojson-source') && !e.id.includes('extrusion') && !e.id.includes('shadow')),
     ordered.filter(e => e.id.startsWith('polygon-layer-pattern_geojson-source')), // pattern on the fill
@@ -718,13 +723,17 @@ export function sortLayers () {
       e.id.startsWith('cluster_points')),
     ordered.filter(e => e.id.startsWith('heatmap-layer')),
     ordered.filter(e => e.id.startsWith('gl-draw-')),
-    ordered.filter(e => e.id.startsWith('text-layer') || e.id.startsWith('cluster_labels')),
-    // the hovered or selected point covers the other labels, see frontStyleNames in styles.js.
-    // A layer in two groups ends up at the place of the last one.
-    ordered.filter(e => e.id.includes('-front_')),
+    ordered.filter(e => (e.id.startsWith('text-layer') && !e.id.includes('-front_')) || e.id.startsWith('cluster_labels')),
+    // the hovered or selected point covers the other labels, see frontStyleNames in styles.js
+    ordered.filter(e => e.id.includes('-front_') && !e.id.startsWith('text-layer')),
     // its label goes on top of it
     ordered.filter(e => e.id.startsWith('text-layer') && e.id.includes('-front_'))
   ]
+
+  // A mapforge style layer in no group stays below all sorted layers, see viewStyleNames in styles.js
+  const grouped = new Set(groups.flat())
+  const unsorted = ordered.filter(e => e.id.includes('_geojson-source') && !grouped.has(e))
+  if (unsorted.length) { console.warn('sortLayers: no group for ' + unsorted.map(e => e.id).join(', ')) }
 
   // moveLayer(id) with no second arg moves the layer to the top. Iterating
   // bottom-to-top builds up the desired stack order.

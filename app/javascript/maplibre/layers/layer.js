@@ -36,11 +36,12 @@ export const isSelectable = f => SELECTABLE_SOURCE_PREFIXES.some(p => f.source.s
 
 // keep: only these hits count, so a basemap feature under the cursor does not stop the box query
 export function queryFeaturesNear (point, options, keep = () => true) {
-  const exact = map.queryRenderedFeatures(point, options).filter(keep)
+  const counts = f => !hiddenCopy(f) && keep(f)
+  const exact = map.queryRenderedFeatures(point, options).filter(counts)
   if (exact.length) { return exact }
   const r = tolerance()
   const box = [[point.x - r, point.y - r], [point.x + r, point.y + r]]
-  return map.queryRenderedFeatures(box, options).filter(keep)
+  return map.queryRenderedFeatures(box, options).filter(counts)
 }
 
 const isInFront = f => (f.source === hoveredFeature?.source && f.id === hoveredFeature.id) ||
@@ -57,6 +58,7 @@ const hiddenCopy = f => f.layer?.id.includes('-front_') && !isInFront(f)
 // The labels draw above all features, but a point or a line under a label wins over it. A label
 // still wins over an area, because most labels sit on one.
 // The geometry of a hit gets decoded on its first read, so the cheap checks go first.
+// ponytail: the sort calls rank() for each comparison, a few hits make that cheap
 function rank (f) {
   if (isInFront(f) && f.geometry.type === 'Point') { return 0 }
   if (/^(text-layer|line-label)/.test(f.layer?.id)) { return 2 }
@@ -69,29 +71,41 @@ function rank (f) {
 // 2^(zoom - 16) (see shapeIconSize() in styles.js).
 // ponytail: a pin keeps the big box, because its head sits above the coordinate, and a square
 // with 'marker-rotate' or on a rotated flat map gets checked unrotated
-function outsideScaledShape (f, point, slack, scale) {
+function outsideScaledShape (f, point) {
   const p = f.properties
   const shape = p['user_marker-shape'] ?? p['marker-shape'] ?? 'circle'
   if (!f.layer?.id.startsWith('shapes-layer') || shape === 'pin' ||
     (p['user_marker-scaling'] ?? p['marker-scaling']) !== true) { return false }
   const size = Number(p['user_marker-size'] ?? p['marker-size']) || defaultPointSize(f)
-  const radius = SHAPE_EDGE * size * scale
+  const radius = SHAPE_EDGE * size * 2 ** (map.getZoom() - 16)
   const { x, y } = map.project(f.geometry.coordinates)
   const dx = Math.abs(x - point.x)
   const dy = Math.abs(y - point.y)
-  return (shape === 'square' ? Math.max(dx, dy) : Math.hypot(dx, dy)) > radius + slack
+  return (shape === 'square' ? Math.max(dx, dy) : Math.hypot(dx, dy)) > radius + tolerance()
+}
+
+// A query of all layers spends most of its time in the labels and roads of the basemap. MapLibre
+// sorts 3D hits by depth only among the queried layers, so the extrusions of the basemap stay in:
+// a building in front of a feature still hides it. Built again after a style change or when the
+// number of layers changes: 'styledata' does not follow every addLayer().
+let queryLayers = null
+let layerCount = 0
+function selectableLayers () {
+  const order = map.getLayersOrder()
+  if (!queryLayers || order.length !== layerCount) {
+    layerCount = order.length
+    queryLayers = order.map(id => map.getLayer(id))
+      .filter(l => l.type === 'fill-extrusion' || (l.source && isSelectable(l))).map(l => l.id)
+  }
+  return queryLayers
 }
 
 // Features of every selectable source near the point, top-most first, in the order of rank()
 export function selectableFeaturesNear (point) {
-  const slack = tolerance()
-  const scale = 2 ** (map.getZoom() - 16)
-  return queryFeaturesNear(point, { filter: ['!', ['has', 'cluster']], ...noValidate },
-    f => isSelectable(f) && !hiddenCopy(f) && !outsideScaledShape(f, point, slack, scale))
+  return queryFeaturesNear(point, { layers: selectableLayers(), filter: ['!', ['has', 'cluster']], ...noValidate },
+    f => isSelectable(f) && !outsideScaledShape(f, point))
     .filter(f => !f.properties?.cluster)
-    .map(f => [rank(f), f])
-    .sort((a, b) => a[0] - b[0])
-    .map(([, f]) => f)
+    .sort((a, b) => rank(a) - rank(b))
 }
 
 function httpUrl (target) {
@@ -186,6 +200,7 @@ const hoverFeatureOnMove = functions.perFrame((e) => {
 // every selectable source and pick the global top feature, so one per map is enough.
 // map.js binds them before any layer handler, and those skip a click prevented here.
 export function bindFeatureSelection () {
+  map.on('styledata', () => { queryLayers = null })
   map.on('click', selectFeatureOnClick)
   // a touch laptop with a mouse still hovers, see dom.js
   if (functions.isTouchDevice() && !window.matchMedia('(hover: hover)').matches) { return }
@@ -357,7 +372,7 @@ export class Layer {
   listenForCopy() {
     this.listen('contextmenu', (e) => {
       e.preventDefault()
-      const hit = map.queryRenderedFeatures(e.point, { layers: this.getStyleLayerIds() })
+      const hit = queryFeaturesNear(e.point, { layers: this.getStyleLayerIds() })
         .find(f => !f.properties?.cluster)
       if (hit) { addCopyToLayerMenuItem(this.copyableFeature(hit.id)) }
     })

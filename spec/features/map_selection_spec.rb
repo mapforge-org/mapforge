@@ -12,6 +12,12 @@ describe "Map selection" do
     expect_map_loaded
   end
 
+  # the properties of the features that layers with ids matching the pattern render
+  def rendered_properties(layer_pattern)
+    page.evaluate_script("map.queryRenderedFeatures({ layers: map.getStyle().layers.map(l => l.id)" \
+                         ".filter(id => #{layer_pattern.inspect}.test(id)) }).map(f => f.properties)")
+  end
+
   def hover_state_of(feature)
     page.evaluate_script("map.getFeatureState({ source: 'geojson-source-#{map.layers.first.id}', id: '#{feature.id}' })")
   end
@@ -23,12 +29,7 @@ describe "Map selection" do
     let(:path) { map_path(id: map.public_id, f: second.id) }
 
     it "shows the label of the selected feature" do
-      labels = <<~JS
-        [...new Set(map.queryRenderedFeatures({
-          layers: map.getStyle().layers.map(l => l.id).filter(id => /^text-layer(-flat)?_/.test(id))
-        }).map(f => f.properties.label))]
-      JS
-      wait_for { page.evaluate_script(labels) }.to eq [ "second" ]
+      wait_for { rendered_properties(/^text-layer(-flat)?_/).map { it["label"] }.uniq }.to eq [ "second" ]
     end
   end
 
@@ -97,11 +98,7 @@ describe "Map selection" do
     end
 
     def rendered_labels
-      page.evaluate_script(<<~JS).sort
-        [...new Set(map.queryRenderedFeatures({
-          layers: map.getStyle().layers.map(l => l.id).filter(id => /^text-layer(-flat)?_/.test(id))
-        }).map(f => f.properties.label))]
-      JS
+      rendered_properties(/^text-layer(-flat)?_/).map { it["label"] }.uniq.sort
     end
 
     def covered_labels
@@ -131,12 +128,7 @@ describe "Map selection" do
       images = "map.listImages().filter(name => name.startsWith('shape-')).map(name => name.split('|'))" \
                ".filter(parts => parts.length > 6).map(parts => parts.pop()).sort()"
       wait_for { page.evaluate_script(images) }.to eq %w[1 2]
-      labels = <<~JS
-        map.queryRenderedFeatures({
-          layers: map.getStyle().layers.map(l => l.id).filter(id => /^text-layer(-flat|-front)?_/.test(id))
-        }).length
-      JS
-      expect(page.evaluate_script(labels)).to eq 0
+      expect(rendered_properties(/^text-layer(-flat|-front)?_/)).to be_empty
       expect(page.evaluate_script("map.getGlobalState().coveredLabels").to_s).to eq ""
 
       # the prune keeps the images by these names
@@ -149,12 +141,7 @@ describe "Map selection" do
 
     # the label-* properties style the label in the image, not the title
     it "places a title that differs from the label in a front layer for the default label look" do
-      titles = <<~JS
-        map.queryRenderedFeatures({
-          layers: map.getStyle().layers.map(l => l.id).filter(id => id.startsWith('text-layer-title-front_'))
-        }).map(f => f.properties.title)
-      JS
-      wait_for { page.evaluate_script(titles) }.to eq [ "One" ]
+      wait_for { rendered_properties(/^text-layer-title-front_/).map { it["title"] } }.to eq [ "One" ]
     end
   end
 
@@ -205,12 +192,7 @@ describe "Map selection" do
 
     # the front copy places the title of every point, feature-state shows the hovered one
     it "places the title as a map label, and shows no card" do
-      titles = <<~JS
-        map.queryRenderedFeatures({
-          layers: map.getStyle().layers.map(l => l.id).filter(id => id.startsWith('text-layer-front_'))
-        }).map(f => f.properties.title)
-      JS
-      wait_for { page.evaluate_script(titles) }.to eq [ "Glenn" ]
+      wait_for { rendered_properties(/^text-layer-front_/).map { it["title"] } }.to eq [ "Glenn" ]
       expect(hover_state).to eq("hover" => true)
       expect(page).to have_no_css(".feature-hover-info")
     end
@@ -250,6 +232,24 @@ describe "Map selection" do
       expect(hover_state_of(point)).to eq({})
       hover_coord(xy[:x], xy[:y] + 15)
       wait_for { hover_state_of(point) }.to eq("hover" => true)
+    end
+  end
+
+  context "with a polygon, a line and a point" do
+    let(:map) do
+      create(:map, features: [ create(:feature, :polygon_middle), create(:feature, :line_string),
+                               create(:feature, :point, properties: { "label" => "x", "title" => "y" }) ])
+    end
+
+    it "gives every style layer a place in the layer order" do
+      warnings = page.evaluate_async_script(<<~JS)
+        const done = arguments[0]
+        const warn = console.warn
+        const messages = []
+        console.warn = message => messages.push(message)
+        import('maplibre/map').then(m => { m.sortLayers(); console.warn = warn; done(messages) })
+      JS
+      expect(warnings).to eq []
     end
   end
 

@@ -11,12 +11,19 @@ const MAX_IMAGES = 200
 
 let covered = new Map()
 
+// A hover changes only feature state, which moves nothing, but still ends in an 'idle'. The checks
+// run again only after the camera or the data changed.
+const stale = { images: true, labels: true }
+export function markCoveredStale () { stale.images = stale.labels = true }
+
 const stateKey = feature => `${feature.source}|${feature.id}`
 
 // A style cannot see a collision, so image points below an icon or a label get the feature state
 // 'covered', which the symbols layer dims. It runs on idle, because placement is only final then.
 // A change of the state renders again, so it must not write when nothing changed.
 export function dimCoveredImages () {
+  if (!stale.images) { return }
+  stale.images = false
   const layerIds = map.getLayersOrder()
   const imageLayers = layerIds.filter(id => id.startsWith('symbols-layer_'))
   const coverLayers = layerIds.filter(id => /^(points-layer|shapes-layer|text-layer)_/.test(id))
@@ -58,6 +65,8 @@ function skipNextFade () {
 // ponytail: the radius is 'marker-size', which ignores the smaller radius below zoom 17 and
 // 'marker-scaling', and the order of two points in different tiles can be wrong
 export function hideCoveredLabels () {
+  if (!stale.labels) { return }
+  stale.labels = false
   const pointLayers = map.getLayersOrder().filter(id => /^(points-layer|shapes-layer|symbols-layer)_/.test(id))
   // top-most first
   const points = pointLayers.length ? map.queryRenderedFeatures({ layers: pointLayers }).slice(0, MAX_IMAGES) : []

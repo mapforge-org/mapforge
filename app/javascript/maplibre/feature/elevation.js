@@ -239,10 +239,12 @@ export async function showElevationChart (feature) {
   let trackIndex = -1
   window.addEventListener('track-position', (event) => {
     const { featureId, meters } = event.detail
-    if (featureId !== feature.id || elevationContainer.offsetParent === null) { return }
+    if (featureId !== feature.id) { return }
     const i = meters == null ? -1 : active.labels.findIndex(d => d >= meters)
     if (i === trackIndex) { return }
     trackIndex = i
+    // offsetParent computes the layout, so it gets read only when the point changes
+    if (elevationContainer.offsetParent === null) { return }
     chart.setActiveElements(i < 0 ? [] : [{ datasetIndex: 0, index: i }])
     chart.update('none')
     if (i < 0) {

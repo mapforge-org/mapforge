@@ -78,9 +78,10 @@ const labelCanvasFont = label => `${label.bold ? 'bold ' : ''}${label.size}px "N
 
 // The label goes on the center of the head, with its shadow as an outline around the letters.
 // ponytail: no badge box ('label-background'), and a bitmap that blurs with 'marker-scaling'
-function drawLabel (ctx, size, label, metrics) {
+function drawLabel (ctx, size, label) {
   ctx.font = labelCanvasFont(label)
   ctx.textAlign = 'center'
+  const metrics = ctx.measureText(label.text)
   const y = size / 2 + (metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2
   if (label.shadowWidth > 0) {
     ctx.strokeStyle = label.shadow
@@ -90,6 +91,11 @@ function drawLabel (ctx, size, label, metrics) {
   }
   ctx.fillStyle = label.color
   ctx.fillText(label.text, size / 2, y)
+}
+
+function labelWidth (ctx, label, size) {
+  ctx.font = labelCanvasFont(label)
+  return Math.max(size, Math.ceil(ctx.measureText(label.text).width + 2 * label.shadowWidth + 2))
 }
 
 // Draws a shape in the given color, with a border, an optional emoji or label on it and an
@@ -102,13 +108,7 @@ export function markerImage (name, { shape = 'circle', color, border = '#CCC', s
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
   // a label wider than the shape widens the canvas, the shape stays in the middle, on the anchor
-  let width = size
-  let metrics = null
-  if (label) {
-    ctx.font = labelCanvasFont(label)
-    metrics = ctx.measureText(label.text)
-    width = Math.max(size, Math.ceil(metrics.width + 2 * label.shadowWidth + 2))
-  }
+  const width = label ? labelWidth(ctx, label, size) : size
   // a new size resets the context
   canvas.width = width * ratio
   canvas.height = canvasHeight(shape, size) * ratio
@@ -139,7 +139,7 @@ export function markerImage (name, { shape = 'circle', color, border = '#CCC', s
     shapePath(ctx, shape, size, margin + borderWidth / 2)
     ctx.fill()
   }
-  if (label) { drawLabel(ctx, size, label, metrics) }
+  if (label) { drawLabel(ctx, size, label) }
 
   const imageData = () => ctx.getImageData(0, 0, canvas.width, canvas.height)
   // a halo is an sdf image: the map reads only its alpha, 'icon-color' tints it for hover and selection
