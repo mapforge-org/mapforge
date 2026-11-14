@@ -1,13 +1,6 @@
-# This workflow uses actions that are not certified by GitHub.  They are
-# provided by a third-party and are governed by separate terms of service,
-# privacy policy, and support documentation.
-#
-# This workflow will install a prebuilt Ruby version, install dependencies, and
-# run tests and linters.
 name: "Lint & Tests"
 permissions:
   contents: read
-  pull-requests: write
 on:
   push:
     branches: [ "main" ]
@@ -20,20 +13,15 @@ jobs:
     # Building an own image is not worth it, pulling it in gh actions
     # is about as slow as installing the dependencies and it blocks using cached gems
     runs-on: ubuntu-latest
-    #container:
-    #  image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Update package lists
-        run: sudo apt-get update
-      - name: Disable mandb updates
-        run: |
-          sudo mv /usr/bin/mandb /usr/bin/mandb.bak
-          echo -e '#!/bin/sh\nexit 0' | sudo tee /usr/bin/mandb > /dev/null
-          sudo chmod +x /usr/bin/mandb
+      # Without the man-db flag file, apt-get install skips the slow man page index rebuild
       - name: Install dependencies
-        run: sudo apt-get install --no-install-recommends -y libimlib2-dev
+        run: |
+          sudo rm -f /var/lib/man-db/auto-update
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y libimlib2-dev
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
@@ -60,58 +48,30 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    # The runner is too weak for more than 2 headless Chrome instances, so every job
-    # keeps 2 processes and the fan out happens over jobs. All jobs must compute the
-    # same 6 groups, so they must read the same runtime log. Only the coverage job
-    # writes that cache.
+    # One spec process per job: two browsers on one runner compete for its 4 CPUs, and
+    # that makes the spec runtimes too uneven for the runtime split to balance. All jobs
+    # must compute the same 6 groups, so they must read the same runtime log. Only the
+    # coverage job writes that cache.
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - part: 1
-            groups: "1,2"
-          - part: 2
-            groups: "3,4"
-          - part: 3
-            groups: "5,6"
-    #container:
-    #  image: ghcr.io/mapforge-org/mapforge-ci-runner:latest
-    services:
-      mongodb:
-        image: mongo:9.0.4
-        ports:
-        - 27017:27017
-        # Without a health check, steps start before mongod listens
-        options: >-
-          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ping: 1})'"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-        # credentials are only needed when not running on ubuntu-latest VM
-        # credentials:
-        #  username: ${{ secrets.DOCKER_USERNAME }}
-        #  password: ${{ secrets.DOCKER_TOKEN }}
+        part: [1, 2, 3, 4, 5, 6]
     env:
       RAILS_ENV: test
       COVERAGE: true
       CI_PART: ${{ matrix.part }} # turns off the per job coverage minimum
-      SE_AVOID_STATS: true # skip Selenium stats
-      SE_DISABLE_REMOTE_MANAGER: true # skip Selenium plausible telemetry
-      # MONGO_URL is only needed when not running on ubuntu-latest VM
-      # MONGO_URL: "mongodb:27017"
     steps:
+      # A service container blocks the job until its image is pulled. In the background,
+      # the pull overlaps the setup steps. Its output must not hold the step's stdio open.
+      - name: Start MongoDB
+        run: (docker run -d --name mongo -p 27017:27017 mongo:9.0.4 > /dev/null 2>&1 &)
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Update package lists
-        run: sudo apt-get update
-      - name: Disable mandb updates
-        run: |
-          sudo mv /usr/bin/mandb /usr/bin/mandb.bak
-          echo -e '#!/bin/sh\nexit 0' | sudo tee /usr/bin/mandb > /dev/null
-          sudo chmod +x /usr/bin/mandb
       - name: Install dependencies
-      #  run: sudo apt-get install -y ruby-dev build-essential git libvips pkg-config libimlib2 libimlib2-dev imagemagick
-        run: sudo apt-get install --no-install-recommends -y libimlib2 libimlib2-dev imagemagick
+        run: |
+          sudo rm -f /var/lib/man-db/auto-update
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y libimlib2-dev imagemagick
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
@@ -124,15 +84,16 @@ jobs:
           path: tmp/parallel_runtime_rspec.log
           key: rspec-runtime-${{ github.run_id }}
           restore-keys: rspec-runtime-
+      - name: Wait for MongoDB
+        run: |
+          timeout 90 bash -c 'until docker exec mongo mongosh --quiet --eval "db.adminCommand({ping: 1})"; do sleep 1; done'
       - name: Run tests
         id: rspec
-        #run: |
-        #  bin/rspec --pattern "spec/**/*_spec.rb,engines/**/*_spec.rb"
         run: |
           # --group-by runtime reads the log without a rescue, so it must exist
           mkdir -p tmp && touch tmp/parallel_runtime_rspec.log
           bin/parallel_rspec spec engines -n 6 \
-            --group-by runtime --allowed-missing 100 --only-group ${{ matrix.groups }}
+            --group-by runtime --allowed-missing 100 --only-group ${{ matrix.part }}
         shell: bash
       # The coverage job needs this artifact, so a failed upload must fail this job.
       # Otherwise "re-run failed jobs" only re-runs coverage and never regenerates it.
@@ -168,15 +129,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Update package lists
-        run: sudo apt-get update
-      - name: Install dependencies
-        run: sudo apt-get install --no-install-recommends -y libimlib2-dev
-      - name: Install Ruby and gems
+      - name: Install Ruby
         uses: ruby/setup-ruby@v1
-        with:
-          # caches by Gemfile.lock checksum
-          bundler-cache: true
+      # The collate step needs only simplecov, so skip apt and the app bundle
+      - name: Install simplecov
+        run: gem install simplecov --no-document -v "$(grep -oP '^    simplecov \(\K[^)]+' Gemfile.lock)"
       - name: Download partial results
         uses: actions/download-artifact@v4
         with:
@@ -186,7 +143,7 @@ jobs:
       # spec/rails_helper.rb therefore cannot apply. Enforce it over the merged data.
       - name: Check merged coverage
         run: |
-          bundle exec ruby -e '
+          ruby -e '
             require "simplecov"
             SimpleCov.collate Dir["parts/*/coverage/.resultset.json"], "rails" do
               minimum_coverage 100
@@ -210,7 +167,3 @@ jobs:
         with:
           path: tmp/parallel_runtime_rspec.log
           key: rspec-runtime-${{ github.run_id }}
-      # - name: Coveralls
-      #   uses: coverallsapp/github-action@v2
-      #   with:
-      #     fail-on-error: false
