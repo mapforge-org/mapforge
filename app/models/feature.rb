@@ -50,6 +50,29 @@ class Feature
     GPX::GeoJSON.convert_to_gpx(geojson_data: to_geojson.to_json)
   end
 
+  # Body of the Garmin Courses API. Garmin requires distance and elevation totals, and points at
+  # most 100m apart, so long segments get interpolated points.
+  def to_garmin_course
+    coords = geometry["coordinates"]
+    points = [ garmin_point(coords.first) ]
+    distance = gain = loss = 0.0
+    vertexes = coords.map { |c| Mapforge::LineIndex::FACTORY.point(c[0], c[1]) }
+    coords.zip(vertexes).each_cons(2) do |(a, va), (b, vb)|
+      segment = va.distance(vb)
+      steps = (segment / 100).ceil
+      (1..steps).each do |i|
+        points << garmin_point(a.zip(b).map { |x, y| x && y && x + (y - x) * i.fdiv(steps) })
+      end
+      distance += segment
+      climb = a[2] && b[2] ? b[2] - a[2] : 0
+      climb.positive? ? gain += climb : loss -= climb
+    end
+    { courseName: properties["title"].presence || "Mapforge track", description: properties["desc"].presence,
+      distance:, elevationGain: gain, elevationLoss: loss, geoPoints: points,
+      activityType: properties.dig("route", "profile") == "bike" ? "ROAD_CYCLING" : "HIKING",
+      coordinateSystem: "WGS84" }.compact
+  end
+
   # expects EPSG:4326 (WGS 84), the GeoJSON default
   def self.from_collection(geojson)
     (geojson["features"] || [ geojson ]).filter_map do |feature|
@@ -62,6 +85,10 @@ class Feature
   end
 
   private
+
+  def garmin_point((lon, lat, ele))
+    { latitude: lat, longitude: lon, elevation: ele }.compact
+  end
 
   def sanitize_coordinates
     return unless geometry["coordinates"].is_a?(Array)

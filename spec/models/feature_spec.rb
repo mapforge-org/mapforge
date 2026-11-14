@@ -12,6 +12,35 @@ describe Feature do
     end
   end
 
+  describe "#to_garmin_course" do
+    let(:feature) { build(:feature, :line_string_with_elevation, title: "Hike") }
+    let(:course) { feature.to_garmin_course }
+
+    it "sums the climb and the descent" do
+      expect(course).to include(courseName: "Hike", elevationGain: 50.0, elevationLoss: 60.0,
+                                activityType: "HIKING", coordinateSystem: "WGS84")
+    end
+
+    it "keeps the vertexes in lat/lon order with elevation" do
+      expect(course[:geoPoints].first).to eq(latitude: 49.46, longitude: 11.06, elevation: 300)
+      expect(course[:geoPoints].last).to include(latitude: be_within(1e-9).of(49.435), elevation: be_within(1e-9).of(290))
+    end
+
+    it "keeps points at most 100m apart" do
+      factory = RGeo::Geographic.spherical_factory
+      gaps = course[:geoPoints].each_cons(2).map do |a, b|
+        factory.point(a[:longitude], a[:latitude]).distance(factory.point(b[:longitude], b[:latitude]))
+      end
+      expect(gaps.max).to be <= 100
+      expect(gaps.sum).to be_within(1).of(course[:distance])
+    end
+
+    it "uses a cycling course for bike routes" do
+      feature.properties["route"] = { "profile" => "bike" }
+      expect(course[:activityType]).to eq("ROAD_CYCLING")
+    end
+  end
+
   describe "#to_gpx" do
     it "exports valid gpx" do
       feature = described_class.create(type: "Feature", geometry: { "type" => "Point", "coordinates" => [ 11.0557138, 49.4731983 ] })

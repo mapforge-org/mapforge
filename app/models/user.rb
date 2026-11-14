@@ -2,6 +2,7 @@ class User
   include ActiveModel::Model
   include Mongoid::Document
   include Mongoid::Timestamps
+  include GarminAccount
 
   scope :admin, -> { where(admin: true) }
   scope :github, -> { where(provider: "github") }

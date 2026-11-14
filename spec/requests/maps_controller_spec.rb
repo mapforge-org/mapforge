@@ -68,6 +68,77 @@ describe MapsController do
     end
   end
 
+  describe "#garmin_upload" do
+    let(:user) { create(:user, garmin_token: { "access_token" => "abc", "expires_at" => 1.hour.from_now.to_i }) }
+    let!(:feature) { create(:feature, :line_string, title: "Track", layer: map.layers.first) }
+    let(:path) { map_feature_garmin_path(id: map.public_id, feature_id: feature.id) }
+
+    let(:created) { instance_double(OAuth2::Response, parsed: { "courseId" => 43 }) }
+
+    def garmin_error(status, body = "")
+      OAuth2::Error.new(OAuth2::Response.new(Faraday::Response.new(status:, body:)))
+    end
+
+    before { sign_in(user) }
+
+    # Stubbed on the client, so the token still adds its Authorization header to the request
+    it "creates the course and remembers its id" do
+      allow_any_instance_of(OAuth2::Client).to receive(:request)
+        .with(:post, "/training-api/courses/v1/course",
+              hash_including(body: feature.to_garmin_course.to_json,
+                             headers: { "Content-Type" => "application/json", "Authorization" => "Bearer abc" }))
+        .and_return(created)
+      expect { post path }.to change { Yabeda.feature_exports.get(format: "garmin").to_i }.by(1)
+      expect(response.parsed_body).to eq("result" => "created", "course_id" => 43)
+      expect(user.reload.garmin_course_ids).to eq(feature.id.to_s => 43)
+    end
+
+    it "updates a course that was sent before" do
+      user.update!(garmin_course_ids: { feature.id.to_s => 42 })
+      expect_any_instance_of(OAuth2::Client).to receive(:request).once
+        .with(:put, "/training-api/courses/v1/course/42",
+              hash_including(body: feature.to_garmin_course.merge(courseId: 42).to_json))
+      post path
+      expect(response.parsed_body).to eq("result" => "updated", "course_id" => 42)
+    end
+
+    it "creates the course again when it was deleted in Garmin Connect" do
+      user.update!(garmin_course_ids: { feature.id.to_s => 42 })
+      allow_any_instance_of(OAuth2::AccessToken).to receive(:put).and_raise(garmin_error(404))
+      allow_any_instance_of(OAuth2::AccessToken).to receive(:post).and_return(created)
+      post path
+      expect(response.parsed_body).to eq("result" => "created", "course_id" => 43)
+      expect(user.reload.garmin_course_ids).to eq(feature.id.to_s => 43)
+    end
+
+    it "refuses a user without Garmin connection" do
+      user.update!(garmin_token: nil)
+      post path
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "drops a token that Garmin rejects" do
+      allow_any_instance_of(OAuth2::AccessToken).to receive(:post).and_raise(garmin_error(401))
+      post path
+      expect(response).to have_http_status(:unauthorized)
+      expect(user.reload.garmin_token).to be_nil
+    end
+
+    it "reports a missing course permission" do
+      allow_any_instance_of(OAuth2::AccessToken).to receive(:post).and_raise(garmin_error(412))
+      post path
+      expect(response).to have_http_status(:forbidden)
+      expect(user.reload.garmin_token).to be_present
+    end
+
+    it "reports other Garmin errors" do
+      allow_any_instance_of(OAuth2::AccessToken).to receive(:post).and_raise(garmin_error(400, "too many points"))
+      post path
+      expect(response).to have_http_status(:bad_gateway)
+      expect(user.reload.garmin_token).to be_present
+    end
+  end
+
   describe "#show (preloads)" do
     it "preloads the map modules, and the draw modules only in edit mode" do
       get map_path(id: map.public_id)

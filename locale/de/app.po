@@ -115,6 +115,9 @@ msgstr "Erweiterte Objektgestaltung"
 msgid "All"
 msgstr "Alle"
 
+msgid "Allow courses for Mapforge in your Garmin Connect account"
+msgstr "Erlaube Strecken für Mapforge in deinem Garmin Connect Konto"
+
 msgid "Applies in view mode. In edit mode, a click always selects the feature."
 msgstr "Gilt im Ansichtsmodus. Im Bearbeitungsmodus wählt ein Klick immer das Objekt aus."
 
@@ -282,6 +285,9 @@ msgstr "Beton"
 
 msgid "Configure Map"
 msgstr "Karte einrichten"
+
+msgid "Connect Garmin Connect to send tracks to your device"
+msgstr "Verbinde Garmin Connect, um Tracks an dein Gerät zu senden"
 
 msgid "Connection error"
 msgstr "Verbindungsfehler"
@@ -553,6 +559,9 @@ msgstr "Fehler beim Umwandeln des Tracks: %{message}"
 msgid "Error detecting location: %{message}"
 msgstr "Fehler beim Ermitteln des Standorts: %{message}"
 
+msgid "Error sending to Garmin Connect"
+msgstr "Fehler beim Senden an Garmin Connect"
+
 msgid "Error updating %{type}"
 msgstr "Fehler beim Aktualisieren von %{type}"
 
@@ -636,6 +645,9 @@ msgstr "GPS-Position"
 
 msgid "Gallery"
 msgstr "Galerie"
+
+msgid "Garmin Connect login expired, reload the page to connect again"
+msgstr "Garmin Connect Anmeldung abgelaufen, lade die Seite neu, um dich erneut zu verbinden"
 
 msgid "Gentle downhill (4-6%)"
 msgstr "Leichtes Gefälle (4-6 %)"
@@ -1240,6 +1252,12 @@ msgstr "Selbst hostbar"
 msgid "Self-hosting guide"
 msgstr "Self-Hosting-Anleitung"
 
+msgid "Send to Garmin Connect"
+msgstr "An Garmin Connect senden"
+
+msgid "Sent to Garmin Connect"
+msgstr "An Garmin Connect gesendet"
+
 msgid "Set current view as default"
 msgstr "Aktuelle Ansicht als Standard setzen"
 
@@ -1498,6 +1516,9 @@ msgstr "Ebene aktualisieren"
 
 msgid "Updated %{time} ago"
 msgstr "Aktualisiert vor %{time}"
+
+msgid "Updated in Garmin Connect"
+msgstr "In Garmin Connect aktualisiert"
 
 msgid "Uphill"
 msgstr "Bergauf"

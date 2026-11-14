@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     get "/:id/feature/:feature_id.geojson(/:name)" => "maps#feature", :as => :map_feature_geo, :constraints => { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, :defaults => { format: "geojson" }
     get "/:id/feature/:feature_id.gpx(/:name)" => "maps#feature", :as => :map_feature_gpx, :constraints => { id: ID_PATTERN, feature_id: ID_PATTERN, name: NAME_PATTERN }, :defaults => { format: "gpx" }
 
+    post "/:id/feature/:feature_id/garmin" => "maps#garmin_upload", :as => :map_feature_garmin, :constraints => { id: ID_PATTERN, feature_id: ID_PATTERN }
+
     post "" => "maps#create", :as => :create_map
     post "/:id/copy" => "maps#copy", :as => :copy_map, :constraints => { id: ID_PATTERN }
     delete "/:id" => "maps#destroy", :as => :destroy_map, :constraints => { id: ID_PATTERN }

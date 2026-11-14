@@ -424,6 +424,30 @@ export default class extends Controller {
     }
   }
 
+  async sendToGarmin (event) {
+    event.preventDefault()
+    dom.showElements('#preloader')
+    try {
+      const response = await fetch(event.currentTarget.dataset.url, {
+        method: 'POST',
+        headers: { 'X-CSRF-Token': window.gon.csrf_token }
+      })
+      if (response.ok) {
+        const { result, course_id: courseId } = await response.json()
+        const text = result === 'updated' ? window.__('Updated in Garmin Connect') : window.__('Sent to Garmin Connect')
+        const url = 'https://connect.garmin.com/modern/course/' + encodeURIComponent(courseId)
+        status(courseId ? `<a href="${url}" target="_blank" rel="noopener">${text}</a>` : text, 'info', 'medium', 15000)
+      } else if (response.status === 401) {
+        status(window.__('Garmin Connect login expired, reload the page to connect again'), 'error')
+      } else {
+        const error = (await response.json().catch(() => ({}))).error
+        status(window.__('Error sending to Garmin Connect') + (error ? ': ' + error : ''), 'error')
+      }
+    } finally {
+      dom.hideElements('#preloader')
+    }
+  }
+
   animate () {
     const feature = this.getSelectedFeature()
     console.log('Animating ' + feature.id)
