@@ -228,7 +228,7 @@ describe MapsController do
 
     it "offers the import without images to a visitor" do
       get map.private_map_path
-      expect(import_tile["data-accept"]).to eq(".gpx,.kml,.kmz,.geojson,.json")
+      expect(import_tile["data-accept"]).to eq(".gpx,.kml,.kmz,.geojson,.json,.umap")
       expect(import_tile.text).to include("Import data (gpx, kml)")
       expect(response.body).to include("Please log in to upload images")
     end
@@ -237,7 +237,7 @@ describe MapsController do
       user = create(:user)
       sign_in(user)
       get map.private_map_path
-      expect(import_tile["data-accept"]).to eq(".gpx,.kml,.kmz,.geojson,.json,image/*")
+      expect(import_tile["data-accept"]).to eq(".gpx,.kml,.kmz,.geojson,.json,.umap,image/*")
       expect(import_tile.text).to include("Import data (gpx, kml, image)")
       expect(response.body).not_to include("Please log in to upload images")
     end
