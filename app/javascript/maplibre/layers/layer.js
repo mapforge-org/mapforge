@@ -15,7 +15,7 @@ import { moveHoverInfo, showHoverInfo } from 'maplibre/feature/hover_info'
 import { frontFeature, getFeature, layers } from 'maplibre/layers/layers'
 import { addGeoJSONSource, map, noValidate } from 'maplibre/map'
 import { SHAPE_EDGE } from 'maplibre/styles/circle_image'
-import { defaultPointSize } from 'maplibre/styles/defaults'
+import { markerSizeOf } from 'maplibre/styles/defaults'
 
 // Source prefixes whose features are selectable via click. Excludes basemap
 // vector features and raster layers (which handle their own clicks).
@@ -76,7 +76,7 @@ function outsideScaledShape (f, point) {
   const shape = p['user_marker-shape'] ?? p['marker-shape'] ?? 'circle'
   if (!f.layer?.id.startsWith('shapes-layer') || shape === 'pin' ||
     (p['user_marker-scaling'] ?? p['marker-scaling']) !== true) { return false }
-  const size = Number(p['user_marker-size'] ?? p['marker-size']) || defaultPointSize(f)
+  const size = markerSizeOf(f)
   const radius = SHAPE_EDGE * size * 2 ** (map.getZoom() - 16)
   const { x, y } = map.project(f.geometry.coordinates)
   const dx = Math.abs(x - point.x)

@@ -271,7 +271,7 @@ describe "Feature edit, point features" do
         find("#edit-button-style").click
 
         expect(find("#stroke-color").value).to eq("#ffffff")
-        expect(find("#fill-color").value).to eq("#0a870a")
+        expect(find("#fill-color").value).to eq("#225a96")
       end
     end
 

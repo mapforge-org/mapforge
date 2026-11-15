@@ -29,6 +29,7 @@ class Feature
       (previous_changes["geometry"] || previous_changes["properties"] || previous_changes["layer_id"])
   }
   before_save :sanitize_coordinates
+  before_save :apply_simplestyle
   validate :require_coords
 
   def geojson
@@ -62,6 +63,17 @@ class Feature
   end
 
   private
+
+  # Mapbox simplestyle 1.1.0 writes a few properties in a form that Mapforge does not read. The
+  # broadcast of the save sends the converted feature back to the client that sent it.
+  def apply_simplestyle
+    props = (properties || {}).dup
+    props["desc"] = props.delete("description") if props.key?("description") && props["desc"].blank?
+    props["marker-symbol"] = props["marker-symbol"].to_s if props["marker-symbol"].is_a?(Integer)
+    # the color properties of Mapbox simplestyle, which allows them without the '#'
+    %w[marker-color stroke fill].each { |key| props[key] = "##{props[key]}" if props[key].to_s.match?(/\A\h{3}(\h{3})?\z/) }
+    self.properties = props
+  end
 
   def sanitize_coordinates
     return unless geometry["coordinates"].is_a?(Array)

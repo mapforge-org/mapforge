@@ -1,4 +1,5 @@
 // Converts KML/KMZ/GPX into the property names of Mapforge.
+import { symbolUrl } from 'helpers/functions'
 import { uploadImage } from 'maplibre/feature/image_upload'
 import { GOOGLE_ICONS } from 'maplibre/import/google_icons'
 
@@ -186,7 +187,7 @@ function earthIcon (icon) {
   const name = EARTH_SYMBOLS[shape] || (/^[a-z]$/i.test(shape) ? shape.toLowerCase() : undefined)
   return {
     color: EARTH_COLORS[(color || 'red').toLowerCase()],
-    symbol: name && `/icon-sets/pinhead/${name}.png`
+    symbol: name && symbolUrl(name)
   }
 }
 

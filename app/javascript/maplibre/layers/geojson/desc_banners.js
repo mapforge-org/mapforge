@@ -6,7 +6,7 @@ import { highlightFeature } from 'maplibre/feature'
 import { runFeatureOnclickAction } from 'maplibre/layers/layer'
 import { frontFeature } from 'maplibre/layers/layers'
 import { clusterMaxZoom, map } from 'maplibre/map'
-import { defaultPointSize } from 'maplibre/styles/defaults'
+import { defaultPointSize, markerSizeOf } from 'maplibre/styles/defaults'
 
 // A point with 'show-desc' carries its markdown description as an HTML popup pinned above the
 // marker. Popups are DOM elements, not style layers, so this module keeps them by hand, keyed
@@ -138,7 +138,7 @@ function bindBannerEvents (el, id) {
 // Same curve as shapeIconSize in styles.js: 1x at zoom 16, doubling with each zoom level.
 function scaleBanner (popup, feature) {
   const p = feature.properties
-  const radius = Number(p['marker-size'] || defaultPointSize(feature))
+  const radius = markerSizeOf(feature)
   const zoomFactor = p['marker-scaling'] ? 2 ** (map.getZoom() - 16) : 1
   // marker-size is the radius, so the arrow tip sits on the top edge of the marker
   popup.setOffset(radius * zoomFactor)

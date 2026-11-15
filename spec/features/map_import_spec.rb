@@ -30,7 +30,19 @@ describe "Map import" do
     expect(map.reload.features.count).to eq 3
   end
 
-  it "import mapforge json" do
+  it "import Mapbox simplestyle geojson" do
+    page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+    attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "simplestyle.geojson"))
+    wait_for { map.reload.features.first&.properties }.to include(
+      "desc" => "Simplestyle text", "marker-color" => "#312e81", "marker-size" => "large", "marker-symbol" => "5")
+    # the broadcast of the save brings the converted feature back to the importing browser
+    wait_for do
+      page.evaluate_script("window._layers.flatMap(l => l.geojson?.features || [])" \
+                           ".find(f => f.properties.title === 'Simple')?.properties.desc")
+    end.to eq "Simplestyle text"
+  end
+
+    it "import mapforge json" do
     page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
     attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "mapforge.json"))
     expect(page).to have_text("(3)")

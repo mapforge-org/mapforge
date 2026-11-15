@@ -17,7 +17,7 @@ import { EXTRAS_COLOR_CONFIGS } from 'maplibre/layers/geojson/route_extras'
 import { applyFeatureUpdate, getFeature, layers } from 'maplibre/layers/layers'
 import { convertToRoute } from 'maplibre/routing/gpx_to_route'
 import { routingEnabled } from 'maplibre/routing/openrouteservice'
-import { defaultLineWidth, defaultPointSize, defaults } from 'maplibre/styles/defaults'
+import { defaultLineWidth, defaults, markerSizeOf } from 'maplibre/styles/defaults'
 
 let easyMDE
 
@@ -141,7 +141,7 @@ export default class extends Controller {
     if (feature.geometry.type === 'Point') {
       dom.showElements(['#feature-edit-ui .edit-point'])
 
-      const size = feature.properties['marker-size'] || defaultPointSize(feature)
+      const size = markerSizeOf(feature)
 
       document.querySelector('#point-size').value = size
       document.querySelector('#point-size-val').innerHTML = size

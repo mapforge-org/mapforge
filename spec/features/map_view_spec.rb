@@ -57,6 +57,49 @@ describe "Map public view" do
   end
 
   # features are created before loading the map, to make sure they're loaded via /features
+  context "with Mapbox simplestyle points" do
+    let(:map) do
+      create(:map, features: %w[small medium large].map do |size|
+        create(:feature, :point_middle, properties: { "marker-color" => "#312e81", "marker-size" => size,
+                                                      "marker-symbol" => "bicycle-share" })
+      end)
+    end
+
+    it "scales the default size of the point by a named marker-size" do
+      # the radius is the 5th part of the image name, the default of a point with a symbol is 18
+      wait_for do
+        page.evaluate_script("map.listImages().filter(i => i.startsWith('shape-circle|#312e81|'))" \
+                             ".map(i => Number(i.split('|')[4])).sort((a, b) => a - b)")
+      end.to eq([ 13.5, 18, 27 ])
+    end
+  end
+
+  context "with simplestyle colors and symbols" do
+    let(:map) do
+      create(:map, center: [ 11.085353409646018, 49.440728444532255 ], features: [
+        create(:feature, :point_middle, properties: { "marker-color" => "a00", "marker-symbol" => 17, "title" => "Seventeen",
+                                                      "description" => "Simplestyle text" }),
+        create(:feature, :point, properties: { "marker-color" => "a00", "marker-symbol" => "b" })
+      ])
+    end
+
+    it "draws the digit and the letter of pinhead in the marker color" do
+      wait_for do
+        page.evaluate_script("map.listImages().filter(i => i.startsWith('shape-circle|#a00|'))" \
+                             ".map(i => i.split('|')[3]).sort()")
+      end.to eq(%w[17 b])
+      wait_for do
+        page.evaluate_script("performance.getEntriesByType('resource').map(e => e.name)" \
+                             ".filter(n => n.includes('/icon-sets/pinhead/')).map(n => n.split('/').pop()).sort()")
+      end.to eq(%w[17.png b.png])
+    end
+
+    it "shows the description" do
+      click_center_of_screen
+      expect(page).to have_css("#feature-details-modal", text: "Simplestyle text")
+    end
+  end
+
   context "with existing features" do
     # this polygon is in the middle of nbg (default view)
     let(:polygon) { create(:feature, :polygon_middle, title: "Poly Title", desc: "Poly Desc") }

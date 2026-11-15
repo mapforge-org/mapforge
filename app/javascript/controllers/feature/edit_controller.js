@@ -14,7 +14,8 @@ import {
 import { confirmImageLocation, uploadImage, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
-import { defaultPointSize } from 'maplibre/styles/defaults'
+import { SYMBOL_IN_FILL } from 'maplibre/styles/circle_image'
+import { defaults, markerSizeOf } from 'maplibre/styles/defaults'
 import { patternKeys } from 'maplibre/styles/pattern_image'
 import { addUndoState } from 'maplibre/undo'
 
@@ -30,6 +31,8 @@ const categories = [ 'frequent', 'pinhead', 'people', 'nature', 'foods', 'activi
 // emoji-mart has no merge option, so the emojis of these categories move into 'places' and
 // share its tab. The tab keeps the travel icon of emoji-mart.
 const mergedCategories = [ 'objects', 'symbols' ]
+// px of an icon in the grid of the emoji picker
+const PICKER_EMOJI_SIZE = 28
 const isWhiteSymbol = symbol => whiteIconSets.some(set => functions.symbolUrl(symbol).includes(`/icon-sets/${set}/`))
 // emoji-mart keeps its data across pickers and builds the search index of a custom emoji only
 // once, on the object of the first picker. A later picker registers the objects that it gets,
@@ -438,12 +441,12 @@ export default class extends Controller {
     this.renderFeature()
   }
 
-  // A point without an explicit marker-size renders at the default for its symbol or image,
-  // so the slider must follow when the symbol or the image changes.
+  // A point without a numeric marker-size renders at the default for its symbol or image, or a
+  // named size scales that default, so the slider must follow when the symbol or the image changes.
   syncPointSizeDefault () {
     const feature = this.getEditFeature()
-    if (feature.properties['marker-size']) { return }
-    const size = defaultPointSize(feature)
+    if (Number(feature.properties['marker-size'])) { return }
+    const size = markerSizeOf(feature)
     document.querySelector('#point-size').value = size
     document.querySelector('#point-size-val').textContent = size
     syncStepperValues()
@@ -587,7 +590,7 @@ export default class extends Controller {
       // is 25rem wide, so 38 gives 10 per row. The icon fills more of its button than the
       // emoji-mart default of 24 of 36, which leaves 2px between two white icon circles.
       emojiButtonSize: 38,
-      emojiSize: 28,
+      emojiSize: PICKER_EMOJI_SIZE,
       noCountryFlags: true, // TODO country flags don't work right now
       set: 'native', // default is native icons (they don't match the map icons)
       theme: 'light',
@@ -629,17 +632,27 @@ export default class extends Controller {
     })
   }
 
-  // A white icon is invisible on the white background of the picker. The picker keeps its
-  // markup in a shadow root, so the rule cannot come from the stylesheet of the page.
+  // A white icon is invisible on the white background of the picker, so it gets the circle of a
+  // point in the default color of the basemap. The picker keeps its markup in a shadow root, so
+  // the rule cannot come from the stylesheet of the page.
   stylePicker () {
     const root = this.picker.shadowRoot
     if (!root || root.querySelector('#white-icons')) { return }
     const style = document.createElement('style')
     style.id = 'white-icons'
-    style.textContent = whiteIconSets.map(set =>
-      `img[src*="/icon-sets/${set}/"] { background-color: var(--color-dark-charcoal, #354A51); border-radius: 50%; padding: 3px; margin: -3px; }`
-    ).join('\n')
-    style.textContent += '\n#nav img { margin: 0; }'
+    // The circle fills the box of the image, and the padding keeps the icon at the same share of
+    // the circle as on the map, with its corners inside the circle. The circle is a gradient,
+    // because a border-radius clips the image to a circle inside the padding. A padding in em would not
+    // work: the font size of the category tabs and of the preview differs from their icon size.
+    const padding = size => `calc(${(1 - SYMBOL_IN_FILL) / 2} * ${size})`
+    const white = context => whiteIconSets.map(set => `${context} img[src*="/icon-sets/${set}/"]`).join(', ')
+    style.textContent = `
+      ${white('')} {
+        background: radial-gradient(circle closest-side, ${defaults.featureColor} 97%, transparent);
+        padding: ${padding(`${PICKER_EMOJI_SIZE}px`)};
+      }
+      ${white('#nav')} { padding: ${padding('22px')}; }
+      ${white('#preview')} { padding: ${padding('1.5rem')}; }`
     root.appendChild(style)
 
     const previewStyle = document.createElement('style')

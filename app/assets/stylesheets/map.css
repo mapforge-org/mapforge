@@ -417,8 +417,10 @@ body:has(#map-mode-badge) .layer-popover {
 }
 
 .feature-hover-info .hover-head .feature-details-icon {
-  width: 1.2rem;
-  height: 1.2rem;
+  --icon-size: 1.2rem;
+
+  width: var(--icon-size);
+  height: var(--icon-size);
 }
 
 .feature-hover-info .hover-total {

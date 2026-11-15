@@ -116,12 +116,14 @@ export function escapeHtml (text) {
 // A 'marker-symbol' is either a native emoji, or a path into an icon set (see public/icon-sets).
 // The same rule as a maplibre expression sits in maplibre/styles/styles.js, a layout property
 // cannot call a function.
-// A path stays as it is. A name is a pinhead icon, or a maki name that links to one (see
-// public/icon-sets/README): no emoji starts with an ASCII letter. Everything else is an emoji.
-// Same rule as symbolUrlExpression in maplibre/styles/styles.js.
+// A path stays as it is. A name or a number is a pinhead icon, or a link to one for a maki name
+// (see public/icon-sets/README): no emoji starts with an ASCII letter, and a keycap emoji is a
+// digit plus the combining mark U+20E3. Everything else is an emoji.
 export function symbolUrl (symbol) {
+  symbol = String(symbol)
   if (symbol.includes('/')) { return symbol }
-  return (/^[a-z]/i.test(symbol) ? '/icon-sets/pinhead/' : '/icon-sets/noto/') + symbol + '.png'
+  const pinhead = /^[a-z0-9]/i.test(symbol) && !symbol.includes('\u20e3')
+  return (pinhead ? '/icon-sets/pinhead/' : '/icon-sets/noto/') + symbol + '.png'
 }
 
 export function isTestEnvironment() {
