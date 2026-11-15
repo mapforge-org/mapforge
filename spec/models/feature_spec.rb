@@ -26,13 +26,24 @@ describe Feature do
       expect(course[:geoPoints].last).to include(latitude: be_within(1e-9).of(49.435), elevation: be_within(1e-9).of(290))
     end
 
-    it "keeps points at most 100m apart" do
-      factory = RGeo::Geographic.spherical_factory
-      gaps = course[:geoPoints].each_cons(2).map do |a, b|
+    def gaps(course)
+      factory = Mapforge::LineIndex::FACTORY
+      course[:geoPoints].each_cons(2).map do |a, b|
         factory.point(a[:longitude], a[:latitude]).distance(factory.point(b[:longitude], b[:latitude]))
       end
-      expect(gaps.max).to be <= 100
-      expect(gaps.sum).to be_within(1).of(course[:distance])
+    end
+
+    it "keeps points at most 100m apart" do
+      expect(gaps(course).max).to be <= 100
+      expect(gaps(course).sum).to be_within(1).of(course[:distance])
+    end
+
+    it "takes the short way across the antimeridian" do
+      feature.geometry["coordinates"] = [ [ 179.999, 0 ], [ -179.999, 0 ] ]
+      expect(gaps(course).max).to be <= 100
+      expect(gaps(course).sum).to be_within(1).of(course[:distance])
+      expect(course[:geoPoints].map { |p| p[:longitude] }).to all(be_between(-180, 180))
+      expect(course[:geoPoints].last[:longitude]).to be_within(1e-9).of(-179.999)
     end
 
     it "uses a cycling course for bike routes" do

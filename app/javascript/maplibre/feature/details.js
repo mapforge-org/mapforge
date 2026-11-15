@@ -128,9 +128,10 @@ export function showFeatureDetails (feature) {
     dom.showElements('.feature-export')
     setExportHref('#feature-export-geo a', feature, '.geojson', '.geojson')
     setExportHref('#feature-export-gpx a', feature, '.gpx', '')
-    f.e('#feature-export-garmin', e => { e.classList.toggle('hidden', feature.geometry.type !== 'LineString') })
-    f.e('#feature-export-garmin a', e => {
-      e.dataset.url = e.dataset.url.replace(/feature\/[^/]*/, 'feature/' + feature.id)
+    f.e('#feature-export-garmin', e => {
+      e.classList.toggle('hidden', feature.geometry.type !== 'LineString')
+      const link = e.querySelector('a')
+      if (link) link.dataset.url = link.dataset.url.replace(/feature\/[^/]*/, 'feature/' + feature.id)
     })
   }
 

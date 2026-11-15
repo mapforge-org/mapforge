@@ -9,15 +9,19 @@ module GarminAccount
     field :garmin_course_ids, type: Hash, default: {}
   end
 
-  # Returns :updated or :created. A course deleted in Garmin Connect answers 404 and gets created again.
+  # Returns [:updated or :created, courseId]. A course deleted in Garmin Connect answers 404 and gets created again.
   def upload_garmin_course(feature)
-    token = garmin_access_token
-    course = feature.to_garmin_course
-    course_id = garmin_course_ids[feature.id.to_s]
-    return :updated if course_id && update_garmin_course(token, course_id, course)
-    created = token.post(COURSE_PATH, course_request(course)).parsed
-    update!(garmin_course_ids: garmin_course_ids.merge(feature.id.to_s => created["courseId"]))
-    :created
+    with_garmin_lock do
+      token = garmin_access_token
+      course = feature.to_garmin_course
+      course_id = reload.garmin_course_ids[feature.id.to_s]
+      next [ :updated, course_id ] if course_id && update_garmin_course(token, course_id, course)
+      created = token.post(COURSE_PATH, course_request(course)).parsed
+      # $set on the one key, a whole-hash write would drop mappings that other requests saved meanwhile.
+      # Mongoid #set with a dotted key writes the whole hash, too.
+      collection.update_one({ _id: id }, { "$set" => { "garmin_course_ids.#{feature.id}" => created["courseId"] } })
+      [ :created, created["courseId"] ]
+    end
   end
 
   def garmin_access_token
@@ -35,6 +39,25 @@ module GarminAccount
   end
 
   private
+
+  # Parallel sends of one feature would each create a course, so a user's sends run one at a time
+  # across all app workers. ponytail: no lock renewal, a send that runs longer than 60s loses it.
+  def with_garmin_lock
+    redis = Redis.new(url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"))
+    key = "garmin_upload:#{id}"
+    owner = SecureRandom.hex
+    50.times do
+      next sleep(0.2) unless redis.set(key, owner, nx: true, ex: 60)
+      begin
+        return yield
+      ensure
+        redis.del(key) if redis.get(key) == owner
+      end
+    end
+    raise "Another Garmin Connect upload of this user is still running"
+  ensure
+    redis&.close
+  end
 
   # A new hash per request: OAuth2::AccessToken merges the user's bearer token into these headers
   def course_request(course)

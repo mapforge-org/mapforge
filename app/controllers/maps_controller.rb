@@ -141,9 +141,9 @@ class MapsController < ApplicationController
     feature = @map.features.find(params["feature_id"])
     head :not_found and return unless feature&.geometry&.dig("type") == "LineString"
     head :unauthorized and return unless @user&.garmin_token
-    result = @user.upload_garmin_course(feature)
+    result, course_id = @user.upload_garmin_course(feature)
     Yabeda.feature_exports.increment(format: "garmin")
-    render json: { result:, course_id: @user.garmin_course_ids[feature.id.to_s] }
+    render json: { result:, course_id: }
   rescue OAuth2::Error => e
     Rails.logger.warn "Garmin upload failed: #{e.response.status} #{e.response.body}"
     # 401 from the course call, 400 invalid_grant from the token refresh: the user has to connect again

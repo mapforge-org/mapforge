@@ -56,12 +56,15 @@ class Feature
     coords = geometry["coordinates"]
     points = [ garmin_point(coords.first) ]
     distance = gain = loss = 0.0
-    vertexes = coords.map { |c| Mapforge::LineIndex::FACTORY.point(c[0], c[1]) }
-    coords.zip(vertexes).each_cons(2) do |(a, va), (b, vb)|
-      segment = va.distance(vb)
+    factory = Mapforge::LineIndex::FACTORY
+    coords.each_cons(2) do |a, b|
+      segment = factory.point(a[0], a[1]).distance(factory.point(b[0], b[1]))
       steps = (segment / 100).ceil
+      # Across the antimeridian, interpolate towards the end point shifted by 360 degrees, not the long way round
+      b = [ b[0] - 360 * ((b[0] - a[0]) / 360.0).round, *b[1..] ]
       (1..steps).each do |i|
-        points << garmin_point(a.zip(b).map { |x, y| x && y && x + (y - x) * i.fdiv(steps) })
+        lon, *rest = a.zip(b).map { |x, y| x && y && x + (y - x) * i.fdiv(steps) }
+        points << garmin_point([ (lon + 180) % 360 - 180, *rest ])
       end
       distance += segment
       climb = a[2] && b[2] ? b[2] - a[2] : 0

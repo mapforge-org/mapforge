@@ -5,7 +5,8 @@ let fadeInterval = null
 export function status (text, status = 'info', size = 'medium', duration = 6000) {
   console.log(`Status (${status}): ` + text)
   functions.e('#status-message', e => {
-    e.innerHTML = text
+    // Text goes in as plain text, because messages can carry error text from other servers
+    text instanceof Node ? e.replaceChildren(text) : (e.textContent = text)
     e.className = size
   })
   functions.e('#status-container', e => {

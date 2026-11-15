@@ -93,6 +93,15 @@ describe MapsController do
       expect(user.reload.garmin_course_ids).to eq(feature.id.to_s => 43)
     end
 
+    it "keeps a mapping that another request saved during the upload" do
+      allow_any_instance_of(OAuth2::Client).to receive(:request) do
+        User.find(user.id).set("garmin_course_ids.other" => 7)
+        created
+      end
+      post path
+      expect(user.reload.garmin_course_ids).to eq("other" => 7, feature.id.to_s => 43)
+    end
+
     it "updates a course that was sent before" do
       user.update!(garmin_course_ids: { feature.id.to_s => 42 })
       expect_any_instance_of(OAuth2::Client).to receive(:request).once
