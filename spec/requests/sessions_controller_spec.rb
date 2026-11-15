@@ -57,6 +57,34 @@ describe SessionsController do
     end
   end
 
+  describe "#create (garmin)" do
+    around do |example|
+      OmniAuth.config.test_mode = true
+      OmniAuth.config.mock_auth[:garmin] = OmniAuth::AuthHash.new(
+        provider: "garmin", uid: "g1",
+        credentials: { token: "abc", refresh_token: "def", expires_at: 1_900_000_000 })
+      example.run
+    ensure
+      OmniAuth.config.mock_auth.delete(:garmin)
+      OmniAuth.config.test_mode = false
+    end
+
+    it "links the Garmin account to the logged in user" do
+      user = create(:user)
+      sign_in(user)
+      get "/auth/garmin/callback"
+      expect(response).to redirect_to(my_path)
+      expect(user.reload.garmin_token).to eq("access_token" => "abc", "refresh_token" => "def",
+                                             "expires_at" => 1_900_000_000)
+    end
+
+    it "sends a visitor without login to the login page" do
+      get "/auth/garmin/callback"
+      expect(response).to redirect_to(login_path)
+      expect(User.count).to eq 0
+    end
+  end
+
   describe "#logout" do
     it "destroys the session" do
       get "/auth/developer/callback", params: { name: "Test User", email: "test@mapforge.org" }

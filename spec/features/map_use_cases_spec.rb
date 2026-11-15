@@ -23,7 +23,7 @@ describe "Map settings use cases" do
     it "copies the accept value of the import tile to the file picker" do
       click_button "Import data (gpx, kml)"
       expect(page.evaluate_script("document.querySelector('#fileInput').accept"))
-        .to eq ".gpx,.kml,.kmz,.geojson,.json"
+        .to eq ".gpx,.kml,.kmz,.geojson,.json,.umap"
     end
 
     it "starts the bike route mode" do

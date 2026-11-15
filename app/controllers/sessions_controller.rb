@@ -21,6 +21,7 @@ class SessionsController < ApplicationController
 
   def create
     user_info = request.env["omniauth.auth"]
+    return connect_garmin(user_info.credentials) if user_info.provider == "garmin"
     user = User.find_or_create_by(uid: user_info.uid, provider: user_info.provider)
     user.update!(email: user_info.info.email, name: user_info.info.name, image: user_info.info.image)
     # Make first user admin
@@ -29,5 +30,13 @@ class SessionsController < ApplicationController
     reset_session
     session[:user_id] = user.id
     redirect_to return_to || my_path
+  end
+
+  private
+
+  def connect_garmin(credentials)
+    return redirect_to(login_path) unless @user
+    @user.save_garmin_token!(credentials)
+    redirect_to url_from(request.env["omniauth.origin"]) || my_path
   end
 end

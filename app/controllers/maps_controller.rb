@@ -1,12 +1,12 @@
 class MapsController < ApplicationController
   include MapListFilters
 
-  before_action :set_map, only: %i[show properties feature layer destroy copy]
-  before_action :set_map_mode, only: %i[show properties feature layer]
+  before_action :set_map, only: %i[show properties feature garmin_upload layer destroy copy]
+  before_action :set_map_mode, only: %i[show properties feature garmin_upload layer]
   before_action :set_client_view, only: %i[show]
   before_action :join, only: %i[show]
   before_action :set_global_js_values, only: %i[show tutorial]
-  before_action :check_permissions, only: %i[show properties feature layer]
+  before_action :check_permissions, only: %i[show properties feature garmin_upload layer]
   before_action :require_login, only: %i[my copy]
   before_action :require_map_owner, only: %i[destroy]
   # Visitors without login get no session cookie (ApplicationController#disable_session_cookies),
@@ -134,6 +134,26 @@ class MapsController < ApplicationController
         name = feature.properties["title"].presence || feature.id
         send_data feature.to_gpx, filename: "#{name}.gpx", disposition: "attachment"
       }
+    end
+  end
+
+  def garmin_upload
+    feature = @map.features.find(params["feature_id"])
+    head :not_found and return unless feature&.geometry&.dig("type") == "LineString"
+    head :unauthorized and return unless @user&.garmin_token
+    result, course_id = @user.upload_garmin_course(feature)
+    Yabeda.feature_exports.increment(format: "garmin")
+    render json: { result:, course_id: }
+  rescue OAuth2::Error => e
+    Rails.logger.warn "Garmin upload failed: #{e.response.status} #{e.response.body}"
+    # 401 from the course call, 400 invalid_grant from the token refresh: the user has to connect again
+    if e.response.status == 401 || e.code == "invalid_grant"
+      @user.update!(garmin_token: nil)
+      head :unauthorized
+    elsif e.response.status == 412
+      render json: { error: _("Allow courses for Mapforge in your Garmin Connect account") }, status: :forbidden
+    else
+      render json: { error: e.description.presence || e.response.body }, status: :bad_gateway
     end
   end
 

@@ -67,5 +67,17 @@
         =link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), download: "", title: _('Download as GPX'), data: { turbo: false, toggle: "tooltip", 'bs-placement': "bottom", 'bs-trigger': "hover" } do
           %i.bi.bi-download
           GPX
+      - if @user && ENV["GARMIN_CLIENT_ID"].present?
+        %span.feature-export#feature-export-garmin.ms-2.link.text-nowrap<
+          - if @user.garmin_token
+            %a{ href: '#', title: _('Send to Garmin Connect'), data: { action: "click->feature--modal#sendToGarmin", url: map_feature_garmin_path(id: @map.public_id, feature_id: 'feature_id'), toggle: "tooltip", 'bs-placement': "bottom", 'bs-trigger': "hover" } }
+              %i.bi.bi-cloud-upload
+              Garmin
+          - else
+            = form_tag('/auth/garmin', method: 'post', class: 'd-inline', data: { turbo: false }) do
+              = hidden_field_tag :origin, request.original_url
+              = button_tag class: 'btn btn-link p-0 link', title: _('Connect Garmin Connect to send tracks to your device') do
+                %i.bi.bi-cloud-upload
+                Garmin
       / %span#feature-animation.ms-2.link
       /   %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-action': "click->feature--modal#animate"}
