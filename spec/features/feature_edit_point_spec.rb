@@ -198,9 +198,9 @@ describe "Feature edit, point features" do
 
         # 'cafe' is the maki name of the icon, it only matches through the alias keywords that
         # build_icon_sets.rb reads out of the pinhead changelog.
-        pick_from_emoji_picker("cafe", 'img[src="/icon-sets/pinhead/cup_and_saucer.png"]')
+        pick_from_emoji_picker("cafe", 'img[src="/icon-sets/pinhead/handled_teacup_and_saucer.png"]')
 
-        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/cup_and_saucer.png")
+        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/handled_teacup_and_saucer.png")
       end
 
       it "can remove the symbol" do
@@ -226,9 +226,9 @@ describe "Feature edit, point features" do
         wait_for { point.reload.properties.values_at("marker-color", "stroke") }.to eq(%w[transparent transparent])
 
         find("#marker-content-ui [data-content='symbol']").click
-        pick_from_emoji_picker("cafe", 'img[src="/icon-sets/pinhead/cup_and_saucer.png"]')
+        pick_from_emoji_picker("cafe", 'img[src="/icon-sets/pinhead/handled_teacup_and_saucer.png"]')
         # a white icon turns on the circle that an emoji took away, but not a chosen transparency
-        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/cup_and_saucer.png")
+        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/handled_teacup_and_saucer.png")
         expect(point.properties.values_at("marker-color", "stroke")).to eq(%w[transparent transparent])
         expect(find("#fill-color-transparent")).to be_checked
 

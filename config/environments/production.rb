@@ -15,8 +15,9 @@ Rails.application.configure do
   # Turn on fragment caching in view templates.
   config.action_controller.perform_caching = true
 
-  # Cache assets for far-future expiry since they are all digest stamped.
-  config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.month.to_i}" }
+  # The digest stamped assets could stay for a year, but the icon sets in public/icon-sets
+  # change under the same names.
+  config.public_file_server.headers = { "cache-control" => "public, max-age=#{3.days.to_i}" }
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"

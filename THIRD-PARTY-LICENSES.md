@@ -1768,7 +1768,8 @@ Copyright Pinhead contributors. License: CC0-1.0.
 
 Mapforge converted the Pinhead and Font Awesome icons from SVG to PNG images of
 72 pixels and removed their color. Mapforge renamed the Noto Emoji and OpenMoji files
-from their code points to the emoji character. Mapforge made no other change.
+from their code points to the emoji character. Mapforge composed the number icons 13 to 50
+from two Pinhead digits each, they are in public/icon-sets/mapforge. Mapforge made no other change.
 
 The CC0, CC BY 4.0, and CC BY-SA 4.0 licenses are published at
 https://creativecommons.org/licenses/.
