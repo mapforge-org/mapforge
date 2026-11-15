@@ -229,16 +229,21 @@
 }
 
 .feature-details-icon {
+  --icon-size: 2rem;
+
   margin: 0.3rem;
-  max-height: 2rem; /* same size as .fs-2 */
+  max-height: var(--icon-size); /* same size as .fs-2 */
 }
 
-/* A symbol sits on a circle in the feature color, the same as on the map. The padding
- * keeps the icon at about 65% of the circle, see markerSize and pointSizeEmoji. */
+/* A symbol sits on a circle in the feature color, the same as on the map. The padding keeps
+ * the icon at 67% of the fill inside the 2px ring, so that the corners of a square icon like '29'
+ * stay inside the circle: 0.164 is (1 - SYMBOL_IN_FILL) / 2, see circle_image.js. The circle and
+ * the ring are a gradient: a border-radius clips the image to a circle inside the padding, which
+ * cuts the corners of the icon. featureIcon() sets --fill and --outline. */
 .feature-details-icon.marker-circle {
-  border: 2px solid;
-  border-radius: 50%;
-  padding: 0.22rem;
+  background: radial-gradient(circle closest-side, var(--fill) calc(100% - 2.5px),
+    var(--outline) calc(100% - 2px), var(--outline) calc(100% - 0.5px), transparent);
+  padding: calc(2px + (var(--icon-size) - 4px) * 0.164);
   box-sizing: border-box;
 }
 
@@ -247,8 +252,8 @@
  */
 img[src*="/icon-sets/pinhead/"],
 img[src*="/icon-sets/fontawesome/"] {
-  background-color: var(--color-dark-charcoal);
-  border-radius: 50%;
+  /* a gradient and not a border-radius, which would clip the corners of a wide icon */
+  background: radial-gradient(circle closest-side, var(--color-dark-charcoal) 97%, transparent);
   padding: 3px;
   margin: -3px;
 }
@@ -554,13 +559,16 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
 }
 
 :is(.feature-onclick-toggle, .feature-onclick-menu) .feature-details-icon {
-  height: 1.4rem;
+  --icon-size: 1.4rem;
+
+  height: var(--icon-size);
   margin: 0;
 }
 
 :is(#marker-content-ui, #fill-image-ui) .btn .feature-details-icon {
+  --icon-size: 1.5rem;
+
   margin: 0;
-  max-height: 1.5rem;
 }
 
 /* the preview already fills the left of the button, so it needs less room there. Only with the

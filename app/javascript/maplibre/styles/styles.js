@@ -1,8 +1,8 @@
 import { symbolUrl } from 'helpers/functions'
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { addLayer, map, removeStyleLayers } from 'maplibre/map'
-import { SHAPE_EDGE, haloImage, inlineIconImage, labelImage, markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
-import { defaults, glyphShift } from 'maplibre/styles/defaults'
+import { SHAPE_EDGE, haloImage, haloPad, inlineIconImage, labelImage, markerImage, shapeCanvasSize } from 'maplibre/styles/circle_image'
+import { defaults, glyphShift, namedMarkerSizes } from 'maplibre/styles/defaults'
 import { patternImage } from 'maplibre/styles/pattern_image'
 
 // fill-extrusion-opacity is not data-driven in MapLibre, so per-feature opacity
@@ -15,8 +15,8 @@ export const extrusionOpacityBuckets = Array.from({ length: 10 }, (_, i) => (i +
 // a new symbol in. The point stays in its own layer below, so the original order comes back.
 // A halo shows only in front, so its own layer is not on the map: two rings at the hover opacity
 // would look darker than the ring of a line or a polygon.
-const frontStyleNames = ['points-layer-halo', 'points-layer', 'shapes-layer-halo', 'shapes-layer',
-  'symbols-layer-halo', 'symbols-layer'].map(id => `${id}-front`)
+const frontStyleNames = ['points-layer-halo', 'points-layer', 'shapes-layer-halo', 'shapes-layer-halo-hover',
+  'shapes-layer', 'symbols-layer-halo', 'symbols-layer-halo-hover', 'symbols-layer'].map(id => `${id}-front`)
 
 export const viewStyleNames = [
   'polygon-layer',
@@ -32,9 +32,11 @@ export const viewStyleNames = [
   'points-layer-flat',
   'points-layer',
   'shapes-layer-halo-flat',
+  'shapes-layer-halo-hover-flat',
   'shapes-layer-flat',
   'shapes-layer',
   'symbols-layer-halo-flat',
+  'symbols-layer-halo-hover-flat',
   'symbols-layer-flat',
   'symbols-layer',
   'text-layer-flat',
@@ -111,7 +113,7 @@ export async function loadImage (id) {
       size: Number(labelSize) || Math.max(defaults.labelSize, defaults.labelSize + 0.25 * (Number(size) - 20)),
       bold: weight === 'bold'
     } : null
-    markerImage(id, { shape, color, border, symbol, size: shapeCanvasSize(Number(size)), halo: selected === '1', label })
+    markerImage(id, { shape, color, border, symbol, size: shapeCanvasSize(Number(size)), halo: Number(selected), label })
     return
   }
 
@@ -187,11 +189,20 @@ const styleProp = (keys, defaultVal) => {
   return defaultVal !== undefined ? ['coalesce', ...gets, defaultVal] : ['coalesce', ...gets]
 }
 const hasProp = key => ['any', ['has', key], ['has', 'user_' + key]]
-// The url of a symbol property: an icon of a set carries its path, an emoji its character.
-// Same rule as symbolUrl in helpers/functions.js.
-const symbolUrlExpression = key => ['case',
-  ['in', '/', ['get', key]], ['get', key],
-  ['concat', '/icon-sets/noto/', ['get', key], '.png']]
+// The url of a symbol property: an icon of a set carries its path, a pinhead icon its name or
+// number, an emoji its character. Same rule as symbolUrl in helpers/functions.js. Simplestyle
+// allows a number, which 'in' and 'slice' do not take.
+const isInRange = (char, from, to) => ['all', ['>=', char, from], ['<=', char, to]]
+const symbolUrlExpression = key => {
+  const symbol = ['var', 'symbolText']
+  const first = ['var', 'symbolFirst']
+  return ['let', 'symbolText', ['to-string', ['get', key]],
+    ['let', 'symbolFirst', ['downcase', ['slice', symbol, 0, 1]], ['case',
+      ['in', '/', symbol], symbol,
+      ['all', ['any', isInRange(first, 'a', 'z'), isInRange(first, '0', '9')], ['!', ['in', '\u20e3', symbol]]],
+      ['concat', '/icon-sets/pinhead/', symbol, '.png'],
+      ['concat', '/icon-sets/noto/', symbol, '.png']]]]
+}
 const sortKey = () => ['to-number', styleProp(['user_sort-key', 'sort-key'], defaults.sortKey)]
 const labelColor = () => styleProp(['user_label-color', 'label-color'], defaults.labelColor)
 const labelShadow = () => styleProp(['user_label-shadow', 'label-shadow'], defaults.labelShadow)
@@ -269,13 +280,35 @@ const haloOpacity = () => ['case',
   ['boolean', ['feature-state', 'hover'], false], defaults.haloOpacityHover,
   0]
 
+// the hover ring is wider, its lower opacity makes it look thinner
+const haloWidth = () => ['case', ['boolean', ['feature-state', 'active'], false], defaults.haloWidth,
+  defaults.haloWidthHover]
+
+// The ring of a point drawn as one image is an image too, and a layout property like the image
+// cannot depend on the feature-state. So the wider hover ring is a second image in a layer of its
+// own, and each of the two layers shows only its state.
+const activeHaloOpacity = () => ['case', ['boolean', ['feature-state', 'active'], false], 1, 0]
+const hoverHaloOpacity = () => ['case', ['boolean', ['feature-state', 'active'], false], 0,
+  ['boolean', ['feature-state', 'hover'], false], defaults.haloOpacityHover, 0]
+// the id, ring width and opacity of the selection and the hover ring layer
+const haloStates = (id, hoverId) => [[id, defaults.haloWidth, activeHaloOpacity()],
+  [hoverId, defaults.haloWidthHover, hoverHaloOpacity()]]
+
 // one color stays a constant, a feature-state case is a per vertex attribute
 const haloColor = () => defaults.haloColor === defaults.haloColorHover ? defaults.haloColor
   : ['case', ['boolean', ['feature-state', 'active'], false], defaults.haloColor, defaults.haloColorHover]
 
 const shouldScale = ['boolean', styleProp(['user_marker-scaling', 'marker-scaling']), false]
 const pointColor = () => styleProp(['user_marker-color', 'marker-color'], defaults.featureColor)
-const markerSize = styleProp(['user_marker-size', 'marker-size'])
+// A named size of Mapbox simplestyle scales the fallback. Any other size that is not a number
+// takes the fallback: a plain to-number fails on it, and MapLibre then draws no marker at all.
+// KEEP IN SYNC with markerSizeOf() in defaults.js.
+// The fallback is bound once: it is a 'case' that the size expressions would parse four times.
+const markerSizeOr = fallback => ['let', 'fallbackSize', fallback, ['let',
+  'markerSize', ['coalesce', ['get', 'user_marker-size'], ['get', 'marker-size'], ['var', 'fallbackSize']],
+  ['match', ['var', 'markerSize'],
+    ...Object.entries(namedMarkerSizes).flatMap(([name, factor]) => [name, ['*', factor, ['var', 'fallbackSize']]]),
+    ['to-number', ['var', 'markerSize'], ['var', 'fallbackSize']]]]]
 const markerShape = () => styleProp(['user_marker-shape', 'marker-shape'], 'circle')
 const markerSymbol = () => styleProp(['user_marker-symbol', 'marker-symbol'], '')
 // An image covers a symbol, so a symbol next to an image must not change how the point looks.
@@ -308,11 +341,9 @@ const pointSizeDefault = plain => [
   plain
 ]
 
-const pointSizeMin = () => ['to-number', ['coalesce',
-  ...markerSize.slice(1), pointSizeDefault(defaults.pointSize)]]
+const pointSizeMin = () => markerSizeOr(pointSizeDefault(defaults.pointSize))
 
-const pointSizeMax = () => ['to-number', ['coalesce',
-  ...markerSize.slice(1), pointSizeDefault(defaults.pointSizePlain)]]
+const pointSizeMax = () => markerSizeOr(pointSizeDefault(defaults.pointSizePlain))
 
 // With 'marker-scaling' the radius doubles per zoom level like shapeIconSize, else it grows
 // linearly from min at zoom 5 to max at zoom 17. One 'interpolate' has one curve, so the
@@ -332,9 +363,11 @@ export const pointSize = (factor = 1) => ['let', 'sizeMin', pointSizeMin(), 'siz
 
 // The halo of a plain circle starts at its radius, and the stroke of the circle covers the inner
 // part. A constant added to both stops stays constant in an interpolation, so the halo keeps its width.
+// A transparent outline covers nothing, so the halo starts right at the fill.
+const haloOutlineSize = () => ['case', ['==', pointOutlineColor(), 'transparent'], 0, pointOutlineSize()]
 const pointHaloWidth = () => ['interpolate', ['exponential', 2], ['zoom'],
-  0, ['+', defaults.haloWidth, ['case', shouldScale, 0, pointOutlineSize()]],
-  21, ['+', defaults.haloWidth, ['case', shouldScale, ['*', 32, pointOutlineSize()], pointOutlineSize()]]
+  0, ['+', haloWidth(), ['case', shouldScale, 0, haloOutlineSize()]],
+  21, ['+', haloWidth(), ['case', shouldScale, ['*', 32, haloOutlineSize()], haloOutlineSize()]]
 ]
 
 // MapLibre draws all labels above all points, so the label on a point would draw above the point
@@ -381,8 +414,11 @@ const shapeImage = () => ['concat',
 ]
 // Only the halo ring of a shape, which shapes-layer-halo shows below a selected shape.
 // KEEP IN SYNC with shapeHaloImageName() in circle_image.js.
-const shapeHaloImage = () => ['concat',
-  'shape-', markerShape(), '|transparent|transparent||', ['to-string', pointSizeMax()], '|1']
+// The border part says whether the shape has a border, without one the ring touches the fill.
+const shapeHaloImage = width => ['concat',
+  'shape-', markerShape(), '|transparent|',
+  ['case', ['==', pointOutlineColor(), 'transparent'], 'transparent', 'border'],
+  '||', ['to-string', pointSizeMax()], `|${width}`]
 
 // The image is drawn at the size of the marker (see shapeCanvasSize), so it needs no scaling.
 // A selected shape keeps its size, shapes-layer-halo draws the ring below it.
@@ -410,7 +446,7 @@ const pointOpacity = () => ['to-number', ['coalesce', ['get', 'marker-opacity'],
 // factor of the original icon size (200x200)
 // in case of external icon url, we don't know the size
 // This is the default size for zoom=16. With each zoom level the size doubles when marker-scaling=true
-export const iconSizeDefault = () => ['*', 1 / 60, ['to-number', styleProp(['user_marker-size', 'marker-size'], defaults.markerSize)]]
+export const iconSizeDefault = () => ['*', 1 / 60, markerSizeOr(defaults.markerSize)]
 export const iconSizeMin = () => ['case', shouldScale,
   0, iconSizeDefault()]
 export const iconSizeMax = () => ['case', shouldScale,
@@ -557,6 +593,7 @@ function symbolsLayerStyles(mode) {
   const flatMode = mode === 'flat'
   const layerId = flatMode ? 'symbols-layer-flat' : 'symbols-layer'
   const haloId = flatMode ? 'symbols-layer-halo-flat' : 'symbols-layer-halo'
+  const haloHoverId = flatMode ? 'symbols-layer-halo-hover-flat' : 'symbols-layer-halo-hover'
 
   const image = ['coalesce',
     ['get', 'marker-image-url'],
@@ -604,18 +641,18 @@ function symbolsLayerStyles(mode) {
 
   return {
     // the ring around the outline of a selected image, see haloImage
-    [haloId]: {
-      id: haloId,
+    ...Object.fromEntries(haloStates(haloId, haloHoverId).map(([id, width, opacity]) => [id, {
+      id,
       type: 'symbol',
       filter: ['all', ['has', 'marker-image-url'], plainPoint(), ...zoomAndMode],
       layout: {
         ...sharedLayout,
         ...modeSpecificLayout,
-        'icon-image': ['concat', 'halo|',
-          ['to-string', styleProp(['user_marker-size', 'marker-size'], defaults.markerSize)], '|', image]
+        'icon-image': ['concat', `halo|${width}|`,
+          ['to-string', markerSizeOr(defaults.markerSize)], '|', image]
       },
-      paint: { 'icon-opacity': haloOpacity(), 'icon-color': haloColor() }
-    },
+      paint: { 'icon-opacity': opacity, 'icon-color': haloColor() }
+    }])),
     [layerId]: {
       id: layerId,
       type: 'symbol',
@@ -643,6 +680,7 @@ function shapesLayerStyles(mode) {
   const flatMode = mode === 'flat'
   const layerId = flatMode ? 'shapes-layer-flat' : 'shapes-layer'
   const haloId = flatMode ? 'shapes-layer-halo-flat' : 'shapes-layer-halo'
+  const haloHoverId = flatMode ? 'shapes-layer-halo-hover-flat' : 'shapes-layer-halo-hover'
 
   const filter = ['all',
     shapedPoint(),
@@ -667,13 +705,17 @@ function shapesLayerStyles(mode) {
   }
 
   return {
-    [haloId]: {
-      id: haloId,
+    ...Object.fromEntries(haloStates(haloId, haloHoverId).map(([id, width, opacity]) => [id, {
+      id,
       type: 'symbol',
       filter,
-      layout: { ...layout, 'icon-image': shapeHaloImage() },
-      paint: { 'icon-opacity': haloOpacity(), 'icon-color': haloColor() }
-    },
+      layout: {
+        ...layout,
+        'icon-image': shapeHaloImage(width),
+        'icon-offset': ['case', ['==', markerShape(), 'pin'], ['literal', [0, haloPad()]], ['literal', [0, 0]]]
+      },
+      paint: { 'icon-opacity': opacity, 'icon-color': haloColor() }
+    }])),
     [layerId]: {
       id: layerId,
       type: 'symbol',
@@ -1022,8 +1064,8 @@ export function styles () {
         'line-color': haloColor(),
         // the tiles of a geojson source rewind every ring, so the outside of the polygon is
         // always on the same side of the line, including the inside of a hole
-        'line-offset': ['-', 0, ['+', ['/', outlineWidthPolygon(), 2], defaults.haloWidth / 2]],
-        'line-width': defaults.haloWidth,
+        'line-offset': ['-', 0, ['+', ['/', outlineWidthPolygon(), 2], ['/', haloWidth(), 2]]],
+        'line-width': haloWidth(),
         'line-opacity': haloOpacity()
       }
     },
@@ -1061,7 +1103,7 @@ export function styles () {
       paint: {
         'line-color': haloColor(),
         'line-gap-width': lineHaloGap(),
-        'line-width': defaults.haloWidth,
+        'line-width': haloWidth(),
         'line-opacity': haloOpacity()
       }
     },

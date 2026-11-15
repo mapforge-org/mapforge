@@ -133,7 +133,7 @@ describe "Map GeoJSON levels" do
     let(:map) {
       create(:map, features: [
         feature_level_0,
-        create(:feature, :point_middle, desc: "Upstairs", properties: { "level" => "1", "show-desc" => "banner" })
+        create(:feature, :point_middle, description: "Upstairs", properties: { "level" => "1", "show-desc" => "banner" })
       ])
     }
 

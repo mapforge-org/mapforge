@@ -14,23 +14,26 @@ import {
 import { confirmImageLocation, uploadImage, uploadImageToFeature } from 'maplibre/feature/image_upload'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { applyFeatureUpdate, getFeature, getLayer, renderLayer } from 'maplibre/layers/layers'
-import { defaultPointSize } from 'maplibre/styles/defaults'
+import { SYMBOL_IN_FILL } from 'maplibre/styles/circle_image'
+import { defaults, markerSizeOf } from 'maplibre/styles/defaults'
 import { patternKeys } from 'maplibre/styles/pattern_image'
 import { addUndoState } from 'maplibre/undo'
 
 // one directory with an index.json per set, see public/icon-sets/README
-const iconSets = [ 'pinhead', 'fontawesome' ]
+const iconSets = [ 'pinhead', 'openmoji', 'fontawesome' ]
 // The icons of these sets are white, so that they read well on the circle of a marker. On a
 // page they need a background of their own, see the img rule in feature.css.
 const whiteIconSets = [ 'pinhead', 'fontawesome' ]
 // emoji-mart appends a custom set behind its own categories, and it sorts the shown
 // categories by this list. A category that is missing here gets no tab, like 'flags'.
-const categories = [ 'frequent', 'pinhead', 'people', 'nature', 'foods', 'activity', 'places',
+const categories = [ 'frequent', 'pinhead', 'people', 'nature', 'foods', 'places', 'openmoji',
   'fontawesome' ]
 // emoji-mart has no merge option, so the emojis of these categories move into 'places' and
-// share its tab. The tab keeps the travel icon of emoji-mart.
-const mergedCategories = [ 'objects', 'symbols' ]
-const isWhiteSymbol = symbol => whiteIconSets.some(set => symbol.includes(`/icon-sets/${set}/`))
+// share its tab. The tab keeps the car icon of emoji-mart.
+const mergedCategories = [ 'activity', 'objects', 'symbols' ]
+// px of an icon in the grid of the emoji picker
+const PICKER_EMOJI_SIZE = 28
+const isWhiteSymbol = symbol => whiteIconSets.some(set => functions.symbolUrl(symbol).includes(`/icon-sets/${set}/`))
 // emoji-mart keeps its data across pickers and builds the search index of a custom emoji only
 // once, on the object of the first picker. A later picker registers the objects that it gets,
 // so a fresh fetch per open leaves every icon of the sets without an index after a reopen.
@@ -438,12 +441,12 @@ export default class extends Controller {
     this.renderFeature()
   }
 
-  // A point without an explicit marker-size renders at the default for its symbol or image,
-  // so the slider must follow when the symbol or the image changes.
+  // A point without a numeric marker-size renders at the default for its symbol or image, or a
+  // named size scales that default, so the slider must follow when the symbol or the image changes.
   syncPointSizeDefault () {
     const feature = this.getEditFeature()
-    if (feature.properties['marker-size']) { return }
-    const size = defaultPointSize(feature)
+    if (Number(feature.properties['marker-size'])) { return }
+    const size = markerSizeOf(feature)
     document.querySelector('#point-size').value = size
     document.querySelector('#point-size-val').textContent = size
     syncStepperValues()
@@ -587,7 +590,7 @@ export default class extends Controller {
       // is 25rem wide, so 38 gives 10 per row. The icon fills more of its button than the
       // emoji-mart default of 24 of 36, which leaves 2px between two white icon circles.
       emojiButtonSize: 38,
-      emojiSize: 28,
+      emojiSize: PICKER_EMOJI_SIZE,
       noCountryFlags: true, // TODO country flags don't work right now
       set: 'native', // default is native icons (they don't match the map icons)
       theme: 'light',
@@ -606,7 +609,7 @@ export default class extends Controller {
     // buttons above it stay clickable. Only the layout knows where those buttons end. A few
     // px down, so that the underline of the open tab stays visible above the picker
     this.picker.style.top = `${editUi.offsetTop + 4}px`
-    this.stylePicker()
+    this.stylePicker(custom)
     this.lazyLoadIcons()
     this.keepPreview()
   }
@@ -629,17 +632,34 @@ export default class extends Controller {
     })
   }
 
-  // A white icon is invisible on the white background of the picker. The picker keeps its
+  // A white icon is invisible on the white background of the picker, so it gets the circle of a
+  // point in the default color of the basemap. The tab of a set has no circle: its icon, white or
+  // colored, becomes a mask over the text color, like the svg icons of the emoji categories. The picker keeps its
   // markup in a shadow root, so the rule cannot come from the stylesheet of the page.
-  stylePicker () {
+  stylePicker (sets) {
     const root = this.picker.shadowRoot
     if (!root || root.querySelector('#white-icons')) { return }
     const style = document.createElement('style')
     style.id = 'white-icons'
-    style.textContent = whiteIconSets.map(set =>
-      `img[src*="/icon-sets/${set}/"] { background-color: var(--color-dark-charcoal, #354A51); border-radius: 50%; padding: 3px; margin: -3px; }`
-    ).join('\n')
-    style.textContent += '\n#nav img { margin: 0; }'
+    // The circle fills the box of the image, and the padding keeps the icon at the same share of
+    // the circle as on the map, with its corners inside the circle. The circle is a gradient,
+    // because a border-radius clips the image to a circle inside the padding. A padding in em would not
+    // work: the font size of the category tabs and of the preview differs from their icon size.
+    const padding = size => `calc(${(1 - SYMBOL_IN_FILL) / 2} * ${size})`
+    const white = context => whiteIconSets.map(set => `${context} img[src*="/icon-sets/${set}/"]`).join(', ')
+    style.textContent = `
+      ${white('')} {
+        background: radial-gradient(circle closest-side, ${defaults.featureColor} 97%, transparent);
+        padding: ${padding(`${PICKER_EMOJI_SIZE}px`)};
+      }
+      ${white('#preview')} { padding: ${padding('1.5rem')}; }
+      #nav img[src*="/icon-sets/"] {
+        background: currentColor;
+        padding: 0;
+        object-position: -9999px 0;
+        mask: center / contain no-repeat;
+      }
+      ${sets.map(set => `#nav img[src="${set.icon.src}"] { mask-image: url("${set.icon.src}"); }`).join('\n')}`
     root.appendChild(style)
 
     const previewStyle = document.createElement('style')

@@ -274,7 +274,7 @@ function toMapFeature (item) {
       ...item.properties,
       title: title,
       label: title,
-      desc: item.place_name,
+      description: item.place_name,
       'marker-symbol': categorySymbol(item.properties),
       'marker-color': markerColor(),
       stroke: MARKER_OUTLINE,

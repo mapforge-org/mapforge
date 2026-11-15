@@ -104,7 +104,7 @@ describe "Feature edit, point features" do
         expect(page).to have_text("Add a description text")
         text_area = find(:css, ".CodeMirror textarea", visible: false)
         text_area.set("New Desc")
-        wait_for { point.reload.properties["desc"] }.to eq("New Desc")
+        wait_for { point.reload.properties["description"] }.to eq("New Desc")
       end
 
       it "can update fill color" do
@@ -192,15 +192,33 @@ describe "Feature edit, point features" do
         expect(page).to have_selector("em-emoji-picker")
       end
 
+      it "shows activities on the travel tab, and openmoji before font awesome" do
+        find("#edit-button-style").click
+        find("#marker-content-ui [data-content='symbol']").click
+        find("em-emoji-picker")
+        wait_for do
+          page.evaluate_script("[...document.querySelector('em-emoji-picker').shadowRoot" \
+                               ".querySelectorAll('#nav button')].map(b => b.getAttribute('aria-label'))")
+        end.to eq [ "Frequently used", "Pinhead", "Smileys & People", "Animals & Nature", "Food & Drink",
+                    "Travel & Places", "OpenMoji", "Font Awesome" ]
+      end
+
       it "can select an icon of an icon set" do
         find("#edit-button-style").click
         find("#marker-content-ui [data-content='symbol']").click
 
         # 'cafe' is the maki name of the icon, it only matches through the alias keywords that
         # build_icon_sets.rb reads out of the pinhead changelog.
-        pick_from_emoji_picker("cafe", 'img[src="/icon-sets/pinhead/cup_and_saucer.png"]')
+        pick_from_emoji_picker("cafe", 'img[src="/icon-sets/pinhead/handled_teacup_and_saucer.png"]')
 
-        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/cup_and_saucer.png")
+        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/handled_teacup_and_saucer.png")
+      end
+
+      it "can select an extra icon of openmoji" do
+        find("#edit-button-style").click
+        find("#marker-content-ui [data-content='symbol']").click
+        pick_from_emoji_picker("openstreetmap", "img[src=\"/icon-sets/openmoji/\uE04A.png\"]")
+        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/openmoji/\uE04A.png")
       end
 
       it "can remove the symbol" do
@@ -226,9 +244,9 @@ describe "Feature edit, point features" do
         wait_for { point.reload.properties.values_at("marker-color", "stroke") }.to eq(%w[transparent transparent])
 
         find("#marker-content-ui [data-content='symbol']").click
-        pick_from_emoji_picker("cafe", 'img[src="/icon-sets/pinhead/cup_and_saucer.png"]')
+        pick_from_emoji_picker("cafe", 'img[src="/icon-sets/pinhead/handled_teacup_and_saucer.png"]')
         # a white icon turns on the circle that an emoji took away, but not a chosen transparency
-        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/cup_and_saucer.png")
+        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/handled_teacup_and_saucer.png")
         expect(point.properties.values_at("marker-color", "stroke")).to eq(%w[transparent transparent])
         expect(find("#fill-color-transparent")).to be_checked
 
@@ -271,12 +289,12 @@ describe "Feature edit, point features" do
         find("#edit-button-style").click
 
         expect(find("#stroke-color").value).to eq("#ffffff")
-        expect(find("#fill-color").value).to eq("#0a870a")
+        expect(find("#fill-color").value).to eq("#225a96")
       end
     end
 
     context "with a clustered layer" do
-      let(:point) { create(:feature, :point_middle, desc: "Clustered", properties: { "show-desc" => "banner" }) }
+      let(:point) { create(:feature, :point_middle, description: "Clustered", properties: { "show-desc" => "banner" }) }
       let(:map) { create(:map, features: [ point ]).tap { |m| m.layers.first.update!(cluster: true) } }
 
       it "shows the banner only above the cluster zoom" do

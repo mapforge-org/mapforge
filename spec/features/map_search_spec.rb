@@ -310,7 +310,7 @@ describe "Map places search" do
       expect(copied_feature.properties["title"]).to eq("Berlin")
       expect(copied_feature.properties["marker-symbol"]).to eq("🏙")
       expect(copied_feature.geometry["coordinates"]).to eq([ 13.3888599, 52.5170365 ])
-      expect(copied_feature.properties["desc"]).to eq("Berlin, Germany")
+      expect(copied_feature.properties["description"]).to eq("Berlin, Germany")
     end
 
     context "with the tags of the result" do
@@ -328,7 +328,7 @@ describe "Map places search" do
         click_coord("#maplibre-map", center[:x], center[:y])
         expect(page).to have_css("#feature-details-modal.show", text: "Mo-Fr 08:00-18:00")
 
-        expect(copy_first_result.properties["desc"]).to include("Mo-Fr 08:00-18:00")
+        expect(copy_first_result.properties["description"]).to include("Mo-Fr 08:00-18:00")
       end
     end
   end

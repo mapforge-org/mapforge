@@ -30,6 +30,13 @@ describe "Map import" do
     expect(map.reload.features.count).to eq 3
   end
 
+  it "import Mapbox simplestyle geojson" do
+    page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+    attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "simplestyle.geojson"))
+    wait_for { map.reload.features.first&.properties }.to include(
+      "description" => "Simplestyle text", "marker-color" => "#312e81", "marker-size" => "large", "marker-symbol" => 5)
+  end
+
   it "import mapforge json" do
     page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
     attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "mapforge.json"))
@@ -69,7 +76,7 @@ describe "Map import" do
       expect(point.properties["marker-size"]).to eq 13
       # <LabelStyle><scale>0</scale> hides the label
       expect(point.properties["label"]).to be_nil
-      expect(point.properties["desc"]).to include("Statue am Hafen von Funchal")
+      expect(point.properties["description"]).to include("Statue am Hafen von Funchal")
       expect(point.properties["Kategorie"]).to eq "Sehenswürdigkeit"
     end
 
@@ -180,7 +187,7 @@ describe "Map import" do
     wait_for { map.reload.features.count }.to eq 2
     expect(map.layers.count).to eq 1
     expect(map.features.map { |f| f.properties["title"] }).to contain_exactly("Funchal", "Levada walk")
-    expect(map.features.find { |f| f.geometry["type"] == "Point" }.properties["desc"])
+    expect(map.features.find { |f| f.geometry["type"] == "Point" }.properties["description"])
       .to eq "Start of the track"
   end
 

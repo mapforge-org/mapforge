@@ -1,6 +1,6 @@
 import { present, symbolUrl } from 'helpers/functions'
 import { map } from 'maplibre/map'
-import { defaultPointSize, defaults } from 'maplibre/styles/defaults'
+import { defaults, markerSizeOf } from 'maplibre/styles/defaults'
 
 // A marker that maplibre draws as one icon: the shape, and the emoji on it, go to a canvas,
 // and the canvas becomes a map image. A circle style layer below a symbol style layer would
@@ -18,6 +18,14 @@ const BORDER = 1 / 18
 // The filled part of a shape, as a fraction of its canvas.
 const FILL = 1 - 2 * MARGIN - BORDER
 
+// The width of a symbol, as a fraction of the filled circle of its marker, about 67%. A square
+// icon like '29' then keeps its corners inside the fill, with a margin of 5%: the diagonal of
+// the square is the diameter. The emoji picker and the marker previews on the page draw the
+// symbol at the same share, see stylePicker in edit_controller.js and .marker-circle in feature.css.
+export const SYMBOL_IN_FILL = 0.95 / Math.SQRT2
+// The width of a symbol, as a fraction of the canvas of its marker
+const SYMBOL_WIDTH = FILL * SYMBOL_IN_FILL
+
 // Where the outline of a shape ends, as a multiple of its 'marker-size'
 export const SHAPE_EDGE = (1 - 2 * MARGIN + BORDER) / FILL
 
@@ -34,13 +42,20 @@ const pixelRatio = () => Math.min(window.devicePixelRatio || 1, 2)
 function drawSymbol (name, ctx, size, symbol, imageData) {
   const image = new Image()
   image.onload = () => {
-    const width = size * 0.62
+    const width = size * SYMBOL_WIDTH
     ctx.drawImage(image, (size - width) / 2, (size - width) / 2, width, width)
     // a prune between the two can have dropped the image again
     if (map.hasImage(name)) { map.updateImage(name, imageData()) }
   }
   image.src = symbolUrl(symbol)
 }
+
+// The map draws an sdf image a little thinner than its antialiased pixels, so a ring is drawn
+// that much wider.
+const SDF_EDGE = 1
+// The room around the shape in the image of its ring, which takes the widest ring. A pin sits on
+// its tip, so its ring layer moves the image down by the same room, see shapesLayerStyles.
+export const haloPad = () => Math.ceil(defaults.haloWidthHover + SDF_EDGE)
 
 // A pin is taller than it is wide: the head takes the top square of the canvas, the tip goes
 // below it. A square canvas would cut the top of the head off.
@@ -109,26 +124,25 @@ export function markerImage (name, { shape = 'circle', color, border = '#CCC', s
   const ctx = canvas.getContext('2d')
   // a label wider than the shape widens the canvas, the shape stays in the middle, on the anchor
   const width = label ? labelWidth(ctx, label, size) : size
+  const pad = halo ? haloPad() : 0
   // a new size resets the context
-  canvas.width = width * ratio
-  canvas.height = canvasHeight(shape, size) * ratio
+  canvas.width = (width + 2 * pad) * ratio
+  canvas.height = (canvasHeight(shape, size) + 2 * pad) * ratio
   ctx.scale(ratio, ratio)
-  ctx.translate((width - size) / 2, 0)
+  ctx.translate((width - size) / 2 + pad, pad)
 
   const borderWidth = size * BORDER
   const margin = size * MARGIN
 
-  // ponytail: the halo fills the margin outside the border, which is thinner than haloWidth for
-  // a marker below size 20. A wider canvas would move the anchor and pointEdge() in styles.js.
+  // The ring of a shape without a border starts at its fill, the image holds only the ring.
   if (halo) {
-    const haloWidth = Math.min(defaults.haloWidth, margin - borderWidth / 2)
+    const edge = border === 'transparent' ? margin + borderWidth / 2 : margin - borderWidth / 2
+    const haloWidth = halo + SDF_EDGE
     ctx.strokeStyle = '#000'
     ctx.lineWidth = haloWidth
-    shapePath(ctx, shape, size, margin - borderWidth / 2 - haloWidth / 2)
+    shapePath(ctx, shape, size, edge - haloWidth / 2)
     ctx.stroke()
-  }
-
-  if (border !== 'transparent') {
+  } else if (border !== 'transparent') {
     ctx.strokeStyle = border
     ctx.lineWidth = borderWidth
     shapePath(ctx, shape, size, margin)
@@ -143,7 +157,7 @@ export function markerImage (name, { shape = 'circle', color, border = '#CCC', s
 
   const imageData = () => ctx.getImageData(0, 0, canvas.width, canvas.height)
   // a halo is an sdf image: the map reads only its alpha, 'icon-color' tints it for hover and selection
-  map.addImage(name, imageData(), { pixelRatio: ratio, sdf: halo })
+  map.addImage(name, imageData(), { pixelRatio: ratio, sdf: !!halo })
   if (symbol) { drawSymbol(name, ctx, size, symbol, imageData) }
   return name
 }
@@ -172,7 +186,7 @@ export function shapeImageName (properties) {
     properties['marker-color'] || defaults.featureColor,
     properties.stroke || defaults.featureOutlineColor,
     properties['marker-image-url'] || properties['marker-symbol'] || '',
-    Number(properties['marker-size']) || defaultPointSize({ properties }),
+    markerSizeOf({ properties }),
     '0' ]
   if (hasCenteredLabel(properties)) {
     parts.push(properties['label-color'] ?? defaults.labelColor, properties['label-shadow'] ?? defaults.labelShadow,
@@ -182,10 +196,12 @@ export function shapeImageName (properties) {
   return parts.join('|')
 }
 
-// The name of the halo ring of a shaped marker. KEEP IN SYNC with shapeHaloImage() in styles.js.
-const shapeHaloImageName = properties => [ 'shape-' + (properties['marker-shape'] || 'circle'),
-  'transparent', 'transparent', '',
-  Number(properties['marker-size']) || defaultPointSize({ properties }), '1' ].join('|')
+// The names of the selection and the hover ring of a shaped marker. KEEP IN SYNC with
+// shapeHaloImage() in styles.js.
+const shapeHaloImageNames = properties => [defaults.haloWidth, defaults.haloWidthHover].map(width =>
+  [ 'shape-' + (properties['marker-shape'] || 'circle'), 'transparent',
+    (properties.stroke || defaults.featureOutlineColor) === 'transparent' ? 'transparent' : 'border', '',
+    markerSizeOf({ properties }), width ].join('|'))
 
 // Which points the map draws as one image. KEEP IN SYNC with shapedPoint() in styles.js.
 const isShapedPoint = feature => feature.geometry?.type === 'Point' &&
@@ -197,7 +213,7 @@ const isShapedPoint = feature => feature.geometry?.type === 'Point' &&
 // resolver of maplibre (see loadImage), so a prune that goes too far repairs itself.
 export function pruneShapeImages (features) {
   const keep = new Set(features.filter(isShapedPoint)
-    .flatMap(feature => [shapeImageName(feature.properties), shapeHaloImageName(feature.properties)]))
+    .flatMap(feature => [shapeImageName(feature.properties), ...shapeHaloImageNames(feature.properties)]))
   pruneCircleImages('shape', keep)
 }
 
@@ -271,13 +287,13 @@ export function labelImage (name) {
   })
 }
 
-// Draws the image of a 'halo|<marker-size>|<url>' name: a ring around the outline of the image,
+// Draws the image of a 'halo|<width>|<marker-size>|<url>' name: a ring around the outline of the image,
 // so a rounded icon (see ImagesController#icon) and a transparent png get a halo of their shape.
 // The silhouette of the image, moved around in a circle, covers the outline, and the image itself
 // gets cut out of it. The canvas grows by the halo, so the image on top keeps its size. The map
 // draws an image at 'marker-size' / 60, so the halo gets that much wider in image pixels.
 export async function haloImage (name) {
-  const [, size, ...url] = name.split('|')
+  const [, width, size, ...url] = name.split('|')
   // MapLibre checks for the image right after the resolver, see the placeholder in loadImage.
   // A symbol layer takes either sdf or plain images, so the placeholder is sdf like the halo.
   map.addImage(name, { width: 1, height: 1, data: new Uint8Array(4) }, { sdf: true })
@@ -288,7 +304,7 @@ export async function haloImage (name) {
     console.error(`Failed to load image ${url.join('|')}: ` + error)
     return
   }
-  const pad = Math.ceil(defaults.haloWidth * 60 / Number(size))
+  const pad = Math.ceil((Number(width) + SDF_EDGE) * 60 / Number(size))
   const canvas = document.createElement('canvas')
   canvas.width = image.width + 2 * pad
   canvas.height = image.height + 2 * pad

@@ -38,9 +38,10 @@ describe "Map selection" do
     let(:map) { create(:map, features: [ point ]) }
     let(:path) { map_path(id: map.public_id, f: point.id) }
 
-    it "draws the halo ring of the shape" do
-      images = "map.listImages().filter(name => name.startsWith('shape-pin|transparent|transparent||'))"
-      wait_for { page.evaluate_script(images).any? { |name| name.end_with?("|1") } }.to be true
+    it "draws the selection ring and the wider hover ring of the shape" do
+      images = "map.listImages().filter(name => name.startsWith('shape-pin|transparent|border||'))" \
+               ".map(name => name.split('|').pop()).sort()"
+      wait_for { page.evaluate_script(images) }.to eq %w[2 3]
     end
   end
 

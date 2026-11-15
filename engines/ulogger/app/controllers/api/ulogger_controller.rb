@@ -78,7 +78,7 @@ module Ulogger
       timestamp = Time.at(params[:time].to_i).to_datetime.strftime("%Y-%m-%d %H:%M:%S")
       # properties of leading point
       properties = { "title" => timestamp,
-                    "desc" => description || "",
+                    "description" => description || "",
                     "marker-size" => 4,
                     "leading": true }
       properties["label"] = params["comment"] if params["comment"]
@@ -138,7 +138,7 @@ module Ulogger
        "marker-size" => 20,
        "stroke-width" => 8,
        "marker-image-url" => "/icon/" + img.public_id,
-       "desc" => desc }
+       "description" => desc }
     end
 
     def location_properties

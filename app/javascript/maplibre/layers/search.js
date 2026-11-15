@@ -46,7 +46,7 @@ class SearchLayer extends Layer {
     const properties = { ...feature.properties }
     // no geojson layer builds a description on demand, so tags that a click on the
     // result already loaded are rendered into the text of the copy
-    if (properties.osm) { properties.desc = overpassDescription(properties.osm) }
+    if (properties.osm) { properties.description = overpassDescription(properties.osm) }
     TRANSIENT_PROPERTIES.forEach(key => delete properties[key])
     return { ...feature, properties: properties }
   }
@@ -66,10 +66,10 @@ class SearchLayer extends Layer {
    */
   async description(feature) {
     const type = OSM_TYPES[feature.properties.osm_type]
-    if (!type) { return feature.properties.desc }
+    if (!type) { return feature.properties.description }
 
     const tags = (await fetchOsmElement(`${type}/${feature.properties.osm_id}`))?.tags
-    if (!tags) { return feature.properties.desc }
+    if (!tags) { return feature.properties.description }
 
     const osm = { ...tags, id: `${type}/${feature.properties.osm_id}` }
     // the modal passes a copy, the copy to a layer reads the tags from the source feature

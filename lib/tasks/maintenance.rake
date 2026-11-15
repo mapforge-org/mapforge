@@ -6,7 +6,9 @@ namespace :maintenance do
     public_ids = MapChannel::IMAGE_PROPERTIES.flat_map { |key|
       Feature.distinct("properties.#{key}").filter_map { |url| url.to_s[MapChannel::IMAGE_URL, 1] }
     }
-    text = (Feature.distinct("properties.desc") + Map.distinct(:description)).join("\n")
+    # 'desc' is the key of features from before the rename to 'description'
+    text = (%w[description desc].flat_map { |key| Feature.distinct("properties.#{key}") } +
+            Map.distinct(:description)).join("\n")
     Image.not_in(id: Feature.distinct(:image_id).compact, public_id: public_ids).reject { |image|
       image.public_id.present? && text.match?(%r{/(?:icon|image)/#{Regexp.escape(image.public_id)}\b})
     }

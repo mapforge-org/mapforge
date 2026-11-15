@@ -55,7 +55,7 @@ export function featureIcon (feature, { link = true, lazy = true } = {}) {
   } else if (feature.properties['marker-symbol']) {
     const outlineColor = f.escapeHtml(feature.properties['stroke'] || defaults.featureOutlineColor)
     image = `<img ${loading}class='feature-details-icon marker-circle' ` +
-      `style='background-color: ${iconColor}; border-color: ${outlineColor};' ` +
+      `style='--fill: ${iconColor}; --outline: ${outlineColor};' ` +
       `src='${f.escapeHtml(f.symbolUrl(feature.properties['marker-symbol']))}'>`
   } else if (feature.properties['stroke-image-url']) {
     image = `<img ${loading}class='feature-details-icon' src='${f.escapeHtml(feature.properties['stroke-image-url'])}'>`

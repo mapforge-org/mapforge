@@ -109,7 +109,7 @@ RSpec.describe Api::UloggerController do
     end
 
     it "writes formatted metadata to the point's description" do
-      expect(map.reload.features.point.first.properties["desc"])
+      expect(map.reload.features.point.first.properties["description"])
         .to eq "- Altitude: 374.29 m\n- Speed: 15.5 km/h\n- Accuracy: 16.11 m\n- Provider: network"
     end
 

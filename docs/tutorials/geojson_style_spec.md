@@ -5,7 +5,11 @@ Most of the properties are supported to be changed in the UI. For changing the p
 
 ### Supported feature attributes:
 
-Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0), Mapforge supports these feature attributes:
+Mapforge supports every attribute and value of the [Mapbox Simplestyle Spec 1.1.0](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0), and it extends the spec with the attributes below. Mapforge stores the attributes as they are, so an export gives back the same values. A color must start with `#`: Mapforge does not draw a color like `7e7e7e`, which the spec allows.
+
+A feature without style attributes looks different from other simplestyle renderers, because Mapforge uses its own default values. For example, a marker is green and not gray (`#7e7e7e`).
+
+Mapforge supports these feature attributes:
 
 #### *All* geometries:
 
@@ -28,34 +32,34 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `max-zoom`: Display feature only on zoom levels smaller than max-zoom (only integer values)
 * `level`: floor the feature belongs to (for example `"0"`, `"1"`, `"-1"`). Accepts an OSM-style semicolon-separated list (`"0;1;2"`) for features that span multiple floors. Features without this property are always visible.
 * `title`: title
-* `desc`: detailed description (markdown supported)
+* `description`: detailed description (markdown supported).
 * `onclick`: on hover/click behavior: 'details' (default), 'false' (do not react on hover/click), 'link' (link to url), 'feature' (link to another feature on the map)
 * `onclick-target`: required for onclick=link/feature: url or feature id of target. A link must use http or https.
 
 #### *Point* geometry:
 
 * `marker-shape`: background shape of the marker: `circle` (default), `pin` or `square`. A marker with a `marker-shape` or a `marker-symbol` is drawn as one image, with `marker-symbol` or `marker-image-url` inside the shape. `stroke-width` is ignored for such a marker, the border keeps a fixed width.
-* `marker-color`: circle color (default "green", 'transparent' for none)
-* `marker-size`: radius of the marker (default: 6, with 'marker-symbol' fixed to 16 )
+* `marker-color`: circle color (default "#225A96", blue, "#4D7A9C" on a dark basemap, 'transparent' for none)
+* `marker-size`: radius of the marker (default: 5, 18 with a `marker-symbol` or a `marker-shape`, 20 with a `marker-image-url`). The names of the Mapbox simplestyle spec also work: `small` is 0.75 times the default, `medium` is the default, `large` is 1.5 times the default.
 * `marker-opacity`: opacity of the marker (default: 0.7)
-* `marker-symbol`: taken as text/emoji, emoji list: https://emojipedia.org/google/15.1 . A value with a slash is the path to an icon of a set, for example `/icon-sets/pinhead/cup_and_saucer.png` (see public/icon-sets/README).
+* `marker-symbol`: an emoji, an icon name or an icon path. A value with a slash is the path to an icon of a set, for example `/icon-sets/fontawesome/mug-hot.png` (see public/icon-sets/README). A value that starts with a letter from a to z is the name of a [Pinhead](https://github.com/waysidemapping/pinhead) icon, like `handled_teacup_and_saucer`. A [Maki](https://labs.mapbox.com/maki-icons/) name like `cafe` works too, it shows the Pinhead icon that replaced it. A whole number from `0` to `50` shows a number icon. Any other value is an emoji (list: https://emojipedia.org/google/15.1).
 * `marker-image-url`: URL pointing to icon image. Can point to a Mapforge hosted image like /image/<id>. Disables `marker-color` and `stroke`.
 * `marker-scaling`: marker scales with zoom level (default: false)
 * `stroke-width`: width of the circle border line (default: 2)
 * `stroke`: circle border color (default "white", 'transparent' for none)
 * `flat`: if set, marker + label with be projected 'flat' on the map
 * `marker-rotate`: rotate marker by x degrees clockwise
-* `show-desc`: render `desc` as HTML above the marker, scaled by `marker-scaling`. One of `banner`, `square` or `bubble` (default: not shown)
+* `show-desc`: render `description` as HTML above the marker, scaled by `marker-scaling`. One of `banner`, `square` or `bubble` (default: not shown)
 
 #### *LineString* geometry:
 
 * `stroke-width`: width of the line (default: 2)
-* `stroke`: line color (default: 'darkgreen')
+* `stroke`: line color (default: "#225A96", blue, "#4D7A9C" on a dark basemap)
 * `stroke-opacity`: opacity of the line (default: 0.8)
 * `stroke-image-url`: URL pointing to icon image that will get repeated along the line. Can point to a Mapforge hosted image like /icons/direction-arrow.png
-* `stroke-symbol`: taken as text/emoji, emoji list: https://emojipedia.org/google/16
+* `stroke-symbol`: an emoji (list: https://emojipedia.org/google/16), an icon name or an icon path, as for `marker-symbol`
 * `stroke-dasharray`: true/false for making the stroke line dashed (default: false)
-* `fill-extrusion-color`: color of the extrusion (default: green, a 'transparent' `stroke` is ignored here)
+* `fill-extrusion-color`: color of the extrusion (default: "#225A96", blue, "#4D7A9C" on a dark basemap, a 'transparent' `stroke` is ignored here)
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-width`: width in m
 * `fill-extrusion-base`: ground distance in m (default: 0)
@@ -66,13 +70,13 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 #### *Polygon* geometry:
 
 * `stroke-width`: width of the line (default: 3)
-* `stroke`: line color (default: 'darkgreen', 'transparent' for none)
+* `stroke`: line color (default: "#225A96", blue, "#4D7A9C" on a dark basemap, 'transparent' for none)
 * `stroke-opacity`: opacity of the line (default: 1.0)
-* `fill`: fill color (default: "#0A870A", green, 'transparent' for none)
+* `fill`: fill color (default: "#225A96", blue, "#4D7A9C" on a dark basemap, 'transparent' for none)
 * `fill-opacity`: opacity of the fill color, and of a `fill-image-url` image (default: 0.9)
 * `fill-image-url`: URL pointing to an image (for example a floor plan). Can point to a Mapforge hosted image like /image/<id>.
 * `fill-pattern`: a pattern drawn on the fill color, in the `stroke` color. One of `hatch`, `cross`, `lines`, `lines-bold`, `grid`, `dots`, `dots-big`, `checker`.
-* `fill-extrusion-color`: color of the extrusion (default: green, a 'transparent' `fill` is ignored here)
+* `fill-extrusion-color`: color of the extrusion (default: "#225A96", blue, "#4D7A9C" on a dark basemap, a 'transparent' `fill` is ignored here)
 * `fill-extrusion-height`: height in m
 * `fill-extrusion-base`: ground distance in m (default: 0). The label of an extruded polygon floats halfway between `fill-extrusion-base` and `fill-extrusion-height`.
 * `fill-extrusion-opacity`: opacity of the extrusion, rounded to nearest 0.1 (defaults to `fill-opacity`, else 0.9)

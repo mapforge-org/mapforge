@@ -9,14 +9,18 @@
 // fontBold and fontItalic are only used for the labels of a basemap that opts
 // into the font transform with 'applyFont: true'. versatiles glyphs have no italic
 // variant, so fontItalic is null here and the transform falls back to font.
-// Highlight colors for the selected feature and the feature under the mouse. Most basemaps are
-// light (backgrounds #f2f3f0 to #fffdee), where this deep magenta keeps a contrast of 5:1 and
-// matches no road, water or park color. On a dark or satellite basemap ('dark: true' in
-// basemaps.js) it turns dark on dark (2.5:1 on Eclipse), so darkDefaults takes an orange
-// selection (8:1) and a cream hover glow (12:1). A basemap can still override each key.
-const selectionColor = '#c2185b'
-const darkSelectionColor = '#fbb03b'
-const darkDefaults = { haloColor: darkSelectionColor, haloColorHover: '#f3edd6', haloOpacityHover: 0.9, haloFillOpacityHover: 0.3 }
+// Highlight colors for the selected feature and the feature under the mouse. On the light
+// basemaps the rust of the active state of the site (3.9:1 on #f2f3f0), the opposite hue of the
+// blue default and apart from the green of parks and the blue of water. On a dark or satellite
+// basemap ('dark: true' in basemaps.js) a cream (12:1 on Eclipse). The hover takes the same color
+// at a lower opacity. A basemap can still override each key.
+const selectionColor = '#b85e1e'
+const darkSelectionColor = '#f3edd6'
+const darkDefaults = {
+  // a lighter blue, a dark one disappears on the dark ground. The light ring keeps it apart.
+  featureColor: '#4D7A9C',
+  featureOutlineColor: '#E5E5D7',
+  haloColor: darkSelectionColor, haloColorHover: darkSelectionColor, haloOpacityHover: 0.9, haloFillOpacityHover: 0.3 }
 
 const baseDefaults = {
   font: 'noto_sans_regular',
@@ -37,12 +41,13 @@ const baseDefaults = {
   lineLabelSpacing: 200,
   lineLabelMaxAngle: 30,
 
-  featureColor: '#0A870A', // green
+  featureColor: '#225A96', // the blue of the site buttons, darker than water and apart from the green of parks
   featureOutlineColor: '#444444',
   // ring outside a selected feature, which leaves its own size, color and opacity as they are.
   // Points, shapes, images, polygons and lines all read these keys, so they change together.
   haloColor: selectionColor,
   haloWidth: 2,
+  haloWidthHover: 3,
   haloColorHover: selectionColor, // the feature under the mouse, a click shows the haloColor
   haloOpacityHover: 0.5,
   haloFillOpacityHover: 0.15, // tints the fill of a hovered polygon
@@ -126,6 +131,19 @@ export function defaultPointSize (feature) {
   if (feature.properties['marker-image-url']) { return defaults.pointSizeImage }
   if (feature.properties['marker-symbol']) { return defaults.pointSizeEmoji }
   return defaults.pointSizePlain
+}
+
+// The named sizes of the Mapbox simplestyle spec, as factors of the default size of the point.
+// 'medium' needs no entry: like any size that is not a number, it takes the default.
+export const namedMarkerSizes = { small: 0.75, large: 1.5 }
+
+// The radius of a point. Any other size that is not a number falls back to the default.
+// KEEP IN SYNC with markerSizeOr() in styles.js.
+export function markerSizeOf (feature) {
+  const p = feature.properties
+  const size = p['user_marker-size'] ?? p['marker-size']
+  const fallback = defaultPointSize(feature)
+  return Object.hasOwn(namedMarkerSizes, size) ? namedMarkerSizes[size] * fallback : Number(size) || fallback
 }
 
 // Width a line falls back to when it has no explicit 'stroke-width'.

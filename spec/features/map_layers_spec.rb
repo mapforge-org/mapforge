@@ -10,7 +10,7 @@ describe "Map layers" do
       find(".maplibregl-ctrl-layers").click
     end
 
-    let(:feature) { create(:feature, :point, title: "Feature 1", desc: "F1 desc", layer: map.layers.first) }
+    let(:feature) { create(:feature, :point, title: "Feature 1", description: "F1 desc", layer: map.layers.first) }
 
     it "lists all features" do
       expect(page).to have_text("Feature 1")

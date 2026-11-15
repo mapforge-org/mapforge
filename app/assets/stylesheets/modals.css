@@ -611,7 +611,9 @@ body.map-mode-rw .ro-only {
 }
 
 .layer-feature-item .feature-details-icon {
-  height: 1.75rem;
+  --icon-size: 1.75rem;
+
+  height: var(--icon-size);
   margin: 0;
 }
 

@@ -1,4 +1,5 @@
 // Converts KML/KMZ/GPX into the property names of Mapforge.
+import { symbolUrl } from 'helpers/functions'
 import { uploadImage } from 'maplibre/feature/image_upload'
 import { GOOGLE_ICONS } from 'maplibre/import/google_icons'
 
@@ -30,7 +31,7 @@ const EARTH_SYMBOLS = { circle: 'circle', square: 'square', diamond: 'diamond', 
 // Consumed by the mapping below, or deliberately dropped. Everything else (ExtendedData
 // fields, timestamp, timespan, stroke, fill, sym, ...) is copied through untouched.
 const CONSUMED = [
-  'name', 'description', 'address', 'phoneNumber', 'cmt', 'visibility', 'open',
+  'name', 'desc', 'description', 'address', 'phoneNumber', 'cmt', 'visibility', 'open',
   'styleUrl', 'styleHash', 'styleMapHash', 'coordinateProperties', 'links', '_gpxType',
   'icon', 'icon-color', 'icon-opacity', 'icon-scale', 'icon-heading',
   'icon-offset', 'icon-offset-units', 'label-scale', 'label-opacity', '@geometry-type'
@@ -169,7 +170,7 @@ function mapforgeProperties (props = {}) {
   if (props.phoneNumber) { desc.push(props.phoneNumber) }
   // Mapforge has no image overlay layer, so a GroundOverlay keeps its box and shows the image.
   if (icon && isOverlay) { desc.push(`[![overlay](${icon})](${icon})`) }
-  if (desc.length) { out.desc = desc.join('\n\n') }
+  if (desc.length) { out.description = desc.join('\n\n') }
 
   return out
 }
@@ -186,7 +187,7 @@ function earthIcon (icon) {
   const name = EARTH_SYMBOLS[shape] || (/^[a-z]$/i.test(shape) ? shape.toLowerCase() : undefined)
   return {
     color: EARTH_COLORS[(color || 'red').toLowerCase()],
-    symbol: name && `/icon-sets/pinhead/${name}.png`
+    symbol: name && symbolUrl(name)
   }
 }
 
