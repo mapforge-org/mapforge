@@ -251,7 +251,7 @@ end
 # Like every icon of the set, an extra gets the name of its character, the download names it
 # by code point, see .gitignore. The character of an openmoji extra is in the private use area.
 def extras_index(set, config, target)
-  JSON.parse(URI.open(config[:extras]).read).filter_map do |emoji|
+  JSON.parse(URI(config[:extras]).open.read).filter_map do |emoji|
     next unless emoji["group"].start_with?("extras")
 
     download = File.join(target, "#{emoji["hexcode"]}.png")
