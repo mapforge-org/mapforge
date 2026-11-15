@@ -182,6 +182,18 @@
     font-size: clamp(60%, 2vw + 0.3rem, 80%);
   }
 
+  /* on touch screens the sheet closes with a drag down */
+  @media (pointer: coarse) {
+    #feature-details-modal .modal-close-button {
+      display: none;
+    }
+  }
+
+  /* a small view mode sheet with a title shows the title only */
+  #feature-details-modal.modal-pull-min.modal-title-only #feature-details-meta {
+    display: none;
+  }
+
   #feature-edit-ui {
     padding: 0.45rem;
   }

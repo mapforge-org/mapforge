@@ -83,6 +83,14 @@ function featureHasDescription (feature) {
   return !!p.description
 }
 
+// the elevation chart and the route extras need room, they show for a LineString only,
+// see showElevationChart and showExtrasTotals
+function featureHasBody (feature) {
+  if (featureHasDescription(feature)) return true
+  const { type, coordinates } = feature.geometry ?? {}
+  return type === 'LineString' && (coordinates[0]?.length === 3 || !!feature.properties?.route?.extras)
+}
+
 export function showFeatureDetails (feature) {
   dom.hideElements(['#feature-edit-ui'])
   f.e('#edit-buttons button', (e) => { e.classList.remove('active') })
@@ -93,8 +101,8 @@ export function showFeatureDetails (feature) {
   document.querySelector('#edit-buttons').classList.toggle('hidden', !editable)
   dom.showElements('#feature-details-body')
   const modal = document.querySelector('#feature-details-modal')
-  modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-up', 'modal-pull-fade')
-  modal.classList.add(featureHasDescription(feature) ? 'modal-pull-middle' : 'modal-pull-down')
+  modal.classList.remove('modal-pull-min', 'modal-pull-down', 'modal-pull-middle', 'modal-pull-up', 'modal-pull-fade')
+  modal.classList.add(featureHasBody(feature) ? 'modal-pull-middle' : 'modal-pull-min')
   // without this, the details height depends on the tab you came from
   if (!modal.dataset.userSized) { modal.style.removeProperty('height') }
   // the sheet must appear at its class height, not slide down from the height of the
@@ -120,6 +128,8 @@ export function showFeatureDetails (feature) {
   titleElement.textContent = title
   titleElement.style.fontSize = titleElement.textContent.length > 24 ? '1rem' : null;
   document.querySelector('.feature-modal-header').classList.toggle('no-title', !title)
+  // a small view mode sheet with a title shows the title only, see feature.css
+  modal.classList.toggle('modal-title-only', !editable && !!title)
 
   refreshFeatureMeta(feature)
   if (feature.geometry.type === 'Point' || !featureLayer || featureLayer.type !== 'geojson') {

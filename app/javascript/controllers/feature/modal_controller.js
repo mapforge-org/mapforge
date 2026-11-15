@@ -341,16 +341,14 @@ export default class extends Controller {
   }
 
   pullDownModal (modal) {
-    modal.classList.remove('modal-pull-up')
-    modal.classList.remove('modal-pull-middle')
+    modal.classList.remove('modal-pull-up', 'modal-pull-middle', 'modal-pull-min')
     modal.classList.add('modal-pull-transition')
     modal.classList.add('modal-pull-down')
     modal.style.removeProperty('height')
   }
 
   pullUpModal (modal) {
-    modal.classList.remove('modal-pull-down')
-    modal.classList.remove('modal-pull-middle')
+    modal.classList.remove('modal-pull-down', 'modal-pull-middle', 'modal-pull-min')
     modal.classList.add('modal-pull-transition')
     modal.classList.add('modal-pull-up')
     modal.style.removeProperty('height')

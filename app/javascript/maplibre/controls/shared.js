@@ -646,7 +646,8 @@ function initializeFeatureTouchScroll() {
 
     // When dragging down, at first scroll up, then lower modal
     if (y < 0 || modal.querySelector('.feature-modal-scroll').scrollTop === 0) {
-      modal.classList.remove('modal-pull-transition')
+      // the max-height of the content sized sheet would stop the drag
+      modal.classList.remove('modal-pull-transition', 'modal-pull-min')
       modal.style.height = newHeight + 'px'
       // a tap also starts a drag, so only a real move counts as a manual resize
       if (Math.abs(newHeight - dragStartModalHeight) > 10) { modal.dataset.userSized = 'true' }

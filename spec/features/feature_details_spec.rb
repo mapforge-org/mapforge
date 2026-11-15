@@ -11,16 +11,21 @@ describe "Feature details" do
   end
 
   context "mobile", :phone do
-    context "with selected feature" do
-      before do
-        click_center_of_screen
-        expect(page).to have_css("#feature-details-modal")
-      end
+    before do
+      click_center_of_screen
+      expect(page).to have_css("#feature-details-modal")
+    end
 
-      it "opens a feature without description at modal-pull-down" do
+    context "with selected feature" do
+      it "opens a feature without description at the height of its content" do
+        expect(page).to have_css("#feature-details-modal.modal-pull-min")
+        scroll = ".feature-modal-scroll"
+        wait_for { page.evaluate_script("document.querySelector('#{scroll}').scrollHeight") }
+          .to eq(page.evaluate_script("document.querySelector('#{scroll}').clientHeight"))
         viewport = page.evaluate_script("window.innerHeight")
-        expect(page).to have_css("#feature-details-modal.modal-pull-down")
-        wait_for { element_offset_height("#feature-details-modal") }.to be_within(5).of(viewport * 0.25)
+        expect(element_offset_height("#feature-details-modal")).to be < viewport * 0.45
+        # the edit tabs of the rw mode need the meta line
+        expect(page).to have_css("#feature-details-meta")
       end
 
       it "can enlarge modal with pull-up button" do
@@ -30,6 +35,33 @@ describe "Feature details" do
         enlarged_height = element_offset_height("#feature-details-modal")
         expect(enlarged_height).to be > initial_height
       end
+    end
+
+    context "with a description" do
+      let(:feature) { create(:feature, :polygon_middle, title: "Poly Title", description: "Some text") }
+
+      it "opens at modal-pull-middle" do
+        expect(page).to have_css("#feature-details-modal.modal-pull-middle")
+      end
+    end
+
+    context "in view mode" do
+      let(:path) { map.public_map_path }
+
+      it "shows the title only" do
+        expect(page).to have_css("#feature-details-modal.modal-pull-min")
+        expect(page).to have_css("#feature-title", text: "Poly Title")
+        expect(page).not_to have_css("#feature-details-meta")
+      end
+    end
+  end
+
+  context "mobile with a selected line with elevation", :phone do
+    let(:feature) { create(:feature, :line_string_with_elevation) }
+    let(:path) { map_path(id: map.public_id, f: feature.id) }
+
+    it "opens at modal-pull-middle for the elevation chart" do
+      expect(page).to have_css("#feature-details-modal.modal-pull-middle")
     end
   end
 

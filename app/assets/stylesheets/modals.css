@@ -737,6 +737,8 @@ body.map-mode-rw .ro-only {
   }
 
   .modal-pull-transition {
+    /* animates the 'auto' height of .modal-pull-min, other browsers jump */
+    interpolate-size: allow-keywords;
     transition:
       height 0.35s cubic-bezier(0.32, 0.72, 0, 1) !important;
   }
@@ -751,6 +753,11 @@ body.map-mode-rw .ro-only {
 
   .modal-pull-down {
     height: 25%;
+  }
+
+  .modal-pull-min {
+    height: auto;
+    max-height: 45%;
   }
 
   .modal-pull-fade {
