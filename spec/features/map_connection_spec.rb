@@ -35,6 +35,10 @@ describe "Map connection" do
       go_online
 
       expect_map_loaded
+      # data-geojson-loaded can be 'true' before MapLibre drew the reloaded source
+      wait_for {
+        page.evaluate_script("map.queryRenderedFeatures().some(f => f.properties.title === 'Poly Title')")
+      }.to be true
       click_center_of_screen
       expect(page).to have_text("Poly Title")
     end
