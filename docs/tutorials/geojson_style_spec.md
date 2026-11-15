@@ -7,6 +7,8 @@ Most of the properties are supported to be changed in the UI. For changing the p
 
 Mapforge supports every attribute and value of the [Mapbox Simplestyle Spec 1.1.0](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0), and it extends the spec with the attributes below. Mapforge stores the attributes as they are, so an export gives back the same values. A color must start with `#`: Mapforge does not draw a color like `7e7e7e`, which the spec allows.
 
+When you import a file, Mapforge converts the style attributes of uMap, Leaflet, OsmAnd and Garmin into the attributes below. It also converts uMap backup files (`.umap`) with their layers.
+
 A feature without style attributes looks different from other simplestyle renderers, because Mapforge uses its own default values. For example, a marker is green and not gray (`#7e7e7e`).
 
 Mapforge supports these feature attributes:
@@ -40,7 +42,7 @@ Mapforge supports these feature attributes:
 
 * `marker-shape`: background shape of the marker: `circle` (default), `pin` or `square`. A marker with a `marker-shape` or a `marker-symbol` is drawn as one image, with `marker-symbol` or `marker-image-url` inside the shape. `stroke-width` is ignored for such a marker, the border keeps a fixed width.
 * `marker-color`: circle color (default "#225A96", blue, "#4D7A9C" on a dark basemap, 'transparent' for none)
-* `marker-size`: radius of the marker (default: 5, 18 with a `marker-symbol` or a `marker-shape`, 20 with a `marker-image-url`). The names of the Mapbox simplestyle spec also work: `small` is 0.75 times the default, `medium` is the default, `large` is 1.5 times the default.
+* `marker-size`: radius of the marker. The default is 5. A `pin` or `square` `marker-shape` without a symbol or image has 10. A `marker-symbol`, or a shape with a `marker-image-url`, has 18. A `marker-image-url` alone has 20. The names of the Mapbox simplestyle spec also work: `small` is 0.75 times the default, `medium` is the default, `large` is 1.5 times the default.
 * `marker-opacity`: opacity of the marker (default: 0.7)
 * `marker-symbol`: an emoji, an icon name or an icon path. A value with a slash is the path to an icon of a set, for example `/icon-sets/fontawesome/mug-hot.png` (see public/icon-sets/README). A value that starts with a letter from a to z is the name of a [Pinhead](https://github.com/waysidemapping/pinhead) icon, like `handled_teacup_and_saucer`. A [Maki](https://labs.mapbox.com/maki-icons/) name like `cafe` works too, it shows the Pinhead icon that replaced it. A whole number from `0` to `50` shows a number icon. Any other value is an emoji (list: https://emojipedia.org/google/15.1).
 * `marker-image-url`: URL pointing to icon image. Can point to a Mapforge hosted image like /image/<id>. Disables `marker-color` and `stroke`.

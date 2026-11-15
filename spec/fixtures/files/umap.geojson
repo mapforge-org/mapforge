@@ -1,0 +1,89 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.07,
+          49.45
+        ]
+      },
+      "properties": {
+        "name": "uMap point",
+        "description": "See [[https://example.com|the site]] {{https://example.com/a.jpg|300}}",
+        "_umap_options": {
+          "color": "DarkRed",
+          "iconUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+          "showLabel": true
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            11.07,
+            49.45
+          ],
+          [
+            11.08,
+            49.46
+          ]
+        ]
+      },
+      "properties": {
+        "name": "uMap line",
+        "_umap_options": {
+          "color": "#00ff00",
+          "weight": "6",
+          "dashArray": "5,10"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              11.07,
+              49.45
+            ],
+            [
+              11.08,
+              49.45
+            ],
+            [
+              11.08,
+              49.46
+            ],
+            [
+              11.07,
+              49.45
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "name": "uMap polygon",
+        "_umap_options": {
+          "color": "#0000ff",
+          "fillColor": "#ff0000",
+          "fillOpacity": "0.5"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "name": "No geometry"
+      }
+    }
+  ]
+}

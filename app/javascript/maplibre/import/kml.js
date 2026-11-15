@@ -1,6 +1,7 @@
 // Converts KML/KMZ/GPX into the property names of Mapforge.
 import { symbolUrl } from 'helpers/functions'
 import { uploadImage } from 'maplibre/feature/image_upload'
+import { compatFeatures, compatGpx } from 'maplibre/import/compat'
 import { GOOGLE_ICONS } from 'maplibre/import/google_icons'
 
 // G**gle My Maps points every colored pin at the same white silhouette. The real color rides
@@ -61,7 +62,7 @@ export async function importFile (format, content) {
   const { gpx, kmlWithFolders } = await import('togeojson')
 
   if (format === 'gpx') {
-    return { layers: [], features: normalize(gpx(xmlDoc).features), map: {} }
+    return { layers: [], features: compatGpx(xmlDoc, normalize(gpx(xmlDoc).features)), map: {} }
   }
 
   // skipNullGeometry is required: a <Model> placemark otherwise yields geometry: null,
@@ -77,8 +78,8 @@ export async function importFile (format, content) {
   return { layers, features, map: documentProperties(xmlDoc) }
 }
 
-const normalize = (features) => expandGeometryCollections(features)
-  .map(f => ({ ...f, properties: mapforgeProperties(f.properties) }))
+const normalize = (features) => compatFeatures(expandGeometryCollections(features)
+  .map(f => ({ ...f, properties: mapforgeProperties(f.properties) })))
 
 // Each <Folder> becomes one layer. Nested folders flatten into a layer of their own,
 // placemarks outside any folder stay loose so they land in the default layer.

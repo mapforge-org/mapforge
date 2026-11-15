@@ -1,0 +1,9 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "geometry": { "type": "Point", "coordinates": [11.07, 49.45] },
+      "properties": { "name": "Leaflet point", "color": "#ff8800", "opacity": 0.5 } },
+    { "type": "Feature", "geometry": { "type": "Polygon", "coordinates": [[[11.07, 49.45], [11.08, 49.45], [11.08, 49.46], [11.07, 49.45]]] },
+      "properties": { "name": "Leaflet polygon", "color": "#0000ff", "weight": 3, "fill": true } }
+  ]
+}

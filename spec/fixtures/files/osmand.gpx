@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="OsmAnd" xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:osmand="https://osmand.net" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3">
+  <trk>
+    <name>OsmAnd track</name>
+    <extensions><osmand:color>#80ff0000</osmand:color><osmand:width>bold</osmand:width></extensions>
+    <trkseg><trkpt lat="32.77" lon="-16.88"/><trkpt lat="32.78" lon="-16.87"/></trkseg>
+  </trk>
+  <trk>
+    <name>Garmin track</name>
+    <extensions><gpxx:TrackExtension><gpxx:DisplayColor>DarkYellow</gpxx:DisplayColor></gpxx:TrackExtension></extensions>
+    <trkseg><trkpt lat="32.79" lon="-16.86"/><trkpt lat="32.80" lon="-16.85"/></trkseg>
+  </trk>
+</gpx>

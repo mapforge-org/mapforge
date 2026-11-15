@@ -330,7 +330,8 @@ export function updateElevation(feature) {
 
   if (missing.length === 0) return Promise.resolve()
 
-  if (missing.length <= 10) {
+  // Without any height, one line request beats a point request per vertex
+  if (missing.length <= 10 && missing.length < coords.length) {
     return getPointsElevation(coords, missing)
       .then(updated => { feature.geometry.coordinates = updated })
       .catch(() => fullElevation(feature))

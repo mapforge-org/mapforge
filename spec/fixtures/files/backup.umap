@@ -1,0 +1,78 @@
+{
+  "type": "umap",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      11.07,
+      49.45
+    ]
+  },
+  "properties": {
+    "name": "uMap backup",
+    "description": "A [[https://example.com|link]]",
+    "zoom": 13,
+    "color": "Gold"
+  },
+  "layers": [
+    {
+      "type": "FeatureCollection",
+      "_umap_options": {
+        "name": "Visible layer",
+        "color": "#123456"
+      },
+      "features": [
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                11.07,
+                49.45
+              ],
+              [
+                11.08,
+                49.46
+              ]
+            ]
+          },
+          "properties": {
+            "name": "Inherited color"
+          }
+        },
+        {
+          "type": "Feature",
+          "geometry": null,
+          "properties": {
+            "name": "No geometry"
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureCollection",
+      "_umap_options": {
+        "name": "Hidden layer",
+        "displayOnLoad": false
+      },
+      "features": [
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              11.07,
+              49.45
+            ]
+          },
+          "properties": {
+            "name": "Map color",
+            "_umap_options": {
+              "iconClass": "Circle"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

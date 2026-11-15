@@ -5,8 +5,8 @@ import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
 import { flyToFeature } from 'maplibre/animations'
 import { initLayersModal } from 'maplibre/controls/shared'
-import { updateElevation } from 'maplibre/routing/openrouteservice'
 import { confirmImageLocation, uploadImageToFeature } from 'maplibre/feature/image_upload'
+import { compatFeatures, importUmap } from 'maplibre/import/compat'
 import { importFile } from 'maplibre/import/kml'
 import { activeLayer, applyLayerVisibility, createLayerInstance, getFeature, initializeLayerSources, initializeLayerStyles, layers, loadAllLayerData, loadLayerData, removeLayer, setActiveLayer, setLayerLoading, upsert } from 'maplibre/layers/layers'
 import { overpassClusterSettings } from 'maplibre/layers/overpass/overpass'
@@ -22,7 +22,7 @@ function fileFormat (file) {
   if (file.type === 'application/vnd.google-earth.kml+xml' || name.endsWith('.kml')) { return 'kml' }
   if (file.type === 'application/vnd.google-earth.kmz' || name.endsWith('.kmz')) { return 'kmz' }
   if (file.type === 'application/geo+json' || name.endsWith('.geojson')) { return 'geojson' }
-  if (file.type === 'application/json' || name.endsWith('.json')) { return 'json' }
+  if (file.type === 'application/json' || name.endsWith('.json') || name.endsWith('.umap')) { return 'json' }
   if (file.type.startsWith('image/')) { return 'image' }
   return null
 }
@@ -60,8 +60,8 @@ export default class extends Controller {
     let geoJSON
     let mapProps
 
-    // createLayer persists the features of a KML <Folder> or an export layer in one new_layer
-    // message, so only the loose features in geoJSON go through updateElevation() below.
+    // An import fetches no heights: one elevation request per line runs into the
+    // openrouteservice rate limit on a large file. An edit of the line fetches them.
     if (['gpx', 'kml', 'kmz'].includes(format)) {
       let imported
       try {
@@ -76,10 +76,12 @@ export default class extends Controller {
     } else {
       const json = JSON.parse(content)
       if (json.layers) {
-        json.layers.forEach(layer => this.createLayer(layer))
-        mapProps = json.properties
+        // a uMap backup has layers as well, which are no Mapforge layer definitions
+        const imported = json.type === 'umap' ? importUmap(json) : { layers: json.layers, map: json.properties }
+        imported.layers.forEach(layer => this.createLayer(layer))
+        mapProps = imported.map
       } else {
-        geoJSON = json
+        geoJSON = { ...json, features: compatFeatures(json.features || []) }
       }
     }
 
@@ -87,13 +89,7 @@ export default class extends Controller {
       feature.id = functions.featureId()
       feature.properties ||= {}
       upsert(feature)
-      if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
-        updateElevation(feature).finally(() => {
-          sendMessage('new_feature', feature)
-        })
-      } else {
-        sendMessage('new_feature', feature)
-      }
+      sendMessage('new_feature', feature)
     })
 
     // flyTo reads a present but undefined zoom as NaN

@@ -19,7 +19,7 @@ describe "Map import" do
       find("button.dropdown-item", text: "Map data").trigger("click")
     end
     expect(page.evaluate_script("document.querySelector('#fileInput').accept"))
-      .to eq ".gpx,.kml,.kmz,.geojson,.json"
+      .to eq ".gpx,.kml,.kmz,.geojson,.json,.umap"
   end
 
   it "import geojson" do
@@ -189,6 +189,64 @@ describe "Map import" do
     expect(map.features.map { |f| f.properties["title"] }).to contain_exactly("Funchal", "Levada walk")
     expect(map.features.find { |f| f.geometry["type"] == "Point" }.properties["description"])
       .to eq "Start of the track"
+  end
+
+  context "with style attributes of other apps" do
+    def import(file)
+      page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
+      attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", file))
+    end
+
+    # Map#features memoizes the layer ids, which reload keeps
+    def features = Map.find(map.id).features
+    def props(title) = features.find { |f| (f.properties["title"] || f.properties["name"]) == title }.properties
+
+    it "converts uMap geojson" do
+      import("umap.geojson")
+      wait_for { features.count }.to eq 3
+      expect(props("uMap point")).to include(
+        "label" => "uMap point", "marker-color" => "#8b0000", "marker-image-url" => start_with("data:image/png"),
+        "description" => "See [the site](https://example.com) ![](https://example.com/a.jpg)")
+      expect(props("uMap line")).to include("stroke" => "#00ff00", "stroke-width" => 6, "stroke-dasharray" => true)
+      expect(props("uMap polygon")).to include("stroke" => "#0000ff", "fill" => "#ff0000", "fill-opacity" => 0.5)
+      expect(features.map(&:properties)).to all(satisfy { |p| (p.keys & %w[_umap_options name]).empty? })
+    end
+
+    it "imports a uMap backup with its layers" do
+      import("backup.umap")
+      wait_for { features.count }.to eq 2
+      expect(map.reload.layers.find_by(name: "Hidden layer").show).to be false
+      expect(map.layers.find_by(name: "Visible layer").show).to be true
+      expect(props("Inherited color")).to include("stroke" => "#123456")
+      expect(props("Map color")).to include("marker-color" => "#ffd700")
+      expect(props("Map color")).not_to have_key("marker-shape")
+      expect(map.description).to eq "A [link](https://example.com)"
+      expect(map.zoom).to eq "13"
+    end
+
+    it "converts the description syntax of a uMap gpx export" do
+      import("umap.gpx")
+      wait_for { features.count }.to eq 2
+      expect(props("uMap waypoint")["description"]).to eq "See [the site](https://example.com)"
+    end
+
+    it "converts Leaflet style keys" do
+      import("leaflet.geojson")
+      wait_for { features.count }.to eq 2
+      expect(props("Leaflet polygon")).to include("stroke" => "#0000ff", "stroke-width" => 3,
+                                                 "fill" => "#0000ff", "fill-opacity" => 0.2)
+      expect(props("Leaflet polygon")).not_to include("color", "weight")
+      expect(props("Leaflet point")).to include("marker-color" => "#ff8800", "marker-opacity" => 0.5)
+    end
+
+    it "converts OsmAnd and Garmin gpx colors" do
+      import("osmand.gpx")
+      wait_for { features.count }.to eq 2
+      expect(props("OsmAnd track")).to include("stroke" => "#ff0000", "stroke-opacity" => 0.5, "stroke-width" => 6)
+      expect(props("OsmAnd track")).not_to include("osmand_color", "osmand_width")
+      expect(props("Garmin track")).to include("stroke" => "#808000")
+      expect(props("Garmin track")).not_to include("gpxx_DisplayColor", "gpxx_TrackExtension")
+    end
   end
 
   it "import image" do

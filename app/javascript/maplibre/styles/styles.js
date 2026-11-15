@@ -333,8 +333,12 @@ export const maxZoomFilter = () => ['any', isSelected(),
 // KEEP IN SYNC with defaultPointSize() in defaults.js, which is what the size slider reads.
 const pointSizeDefault = plain => [
   'case',
+  showsSymbol(),
+  defaults.pointSizeEmoji,
   // a pin or a square at the plain default is too small to recognize
-  ['any', ['!=', markerShape(), 'circle'], showsSymbol()],
+  ['all', ['!=', markerShape(), 'circle'], ['!', hasProp('marker-image-url')]],
+  defaults.pointSizeShape,
+  ['!=', markerShape(), 'circle'],
   defaults.pointSizeEmoji,
   hasProp('marker-image-url'),
   defaults.pointSizeImage,

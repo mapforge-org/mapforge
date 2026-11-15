@@ -45,7 +45,7 @@
 
             - # the layers modal narrows accept per dropdown entry, this tile offers everything the user may upload
             %button.welcome-tile{ type: "button",
-              data: { action: "click->map--settings#importFile", accept: ".gpx,.kml,.kmz,.geojson,.json#{',image/*' if @user}" } }
+              data: { action: "click->map--settings#importFile", accept: ".gpx,.kml,.kmz,.geojson,.json,.umap#{',image/*' if @user}" } }
               %i.bi.bi-upload
               %span= @user ? _("Import data (gpx, kml, image)") : _("Import data (gpx, kml)")
 

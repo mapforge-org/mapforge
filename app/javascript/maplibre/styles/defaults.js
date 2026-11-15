@@ -70,6 +70,8 @@ const baseDefaults = {
   pointSizeEmoji: 18,
   pointSizeImage: 20,
   pointSizePlain: 5,
+  // a pin or a square without a symbol or an image, at the plain default it is too small to recognize
+  pointSizeShape: 10,
   pointOutlineSize: 2,
   pointOpacity: 0.9,
   pointOpacitySymbol: 1,
@@ -125,8 +127,10 @@ export const editDefaults = { ...baseEditDefaults }
 // Size a point falls back to when it has no explicit 'marker-size'.
 // Keep the branch order in sync with pointSizeMax() in styles.js, which is what the map renders.
 export function defaultPointSize (feature) {
-  // a pin or a square at the plain default is too small to recognize
-  if ((feature.properties['marker-shape'] || 'circle') !== 'circle') { return defaults.pointSizeEmoji }
+  if ((feature.properties['marker-shape'] || 'circle') !== 'circle') {
+    const content = feature.properties['marker-symbol'] || feature.properties['marker-image-url']
+    return content ? defaults.pointSizeEmoji : defaults.pointSizeShape
+  }
   // an image covers a symbol
   if (feature.properties['marker-image-url']) { return defaults.pointSizeImage }
   if (feature.properties['marker-symbol']) { return defaults.pointSizeEmoji }
