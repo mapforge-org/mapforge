@@ -1,6 +1,7 @@
 import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import * as functions from 'helpers/functions'
+import { routeDot } from 'maplibre/feature/hover_info'
 import { EXTRAS_COLOR_CONFIGS, computeCumulativeDistances } from 'maplibre/layers/geojson/route_extras'
 import { map } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
@@ -47,6 +48,8 @@ export async function showElevationChart (feature) {
 
   const chartLineColor = (feature.properties['fill-extrusion-color'] ||
     feature.properties['stroke'] || defaults.featureColor).substring(0, 7)
+
+  marker = routeDot(marker, chartLineColor)
 
   const canvas = document.getElementById('route-elevation-chart')
   const existing = Chart.getChart(canvas)
@@ -127,10 +130,11 @@ export async function showElevationChart (feature) {
           }
         },
         pointRadius: 0,
-        pointHoverRadius: 6,
-        pointBackgroundColor: 'white',
-        pointBorderColor: chartLineColor,
-        pointBorderWidth: 3,
+        // the ring of .hover-route-dot in map.css: 12px wide, the border is centered on the radius
+        pointHoverRadius: 4.5,
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: chartLineColor,
+        pointHoverBorderWidth: 3,
         tension: 0.1,
         spanGaps: true,
       }]
@@ -268,9 +272,7 @@ export async function showElevationChart (feature) {
 
     // Place a marker on the map at the hovered point
     const coord = active.coords[i]
-    marker = getMarker(feature)
-    marker.setLngLat([coord[0], coord[1]])
-    marker.addTo(map)
+    marker.setLngLat([coord[0], coord[1]]).addTo(map)
   }
 
   const hideChartInteraction = () => {
@@ -499,21 +501,6 @@ function showElevationStats (values) {
     document.getElementById('elevation-loss').textContent = '↓ ' + Math.round(loss) + ' m'
     statsEl.classList.remove('hidden')
   }
-}
-
-function getMarker (feature) {
-  if (marker) return marker
-  const el = document.createElement('div')
-  el.style.backgroundColor = feature.properties['fill-extrusion-color'] ||
-    feature.properties['stroke'] || defaults.featureColor
-  el.className = 'elevation-marker'
-  return new window.maplibregl.Marker({
-    element: el,
-    opacity: '0.8',
-    opacityWhenCovered: '0',
-    rotationAlignment: 'viewport',
-    pitchAlignment: 'viewport'
-  })
 }
 
 function toDisplayUnit (distance) {

@@ -595,15 +595,6 @@ body:has(#map-mode-badge) .layer-popover {
   margin-bottom: 0;
 }
 
-.elevation-marker {
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  border-color: #fff;
-  border-style: solid;
-  border-width: 0.15rem;
-}
-
 /* Stands in for the km end marker while an animation moves it, see km_markers.js. The map
    image is a 32 px circle with a 2 px #ccc border, drawn at a scale of 15/14. */
 .km-marker-moving-end {

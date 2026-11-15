@@ -93,13 +93,19 @@ export function showHoverInfo (feature, lngLat) {
     route.ring = el.querySelector('.hover-bar .hover-ring')
     route.position = el.querySelector('.hover-position')
     map.on('move', dropProjection)
-    dot ||= new window.maplibregl.Marker({
-      element: Object.assign(document.createElement('div'), { className: 'hover-ring hover-route-dot' })
-    })
-    dot.getElement().style.setProperty('--route-color', route.color)
+    dot = routeDot(dot, route.color)
     dot.setLngLat(lngLat).addTo(map)
     moveHoverInfo(lngLat)
   }
+}
+
+// the ring that marks a position on a track, also for the hover on the elevation chart
+export function routeDot (marker, color) {
+  marker ||= new window.maplibregl.Marker({
+    element: Object.assign(document.createElement('div'), { className: 'hover-ring hover-route-dot' })
+  })
+  marker.getElement().style.setProperty('--route-color', color)
+  return marker
 }
 
 // The point of the track nearest to the cursor on screen: the index of its segment and how far

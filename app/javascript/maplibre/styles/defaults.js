@@ -39,9 +39,10 @@ const baseDefaults = {
 
   featureColor: '#0A870A', // green
   featureOutlineColor: '#444444',
-  // ring outside a selected feature, which leaves its own size, color and opacity as they are
+  // ring outside a selected feature, which leaves its own size, color and opacity as they are.
+  // Points, shapes, images, polygons and lines all read these keys, so they change together.
   haloColor: selectionColor,
-  haloWidth: 3,
+  haloWidth: 2,
   haloColorHover: selectionColor, // the feature under the mouse, a click shows the haloColor
   haloOpacityHover: 0.5,
   haloFillOpacityHover: 0.15, // tints the fill of a hovered polygon

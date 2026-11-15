@@ -13,6 +13,8 @@ export const extrusionOpacityBuckets = Array.from({ length: 10 }, (_, i) => (i +
 // 'text-layer-front' with the label of the point. They hold every point, but only the hovered or
 // selected one is visible, through feature-state in its opacity. A copy filtered to that point would place a new symbol on each hover, and MapLibre fades
 // a new symbol in. The point stays in its own layer below, so the original order comes back.
+// A halo shows only in front, so its own layer is not on the map: two rings at the hover opacity
+// would look darker than the ring of a line or a polygon.
 const frontStyleNames = ['points-layer-halo', 'points-layer', 'shapes-layer-halo', 'shapes-layer',
   'symbols-layer-halo', 'symbols-layer'].map(id => `${id}-front`)
 
@@ -28,15 +30,12 @@ export const viewStyleNames = [
   'line-labels',
   'points-layer-halo-flat',
   'points-layer-flat',
-  'points-layer-halo',
   'points-layer',
   'shapes-layer-halo-flat',
   'shapes-layer-flat',
-  'shapes-layer-halo',
   'shapes-layer',
   'symbols-layer-halo-flat',
   'symbols-layer-flat',
-  'symbols-layer-halo',
   'symbols-layer',
   'text-layer-flat',
   'text-layer',
