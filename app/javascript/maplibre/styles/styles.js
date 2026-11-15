@@ -187,10 +187,13 @@ const styleProp = (keys, defaultVal) => {
   return defaultVal !== undefined ? ['coalesce', ...gets, defaultVal] : ['coalesce', ...gets]
 }
 const hasProp = key => ['any', ['has', key], ['has', 'user_' + key]]
-// The url of a symbol property: an icon of a set carries its path, an emoji its character.
-// Same rule as symbolUrl in helpers/functions.js.
+// The url of a symbol property: an icon of a set carries its path, a pinhead icon its name,
+// an emoji its character. Same rule as symbolUrl in helpers/functions.js.
+const firstLetter = key => ['downcase', ['slice', ['to-string', ['get', key]], 0, 1]]
 const symbolUrlExpression = key => ['case',
   ['in', '/', ['get', key]], ['get', key],
+  ['all', ['>=', firstLetter(key), 'a'], ['<=', firstLetter(key), 'z']],
+  ['concat', '/icon-sets/pinhead/', ['get', key], '.png'],
   ['concat', '/icon-sets/noto/', ['get', key], '.png']]
 const sortKey = () => ['to-number', styleProp(['user_sort-key', 'sort-key'], defaults.sortKey)]
 const labelColor = () => styleProp(['user_label-color', 'label-color'], defaults.labelColor)

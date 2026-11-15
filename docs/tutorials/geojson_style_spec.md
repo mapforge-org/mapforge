@@ -38,7 +38,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `marker-color`: circle color (default "green", 'transparent' for none)
 * `marker-size`: radius of the marker (default: 6, with 'marker-symbol' fixed to 16 )
 * `marker-opacity`: opacity of the marker (default: 0.7)
-* `marker-symbol`: taken as text/emoji, emoji list: https://emojipedia.org/google/15.1 . A value with a slash is the path to an icon of a set, for example `/icon-sets/pinhead/cup_and_saucer.png` (see public/icon-sets/README).
+* `marker-symbol`: an emoji, an icon name or an icon path. A value with a slash is the path to an icon of a set, for example `/icon-sets/fontawesome/mug-hot.png` (see public/icon-sets/README). A value that starts with a letter from a to z is the name of a [Pinhead](https://github.com/waysidemapping/pinhead) icon, like `cup_and_saucer`. A [Maki](https://labs.mapbox.com/maki-icons/) name like `cafe` works too, it shows the Pinhead icon that replaced it. Any other value is an emoji (list: https://emojipedia.org/google/15.1).
 * `marker-image-url`: URL pointing to icon image. Can point to a Mapforge hosted image like /image/<id>. Disables `marker-color` and `stroke`.
 * `marker-scaling`: marker scales with zoom level (default: false)
 * `stroke-width`: width of the circle border line (default: 2)
@@ -53,7 +53,7 @@ Extending the [Mapbox Simplestyle Spec](https://github.com/mapbox/simplestyle-sp
 * `stroke`: line color (default: 'darkgreen')
 * `stroke-opacity`: opacity of the line (default: 0.8)
 * `stroke-image-url`: URL pointing to icon image that will get repeated along the line. Can point to a Mapforge hosted image like /icons/direction-arrow.png
-* `stroke-symbol`: taken as text/emoji, emoji list: https://emojipedia.org/google/16
+* `stroke-symbol`: an emoji (list: https://emojipedia.org/google/16), an icon name or an icon path, as for `marker-symbol`
 * `stroke-dasharray`: true/false for making the stroke line dashed (default: false)
 * `fill-extrusion-color`: color of the extrusion (default: green, a 'transparent' `stroke` is ignored here)
 * `fill-extrusion-height`: height in m

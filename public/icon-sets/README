@@ -1,8 +1,12 @@
 Icon sets for the 'marker-symbol' and 'stroke-symbol' attributes of a feature.
 
-A value without a slash is an emoji character, and it is rendered with the image of the same
-name in noto/. A value with a slash is the path of an icon, for example
-/icon-sets/pinhead/cup_and_saucer.png. See app/javascript/helpers/functions.js (symbolUrl).
+A value with a slash is the path of an icon, for example /icon-sets/fontawesome/mug-hot.png.
+A value that starts with an ASCII letter is the name of a pinhead icon, for example
+cup_and_saucer, or a maki name (see the links below). No emoji starts with an ASCII letter.
+Any other value is an emoji character, and it is rendered with the image of the same name in
+noto/. Two places apply this rule and must stay the same: symbolUrl in
+app/javascript/helpers/functions.js and symbolUrlExpression in
+app/javascript/maplibre/styles/styles.js.
 
 Sets in the emoji picker
 ------------------------
@@ -31,6 +35,15 @@ Pinhead renamed the icons that it took over: maki 'cafe' is pinhead 'cup_and_sau
 dist/changelog.json records the source name per icon, and the script turns those names into
 search keywords, so a search for 'cafe' still finds the icon. The same file gave the pinhead
 ids in app/javascript/maplibre/import/google_icons.js.
+
+The script also writes one relative symbolic link per maki name into pinhead/, for example
+cafe.png -> cup_and_saucer.png, because Mapbox simplestyle GeoJSON uses maki names in
+marker-symbol. Only maki names get links: the names of the other sources would clash with
+each other. A maki name that is also a pinhead id keeps the pinhead icon, maki 'bus' shows
+pinhead 'bus'. index.json lists no links, so the picker shows every icon once. Before a
+build, the script deletes the old links: inkscape would write a new png through a link of
+the same name onto another icon. The links are committed as git symlinks, a checkout on
+Windows needs core.symlinks. spec/requests/icon_sets_spec.rb fails on a dangling link.
 
 openmoji is an emoji set of PNG files. The script builds its index from the names and the
 keywords of noto/emoji-mart-data.json, and it takes the png of the same emoji character.

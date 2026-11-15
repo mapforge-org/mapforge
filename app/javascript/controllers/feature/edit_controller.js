@@ -30,7 +30,7 @@ const categories = [ 'frequent', 'pinhead', 'people', 'nature', 'foods', 'activi
 // emoji-mart has no merge option, so the emojis of these categories move into 'places' and
 // share its tab. The tab keeps the travel icon of emoji-mart.
 const mergedCategories = [ 'objects', 'symbols' ]
-const isWhiteSymbol = symbol => whiteIconSets.some(set => symbol.includes(`/icon-sets/${set}/`))
+const isWhiteSymbol = symbol => whiteIconSets.some(set => functions.symbolUrl(symbol).includes(`/icon-sets/${set}/`))
 // emoji-mart keeps its data across pickers and builds the search index of a custom emoji only
 // once, on the object of the first picker. A later picker registers the objects that it gets,
 // so a fresh fetch per open leaves every icon of the sets without an index after a reopen.

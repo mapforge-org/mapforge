@@ -24,7 +24,9 @@ SETS = {
     # changelog.json names the icon of every source set that a pinhead icon replaces, and
     # those names become extra search keywords, see aliases
     aliases: "dist/changelog.json",
-    sources: "dist/external_sources.json"
+    sources: "dist/external_sources.json",
+    # a marker-symbol 'cafe' loads pinhead/cafe.png, a link to the icon that replaced maki 'cafe'
+    links: "maki"
   },
   "fontawesome" => {
     package: "@fortawesome/fontawesome-free",
@@ -99,18 +101,37 @@ end
 # rename an icon, which it records as oldId and newId, so the chain is followed to the id that
 # still exists.
 def aliases(package, config, ids)
-  changes = JSON.parse(File.read(File.join(package, config[:aliases])))
-    .flat_map { |release| release["iconChanges"] }
-  renamed = changes.filter_map { |c| [ c["oldId"], c["newId"] ] if c["oldId"] && c["newId"] }.to_h
   sources = JSON.parse(File.read(File.join(package, config[:sources]))).map { |s| s["id"] }
-  known = ids.to_set
-
-  changes.each_with_object({}) do |change, keywords|
-    id = resolve(change["newId"], renamed, known) or next
+  replacements(package, config, ids).each_with_object({}) do |(id, change), keywords|
     # a source name can be an OSM tag, 'tourism/hostel' gives the keywords 'tourism' and 'hostel'
     names = sources.flat_map { |source| Array(change[source]) }.grep(String)
     (keywords[id] ||= []).concat(names.flat_map { |name| name.split(%r{[-_/]}) })
   end
+end
+
+# Pairs of a pinhead id and the changelog entry of the source icon that it replaced
+def replacements(package, config, ids)
+  changes = JSON.parse(File.read(File.join(package, config[:aliases])))
+    .flat_map { |release| release["iconChanges"] }
+  renamed = changes.filter_map { |c| [ c["oldId"], c["newId"] ] if c["oldId"] && c["newId"] }.to_h
+  known = ids.to_set
+  changes.filter_map { |change| (id = resolve(change["newId"], renamed, known)) && [ id, change ] }
+end
+
+# One relative link per name of the source set. A pinhead icon of the same name keeps its own
+# file: maki 'bus' links to 'bus_with_destination_display', but pinhead has a 'bus' icon too.
+def link_names(package, config, ids, target)
+  known = ids.to_set
+  replacements(package, config, ids).each do |id, change|
+    Array(change[config[:links]]).grep(String).reject { |name| known.include?(name) }.each do |name|
+      FileUtils.ln_sf("#{id}.png", File.join(target, "#{name}.png"))
+    end
+  end
+end
+
+# inkscape would write a new icon through an old link of the same name, onto another icon
+def remove_links(target)
+  FileUtils.rm(Dir.glob(File.join(target, "*.png")).select { |file| File.symlink?(file) })
 end
 
 def resolve(id, renamed, known)
@@ -155,16 +176,20 @@ def build(set, config, root)
 
   Dir.mktmpdir("icon-set-#{set}") do |tmp|
     package = download(config[:package], tmp)
+    remove_links(target) if config[:links]
     ids = rasterize(File.join(package, config[:dir] || "icons"), target)
     keywords = config[:aliases] ? aliases(package, config, ids) : {}
+    link_names(package, config, ids, target) if config[:links]
     File.write(File.join(target, "index.json"), JSON.generate(index(set, config, ids, keywords)))
     puts "#{set}: #{ids.size} icons"
   end
 end
 
-root = File.expand_path("../..", __dir__)
-sets = ARGV.empty? ? SETS.keys : ARGV
-sets.each do |set|
-  config = SETS[set] or abort("unknown icon set '#{set}', known: #{SETS.keys.join(", ")}")
-  build(set, config, root)
+if __FILE__ == $PROGRAM_NAME
+  root = File.expand_path("../..", __dir__)
+  sets = ARGV.empty? ? SETS.keys : ARGV
+  sets.each do |set|
+    config = SETS[set] or abort("unknown icon set '#{set}', known: #{SETS.keys.join(", ")}")
+    build(set, config, root)
+  end
 end
