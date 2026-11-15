@@ -9,6 +9,7 @@
 
 require "fileutils"
 require "json"
+require "open-uri"
 require "tmpdir"
 
 SIZE = 72
@@ -47,7 +48,9 @@ SETS = {
     # the tab shows the icon as a mask, and the colored map would be a filled rectangle. The black
     # line version is from https://github.com/hfg-gmuend/openmoji/blob/master/black/72x72/1F5FA.png
     icon: "black-map",
-    emoji_data: true
+    emoji_data: true,
+    # the icons that openmoji draws beyond unicode emoji, the version of the pngs on disk
+    extras: "https://raw.githubusercontent.com/hfg-gmuend/openmoji/15.0.0/data/openmoji.json"
   }
 }
 
@@ -240,7 +243,30 @@ def emoji_index(set, config, target, root)
       skins: [ { src: "/icon-sets/#{set}/#{file}" } ]
     }
   end
+  emojis += extras_index(set, config, target) if config[:extras]
   { id: set, name: config[:name], icon: { src: "/icon-sets/#{set}/#{config[:icon]}.png" }, emojis: emojis }
+end
+
+# emoji-mart-data.json lists unicode emoji only, the data of the set names its extra icons.
+# Like every icon of the set, an extra gets the name of its character, the download names it
+# by code point, see .gitignore. The character of an openmoji extra is in the private use area.
+def extras_index(set, config, target)
+  JSON.parse(URI.open(config[:extras]).read).filter_map do |emoji|
+    next unless emoji["group"].start_with?("extras")
+
+    download = File.join(target, "#{emoji["hexcode"]}.png")
+    next unless File.exist?(download)
+
+    file = "#{emoji["emoji"]}.png"
+    FileUtils.cp(download, File.join(target, file)) unless File.exist?(File.join(target, file))
+
+    {
+      id: "#{set}-#{emoji["hexcode"].downcase}",
+      name: emoji["annotation"].split.map(&:capitalize).join(" "),
+      keywords: "#{emoji["tags"]},#{emoji["openmoji_tags"]}".split(",").map(&:strip).reject(&:empty?).uniq,
+      skins: [ { src: "/icon-sets/#{set}/#{file}" } ]
+    }
+  end
 end
 
 def build(set, config, root)

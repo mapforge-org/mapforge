@@ -17,7 +17,10 @@ pinhead     CC0, https://github.com/waysidemapping/pinhead , the icon set of the
             one style, so those sets are not included separately any more.
 noto        Noto Color Emoji, https://fonts.google.com/noto/specimen/Noto+Color+Emoji
             The picker reads noto/emoji-mart-data.json for its emoji categories.
-openmoji    CC BY-SA 4.0, https://openmoji.org/ , an alternative rendering of the emoji set.
+openmoji    CC BY-SA 4.0, https://openmoji.org/ , an alternative rendering of the emoji set,
+            plus the extra icons that OpenMoji draws beyond Unicode, like emergency services
+            and brand logos. The script reads their names from the data of OpenMoji 15.0.0,
+            the version of the pngs.
 mapforge    the icons that Mapforge makes itself: the numbers 13 to 50, composed from pinhead
             digits. The picker shows them in the pinhead category, through the links.
 fontawesome CC BY 4.0, https://fontawesome.com/ , the free "solid" style only. The free

@@ -214,6 +214,13 @@ describe "Feature edit, point features" do
         wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/pinhead/handled_teacup_and_saucer.png")
       end
 
+      it "can select an extra icon of openmoji" do
+        find("#edit-button-style").click
+        find("#marker-content-ui [data-content='symbol']").click
+        pick_from_emoji_picker("openstreetmap", "img[src=\"/icon-sets/openmoji/\uE04A.png\"]")
+        wait_for { point.reload.properties["marker-symbol"] }.to eq("/icon-sets/openmoji/\uE04A.png")
+      end
+
       it "can remove the symbol" do
         find("#edit-button-style").click
         find("#marker-content-ui [data-content='symbol']").click
