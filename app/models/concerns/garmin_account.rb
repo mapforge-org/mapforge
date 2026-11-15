@@ -7,6 +7,7 @@ module GarminAccount
     field :garmin_token, type: Hash
     # feature id => Garmin courseId, so a repeated send updates the course instead of adding one
     field :garmin_course_ids, type: Hash, default: {}
+    field :garmin_lock, type: Hash
   end
 
   # Returns [:updated or :created, courseId]. A course deleted in Garmin Connect answers 404 and gets created again.
@@ -43,20 +44,18 @@ module GarminAccount
   # Parallel sends of one feature would each create a course, so a user's sends run one at a time
   # across all app workers. ponytail: no lock renewal, a send that runs longer than 60s loses it.
   def with_garmin_lock
-    redis = Redis.new(url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"))
-    key = "garmin_upload:#{id}"
     owner = SecureRandom.hex
     50.times do
-      next sleep(0.2) unless redis.set(key, owner, nx: true, ex: 60)
+      free = { "$or" => [ { garmin_lock: nil }, { "garmin_lock.until" => { "$lt" => Time.current } } ] }
+      claim = { "$set" => { garmin_lock: { "owner" => owner, "until" => 60.seconds.from_now } } }
+      next sleep(0.2) if collection.update_one({ _id: id }.merge(free), claim).modified_count.zero?
       begin
         return yield
       ensure
-        redis.del(key) if redis.get(key) == owner
+        collection.update_one({ _id: id, "garmin_lock.owner" => owner }, { "$unset" => { garmin_lock: "" } })
       end
     end
     raise "Another Garmin Connect upload of this user is still running"
-  ensure
-    redis&.close
   end
 
   # A new hash per request: OAuth2::AccessToken merges the user's bearer token into these headers

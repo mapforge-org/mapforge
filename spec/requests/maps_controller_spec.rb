@@ -102,6 +102,14 @@ describe MapsController do
       expect(user.reload.garmin_course_ids).to eq("other" => 7, feature.id.to_s => 43)
     end
 
+    it "takes over an expired upload lock and releases it" do
+      user.update!(garmin_lock: { "owner" => "crashed", "until" => 1.minute.ago })
+      allow_any_instance_of(OAuth2::Client).to receive(:request).and_return(created)
+      post path
+      expect(response.parsed_body).to eq("result" => "created", "course_id" => 43)
+      expect(user.reload.garmin_lock).to be_nil
+    end
+
     it "updates a course that was sent before" do
       user.update!(garmin_course_ids: { feature.id.to_s => 42 })
       expect_any_instance_of(OAuth2::Client).to receive(:request).once
