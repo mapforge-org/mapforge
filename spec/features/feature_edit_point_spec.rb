@@ -192,6 +192,17 @@ describe "Feature edit, point features" do
         expect(page).to have_selector("em-emoji-picker")
       end
 
+      it "shows activities on the travel tab, and openmoji before font awesome" do
+        find("#edit-button-style").click
+        find("#marker-content-ui [data-content='symbol']").click
+        find("em-emoji-picker")
+        wait_for do
+          page.evaluate_script("[...document.querySelector('em-emoji-picker').shadowRoot" \
+                               ".querySelectorAll('#nav button')].map(b => b.getAttribute('aria-label'))")
+        end.to eq [ "Frequently used", "Pinhead", "Smileys & People", "Animals & Nature", "Food & Drink",
+                    "Travel & Places", "OpenMoji", "Font Awesome" ]
+      end
+
       it "can select an icon of an icon set" do
         find("#edit-button-style").click
         find("#marker-content-ui [data-content='symbol']").click

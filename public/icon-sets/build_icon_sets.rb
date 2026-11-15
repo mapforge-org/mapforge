@@ -44,7 +44,9 @@ SETS = {
   # the pngs of an emoji set are downloaded by hand, only its index gets built
   "openmoji" => {
     name: "OpenMoji",
-    icon: "🗺",
+    # the tab shows the icon as a mask, and the colored map would be a filled rectangle. The black
+    # line version is from https://github.com/hfg-gmuend/openmoji/blob/master/black/72x72/1F5FA.png
+    icon: "black-map",
     emoji_data: true
   }
 }

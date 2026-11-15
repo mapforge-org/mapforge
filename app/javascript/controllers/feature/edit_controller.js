@@ -20,17 +20,17 @@ import { patternKeys } from 'maplibre/styles/pattern_image'
 import { addUndoState } from 'maplibre/undo'
 
 // one directory with an index.json per set, see public/icon-sets/README
-const iconSets = [ 'pinhead', 'fontawesome' ]
+const iconSets = [ 'pinhead', 'openmoji', 'fontawesome' ]
 // The icons of these sets are white, so that they read well on the circle of a marker. On a
 // page they need a background of their own, see the img rule in feature.css.
 const whiteIconSets = [ 'pinhead', 'fontawesome' ]
 // emoji-mart appends a custom set behind its own categories, and it sorts the shown
 // categories by this list. A category that is missing here gets no tab, like 'flags'.
-const categories = [ 'frequent', 'pinhead', 'people', 'nature', 'foods', 'activity', 'places',
+const categories = [ 'frequent', 'pinhead', 'people', 'nature', 'foods', 'places', 'openmoji',
   'fontawesome' ]
 // emoji-mart has no merge option, so the emojis of these categories move into 'places' and
-// share its tab. The tab keeps the travel icon of emoji-mart.
-const mergedCategories = [ 'objects', 'symbols' ]
+// share its tab. The tab keeps the car icon of emoji-mart.
+const mergedCategories = [ 'activity', 'objects', 'symbols' ]
 // px of an icon in the grid of the emoji picker
 const PICKER_EMOJI_SIZE = 28
 const isWhiteSymbol = symbol => whiteIconSets.some(set => functions.symbolUrl(symbol).includes(`/icon-sets/${set}/`))
@@ -633,8 +633,8 @@ export default class extends Controller {
   }
 
   // A white icon is invisible on the white background of the picker, so it gets the circle of a
-  // point in the default color of the basemap. A category tab has no circle: its icon becomes a
-  // mask over the text color, like the svg icons of the emoji categories. The picker keeps its
+  // point in the default color of the basemap. The tab of a set has no circle: its icon, white or
+  // colored, becomes a mask over the text color, like the svg icons of the emoji categories. The picker keeps its
   // markup in a shadow root, so the rule cannot come from the stylesheet of the page.
   stylePicker (sets) {
     const root = this.picker.shadowRoot
@@ -653,7 +653,7 @@ export default class extends Controller {
         padding: ${padding(`${PICKER_EMOJI_SIZE}px`)};
       }
       ${white('#preview')} { padding: ${padding('1.5rem')}; }
-      ${white('#nav')} {
+      #nav img[src*="/icon-sets/"] {
         background: currentColor;
         padding: 0;
         object-position: -9999px 0;
