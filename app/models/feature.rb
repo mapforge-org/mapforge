@@ -70,7 +70,8 @@ class Feature
       climb = a[2] && b[2] ? b[2] - a[2] : 0
       climb.positive? ? gain += climb : loss -= climb
     end
-    { courseName: properties["title"].presence || "Mapforge track", description: properties["desc"].presence,
+    { courseName: properties["title"].presence || layer&.map&.name.presence || "Mapforge track",
+      description: properties["description"].presence,
       distance:, elevationGain: gain, elevationLoss: loss, geoPoints: points,
       activityType: properties.dig("route", "profile") == "bike" ? "ROAD_CYCLING" : "HIKING",
       coordinateSystem: "WGS84" }.compact
