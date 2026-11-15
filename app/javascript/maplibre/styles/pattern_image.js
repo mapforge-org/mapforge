@@ -1,4 +1,3 @@
-import { cssColor } from 'helpers/functions'
 import { map } from 'maplibre/map'
 import { pruneCircleImages } from 'maplibre/styles/circle_image'
 import { defaults } from 'maplibre/styles/defaults'
@@ -62,7 +61,7 @@ function tile (key, color, ratio) {
   const ctx = canvas.getContext('2d')
   ctx.scale(ratio, ratio)
   // a transparent border would draw a tile that shows nothing, so the pattern keeps the default
-  const ink = (!color || color === 'transparent') ? defaults.featureOutlineColor : cssColor(color)
+  const ink = (!color || color === 'transparent') ? defaults.featureOutlineColor : color
   if (patternKeys.includes(key)) { drawPattern(ctx, key, ink) }
   return { canvas, ctx }
 }

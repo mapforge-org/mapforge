@@ -27,7 +27,7 @@ function lineCard (feature) {
   const track = isTrack(feature)
   // a card with only the length tells too little
   if (!title && !track) { return null }
-  const color = f.cssColor(feature.properties.stroke) || defaults.featureColor
+  const color = feature.properties.stroke || defaults.featureColor
   const bar = track ? '<div class="hover-bar"><span class="hover-ring"></span></div><div class="hover-position"></div>' : ''
   return {
     html: `<div style="--route-color: ${f.escapeHtml(color)}">` +
@@ -49,7 +49,7 @@ function polygonCard (feature) {
   const title = featureTitle(feature)
   // a label already shows the name on the map
   if (!title || f.present(p.label) || f.present(p['label-title'])) { return null }
-  const color = f.escapeHtml(f.cssColor(p['fill-extrusion-color'] || p.fill) || defaults.featureColor)
+  const color = f.escapeHtml(p['fill-extrusion-color'] || p.fill || defaults.featureColor)
   return {
     html: head(title, `<span class="hover-swatch" style="background: ${color}"></span>`),
     options: { anchor: 'top-left', offset: 14 },

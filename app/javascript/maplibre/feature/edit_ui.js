@@ -100,7 +100,7 @@ export function backgroundMode (feature) {
 
 // One tile of a pattern on the fill color of the feature, the same as the map draws it
 function patternSwatch (feature, key) {
-  const fill = f.cssColor(feature.properties.fill) || defaults.featureColor
+  const fill = feature.properties.fill || defaults.featureColor
   const url = patternDataUrl(key, feature.properties.stroke || defaults.featureOutlineColor)
   return `<span class='pattern-swatch' style='background-color: ${f.escapeHtml(fill)}; background-image: url(${url})'></span>`
 }

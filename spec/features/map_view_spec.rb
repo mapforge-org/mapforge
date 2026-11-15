@@ -77,9 +77,9 @@ describe "Map public view" do
   context "with simplestyle colors and symbols" do
     let(:map) do
       create(:map, center: [ 11.085353409646018, 49.440728444532255 ], features: [
-        create(:feature, :point_middle, properties: { "marker-color" => "a00", "marker-symbol" => 17, "title" => "Seventeen",
+        create(:feature, :point_middle, properties: { "marker-color" => "#a00", "marker-symbol" => 17, "title" => "Seventeen",
                                                       "description" => "Simplestyle text" }),
-        create(:feature, :point, properties: { "marker-color" => "a00", "marker-symbol" => "b" })
+        create(:feature, :point, properties: { "marker-color" => "#a00", "marker-symbol" => "b" })
       ])
     end
 

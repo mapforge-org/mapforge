@@ -1,19 +1,6 @@
 require "rails_helper"
 
 describe "Map import" do
-  let(:shape_has_color_312e81) do
-    <<~JS
-      (() => {
-        const id = map.listImages().find(i => i.startsWith('shape-circle|312e81|'))
-        const pixels = id ? map.getImage(id).data.data : []
-        for (let i = 0; i < pixels.length; i += 4) {
-          if (pixels[i] === 0x31 && pixels[i + 1] === 0x2e && pixels[i + 2] === 0x81) { return true }
-        }
-        return false
-      })()
-    JS
-  end
-
   include_context "with an editable map and an overpass stub"
 
   before do
@@ -47,9 +34,7 @@ describe "Map import" do
     page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
     attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "simplestyle.geojson"))
     wait_for { map.reload.features.first&.properties }.to include(
-      "description" => "Simplestyle text", "marker-color" => "312e81", "marker-size" => "large", "marker-symbol" => 5)
-    # the marker image is drawn in the color without '#'
-    wait_for { page.evaluate_script(shape_has_color_312e81) }.to be true
+      "description" => "Simplestyle text", "marker-color" => "#312e81", "marker-size" => "large", "marker-symbol" => 5)
   end
 
   it "import mapforge json" do

@@ -1,4 +1,3 @@
-import { cssColor } from 'helpers/functions'
 import { renderMarkdown } from 'helpers/markdown'
 import { hideContextMenu } from 'maplibre/controls/context_menu'
 import { featureOnLevel } from 'maplibre/controls/levels'
@@ -90,7 +89,7 @@ function upsertDescBanner (feature, layer, visible) {
   ;['banner', 'square', 'bubble'].forEach(s => el.classList.toggle(`shape-${s}`, s === shape))
   el.classList.toggle('no-tip', p['marker-color'] === 'transparent' && p.stroke === 'transparent')
   if (p.stroke && p.stroke !== 'transparent') {
-    el.style.setProperty('--border-color', cssColor(p.stroke))
+    el.style.setProperty('--border-color', p.stroke)
   } else {
     el.style.removeProperty('--border-color')
   }

@@ -5,7 +5,7 @@ Most of the properties are supported to be changed in the UI. For changing the p
 
 ### Supported feature attributes:
 
-Mapforge supports every attribute and value of the [Mapbox Simplestyle Spec 1.1.0](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0), and it extends the spec with the attributes below. Mapforge stores the attributes as they are, so an export gives back the same values. For example, a color without `#`, like `7e7e7e`, stays without `#`.
+Mapforge supports every attribute and value of the [Mapbox Simplestyle Spec 1.1.0](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0), and it extends the spec with the attributes below. Mapforge stores the attributes as they are, so an export gives back the same values. A color must start with `#`: Mapforge does not draw a color like `7e7e7e`, which the spec allows.
 
 A feature without style attributes looks different from other simplestyle renderers, because Mapforge uses its own default values. For example, a marker is green and not gray (`#7e7e7e`).
 
