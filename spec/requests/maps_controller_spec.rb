@@ -110,6 +110,23 @@ describe MapsController do
       expect(user.reload.garmin_lock).to be_nil
     end
 
+    it "refreshes an expired token and saves the new one" do
+      user.update!(garmin_token: { "access_token" => "old", "refresh_token" => "r", "expires_at" => 1.hour.ago.to_i })
+      fresh = OAuth2::AccessToken.new(OAuth2::Client.new("id", "secret"), "new", refresh_token: "r2",
+                                                                               expires_at: 1.hour.from_now.to_i)
+      allow_any_instance_of(OAuth2::AccessToken).to receive(:refresh).and_return(fresh)
+      allow_any_instance_of(OAuth2::AccessToken).to receive(:post).and_return(created)
+      post path
+      expect(response.parsed_body).to eq("result" => "created", "course_id" => 43)
+      expect(user.reload.garmin_token).to include("access_token" => "new", "refresh_token" => "r2")
+    end
+
+    it "gives up while another upload of the user holds the lock" do
+      user.update!(garmin_lock: { "owner" => "other", "until" => 1.minute.from_now })
+      allow_any_instance_of(User).to receive(:sleep)
+      expect { post path }.to raise_error(RuntimeError, /still running/)
+    end
+
     it "updates a course that was sent before" do
       user.update!(garmin_course_ids: { feature.id.to_s => 42 })
       expect_any_instance_of(OAuth2::Client).to receive(:request).once
