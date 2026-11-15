@@ -42,7 +42,7 @@ describe "Map import" do
     end.to eq "Simplestyle text"
   end
 
-    it "import mapforge json" do
+  it "import mapforge json" do
     page.driver.execute_script("document.querySelector('#fileInput').classList.remove('hidden')")
     attach_file("fileInput", Rails.root.join("spec", "fixtures", "files", "mapforge.json"))
     expect(page).to have_text("(3)")

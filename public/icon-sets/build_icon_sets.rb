@@ -37,7 +37,7 @@ SETS = {
   "fontawesome" => {
     package: "@fortawesome/fontawesome-free",
     name: "Font Awesome",
-    icon: "location-dot",
+    icon: "font-awesome",
     # the free package also has regular (thin) and brands (colored logos) styles, see README
     dir: "svgs/solid"
   },
@@ -73,12 +73,14 @@ def rasterize(source, target)
   # One inkscape run for all icons: the startup of the process costs more than the export.
   # --export-type writes the png next to its svg, so the svgs are copied over and removed after.
   FileUtils.cp(svgs, target)
-  run("inkscape", "--export-type=png", "--export-width=#{SIZE}", "--export-height=#{SIZE}",
-      *Dir.glob(File.join(target, "*.svg")))
+  # A width and a height together would stretch an icon that is not square, like the narrow
+  # digits of Font Awesome, so the export keeps the aspect and the square comes after.
+  run("inkscape", "--export-type=png", "--export-height=#{SIZE}", *Dir.glob(File.join(target, "*.svg")))
   FileUtils.rm(Dir.glob(File.join(target, "*.svg")))
   # The sets are monochrome black. A marker draws them on a circle in the color of the
   # feature, where white reads better, so only the alpha channel of the icon is kept.
-  run("magick", "mogrify", "-channel", "RGB", "-evaluate", "set", "100%",
+  run("magick", "mogrify", "-channel", "RGB", "-evaluate", "set", "100%", "+channel",
+      "-resize", "#{SIZE}x#{SIZE}", "-background", "none", "-gravity", "center", "-extent", "#{SIZE}x#{SIZE}",
       *Dir.glob(File.join(target, "*.png")))
   svgs.map { |svg| File.basename(svg, ".svg") }
 end

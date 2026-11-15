@@ -609,7 +609,7 @@ export default class extends Controller {
     // buttons above it stay clickable. Only the layout knows where those buttons end. A few
     // px down, so that the underline of the open tab stays visible above the picker
     this.picker.style.top = `${editUi.offsetTop + 4}px`
-    this.stylePicker()
+    this.stylePicker(custom)
     this.lazyLoadIcons()
     this.keepPreview()
   }
@@ -633,9 +633,10 @@ export default class extends Controller {
   }
 
   // A white icon is invisible on the white background of the picker, so it gets the circle of a
-  // point in the default color of the basemap. The picker keeps its markup in a shadow root, so
-  // the rule cannot come from the stylesheet of the page.
-  stylePicker () {
+  // point in the default color of the basemap. A category tab has no circle: its icon becomes a
+  // mask over the text color, like the svg icons of the emoji categories. The picker keeps its
+  // markup in a shadow root, so the rule cannot come from the stylesheet of the page.
+  stylePicker (sets) {
     const root = this.picker.shadowRoot
     if (!root || root.querySelector('#white-icons')) { return }
     const style = document.createElement('style')
@@ -651,8 +652,14 @@ export default class extends Controller {
         background: radial-gradient(circle closest-side, ${defaults.featureColor} 97%, transparent);
         padding: ${padding(`${PICKER_EMOJI_SIZE}px`)};
       }
-      ${white('#nav')} { padding: ${padding('22px')}; }
-      ${white('#preview')} { padding: ${padding('1.5rem')}; }`
+      ${white('#preview')} { padding: ${padding('1.5rem')}; }
+      ${white('#nav')} {
+        background: currentColor;
+        padding: 0;
+        object-position: -9999px 0;
+        mask: center / contain no-repeat;
+      }
+      ${sets.map(set => `#nav img[src="${set.icon.src}"] { mask-image: url("${set.icon.src}"); }`).join('\n')}`
     root.appendChild(style)
 
     const previewStyle = document.createElement('style')
