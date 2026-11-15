@@ -103,6 +103,8 @@ export function loadLayerDefinitions({ refetch = false } = {}) {
     if (window.gon.map_properties.public_id !== data.properties.public_id) { return }
     layers = data.layers.map(l => createLayerInstance(l))
     layers.forEach(l => {
+      // Only the style preview map carries its features in the definition, it has no layer url
+      if (l.layer.geojson) { l.localData = true }
       const previous = previousGeojson.get(l.id)
       if (previous && !l.layer.geojson) { l.geojson = previous }
     })

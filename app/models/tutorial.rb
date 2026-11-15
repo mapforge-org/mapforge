@@ -23,12 +23,18 @@ class Tutorial
   end
 
   def to_html
+    self.class.render(markdown)
+  end
+
+  def self.render(markdown, inline: false)
     renderer = Redcarpet::Render::HTML.new(
       filter_html: false,
       hard_wrap: true,
       with_toc_data: true # adds slug ids to headlines, for in-page links
     )
     markdown_parser = Redcarpet::Markdown.new(renderer, tables: true, fenced_code_blocks: true)
-    markdown_parser.render(markdown).html_safe
+    html = markdown_parser.render(markdown)
+    html = html.strip.delete_prefix("<p>").delete_suffix("</p>") if inline
+    html.html_safe
   end
 end

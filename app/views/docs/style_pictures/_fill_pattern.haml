@@ -1,0 +1,26 @@
+- mark = { stroke: "#33691e", fill: "none" }
+%svg.position-absolute{ width: 0, height: 0, 'aria-hidden': "true" }
+  %defs
+    %pattern#style-pattern-hatch{ width: 8, height: 8, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" }
+      %rect{ width: 8, height: 8, fill: "#9ccc65" }
+      %path{ **mark, d: "M0 0V8", 'stroke-width': 2 }
+    %pattern#style-pattern-cross{ width: 8, height: 8, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" }
+      %rect{ width: 8, height: 8, fill: "#9ccc65" }
+      %path{ **mark, d: "M0 0V8M0 0H8", 'stroke-width': 1.5 }
+    %pattern#style-pattern-lines{ width: 8, height: 8, patternUnits: "userSpaceOnUse" }
+      %rect{ width: 8, height: 8, fill: "#9ccc65" }
+      %path{ **mark, d: "M0 4H8", 'stroke-width': 1.5 }
+    %pattern#style-pattern-grid{ width: 8, height: 8, patternUnits: "userSpaceOnUse" }
+      %rect{ width: 8, height: 8, fill: "#9ccc65" }
+      %path{ **mark, d: "M0 0V8M0 0H8", 'stroke-width': 1.2 }
+    %pattern#style-pattern-dots{ width: 8, height: 8, patternUnits: "userSpaceOnUse" }
+      %rect{ width: 8, height: 8, fill: "#9ccc65" }
+      %circle{ cx: 4, cy: 4, r: 1.5, fill: "#33691e" }
+    %pattern#style-pattern-checker{ width: 12, height: 12, patternUnits: "userSpaceOnUse" }
+      %rect{ width: 12, height: 12, fill: "#9ccc65" }
+      %path{ d: "M0 0H6V6H0ZM6 6H12V12H6Z", fill: "#33691e" }
+- %w[hatch cross lines grid dots checker].each do |name|
+  .styling-cap
+    %svg{ width: 40, height: 40, viewBox: "0 0 40 40", 'aria-hidden': "true" }
+      %rect{ x: 1, y: 1, width: 38, height: 38, rx: 4, fill: "url(#style-pattern-#{name})", stroke: "#33691e", 'stroke-width': 2 }
+    = name

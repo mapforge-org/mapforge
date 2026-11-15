@@ -47,6 +47,7 @@ Rails.application.routes.draw do
 
   get "/admin" => "admin#index"
   get "/docs" => "docs#tutorials", :as => :docs
+  get "/docs/style_preview" => "docs#style_preview", :as => :docs_style_preview
   get "/tutorials", to: redirect("/docs") # legacy route
   get "/tutorial/:id" => "docs#tutorial" # legacy route
   get "/doc/:id" => "docs#tutorial", :as => :doc
