@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
-import { centroid } from '@turf/centroid'
+import { bbox } from '@turf/bbox'
 import { sendMessage } from 'channels/map_channel'
 import * as functions from 'helpers/functions'
 import { status } from 'helpers/status'
@@ -99,11 +99,12 @@ export default class extends Controller {
     // flyTo reads a present but undefined zoom as NaN
     const view = Object.fromEntries(['center', 'zoom', 'pitch', 'bearing']
       .filter(key => mapProps?.[key] != null).map(key => [key, mapProps[key]]))
-    // A KML <LookAt> or the export view frames the import better than its centroid does.
+    // A KML <LookAt> or the export view frames the import better than its bounding box does.
     if (view.center) {
       map.flyTo({ ...view, duration: 1000, curve: 0.3, essential: true })
     } else if (geoJSON?.features?.length > 0) {
-      map.flyTo({ center: centroid(geoJSON).geometry.coordinates, duration: 1000, curve: 0.3, essential: true })
+      // maxZoom keeps a single point import from zooming in to street level
+      map.fitBounds(bbox(geoJSON), { padding: 50, maxZoom: 16, duration: 1000, essential: true })
     }
 
     if (mapProps && Object.keys(mapProps).length) {
