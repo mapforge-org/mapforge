@@ -46,7 +46,7 @@ export async function showElevationChart (feature) {
   const allLabels = computeCumulativeDistances(allCoords).map(Math.round)
   const allValues = allCoords.map(c => c[2])
 
-  const chartLineColor = (feature.properties['fill-extrusion-color'] ||
+  const chartLineColor = functions.cssColor(feature.properties['fill-extrusion-color'] ||
     feature.properties['stroke'] || defaults.featureColor).substring(0, 7)
 
   marker = routeDot(marker, chartLineColor)

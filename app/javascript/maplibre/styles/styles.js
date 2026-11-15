@@ -188,6 +188,10 @@ const styleProp = (keys, defaultVal) => {
   const gets = keys.map(k => ['get', k])
   return defaultVal !== undefined ? ['coalesce', ...gets, defaultVal] : ['coalesce', ...gets]
 }
+// Mapbox simplestyle allows a hex color without the '#'. KEEP IN SYNC with cssColor() in helpers/functions.js.
+// The binding keeps the color expression from being parsed twice.
+const paintColor = color => ['let', 'rawColor', color,
+  ['to-color', ['var', 'rawColor'], ['concat', '#', ['var', 'rawColor']]]]
 const hasProp = key => ['any', ['has', key], ['has', 'user_' + key]]
 // The url of a symbol property: an icon of a set carries its path, a pinhead icon its name or
 // number, an emoji its character. Same rule as symbolUrl in helpers/functions.js. Simplestyle
@@ -932,7 +936,7 @@ const opacityBucketSelector = () => [
 // A transparent 'fill' or 'stroke' makes the extrusion invisible. Use the default color.
 const extrusionColor = () => {
   const color = styleProp(['fill-extrusion-color', 'user_fill-extrusion-color', 'fill', 'user_fill'], defaults.featureColor)
-  return ['case', ['==', color, 'transparent'], defaults.featureColor, color]
+  return paintColor(['case', ['==', color, 'transparent'], defaults.featureColor, color])
 }
 
 // A selected extrusion turns darker as a whole. MapLibre has no darken(), so the channels of the
@@ -1007,7 +1011,7 @@ export function styles () {
         maxZoomFilter()],
       paint: {
         'fill-color': hoverTint(['interpolate', ['linear'], ['var', 'share'],
-          0, ['to-color', fillColor()], 1, defaults.haloColorHover]),
+          0, paintColor(fillColor()), 1, defaults.haloColorHover]),
         'fill-opacity': hoverTint(['var', 'opacity'])
       }
     },
@@ -1043,7 +1047,7 @@ export function styles () {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': polygonOutlineColor(),
+        'line-color': paintColor(polygonOutlineColor()),
         'line-width': outlineWidthPolygon(),
         'line-opacity': lineOpacity()
       }
@@ -1121,7 +1125,7 @@ export function styles () {
         'line-sort-key': sortKey()
       },
       paint: {
-        'line-color': lineColor(),
+        'line-color': paintColor(lineColor()),
         'line-width': lineWidth(),
         'line-opacity': lineOpacity(),
         'line-dasharray': [
@@ -1152,10 +1156,10 @@ export function styles () {
         "circle-pitch-alignment": "map",
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': pointSize(),
-        'circle-color': pointColor(),
+        'circle-color': paintColor(pointColor()),
         'circle-opacity': pointOpacity(),
         'circle-blur': defaults.pointBlur,
-        'circle-stroke-color': pointOutlineColor(),
+        'circle-stroke-color': paintColor(pointOutlineColor()),
         'circle-stroke-width': pointOutlineWidth(),
         'circle-stroke-opacity': ['to-number', ["min", 1, ['+', pointOpacity(), 0.2]]]
       },
@@ -1182,10 +1186,10 @@ export function styles () {
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': pointSize(),
-        'circle-color': pointColor(),
+        'circle-color': paintColor(pointColor()),
         'circle-opacity': pointOpacity(),
         'circle-blur': defaults.pointBlur,
-        'circle-stroke-color': pointOutlineColor(),
+        'circle-stroke-color': paintColor(pointOutlineColor()),
         'circle-stroke-width': pointOutlineWidth(),
         'circle-stroke-opacity': ["min", 1, ['+', pointOpacity(), 0.2]]
       },
@@ -1309,9 +1313,9 @@ export function clusterStyles(icon, color=null) {
       paint: {
         'circle-pitch-scale': 'map', // points get bigger when camera is closer
         'circle-radius': defaults.clusterRadius,
-        'circle-color': color || pointColor(),
+        'circle-color': color || paintColor(pointColor()),
         'circle-blur': defaults.pointBlur,
-        'circle-stroke-color': pointOutlineColor(),
+        'circle-stroke-color': paintColor(pointOutlineColor()),
         'circle-stroke-width': pointOutlineSize(),
         'circle-stroke-opacity': ["min", 1, ['+', pointOpacity(), 0.2]]
       }

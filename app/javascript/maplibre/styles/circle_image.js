@@ -1,4 +1,4 @@
-import { present, symbolUrl } from 'helpers/functions'
+import { cssColor, present, symbolUrl } from 'helpers/functions'
 import { map } from 'maplibre/map'
 import { defaults, markerSizeOf } from 'maplibre/styles/defaults'
 
@@ -118,6 +118,8 @@ function labelWidth (ctx, label, size) {
 // pixels, the style layer scales the image from there.
 export function markerImage (name, { shape = 'circle', color, border = '#CCC', symbol = '', size = 36, halo = false, label = null } = {}) {
   if (map.hasImage(name)) { return name }
+  color = cssColor(color)
+  border = cssColor(border)
 
   const ratio = pixelRatio()
   const canvas = document.createElement('canvas')

@@ -42,7 +42,8 @@ const routeIcons = { bike: 'bi-bicycle', car: 'bi-car-front', foot: 'bi-person-w
 // not: a lazy image stays blank until an async viewport check, so it flickers even from cache.
 export function featureIcon (feature, { link = true, lazy = true } = {}) {
   let image = ''
-  let iconColor = feature.properties['marker-color'] || feature.properties['fill'] || feature.properties['stroke'] || defaults.featureColor
+  let iconColor = f.cssColor(feature.properties['marker-color'] || feature.properties['fill'] ||
+    feature.properties['stroke'] || defaults.featureColor)
   if (iconColor === 'transparent') { iconColor = '#c0c0c0' }
   iconColor = f.escapeHtml(iconColor)
   let iconColorStyle = `style='color: ${iconColor};'`
@@ -53,7 +54,7 @@ export function featureIcon (feature, { link = true, lazy = true } = {}) {
     const img = `<img ${loading}class='feature-details-icon' src='${f.escapeHtml(markerImageUrl)}'>`
     image = link ? `<a target='_blank' href='${f.escapeHtml(imageHref)}'>${img}</a>` : img
   } else if (feature.properties['marker-symbol']) {
-    const outlineColor = f.escapeHtml(feature.properties['stroke'] || defaults.featureOutlineColor)
+    const outlineColor = f.escapeHtml(f.cssColor(feature.properties['stroke']) || defaults.featureOutlineColor)
     image = `<img ${loading}class='feature-details-icon marker-circle' ` +
       `style='--fill: ${iconColor}; --outline: ${outlineColor};' ` +
       `src='${f.escapeHtml(f.symbolUrl(feature.properties['marker-symbol']))}'>`

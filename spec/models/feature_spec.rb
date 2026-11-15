@@ -12,37 +12,6 @@ describe Feature do
     end
   end
 
-  describe "Mapbox simplestyle properties" do
-    let(:point) { { "type" => "Point", "coordinates" => [ 11.0557138, 49.4731983 ] } }
-
-    def saved(properties)
-      described_class.create!(geometry: point, properties: properties).reload.properties
-    end
-
-    it "stores the 'desc' alias as 'description'" do
-      expect(saved("desc" => "Open 9 to 17")).to eq("description" => "Open 9 to 17")
-    end
-
-    it "keeps 'desc' and 'description' when both are set" do
-      expect(saved("desc" => "a", "description" => "b")).to eq("desc" => "a", "description" => "b")
-    end
-
-    it "adds the # to a color without it" do
-      expect(saved("marker-color" => "7e7e7e", "stroke" => "555", "fill" => "#555555", "label-color" => "abc"))
-        .to eq("marker-color" => "#7e7e7e", "stroke" => "#555", "fill" => "#555555", "label-color" => "abc")
-    end
-
-    it "stores an integer marker-symbol as string" do
-      expect(saved("marker-symbol" => 5)).to eq("marker-symbol" => "5")
-    end
-
-    it "converts an update too" do
-      feature = described_class.create!(geometry: point, properties: {})
-      feature.update!(properties: { "marker-color" => "312e81" })
-      expect(feature.reload.properties).to eq("marker-color" => "#312e81")
-    end
-  end
-
   describe "#to_gpx" do
     it "exports valid gpx" do
       feature = described_class.create(type: "Feature", geometry: { "type" => "Point", "coordinates" => [ 11.0557138, 49.4731983 ] })

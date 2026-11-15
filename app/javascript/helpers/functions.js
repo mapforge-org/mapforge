@@ -1,7 +1,11 @@
 const debounceList = []
 const throttleList = []
 
+// Mapbox simplestyle allows a hex color without the '#'. The map style does the same in paintColor().
+export const cssColor = color => /^([0-9a-f]{3}){1,2}$/i.test(color) ? '#' + color : color
+
 export function hexToRgb (hex) {
+  hex = cssColor(hex)
   let r = parseInt(hex.slice(1, 3), 16)
   let g = parseInt(hex.slice(3, 5), 16)
   let b = parseInt(hex.slice(5, 7), 16)
@@ -20,7 +24,7 @@ let colorCtx
 export function hexColor (color, fallback) {
   colorCtx ||= document.createElement('canvas').getContext('2d')
   colorCtx.fillStyle = fallback
-  colorCtx.fillStyle = color // an invalid value leaves the fallback in place
+  colorCtx.fillStyle = cssColor(color) // an invalid value leaves the fallback in place
   return /^#[0-9a-f]{6}$/.test(colorCtx.fillStyle) ? colorCtx.fillStyle : fallback
 }
 

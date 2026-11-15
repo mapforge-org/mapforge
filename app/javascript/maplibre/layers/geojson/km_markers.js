@@ -2,6 +2,7 @@ import { bearing } from "@turf/bearing"
 import { destination } from "@turf/destination"
 import { distance as segmentDistance } from "@turf/distance"
 import { point as turfPoint } from "@turf/helpers"
+import { cssColor } from 'helpers/functions'
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { addLayer, map, noValidate, removeStyleLayers } from 'maplibre/map'
 import { circleImage, pruneCircleImages } from 'maplibre/styles/circle_image'
@@ -34,7 +35,7 @@ const movingEnds = new Map()
 export function showMovingEndMarker (feature, lngLat, distance) {
   let marker = movingEnds.get(feature.id)
   if (!marker) {
-    const color = feature.properties['stroke'] || defaults.featureColor
+    const color = cssColor(feature.properties['stroke']) || defaults.featureColor
     const el = document.createElement('div')
     el.className = 'km-marker-moving-end'
     el.style.backgroundColor = color
@@ -93,7 +94,7 @@ export function renderKmMarkers (features, sourceId) {
 
     const coords = f.geometry.coordinates
     const { distance, kmPoints } = walkKilometers(coords)
-    const markerColor = f.properties['stroke'] || defaults.featureColor
+    const markerColor = cssColor(f.properties['stroke']) || defaults.featureColor
     const markerImageName = circleImage(imagePrefix(sourceId), markerColor)
     imageNames.add(markerImageName)
 
