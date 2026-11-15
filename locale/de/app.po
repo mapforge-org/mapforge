@@ -55,6 +55,9 @@ msgstr "3D-Gelände"
 msgid "3D Terrain:"
 msgstr "3D-Gelände:"
 
+msgid "3D building"
+msgstr ""
+
 msgid "A phone shows your GPS position on the map, next to a compass."
 msgstr "Ein Handy zeigt deine GPS-Position auf der Karte, daneben ein Kompass."
 
@@ -114,6 +117,13 @@ msgstr "Erweiterte Objektgestaltung"
 
 msgid "All"
 msgstr "Alle"
+
+#, fuzzy
+msgid "All properties"
+msgstr "Titel"
+
+msgid "An extruded block with its height above the ground"
+msgstr ""
 
 msgid "Applies in view mode. In edit mode, a click always selects the feature."
 msgstr "Gilt im Ansichtsmodus. Im Bearbeitungsmodus wählt ein Klick immer das Objekt aus."
@@ -204,6 +214,10 @@ msgstr "Gebaut mit"
 
 msgid "Buy me a coffee"
 msgstr "Spende mir einen Kaffee"
+
+#, fuzzy
+msgid "Café marker"
+msgstr "Kartenmarkierung"
 
 msgid "Calculate a bike route (b)"
 msgstr "Fahrradroute berechnen (b)"
@@ -309,6 +323,9 @@ msgstr "Track wird in %{profile}-Route umgewandelt..."
 
 msgid "Coordinates copied to clipboard"
 msgstr "Koordinaten in die Zwischenablage kopiert"
+
+msgid "Copied"
+msgstr ""
 
 msgid "Copy"
 msgstr "Kopieren"
@@ -439,6 +456,10 @@ msgstr "Möchtest du diese Karte kopieren?"
 msgid "Docs"
 msgstr "Doku"
 
+#, fuzzy
+msgid "Docs for the property under the cursor"
+msgstr "Doku"
+
 msgid "Don't show again for this map"
 msgstr "Für diese Karte nicht mehr anzeigen"
 
@@ -562,6 +583,12 @@ msgstr "Fehler beim Aktualisieren der Geometrie von %{type}"
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
 
+msgid "Every style property with a picture of what it does. \"Load in playground\" adds it to the feature above."
+msgstr ""
+
+msgid "Extrusion"
+msgstr ""
+
 msgid "Failed to copy"
 msgstr "Kopieren fehlgeschlagen"
 
@@ -569,6 +596,10 @@ msgid "Failed to load layer %{name}"
 msgstr "Ebene %{name} konnte nicht geladen werden"
 
 msgid "Feature"
+msgstr "Objekt"
+
+#, fuzzy
+msgid "Feature as GeoJSON"
 msgstr "Objekt"
 
 msgid "Featured"
@@ -625,6 +656,9 @@ msgstr "Zu Fuß"
 msgid "Free to try, no signup needed."
 msgstr "Kostenlos, ohne Anmeldung ausprobieren."
 
+msgid "Full text as markdown"
+msgstr ""
+
 msgid "Full track"
 msgstr "Gesamter Track"
 
@@ -642,6 +676,9 @@ msgstr "Leichtes Gefälle (4-6 %)"
 
 msgid "Gentle uphill (4-6%)"
 msgstr "Leichte Steigung (4-6 %)"
+
+msgid "GeoJSON editor"
+msgstr ""
 
 msgid "Geometry"
 msgstr "Geometrie"
@@ -673,6 +710,10 @@ msgstr "Gitter"
 msgid "Ground"
 msgstr "Erde"
 
+#, fuzzy
+msgid "Groups"
+msgstr "Erde"
+
 msgid "Guests view"
 msgstr "Gäste schauen"
 
@@ -690,6 +731,9 @@ msgstr "Wanderkarte mit Höhenlinien und Schattierung"
 
 msgid "Hiking route"
 msgstr "Wanderroute"
+
+msgid "Hiking trail"
+msgstr ""
 
 msgid "Hillshade added to map"
 msgstr "Schummerung zur Karte hinzugefügt"
@@ -751,6 +795,9 @@ msgstr "Die Mapforge-App installieren"
 msgid "Keyboard Shortcuts"
 msgstr "Tastenkürzel"
 
+msgid "Label"
+msgstr ""
+
 msgid "Language"
 msgstr "Sprache"
 
@@ -805,6 +852,9 @@ msgstr "Linie in 2 Abschnitte geteilt"
 msgid "Lines"
 msgstr "Linien"
 
+msgid "Link copied"
+msgstr ""
+
 msgid "Live sync"
 msgstr "Live-Sync"
 
@@ -813,6 +863,9 @@ msgstr "Live-Tracking"
 
 msgid "Load for this area"
 msgstr "Für diesen Bereich laden"
+
+msgid "Load in playground ↑"
+msgstr ""
 
 msgid "Loaded base map %{name}"
 msgstr "Basiskarte %{name} geladen"
@@ -868,6 +921,10 @@ msgstr "Kartenmarkierung"
 msgid "Map owners have this map listed in their account with full permissions."
 msgstr "Eigentümer sehen diese Karte in ihrem Konto und haben volle Rechte."
 
+#, fuzzy
+msgid "Map preview"
+msgstr "Karte"
+
 msgid "Map properties updated"
 msgstr "Karteneigenschaften aktualisiert"
 
@@ -885,6 +942,9 @@ msgstr "Karte mit eigenen, handverlesenen Farben"
 
 msgid "Mapforge: Create and share your own maps online"
 msgstr "Mapforge: Erstelle und teile deine eigenen Karten online"
+
+msgid "Marker"
+msgstr ""
 
 msgid "Max. 5MB"
 msgstr "Max. 5MB"
@@ -958,6 +1018,10 @@ msgstr "Keine Route gefunden"
 msgid "None"
 msgstr "Ohne"
 
+#, fuzzy
+msgid "Not a GeoJSON feature"
+msgstr "Nein"
+
 msgid "Not shown"
 msgstr "Nicht anzeigen"
 
@@ -1014,6 +1078,10 @@ msgstr "Mal-Modus: Auf die Karte klicken zum Zeichnen, loslassen zum Beenden"
 
 msgid "Paint objects on the map"
 msgstr "Objekte auf der Karte zeichnen"
+
+#, fuzzy
+msgid "Park polygon"
+msgstr "Polygon zeichnen"
 
 msgid "Paste %{type}"
 msgstr "%{type} einfügen"
@@ -1102,6 +1170,9 @@ msgstr "Öffentlich"
 msgid "Publish in the gallery or share privately – you decide."
 msgstr "In der Galerie veröffentlichen oder privat teilen – du entscheidest."
 
+msgid "Put the cursor on a property in the editor."
+msgstr ""
+
 msgid "QR code"
 msgstr "QR-Code"
 
@@ -1158,6 +1229,10 @@ msgstr "Wiederhergestellt: %{type}"
 
 msgid "Refresh layer for current view"
 msgstr "Ebene für aktuellen Kartenausschnitt neu laden"
+
+#, fuzzy
+msgid "Related"
+msgstr "Löschen"
 
 msgid "Rename"
 msgstr "Umbenennen"
@@ -1216,6 +1291,9 @@ msgstr "Satellitenbilder ohne Beschriftung"
 msgid "Saving %{type}"
 msgstr "%{type} wird gespeichert"
 
+msgid "Search"
+msgstr ""
+
 msgid "Search location"
 msgstr "Ort suchen"
 
@@ -1258,6 +1336,10 @@ msgstr "Karte teilen"
 
 msgid "Share edit link"
 msgstr "Bearbeitungslink teilen"
+
+#, fuzzy
+msgid "Share link"
+msgstr "Teilen"
 
 msgid "Share map"
 msgstr "Karte teilen"
@@ -1331,6 +1413,9 @@ msgstr "Karte erstellen"
 msgid "Start for free"
 msgstr "Kostenlos loslegen"
 
+msgid "Start from:"
+msgstr ""
+
 msgid "Steep downhill (>16%)"
 msgstr "Starkes Gefälle (>16 %)"
 
@@ -1358,6 +1443,9 @@ msgstr "Straße, Satellit, Topo, Fahrrad, Aquarell, 3D-Gebäude"
 msgid "Streets, Satellite, Topographic, Biking, Watercolor, 3D terrain"
 msgstr "Straße, Satellit, Topo, Fahrrad, Aquarell, 3D-Gelände"
 
+msgid "Stroke"
+msgstr ""
+
 msgid "Style"
 msgstr "Stil"
 
@@ -1366,6 +1454,9 @@ msgstr "Stil-Hilfe"
 
 msgid "Style JSON"
 msgstr "Stil-JSON"
+
+msgid "Styling playground"
+msgstr ""
 
 msgid "Supported formats: gpx, kml, kmz, geojson, mapforge json and images. WGS84 format, max. 2.5MB"
 msgstr "Unterstützte Formate: gpx, kml, kmz, geojson, mapforge json und Bilder. WGS84-Format, max. 2,5 MB"
@@ -1469,6 +1560,9 @@ msgstr "Aufzeichnen mit µlogger"
 msgid "Tutorials"
 msgstr "Tutorials"
 
+msgid "Under the cursor"
+msgstr ""
+
 msgid "Undo"
 msgstr "Rückgängig"
 
@@ -1531,6 +1625,9 @@ msgstr "Auf GitHub ansehen"
 
 msgid "View your map with mountains and valleys"
 msgstr "Betrachte deine Karte mitsamt Bergen und Tälern"
+
+msgid "Visibility"
+msgstr ""
 
 msgid "Visible section"
 msgstr "Sichtbarer Abschnitt"
@@ -1652,6 +1749,9 @@ msgstr "erstelle"
 msgid "data"
 msgstr "daten"
 
+msgid "default: %{value}"
+msgstr ""
+
 msgid "dental"
 msgstr "Zahnarzt|Zahnaerztin|Zahnärztin"
 
@@ -1718,6 +1818,9 @@ msgstr "Kindergarten|Kita|Kindertagesstaette|Kindertagesstätte"
 msgid "on your website"
 msgstr "auf deiner Webseite"
 
+msgid "pattern, anchor, opacity…"
+msgstr ""
+
 msgid "picnic|picnic_table"
 msgstr "Picknick|Picknickplatz|Rastplatz"
 
@@ -1777,6 +1880,9 @@ msgstr "Strassenbahn|Straßenbahn|Tram"
 
 msgid "transparent"
 msgstr "transparent"
+
+msgid "valid"
+msgstr ""
 
 msgid "vet|animal_doctor"
 msgstr "Tierarzt|Tieraerztin|Tierärztin|Tierklinik"

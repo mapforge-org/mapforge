@@ -1,0 +1,94 @@
+- content_for :title, "Mapforge Tutorial: #{@title}"
+- content_for :alternate_md_url, doc_url(format: :md)
+- geometry_labels = { "All" => _("All"), "Point" => _("Point"), "LineString" => _("Line"), "Polygon" => _("Polygon") }
+- presets = [ [ "park", _("Park polygon") ], [ "cafe", _("Café marker") ], [ "trail", _("Hiking trail") ], [ "building", _("3D building") ] ]
+- groups = [ [ "All", _("All") ], [ "Label", _("Label") ], [ "Marker", _("Marker") ], [ "Stroke", _("Stroke") ], [ "Fill", _("Fill") ],
+  [ "Extrusion", _("Extrusion") ], [ "Visibility", _("Visibility") ], [ "Content", _("Content") ] ]
+- pictures = { "min-zoom" => "zoom_range", "max-zoom" => "zoom_range" }
+
+#docs.styling.selectable{ data: { controller: "style-playground",
+  'style-playground-properties-value': @properties.to_json,
+  'style-playground-geometries-value': geometry_labels.to_json,
+  action: "message@window->style-playground#previewMessage" } }
+  %i.bi.bi-arrow-left-square.me-1
+  = link_to 'Docs', docs_path
+
+  .styling-head#playground
+    %h1.mapforge-font= _("Styling playground")
+    .styling-presets
+      %span.styling-muted= _("Start from:")
+      - presets.each do |id, label|
+        %button.styling-pill{ type: "button", data: { action: "click->style-playground#loadPreset",
+          'style-playground-preset-param': id, 'style-playground-target': "preset" } }= label
+
+  .styling-playground
+    %section.styling-editor{ 'aria-label': _("GeoJSON editor") }
+      .styling-editor-bar
+        %span feature.json
+        %span.flex-grow-1
+        %span.styling-status{ role: "status", data: { 'style-playground-target': "status" } }
+        %button.styling-button{ type: "button", data: { action: "click->style-playground#copy" } }= _("Copy")
+        %button.styling-button{ type: "button", data: { action: "click->style-playground#share" } }= _("Share link")
+      %textarea.styling-code{ spellcheck: "false", autocomplete: "off", 'aria-label': _("Feature as GeoJSON"),
+        data: { 'style-playground-target': "editor",
+                action: "input->style-playground#edit keyup->style-playground#showCursor click->style-playground#showCursor" } }
+
+    %section.styling-preview{ 'aria-label': _("Map preview") }
+      %iframe{ src: docs_style_preview_path(nomenu: true), title: _("Map preview"), data: { 'style-playground-target': "preview" } }
+
+  %section.styling-cursor{ 'aria-label': _("Docs for the property under the cursor") }
+    .styling-cursor-main
+      %span.styling-label= _("Under the cursor")
+      .styling-cursor-title
+        %span.styling-cursor-name{ data: { 'style-playground-target': "cursorName" } }
+        %span{ data: { 'style-playground-target': "cursorChips" } }
+      %p.styling-desc{ data: { 'style-playground-target': "cursorDesc" } }= _("Put the cursor on a property in the editor.")
+      .styling-values{ data: { 'style-playground-target': "cursorValues" } }
+    .styling-cursor-related
+      %span.styling-label= _("Related")
+      %div{ data: { 'style-playground-target': "cursorRelated" } }
+
+  %section#properties.styling-properties{ 'aria-label': _("All properties") }
+    .styling-properties-head
+      .styling-intro
+        %h2.mapforge-font= _("All properties")
+        %p.styling-desc
+          = _("Every style property with a picture of what it does. \"Load in playground\" adds it to the feature above.")
+          = link_to _("Full text as markdown"), doc_path(id: 'geojson_style_spec', format: :md)
+      .styling-search
+        %label.styling-label{ for: "style-search" }= _("Search")
+        %input#style-search{ type: "search", placeholder: _("pattern, anchor, opacity…"),
+          data: { 'style-playground-target': "search", action: "input->style-playground#filter" } }
+
+    %nav.styling-tabs{ 'aria-label': _("Groups") }
+      - groups.each do |group, label|
+        %button.styling-pill{ type: "button", class: ("active" if group == "All"),
+          data: { action: "click->style-playground#filterGroup", 'style-playground-group-param': group,
+                  'style-playground-target': "tab" } }= label
+
+    .styling-cards
+      - @properties.each do |property|
+        - name = property[:name]
+        - picture = pictures.fetch(name, name.underscore)
+        - defaults = property[:geometries].values.pluck(:default).uniq
+        %article.styling-card{ id: "property-#{name}", data: { 'style-playground-target': "card", name: name, group: property[:group] } }
+          .styling-card-picture
+            - if lookup_context.exists?(picture, [ "docs/style_pictures" ], true)
+              = render "docs/style_pictures/#{picture}"
+            - else
+              %pre= "{ #{name.to_json}: #{property[:example].nil? ? '"…"' : property[:example].to_json} }"
+          .styling-card-body
+            %div
+              %code.styling-name= name
+            - property[:geometries].each do |geometry, info|
+              %p.styling-desc
+                - if property[:geometries].size > 1
+                  %strong= "#{geometry_labels[geometry]}:"
+                = info[:html]
+            %div
+              - property[:geometries].each_key do |geometry|
+                %span.styling-chip= geometry_labels[geometry]
+              - if defaults.one? && defaults.first
+                %span.styling-chip= _("default: %{value}") % { value: defaults.first }
+            %a.styling-load{ href: "#playground", data: { action: "click->style-playground#loadProperty",
+              'style-playground-name-param': name } }= _("Load in playground ↑")

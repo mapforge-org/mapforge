@@ -20,22 +20,22 @@ Mapforge supports these feature attributes:
 * `label-size`: font size (max. 254). The default is 16. A point with a `marker-size` above 20 adds 0.25 px per px of size, with `marker-scaling` 0.4 px at zoom 16. With `marker-scaling`, a `label-size` you set is the size at zoom 14. The label then doubles with every zoom level up to zoom 17, so values above 31 have no further effect.
 * `label-font`: label font array (default depends on base map, like `["noto_sans_regular"]`), see *[Label fonts](#label-fonts)* below
 * `label-color`: font color in format "#000000" (default)
-* `label-justify`: alignment: auto (default), left, center, right
+* `label-justify`: alignment: `auto` (default), `left`, `center`, `right`
 * `label-max-width`: line width (default 10)
 * `label-letter-spacing`: space between letters (default 0)
 * `label-font-weight`: `normal` (default) or `bold`. It picks the regular or the bold font of the base map. A `label-font` overrides it.
 * `label-background`: `badge` (default) draws a rounded box in the `label-shadow` color behind the label, and the letters get no halo. `shadow` draws only the halo around the letters. A label with `marker-scaling` always gets `shadow`.
 * `label-shadow`: font shadow and background color of the label box in format "#ffffff" (default)
 * `label-shadow-width`: shadow width/halo width in pixels (default 2, max. 5)
-* `label-anchor`: text anchor position relative to the feature: top (default), bottom, left, right, center, top-left, top-right, bottom-left, bottom-right. A point label with `center` and without `label-title`, and without a `label-offset` other than `[0, 0]`, is drawn as a part of the marker: it always shows, and a marker on top covers it together with its marker.
+* `label-anchor`: text anchor position relative to the feature: `top` (default), `bottom`, `left`, `right`, `center`, `top-left`, `top-right`, `bottom-left`, `bottom-right`. A point label with `center` and without `label-title`, and without a `label-offset` other than `[0, 0]`, is drawn as a part of the marker: it always shows, and a marker on top covers it together with its marker.
 * `label-offset`: label position offset from the anchor as `[x, y]` in em units (default: depends on marker size for `label-anchor: top`, otherwise `[0, 0]`)
 * `sort-key`: sort order of features: higher numbers overlay lower numbers (default: 1)
 * `min-zoom`: Display feature only on zoom levels bigger than min-zoom (only integer values)
 * `max-zoom`: Display feature only on zoom levels smaller than max-zoom (only integer values)
 * `level`: floor the feature belongs to (for example `"0"`, `"1"`, `"-1"`). Accepts an OSM-style semicolon-separated list (`"0;1;2"`) for features that span multiple floors. Features without this property are always visible.
 * `title`: title
-* `description`: detailed description (markdown supported).
-* `onclick`: on hover/click behavior: 'details' (default), 'false' (do not react on hover/click), 'link' (link to url), 'feature' (link to another feature on the map)
+* `description`: detailed description (markdown supported)
+* `onclick`: on hover/click behavior: `details` (default), `false` (do not react on hover/click), `link` (link to url), `feature` (link to another feature on the map)
 * `onclick-target`: required for onclick=link/feature: url or feature id of target. A link must use http or https.
 
 #### *Point* geometry:

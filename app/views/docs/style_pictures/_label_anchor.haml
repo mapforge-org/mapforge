@@ -1,0 +1,3 @@
+.styling-anchors
+  - %w[top-left top top-right left center right bottom-left bottom bottom-right].each do |anchor|
+    %div{ class: ("active" if anchor == "top") }= anchor

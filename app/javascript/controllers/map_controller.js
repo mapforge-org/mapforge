@@ -6,7 +6,8 @@ import * as functions from 'helpers/functions'
 import { initializeEditMode } from 'maplibre/edit'
 import { moveFeatureTo, setHoveredFeature } from 'maplibre/feature'
 import { showHoverInfo } from 'maplibre/feature/hover_info'
-import { addFeature, resetInitializationState } from 'maplibre/layers/layers'
+import { bbox } from '@turf/bbox'
+import { addFeature, initializeLayers, layers, resetInitializationState } from 'maplibre/layers/layers'
 import {
   initializeMap,
   initializeStaticMode,
@@ -37,12 +38,32 @@ export default class extends Controller {
       } else {
         initializeViewMode()
       }
-      initializeSocket()
+      if (window.gon.style_preview) { this.listenForPreview() } else { initializeSocket() }
     }
     setBackgroundMapLayer()
   }
 
+  // The styling docs page draws its edited feature on this map, see style_playground_controller.js
+  listenForPreview () {
+    this.previewListener = (event) => {
+      if (event.origin !== window.location.origin || event.data?.type !== 'style-preview' || !layers) { return }
+      layers[0].geojson = { type: 'FeatureCollection', features: [event.data.feature] }
+      layers[0].render()
+      if (event.data.fit) {
+        map.setPitch(event.data.pitch || 0)
+        map.fitBounds(bbox(event.data.feature), { padding: 80, maxZoom: 17, duration: 0 })
+      }
+    }
+    window.addEventListener('message', this.previewListener)
+    // The layers need the basemap style, which is in place on 'load'
+    map.once('load', async () => {
+      await initializeLayers()
+      window.parent.postMessage({ type: 'style-preview-ready' }, window.location.origin)
+    })
+  }
+
   disconnect() {
+    if (this.previewListener) { window.removeEventListener('message', this.previewListener) }
     // Clean up when navigating away from the map
     console.log('Map controller disconnecting, cleaning up...')
     // a revisit of the map would skip the hover of the same feature
