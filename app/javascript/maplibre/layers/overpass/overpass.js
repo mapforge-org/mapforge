@@ -41,10 +41,10 @@ export class OverpassLayer extends Layer {
 
   /**
    * Built on demand, so the tags stay the only copy of the element in the feature.
-   * A query template can put its own text into desc, that text opens the body.
+   * A query template can put its own text into description, that text opens the body.
    */
   description(feature) {
-    return [feature.properties.desc, overpassDescription(feature.properties.osm)]
+    return [feature.properties.description, overpassDescription(feature.properties.osm)]
       .filter(Boolean).join('\n\n')
   }
 

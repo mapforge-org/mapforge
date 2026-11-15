@@ -124,7 +124,7 @@ export async function fetchRouteDetails(theme, routeId) {
     const properties = {
       title: routeName,
       label: routeName,
-      desc: buildDescription(details, theme, routeId),
+      description: buildDescription(details, theme, routeId),
       stroke: determineRouteColor(details, theme),
       waymarkedtrailsId: routeId
     }

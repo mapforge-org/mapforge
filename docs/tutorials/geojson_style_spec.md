@@ -5,9 +5,9 @@ Most of the properties are supported to be changed in the UI. For changing the p
 
 ### Supported feature attributes:
 
-Mapforge supports every attribute and value of the [Mapbox Simplestyle Spec 1.1.0](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0), and it extends the spec with the attributes below. Mapforge converts three simplestyle forms when it saves or imports a feature:
+Mapforge supports every attribute and value of the [Mapbox Simplestyle Spec 1.1.0](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0), and it extends the spec with the attributes below. Mapforge converts these forms when it saves or imports a feature:
 
-* `description` becomes `desc`, if the feature has no `desc`.
+* `desc`, the name in older Mapforge maps, becomes `description`, if the feature has no `description`.
 * A color without `#` in `marker-color`, `stroke` or `fill`, like `7e7e7e`, gets the `#`.
 * A number in `marker-symbol`, like `5`, becomes the text `"5"`.
 
@@ -36,7 +36,7 @@ Mapforge supports these feature attributes:
 * `max-zoom`: Display feature only on zoom levels smaller than max-zoom (only integer values)
 * `level`: floor the feature belongs to (for example `"0"`, `"1"`, `"-1"`). Accepts an OSM-style semicolon-separated list (`"0;1;2"`) for features that span multiple floors. Features without this property are always visible.
 * `title`: title
-* `desc`: detailed description (markdown supported). The `description` of simplestyle becomes `desc`.
+* `description`: detailed description (markdown supported). Mapforge also reads `desc` as an alias.
 * `onclick`: on hover/click behavior: 'details' (default), 'false' (do not react on hover/click), 'link' (link to url), 'feature' (link to another feature on the map)
 * `onclick-target`: required for onclick=link/feature: url or feature id of target. A link must use http or https.
 
@@ -53,7 +53,7 @@ Mapforge supports these feature attributes:
 * `stroke`: circle border color (default "white", 'transparent' for none)
 * `flat`: if set, marker + label with be projected 'flat' on the map
 * `marker-rotate`: rotate marker by x degrees clockwise
-* `show-desc`: render `desc` as HTML above the marker, scaled by `marker-scaling`. One of `banner`, `square` or `bubble` (default: not shown)
+* `show-desc`: render `description` as HTML above the marker, scaled by `marker-scaling`. One of `banner`, `square` or `bubble` (default: not shown)
 
 #### *LineString* geometry:
 

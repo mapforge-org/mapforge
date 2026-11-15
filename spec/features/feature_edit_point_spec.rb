@@ -104,7 +104,7 @@ describe "Feature edit, point features" do
         expect(page).to have_text("Add a description text")
         text_area = find(:css, ".CodeMirror textarea", visible: false)
         text_area.set("New Desc")
-        wait_for { point.reload.properties["desc"] }.to eq("New Desc")
+        wait_for { point.reload.properties["description"] }.to eq("New Desc")
       end
 
       it "can update fill color" do
@@ -276,7 +276,7 @@ describe "Feature edit, point features" do
     end
 
     context "with a clustered layer" do
-      let(:point) { create(:feature, :point_middle, desc: "Clustered", properties: { "show-desc" => "banner" }) }
+      let(:point) { create(:feature, :point_middle, description: "Clustered", properties: { "show-desc" => "banner" }) }
       let(:map) { create(:map, features: [ point ]).tap { |m| m.layers.first.update!(cluster: true) } }
 
       it "shows the banner only above the cluster zoom" do

@@ -16,7 +16,7 @@ const prefix = layer => `${layer.id}/`
 const key = (layer, feature) => prefix(layer) + feature.id
 
 const hasDescBanner = feature => feature.geometry?.type === 'Point' &&
-  !!feature.properties?.['show-desc'] && !!feature.properties?.desc
+  !!feature.properties?.['show-desc'] && !!feature.properties?.description
 
 export function renderDescBanners (features, layer, visible = layer.show !== false) {
   const wanted = new Set()
@@ -62,7 +62,7 @@ export function refreshDescBanners () {
 export const descShape = feature => feature.properties['show-desc'] || 'none'
 
 function upsertDescBanner (feature, layer, visible) {
-  const html = renderMarkdown(feature.properties.desc)
+  const html = renderMarkdown(feature.properties.description)
   const shape = descShape(feature)
   // the tail of a bubble sits at its corner, and maplibre puts the tip where the anchor is
   const anchor = shape === 'bubble' ? 'bottom-left' : 'bottom'

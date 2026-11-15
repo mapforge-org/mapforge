@@ -80,7 +80,7 @@ function featureHasDescription (feature) {
   if (p.wikipediaId) return true
   // the tags of an osm element become the body of the modal, see overpassDescription
   if (p.osm) return true
-  return !!p.desc
+  return !!p.description
 }
 
 export function showFeatureDetails (feature) {
@@ -167,7 +167,7 @@ async function featureDescription (feature) {
     // the search layer is imported here, a static import of it breaks the module init order
     const layer = getLayer(feature.id) ||
       (await import('maplibre/layers/search')).searchLayerOf(feature.id)
-    const markdown = layer?.description ? await layer.description(feature) : feature?.properties?.desc
+    const markdown = layer?.description ? await layer.description(feature) : feature?.properties?.description
     desc = marked(markdown || '')
   }
   // every branch builds html from properties or api answers that a stranger can control

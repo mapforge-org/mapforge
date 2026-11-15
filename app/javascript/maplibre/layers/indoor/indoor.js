@@ -92,7 +92,7 @@ export class IndoorLayer extends Layer {
       if (!feature) return
 
       feature.properties.label = feature.properties.name || feature.properties.class
-      feature.properties.desc = indoorDescription(feature.properties)
+      feature.properties.description = indoorDescription(feature.properties)
 
       const sourceLayer = feature.layer['source-layer'] || feature.sourceLayer
       highlightFeature(feature, false, this.sourceId, sourceLayer)
@@ -114,7 +114,7 @@ export class IndoorLayer extends Layer {
       }
       geojsonFeature.id = geojsonFeature.properties.id = featureId()
       delete geojsonFeature.properties.label
-      delete geojsonFeature.properties.desc
+      delete geojsonFeature.properties.description
 
       addCopyToLayerMenuItem(geojsonFeature)
     })
@@ -218,7 +218,7 @@ export class IndoorLayer extends Layer {
 }
 
 function indoorDescription(props) {
-  const skipKeys = ['name', 'label', 'desc']
+  const skipKeys = ['name', 'label', 'description']
 
   let desc = '\n'
   desc += '|               |               |\n'

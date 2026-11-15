@@ -89,7 +89,7 @@ export default class extends Controller {
     // Only show description controls for non-geometry tabs
     if (tab !== 'geometry') {
       dom.showElements(['#button-add-desc'])
-      feature.properties.desc ? this.show_add_desc() : dom.hideElements(['#feature-desc-section', '#feature-desc'])
+      feature.properties.description ? this.show_add_desc() : dom.hideElements(['#feature-desc-section', '#feature-desc'])
     }
 
     this.show_ui_tab(tab)
@@ -303,15 +303,15 @@ export default class extends Controller {
     dom.showElements(['#feature-desc-section', '#feature-desc'])
     await loadMarkdownEditor()
     if (easyMDE) { easyMDE.toTextArea() }
-    document.querySelector('#feature-desc-input').value = this.getSelectedFeature().properties.desc || ''
+    document.querySelector('#feature-desc-input').value = this.getSelectedFeature().properties.description || ''
     easyMDE = markdownEditor(document.getElementById('feature-desc-input'), () => { this.updateDesc() })
   }
 
   updateDesc () {
     const feature = this.getSelectedFeature()
     try {
-      if (easyMDE && feature.properties.desc !== easyMDE.value()) {
-        feature.properties.desc = easyMDE.value()
+      if (easyMDE && feature.properties.description !== easyMDE.value()) {
+        feature.properties.description = easyMDE.value()
         if (feature.properties['show-desc']) { applyFeatureUpdate(feature) }
         functions.debounce(() => { this.saveFeature() }, 'desc', 2000)
       }

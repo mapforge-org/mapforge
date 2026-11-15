@@ -32,9 +32,9 @@ export async function uploadImageToFeature(image, feature) {
   feature.properties['marker-image-url'] = data.icon
   feature.properties['stroke'] = 'transparent'
   feature.properties['marker-color'] = 'transparent'
-  const desc = feature.properties.desc?.trim()
+  const desc = feature.properties.description?.trim()
   if (!desc || desc.startsWith('[![image]')) {
-    feature.properties['desc'] = `[![image](${data.image})](${data.image})\n`
+    feature.properties['description'] = `[![image](${data.image})](${data.image})\n`
   }
   return data
 }

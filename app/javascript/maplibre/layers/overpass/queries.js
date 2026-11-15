@@ -102,7 +102,7 @@ export const queries = [
            'out geom 250;\n',
     style: (f) => {
       if (f.properties.osm.name) {
-        f.properties.desc = "[Abfahrten](https://bahn.expert/" +
+        f.properties.description = "[Abfahrten](https://bahn.expert/" +
           encodeURIComponent(f.properties.osm.name) + ")"
       }
       if (f.properties.osm.route === "tracks") {

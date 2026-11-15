@@ -19,8 +19,8 @@ describe Feature do
       described_class.create!(geometry: point, properties: properties).reload.properties
     end
 
-    it "keeps 'description' as 'desc'" do
-      expect(saved("description" => "Open 9 to 17")).to eq("desc" => "Open 9 to 17")
+    it "stores the 'desc' alias as 'description'" do
+      expect(saved("desc" => "Open 9 to 17")).to eq("description" => "Open 9 to 17")
     end
 
     it "keeps 'desc' and 'description' when both are set" do

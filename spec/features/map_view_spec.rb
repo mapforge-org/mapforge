@@ -102,7 +102,7 @@ describe "Map public view" do
 
   context "with existing features" do
     # this polygon is in the middle of nbg (default view)
-    let(:polygon) { create(:feature, :polygon_middle, title: "Poly Title", desc: "Poly Desc") }
+    let(:polygon) { create(:feature, :polygon_middle, title: "Poly Title", description: "Poly Desc") }
     let(:map) { create(:map, features: [ polygon ]) }
 
     it "shows feature details on click" do
@@ -304,7 +304,7 @@ describe "Map public view" do
     let(:map) { create(:map, features: [ point, target ]) }
 
     def banner_point(onclick)
-      create(:feature, :point_middle, desc: "Banner text", properties: { "show-desc" => "banner" }.merge(onclick))
+      create(:feature, :point_middle, description: "Banner text", properties: { "show-desc" => "banner" }.merge(onclick))
     end
 
     context "with a feature link" do
