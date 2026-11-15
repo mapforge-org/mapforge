@@ -462,11 +462,7 @@ export function setLayerVisibility(sourceName, visible) {
     if (sourceName.startsWith('raster-source-')) {
       sources.push(sourceName + '-features')
     }
-    styleLayers()
-      .filter(l => sources.includes(l.source))
-      .forEach(l => {
-        if (map.getLayer(l.id)) map.setLayoutProperty(l.id, 'visibility', visible ? 'visible' : 'none', noValidate)
-      })
+    applyVisibility(sources, visible)
     // the visibility of an image overlay also depends on the level of its feature
     if (layer?.type === 'geojson') { showImageOverlays(layer.geojson.features, layer.id, visible) }
   }
@@ -474,7 +470,28 @@ export function setLayerVisibility(sourceName, visible) {
   if (layer?.type === 'geojson') { showDescBanners(layer, visible) }
 }
 
+// MapLibre loads tiles only for a source with a visible style layer. Hiding the layers of an
+// empty companion source (km markers, route extras, extrusions) saves one worker round trip
+// per tile and per zoom step.
+const emptySources = new Set()
+
+function applyVisibility(sources, visible) {
+  styleLayers()
+    .filter(l => sources.includes(l.source))
+    .forEach(l => {
+      const shown = visible && !emptySources.has(l.source)
+      map.setLayoutProperty(l.id, 'visibility', shown ? 'visible' : 'none', noValidate)
+    })
+}
+
+export function setSourceEmpty(sourceName, empty) {
+  if (empty) { emptySources.add(sourceName) } else { emptySources.delete(sourceName) }
+  const mainSourceId = sourceName.replace(/^.*?-source-/, 'geojson-source-')
+  applyVisibility([sourceName], layers?.find(l => l.sourceId === mainSourceId)?.show !== false)
+}
+
 export function removeGeoJSONSource(sourceName) {
+  emptySources.delete(sourceName)
   removeStyleLayers(sourceName)
   if (map.getSource(sourceName)) {
     map.removeSource(sourceName)

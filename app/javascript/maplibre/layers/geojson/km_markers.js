@@ -3,7 +3,7 @@ import { destination } from "@turf/destination"
 import { distance as segmentDistance } from "@turf/distance"
 import { point as turfPoint } from "@turf/helpers"
 import { withLevelFilter } from 'maplibre/controls/levels'
-import { addLayer, map, noValidate, removeStyleLayers } from 'maplibre/map'
+import { addLayer, map, noValidate, removeStyleLayers, setSourceEmpty } from 'maplibre/map'
 import { circleImage, pruneCircleImages } from 'maplibre/styles/circle_image'
 import { defaults } from 'maplibre/styles/defaults'
 import { setSource } from 'maplibre/styles/styles'
@@ -123,6 +123,7 @@ export function renderKmMarkers (features, sourceId) {
 
   const markerFeatures = { type: 'FeatureCollection', features: kmMarkerFeatures }
   map.getSource(sourceId).setData(markerFeatures)
+  setSourceEmpty(sourceId, kmMarkerFeatures.length === 0)
   pruneCircleImages(imagePrefix(sourceId), imageNames)
 }
 

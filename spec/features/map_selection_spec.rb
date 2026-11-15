@@ -112,6 +112,21 @@ describe "Map selection" do
       expect(covered_labels).not_to include "free"
       wait_for { rendered_labels }.to eq (%w[first second free] - covered_labels).sort
     end
+
+    context "among more than 200 points in view" do
+      let(:points) do
+        # below the labeled points, which stay among the 200 top-most
+        201.times.map { |i| create(:feature, :point, coordinates: [ 11.0527 + i * 0.00003, 49.4735 ]) } + super()
+      end
+
+      it "hides no label" do
+        wait_for { rendered_properties(/^points-layer_/).size }.to be > 200
+        # a move runs hideCoveredLabels on moveend, this 'idle' handler runs after it
+        script = "const done = arguments[arguments.length - 1]; map.once('idle', () => " \
+                 "done(map.getGlobalState().coveredLabels ?? '')); map.panBy([ 1, 0 ], { duration: 0 })"
+        expect(page.evaluate_async_script(script)).to eq ""
+      end
+    end
   end
 
   context "with centered labels on points that cover each other" do

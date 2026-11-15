@@ -69,7 +69,10 @@ export function hideCoveredLabels () {
   stale.labels = false
   const pointLayers = map.getLayersOrder().filter(id => /^(points-layer|shapes-layer|symbols-layer)_/.test(id))
   // top-most first
-  const points = pointLayers.length ? map.queryRenderedFeatures({ layers: pointLayers }).slice(0, MAX_IMAGES) : []
+  const rendered = pointLayers.length ? map.queryRenderedFeatures({ layers: pointLayers }) : []
+  // With more points in view, labels collide anyway and MapLibre hides most of them. The set
+  // would change on each move, and every change reloads all point tiles, see the comment above.
+  const points = rendered.length > MAX_IMAGES ? [] : rendered
 
   const above = []
   const seen = new Set()

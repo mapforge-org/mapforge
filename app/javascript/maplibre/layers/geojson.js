@@ -24,7 +24,7 @@ import {
 import { highlightFeature } from 'maplibre/feature'
 import { Layer, queryFeaturesNear } from 'maplibre/layers/layer'
 import { frontFeature, getFeature, layers } from 'maplibre/layers/layers'
-import { addGeoJSONSource, map, noValidate, removeGeoJSONSource } from 'maplibre/map'
+import { addGeoJSONSource, map, noValidate, removeGeoJSONSource, setSourceEmpty } from 'maplibre/map'
 import { pruneShapeImages } from 'maplibre/styles/circle_image'
 import { prunePatternImages } from 'maplibre/styles/pattern_image'
 import {
@@ -448,5 +448,6 @@ export class GeoJSONLayer extends Layer {
       .filter(Boolean)
 
     source.setData({ type: 'FeatureCollection', features: extrusionFeatures })
+    setSourceEmpty(this.extrusionSourceId, extrusionFeatures.length === 0)
   }
 }

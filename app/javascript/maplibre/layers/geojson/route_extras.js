@@ -3,7 +3,7 @@ import { distance } from "@turf/distance"
 import { point } from "@turf/helpers"
 import { withLevelFilter } from 'maplibre/controls/levels'
 import { buildLineExtrusion, groundRanges, offTerrainRanges, wallPieceLength } from 'maplibre/layers/geojson/extrusion'
-import { addLayer, map, noValidate } from 'maplibre/map'
+import { addLayer, map, noValidate, setSourceEmpty } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
 
 const labelsBaseFilter = ['all', ['has', 'route-extras-label'], [">=", ["zoom"], 10]]
@@ -409,6 +409,7 @@ export function renderRouteExtras (features, sourceId) {
     type: 'FeatureCollection',
     features: extrasFeatures.concat(extrusionFeatures)
   })
+  setSourceEmpty(sourceId, extrasFeatures.length + extrusionFeatures.length === 0)
 }
 
 export function initializeExtrasLabelStyles (sourceId) {
