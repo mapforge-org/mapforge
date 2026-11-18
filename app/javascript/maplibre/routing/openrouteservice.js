@@ -104,6 +104,8 @@ export async function orsFetch ({ method: _method, url, payload }) {
       decodedCoordinates: routeCoords,
       legs: [],
       extras: { ...route.extras, off_terrain: offTerrain },
+      // estimated travel time in seconds, at the place where OSRM has it
+      duration: route.summary?.duration || 0,
       way_points: route.way_points
     }))
   }
@@ -400,6 +402,8 @@ export async function getRouteUpdate (originalFeature, updatedFeature) {
     updatedFeature.geometry.coordinates = routeLocations
 
     updatedFeature.properties.route.waypoints = waypoints
+    // estimated travel time in seconds
+    updatedFeature.properties.route.duration = Math.round(routeResponse.routes[0].summary.duration || 0)
     updatedFeature.properties.route.extras = { ...routeResponse.routes[0].extras,
       off_terrain: await offTerrainExtra(routeLocations, routeResponse.routes[0].extras) }
   } catch (err) {

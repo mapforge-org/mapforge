@@ -9,7 +9,7 @@ import { status } from 'helpers/status'
 import { showFeatureDetails } from 'maplibre/feature/details'
 import { upsert } from 'maplibre/layers/layers'
 import { getRouteElevation, ORS_EXTRA_INFO, orsProfiles } from 'maplibre/routing/openrouteservice'
-import { defaults } from 'maplibre/styles/defaults'
+import { defaults, routeColor } from 'maplibre/styles/defaults'
 import { addUndoState } from 'maplibre/undo'
 import Openrouteservice from 'openrouteservice-js'
 
@@ -186,7 +186,7 @@ export async function convertToRoute(originalFeature, profile) {
     }
 
     // Create new routed feature with default route styling
-    const trackColor = profile === 'bike' ? '#0a870a' : profile === 'foot' ? '#a51d2d' : '#1a5fb4'
+    const trackColor = routeColor(profile)
     const newFeature = {
       type: 'Feature',
       id: functions.featureId(),
@@ -210,7 +210,9 @@ export async function convertToRoute(originalFeature, profile) {
           provider: 'ors',
           profile: profile,
           waypoints: snappedWaypoints,
-          extras: routeResponse.routes[0].extras
+          extras: routeResponse.routes[0].extras,
+          // estimated travel time in seconds
+          duration: Math.round(routeResponse.routes[0].summary.duration || 0)
         }
       }
     }
@@ -268,6 +270,7 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
 
   const allCoordinates = []
   let allExtras = null
+  let duration = 0
 
   for (const [index, segment] of segments.entries()) {
     status(window.__('Routing segment %{index}/%{total}...')
@@ -291,6 +294,7 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
 
     const routeResponse = await orsDirections.calculate(routeOptions)
     const segmentCoords = decodePolyline(routeResponse.routes[0].geometry)
+    duration += routeResponse.routes[0].summary.duration || 0
 
     // Merge coordinates (skip first point of subsequent segments to avoid duplicates)
     if (index === 0) {
@@ -336,7 +340,7 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
   finalWaypoints.push(functions.removeElevation([finalCoordinates[finalCoordinates.length - 1]])[0])
 
   // Create new routed feature
-  const trackColor = profile === 'bike' ? '#0a870a' : profile === 'foot' ? '#a51d2d' : '#1a5fb4'
+  const trackColor = routeColor(profile)
   const routedLength = length(lineString(functions.removeElevation(finalCoordinates)))
 
   const newFeature = {
@@ -360,7 +364,8 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
         provider: 'ors',
         profile: profile,
         waypoints: finalWaypoints,
-        extras: allExtras
+        extras: allExtras,
+        duration: Math.round(duration)
       }
     }
   }

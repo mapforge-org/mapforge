@@ -122,6 +122,8 @@ const baseEditDefaults = {
 export const glyphShift = font => (font.startsWith('noto_sans_') ? 1 / 16 : 0)
 
 export const defaults = { ...baseDefaults }
+// the color of a new routed track per routing profile
+export const routeColor = profile => ({ bike: '#0a870a', foot: '#a51d2d' })[profile] || '#1a5fb4'
 export const editDefaults = { ...baseEditDefaults }
 
 // Size a point falls back to when it has no explicit 'marker-size'.
