@@ -429,7 +429,8 @@ body:has(#map-mode-badge) .layer-popover {
   color: #666;
 }
 
-.feature-hover-info .hover-position .bi {
+/* the hover card shares its position row with the elevation profile, see #elevation-here */
+:is(.feature-hover-info, .track-position) .hover-position :is(.bi, .grade-icon) {
   margin-right: 0.3rem;
 }
 
@@ -463,14 +464,14 @@ body:has(#map-mode-badge) .layer-popover {
 
 /* the route color can be pale, a shadow keeps the line, the rings and the icons on the white card */
 .feature-hover-info .hover-bar,
-.feature-hover-info .hover-position .hover-ring,
+:is(.feature-hover-info, .track-position) .hover-position .hover-ring,
 .feature-hover-info .hover-head .bi,
 .feature-hover-info .hover-head .feature-details-icon,
 .feature-hover-info .hover-swatch {
   filter: drop-shadow(0 1px 1px rgb(0 0 0 / 30%));
 }
 
-.feature-hover-info .hover-position {
+:is(.feature-hover-info, .track-position) .hover-position {
   display: flex;
   flex-wrap: wrap;
   align-items: center;

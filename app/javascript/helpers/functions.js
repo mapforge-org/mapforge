@@ -72,6 +72,11 @@ export function isTouchDevice () {
   return navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches
 }
 
+// a phone, no hover. A touch laptop with a mouse still hovers, isTouchDevice() alone would count it.
+export function touchOnly () {
+  return isTouchDevice() && !window.matchMedia('(hover: hover)').matches
+}
+
 // Keep in sync with the bottom sheet media queries in feature.css and modals.css
 export function isBottomSheet () {
   return window.matchMedia('(width <= 640px), (height < 410px)').matches
@@ -143,4 +148,17 @@ export function toDegreesMinutes (decimal, isLatitude) {
   }
 
   return degrees + '° ' + minutes.toFixed(3) + "' " + hemisphere
+}
+
+// in the language of the page, so 9.66 shows as 9,66 on a German page. The typographic minus
+// replaces the hyphen of a negative number.
+// the hover card formats in each mouse move, a new formatter per call costs more than the call
+const numberFormats = new Map()
+export function formatNumber (value, digits = 0, options = {}) {
+  const key = digits + JSON.stringify(options)
+  if (!numberFormats.has(key)) {
+    numberFormats.set(key, new Intl.NumberFormat(document.documentElement.lang || undefined,
+      { minimumFractionDigits: digits, maximumFractionDigits: digits, ...options }))
+  }
+  return numberFormats.get(key).format(value).replace('-', '−')
 }

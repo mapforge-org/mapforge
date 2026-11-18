@@ -3,6 +3,7 @@ import { coordEach } from "@turf/meta"
 import * as f from 'helpers/functions'
 import { resetControls } from 'maplibre/controls/shared'
 import { showFeatureDetails } from 'maplibre/feature/details'
+import { closeElevationChart } from 'maplibre/feature/elevation'
 import { getFeatureSource, layers } from "maplibre/layers/layers"
 import { map } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
@@ -26,7 +27,7 @@ export function featureTitle (feature) {
 const isImageUrl = url => !!url && (url.startsWith('/') || url.startsWith('http'))
 
 // A route profile is short ('bike', 'car', 'foot') or an openrouteservice one ('cycling-road')
-function routeKind (feature) {
+export function routeKind (feature) {
   const profile = feature.properties?.route?.profile
   if (!profile) { return null }
   if (profile === 'bike' || profile.includes('cycling')) { return 'bike' }
@@ -132,6 +133,7 @@ export function resetHighlightedFeature () {
   layers?.forEach(layer => layer.clearHighlight())
   // reset active modals
   f.e('#feature-details-modal', e => { e.classList.remove('show') })
+  closeElevationChart()
 }
 
 // For highlighting features from vector layers, we need to track their sourceLayer.

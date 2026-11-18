@@ -296,7 +296,7 @@ describe "Map selection" do
       xy = viewport_xy_for_lat_lng(49.4722, 11.0492)
       hover_coord(xy[:x], xy[:y])
       expect(page).to have_css(".feature-hover-info", text: /River walk\s*2\.\d+ km/)
-      expect(page).to have_css(".feature-hover-info .hover-position", text: /\Akm 1\.\d\s*3\d\d m\s*7-11%\z/)
+      expect(page).to have_css(".feature-hover-info .hover-position", text: /\Akm 1\.\d\s*3\d\d m\s*\+\d\.\d %\z/)
       expect(page).to have_css(".hover-route-dot")
 
       # the card must let the mouse events through to the map

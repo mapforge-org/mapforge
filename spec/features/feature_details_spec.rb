@@ -63,6 +63,19 @@ describe "Feature details" do
     it "opens at modal-pull-middle for the elevation chart" do
       expect(page).to have_css("#feature-details-modal.modal-pull-middle")
     end
+
+    it "shows the export bar only at the end of the content" do
+      expect(page).to have_css("#feature-details-modal.modal-pull-middle")
+      bar_below_view = <<~JS
+        (() => {
+          const scroll = document.querySelector('.feature-modal-scroll').getBoundingClientRect()
+          return document.querySelector('#feature-export-bar').getBoundingClientRect().top >= scroll.bottom
+        })()
+      JS
+      wait_for { page.evaluate_script(bar_below_view) }.to be true
+      page.execute_script("document.querySelector('.feature-modal-scroll').scrollTo(0, 100000)")
+      wait_for { page.evaluate_script(bar_below_view) }.to be false
+    end
   end
 
   context "click tolerance on a thin line" do
@@ -165,6 +178,22 @@ describe "Feature details" do
     end
   end
 
+  context "tabs" do
+    it "keeps the open tab when the open feature is selected again, the details tab goes back" do
+      click_center_of_screen
+      find("#edit-button-style").click
+      expect(page).to have_css("#edit-button-style.active")
+
+      click_center_of_screen
+      expect(page).to have_css("#edit-button-style.active")
+      expect(page).to have_no_css("#feature-details-body")
+
+      find("#edit-button-details").click
+      expect(page).to have_css("#edit-button-details.active")
+      expect(page).to have_css("#feature-details-body")
+    end
+  end
+
   context "image marker" do
     let(:feature) do
       create(:feature, :point_middle, properties: { "marker-size" => "150", "marker-image-url" => "/icon/none.webp" })
@@ -241,19 +270,18 @@ describe "Feature details" do
       expect(page).to have_css("#route-elevation-chart")
     end
 
-    it "shows elevation gain and loss stats" do
-      expect(page).to have_css("#elevation-stats")
-      expect(page).to have_css("#elevation-gain")
-      expect(page).to have_css("#elevation-loss")
+    it "shows the length, ascent and descent and counts the points of a line without waypoints" do
+      expect(page).to have_css("#feature-title", text: "Elevation Track")
+      expect(page).to have_css("#feature-subtitle", text: "Line · 6 points")
+      expect(page).to have_css(".feature-stat", text: /Ascent\s+50 m/)
+      expect(page).to have_css(".feature-stat", text: /Descent\s+60 m/)
+      expect(page).to have_css(".feature-stat", text: "Length")
     end
 
-    it "can toggle between visible section and full track" do
-      scope = find("#elevation-scope-toggle")
-      expect(scope).to have_text("Visible section")
-      scope.click
-      expect(scope).to have_text("Full track")
-      scope.click
-      expect(scope).to have_text("Visible section")
+    it "shows the point under the mouse" do
+      expect(page).to have_css("#elevation-here.idle", text: "Point at the profile or the route")
+      find("#route-elevation-chart").hover
+      expect(page).to have_css("#elevation-here:not(.idle)", text: "km")
     end
 
     it "keeps the gps position marker when the chart is rebuilt" do
@@ -280,7 +308,7 @@ describe "Feature details" do
         xy = viewport_xy_for_lat_lng(49.45, 11.08)
         hover_coord(xy[:x], xy[:y])
         expect(page).to have_css(".feature-hover-info .hover-position .bi-triangle")
-        expect(page).to have_css("#elevation-info-line", text: "350m")
+        expect(page).to have_css("#elevation-here", text: "350 m")
         active = page.evaluate_async_script(<<~JS)
           const done = arguments[0]
           import('chart.js').then(m => done(
@@ -289,16 +317,23 @@ describe "Feature details" do
         expect(active).to eq [ 2 ]
 
         hover_coord(xy[:x] + 300, xy[:y] - 300)
-        expect(page).to have_no_css("#elevation-info-line", visible: :visible)
+        expect(page).to have_css("#elevation-here.idle")
       end
     end
 
-    it "can collapse and expand elevation profile" do
-      expect(page).not_to have_css("#elevation-content.hidden", visible: :all)
-      find("#elevation-toggle").click
-      expect(page).to have_css("#elevation-content.hidden", visible: :all)
-      find("#elevation-toggle").click
-      expect(page).not_to have_css("#elevation-content.hidden", visible: :all)
+    context "with a routed duration" do
+      let(:feature) {
+        create(:feature, :line_string_with_elevation).tap { |feature|
+          feature.update!(properties: feature.properties.merge(
+            "route" => { "profile" => "foot", "duration" => 9900, "waypoints" => [ [ 11.06, 49.46 ], [ 11.095, 49.435 ] ] }))
+        }
+      }
+
+      it "shows the walking time and counts the waypoints" do
+        expect(page).to have_css("#feature-title", text: "Untitled route")
+        expect(page).to have_css("#feature-subtitle", text: "Hike · 2 waypoints")
+        expect(page).to have_css(".feature-stat", text: /Walking time\s+≈ 2:45 h/)
+      end
     end
   end
 
@@ -311,37 +346,33 @@ describe "Feature details" do
       expect(page).to have_css("#feature-details-modal")
     end
 
-    it "shows analysis sections for available extras" do
-      expect(page).to have_css("#feature-details-extras")
-      expect(page).to have_text("Steepness analysis")
-      expect(page).to have_text("Surface analysis")
+    it "shows the gradient from the elevation, with the steepest spots" do
+      card = find(".extras-card", text: "Steepness")
+      expect(card).to have_css(".extras-totals-label", count: 3)
+      expect(card).to have_text("Downhill")
+      expect(card).to have_text("Flat")
+      expect(card).to have_text("Uphill")
+      expect(card).to have_text("Steepest point +3 % at km")
+      expect(card).to have_text(/Steepest descent −\d+ % at km/)
     end
 
-    it "shows stacked color bars for each section" do
-      expect(page).to have_css(".extras-totals-bar", count: 2)
+    it "lists the surfaces, the longest first" do
+      card = find(".extras-card", text: "Surface")
+      expect(card.all(".extras-totals-label").map(&:text)).to eq [ "Asphalt", "Gravel" ]
     end
 
-    it "can expand steepness details" do
-      steepness_header = find(".feature-details-card-header", text: "Steepness")
-      steepness_header.click
-      expect(page).to have_text("Slight uphill")
-    end
-
-    it "can expand surface details" do
-      surface_header = find(".feature-details-card-header", text: "Surface")
-      surface_header.click
-      expect(page).to have_text("Asphalt")
-      expect(page).to have_text("Gravel")
-    end
-
-    it "detail rows are collapsed by default" do
-      expect(page).to have_css(".extras-totals-list.hidden", count: 2, visible: :all)
-    end
-
-    it "shows chevron indicator that toggles on expand" do
-      expect(page).to have_css(".extras-totals-chevron.bi-chevron-down", count: 2)
-      find(".feature-details-card-header", text: "Steepness").click
-      expect(page).to have_css(".extras-totals-chevron.bi-chevron-up", minimum: 1)
+    it "draws the surface band below the chart" do
+      # the alpha of a pixel in the band, near its end, behind the label at its start
+      alpha = page.evaluate_async_script(<<~JS)
+        const done = arguments[0]
+        import('chart.js').then(m => {
+          const chart = m.Chart.getChart(document.getElementById('route-elevation-chart'))
+          const { right, bottom } = chart.chartArea
+          const ratio = chart.currentDevicePixelRatio
+          done(chart.ctx.getImageData((right - 5) * ratio, (bottom + 12) * ratio, 1, 1).data[3])
+        })
+      JS
+      expect(alpha).to eq 255
     end
   end
 end

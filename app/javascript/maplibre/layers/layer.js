@@ -158,6 +158,16 @@ function selectFeatureOnClick (e) {
   const clickableStack = [...new Map(clickable.map(f => [f.id, f])).values()]
     .sort((a, b) => String(a.id).localeCompare(String(b.id)))
 
+  // A phone has no hover: a tap on the selected track picks a point in its elevation chart, see
+  // elevation.js. A second tap on the only feature there would select it again anyway.
+  if (functions.touchOnly() && stickyFeatureHighlight && clickableStack.length === 1 && visualTop.id === highlightedFeatureId &&
+      visualTop.geometry?.type === 'LineString') {
+    window.dispatchEvent(new CustomEvent('track-tap',
+      { detail: { featureId: visualTop.id, lngLat: [e.lngLat.lng, e.lngLat.lat] } }))
+    e.preventDefault()
+    return
+  }
+
   const currentIdx = clickableStack.findIndex(f => f.id === highlightedFeatureId)
   let feature
   if (!stickyFeatureHighlight || currentIdx === -1) {
@@ -202,8 +212,7 @@ const hoverFeatureOnMove = functions.perFrame((e) => {
 export function bindFeatureSelection () {
   map.on('styledata', () => { queryLayers = null })
   map.on('click', selectFeatureOnClick)
-  // a touch laptop with a mouse still hovers, see dom.js
-  if (functions.isTouchDevice() && !window.matchMedia('(hover: hover)').matches) { return }
+  if (functions.touchOnly()) { return }
   map.on('mousemove', hoverFeatureOnMove)
 }
 

@@ -23,6 +23,10 @@
       %p#geometry-hint-move-polygon.edit-polygon= _("Drag the polygon to move it")
       %p#geometry-hint-rotate-polygon.edit-polygon= _("Drag the polygon to rotate it")
       %p#geometry-hint-routed.hidden= _("Drag or add waypoints to reroute")
+    -# maplibre/feature/details.js fills it for a routed track
+    #geometry-track-summary.feature-section-card.hidden
+      .feature-stats
+      .track-silhouette
 
   .feature-edit-section{ 'data-edit-section': "properties" }
     .feature-section-card.pt-2
@@ -40,6 +44,9 @@
           = _("Add description")
 
     #feature-desc-section.feature-section-card.hidden
+      %h5.feature-card-title
+        %i.bi.bi-text-paragraph
+        = _("Description")
       #feature-desc
         %textarea#feature-desc-input
       #desc-shape-ui.edit-ui.edit-point

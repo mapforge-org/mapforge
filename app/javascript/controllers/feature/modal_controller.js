@@ -9,7 +9,7 @@ import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { draw, select, unselect } from 'maplibre/edit'
 import { getFeatureTypeName, highlightedFeatureId } from 'maplibre/feature'
-import { refreshFeatureMeta, showFeatureDetails } from 'maplibre/feature/details'
+import { refreshFeatureMeta, showFeatureDetails, toggleDescription } from 'maplibre/feature/details'
 import {
   syncBackground, syncDescShapeButtons, syncMarkerContent, syncFeatureOnclickUi, syncShapeButtons
 } from 'maplibre/feature/edit_ui'
@@ -326,6 +326,10 @@ export default class extends Controller {
     status(window.__('Saving %{type}').replace('%{type}', getFeatureTypeName(feature)))
     // send shallow copy of feature to avoid changes during send
     sendMessage('update_feature', { ...feature })
+  }
+
+  toggleDescription () {
+    toggleDescription()
   }
 
   toggleModalSize (e) {

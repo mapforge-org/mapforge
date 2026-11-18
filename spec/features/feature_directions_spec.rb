@@ -237,6 +237,18 @@ describe "Feature directions" do
       expect(draw_mode).to eq("directions_foot")
     end
 
+    it "shows the key values and the elevation silhouette instead of the meta line" do
+      expect(page).to have_css("#geometry-track-summary .feature-stat", text: "Length")
+      expect(page).to have_css("#geometry-track-summary .feature-stat", text: /Descent\s+30 m/)
+      expect(page).to have_css("#geometry-track-summary .track-silhouette svg path", count: 2)
+      expect(page).not_to have_css("#feature-details-meta")
+      expect(page).not_to have_css("#feature-export-bar")
+
+      find("#edit-button-details").click
+      expect(page).not_to have_css("#geometry-track-summary")
+      expect(page).to have_css("#feature-export-bar")
+    end
+
     it "adds a waypoint via context menu on the route line" do
       expect(page).to have_css(".maplibregl-canvas.cursor-crosshair")
       # the crosshair comes with the draw mode, the route line only after the async plugin import
@@ -250,6 +262,12 @@ describe "Feature directions" do
       find(".context-menu-item", text: "Add waypoint here").click
       expect(page).to have_no_css(".context-menu-item")
       wait_for { routed_feature.reload.properties["route"]["waypoints"].length }.to eq(3)
+
+      expect(page).to have_css("#edit-button-geometry.active")
+      find("button.maplibregl-ctrl-undo").click
+      wait_for { routed_feature.reload.properties["route"]["waypoints"].length }.to eq(2)
+      expect(page).to have_css("#edit-button-geometry.active")
+      expect(page).to have_css("#geometry-track-summary")
     end
   end
 end

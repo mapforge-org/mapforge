@@ -5,6 +5,7 @@ import { withLevelFilter } from 'maplibre/controls/levels'
 import { buildLineExtrusion, groundRanges, offTerrainRanges, wallPieceLength } from 'maplibre/layers/geojson/extrusion'
 import { addLayer, map, noValidate, setSourceEmpty } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
+import { formatNumber } from 'helpers/functions'
 
 const labelsBaseFilter = ['all', ['has', 'route-extras-label'], [">=", ["zoom"], 10]]
 
@@ -171,7 +172,7 @@ function pick (properties, keys) {
 }
 
 export function formatLength (meters) {
-  return meters >= 1000 ? `${(meters / 1000).toFixed(1)} km` : `${Math.round(meters)} m`
+  return meters >= 1000 ? `${formatNumber(meters / 1000, 1)} km` : `${formatNumber(meters)} m`
 }
 
 const OFF_TERRAIN_LABEL_COLOR = '#555555'

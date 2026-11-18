@@ -1,8 +1,10 @@
 import * as f from 'helpers/functions'
 import { featureIcon, featureTitle } from 'maplibre/feature'
 import { featureMeta } from 'maplibre/feature/details'
+import { GRADE_ICON } from 'maplibre/feature/extras_totals'
+import { GRADE_CLASSES, gradeClass, ORS_CLASS, trackProfile } from 'maplibre/feature/track_profile'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
-import { STEEPNESS_RANGES, computeCumulativeDistances } from 'maplibre/layers/geojson/route_extras'
+import { EXTRAS_COLOR_CONFIGS, STEEPNESS_RANGES } from 'maplibre/layers/geojson/route_extras'
 import { getFeature } from 'maplibre/layers/layers'
 import { map } from 'maplibre/map'
 import { defaults } from 'maplibre/styles/defaults'
@@ -12,7 +14,27 @@ let dot = null
 // the hovered track: the card follows the cursor along it
 let route = null
 
-const meters = m => Math.round(m).toLocaleString() + ' m'
+// The position on a track, the same in the hover card and in the elevation profile of the details
+// modal: distance, elevation, gradient and surface. Without elevation, the steepness class of the
+// routing service stands in for the gradient. The values are numbers or translations.
+export function trackPositionHtml (profile, segment, at, elevation) {
+  const grade = profile.grades?.[segment]
+  const steepness = grade == null ? profile.steepness?.[segment] : null
+  const arrow = steepness > 0 ? 'bi-arrow-up-right' : steepness < 0 ? 'bi-arrow-down-right' : 'bi-arrow-right'
+  const surface = profile.surfaces?.[segment]
+  // the steep classes in the color of the chart, the base classes are too light for text
+  const grading = GRADE_CLASSES[grade != null ? gradeClass(grade) : ORS_CLASS[steepness]]
+  const tint = grading && !grading.base ? ` style="color: ${grading.color}"` : ''
+  return [
+    '<span class="hover-ring"></span>',
+    `<span>km ${f.formatNumber(at / 1000, 1)}</span>`,
+    elevation != null && `<span><i class="bi bi-triangle"></i>${f.formatNumber(elevation)} m</span>`,
+    grade != null && `<span${tint}>${GRADE_ICON}${f.formatNumber(grade, 1, { signDisplay: 'exceptZero' })} %</span>`,
+    steepness != null && `<span${tint}><i class="bi ${arrow}"></i>${STEEPNESS_RANGES[Math.abs(steepness)]}</span>`,
+    // 0 is the unknown surface of the routing service, it tells nothing
+    surface > 0 && `<span><i class="bi bi-layers"></i>${f.escapeHtml(EXTRAS_COLOR_CONFIGS.surface.labels[surface] || '')}</span>`
+  ].filter(Boolean).join('')
+}
 
 function head (title, before = '', after = '') {
   return `<div class="hover-head">${before}<span>${f.escapeHtml(title)}</span>${after}</div>`
@@ -24,7 +46,9 @@ const isTrack = feature => hasKmMarkers(feature) ||
 
 function lineCard (feature) {
   const title = featureTitle(feature)
-  const track = isTrack(feature)
+  // a MultiLineString has no single profile, its card shows the length only
+  const profile = isTrack(feature) && trackProfile(feature)
+  const track = !!profile
   // a card with only the length tells too little
   if (!title && !track) { return null }
   const color = feature.properties.stroke || defaults.featureColor
@@ -37,8 +61,7 @@ function lineCard (feature) {
     route: track && {
       feature,
       color,
-      cumulative: computeCumulativeDistances(feature.geometry.coordinates),
-      steepness: feature.properties.route?.extras?.steepness?.values
+      profile
     }
   }
 }
@@ -65,8 +88,8 @@ const cards = {
 }
 
 // the elevation chart of the details modal marks the same point, null clears it
-const showOnChart = at => window.dispatchEvent(new CustomEvent('track-position',
-  { detail: { featureId: route.feature.id, meters: at } }))
+const showOnChart = position => window.dispatchEvent(new CustomEvent('track-position',
+  { detail: { featureId: route.feature.id, position } }))
 
 // the screen positions of the track points hold until the camera moves
 const dropProjection = () => { if (route) { route.points = null } }
@@ -130,26 +153,17 @@ function nearestOnTrack (lngLat) {
 export function moveHoverInfo (lngLat) {
   if (!route) { return }
   const { index, share } = nearestOnTrack(lngLat)
+  const { dists, total } = route.profile
   const coords = route.feature.geometry.coordinates
-  const step = route.cumulative[index + 1] - route.cumulative[index]
-  const at = route.cumulative[index] + step * share
+  const at = dists[index] + (dists[index + 1] - dists[index]) * share
   const position = coords[index].map((c, i) => c + (coords[index + 1][i] - c) * share)
 
   dot.setLngLat(position)
   popup.setLngLat(position)
 
-  route.ring.style.left = (100 * at / route.cumulative.at(-1)) + '%'
-  // the steepness class of the routing service, a grade from two track points jumps around
-  const steepness = route.steepness?.find(([start, end]) => start <= index && index < end)?.[2]
-  const arrow = steepness > 0 ? 'bi-arrow-up-right' : steepness < 0 ? 'bi-arrow-down-right' : 'bi-arrow-right'
-  // the icons tell elevation and steepness apart, the values are numbers, so the html is safe
-  const html = [
-    '<span class="hover-ring"></span>',
-    `<span>km ${(at / 1000).toFixed(1)}</span>`,
-    position[2] != null && `<span><i class="bi bi-triangle"></i>${meters(position[2])}</span>`,
-    steepness != null && `<span><i class="bi ${arrow}"></i>${STEEPNESS_RANGES[Math.abs(steepness)]}</span>`
-  ].filter(Boolean).join('')
+  route.ring.style.left = (100 * at / total) + '%'
+  const html = trackPositionHtml(route.profile, index, at, position[2])
   // the text changes only every 100m or so, a new html would rebuild the elements in each frame
   if (html !== route.html) { route.position.innerHTML = route.html = html }
-  showOnChart(at)
+  showOnChart({ segment: index, share, meters: at, elevation: position[2] })
 }
