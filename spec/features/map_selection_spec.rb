@@ -332,17 +332,22 @@ describe "Map selection" do
       expect(page).to have_css(".feature-hover-info.maplibregl-popup-anchor-right")
     end
 
-    it "shows the name, the length and the position on the track next to the cursor" do
+    it "runs the ring on the elevation silhouette" do
       xy = viewport_xy_for_lat_lng(49.4722, 11.0492)
       hover_coord(xy[:x], xy[:y])
-      expect(page).to have_css(".feature-hover-info", text: /River walk\s*2\.\d+ km/)
-      expect(page).to have_css(".feature-hover-info .hover-position", text: /\Akm 1\.\d\s*3\d\d m\s*\+\d\.\d %\z/)
       # the elevation from 300 m to 350 m, from the bottom left to the top right
       expect(page).to have_css(".feature-hover-info .hover-elevation .hover-silhouette path[d='M0 100L0.0 100.0L100.0 0.0L100.0 0.0L100 100Z']")
       # the ring runs on the top edge of the silhouette, at the same share of the length and the height
       ring = "(() => { const s = document.querySelector('.hover-elevation .hover-ring').style; return [parseFloat(s.left), parseFloat(s.top)] })()"
       left, top = page.evaluate_script(ring)
       expect(left + top).to be_within(0.5).of(100)
+    end
+
+    it "shows the name, the length and the position on the track next to the cursor" do
+      xy = viewport_xy_for_lat_lng(49.4722, 11.0492)
+      hover_coord(xy[:x], xy[:y])
+      expect(page).to have_css(".feature-hover-info", text: /River walk\s*2\.\d+ km/)
+      expect(page).to have_css(".feature-hover-info .hover-position", text: /\Akm 1\.\d\s*3\d\d m\s*\+\d\.\d %\z/)
       expect(page).to have_css(".hover-route-dot")
 
       # the card must let the mouse events through to the map

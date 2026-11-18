@@ -98,6 +98,24 @@ export function profileLine ({ dists, total, eles }, maxPoints, y) {
   return points.map(i => `${(dists[i] / total * 100).toFixed(1)} ${y(eles[i]).toFixed(1)}`).join('L')
 }
 
+// The elevation of each point, null for a track without any. A GPS recorder leaves it out on some
+// points, often at the start: a gap takes the values between its neighbors along the track, a gap
+// at an end the nearest value.
+function elevationsOf (coords, dists) {
+  const known = []
+  coords.forEach((c, i) => { if (Number.isFinite(c[2])) known.push(i) })
+  if (!known.length) return null
+  let k = 0
+  return coords.map((c, i) => {
+    while (known[k + 1] <= i) k++
+    const a = known[k]
+    const b = known[k + 1]
+    if (a === i) return c[2]
+    if (a > i || b === undefined) return coords[a][2]
+    return coords[a][2] + (coords[b][2] - coords[a][2]) * (dists[i] - dists[a]) / ((dists[b] - dists[a]) || 1)
+  })
+}
+
 // Distances, gradient classes, steepness and surfaces per segment of a LineString. The gradient comes from
 // the elevation of the track, or else from the steepness classes of openrouteservice.
 export function trackProfile (feature) {
@@ -105,7 +123,7 @@ export function trackProfile (feature) {
   if (feature.geometry.type !== 'LineString' || coords.length < 2) return null
   const dists = computeCumulativeDistances(coords)
   const segments = coords.length - 1
-  const eles = coords[0].length === 3 ? coords.map(c => c[2]) : null
+  const eles = elevationsOf(coords, dists)
   const grades = eles ? smoothedGrades(dists, eles) : null
   const extras = feature.properties.route?.extras
   const steepness = segmentValues(extras?.steepness?.values, segments)

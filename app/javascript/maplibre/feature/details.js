@@ -182,7 +182,7 @@ function featureHasDescription (feature) {
 function featureHasBody (feature) {
   if (featureHasDescription(feature)) return true
   const { type, coordinates } = feature.geometry ?? {}
-  return type === 'LineString' && (coordinates[0]?.length === 3 || !!feature.properties?.route?.extras)
+  return type === 'LineString' && (coordinates.some(c => c.length === 3) || !!feature.properties?.route?.extras)
 }
 
 // the light background of the feature icon, in the feature color

@@ -197,10 +197,13 @@ export function moveHoverInfo (lngLat) {
   popup.setLngLat(position)
 
   route.ring.style.left = (100 * at / total) + '%'
-  if (route.y) { route.ring.style.top = route.y(position[2]) + '%' }
-  const html = trackPositionHtml(route.profile, index, at, position[2])
+  // the profile fills the gaps where the track has no elevation
+  const { eles } = route.profile
+  const elevation = eles && eles[index] + (eles[index + 1] - eles[index]) * share
+  if (route.y) { route.ring.style.top = route.y(elevation) + '%' }
+  const html = trackPositionHtml(route.profile, index, at, elevation)
   // the text changes only every 100m or so, a new html would rebuild the elements in each frame
   if (html !== route.html) { route.position.innerHTML = route.html = html }
   placeSide(position)
-  showOnChart({ segment: index, share, meters: at, elevation: position[2] })
+  showOnChart({ segment: index, share, meters: at, elevation })
 }

@@ -278,6 +278,20 @@ describe "Feature details" do
       expect(page).to have_css(".feature-stat", text: "Length")
     end
 
+    context "with points without elevation" do
+      let(:feature) do
+        create(:feature, :line_string_with_elevation, title: "Elevation Track",
+          coordinates: [ [ 11.06, 49.46 ], [ 11.07, 49.455, 320 ], [ 11.08, 49.45 ],
+                         [ 11.085, 49.445, 340 ], [ 11.09, 49.44, 310 ], [ 11.095, 49.435 ] ])
+      end
+
+      it "fills the gaps and shows the chart" do
+        expect(page).to have_css("#feature-details-elevation #route-elevation-chart")
+        expect(page).to have_css(".feature-stat", text: /Ascent\s+20 m/)
+        expect(page).to have_css(".feature-stat", text: /Descent\s+30 m/)
+      end
+    end
+
     it "shows the point under the mouse" do
       expect(page).to have_css("#elevation-here.idle", text: "Point at the profile or the route")
       find("#route-elevation-chart").hover

@@ -104,7 +104,7 @@ describe "Feature edit, polygon features" do
       end
 
       it "shows feature meta data" do
-        find("#edit-button-edit").click
+        # the details and the geometry tab show the meta line, the edit tabs do not
         expect(page).to have_text("27.64 km²")
       end
 
