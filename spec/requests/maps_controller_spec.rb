@@ -288,6 +288,15 @@ describe MapsController do
     end
   end
 
+  describe "#show (garmin)" do
+    it "passes the Garmin courses of the user to the client" do
+      user = create(:user, garmin_course_ids: { "f1" => 43 })
+      sign_in(user)
+      get map_path(id: map.public_id)
+      expect(response.body).to include('gon.garmin_course_ids={"f1":43}')
+    end
+  end
+
   describe "#show (view count)" do
     # rack.after_reply only runs under Puma, so the spec runs the deferred callbacks itself
     it "counts each view" do
@@ -557,6 +566,24 @@ describe MapsController do
       image = Nokogiri::HTML(response.body).at_css(".map-card img.preview-image")
       expect(image["src"]).to start_with("/assets/preview")
       expect(image["class"]).to include("preview-placeholder")
+    end
+
+    it "links the Garmin courses of a map" do
+      map = create(:map, owners: [ user ])
+      feature = create(:feature, :line_string, layer: map.layers.first, properties: { "title" => "Morning ride" })
+      two = create(:map, owners: [ user ])
+      first, second = create_list(:feature, 2, :line_string, layer: two.layers.first)
+      other = create(:map, owners: [ user ])
+      user.update!(garmin_course_ids: { feature.id.to_s => 43, first.id.to_s => 44, second.id.to_s => 45, "deleted" => 7 })
+      get my_path
+      html = Nokogiri::HTML(response.body)
+      link = html.at_css(".map_#{map.public_id} .map-card-garmin a")
+      expect(link["href"]).to eq("https://connect.garmin.com/modern/course/43")
+      expect(link.text).to eq("Garmin")
+      expect(link["title"]).to eq("Open course in Garmin Connect: Morning ride")
+      expect(html.at_css(".map_#{two.public_id} .map-card-garmin").text.squish).to eq("Garmin (Track 1, Track 2)")
+      expect(html.css(".map_#{two.public_id} .map-card-garmin a").map { it["href"][/\d+$/] }).to eq(%w[44 45])
+      expect(html.at_css(".map_#{other.public_id} .map-card-garmin")).to be_nil
     end
 
     it "lists the private link of an own map" do

@@ -81,7 +81,7 @@ export function fallbackCopyToClipboard (text, successMessage, iconElement = nul
  * Show visual feedback on icon element after successful copy
  * @param {HTMLElement} iconElement - Icon element to animate
  */
-export function showCopySuccess (iconElement) {
+export function showCopySuccess (iconElement, iconClass = 'bi-copy') {
   // Find the actual icon element
   const icon = iconElement.querySelector('i') || iconElement
 
@@ -92,12 +92,12 @@ export function showCopySuccess (iconElement) {
   if (wasCheck) return
 
   // Change to checkmark with success styling
-  icon.classList.remove('bi-copy')
+  icon.classList.remove(iconClass)
   icon.classList.add('bi-check2', 'copy-success')
 
   // Revert after 2 seconds
   setTimeout(() => {
     icon.classList.remove('bi-check2', 'copy-success')
-    icon.classList.add('bi-copy')
+    icon.classList.add(iconClass)
   }, 2000)
 }

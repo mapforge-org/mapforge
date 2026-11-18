@@ -10,6 +10,16 @@ module GarminAccount
     field :garmin_lock, type: Hash
   end
 
+  # map id => [[feature title, Garmin courseId], ...]
+  def garmin_courses_by_map
+    return {} if garmin_course_ids.blank?
+    features = Feature.in(id: garmin_course_ids.keys).only(:layer_id, :properties).to_a
+    map_ids = Layer.in(id: features.map(&:layer_id)).pluck(:id, :map_id).to_h
+    features.group_by { |f| map_ids[f.layer_id] }.transform_values do |list|
+      list.map { |f| [ f.properties["title"] || f.properties["name"], garmin_course_ids[f.id.to_s] ] }
+    end
+  end
+
   # Returns [:updated or :created, courseId]. A course deleted in Garmin Connect answers 404 and gets created again.
   def upload_garmin_course(feature)
     with_garmin_lock do

@@ -24,6 +24,7 @@ class MapsController < ApplicationController
   def my
     @recent_maps = load_recent_maps(@user.recent_map_ids)
     @my_maps = filter_and_sort_maps(@user.owned_maps.includes(:layers, :owners, :tags))
+    @garmin_courses = @user.garmin_courses_by_map
 
     respond_to do |format|
       format.html # full page
@@ -58,6 +59,7 @@ class MapsController < ApplicationController
         gon.client_zoom = @client_zoom
         gon.map_layers = @map.layers.map(&:to_summary_json)
         gon.map_updated_at = @map.updated_at
+        gon.garmin_course_ids = @user&.garmin_course_ids || {}
 
         case params["engine"]
         when "deck"

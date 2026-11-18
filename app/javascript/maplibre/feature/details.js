@@ -254,11 +254,7 @@ export function showFeatureDetails (feature) {
   if (exportable) {
     setExportHref('#feature-export-geo', feature, '.geojson', '.geojson')
     setExportHref('#feature-export-gpx', feature, '.gpx', '')
-    f.e('#feature-export-garmin', e => {
-      e.classList.toggle('hidden', feature.geometry.type !== 'LineString')
-      const upload = e.querySelector('.garmin-upload')
-      if (upload) { upload.dataset.url = upload.dataset.url.replace(/feature\/[^/]*/, 'feature/' + feature.id) }
-    })
+    showGarminState(feature)
   }
 
   const profile = trackProfile(feature)
@@ -275,6 +271,27 @@ export function showFeatureDetails (feature) {
   // Fire-and-forget — Chart.js dynamic import shouldn't block the modal's basic info.
   // showElevationChart destroys any prior chart on the canvas itself.
   showElevationChart(feature, profile)
+}
+
+export function garminCourseUrl (courseId) {
+  return 'https://connect.garmin.com/modern/course/' + encodeURIComponent(courseId)
+}
+
+export function showGarminState (feature) {
+  f.e('#feature-export-garmin', e => {
+    e.classList.toggle('hidden', feature.geometry.type !== 'LineString')
+    const upload = e.querySelector('.garmin-upload')
+    if (!upload) { return }
+    upload.dataset.url = upload.dataset.url.replace(/feature\/[^/]*/, 'feature/' + feature.id)
+    const courseId = window.gon.garmin_course_ids?.[feature.id]
+    const course = e.querySelector('.garmin-course')
+    course.classList.toggle('hidden', !courseId)
+    if (courseId) { course.href = garminCourseUrl(courseId) }
+    const icon = upload.querySelector('i')
+    icon.classList.toggle('bi-cloud-upload', !courseId)
+    icon.classList.toggle('bi-arrow-repeat', !!courseId)
+    dom.setTooltip(upload, courseId ? window.__('Update course in Garmin Connect') : window.__('Send to Garmin Connect'))
+  })
 }
 
 // the gpx route takes the file name without an extension

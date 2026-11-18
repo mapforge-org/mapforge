@@ -278,6 +278,12 @@ span.map-avatar {
   background-color: var(--color-light-teagreen);
 }
 
+.map-card-garmin {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .map-card-stats {
   padding-top: 0.5rem;
   border-top: 1px solid var(--color-light-beige);
@@ -291,6 +297,7 @@ span.map-avatar {
 
   .map-card-updated {
     flex: 1;
+    font-size: 0.85em;
   }
 
   a {

@@ -7,6 +7,7 @@ import { initializeGeoLocateControl } from 'maplibre/controls/geolocate'
 import { initializeSearchControl } from 'maplibre/controls/search'
 import { draw, unselect } from 'maplibre/edit'
 import { featureIcon, getFeatureTypeName, resetHighlightedFeature } from 'maplibre/feature'
+import { garminCourseUrl } from 'maplibre/feature/details'
 import { activeLayer, layers, moveFeature } from 'maplibre/layers/layers'
 import { map, mapProperties } from 'maplibre/map'
 
@@ -246,11 +247,29 @@ function renderLayerFeatures (layerElement, layer) {
     name.classList.add('feature-name')
     name.textContent = (feature.properties.title || feature.properties.name || feature.properties.label || getFeatureTypeName(feature))
     listItem.appendChild(name)
+    const courseId = window.gon.garmin_course_ids?.[feature.id]
+    if (courseId) {
+      const garmin = Object.assign(document.createElement('a'), {
+        href: garminCourseUrl(courseId),
+        target: '_blank',
+        rel: 'noopener',
+        title: window.__('Open course in Garmin Connect'),
+        innerHTML: '<i class="bi bi-smartwatch"></i>'
+      })
+      // me-auto takes the free space that the name took before, the item centers its content
+      garmin.classList.add('garmin-link', 'ms-2', 'me-auto', 'text-decoration-none')
+      name.classList.add('flex-grow-0')
+      Object.assign(garmin.dataset, { toggle: 'tooltip', bsTrigger: 'hover' })
+      // the item flies to the feature on click
+      garmin.addEventListener('click', e => e.stopPropagation())
+      listItem.appendChild(garmin)
+    }
     const link = document.createElement('a')
     link.setAttribute('href', '#')
     listItem.appendChild(link)
     ul.appendChild(listItem)
   })
+  dom.initTooltips(ul)
   if (window.gon.map_mode === 'rw' && layer.type === 'geojson') {
     ul.classList.add('feature-drop-list')
     // Swallow the click that fires after a drop so reordering never selects a feature
