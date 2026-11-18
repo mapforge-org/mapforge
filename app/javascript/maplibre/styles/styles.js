@@ -319,6 +319,8 @@ const showsSymbol = () => ['all', ['!=', markerSymbol(), ''], ['!', ['has', 'mar
 // ['has', 'id']: without it, a feature without an id would match while nothing is selected (null == null)
 const inFront = ['any', ['boolean', ['feature-state', 'active'], false], ['boolean', ['feature-state', 'hover'], false]]
 const showInFront = value => ['case', inFront, value, 0]
+// the title of a point shows while it is hovered only, a selected point has its details modal
+const showOnHover = value => ['case', ['boolean', ['feature-state', 'hover'], false], value, 0]
 const hideInFront = value => ['case', inFront, 0, value]
 const isSelected = () => ['all', ['has', 'id'], ['==', ['get', 'id'], ['global-state', 'selectedFeatureId']]]
 // the selected feature shows at every zoom level
@@ -877,6 +879,7 @@ function textLayerStyles(mode) {
     ['!=', ['var', 'title'], labelText()], ['!=', ['var', 'title'], ['to-string', ['coalesce', ['get', 'label-title'], '']]]]]
   const overlapAll = { 'text-allow-overlap': true, 'text-ignore-placement': true, 'icon-allow-overlap': true, 'icon-ignore-placement': true }
   const frontPaint = { 'text-opacity': showInFront(1), 'icon-opacity': showInFront(sharedPaint['icon-opacity']) }
+  const titlePaint = { 'text-opacity': showOnHover(1), 'icon-opacity': showOnHover(sharedPaint['icon-opacity']) }
   const titleSize = defaultLabelSize(0.25)
   return {
     [layerId]: {
@@ -895,7 +898,11 @@ function textLayerStyles(mode) {
         'text-offset': labelOffset(showsTitle),
         ...overlapAll
       },
-      paint: { ...sharedPaint, ...frontPaint }
+      paint: {
+        ...sharedPaint,
+        'text-opacity': ['case', showsTitle, titlePaint['text-opacity'], frontPaint['text-opacity']],
+        'icon-opacity': ['case', showsTitle, titlePaint['icon-opacity'], frontPaint['icon-opacity']]
+      }
     },
     // The title of a point with a centered label. The label-* properties style the label in the
     // image, so the title gets the look and the place of a default label.
@@ -918,7 +925,7 @@ function textLayerStyles(mode) {
         'icon-offset': labelBoxOffset(),
         ...overlapAll
       },
-      paint: { 'text-color': defaults.labelColor, ...frontPaint }
+      paint: { 'text-color': defaults.labelColor, ...titlePaint }
     }
   }
 }

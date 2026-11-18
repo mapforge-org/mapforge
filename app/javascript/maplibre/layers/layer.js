@@ -44,13 +44,17 @@ export function queryFeaturesNear (point, options, keep = () => true) {
   return map.queryRenderedFeatures(box, options).filter(counts)
 }
 
-const isInFront = f => (f.source === hoveredFeature?.source && f.id === hoveredFeature.id) ||
-  (f.source === highlightedFeatureSource && f.id === highlightedFeatureId)
+const isHovered = f => f.source === hoveredFeature?.source && f.id === hoveredFeature.id
+const isInFront = f => isHovered(f) || (f.source === highlightedFeatureSource && f.id === highlightedFeatureId)
 
 // The front layers place a copy of every point and label, and show only the hovered and the selected
 // one. The query does not see opacity, so a hidden copy, like the title of a point without a label,
 // would activate its feature from an empty spot. The visible feature has its own hit in its own layer.
-const hiddenCopy = f => f.layer?.id.includes('-front_') && !isInFront(f)
+// A title copy shows on hover only, the selected feature keeps its label copy, see showOnHover() in styles.js.
+// ponytail: reads 'title' and 'label' only, a title from 'name' or a 'label-title' counts as a label copy
+const titleCopy = f => f.layer.id.startsWith('text-layer-title-front') ||
+  (f.layer.id.startsWith('text-layer-front') && !!f.properties.title && f.properties.title !== f.properties.label)
+const hiddenCopy = f => f.layer?.id.includes('-front_') && !(titleCopy(f) ? isHovered(f) : isInFront(f))
 
 // The front layers draw the hovered and the selected point on top, but they hold copies of all
 // points in the original order, so the query still ranks these two at their old place. They hold

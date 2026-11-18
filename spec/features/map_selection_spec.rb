@@ -218,6 +218,36 @@ describe "Map selection" do
       expect(hover_state).to eq("hover" => true)
       expect(hover_state(30)).to eq("hover" => true)
     end
+
+    context "when the point is selected" do
+      let(:path) { map_path(id: map.public_id, f: point.id) }
+
+      # the title shows on hover only, the details modal shows it for the selected point
+      it "hides the title and takes no hover from its place" do
+        expect(page).to have_css("#feature-details-modal.show")
+        expect(hover_state(30)).not_to include("hover" => true)
+      end
+    end
+  end
+
+  context "with a newly drawn point" do
+    let(:map) { create(:map, center: [ 11.0557, 49.4732 ], zoom: 16) }
+    let(:path) { map.private_map_path }
+
+    it "shows its title on hover" do
+      xy = viewport_xy_for_lat_lng(49.4732, 11.0557)
+      find(".mapbox-gl-draw_point").click
+      click_coord("#maplibre-map", xy[:x], xy[:y])
+      wait_for { Feature.point.count }.to eq(1)
+      fill_in "feature-title", with: "Glenn"
+      wait_for { Feature.point.first.properties["title"] }.to eq("Glenn")
+      find("#feature-details-modal .modal-close-button").click
+
+      hover_coord(xy[:x] + 200, xy[:y] + 200)
+      hover_coord(xy[:x], xy[:y])
+      wait_for { hover_state_of(Feature.point.first) }.to include("hover" => true)
+      wait_for { rendered_properties(/^text-layer-front_/).map { it["title"] } }.to eq [ "Glenn" ]
+    end
   end
 
   context "with a point below the label of another point" do

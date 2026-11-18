@@ -122,8 +122,9 @@ export default class extends Controller {
     feature.properties.title = title
     if (document.querySelector('#feature-show-title-on-map')?.checked) {
       feature.properties.label = title
-      this.renderFeature()
     }
+    // the map shows the title of a hovered point, see 'text-layer-front' in styles.js
+    this.renderFeature()
     document.querySelector('#feature-title').textContent = title
     functions.debounce(() => { this.saveFeature() }, 'title')
   }
