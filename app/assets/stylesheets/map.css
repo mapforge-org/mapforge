@@ -60,6 +60,13 @@ html:has(.map), body:has(.map) {
   text-decoration: underline;
 }
 
+/* the vendor css pins the button to the top, an open box grows upward from the bottom
+   corner and took the button with it */
+.maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib-button {
+  inset-block: 0;
+  margin-block: auto;
+}
+
 /* Sits 0.4rem below #map-head, which ends at margin-top plus height. Every top below
    keeps that gap, 0.3rem on small screens, and .layer-popover repeats the step below
    the badge. */
@@ -160,6 +167,12 @@ body:has(#map-mode-badge) .layer-popover {
   .maplibregl-ctrl-attrib-inner {
     font-size: 0.9rem;
     padding: 0.25rem;
+  }
+
+  /* the padding above makes the open box 0.5rem higher than the closed one, half of it
+     goes below the vendor margin of 10px, so the centered button does not move */
+  .maplibregl-ctrl-bottom-right > .maplibregl-ctrl-attrib.maplibregl-compact-show {
+    margin-bottom: calc(10px - 0.25rem);
   }
 
   /* the vendor box is 0 5px, too tight for the larger font */

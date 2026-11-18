@@ -231,8 +231,9 @@ function showExtrasLegend (extrasType, activeValues, extrasBbox = null) {
   let container = document.getElementById('route-extras-legend')
   legendBbox = extrasBbox
 
+  // removed, not hidden: the moveend handler would show a hidden legend again
   if (!extrasType) {
-    if (container) container.classList.add('hidden')
+    container?.remove()
     return
   }
 

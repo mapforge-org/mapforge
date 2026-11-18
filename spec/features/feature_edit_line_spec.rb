@@ -117,5 +117,19 @@ describe "Feature edit, line features" do
       find("#stroke-color-mode").select("Color")
       expect(page).to have_selector("#stroke-color", visible: true)
     end
+
+    it "removes the surface legend when the line gets its color back" do
+      xy = viewport_xy_for_lat_lng(line.geometry['coordinates'][2][1], line.geometry['coordinates'][2][0])
+      click_coord("#maplibre-map", xy[:x], xy[:y])
+      find("#edit-button-style").click
+
+      find("#stroke-color-mode").select("Surface")
+      expect(page).to have_css("#route-extras-legend:not(.hidden)")
+
+      find("#stroke-color-mode").select("Color")
+      # a map move used to show the legend again
+      page.execute_script("window.map.panBy([20, 0], { duration: 0 })")
+      expect(page).to have_no_css("#route-extras-legend", visible: :all)
+    end
   end
 end

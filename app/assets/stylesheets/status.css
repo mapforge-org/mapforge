@@ -11,7 +11,9 @@
   background-color: rgb(255 255 255 / 85%);
   box-shadow: 0 0 0 1.5px #BBB;
   border-radius: 0.4rem;
-  padding: 0 0.5rem;
+
+  /* room for #status-close on both sides, so that the text stays centered */
+  padding: 0 1.8rem;
   font-size: 0.7rem;
   color: var(--ctrl-button-color);
   min-width: calc(min(90vw, 30rem));
@@ -81,6 +83,12 @@
 
 #status-message {
   text-align: center;
+}
+
+#status-close {
+  top: 0;
+  transform: none;
+  font-size: 1.1rem;
 }
 
 #status-message.small {

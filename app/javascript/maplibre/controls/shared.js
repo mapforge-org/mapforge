@@ -595,7 +595,7 @@ export function initializeDefaultControls () {
 }
 
 let isDragging = false
-let dragStartY, dragStartModalHeight
+let dragStartY, dragStartModalHeight, dragFromHeader
 // Velocity tracking
 let dragHistory = [] // stores { y, time } entries for velocity calculation
 const SNAP_POINTS = [0, 25, 45, 75, 100] // close, down, middle, high, full (percent of viewport)
@@ -625,6 +625,8 @@ function initializeFeatureTouchScroll() {
     isDragging = true
     dragStartY = event.clientY || event.touches[0].clientY
     dragStartModalHeight = modal.offsetHeight
+    // the header does not scroll, a drag on it always moves the sheet
+    dragFromHeader = !!event.target.closest('.feature-modal-top')
     dragHistory = [{ y: dragStartY, time: Date.now() }]
     modal.style.cursor = 'move'
   })
@@ -664,7 +666,7 @@ function initializeFeatureTouchScroll() {
     }
 
     // When dragging down, at first scroll up, then lower modal
-    if (y < 0 || modal.querySelector('.feature-modal-scroll').scrollTop === 0) {
+    if (y < 0 || dragFromHeader || modal.querySelector('.feature-modal-scroll').scrollTop === 0) {
       // the max-height of the content sized sheet would stop the drag
       modal.classList.remove('modal-pull-transition', 'modal-pull-min')
       modal.style.height = newHeight + 'px'
