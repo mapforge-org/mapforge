@@ -22,6 +22,8 @@ describe "Feature directions" do
       click_coord("#maplibre-map", 250, 250)
       click_coord("#maplibre-map", 450, 450)
       wait_for { Feature.line_string.count }.to eq(1)
+      # the summary.duration of ors_foot.json
+      expect(Feature.line_string.first.properties.dig("route", "duration")).to eq(1080)
 
       # Verify modal opened and switched to properties tab
       expect(page).to have_css("#feature-details-modal.show")
@@ -187,6 +189,7 @@ describe "Feature directions" do
         coordinates: [ [ 11.041, 49.481, 350 ], [ 11.056, 49.463, 320 ] ],
         title: "Existing Route",
         properties: {
+          "show-km-markers" => true,
           "route" => {
             "provider" => "ors",
             "profile" => "foot",
@@ -237,6 +240,24 @@ describe "Feature directions" do
       expect(draw_mode).to eq("directions_foot")
     end
 
+    it "shows the key values and the elevation silhouette instead of the meta line" do
+      expect(page).to have_css("#geometry-track-summary .feature-stat", text: "Length")
+      expect(page).to have_css("#geometry-track-summary .feature-stat", text: /Descent\s+30 m/)
+      expect(page).to have_css("#geometry-track-summary .track-silhouette svg path", count: 2)
+      expect(page).not_to have_css("#feature-details-meta")
+      expect(page).not_to have_css("#feature-export-bar")
+
+      find("#edit-button-details").click
+      expect(page).not_to have_css("#geometry-track-summary")
+      expect(page).to have_css("#feature-export-bar")
+    end
+
+    it "draws the dotted route line below the km markers" do
+      wait_for { page.evaluate_script("!!window.map.getLayer('maplibre-gl-directions-routeline')") }.to be true
+      ids = page.evaluate_script("window.map.getStyle().layers.map(l => l.id)")
+      expect(ids.index("maplibre-gl-directions-routeline")).to be < ids.index { |id| id.start_with?("km-marker") }
+    end
+
     it "adds a waypoint via context menu on the route line" do
       expect(page).to have_css(".maplibregl-canvas.cursor-crosshair")
       # the crosshair comes with the draw mode, the route line only after the async plugin import
@@ -250,6 +271,12 @@ describe "Feature directions" do
       find(".context-menu-item", text: "Add waypoint here").click
       expect(page).to have_no_css(".context-menu-item")
       wait_for { routed_feature.reload.properties["route"]["waypoints"].length }.to eq(3)
+
+      expect(page).to have_css("#edit-button-geometry.active")
+      find("button.maplibregl-ctrl-undo").click
+      wait_for { routed_feature.reload.properties["route"]["waypoints"].length }.to eq(2)
+      expect(page).to have_css("#edit-button-geometry.active")
+      expect(page).to have_css("#geometry-track-summary")
     end
   end
 end

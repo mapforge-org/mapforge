@@ -7,7 +7,7 @@ import { refreshFeatureMeta, showFeatureDetails } from 'maplibre/feature/details
 import { getFeature, upsert } from 'maplibre/layers/layers'
 import { addLayer, map, noValidate } from 'maplibre/map'
 import { ORS_EXTRA_INFO, orsBuildRequest, orsFetch, orsProfiles, updateElevation } from 'maplibre/routing/openrouteservice'
-import { defaults, editDefaults } from 'maplibre/styles/defaults'
+import { defaults, editDefaults, routeColor } from 'maplibre/styles/defaults'
 import { styles } from 'maplibre/styles/styles'
 import { addUndoState } from 'maplibre/undo'
 
@@ -217,10 +217,18 @@ export async function initDirections (profile, feature) {
         }
       }
 
+  const trackColor = routeColor(profile)
+
   directions = new CustomMapLibreGlDirections(map, {
     ...config,
-    layers: getDirectionsLayers(layersFactory)
+    layers: getDirectionsLayers(layersFactory, feature?.properties?.stroke || trackColor)
   })
+  // the plugin adds its layers on top, the dotted route line must not cover the km markers
+  const kmMarkers = map.getStyle().layers.find(layer => layer.id.startsWith('km-marker'))
+  if (kmMarkers) {
+    ['maplibre-gl-directions-routeline-casing', 'maplibre-gl-directions-routeline', 'maplibre-gl-directions-routeline-direction']
+      .forEach(id => { if (map.getLayer(id)) { map.moveLayer(id, kmMarkers.id) } })
+  }
 
   if (currentFeature) {
     let waypoints = currentFeature.properties.route.waypoints
@@ -242,9 +250,6 @@ export async function initDirections (profile, feature) {
     let waypoints = e.data.directions.waypoints.map(wp => wp.location)
     directions.setWaypointsFeatures(waypoints.map((coords, index) => directions.createWaypointfeature(coords, index)))
 
-    let trackColor = "#1a5fb4"
-    if (profile === "bike") { trackColor = "#0a870a" }
-    if (profile === "foot") { trackColor = "#a51d2d" }
     const defaultProperties = { "fill-extrusion-height": 8,
                                 "fill-extrusion-base": 3,
                                 "stroke-opacity": 0.65,
@@ -265,6 +270,7 @@ export async function initDirections (profile, feature) {
     currentFeature.properties.route = { "provider": routingBackend,
                                         "profile": profile,
                                         "waypoints": waypoints }
+    if (route.duration != null) { currentFeature.properties.route.duration = Math.round(route.duration) }
     if (routingBackend === 'ors') {
       currentFeature.properties.route.extras = e.data.directions.routes[0].extras
       console.log('ORS route extras:', currentFeature.properties.route.extras)
@@ -328,7 +334,7 @@ function updateTrack(feature) {
   }
 }
 
-function getDirectionsLayers (layersFactory) {
+function getDirectionsLayers (layersFactory, color) {
   let layers = layersFactory(1.2)
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline")
   layers = layers.filter(layer => layer.id !== "maplibre-gl-directions-routeline-casing")
@@ -369,10 +375,18 @@ function getDirectionsLayers (layersFactory) {
     id: "maplibre-gl-directions-routeline-direction" }) )
 
   let waypoints_layer = layers.find(layer => layer.id === "maplibre-gl-directions-waypoint")
-  waypoints_layer.paint["circle-color"] = defaults.featureColor
+  waypoints_layer.paint["circle-color"] = color
+  // a light ring between the color and the casing, so the waypoint stands out on the track
+  waypoints_layer.paint["circle-stroke-color"] = "#ffffff"
+  waypoints_layer.paint["circle-stroke-width"] = 2
 
   let waypoints_casing_layer = layers.find(layer => layer.id === "maplibre-gl-directions-waypoint-casing")
   waypoints_casing_layer.paint["circle-color"] = editDefaults.highlightColor
+
+  // the point on the route line that a click turns into a new waypoint
+  Object.assign(layers.find(layer => layer.id === "maplibre-gl-directions-hoverpoint").paint,
+    { "circle-color": color, "circle-stroke-color": "#ffffff", "circle-stroke-width": 2 })
+  layers.find(layer => layer.id === "maplibre-gl-directions-hoverpoint-casing").paint["circle-color"] = editDefaults.highlightColor
 
   layers.push({
     id: "maplibre-gl-directions-waypoint-label",

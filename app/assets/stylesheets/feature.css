@@ -19,15 +19,14 @@
 }
 
 .feature-modal-header {
-  padding: 1.2rem 1rem 0.5rem;
-  border-bottom: 1px solid #dde2ea;
+  padding: 1.2rem 1rem 0.7rem;
 }
 
 #feature-details-header {
   width: calc(100% - 1.5rem);
 
-  /* 1rem minimum, 1.5rem max */
-  font-size: clamp(1rem, 2vw + 0.7rem, 1.5rem);
+  /* 1rem minimum, 1.3rem max */
+  font-size: clamp(1rem, 2vw + 0.6rem, 1.3rem);
   margin-bottom: 0;
 }
 
@@ -35,9 +34,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin-top: 0;
-  line-height: 1.5;
-  font-weight: 700;
-  color: #0f172a;
+  line-height: 1.3;
+  font-family: "Bree Serif", serif;
+  font-weight: 400;
+  color: #4b5563;
 }
 
 #edit-buttons.feature-edit-tabs {
@@ -121,8 +121,21 @@
   font-weight: 600;
 }
 
+/* the last card of a tab keeps its 0.8rem margin, the only gap above the export bar */
 #feature-details-body {
-  padding: 0.9rem 0.7rem 0.3rem;
+  padding: 0.9rem 0.7rem 0;
+  font-size: 0.9rem;
+}
+
+/* the headlines of a description stay below the size of the feature title */
+#feature-details-description :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0.6rem 0 0.3rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+#feature-details-description h1 {
+  font-size: 1.1rem;
 }
 
 #feature-details-body table {
@@ -166,7 +179,7 @@
   }
 
   #feature-details-body {
-    padding: 0.6rem 0.4rem 0.3rem;
+    padding: 0.6rem 0.4rem 0;
   }
 
   #feature-details-modal:not(:has(.feature-modal-header:not(.no-title), #edit-buttons:not(.hidden))) #feature-details-body {
@@ -190,12 +203,17 @@
   }
 
   /* a small view mode sheet with a title shows the title only */
-  #feature-details-modal.modal-pull-min.modal-title-only #feature-details-meta {
+  #feature-details-modal.modal-pull-min.modal-title-only :is(#feature-details-meta, .feature-modal-footer) {
     display: none;
   }
 
+  /* a bottom sheet has little height, the export bar shows only at the end of the content */
+  #feature-details-modal .feature-modal-footer {
+    position: static;
+  }
+
   #feature-edit-ui {
-    padding: 0.45rem;
+    padding: 0.45rem 0.45rem 0;
   }
 
   .feature-tab-btn {
@@ -223,14 +241,14 @@
   #feature-details-modal {
     left: 2.2rem;
     top: 0.2rem;
-    width: 25rem;
+    width: 27rem;
     max-height: calc(100% - 1.5rem);
     margin: 0.4rem 1rem 1.5rem;
   }
 }
 
 #feature-edit-ui {
-  padding: 0.95rem;
+  padding: 0.95rem 0.95rem 0;
 
   #fill-color, #stroke-color, #marker-symbol {
     min-width: 2rem;
@@ -270,36 +288,10 @@ img[src*="/icon-sets/fontawesome/"] {
   margin: -3px;
 }
 
-#elevation-info-line {
-  font-size: 0.75rem;
-  color: var(--color-dark-charcoal);
-  height: 1rem;
-  visibility: hidden;
-}
-
-#elevation-view-mode {
-  font-size: 0.75rem;
-  flex-wrap: wrap;
-  gap: 0.2rem 0;
-}
-
-#elevation-scope-toggle {
-  color: var(--color-dark-charcoal);
-  opacity: 0.75;
-  user-select: none;
-}
-
-@media (hover: hover) {
-  #elevation-scope-toggle:hover {
-    opacity: 1;
-    color: var(--color-mid-steel-blue);
-  }
-}
-
 #feature-details-meta {
   font-size: 80%;
   font-weight: 400;
-  padding: 0 1rem 0.9rem;
+  padding: 0 1rem 0.8rem;
 
   a {
     text-decoration: none;
@@ -392,17 +384,24 @@ img[src*="/icon-sets/fontawesome/"] {
   padding-top: 0.7rem;
 }
 
+/* the headlines of the description editor get the sizes of the details tab */
+#feature-desc :is(.cm-header-1, .editor-preview h1) {
+  font-size: 1.1rem;
+}
+
+#feature-desc :is(.cm-header-2, .cm-header-3, .cm-header-4, .cm-header-5, .cm-header-6,
+  .editor-preview :is(h2, h3, h4, h5, h6)) {
+  font-size: 1rem;
+}
+
 #feature-size {
   font-size: 0.9rem;
   font-weight: 400;
 }
 
-.feature-edit-section {
-  margin-bottom: 0.9rem;
-}
-
 .geometry-hint {
   font-size: 0.95rem;
+  font-weight: 600;
   line-height: 1.5;
 }
 
@@ -682,6 +681,10 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
   color: #64748b;
 }
 
+:is(#line-width-ui, #outline-width-ui, #fill-extrusion-height-ui) :is(.stepper-val, [id$="-val"]) {
+  font-weight: 700;
+}
+
 #stroke-color-mode {
   max-width: 8.5rem;
 
@@ -783,49 +786,350 @@ input {
   margin-top: -0.35rem;
 }
 
-.extras-totals-bar {
+/* Details tab of a track: stats, elevation profile, gradient and surface */
+
+.feature-modal-top {
+  position: relative;
+  flex: none;
+}
+
+/* without tabs, the line goes below the header */
+.feature-modal-top:has(#edit-buttons.hidden) {
+  border-bottom: 1px solid #dde2ea;
+}
+
+.feature-symbol {
   display: flex;
-  height: 0.6rem;
-  border-radius: 0.3rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.8rem;
+  background: var(--symbol-tint, #f1f3f6);
+}
+
+.feature-heading {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+#feature-subtitle {
   overflow: hidden;
-  margin: 0.4rem 0;
-  cursor: pointer;
+  text-overflow: ellipsis;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #6b7280;
 }
 
-.extras-totals-bar-segment {
-  height: 100%;
-  min-width: 2px;
+#feature-details-modal .modal-close-button {
+  top: 1.1rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.6rem;
+  background: #eef0f3;
 }
 
-.extras-totals-list {
-  padding: 0.2rem 0 0;
+.feature-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+  gap: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.9rem;
+  border: 1px solid #dfe4eb;
+  border-radius: 0.9rem;
+  background: #f1f3f6;
+}
+
+.feature-stat-label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.feature-stat-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1f2937;
+  white-space: nowrap;
+}
+
+/* the stats of the details tab, inside the card of the track summary */
+#geometry-track-summary .feature-stats {
+  padding: 0;
+  margin-bottom: 0.4rem;
+  border: 0;
+  background: none;
+}
+
+.track-silhouette svg {
+  display: block;
+  width: 100%;
+  height: 2.5rem;
+}
+
+/* about four lines, the button below unfolds the rest */
+#feature-details-description.folded {
+  max-height: 6.6em;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 70%, transparent);
+}
+
+#feature-details-description {
+  padding: 0 0.4rem;
+}
+
+#feature-description-more {
+  padding: 0 0.4rem;
+  margin: -0.4rem 0 0.9rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--ctrl-button-color);
+  text-decoration: none;
+}
+
+.feature-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.2rem 0 0.5rem;
+  font-family: "Bree Serif", serif;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+.grade-icon, .card-icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+}
+
+#feature-details-elevation {
+  padding: 0.7rem 0.6rem;
+}
+
+.elevation-chart {
+  position: relative;
+  aspect-ratio: 2.2;
+
+  /* the last distance label may reach past the border of the card */
+  margin-right: -1.6rem;
+}
+
+#elevation-here {
+  /* one row high, so the cards below stay put when the hint shows */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.2rem;
+  margin-top: -0.3rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--color-mid-ecru) 35%, #fff);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1f2937;
+
+  .hover-position {
+    justify-content: center;
+    gap: 0.3rem 0.8rem;
+  }
+
+  .here-hint {
+    display: none;
+    font-weight: 400;
+    color: #6b7280;
+  }
+
+  &.idle {
+    background: #f6f7f9;
+
+    .hover-position {
+      display: none;
+    }
+
+    .here-hint {
+      display: block;
+    }
+  }
+}
+
+/* the gradient card has more rows and the steepest spots, the surface card only short names */
+.feature-extras {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 0.7rem;
+  margin-bottom: 0.8rem;
+}
+
+.feature-extras:has(> :only-child) {
+  grid-template-columns: 1fr;
+}
+
+.extras-card {
+  margin-bottom: 0;
+  padding: 0.7rem 0.9rem;
 }
 
 .extras-totals-row {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.15rem 0;
+  gap: 0.5rem;
+  padding: 0.1rem 0;
   font-size: 0.8rem;
 }
 
 .extras-totals-swatch {
-  width: 0.7rem;
-  height: 0.7rem;
+  width: 0.75rem;
+  height: 0.75rem;
   border-radius: 2px;
   flex-shrink: 0;
 }
 
+.swatch-unknown {
+  background: repeating-linear-gradient(-45deg, #c3c8d0 0 1.5px, #f1f3f6 1.5px 4px);
+}
+
 .extras-totals-label {
   flex-grow: 1;
-  color: var(--color-dark-charcoal);
+  color: #1f2937;
+}
+
+.extras-totals-row:has(.swatch-unknown) .extras-totals-label {
+  color: #6b7280;
 }
 
 .extras-totals-stats {
-  color: var(--color-dark-charcoal);
-  opacity: 0.65;
-  font-size: 0.75rem;
+  color: #6b7280;
   white-space: nowrap;
+}
+
+.extras-totals-spots {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid #dfe4eb;
+  font-size: 0.78rem;
+  color: #374151;
+}
+
+.feature-modal-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  border-top: 1px solid #dde2ea;
+  background: rgb(255 255 255 / 95%);
+}
+
+/* the edit tabs hide the details body, the export belongs to the details tab */
+#feature-details-modal:has(#feature-details-body.hidden) #feature-export-bar {
+  display: none;
+}
+
+.feature-export-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.feature-export-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.btn-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid #cfd5de;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #1f2937;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+
+  .garmin-upload, .garmin-course, .garmin-connect {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+  }
+}
+
+/* a phone keeps the small sheet small */
+@media (width <= 640px), (height < 410px) {
+  .feature-modal-header {
+    padding: 0.9rem 1rem 0.4rem;
+  }
+
+  .feature-symbol {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 0.6rem;
+  }
+
+  .feature-modal-footer {
+    flex-wrap: nowrap;
+    padding: 0.5rem 0.7rem;
+  }
+
+  .btn-export {
+    padding: 0.25rem 0.55rem;
+  }
+
+  .feature-stats {
+    grid-template-columns: repeat(auto-fit, minmax(3.2rem, 1fr));
+    padding: 0.6rem 0.7rem;
+    text-align: center;
+  }
+
+  .feature-stat-value {
+    font-size: 0.85rem;
+  }
+
+  .feature-stat-label {
+    justify-content: center;
+    font-size: 0.65rem;
+  }
+}
+
+@media (width <= 400px) {
+  .feature-extras {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-export-label {
+    display: none;
+  }
+
+  .feature-export-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (hover: hover) {
+  .btn-export:hover, .btn-export :is(.garmin-upload, .garmin-course, .garmin-connect):hover {
+    color: var(--ctrl-button-color);
+  }
 }
 
 /* Details modal for an element of OpenStreetMap, see overpassDescription */

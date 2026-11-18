@@ -595,7 +595,7 @@ body.map-mode-rw .ro-only {
 }
 
 @media (hover: hover) {
-  .layer-feature-item:hover .feature-name {
+  .layer-feature-item:hover:not(:has(.garmin-link:hover)) .feature-name {
     text-decoration: underline;
   }
 }

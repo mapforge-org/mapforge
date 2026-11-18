@@ -218,6 +218,36 @@ describe "Map selection" do
       expect(hover_state).to eq("hover" => true)
       expect(hover_state(30)).to eq("hover" => true)
     end
+
+    context "when the point is selected" do
+      let(:path) { map_path(id: map.public_id, f: point.id) }
+
+      # the title shows on hover only, the details modal shows it for the selected point
+      it "hides the title and takes no hover from its place" do
+        expect(page).to have_css("#feature-details-modal.show")
+        expect(hover_state(30)).not_to include("hover" => true)
+      end
+    end
+  end
+
+  context "with a newly drawn point" do
+    let(:map) { create(:map, center: [ 11.0557, 49.4732 ], zoom: 16) }
+    let(:path) { map.private_map_path }
+
+    it "shows its title on hover" do
+      xy = viewport_xy_for_lat_lng(49.4732, 11.0557)
+      find(".mapbox-gl-draw_point").click
+      click_coord("#maplibre-map", xy[:x], xy[:y])
+      wait_for { Feature.point.count }.to eq(1)
+      fill_in "feature-title", with: "Glenn"
+      wait_for { Feature.point.first.properties["title"] }.to eq("Glenn")
+      find("#feature-details-modal .modal-close-button").click
+
+      hover_coord(xy[:x] + 200, xy[:y] + 200)
+      hover_coord(xy[:x], xy[:y])
+      wait_for { hover_state_of(Feature.point.first) }.to include("hover" => true)
+      wait_for { rendered_properties(/^text-layer-front_/).map { it["title"] } }.to eq [ "Glenn" ]
+    end
   end
 
   context "with a point below the label of another point" do
@@ -282,6 +312,8 @@ describe "Map selection" do
       expect(page).to have_css(".feature-hover-info", text: /River walk\s*2\.\d+ km/)
       expect(page).to have_no_css(".feature-hover-info .hover-position")
       expect(page).to have_no_css(".hover-route-dot")
+      # without a position on the track, the card follows the mouse
+      expect(page).to have_css(".feature-hover-info.maplibregl-popup-track-pointer")
     end
   end
 
@@ -292,11 +324,30 @@ describe "Map selection" do
     }
     let(:map) { create(:map, features: [ line ], center: [ 11.0492, 49.4722 ], zoom: 13) }
 
+    it "puts the card left of the cursor at the right edge of the map" do
+      page.execute_script("window.map.jumpTo({ center: [ 11.02, 49.4722 ] })")
+      wait_for { page.evaluate_script("window.map.loaded()") }.to be true
+      xy = viewport_xy_for_lat_lng(49.4722, 11.0492)
+      hover_coord(xy[:x], xy[:y])
+      expect(page).to have_css(".feature-hover-info.maplibregl-popup-anchor-right")
+    end
+
+    it "runs the ring on the elevation silhouette" do
+      xy = viewport_xy_for_lat_lng(49.4722, 11.0492)
+      hover_coord(xy[:x], xy[:y])
+      # the elevation from 300 m to 350 m, from the bottom left to the top right
+      expect(page).to have_css(".feature-hover-info .hover-elevation .hover-silhouette path[d='M0 100L0.0 100.0L100.0 0.0L100.0 0.0L100 100Z']")
+      # the ring runs on the top edge of the silhouette, at the same share of the length and the height
+      ring = "(() => { const s = document.querySelector('.hover-elevation .hover-ring').style; return [parseFloat(s.left), parseFloat(s.top)] })()"
+      left, top = page.evaluate_script(ring)
+      expect(left + top).to be_within(0.5).of(100)
+    end
+
     it "shows the name, the length and the position on the track next to the cursor" do
       xy = viewport_xy_for_lat_lng(49.4722, 11.0492)
       hover_coord(xy[:x], xy[:y])
       expect(page).to have_css(".feature-hover-info", text: /River walk\s*2\.\d+ km/)
-      expect(page).to have_css(".feature-hover-info .hover-position", text: /\Akm 1\.\d\s*3\d\d m\s*7-11%\z/)
+      expect(page).to have_css(".feature-hover-info .hover-position", text: /\Akm 1\.\d\s*3\d\d m\s*\+\d\.\d %\z/)
       expect(page).to have_css(".hover-route-dot")
 
       # the card must let the mouse events through to the map

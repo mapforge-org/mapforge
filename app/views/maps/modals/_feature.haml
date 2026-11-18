@@ -5,7 +5,8 @@
     toggle-edit-feature@window->feature--modal#toggle_edit_feature \
     keydown.ctrl+c@window->feature--modal#copy" }
 
-  .feature-modal-scroll
+  -# header and tabs stay, the content between them and the export bar scrolls
+  .feature-modal-top
     %a.link{ 'data-action': "click->feature--modal#toggleModalSize"}
       .modal-pull-button
 
@@ -13,7 +14,9 @@
     .feature-modal-header
       %h4#feature-details-header.flex-container.flex-no-wrap.flex-vcenter
         .feature-symbol.me-2
-        #feature-title.ms-1.selectable.no-wrap
+        .feature-heading
+          #feature-title.selectable.no-wrap
+          #feature-subtitle.selectable.no-wrap.hidden
 
     #edit-buttons.feature-edit-tabs.hidden.flex-center
       %button#edit-button-details.feature-tab-btn{ type: "button", 'data-action': "click->feature--modal#toggle_edit_feature", 'data-edit-type': 'details', title: _('View feature information'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" }
@@ -32,52 +35,57 @@
         %i.bi.bi-code-slash
         .tab-label= _("Advanced")
 
+  .feature-modal-scroll
     = render 'maps/modals/feature/edit_ui'
 
-    #feature-details-body.selectable.ms-1
+    #feature-details-body.selectable
+      #feature-stats.feature-stats.hidden
+
       #feature-details-description
+      %button#feature-description-more.btn.btn-link.hidden{ type: "button", data: { action: "click->feature--modal#toggleDescription" } }
 
       #feature-details-elevation.feature-section-card.hidden
-        .feature-details-card-header#elevation-toggle
-          %h5
-            %i.bi.bi-graph-up.me-2
-            = _("Elevation profile")
-          %i.bi.bi-chevron-up.extras-totals-chevron
-        #elevation-content.text-center
+        %h5.feature-card-title
+          %svg.card-icon{ viewBox: "0 0 16 16", 'aria-hidden': "true" }
+            %path{ d: "M1.5 13.5h13V2.5l-4.5 5-2-1.5z", fill: "none", stroke: "currentColor", 'stroke-width': "1.5", 'stroke-linejoin': "round" }
+          = _("Elevation profile")
+        -# chart.js sizes the canvas to its parent, which holds nothing else
+        .elevation-chart
           %canvas#route-elevation-chart
-          #elevation-info-line
-          #elevation-view-mode.flex-center.mt-1.mb-2
-            %span#elevation-stats.hidden
-              %span#elevation-gain.text-nowrap
-              %span#elevation-loss.text-nowrap.ms-3
-            %span#elevation-scope-toggle.link.text-nowrap.ms-3
-              %i.bi.bi-map.me-1
-              %span#elevation-scope-label= _("Visible section")
+        -# maplibre/feature/elevation.js fills it for the point under the mouse or finger
+        -# the same values as the hover card on the map, see hover_info.js
+        #elevation-here.track-position.idle
+          .here-hint
+          .hover-position
 
-      #feature-details-extras.hidden
+      #feature-details-extras.feature-extras.hidden
 
     #feature-details-meta.mt-2.flex-center
       %span#feature-size.center.selectable.text-nowrap
       %span#feature-vertexes.selectable.text-nowrap.d-none.d-sm-inline
-      %span.feature-export#feature-export-geo.ms-4.link.text-nowrap<
-        =link_to map_feature_geo_path(id: @map.public_id, feature_id: 'feature_id'), target: '_blank', title: _('Download as geoJSON'), 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover" do
-          %i.bi.bi-download
-          GeoJSON
-      %span.feature-export#feature-export-gpx.ms-2.link.text-nowrap<
-        =link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), download: "", title: _('Download as GPX'), data: { turbo: false, toggle: "tooltip", 'bs-placement': "bottom", 'bs-trigger': "hover" } do
+
+    -# sticks to the bottom of the modal, a bottom sheet shows it at the end of the content, see feature.css
+    #feature-export-bar.feature-modal-footer.hidden
+      %span.feature-export-label= _("Export")
+      .feature-export-buttons
+        = link_to map_feature_gpx_path(id: @map.public_id, feature_id: 'feature_id'), id: 'feature-export-gpx', class: 'btn-export', download: "", title: _('Download as GPX'), data: { turbo: false, toggle: "tooltip", 'bs-placement': "top", 'bs-trigger': "hover" } do
           %i.bi.bi-download
           GPX
-      - if @user && ENV["GARMIN_CLIENT_ID"].present?
-        %span.feature-export#feature-export-garmin.ms-2.link.text-nowrap<
-          - if @user.garmin_token
-            %a{ href: '#', title: _('Send to Garmin Connect'), data: { action: "click->feature--modal#sendToGarmin", url: map_feature_garmin_path(id: @map.public_id, feature_id: 'feature_id'), toggle: "tooltip", 'bs-placement': "bottom", 'bs-trigger': "hover" } }
-              %i.bi.bi-cloud-upload
-              Garmin
-          - else
-            = form_tag('/auth/garmin', method: 'post', class: 'd-inline', data: { turbo: false }) do
-              = hidden_field_tag :origin, request.original_url
-              = button_tag class: 'btn btn-link p-0 link', title: _('Connect Garmin Connect to send tracks to your device') do
+        = link_to map_feature_geo_path(id: @map.public_id, feature_id: 'feature_id'), id: 'feature-export-geo', class: 'btn-export', target: '_blank', title: _('Download as geoJSON'), 'data-toggle': "tooltip", 'data-bs-placement': "top", 'data-bs-trigger': "hover" do
+          %i.bi.bi-download
+          GeoJSON
+        - if @user && ENV["GARMIN_CLIENT_ID"].present?
+          %span#feature-export-garmin.btn-export
+            - if @user.garmin_token
+              -# maplibre/feature/details.js switches to the refresh icon and the course link after an upload
+              %a.garmin-upload{ href: '#', title: _('Send to Garmin Connect'), data: { action: "click->feature--modal#sendToGarmin", url: map_feature_garmin_path(id: @map.public_id, feature_id: 'feature_id'), toggle: "tooltip", 'bs-placement': "top", 'bs-trigger': "hover" } }
                 %i.bi.bi-cloud-upload
-                Garmin
-      / %span#feature-animation.ms-2.link
-      /   %i.bi.bi-camera-reels{title: "Play animation", 'data-toggle': "tooltip", 'data-bs-placement': "bottom", 'data-bs-trigger': "hover", 'data-action': "click->feature--modal#animate"}
+                %span Garmin
+              %a.garmin-course.hidden{ target: '_blank', rel: 'noopener', title: _('Open course in Garmin Connect'), 'aria-label': _('Open course in Garmin Connect'), data: { toggle: "tooltip", 'bs-placement': "top", 'bs-trigger': "hover" } }
+                %i.bi.bi-box-arrow-up-right
+            - else
+              = form_tag('/auth/garmin', method: 'post', class: 'd-inline', data: { turbo: false }) do
+                = hidden_field_tag :origin, request.original_url
+                = button_tag class: 'garmin-connect', title: _('Connect Garmin Connect to send tracks to your device') do
+                  %i.bi.bi-cloud-upload
+                  Garmin

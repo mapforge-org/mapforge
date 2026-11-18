@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-15 00:26+0100\n"
-"PO-Revision-Date: 2026-11-15 00:26+0100\n"
+"POT-Creation-Date: 2026-11-17 00:07+0100\n"
+"PO-Revision-Date: 2026-11-17 00:07+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../app/views/maps/_map_card.haml:38
+#: ../app/views/maps/_map_card.haml:47
 msgid "%{count} features"
 msgstr ""
 
@@ -28,19 +28,23 @@ msgid_plural "%{count} maps"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/views/maps/_map_card.haml:36
+#: ../app/javascript/maplibre/feature/details.js:70
+msgid "%{count} points"
+msgstr ""
+
+#: ../app/views/maps/_map_card.haml:45
 msgid "%{count} views"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/details.js:88
+msgid "%{count} waypoints"
 msgstr ""
 
 #: ../app/javascript/maplibre/layers/layers.js:347 ../app/javascript/maplibre/undo.js:58
 msgid "%{type} added"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/extras_totals.js:44
-msgid "%{type} analysis"
-msgstr ""
-
-#: ../app/javascript/controllers/feature/modal_controller.js:391 ../app/javascript/controllers/map/context_menu_controller.js:125
+#: ../app/javascript/controllers/feature/modal_controller.js:393 ../app/javascript/controllers/map/context_menu_controller.js:125
 msgid "%{type} copied to clipboard"
 msgstr ""
 
@@ -108,7 +112,7 @@ msgstr ""
 msgid "Add layer"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/shared.js:396
+#: ../app/javascript/maplibre/controls/shared.js:414
 msgid "Add new features to this layer"
 msgstr ""
 
@@ -120,7 +124,7 @@ msgstr ""
 msgid "Add waypoint here"
 msgstr ""
 
-#: ../app/javascript/controllers/map/layers_controller.js:137
+#: ../app/javascript/controllers/map/layers_controller.js:134
 msgid "Added image"
 msgstr ""
 
@@ -136,7 +140,7 @@ msgstr ""
 msgid "Admin only"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:33
+#: ../app/views/maps/modals/_feature.haml:36
 msgid "Advanced"
 msgstr ""
 
@@ -148,7 +152,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: ../app/controllers/maps_controller.rb:154
+#: ../app/controllers/maps_controller.rb:156
 msgid "Allow courses for Mapforge in your Garmin Connect account"
 msgstr ""
 
@@ -168,7 +172,11 @@ msgstr ""
 msgid "Ascending"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:70
+#: ../app/javascript/maplibre/feature/details.js:115
+msgid "Ascent"
+msgstr ""
+
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:71
 msgid "Asphalt"
 msgstr ""
 
@@ -234,6 +242,10 @@ msgstr ""
 
 #: ../app/javascript/maplibre/feature/edit_ui.js:117
 msgid "Big dots"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/details.js:81
+msgid "Bike tour"
 msgstr ""
 
 #: ../app/javascript/maplibre/styles/basemaps.js:101
@@ -304,11 +316,15 @@ msgstr ""
 msgid "Car route"
 msgstr ""
 
+#: ../app/javascript/maplibre/feature/details.js:81
+msgid "Car trip"
+msgstr ""
+
 #: ../app/views/maps/modals/_settings.haml:156
 msgid "Center"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:28
+#: ../app/views/maps/modals/_feature.haml:31
 msgid "Change colors and appearance"
 msgstr ""
 
@@ -336,11 +352,11 @@ msgstr ""
 msgid "Click to copy html to embed in your website"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/details.js:31
+#: ../app/javascript/maplibre/feature/details.js:33
 msgid "Click to toggle format"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:71
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:72
 msgid "Cobblestone"
 msgstr ""
 
@@ -356,7 +372,7 @@ msgstr ""
 msgid "Colorful street map for everyday use"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:72
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:73
 msgid "Compacted gravel"
 msgstr ""
 
@@ -368,7 +384,7 @@ msgstr ""
 msgid "Compass mode"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:71
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:72
 msgid "Concrete"
 msgstr ""
 
@@ -376,7 +392,7 @@ msgstr ""
 msgid "Configure Map"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:79
+#: ../app/views/maps/modals/_feature.haml:88
 msgid "Connect Garmin Connect to send tracks to your device"
 msgstr ""
 
@@ -404,7 +420,7 @@ msgstr ""
 msgid "Convert to route"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:31
+#: ../app/views/maps/modals/_feature.haml:34
 msgid "Convert to route and edit JSON"
 msgstr ""
 
@@ -412,7 +428,7 @@ msgstr ""
 msgid "Converting track to %{profile} route..."
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:398 ../app/javascript/controllers/map/settings_controller.js:61
+#: ../app/javascript/controllers/feature/modal_controller.js:400 ../app/javascript/controllers/map/settings_controller.js:61
 msgid "Coordinates copied to clipboard"
 msgstr ""
 
@@ -428,7 +444,7 @@ msgstr ""
 msgid "Copy and transform this line into a routed track with waypoints, elevation and surface info."
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/details.js:34
+#: ../app/javascript/maplibre/feature/details.js:36
 msgid "Copy coordinates to clipboard"
 msgstr ""
 
@@ -436,7 +452,7 @@ msgstr ""
 msgid "Copy link to clipboard"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:42
+#: ../app/views/maps/_map_card.haml:51
 msgid "Copy map"
 msgstr ""
 
@@ -512,7 +528,7 @@ msgstr ""
 msgid "Delete feature"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:44
+#: ../app/views/maps/_map_card.haml:53
 msgid "Delete map"
 msgstr ""
 
@@ -532,6 +548,10 @@ msgstr ""
 msgid "Descending"
 msgstr ""
 
+#: ../app/javascript/maplibre/feature/details.js:116
+msgid "Descent"
+msgstr ""
+
 #: ../app/views/maps/modals/_settings.haml:27
 msgid "Description"
 msgstr ""
@@ -544,7 +564,7 @@ msgstr ""
 msgid "Detailed street map with buildings and landmarks"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:21 ../app/javascript/maplibre/layers/osm_description.js:144
+#: ../app/views/maps/modals/_feature.haml:24 ../app/javascript/maplibre/layers/osm_description.js:144
 msgid "Details"
 msgstr ""
 
@@ -552,7 +572,7 @@ msgstr ""
 msgid "Device Orientation not supported"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:73
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:74
 msgid "Dirt"
 msgstr ""
 
@@ -576,11 +596,11 @@ msgstr ""
 msgid "Do nothing"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:44
+#: ../app/views/maps/_map_card.haml:53
 msgid "Do you really want to delete this map?"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:42
+#: ../app/views/maps/_map_card.haml:51
 msgid "Do you want to copy this map?"
 msgstr ""
 
@@ -596,19 +616,19 @@ msgstr ""
 msgid "Dots"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:58
+#: ../app/javascript/maplibre/feature/track_profile.js:8 ../app/javascript/maplibre/layers/geojson/route_extras.js:59
 msgid "Downhill"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:59
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:60
 msgid "Downhill (12-15%)"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:67
+#: ../app/views/maps/modals/_feature.haml:70
 msgid "Download as GPX"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:63
+#: ../app/views/maps/modals/_feature.haml:73
 msgid "Download as geoJSON"
 msgstr ""
 
@@ -672,6 +692,10 @@ msgstr ""
 msgid "Draw polygon (o)"
 msgstr ""
 
+#: ../app/javascript/maplibre/feature/details.js:82
+msgid "Driving time"
+msgstr ""
+
 #: ../app/views/frontpage/index.haml:77
 msgid "Dynamic layers"
 msgstr ""
@@ -700,15 +724,15 @@ msgstr ""
 msgid "Edit query"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:22
+#: ../app/views/maps/modals/_feature.haml:25
 msgid "Edit shape on map"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:25
+#: ../app/views/maps/modals/_feature.haml:28
 msgid "Edit title and description"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:44
+#: ../app/views/maps/modals/_feature.haml:51
 msgid "Elevation profile"
 msgstr ""
 
@@ -728,11 +752,11 @@ msgstr ""
 msgid "Enter name / Search queries"
 msgstr ""
 
-#: ../app/javascript/maplibre/routing/openrouteservice.js:406
+#: ../app/javascript/maplibre/routing/openrouteservice.js:411
 msgid "Error building route"
 msgstr ""
 
-#: ../app/javascript/maplibre/routing/gpx_to_route.js:236
+#: ../app/javascript/maplibre/routing/gpx_to_route.js:238
 msgid "Error converting track: %{message}"
 msgstr ""
 
@@ -740,15 +764,15 @@ msgstr ""
 msgid "Error detecting location: %{message}"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:442
+#: ../app/javascript/controllers/feature/modal_controller.js:457 ../app/javascript/controllers/feature/modal_controller.js:460
 msgid "Error sending to Garmin Connect"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/edit_controller.js:82 ../app/javascript/controllers/feature/modal_controller.js:320
+#: ../app/javascript/controllers/feature/edit_controller.js:85 ../app/javascript/controllers/feature/modal_controller.js:320
 msgid "Error updating %{type}"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/edit_controller.js:97
+#: ../app/javascript/controllers/feature/edit_controller.js:100
 msgid "Error updating %{type} geometry"
 msgstr ""
 
@@ -756,11 +780,15 @@ msgstr ""
 msgid "Error uploading image"
 msgstr ""
 
+#: ../app/views/maps/modals/_feature.haml:68
+msgid "Export"
+msgstr ""
+
 #: ../app/javascript/helpers/clipboard.js:73
 msgid "Failed to copy"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/layer.js:319
+#: ../app/javascript/maplibre/layers/layer.js:330
 msgid "Failed to load layer %{name}"
 msgstr ""
 
@@ -776,7 +804,7 @@ msgstr ""
 msgid "Featured in gallery"
 msgstr ""
 
-#: ../app/javascript/maplibre/routing/gpx_to_route.js:173 ../app/javascript/maplibre/routing/gpx_to_route.js:320
+#: ../app/javascript/maplibre/routing/gpx_to_route.js:173 ../app/javascript/maplibre/routing/gpx_to_route.js:324
 msgid "Fetching elevation data..."
 msgstr ""
 
@@ -784,7 +812,7 @@ msgstr ""
 msgid "File exceeds 2.5MB. Please simplify it, for example with mapshaper.org"
 msgstr ""
 
-#: ../app/javascript/controllers/map/layers_controller.js:117
+#: ../app/javascript/controllers/map/layers_controller.js:114
 msgid "File imported"
 msgstr ""
 
@@ -804,7 +832,7 @@ msgstr ""
 msgid "Find my location"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:72
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:73
 msgid "Fine gravel"
 msgstr ""
 
@@ -816,11 +844,11 @@ msgstr ""
 msgid "Fixed view"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:58
+#: ../app/javascript/maplibre/feature/track_profile.js:9 ../app/javascript/maplibre/layers/geojson/route_extras.js:59
 msgid "Flat"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:60
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:61
 msgid "Flat (0%)"
 msgstr ""
 
@@ -840,10 +868,6 @@ msgstr ""
 msgid "Free to try, no signup needed."
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/elevation.js:367
-msgid "Full track"
-msgstr ""
-
 #: ../app/views/frontpage/index.haml:96
 msgid "GPS & compass"
 msgstr ""
@@ -856,19 +880,19 @@ msgstr ""
 msgid "Gallery"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:439
+#: ../app/javascript/controllers/feature/modal_controller.js:454
 msgid "Garmin Connect login expired, reload the page to connect again"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:60
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:61
 msgid "Gentle downhill (4-6%)"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:61
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:62
 msgid "Gentle uphill (4-6%)"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:24
+#: ../app/views/maps/modals/_feature.haml:27
 msgid "Geometry"
 msgstr ""
 
@@ -884,15 +908,15 @@ msgstr ""
 msgid "Go to feature"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:74
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:75
 msgid "Grass"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:74
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:75
 msgid "Grass paver"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:72
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:73
 msgid "Gravel"
 msgstr ""
 
@@ -904,7 +928,7 @@ msgstr ""
 msgid "Grid"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/level_control.js:7 ../app/javascript/maplibre/layers/geojson/route_extras.js:73
+#: ../app/javascript/maplibre/controls/level_control.js:7 ../app/javascript/maplibre/layers/geojson/route_extras.js:74
 msgid "Ground"
 msgstr ""
 
@@ -920,8 +944,16 @@ msgstr ""
 msgid "Height:"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:147 ../app/javascript/controllers/map/layers_controller.js:269 ../app/javascript/maplibre/controls/shared.js:381
+#: ../app/javascript/maplibre/feature/elevation.js:241
+msgid "Here"
+msgstr ""
+
+#: ../app/views/maps/modals/_layers.haml:147 ../app/javascript/controllers/map/layers_controller.js:266 ../app/javascript/maplibre/controls/shared.js:399
 msgid "Hide layer"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/details.js:81
+msgid "Hike"
 msgstr ""
 
 #: ../app/javascript/maplibre/styles/basemaps.js:124
@@ -956,7 +988,7 @@ msgstr ""
 msgid "How to use the µlogger app to log your tracks from your phone."
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:73
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:74
 msgid "Ice"
 msgstr ""
 
@@ -1032,7 +1064,7 @@ msgstr ""
 msgid "Layer deleted"
 msgstr ""
 
-#: ../app/javascript/controllers/map/layers_controller.js:207 ../app/javascript/maplibre/controls/shared.js:339 ../app/javascript/maplibre/layers/layers.js:327
+#: ../app/javascript/controllers/map/layers_controller.js:204 ../app/javascript/maplibre/controls/shared.js:357 ../app/javascript/maplibre/layers/layers.js:327
 msgid "Layer elements"
 msgstr ""
 
@@ -1050,6 +1082,10 @@ msgstr ""
 
 #: ../app/views/docs/tutorials.haml:49
 msgid "Learn how to style your map features with extended GeoJSON properties."
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/details.js:114
+msgid "Length"
 msgstr ""
 
 #: ../app/javascript/maplibre/controls/level_control.js:6 ../app/javascript/maplibre/controls/level_control.js:75
@@ -1096,11 +1132,11 @@ msgstr ""
 msgid "Load for this area"
 msgstr ""
 
-#: ../app/javascript/maplibre/map.js:627
+#: ../app/javascript/maplibre/map.js:644
 msgid "Loaded base map %{name}"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/details.js:137
+#: ../app/javascript/maplibre/feature/details.js:214
 msgid "Loading description..."
 msgstr ""
 
@@ -1116,7 +1152,7 @@ msgstr ""
 msgid "Location"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/shared.js:541
+#: ../app/javascript/maplibre/controls/shared.js:559
 msgid "Location (https only)"
 msgstr ""
 
@@ -1200,7 +1236,7 @@ msgstr ""
 msgid "Maximum zoom level %{zoom} reached"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:71
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:72
 msgid "Metal"
 msgstr ""
 
@@ -1212,11 +1248,11 @@ msgstr ""
 msgid "Minimum zoom level %{zoom} reached"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:59
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:60
 msgid "Moderate downhill (7-11%)"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:61
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:62
 msgid "Moderate uphill (7-11%)"
 msgstr ""
 
@@ -1248,11 +1284,11 @@ msgstr ""
 msgid "New features go to layer %{name}"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/shared.js:389
+#: ../app/javascript/maplibre/controls/shared.js:407
 msgid "New features go to this layer"
 msgstr ""
 
-#: ../app/views/maps/modals/_layers.haml:59 ../app/javascript/controllers/map/layers_controller.js:320
+#: ../app/views/maps/modals/_layers.haml:59 ../app/javascript/controllers/map/layers_controller.js:317
 msgid "New layer"
 msgstr ""
 
@@ -1276,7 +1312,7 @@ msgstr ""
 msgid "No compass data, allow motion sensors in the browser settings"
 msgstr ""
 
-#: ../app/javascript/maplibre/controls/shared.js:445
+#: ../app/javascript/maplibre/controls/shared.js:463
 msgid "No elements in this layer"
 msgstr ""
 
@@ -1318,6 +1354,10 @@ msgstr ""
 
 #: ../app/views/frontpage/index.haml:35 ../app/views/frontpage/index.haml:127
 msgid "Open Source"
+msgstr ""
+
+#: ../app/views/maps/_map_card.haml:38 ../app/views/maps/modals/_feature.haml:83 ../app/javascript/controllers/feature/modal_controller.js:449 ../app/javascript/maplibre/controls/shared.js:255
+msgid "Open course in Garmin Connect"
 msgstr ""
 
 #: ../app/views/maps/modals/feature/_edit_ui.haml:227
@@ -1372,11 +1412,11 @@ msgstr ""
 msgid "Pattern"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:70
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:71
 msgid "Paved"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:73
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:74
 msgid "Paving stones"
 msgstr ""
 
@@ -1440,6 +1480,10 @@ msgstr ""
 msgid "Point Mode: Click on the map to place a marker"
 msgstr ""
 
+#: ../app/javascript/maplibre/feature/elevation.js:243
+msgid "Point at the profile or the route"
+msgstr ""
+
 #: ../app/javascript/maplibre/feature.js:86
 msgid "Polygon"
 msgstr ""
@@ -1468,7 +1512,7 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:27
+#: ../app/views/maps/modals/_feature.haml:30
 msgid "Properties"
 msgstr ""
 
@@ -1516,11 +1560,11 @@ msgstr ""
 msgid "Real-time"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/edit_controller.js:68 ../app/javascript/controllers/map/context_menu_controller.js:132
+#: ../app/javascript/controllers/feature/edit_controller.js:71 ../app/javascript/controllers/map/context_menu_controller.js:132
 msgid "Really delete this %{type}?"
 msgstr ""
 
-#: ../app/javascript/controllers/map/layers_controller.js:381
+#: ../app/javascript/controllers/map/layers_controller.js:378
 msgid "Really delete this layer?"
 msgstr ""
 
@@ -1572,6 +1616,10 @@ msgstr ""
 msgid "Reverse track"
 msgstr ""
 
+#: ../app/javascript/maplibre/feature/details.js:82
+msgid "Riding time"
+msgstr ""
+
 #: ../app/javascript/maplibre/edit.js:44
 msgid "Road Mode: Click on the map to set waypoints, double click to finish"
 msgstr ""
@@ -1588,11 +1636,11 @@ msgstr ""
 msgid "Route created from GPX"
 msgstr ""
 
-#: ../app/javascript/maplibre/routing/gpx_to_route.js:376
+#: ../app/javascript/maplibre/routing/gpx_to_route.js:381
 msgid "Route created successfully (%{length}km, %{count} segments)"
 msgstr ""
 
-#: ../app/javascript/maplibre/routing/gpx_to_route.js:228
+#: ../app/javascript/maplibre/routing/gpx_to_route.js:230
 msgid "Route created successfully (%{length}km, %{count} waypoints)"
 msgstr ""
 
@@ -1600,7 +1648,7 @@ msgstr ""
 msgid "Route differs significantly from original track (%{original}km -> %{routed}km)"
 msgstr ""
 
-#: ../app/javascript/maplibre/routing/gpx_to_route.js:273
+#: ../app/javascript/maplibre/routing/gpx_to_route.js:276
 msgid "Routing segment %{index}/%{total}..."
 msgstr ""
 
@@ -1608,7 +1656,7 @@ msgstr ""
 msgid "Routing with elevation profile"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:74
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:75
 msgid "Sand"
 msgstr ""
 
@@ -1664,11 +1712,11 @@ msgstr ""
 msgid "Self-hosting guide"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:73
+#: ../app/views/maps/modals/_feature.haml:80 ../app/javascript/maplibre/feature/details.js:247
 msgid "Send to Garmin Connect"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:437
+#: ../app/views/maps/_map_card.haml:36 ../app/javascript/controllers/feature/modal_controller.js:444
 msgid "Sent to Garmin Connect"
 msgstr ""
 
@@ -1725,8 +1773,12 @@ msgstr ""
 msgid "Show in public gallery"
 msgstr ""
 
-#: ../app/javascript/controllers/map/layers_controller.js:269 ../app/javascript/maplibre/controls/shared.js:377
+#: ../app/javascript/controllers/map/layers_controller.js:266 ../app/javascript/maplibre/controls/shared.js:395
 msgid "Show layer"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/details.js:134
+msgid "Show less"
 msgstr ""
 
 #: ../app/views/frontpage/index.haml:77
@@ -1735,6 +1787,10 @@ msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:79
 msgid "Show map in public Mapforge gallery"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/details.js:128 ../app/javascript/maplibre/feature/details.js:134
+msgid "Show more"
 msgstr ""
 
 #: ../app/views/maps/maplibre.haml:25 ../app/views/shared/_header.html.haml:10 ../app/views/shared/_header.html.haml:74
@@ -1757,11 +1813,11 @@ msgstr ""
 msgid "Size:"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:60
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:61
 msgid "Slight downhill (1-3%)"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:61
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:62
 msgid "Slight uphill (1-3%)"
 msgstr ""
 
@@ -1793,15 +1849,31 @@ msgstr ""
 msgid "Start for free"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:59
+#: ../app/javascript/maplibre/feature/track_profile.js:7
+msgid "Steep downhill"
+msgstr ""
+
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:60
 msgid "Steep downhill (>16%)"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:62
+#: ../app/javascript/maplibre/feature/track_profile.js:11
+msgid "Steep uphill"
+msgstr ""
+
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:63
 msgid "Steep uphill (>16%)"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:55
+#: ../app/javascript/maplibre/feature/extras_totals.js:41
+msgid "Steepest descent %{grade} at km %{km}"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/extras_totals.js:40
+msgid "Steepest point %{grade} at km %{km}"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/extras_totals.js:43 ../app/javascript/maplibre/layers/geojson/route_extras.js:56
 msgid "Steepness"
 msgstr ""
 
@@ -1829,7 +1901,7 @@ msgstr ""
 msgid "Streets, Satellite, Topographic, Biking, Watercolor, 3D terrain"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:30
+#: ../app/views/maps/modals/_feature.haml:33
 msgid "Style"
 msgstr ""
 
@@ -1845,7 +1917,7 @@ msgstr ""
 msgid "Supported formats: gpx, kml, kmz, geojson, mapforge json and images. WGS84 format, max. 2.5MB"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:67
+#: ../app/javascript/maplibre/feature/elevation.js:58 ../app/javascript/maplibre/feature/extras_totals.js:56 ../app/javascript/maplibre/layers/geojson/route_extras.js:68
 msgid "Surface"
 msgstr ""
 
@@ -1855,6 +1927,10 @@ msgstr ""
 
 #: ../app/views/maps/_list_filter.haml:59
 msgid "Tag"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/elevation.js:243
+msgid "Tap the profile or the route"
 msgstr ""
 
 #: ../app/views/frontpage/_share_drawing.haml:2
@@ -1873,7 +1949,7 @@ msgstr ""
 msgid "Text bubble"
 msgstr ""
 
-#: ../app/javascript/maplibre/import/kml.js:54
+#: ../app/javascript/maplibre/import/kml.js:56
 msgid "The KMZ archive contains no .kml document"
 msgstr ""
 
@@ -1885,11 +1961,11 @@ msgstr ""
 msgid "The code is open. Your data is yours."
 msgstr ""
 
-#: ../app/javascript/maplibre/import/kml.js:259
+#: ../app/javascript/maplibre/import/kml.js:261
 msgid "The file is not a zip archive"
 msgstr ""
 
-#: ../app/javascript/maplibre/import/kml.js:59
+#: ../app/javascript/maplibre/import/kml.js:61
 msgid "The file is not valid XML"
 msgstr ""
 
@@ -1909,7 +1985,7 @@ msgstr ""
 msgid "Thick lines"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/edit_controller.js:712
+#: ../app/javascript/controllers/feature/edit_controller.js:732
 msgid "This feature no longer exists"
 msgstr ""
 
@@ -1945,12 +2021,12 @@ msgstr ""
 msgid "Topic maps"
 msgstr ""
 
-#: ../app/javascript/maplibre/undo.js:60
-msgid "Track added"
+#: ../app/views/maps/_map_card.haml:38
+msgid "Track %{number}"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/elevation.js:146
-msgid "Track elevation chart"
+#: ../app/javascript/maplibre/undo.js:60
+msgid "Track added"
 msgstr ""
 
 #: ../app/javascript/controllers/map/context_menu_controller.js:95
@@ -1993,16 +2069,24 @@ msgstr ""
 msgid "Undone: %{type}"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:70 ../app/javascript/maplibre/layers/geojson/route_extras.js:146
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:71 ../app/javascript/maplibre/layers/geojson/route_extras.js:147
 msgid "Unknown"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:70
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:71
 msgid "Unpaved"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/details.js:191
+msgid "Untitled line"
 msgstr ""
 
 #: ../app/views/maps/_map_card.haml:1
 msgid "Untitled map"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/details.js:191
+msgid "Untitled route"
 msgstr ""
 
 #: ../app/views/maps/modals/_layers.haml:185 ../app/views/maps/modals/_layers.haml:198 ../app/views/maps/modals/feature/_edit_raw.haml:7 ../app/views/maps/modals/feature/_edit_raw_geometry.haml:7
@@ -2013,24 +2097,36 @@ msgstr ""
 msgid "Update Layer"
 msgstr ""
 
-#: ../app/views/maps/_map_card.haml:41
+#: ../app/javascript/maplibre/feature/details.js:247
+msgid "Update course in Garmin Connect"
+msgstr ""
+
+#: ../app/views/maps/_map_card.haml:50
 msgid "Updated %{time} ago"
 msgstr ""
 
-#: ../app/javascript/controllers/feature/modal_controller.js:437
+#: ../app/javascript/controllers/feature/modal_controller.js:444
 msgid "Updated in Garmin Connect"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:58
+#: ../app/javascript/maplibre/feature/track_profile.js:10 ../app/javascript/maplibre/layers/geojson/route_extras.js:59
 msgid "Uphill"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:62
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:63
 msgid "Uphill (12-15%)"
 msgstr ""
 
 #: ../app/views/maps/modals/_share.haml:71
 msgid "Users can explore the map but cannot modify it."
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/track_profile.js:6
+msgid "Very steep downhill"
+msgstr ""
+
+#: ../app/javascript/maplibre/feature/track_profile.js:12
+msgid "Very steep uphill"
 msgstr ""
 
 #: ../app/views/maps/maplibre.haml:32 ../app/views/maps/modals/_settings.haml:133
@@ -2041,7 +2137,7 @@ msgstr ""
 msgid "View all maps"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:19
+#: ../app/views/maps/modals/_feature.haml:22
 msgid "View feature information"
 msgstr ""
 
@@ -2065,10 +2161,6 @@ msgstr ""
 msgid "View your map with mountains and valleys"
 msgstr ""
 
-#: ../app/views/maps/modals/_feature.haml:55 ../app/javascript/maplibre/feature/elevation.js:367
-msgid "Visible section"
-msgstr ""
-
 #: ../app/javascript/maplibre/edit.js:52
 msgid "Walk Mode: Click on the map to set waypoints, double click to finish"
 msgstr ""
@@ -2077,12 +2169,12 @@ msgstr ""
 msgid "Walking route"
 msgstr ""
 
-#: ../app/javascript/maplibre/routing/directions.js:302
-msgid "Waypoint added"
+#: ../app/javascript/maplibre/feature/details.js:82 ../app/javascript/maplibre/feature/details.js:117
+msgid "Walking time"
 msgstr ""
 
-#: ../app/javascript/maplibre/feature/elevation.js:233
-msgid "Waypoint:"
+#: ../app/javascript/maplibre/routing/directions.js:303
+msgid "Waypoint added"
 msgstr ""
 
 #: ../app/views/maps/modals/_settings.haml:39
@@ -2109,11 +2201,11 @@ msgstr ""
 msgid "With this link, users can modify the map, add layers, and make changes."
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:71
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:72
 msgid "Wood"
 msgstr ""
 
-#: ../app/javascript/maplibre/layers/geojson/route_extras.js:74
+#: ../app/javascript/maplibre/layers/geojson/route_extras.js:75
 msgid "Woodchips"
 msgstr ""
 

@@ -20,11 +20,15 @@ export function status (text, status = 'info', size = 'medium', duration = 6000)
   }, duration)
 }
 
-export function hideInfoStatus () {
-  const container = document.querySelector('#status-container')
-  if (container && container.classList.contains('status-info')) {
-    container.style.opacity = 0
-    functions.e('#status-message', e => { e.innerHTML = '' })
-    if (fadeInterval) { clearInterval(fadeInterval) }
-  }
+function hideStatus () {
+  functions.e('#status-container', e => { e.style.opacity = 0 })
+  functions.e('#status-message', e => { e.innerHTML = '' })
+  if (fadeInterval) { clearInterval(fadeInterval) }
 }
+
+export function hideInfoStatus () {
+  if (document.querySelector('#status-container')?.classList.contains('status-info')) { hideStatus() }
+}
+
+// #status-container sits outside of the map controller, a turbo visit replaces the button
+document.addEventListener('click', e => { if (e.target.closest('#status-close')) { hideStatus() } })

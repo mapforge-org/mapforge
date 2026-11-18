@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { sendMessage } from 'channels/map_channel'
-import { copyToClipboard, setCopiedFeature } from 'helpers/clipboard'
+import { copyToClipboard, setCopiedFeature, showCopySuccess } from 'helpers/clipboard'
 import * as dom from 'helpers/dom'
 import * as functions from 'helpers/functions'
 import { loadMarkdownEditor, markdownEditor } from 'helpers/markdown'
@@ -8,8 +8,8 @@ import { status } from 'helpers/status'
 import { initSteppers, syncStepperValues } from 'helpers/stepper'
 import { AnimateLineAnimation, AnimatePolygonAnimation, animateViewFromProperties } from 'maplibre/animations'
 import { draw, select, unselect } from 'maplibre/edit'
-import { getFeatureTypeName, highlightedFeatureId } from 'maplibre/feature'
-import { refreshFeatureMeta, showFeatureDetails } from 'maplibre/feature/details'
+import { featureTitle, getFeatureTypeName, highlightedFeatureId } from 'maplibre/feature'
+import { garminCourseUrl, refreshFeatureMeta, showFeatureDetails, showGarminState, toggleDescription } from 'maplibre/feature/details'
 import {
   syncBackground, syncDescShapeButtons, syncMarkerContent, syncFeatureOnclickUi, syncShapeButtons
 } from 'maplibre/feature/edit_ui'
@@ -328,6 +328,10 @@ export default class extends Controller {
     sendMessage('update_feature', { ...feature })
   }
 
+  toggleDescription () {
+    toggleDescription()
+  }
+
   toggleModalSize (e) {
     const modal = this.element
     const size = (modal.offsetHeight / modal.parentElement.offsetHeight) * 100
@@ -424,22 +428,28 @@ export default class extends Controller {
 
   async sendToGarmin (event) {
     event.preventDefault()
+    const button = event.currentTarget
     dom.showElements('#preloader')
     try {
-      const response = await fetch(event.currentTarget.dataset.url, {
+      const response = await fetch(button.dataset.url, {
         method: 'POST',
         headers: { 'X-CSRF-Token': window.gon.csrf_token }
       })
       if (response.ok) {
         const { result, course_id: courseId } = await response.json()
+        const feature = this.getSelectedFeature()
+        window.gon.garmin_course_ids = { ...window.gon.garmin_course_ids, [feature.id]: courseId }
+        showGarminState(feature)
+        showCopySuccess(button, 'bi-arrow-repeat')
         const text = result === 'updated' ? window.__('Updated in Garmin Connect') : window.__('Sent to Garmin Connect')
-        const link = Object.assign(document.createElement('a'), {
-          href: 'https://connect.garmin.com/modern/course/' + encodeURIComponent(courseId),
-          target: '_blank',
-          rel: 'noopener',
-          textContent: text
-        })
-        status(courseId ? link : text, 'info', 'medium', 15000)
+        const message = document.createElement('span')
+        message.append(`${text}: ${featureTitle(feature) || getFeatureTypeName(feature)}. `,
+          Object.assign(document.createElement('a'), {
+            href: garminCourseUrl(courseId), target: '_blank', rel: 'noopener',
+            textContent: window.__('Open course in Garmin Connect')
+          }))
+        // not 'info': a switch of the draw mode hides info messages at once
+        status(message, 'success', 'medium', 20000)
       } else if (response.status === 401) {
         status(window.__('Garmin Connect login expired, reload the page to connect again'), 'error')
       } else {

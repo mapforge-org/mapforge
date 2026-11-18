@@ -2,7 +2,7 @@
 - icon, visibility = { "private" => [ "bi-lock", _("Private") ],
                        "listed" => [ "bi-globe", _("Public") ] }.fetch(map.view_permission, [ "bi-link-45deg", _("Private link") ])
 
-.map-card.grid-item.map-preview.background-bright{ class: [ "map_#{map.public_id}", ("featured" if map.featured) ] }
+.map-card.grid-item.map-preview.background-bright{ class: [ "map_#{map.public_id}", ("featured" if map.featured) ], data: { controller: "tooltip" } }
   = link_to map_path(id: map.private_id, name: map.name), class: "map-card-image", 'aria-label': _("Open map '%{name}'") % { name: title } do
     - screenshot = map.screenshot
     %img{ src: screenshot || image_path("preview.png"), class: [ "preview-image", ("preview-placeholder" unless screenshot) ],
@@ -31,6 +31,15 @@
         = _("Shared with:")
         = render "maps/owner_avatars", owners: map.owners - [ @user ]
 
+    - if (courses = @garmin_courses&.dig(map.id))
+      .map-card-garmin
+        %i.bi.bi-smartwatch{ title: _("Sent to Garmin Connect"), data: { toggle: "tooltip", 'bs-trigger': "hover" } }
+        - links = courses.each_with_index.map do |(name, course_id), i|
+          - link_to (courses.one? ? "Garmin" : _("Track %{number}") % { number: i + 1 }), "https://connect.garmin.com/modern/course/#{course_id}",
+                    target: "_blank", rel: "noopener", title: [ _("Open course in Garmin Connect"), name.presence ].compact.join(": "),
+                    data: { toggle: "tooltip", 'bs-trigger': "hover" }
+        %span= courses.one? ? links.first : safe_join([ "Garmin\u00A0(", safe_join(links, ", "), ")" ])
+
     - if admin
       .map-card-stats
         = _("%{count} views") % { count: map.view_count }
@@ -39,7 +48,7 @@
 
     .map-card-footer
       %span.map-card-updated= _("Updated %{time} ago") % { time: time_ago_in_words(map.updated_at) }
-      = link_to copy_map_path(id: map.public_id), data: { turbo_method: :post, turbo_confirm: _("Do you want to copy this map?") }, title: _("Copy map") do
+      = link_to copy_map_path(id: map.public_id), data: { turbo_method: :post, turbo_confirm: _("Do you want to copy this map?"), toggle: "tooltip", 'bs-trigger': "hover" }, title: _("Copy map") do
         %i.bi.bi-copy
-      = link_to destroy_map_path(id: map.private_id), data: { turbo_method: :delete, turbo_confirm: _("Do you really want to delete this map?") }, title: _("Delete map"), class: "map-delete" do
+      = link_to destroy_map_path(id: map.private_id), data: { turbo_method: :delete, turbo_confirm: _("Do you really want to delete this map?"), toggle: "tooltip", 'bs-trigger': "hover" }, title: _("Delete map"), class: "map-delete" do
         %i.bi.bi-trash

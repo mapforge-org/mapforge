@@ -25,14 +25,17 @@ msgid_plural "%{count} maps"
 msgstr[0] "%{count} Karte"
 msgstr[1] "%{count} Karten"
 
+msgid "%{count} points"
+msgstr "%{count} Punkte"
+
 msgid "%{count} views"
 msgstr "%{count} Aufrufe"
 
+msgid "%{count} waypoints"
+msgstr "%{count} Wegpunkte"
+
 msgid "%{type} added"
 msgstr "%{type} hinzugefügt"
-
-msgid "%{type} analysis"
-msgstr "%{type}-Auswertung"
 
 msgid "%{type} copied to clipboard"
 msgstr "%{type} in die Zwischenablage kopiert"
@@ -130,6 +133,9 @@ msgstr "Künstlerisch"
 msgid "Ascending"
 msgstr "Aufsteigend"
 
+msgid "Ascent"
+msgstr "Aufstieg"
+
 msgid "Asphalt"
 msgstr "Asphalt"
 
@@ -181,6 +187,9 @@ msgstr "Tourenplanung fürs Fahrrad – so funktioniert’s"
 msgid "Big dots"
 msgstr "Große Punkte"
 
+msgid "Bike tour"
+msgstr "Radtour"
+
 msgid "Black and white map, good for printing"
 msgstr "Schwarz-weiße Karte, gut zum Drucken"
 
@@ -231,6 +240,9 @@ msgstr "Auto"
 
 msgid "Car route"
 msgstr "Autoroute"
+
+msgid "Car trip"
+msgstr "Autofahrt"
 
 msgid "Center"
 msgstr "Mittelpunkt"
@@ -403,6 +415,9 @@ msgstr "Demo: Eine Karte mit Routen, Fotos und 3D-Gebäuden entsteht"
 msgid "Descending"
 msgstr "Absteigend"
 
+msgid "Descent"
+msgstr "Abstieg"
+
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -508,6 +523,9 @@ msgstr "Polygon zeichnen"
 msgid "Draw polygon (o)"
 msgstr "Polygon zeichnen (o)"
 
+msgid "Driving time"
+msgstr "Fahrzeit"
+
 msgid "Dynamic layers"
 msgstr "Dynamische Ebenen"
 
@@ -571,6 +589,9 @@ msgstr "Fehler beim Aktualisieren der Geometrie von %{type}"
 msgid "Error uploading image"
 msgstr "Fehler beim Hochladen des Bildes"
 
+msgid "Export"
+msgstr "Exportieren"
+
 msgid "Failed to copy"
 msgstr "Kopieren fehlgeschlagen"
 
@@ -617,7 +638,7 @@ msgid "Fixed view"
 msgstr "Feste Ansicht"
 
 msgid "Flat"
-msgstr "Eben"
+msgstr "Flach"
 
 msgid "Flat (0%)"
 msgstr "Eben (0 %)"
@@ -633,9 +654,6 @@ msgstr "Zu Fuß"
 
 msgid "Free to try, no signup needed."
 msgstr "Kostenlos, ohne Anmeldung ausprobieren."
-
-msgid "Full track"
-msgstr "Gesamter Track"
 
 msgid "GPS & compass"
 msgstr "GPS & Kompass"
@@ -694,8 +712,14 @@ msgstr "Schraffur"
 msgid "Height:"
 msgstr "Höhe:"
 
+msgid "Here"
+msgstr ""
+
 msgid "Hide layer"
 msgstr "Ebene ausblenden"
+
+msgid "Hike"
+msgstr "Wanderung"
 
 msgid "Hiking map with height lines and hill shadows"
 msgstr "Wanderkarte mit Höhenlinien und Schattierung"
@@ -792,6 +816,9 @@ msgstr "Ebenen"
 
 msgid "Learn how to style your map features with extended GeoJSON properties."
 msgstr "Lerne, wie du deine Kartenobjekte mit erweiterten GeoJSON-Eigenschaften gestaltest."
+
+msgid "Length"
+msgstr "Länge"
 
 msgid "Level %{n}"
 msgstr "Ebene %{n}"
@@ -994,6 +1021,9 @@ msgstr "Deckkraft:"
 msgid "Open Source"
 msgstr "Open Source"
 
+msgid "Open course in Garmin Connect"
+msgstr "Strecke in Garmin Connect öffnen"
+
 msgid "Open link"
 msgstr "Link öffnen"
 
@@ -1083,6 +1113,9 @@ msgstr "Punkt"
 
 msgid "Point Mode: Click on the map to place a marker"
 msgstr "Punkt-Modus: Auf die Karte klicken, um einen Marker zu setzen"
+
+msgid "Point at the profile or the route"
+msgstr "Zeige auf das Profil oder die Strecke"
 
 msgid "Polygon"
 msgstr "Polygon"
@@ -1182,6 +1215,9 @@ msgstr "Form ändern"
 
 msgid "Reverse track"
 msgstr "Track umkehren"
+
+msgid "Riding time"
+msgstr "Fahrzeit"
 
 msgid "Road Mode: Click on the map to set waypoints, double click to finish"
 msgstr "Straßen-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklick zum Beenden"
@@ -1301,11 +1337,17 @@ msgstr "In der Galerie zeigen"
 msgid "Show layer"
 msgstr "Ebene einblenden"
 
+msgid "Show less"
+msgstr "Weniger anzeigen"
+
 msgid "Show live OpenStreetMap data with %{overpass_link}"
 msgstr "OpenStreetMap-Daten live per %{overpass_link} einblenden"
 
 msgid "Show map in public Mapforge gallery"
 msgstr "Karte in der öffentlichen Mapforge-Galerie zeigen"
+
+msgid "Show more"
+msgstr "Mehr anzeigen"
 
 msgid "Show navigation"
 msgstr "Navigation anzeigen"
@@ -1349,11 +1391,23 @@ msgstr "Karte erstellen"
 msgid "Start for free"
 msgstr "Kostenlos loslegen"
 
+msgid "Steep downhill"
+msgstr "Steil bergab"
+
 msgid "Steep downhill (>16%)"
 msgstr "Starkes Gefälle (>16 %)"
 
+msgid "Steep uphill"
+msgstr "Steil bergauf"
+
 msgid "Steep uphill (>16%)"
 msgstr "Starke Steigung (>16 %)"
+
+msgid "Steepest descent %{grade} at km %{km}"
+msgstr "Stärkstes Gefälle %{grade} bei km %{km}"
+
+msgid "Steepest point %{grade} at km %{km}"
+msgstr "Steilste Stelle %{grade} bei km %{km}"
 
 msgid "Steepness"
 msgstr "Steigung"
@@ -1396,6 +1450,9 @@ msgstr "Symbol:"
 
 msgid "Tag"
 msgstr "Tag"
+
+msgid "Tap the profile or the route"
+msgstr "Tippe auf das Profil oder die Strecke"
 
 msgid "Team plans along"
 msgstr "Team plant"
@@ -1463,11 +1520,11 @@ msgstr "Vollbild ein-/ausschalten"
 msgid "Topic maps"
 msgstr "Themenkarten"
 
+msgid "Track %{number}"
+msgstr "Track %{number}"
+
 msgid "Track added"
 msgstr "Track hinzugefügt"
-
-msgid "Track elevation chart"
-msgstr "Höhenprofil des Tracks"
 
 msgid "Track reversed"
 msgstr "Track umgekehrt"
@@ -1505,14 +1562,23 @@ msgstr "Unbekannt"
 msgid "Unpaved"
 msgstr "Unbefestigt"
 
+msgid "Untitled line"
+msgstr "Unbenannte Linie"
+
 msgid "Untitled map"
 msgstr "Unbenannte Karte"
+
+msgid "Untitled route"
+msgstr "Unbenannte Route"
 
 msgid "Update"
 msgstr "Aktualisieren"
 
 msgid "Update Layer"
 msgstr "Ebene aktualisieren"
+
+msgid "Update course in Garmin Connect"
+msgstr "Strecke in Garmin Connect aktualisieren"
 
 msgid "Updated %{time} ago"
 msgstr "Aktualisiert vor %{time}"
@@ -1528,6 +1594,12 @@ msgstr "Steigung (12-15 %)"
 
 msgid "Users can explore the map but cannot modify it."
 msgstr "Nutzer können die Karte ansehen, aber nicht ändern."
+
+msgid "Very steep downhill"
+msgstr "Sehr steil bergab"
+
+msgid "Very steep uphill"
+msgstr "Sehr steil bergauf"
 
 msgid "View"
 msgstr "Ansicht"
@@ -1553,20 +1625,17 @@ msgstr "Auf GitHub ansehen"
 msgid "View your map with mountains and valleys"
 msgstr "Betrachte deine Karte mitsamt Bergen und Tälern"
 
-msgid "Visible section"
-msgstr "Sichtbarer Abschnitt"
-
 msgid "Walk Mode: Click on the map to set waypoints, double click to finish"
 msgstr "Fußweg-Modus: Auf die Karte klicken, um Wegpunkte zu setzen, Doppelklick zum Beenden"
 
 msgid "Walking route"
 msgstr "Wanderroute"
 
+msgid "Walking time"
+msgstr "Gehzeit"
+
 msgid "Waypoint added"
 msgstr "Wegpunkt hinzugefügt"
-
-msgid "Waypoint:"
-msgstr "Wegpunkt:"
 
 msgid "What do you want to do?"
 msgstr "Was möchtest du tun?"
