@@ -1,8 +1,8 @@
 import * as f from 'helpers/functions'
 import { featureIcon, featureTitle } from 'maplibre/feature'
-import { featureMeta } from 'maplibre/feature/details'
+import { featureMeta, symbolTint } from 'maplibre/feature/details'
 import { GRADE_ICON } from 'maplibre/feature/extras_totals'
-import { GRADE_CLASSES, gradeClass, ORS_CLASS, trackProfile } from 'maplibre/feature/track_profile'
+import { GRADE_CLASSES, gradeClass, heightShare, ORS_CLASS, profileLine, trackProfile } from 'maplibre/feature/track_profile'
 import { hasKmMarkers } from 'maplibre/layers/geojson/km_markers'
 import { EXTRAS_COLOR_CONFIGS, STEEPNESS_RANGES } from 'maplibre/layers/geojson/route_extras'
 import { getFeature } from 'maplibre/layers/layers'
@@ -40,6 +40,13 @@ function head (title, before = '', after = '') {
   return `<div class="hover-head">${before}<span>${f.escapeHtml(title)}</span>${after}</div>`
 }
 
+// The elevation of the track as a filled area. The svg stretches to the width of the card, so the
+// ring at the position in percent of the length runs on its top edge.
+function silhouette (profile, y) {
+  return '<svg class="hover-silhouette" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
+    `<path d="M0 100L${profileLine(profile, 200, y)}L100 100Z"/></svg>`
+}
+
 // a routed or imported track, not a drawn line. Elevation alone does not make a track.
 const isTrack = feature => hasKmMarkers(feature) ||
   (feature.geometry.type === 'LineString' && feature.geometry.coordinates.length > 1 && !!feature.properties.route)
@@ -52,15 +59,25 @@ function lineCard (feature) {
   // a card with only the length tells too little
   if (!title && !track) { return null }
   const color = feature.properties.stroke || defaults.featureColor
-  const bar = track ? '<div class="hover-bar"><span class="hover-ring"></span></div><div class="hover-position"></div>' : ''
+  const tint = symbolTint(feature)
+  // without elevation, the ring runs on a line
+  // the height of an elevation in percent from the top of the silhouette
+  const height = profile?.eles && profile.total && heightShare(profile)
+  const y = height && (e => 100 - height(e) * 100)
+  const bar = track ? `<div class="hover-bar${y ? ' hover-elevation' : ''}">${y ? silhouette(profile, y) : ''}` +
+    '<span class="hover-ring"></span></div><div class="hover-position"></div>' : ''
   return {
-    html: `<div style="--route-color: ${f.escapeHtml(color)}">` +
-      head(title, featureIcon(feature, { link: false, lazy: false }),
+    html: `<div class="${track ? 'hover-track' : ''}" style="--route-color: ${f.escapeHtml(color)}">` +
+      head(title, `<span class="hover-symbol"${tint ? ` style="--symbol-tint: ${tint}"` : ''}>` +
+        featureIcon(feature, { link: false, lazy: false }) + '</span>',
         `<span class="hover-total">${featureMeta(feature)}</span>`) + bar + '</div>',
     options: { anchor: 'left', offset: 14 },
+    // a track places the card at its point under the cursor, any other line follows the mouse
+    trackPointer: !track,
     route: track && {
       feature,
       color,
+      y,
       profile
     }
   }
@@ -96,6 +113,7 @@ const dropProjection = () => { if (route) { route.points = null } }
 
 export function showHoverInfo (feature, lngLat) {
   popup?.remove()
+  popup = null
   dot?.remove()
   if (route) { showOnChart(null) }
   map.off('move', dropProjection)
@@ -106,10 +124,11 @@ export function showHoverInfo (feature, lngLat) {
   if (!info) { return }
   popup = new window.maplibregl.Popup({
     closeButton: false, closeOnClick: false, focusAfterOpen: false,
-    className: 'feature-hover-info', maxWidth: '16rem', ...info.options
+    className: 'feature-hover-info', maxWidth: 'none', ...info.options
   }).setHTML(info.html).setLngLat(lngLat).addTo(map)
   // trackPointer() places the card on the next mouse move only, setLngLat places it now
   if (info.trackPointer) { popup.trackPointer() }
+  placeSide(lngLat)
   if (info.route) {
     route = info.route
     const el = popup.getElement()
@@ -149,9 +168,25 @@ function nearestOnTrack (lngLat) {
   return nearest
 }
 
+// The card goes left of the cursor where it would leave the map on the right. The anchor of a
+// popup has no setter, setOffset() redraws it with the changed option.
+function placeSide (lngLat) {
+  const { anchor, offset } = popup.options
+  const flip = map.project(lngLat).x + offset + popup.getElement().offsetWidth > map.getContainer().clientWidth
+  const side = flip ? anchor.replace('left', 'right') : anchor.replace('right', 'left')
+  if (side !== anchor) {
+    popup.options.anchor = side
+    popup.setOffset(offset)
+  }
+}
+
 // the cursor moved on the same feature
 export function moveHoverInfo (lngLat) {
-  if (!route) { return }
+  if (!popup) { return }
+  if (!route) {
+    placeSide(lngLat)
+    return
+  }
   const { index, share } = nearestOnTrack(lngLat)
   const { dists, total } = route.profile
   const coords = route.feature.geometry.coordinates
@@ -162,8 +197,10 @@ export function moveHoverInfo (lngLat) {
   popup.setLngLat(position)
 
   route.ring.style.left = (100 * at / total) + '%'
+  if (route.y) { route.ring.style.top = route.y(position[2]) + '%' }
   const html = trackPositionHtml(route.profile, index, at, position[2])
   // the text changes only every 100m or so, a new html would rebuild the elements in each frame
   if (html !== route.html) { route.position.innerHTML = route.html = html }
+  placeSide(position)
   showOnChart({ segment: index, share, meters: at, elevation: position[2] })
 }

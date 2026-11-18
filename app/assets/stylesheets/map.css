@@ -391,6 +391,12 @@ body:has(#map-mode-badge) .layer-popover {
   pointer-events: none;
 }
 
+/* the details tab of the feature modal shows the same values, the dot on the map and the
+   marker in the elevation chart stay */
+body:has(#feature-details-modal.show #feature-details-body:not(.hidden)) .feature-hover-info {
+  display: none;
+}
+
 .feature-hover-info .maplibregl-popup-content {
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
@@ -402,6 +408,12 @@ body:has(#map-mode-badge) .layer-popover {
 
 .feature-hover-info .maplibregl-popup-tip {
   display: none;
+}
+
+/* the position row changes with each surface and gradient, a fixed width keeps the card still.
+   A long row wraps. */
+.feature-hover-info .hover-track {
+  width: 18rem;
 }
 
 .feature-hover-info .hover-head {
@@ -442,6 +454,14 @@ body:has(#map-mode-badge) .layer-popover {
   background: var(--route-color);
 }
 
+.feature-hover-info .hover-silhouette {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: var(--route-color);
+  opacity: 0.3;
+}
+
 .hover-ring {
   display: inline-block;
   width: 10px;
@@ -464,11 +484,21 @@ body:has(#map-mode-badge) .layer-popover {
 
 /* the route color can be pale, a shadow keeps the line, the rings and the icons on the white card */
 .feature-hover-info .hover-bar,
+.feature-hover-info .hover-elevation .hover-ring,
 :is(.feature-hover-info, .track-position) .hover-position .hover-ring,
 .feature-hover-info .hover-head .bi,
 .feature-hover-info .hover-head .feature-details-icon,
 .feature-hover-info .hover-swatch {
   filter: drop-shadow(0 1px 1px rgb(0 0 0 / 30%));
+}
+
+/* a track with elevation drops the line, the ring runs on the top edge of the silhouette.
+   The shadow of the bar would blur the area, the ring gets its own. */
+.feature-hover-info .hover-elevation {
+  height: 1.6rem;
+  border-radius: 0;
+  background: none;
+  filter: none;
 }
 
 :is(.feature-hover-info, .track-position) .hover-position {
@@ -477,6 +507,23 @@ body:has(#map-mode-badge) .layer-popover {
   align-items: center;
   gap: 0.75rem;
   white-space: nowrap;
+}
+
+/* one row, the card grows with it */
+.feature-hover-info .hover-position {
+  flex-wrap: nowrap;
+}
+
+/* the icon on a light square in the feature color, like in the details modal */
+.feature-hover-info .hover-symbol {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 0.45rem;
+  background: var(--symbol-tint, #f1f3f6);
 }
 
 .feature-hover-info .hover-swatch {
@@ -488,9 +535,9 @@ body:has(#map-mode-badge) .layer-popover {
 }
 
 .hover-route-dot {
-  width: 12px;
-  height: 12px;
-  border-width: 3px;
+  width: 16px;
+  height: 16px;
+  border-width: 4px;
 }
 
 /* --scale follows marker-scaling, set in desc_banners.js. Maplibre positions the outer

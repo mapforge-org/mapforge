@@ -307,7 +307,9 @@ describe "Feature details" do
       it "marks the hovered point of the track in the chart" do
         xy = viewport_xy_for_lat_lng(49.45, 11.08)
         hover_coord(xy[:x], xy[:y])
-        expect(page).to have_css(".feature-hover-info .hover-position .bi-triangle")
+        # the details tab shows the position, the hover card stays hidden
+        expect(page).to have_css(".feature-hover-info", visible: :hidden)
+        expect(page).to have_no_css(".feature-hover-info")
         expect(page).to have_css("#elevation-here", text: "350 m")
         active = page.evaluate_async_script(<<~JS)
           const done = arguments[0]
