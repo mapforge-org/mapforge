@@ -26,29 +26,6 @@ describe MapsController do
     end
   end
 
-  describe "#layer" do
-    let(:layer) { map.layers.first }
-    let(:second) { Time.zone.now.to_i }
-
-    it "answers 304 when the layer did not change" do
-      get map_layer_geo_path(id: map.public_id, layer_id: layer.id)
-      get map_layer_geo_path(id: map.public_id, layer_id: layer.id),
-        headers: { "If-None-Match" => response.headers["ETag"] }
-      expect(response).to have_http_status(:not_modified)
-    end
-
-    # A whole-second ETag sent a stale 304 when a feature changed in the same second
-    it "sends the new layer data when the layer changed within the same second" do
-      layer.set(updated_at: Time.zone.at(second + 0.1))
-      get map_layer_geo_path(id: map.public_id, layer_id: layer.id)
-      etag = response.headers["ETag"]
-
-      layer.set(updated_at: Time.zone.at(second + 0.5))
-      get map_layer_geo_path(id: map.public_id, layer_id: layer.id), headers: { "If-None-Match" => etag }
-      expect(response).to have_http_status(:ok)
-    end
-  end
-
   describe "#show (geojson)" do
     it "returns the map features" do
       create(:feature, :line_string, layer: map.layers.first)
@@ -774,6 +751,25 @@ describe MapsController do
       map.update!(view_permission: "private")
       get map_layer_geo_path(id: map.public_id, layer_id: layer.id)
       expect(response).to redirect_to(maps_path)
+    end
+
+    it "answers 304 when the layer did not change" do
+      get map_layer_geo_path(id: map.public_id, layer_id: layer.id)
+      get map_layer_geo_path(id: map.public_id, layer_id: layer.id),
+        headers: { "If-None-Match" => response.headers["ETag"] }
+      expect(response).to have_http_status(:not_modified)
+    end
+
+    # A whole-second ETag sent a stale 304 when a feature changed in the same second
+    it "sends the new layer data when the layer changed within the same second" do
+      second = Time.zone.now.to_i
+      layer.set(updated_at: Time.zone.at(second + 0.1))
+      get map_layer_geo_path(id: map.public_id, layer_id: layer.id)
+      etag = response.headers["ETag"]
+
+      layer.set(updated_at: Time.zone.at(second + 0.5))
+      get map_layer_geo_path(id: map.public_id, layer_id: layer.id), headers: { "If-None-Match" => etag }
+      expect(response).to have_http_status(:ok)
     end
   end
 
