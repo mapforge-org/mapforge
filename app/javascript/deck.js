@@ -33,9 +33,14 @@ async function init () {
   })
   map.addControl(new maplibregl.NavigationControl())
 
-  // maplibre-gl 6 moved the camera to map._camera, deck.gl 9.x still reads map.transform
+  // maplibre-gl 6.19 removed map.transform, deck.gl 9.x still reads its height, elevation, _nearZ and _farZ
   if (!map.transform && map._camera) {
-    Object.defineProperty(map, 'transform', { get: () => map._camera.transform })
+    Object.defineProperty(map, 'transform', {
+      get: () => {
+        const camera = map._camera.projectedCamera
+        return { ...camera, _nearZ: camera.nearZ, _farZ: camera.farZ }
+      }
+    })
   }
 
   // await map.once('load')
