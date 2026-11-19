@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       # Without the man-db flag file, apt-get install skips the slow man page index rebuild
       - name: Install dependencies
         run: |
@@ -27,7 +27,7 @@ jobs:
         with:
           # caches by Gemfile.lock checksum
           bundler-cache: true
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 20
           cache: 'npm'
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Restore spec runtimes
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: tmp/parallel_runtime_rspec.log
           key: rspec-runtime-${{ github.run_id }}
@@ -86,7 +86,7 @@ jobs:
       - name: Start MongoDB
         run: (docker run -d --name mongo -p 27017:27017 mongo:9.0.4 > /dev/null 2>&1 &)
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install dependencies
         run: |
           sudo rm -f /var/lib/man-db/auto-update
@@ -99,7 +99,7 @@ jobs:
           bundler-cache: true
       # Share test run timings across CI runs for optimal distribution
       - name: Download spec runtimes
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: runtimes
           path: tmp
@@ -145,14 +145,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
       # The collate step needs only simplecov, so skip apt and the app bundle
       - name: Install simplecov
         run: gem install simplecov --no-document -v "$(grep -oP '^    simplecov \(\K[^)]+' Gemfile.lock)"
       - name: Download partial results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: part-*
           path: parts
@@ -180,7 +180,7 @@ jobs:
           mkdir -p tmp
           cat parts/*/tmp/parallel_runtime_rspec.log > tmp/parallel_runtime_rspec.log
       - name: Save spec runtimes
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: tmp/parallel_runtime_rspec.log
           key: rspec-runtime-${{ github.run_id }}
