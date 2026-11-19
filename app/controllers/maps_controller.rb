@@ -73,7 +73,7 @@ class MapsController < ApplicationController
         Yabeda.map_downloads.increment(format: "mapforge") if params[:export].present?
         # updated_at bumps on any feature/layer/map change via the touch chain,
         # so it's a sufficient (and private) validator for a 304 on repeat loads.
-        if stale?(etag: @map.updated_at)
+        if stale?(etag: @map.updated_at.iso8601(6))
           render json: @map.to_json(include_features: params[:export].present?)
         end
       end
@@ -163,7 +163,7 @@ class MapsController < ApplicationController
     layer = @map.layers.find(params["layer_id"])
     head :not_found and return unless layer
     # Sending 304 on repeat loads un unchanged layer.
-    render json: layer.to_geojson if stale?(etag: layer.updated_at)
+    render json: layer.to_geojson if stale?(etag: layer.updated_at.iso8601(6))
   end
 
   # Turbo sends the DELETE request automatically with Content-Type: text/vnd.turbo-stream.html
