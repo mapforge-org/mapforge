@@ -4,6 +4,11 @@ on:
   # rebuild image with updated patches each night:
   schedule:
     - cron: '0 4 * * *' # Runs every day at 04:00 UTC
+  push:
+    branches:
+      - main
+    paths:
+      - deploy/Dockerfile.base
   workflow_dispatch:
 
 jobs:
