@@ -17,8 +17,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "\n"
 
-msgid "%{count} features"
-msgstr "%{count} Objekte"
+msgid "%{count} feature"
+msgid_plural "%{count} features"
+msgstr[0] "%{count} Objekt"
+msgstr[1] "%{count} Objekte"
 
 msgid "%{count} map"
 msgid_plural "%{count} maps"
@@ -28,8 +30,10 @@ msgstr[1] "%{count} Karten"
 msgid "%{count} points"
 msgstr "%{count} Punkte"
 
-msgid "%{count} views"
-msgstr "%{count} Aufrufe"
+msgid "%{count} view"
+msgid_plural "%{count} views"
+msgstr[0] "%{count} Aufruf"
+msgstr[1] "%{count} Aufrufe"
 
 msgid "%{count} waypoints"
 msgstr "%{count} Wegpunkte"
@@ -711,9 +715,6 @@ msgstr "Schraffur"
 
 msgid "Height:"
 msgstr "Höhe:"
-
-msgid "Here"
-msgstr ""
 
 msgid "Hide layer"
 msgstr "Ebene ausblenden"

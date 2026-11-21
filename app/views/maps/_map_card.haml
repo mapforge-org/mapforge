@@ -42,9 +42,9 @@
 
     - if admin
       .map-card-stats
-        = _("%{count} views") % { count: map.view_count }
+        = n_("%{count} view", "%{count} views", map.view_count) % { count: map.view_count }
         &middot;
-        = _("%{count} features") % { count: map.features_count }
+        = n_("%{count} feature", "%{count} features", map.features_count) % { count: map.features_count }
 
     .map-card-footer
       %span.map-card-updated= _("Updated %{time} ago") % { time: time_ago_in_words(map.updated_at) }
