@@ -32,7 +32,7 @@ pin_all_from "vendor/javascript/mapbox-gl-draw-paint-mode",
 # preloaded on map pages so the browser fetches during head parse
 pin "maplibre-gl", preload: "map" # v6.19.0
 # https://github.com/maplibre/maplibre-gl-geocoder
-pin "@maplibre/maplibre-gl-geocoder", preload: "map", to: "@maplibre--maplibre-gl-geocoder.js" # @1.9.4
+pin "@maplibre/maplibre-gl-geocoder", preload: "map", to: "@maplibre--maplibre-gl-geocoder.js" # @1.9.5
 # https://github.com/GIScience/openrouteservice-js?tab=readme-ov-file
 pin "openrouteservice-js", preload: "map" # @0.4.1
 # https://github.com/maplibre/maplibre-gl-directions/tree/main
