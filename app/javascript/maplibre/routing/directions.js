@@ -283,11 +283,9 @@ export async function initDirections (profile, feature) {
       updateTrack(currentFeature)
       if (!isExisting) {
         showFeatureDetails(currentFeature)
-        // Defer unselect to avoid destroying directions while event is still being processed
-        setTimeout(() => {
-          unselect()
-          window.dispatchEvent(new CustomEvent("toggle-edit-feature"))
-        }, 10)
+        // Defer unselect to avoid destroying directions while event is still being processed.
+        // A new route stays on the details tab, the properties tab hides its elevation chart.
+        setTimeout(unselect, 10)
       } else {
         refreshFeatureMeta(currentFeature)
       }

@@ -41,7 +41,8 @@ export function orsBuildRequest (config, coordinates, _bearings) {
   const payload = {
     coordinates,
     extra_info: config.requestOptions.extra_info || [],
-    elevation: ORS_ELEVATION_IN_ROUTE
+    elevation: ORS_ELEVATION_IN_ROUTE,
+    instructions: false
   }
   if (config.requestOptions.options) {
     payload.options = config.requestOptions.options
@@ -391,6 +392,7 @@ export async function getRouteUpdate (originalFeature, updatedFeature) {
     const routeOptions = { coordinates: waypoints,
       extra_info: ORS_EXTRA_INFO,
       elevation: ORS_ELEVATION_IN_ROUTE,
+      instructions: false,
       profile }
     if (Object.keys(weightings).length > 0) {
       routeOptions.options = { profile_params: { weightings } }

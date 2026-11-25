@@ -8,7 +8,7 @@ import { decodePolyline } from 'helpers/polyline'
 import { status } from 'helpers/status'
 import { showFeatureDetails } from 'maplibre/feature/details'
 import { upsert } from 'maplibre/layers/layers'
-import { getRouteElevation, ORS_EXTRA_INFO, orsProfiles } from 'maplibre/routing/openrouteservice'
+import { ORS_ELEVATION_IN_ROUTE, ORS_EXTRA_INFO, orsProfiles } from 'maplibre/routing/openrouteservice'
 import { defaults, routeColor } from 'maplibre/styles/defaults'
 import { addUndoState } from 'maplibre/undo'
 import Openrouteservice from 'openrouteservice-js'
@@ -162,17 +162,13 @@ export async function convertToRoute(originalFeature, profile) {
     const routeOptions = {
       coordinates: snappedWaypoints,
       extra_info: ORS_EXTRA_INFO,
+      elevation: ORS_ELEVATION_IN_ROUTE,
+      instructions: false,
       profile: orsProfile
     }
 
     const routeResponse = await orsDirections.calculate(routeOptions)
-    let routeCoordinates = decodePolyline(routeResponse.routes[0].geometry)
-
-    // Fetch elevation (skip for car routes)
-    if (!orsProfile.includes('driving')) {
-      status(window.__('Fetching elevation data...'))
-      routeCoordinates = await getRouteElevation(routeCoordinates) || routeCoordinates
-    }
+    const routeCoordinates = decodePolyline(routeResponse.routes[0].geometry, ORS_ELEVATION_IN_ROUTE)
 
     // Compare lengths to warn about significant differences
     const originalLength = length(lineString(functions.removeElevation(coordinates)))
@@ -289,11 +285,13 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
     const routeOptions = {
       coordinates: snappedSegment,
       extra_info: ORS_EXTRA_INFO,
+      elevation: ORS_ELEVATION_IN_ROUTE,
+      instructions: false,
       profile: orsProfile
     }
 
     const routeResponse = await orsDirections.calculate(routeOptions)
-    const segmentCoords = decodePolyline(routeResponse.routes[0].geometry)
+    const segmentCoords = decodePolyline(routeResponse.routes[0].geometry, ORS_ELEVATION_IN_ROUTE)
     duration += routeResponse.routes[0].summary.duration || 0
 
     // Merge coordinates (skip first point of subsequent segments to avoid duplicates)
@@ -318,12 +316,7 @@ async function convertToRouteSegmented(originalFeature, profile, waypoints) {
     }
   }
 
-  // Fetch elevation for the entire merged route
-  let finalCoordinates = allCoordinates
-  if (!orsProfile.includes('driving')) {
-    status(window.__('Fetching elevation data...'))
-    finalCoordinates = await getRouteElevation(allCoordinates) || allCoordinates
-  }
+  const finalCoordinates = allCoordinates
 
   // Reconstruct snapped waypoints from segment boundaries
   const finalWaypoints = []

@@ -25,9 +25,10 @@ describe "Feature directions" do
       # the summary.duration of ors_foot.json
       expect(Feature.line_string.first.properties.dig("route", "duration")).to eq(1080)
 
-      # Verify modal opened and switched to properties tab
+      # A new route stays on the details tab with its elevation chart
       expect(page).to have_css("#feature-details-modal.show")
-      expect(page).to have_css("#edit-button-edit.active")
+      expect(page).to have_css("#edit-button-details.active")
+      expect(page).to have_css("#feature-details-elevation:not(.hidden)")
 
       # Verify directions mode is deactivated (no longer in foot mode)
       expect(page).not_to have_css(".mapbox-gl-draw_foot.active")
