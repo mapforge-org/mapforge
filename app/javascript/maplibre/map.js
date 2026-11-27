@@ -673,14 +673,17 @@ export function setBackgroundMapLayer (mapName = mapProperties.base_map, force =
   return true
 }
 
+// fill-extrusion layers of mapforge, all others come from the basemap
+const ownExtrusion = /^(polygon-layer|indoor-area)-extrusion/
+const isBasemapExtrusion = l => l.type === 'fill-extrusion' && !ownExtrusion.test(l.id)
+
 export function updateBuildingOpacity () {
   // isStyleLoaded() is false until all basemap tiles loaded, which is when sortLayers() runs
   if (!map?.style) return
 
   const opacity = layers?.some(l => l.type === 'indoor' && l.show !== false && l.levels?.length) ? 0.3 : 0.5
   // basemaps name their building layers differently, e.g. 'building-3d' or 'wrGebaeude3D_nicht_oeffentlich'
-  styleLayers().filter(l => l.type === 'fill-extrusion' &&
-    !l.id.startsWith('polygon-layer-extrusion') && !l.id.startsWith('indoor-area-extrusion_')).forEach(l => {
+  styleLayers().filter(isBasemapExtrusion).forEach(l => {
     map.setPaintProperty(l.id, 'fill-extrusion-opacity', opacity, noValidate)
     map.setLayoutProperty(l.id, 'fill-extrusion-rounded-corner-distance', defaults.extrusionCornerRadius, noValidate)
   })
@@ -722,7 +725,7 @@ export function sortLayers () {
     ordered.filter(e => e.id.includes('route-extras-source') && !e.id.startsWith('route-extras-labels')),
     ordered.filter(e => e.type === 'fill-extrusion' && e.getPaintProperty('fill-extrusion-height') && e.id.startsWith('polygon-layer-extrusion')),
     // ordered.filter(e => e.id.startsWith('indoor-area-extrusion_')),
-    ordered.filter(e => e.type === 'fill-extrusion' && e.getPaintProperty('fill-extrusion-height') && !e.id.startsWith('polygon-layer-extrusion') && !e.id.startsWith('indoor-area-extrusion_')),
+    ordered.filter(e => isBasemapExtrusion(e) && e.getPaintProperty('fill-extrusion-height')),
     ordered.filter(e => e.id.startsWith('maplibre-gl-directions')),
     ordered.filter(e => e.type === 'symbol' &&
       !e.id.startsWith('symbols-layer') && !e.id.startsWith('symbols-border-layer') &&

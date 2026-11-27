@@ -15,7 +15,7 @@ import { featureLabel, highlightFeature } from 'maplibre/feature';
 import { refreshFeatureMeta } from 'maplibre/feature/details';
 import { CLICK_TOLERANCE } from 'maplibre/layers/layer';
 import { addFeature, applyFeatureUpdate, destroyFeature, getFeature, hasFeatures, initializeLayers, layers, renderLayers } from 'maplibre/layers/layers';
-import { map, mapProperties, noValidate, onMapClickAfterLayers } from 'maplibre/map';
+import { map, mapProperties, onMapClickAfterLayers } from 'maplibre/map';
 import { initDirections, resetDirections } from 'maplibre/routing/directions';
 import { getRouteUpdate, updateElevation } from 'maplibre/routing/openrouteservice';
 import { editStyles, initializeEditStyles } from 'maplibre/styles/edit_styles';
@@ -257,7 +257,7 @@ function handleModeChange () {
   if (currentMode === mode) { return }
   console.log("Switch draw mode from '" + currentMode + "' to '" + mode + "'")
 
-  setExtrusionOpacity(mode === 'simple_select' || mode.startsWith('draw_'))
+  map.setGlobalStateProperty('editingGeometry', mode !== 'simple_select' && !mode.startsWith('draw_'))
 
   currentMode = mode
   resetDirections()
@@ -295,19 +295,6 @@ function syncGeometryModeUi (mode) {
     e.classList.toggle('geometry-moving', geometryMode === 'move')
     e.classList.toggle('geometry-rotating', geometryMode === 'rotate')
   })
-}
-
-// Reduce extrusion opacity to make edit handles visible. When restoring, each
-// bucket layer goes back to its own opacity (encoded as the trailing number in
-// the layer id, e.g. polygon-layer-extrusion-7_... → 0.7).
-function setExtrusionOpacity (restoring) {
-  map.getLayersOrder()
-    .filter(id => id.startsWith('polygon-layer-extrusion-'))
-    .forEach(id => {
-      const bucket = parseInt(id.match(/^polygon-layer-extrusion-(\d+)_/)?.[1], 10)
-      const opacity = restoring ? bucket / 10 : 0.5
-      map.setPaintProperty(id, 'fill-extrusion-opacity', opacity, noValidate)
-    })
 }
 
 // Mapbox Draw kills the click event on mobile (https://github.com/mapbox/mapbox-gl-js/issues/9114)

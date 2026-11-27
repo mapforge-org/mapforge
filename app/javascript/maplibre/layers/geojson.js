@@ -28,7 +28,7 @@ import { addGeoJSONSource, map, noValidate, removeGeoJSONSource, setSourceEmpty 
 import { pruneShapeImages } from 'maplibre/styles/circle_image'
 import { prunePatternImages } from 'maplibre/styles/pattern_image'
 import {
-  clusterStyles, extrusionOpacityBuckets, initializeClusterStyles, initializeViewStyles, maxZoomFilter, minZoomFilter, styles,
+  clusterStyles, initializeClusterStyles, initializeViewStyles, maxZoomFilter, minZoomFilter, styles,
   viewStyleNames
 } from 'maplibre/styles/styles'
 
@@ -50,9 +50,11 @@ function needsExtrusionPolygon(feature) {
 // A style layer costs parsing in the main thread and in the worker, also when its filter never
 // matches. Route extras hold lines, label points and walls with only the route properties. The
 // extrusion polygons carry all properties of their line, so symbols and labels can match them.
-const routeExtrasStyleNames = viewStyleNames.filter(name => /^(line-layer(?!-outline)|polygon-layer-(outline|halo|extru))/.test(name))
-const extrusionStyleNames = viewStyleNames.filter(name =>
-  /^(polygon-layer-(outline|halo|extru)|symbols-layer|text-layer)/.test(name))
+const withWalls = names => names.map(name => name === 'polygon-layer-extrusion' ? 'polygon-layer-extrusion-wall' : name)
+const routeExtrasStyleNames = withWalls(viewStyleNames.filter(name =>
+  /^(line-layer(?!-outline)|polygon-layer-(outline|halo|extru))/.test(name)))
+const extrusionStyleNames = withWalls(viewStyleNames.filter(name =>
+  /^(polygon-layer-(outline|halo|extru)|symbols-layer|text-layer)/.test(name)))
 
 export class GeoJSONLayer extends Layer {
   get kmMarkerSourceId() {
@@ -131,16 +133,6 @@ export class GeoJSONLayer extends Layer {
     initializeViewStyles(this.routeExtrasSourceId, false, routeExtrasStyleNames)
     initializeExtrasLabelStyles(this.routeExtrasSourceId)
     initializeViewStyles(this.extrusionSourceId, false, extrusionStyleNames)
-    // Walls are built from short quads (see extrusion.js). Rounded corners and the vertical
-    // gradient shade every quad on its own, which shows each seam as a dark band.
-    for (const sourceId of [this.routeExtrasSourceId, this.extrusionSourceId]) {
-      extrusionOpacityBuckets.forEach((_, i) => {
-        const id = `polygon-layer-extrusion-${i + 1}_${sourceId}`
-        map.setLayoutProperty(id, 'fill-extrusion-rounded-corner-distance', 0, noValidate)
-        map.setPaintProperty(id, 'fill-extrusion-vertical-gradient', false, noValidate)
-      })
-    }
-
     map.setFilter(`line-layer_${this.sourceId}`, withLevelFilter(this.mainLineFilter), noValidate)
 
     // Override line-cap to 'butt' for route extras line layer to prevent color overlap at segment junctions

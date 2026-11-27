@@ -681,7 +681,7 @@ body:not(.map-mode-rw) .feature-section-card:has(#map-description-view:empty) {
   color: #64748b;
 }
 
-:is(#line-width-ui, #outline-width-ui, #fill-extrusion-height-ui) :is(.stepper-val, [id$="-val"]) {
+:is(#line-width-ui, #outline-width-ui, #opacity-ui, #fill-extrusion-height-ui) :is(.stepper-val, [id$="-val"]) {
   font-weight: 700;
 }
 

@@ -5,10 +5,6 @@ import { SHAPE_EDGE, haloImage, haloPad, inlineIconImage, labelImage, markerImag
 import { defaults, glyphShift, namedMarkerSizes } from 'maplibre/styles/defaults'
 import { patternImage } from 'maplibre/styles/pattern_image'
 
-// fill-extrusion-opacity is not data-driven in MapLibre, so per-feature opacity
-// is emulated by stacking one fill-extrusion layer per bucket (0.1 … 1.0)
-export const extrusionOpacityBuckets = Array.from({ length: 10 }, (_, i) => (i + 1) / 10)
-
 // Copies of the point layers, which sortLayers() puts above all other points and labels, and below
 // 'text-layer-front' with the label of the point. They hold every point, but only the hovered or
 // selected one is visible, through feature-state in its opacity. A copy filtered to that point would place a new symbol on each hover, and MapLibre fades
@@ -45,7 +41,7 @@ export const viewStyleNames = [
   'text-layer-title-front',
   ...frontStyleNames,
   'polygon-layer-extruded-shadow',
-  ...extrusionOpacityBuckets.map((_, i) => `polygon-layer-extrusion-${i + 1}`)
+  'polygon-layer-extrusion'
 ]
 
 export function initializeViewStyles (sourceName, heatmap=false, styleNames=viewStyleNames) {
@@ -930,15 +926,11 @@ function textLayerStyles(mode) {
   }
 }
 
-// Routes each polygon to one of the 10 fill-extrusion buckets by rounding its
-// fill-extrusion-opacity (falling back to fill-opacity so the polygon opacity
-// slider keeps working; default = defaults.extrusionOpacity) to the nearest tenth
-// and clamping to [1, 10].
-const opacityBucketSelector = () => [
-  'max', 1, ['min', 10,
-    ['round', ['*', 10,
-      ['to-number', styleProp(['fill-extrusion-opacity', 'user_fill-extrusion-opacity', 'fill-opacity', 'user_fill-opacity'], defaults.extrusionOpacity)]]]]
-]
+// Falls back to fill-opacity, so the polygon opacity slider also sets the extrusion opacity.
+// While a geometry is edited, the extrusions fade so the edit handles show through.
+const extrusionOpacity = () => ['case', ['==', ['global-state', 'editingGeometry'], true], 0.5,
+  ['to-number', styleProp(['fill-extrusion-opacity', 'user_fill-extrusion-opacity', 'fill-opacity', 'user_fill-opacity'],
+    defaults.extrusionOpacity)]]
 
 // A transparent 'fill' or 'stroke' makes the extrusion invisible. Use the default color.
 const extrusionColor = () => {
@@ -959,33 +951,6 @@ const extrusionShadow = () => ['boolean',
   styleProp(['fill-extrusion-shadow', 'user_fill-extrusion-shadow']),
   ['>', ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)], 0]
 ]
-
-function extrusionBucketLayers () {
-  return Object.fromEntries(extrusionOpacityBuckets.map((opacity, i) => {
-    const bucket = i + 1 // 1..10
-    const id = `polygon-layer-extrusion-${bucket}`
-    return [id, {
-      id,
-      type: 'fill-extrusion',
-      filter: ['all',
-        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
-        ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
-        ['==', opacityBucketSelector(), bucket],
-        minZoomFilter(),
-        maxZoomFilter()],
-      layout: {
-        'fill-extrusion-rounded-corner-distance': defaults.extrusionCornerRadius
-      },
-      paint: {
-        'fill-extrusion-color': ['case', ['boolean', ['feature-state', 'active'], false],
-          activeExtrusionColor(), extrusionColor()],
-        'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
-        'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)],
-        'fill-extrusion-opacity': opacity
-      }
-    }]
-  }))
-}
 
 export function styles () {
   const styleDefs = {
@@ -1038,9 +1003,25 @@ export function styles () {
         'fill-opacity': fillOpacity()
       }
     },
-    // fill-extrusion-opacity is not data-driven, so we stack 10 layers, one per
-    // opacity bucket. Each feature is routed to one bucket via opacityBucketSelector.
-    ...extrusionBucketLayers(),
+    'polygon-layer-extrusion': {
+      id: 'polygon-layer-extrusion',
+      type: 'fill-extrusion',
+      filter: ['all',
+        ['any', ['==', ['geometry-type'], 'Polygon'], ['==', ['geometry-type'], 'MultiPolygon']],
+        ['>', ['coalesce', ['get', 'fill-extrusion-height'], 0], 0],
+        minZoomFilter(),
+        maxZoomFilter()],
+      layout: {
+        'fill-extrusion-rounded-corner-distance': defaults.extrusionCornerRadius
+      },
+      paint: {
+        'fill-extrusion-color': ['case', ['boolean', ['feature-state', 'active'], false],
+          activeExtrusionColor(), extrusionColor()],
+        'fill-extrusion-height': ['to-number', styleProp(['fill-extrusion-height', 'user_fill-extrusion-height'], 0)],
+        'fill-extrusion-base': ['to-number', styleProp(['fill-extrusion-base', 'user_fill-extrusion-base'], 0)],
+        'fill-extrusion-opacity': extrusionOpacity()
+      }
+    },
     // polygon outlines
     'polygon-layer-outline': {
       id: 'polygon-layer-outline',
@@ -1305,6 +1286,15 @@ export function styles () {
     // A front copy sits above the other symbol layers, so a claimed place would hide their labels.
     const front = style.type === 'symbol' ? { layout: { ...style.layout, 'icon-ignore-placement': true } } : {}
     styleDefs[id] = { ...style, ...front, id, paint }
+  }
+  // Walls are built from short quads (see extrusion.js). Rounded corners and the vertical
+  // gradient shade every quad on its own, which shows each seam as a dark band.
+  const extrusion = styleDefs['polygon-layer-extrusion']
+  styleDefs['polygon-layer-extrusion-wall'] = {
+    ...extrusion,
+    id: 'polygon-layer-extrusion-wall',
+    layout: { 'fill-extrusion-rounded-corner-distance': 0 },
+    paint: { ...extrusion.paint, 'fill-extrusion-vertical-gradient': false }
   }
   return styleDefs
 }

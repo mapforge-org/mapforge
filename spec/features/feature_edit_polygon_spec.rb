@@ -151,7 +151,7 @@ describe "Feature edit, polygon features" do
         xy = viewport_xy_for_lat_lng(polygon.geometry['coordinates'][0][3][1], polygon.geometry['coordinates'][0][3][0])
         find("#edit-button-geometry").click
         # Wait for MapLibre to finish rendering vertex handles after mode change
-        page.evaluate_async_script("window.map.once('idle', arguments[0])")
+        page.evaluate_async_script("window.map.once('idle', arguments[0]); window.map.triggerRepaint()")
         # click on line vertex with right mouse
         click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 

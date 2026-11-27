@@ -35,7 +35,7 @@ describe "Feature edit, line features" do
       click_coord("#maplibre-map", xy[:x], xy[:y])
       find("#edit-button-geometry").click
       # Wait for MapLibre to finish rendering vertex handles after mode change
-      page.evaluate_async_script("window.map.once('idle', arguments[0])")
+      page.evaluate_async_script("window.map.once('idle', arguments[0]); window.map.triggerRepaint()")
       # click on line vertex with right mouse
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
@@ -50,7 +50,7 @@ describe "Feature edit, line features" do
       click_coord("#maplibre-map", xy[:x], xy[:y])
       find("#edit-button-geometry").click
       # Wait for MapLibre to finish rendering vertex handles after mode change
-      page.evaluate_async_script("window.map.once('idle', arguments[0])")
+      page.evaluate_async_script("window.map.once('idle', arguments[0]); window.map.triggerRepaint()")
       # click on line vertex with right mouse
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
@@ -67,7 +67,7 @@ describe "Feature edit, line features" do
       click_coord("#maplibre-map", xy[:x], xy[:y])
       find("#edit-button-geometry").click
       # Wait for MapLibre to finish rendering vertex handles after mode change
-      page.evaluate_async_script("window.map.once('idle', arguments[0])")
+      page.evaluate_async_script("window.map.once('idle', arguments[0]); window.map.triggerRepaint()")
       # right-click directly on the vertex to see if our menu item appears
       click_coord("#maplibre-map", xy[:x], xy[:y], button: :right)
 
