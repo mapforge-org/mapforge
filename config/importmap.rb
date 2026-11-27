@@ -42,7 +42,7 @@ pin "maplibre-contour", preload: "map" # @0.2.0
 
 # Elevation chart
 # from https://esm.sh/chart.js@4.5.0/es2022/chart.bundle.mjs
-pin "chart.js", to: "chart-js.js", preload: false # @4.5.0
+pin "chart.js", to: "chart-js.js", preload: false # @4.6.2
 
 # render markdown
 pin "marked", preload: "map" # @18.2.1
@@ -97,3 +97,4 @@ pin "@turf/length", to: "@turf--length.js", preload: "map" # @7.4.0
 pin "@turf/area", to: "@turf--area.js", preload: "map" # @7.4.0
 pin "@turf/bbox", to: "@turf--bbox.js", preload: "map" # @7.4.0
 pin "@turf/center", to: "@turf--center.js", preload: "map" # @7.4.0
+pin "@kurkle/color", to: "@kurkle--color.js" # @0.6.6
